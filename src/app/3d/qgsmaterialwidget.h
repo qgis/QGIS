@@ -16,9 +16,11 @@
 #ifndef QGSMATERIALWIDGET_H
 #define QGSMATERIALWIDGET_H
 
-#include <QWidget>
+#include "ui_materialwidget.h"
+
 #include <memory>
-#include <ui_materialwidget.h>
+
+#include <QWidget>
 
 class QgsAbstractMaterialSettings;
 enum class QgsMaterialSettingsRenderingTechnique;

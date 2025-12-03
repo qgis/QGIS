@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgsrelation.h"
-#include "qgspolymorphicrelation.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
+#include "qgspolymorphicrelation.h"
 #include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgsrelation_p.h"
 #include "qgsrelationmanager.h"
-#include "moc_qgsrelation.cpp"
+#include "qgsvectorlayer.h"
 
 #include <QApplication>
+
+#include "moc_qgsrelation.cpp"
 
 QgsRelation::QgsRelation()
   : d( new QgsRelationPrivate() )

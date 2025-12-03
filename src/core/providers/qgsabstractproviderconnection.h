@@ -16,11 +16,11 @@
 #ifndef QGSABSTRACTPROVIDERCONNECTION_H
 #define QGSABSTRACTPROVIDERCONNECTION_H
 
-#include <QString>
-#include <QVariantMap>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QString>
+#include <QVariantMap>
 
 /**
  * \brief An interface for data provider connections.

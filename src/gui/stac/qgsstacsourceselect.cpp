@@ -14,30 +14,32 @@
  ***************************************************************************/
 
 #include "qgsstacsourceselect.h"
-#include "moc_qgsstacsourceselect.cpp"
+
 #include "qgsdatasourcemanagerdialog.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsmapcanvas.h"
-#include "qgsstaccontroller.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
 #include "qgsstaccollectionlist.h"
 #include "qgsstacconnection.h"
 #include "qgsstacconnectiondialog.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgshelp.h"
+#include "qgsstaccontroller.h"
 #include "qgsstacdownloadassetsdialog.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
-#include "qgsstacsearchparametersdialog.h"
-#include "qgsstacobjectdetailsdialog.h"
 #include "qgsstacitemlistmodel.h"
+#include "qgsstacobjectdetailsdialog.h"
+#include "qgsstacsearchparametersdialog.h"
 
+#include <QFileDialog>
+#include <QMenu>
+#include <QMessageBox>
 #include <QScrollBar>
 #include <QUrlQuery>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QMenu>
+
+#include "moc_qgsstacsourceselect.cpp"
 
 ///@cond PRIVATE
 

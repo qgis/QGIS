@@ -16,14 +16,14 @@
  ***************************************************************************/
 
 #include "qgssvgcache.h"
-#include "moc_qgssvgcache.cpp"
+
 #include "qgis.h"
-#include "qgslogger.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsmessagelog.h"
-#include "qgssymbollayerutils.h"
-#include "qgsnetworkcontentfetchertask.h"
 #include "qgsabstractcontentcache_p.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgssymbollayerutils.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -31,14 +31,16 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
+#include <QFileInfo>
 #include <QImage>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPainter>
 #include <QPicture>
 #include <QRegularExpression>
 #include <QSvgRenderer>
-#include <QFileInfo>
-#include <QNetworkReply>
-#include <QNetworkRequest>
+
+#include "moc_qgssvgcache.cpp"
 
 ///@cond PRIVATE
 

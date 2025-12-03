@@ -21,9 +21,9 @@
 
 #define SIP_NO_FILE
 
-#include <QNetworkReply>
-
 #include "qgis_core.h"
+
+#include <QNetworkReply>
 
 /**
  * \ingroup core

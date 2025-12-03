@@ -16,10 +16,10 @@
 #ifndef QGSLINESYMBOLLAYER_H
 #define QGSLINESYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgssymbollayer.h"
+#include "qgis_core.h"
 #include "qgsblanksegmentutils.h"
+#include "qgssymbollayer.h"
 
 #include <QPen>
 #include <QVector>
@@ -822,11 +822,11 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     Qgis::RenderUnit blankSegmentsUnit() const { return mBlankSegmentsUnit; }
 
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
-    void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
-    Qgis::RenderUnit outputUnit() const FINAL;
+    void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) final;
+    Qgis::RenderUnit outputUnit() const final;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
-    void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
-    QgsMapUnitScale mapUnitScale() const FINAL;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) final;
+    QgsMapUnitScale mapUnitScale() const final;
     QVariantMap properties() const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
@@ -1234,7 +1234,7 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
      * Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
      */
     QgsRasterLineSymbolLayer( const QString &path = QString() );
-    virtual ~QgsRasterLineSymbolLayer();
+    ~QgsRasterLineSymbolLayer() override;
 
     /**
      * Creates a new QgsRasterLineSymbolLayer, using the settings

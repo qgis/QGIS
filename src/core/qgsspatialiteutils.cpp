@@ -17,9 +17,10 @@
 
 
 #include "qgsspatialiteutils.h"
-#include "qgslogger.h"
 
 #include <sqlite3.h>
+
+#include "qgslogger.h"
 
 #ifdef HAVE_SPATIALITE
 #include <spatialite.h>

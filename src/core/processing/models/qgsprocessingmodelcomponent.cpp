@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelcomponent.h"
-#include "qgsprocessingmodelcomment.h"
+
 #include "qgscolorutils.h"
+#include "qgsprocessingmodelcomment.h"
 
 ///@cond NOT_STABLE
 

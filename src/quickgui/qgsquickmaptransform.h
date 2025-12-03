@@ -16,11 +16,11 @@
 #ifndef QGSQUICKMAPTRANSFORM_H
 #define QGSQUICKMAPTRANSFORM_H
 
-#include <QQuickItem>
-#include <QMatrix4x4>
-
 #include "qgis_quick.h"
 #include "qgsquickmapsettings.h"
+
+#include <QMatrix4x4>
+#include <QQuickItem>
 
 /**
  * \ingroup quick

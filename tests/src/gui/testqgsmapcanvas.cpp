@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgscustomdrophandler.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolpan.h"
+#include "qgsproject.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsrenderchecker.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QSignalSpy>
 #include <QtMath>
-
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsrenderchecker.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmaptoolpan.h"
-#include "qgscustomdrophandler.h"
-#include "qgsreferencedgeometry.h"
 
 namespace QTest
 {

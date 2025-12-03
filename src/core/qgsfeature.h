@@ -16,8 +16,14 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsattributes.h"
+#include "qgsfeatureid.h"
+#include "qgsfields.h"
+#include "qgsvariantutils.h"
 
 #include <QExplicitlySharedDataPointer>
 #include <QList>
@@ -27,12 +33,6 @@ email                : sherman at mrcc.com
 #include <QVariant>
 #include <QVector>
 
-#include "qgsattributes.h"
-#include "qgsfields.h"
-#include "qgsfeatureid.h"
-#include "qgsvariantutils.h"
-
-#include <memory>
 class QgsFeature;
 class QgsFeaturePrivate;
 class QgsField;

@@ -16,6 +16,14 @@
 #ifndef QGSGRASSMODULEINPUT_H
 #define QGSGRASSMODULEINPUT_H
 
+#include "qgis.h"
+#include "qgsgrass.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassmoduleparam.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassvector.h"
+
 #include <QAbstractProxyModel>
 #include <QCheckBox>
 #include <QComboBox>
@@ -30,15 +38,6 @@
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
 #include <QTreeView>
-
-#include "qgis.h"
-
-#include "qgsgrass.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrassmoduleparam.h"
-#include "qgsgrassplugin.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassvector.h"
 
 extern "C"
 {

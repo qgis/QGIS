@@ -12,40 +12,41 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <algorithm>
-
 #include "qgscategorizedsymbolrenderer.h"
 
-#include "qgsdatadefinedsizelegend.h"
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
+#include <algorithm>
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
-#include "qgsgraduatedsymbolrenderer.h"
-#include "qgspointdisplacementrenderer.h"
-#include "qgsinvertedpolygonrenderer.h"
-#include "qgspainteffect.h"
-#include "qgssymbollayer.h"
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsembeddedsymbolrenderer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgsproperty.h"
-#include "qgsstyle.h"
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsembeddedsymbolrenderer.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
+#include "qgslogger.h"
 #include "qgsmarkersymbol.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgssldexportcontext.h"
+#include "qgspainteffect.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsproperty.h"
 #include "qgsrulebasedrenderer.h"
+#include "qgssldexportcontext.h"
+#include "qgsstyle.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
-#include <QSettings> // for legend
 #include <QRegularExpression>
+#include <QSettings>
 #include <QUuid>
 
 QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render, const QString &uuid )
@@ -509,7 +510,7 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const
   mAttrNum = fields.lookupField( mAttrName );
   if ( mAttrNum == -1 )
   {
-    mExpression.reset( new QgsExpression( mAttrName ) );
+    mExpression = std::make_unique<QgsExpression>( mAttrName );
     mExpression->prepare( &context.expressionContext() );
   }
 
@@ -1434,7 +1435,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     const QgsGraduatedSymbolRenderer *graduatedSymbolRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer );
     if ( graduatedSymbolRenderer )
     {
-      r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
+      r = std::make_unique<QgsCategorizedSymbolRenderer>( QString(), QgsCategoryList() );
       if ( graduatedSymbolRenderer->sourceSymbol() )
         r->setSourceSymbol( graduatedSymbolRenderer->sourceSymbol()->clone() );
       if ( graduatedSymbolRenderer->sourceColorRamp() )
@@ -1449,7 +1450,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     const QgsRuleBasedRenderer *ruleBasedSymbolRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer );
     if ( ruleBasedSymbolRenderer )
     {
-      r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
+      r = std::make_unique<QgsCategorizedSymbolRenderer>( QString(), QgsCategoryList() );
 
       const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedSymbolRenderer )->rootRule()->children();
       bool canConvert = true;
@@ -1557,7 +1558,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
         categories.append( QgsRendererCategory( feature.id(), feature.embeddedSymbol()->clone(), QString::number( feature.id() ) ) );
     }
     categories.append( QgsRendererCategory( QVariant(), embeddedRenderer->defaultSymbol()->clone(), QString() ) );
-    r.reset( new QgsCategorizedSymbolRenderer( QStringLiteral( "$id" ), categories ) );
+    r = std::make_unique<QgsCategorizedSymbolRenderer>( QStringLiteral( "$id" ), categories );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer

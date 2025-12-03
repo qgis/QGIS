@@ -13,17 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgstest.h>
+#include <memory>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <qgsapplication.h>
-#include <qgsattributeform.h>
-#include <qgsgui.h>
-#include <qgsproject.h>
-#include <qgsrelationeditorwidget.h>
-#include <qgsrelationmanager.h>
-#include <qgsrelationreferencewidget.h>
-#include <qgstrackedvectorlayertools.h>
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
+#include "qgsgui.h"
+#include "qgsproject.h"
+#include "qgsrelationeditorwidget.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelationreferencewidget.h"
+#include "qgstest.h"
+#include "qgstrackedvectorlayertools.h"
 
 #include <QTreeWidgetItem>
 
@@ -68,20 +69,20 @@ void TestQgsRelationEditorWidget::cleanupTestCase()
 void TestQgsRelationEditorWidget::init()
 {
   // create layer
-  mLayer1.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) ) );
+  mLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
   mLayer1->setDisplayExpression( QStringLiteral( "'Layer1-' || pk" ) );
   QgsProject::instance()->addMapLayer( mLayer1.get(), false, false );
 
-  mLayer2.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) ) );
+  mLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?field=pk:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   mLayer2->setDisplayExpression( QStringLiteral( "'Layer2-' || pk" ) );
   QgsProject::instance()->addMapLayer( mLayer2.get(), false, false );
 
-  mLayerJoin.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=fk_layer1:int&field=fk_layer2:int" ), QStringLiteral( "join_layer" ), QStringLiteral( "memory" ) ) );
+  mLayerJoin = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?field=pk:int&field=fk_layer1:int&field=fk_layer2:int" ), QStringLiteral( "join_layer" ), QStringLiteral( "memory" ) );
   mLayerJoin->setDisplayExpression( QStringLiteral( "'LayerJoin-' || pk" ) );
   QgsProject::instance()->addMapLayer( mLayerJoin.get(), false, false );
 
   // create relation
-  mRelation.reset( new QgsRelation() );
+  mRelation = std::make_unique<QgsRelation>();
   mRelation->setId( QStringLiteral( "vl1.vl2" ) );
   mRelation->setName( QStringLiteral( "vl1.vl2" ) );
   mRelation->setReferencingLayer( mLayer1->id() );
@@ -91,7 +92,7 @@ void TestQgsRelationEditorWidget::init()
   QgsProject::instance()->relationManager()->addRelation( *mRelation );
 
   // create nm relations
-  mRelation1N.reset( new QgsRelation() );
+  mRelation1N = std::make_unique<QgsRelation>();
   mRelation1N->setId( QStringLiteral( "join_layer.vl1" ) );
   mRelation1N->setName( QStringLiteral( "join_layer.vl1" ) );
   mRelation1N->setReferencingLayer( mLayerJoin->id() );
@@ -100,7 +101,7 @@ void TestQgsRelationEditorWidget::init()
   QVERIFY( mRelation1N->isValid() );
   QgsProject::instance()->relationManager()->addRelation( *mRelation1N );
 
-  mRelationNM.reset( new QgsRelation() );
+  mRelationNM = std::make_unique<QgsRelation>();
   mRelationNM->setId( QStringLiteral( "join_layer.vl2" ) );
   mRelationNM->setName( QStringLiteral( "join_layer.vl2" ) );
   mRelationNM->setReferencingLayer( mLayerJoin->id() );

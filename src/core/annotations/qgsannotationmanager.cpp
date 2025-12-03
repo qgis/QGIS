@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsannotationmanager.h"
-#include "moc_qgsannotationmanager.cpp"
-#include "qgsproject.h"
+
 #include "qgsannotation.h"
-#include "qgsannotationregistry.h"
-#include "qgsapplication.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationlayer.h"
-#include "qgssvgannotation.h"
 #include "qgsannotationpictureitem.h"
 #include "qgsannotationrectangletextitem.h"
-#include "qgsmarkersymbol.h"
+#include "qgsannotationregistry.h"
+#include "qgsapplication.h"
 #include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsproject.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssvgannotation.h"
+
+#include "moc_qgsannotationmanager.cpp"
 
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )

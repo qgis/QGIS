@@ -18,8 +18,8 @@
 #ifndef QGSWFSFEATUREHITSASYNCREQUEST_H
 #define QGSWFSFEATUREHITSASYNCREQUEST_H
 
-#include "qgswfsrequest.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgswfsrequest.h"
 
 //! Utility class to issue a GetFeature resultType=hits request
 class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest

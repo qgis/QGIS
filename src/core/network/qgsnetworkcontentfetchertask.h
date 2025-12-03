@@ -20,10 +20,11 @@
 #ifndef QGSNETWORKCONTENTFETCHERTASK_H
 #define QGSNETWORKCONTENTFETCHERTASK_H
 
-#include "qgstaskmanager.h"
 #include "qgis_core.h"
-#include <QNetworkRequest>
+#include "qgstaskmanager.h"
+
 #include <QNetworkReply>
+#include <QNetworkRequest>
 
 class QgsNetworkContentFetcher;
 

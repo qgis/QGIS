@@ -16,11 +16,12 @@
 #ifndef QGSANNOTATIONLAYER3DRENDERERWIDGET_H
 #define QGSANNOTATIONLAYER3DRENDERERWIDGET_H
 
+#include "ui_qgsannotationlayer3drendererwidget.h"
+
 #include <memory>
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "ui_qgsannotationlayer3drendererwidget.h"
 
 class QgsAnnotationLayer;
 class QgsAnnotationLayer3DRenderer;

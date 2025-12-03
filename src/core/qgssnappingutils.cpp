@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgssnappingutils.h"
-#include "moc_qgssnappingutils.cpp"
+
 #include "qgsgeometry.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgssnappingutils.cpp"
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
   : QObject( parent )

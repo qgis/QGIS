@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmkeepnbiggestparts.h"
+
 #include "qgsgeometrycollection.h"
-#include "qgsmultisurface.h"
 #include "qgsmultipolygon.h"
+#include "qgsmultisurface.h"
+
 #include <queue>
 
 ///@cond PRIVATE

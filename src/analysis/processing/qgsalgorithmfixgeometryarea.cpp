@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometryarea.h"
+
 #include "qgsgeometryareacheck.h"
-#include "qgsvectordataproviderfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsvectordataproviderfeaturepool.h"
 #include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE

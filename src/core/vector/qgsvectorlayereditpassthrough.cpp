@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsvectorlayereditpassthrough.h"
-#include "moc_qgsvectorlayereditpassthrough.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayerundopassthroughcommand.h"
+
 #include "qgstransaction.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerundopassthroughcommand.h"
+
+#include "moc_qgsvectorlayereditpassthrough.cpp"
 
 QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer *layer )
   : mModified( false )

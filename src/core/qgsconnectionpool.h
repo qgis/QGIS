@@ -24,14 +24,14 @@
 #include "qgslogger.h"
 
 #include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QMap>
 #include <QMutex>
 #include <QSemaphore>
 #include <QStack>
+#include <QThread>
 #include <QTime>
 #include <QTimer>
-#include <QThread>
-#include <QElapsedTimer>
 
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 #define CONN_POOL_SPARE_CONNECTIONS          2    // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock

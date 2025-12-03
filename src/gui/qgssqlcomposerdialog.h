@@ -20,14 +20,15 @@ email                : even.rouault at spatialys.com
 #define QGSSQLCOMPOSERDIALOG_H
 
 #include "ui_qgssqlcomposerdialogbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
+#include "qgssubsetstringeditorinterface.h"
 
 #include <QPair>
-#include <QStringList>
 #include <QSet>
-#include "qgis_gui.h"
-#include "qgssubsetstringeditorinterface.h"
+#include <QStringList>
 
 SIP_NO_FILE
 

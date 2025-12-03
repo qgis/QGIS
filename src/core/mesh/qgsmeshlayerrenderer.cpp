@@ -15,37 +15,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
-#include <QSet>
-#include <QPair>
-#include <QLinearGradient>
-#include <QBrush>
-#include <QPointer>
-#include <algorithm>
-#include <QElapsedTimer>
-
 #include "qgsmeshlayerrenderer.h"
-#include "moc_qgsmeshlayerrenderer.cpp"
 
+#include <algorithm>
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgscolorrampshader.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
+#include "qgsmapclippingutils.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsmeshlayer.h"
-#include "qgspointxy.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastershader.h"
+#include "qgsmeshlayerelevationproperties.h"
 #include "qgsmeshlayerinterpolator.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshvectorrenderer.h"
 #include "qgsmeshlayerlabeling.h"
 #include "qgsmeshlayerlabelprovider.h"
-#include "qgsmapclippingutils.h"
-#include "qgscolorrampshader.h"
-#include "qgsmaplayerelevationproperties.h"
-#include "qgsapplication.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmeshlayerelevationproperties.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmeshvectorrenderer.h"
+#include "qgspointxy.h"
+#include "qgsrastershader.h"
 #include "qgsrenderedlayerstatistics.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsthreadingutils.h"
+
+#include <QBrush>
+#include <QElapsedTimer>
+#include <QLinearGradient>
+#include <QPair>
+#include <QPointer>
+#include <QSet>
+
+#include "moc_qgsmeshlayerrenderer.cpp"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,

@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgseptproviderguimetadata.h"
+
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractprofilegenerator.h"
-#include "qgsprofilesnapping.h"
 
+#include "qgsprofilesnapping.h"
 
 QgsProfileRenderContext::QgsProfileRenderContext( QgsRenderContext &context )
   : mRenderContext( context )

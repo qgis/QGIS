@@ -21,12 +21,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QList>
-#include <QVector>
-#include "qgslabelposition.h"
 #include "qgscalloutposition.h"
 #include "qgsgenericspatialindex.h"
+#include "qgslabelposition.h"
 #include "qgsmapsettings.h"
+
+#include <QList>
+#include <QVector>
 
 class QgsPointXY;
 

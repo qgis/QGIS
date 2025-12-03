@@ -16,20 +16,22 @@
  ***************************************************************************/
 
 #include "qgspointclusterrenderer.h"
-#include "qgspointdisplacementrenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsproperty.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
 
 #include <cmath>
+#include <memory>
+
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsproperty.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
 QgsPointClusterRenderer::QgsPointClusterRenderer()
   : QgsPointDistanceRenderer( QStringLiteral( "pointCluster" ) )
 {
-  mClusterSymbol.reset( new QgsMarkerSymbol() );
+  mClusterSymbol = std::make_unique<QgsMarkerSymbol>( );
   mClusterSymbol->setSize( 4 );
   mClusterSymbol->setColor( QColor( 245, 75, 80 ) );
 

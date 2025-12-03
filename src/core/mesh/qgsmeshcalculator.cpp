@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileInfo>
+#include "qgsmeshcalculator.h"
+
 #include <limits>
 #include <memory>
 
+#include "qgis.h"
 #include "qgsfeedback.h"
 #include "qgsmeshcalcnode.h"
-#include "qgsmeshcalculator.h"
 #include "qgsmeshcalcutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshmemorydataprovider.h"
 #include "qgsmeshvirtualdatasetgroup.h"
-#include "qgis.h"
+
+#include <QFileInfo>
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       const QString &outputFile,

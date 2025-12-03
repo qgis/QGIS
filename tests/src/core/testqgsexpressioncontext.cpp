@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsexpressioncontext.h"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgsproject.h"
 #include "qgscolorscheme.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerstore.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsExpressionContext : public QObject
 {

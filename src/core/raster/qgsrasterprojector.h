@@ -23,17 +23,17 @@
 #ifndef QGSRASTERPROJECTOR_H
 #define QGSRASTERPROJECTOR_H
 
+#include <cmath>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QVector>
-#include <QList>
-
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterinterface.h"
+#include "qgsrectangle.h"
 
-#include <cmath>
+#include <QList>
+#include <QVector>
 
 class QgsPointXY;
 

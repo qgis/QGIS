@@ -14,24 +14,27 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoollink.h"
-#include "moc_qgsmodelviewtoollink.cpp"
-#include "qgsprocessingmodelerparameterwidget.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingguiregistry.h"
-#include "qgsprocessingmodelchildalgorithm.h"
-#include "qgsmodelgraphicsscene.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelviewtoolselect.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsmodelviewrubberband.h"
-#include "qgsmodelgraphicitem.h"
 
+#include <memory>
+
+#include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewrubberband.h"
+#include "qgsmodelviewtoolselect.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelerparameterwidget.h"
+
+#include "moc_qgsmodelviewtoollink.cpp"
 
 QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )
 {
   setCursor( Qt::PointingHandCursor );
-  mBezierRubberBand.reset( new QgsModelViewBezierRubberBand( view ) );
+  mBezierRubberBand = std::make_unique<QgsModelViewBezierRubberBand>( view );
 
   mBezierRubberBand->setBrush( QBrush( QColor( 0, 0, 0, 63 ) ) );
   mBezierRubberBand->setPen( QPen( QBrush( QColor( 0, 0, 0, 100 ) ), 0, Qt::SolidLine ) );

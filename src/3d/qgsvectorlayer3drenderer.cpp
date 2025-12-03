@@ -15,14 +15,12 @@
 
 #include "qgsvectorlayer3drenderer.h"
 
-#include "qgs3dutils.h"
-#include "qgsvectorlayerchunkloader_p.h"
-
-#include "qgsvectorlayer.h"
-#include "qgsxmlutils.h"
-#include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
-
+#include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerchunkloader_p.h"
+#include "qgsxmlutils.h"
 
 QgsVectorLayer3DRendererMetadata::QgsVectorLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "vector" ) )

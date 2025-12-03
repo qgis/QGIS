@@ -21,12 +21,11 @@
 #ifndef QGSHTTPHEADERS_H
 #define QGSHTTPHEADERS_H
 
-#include <QMap>
-#include <QVariant>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QMap>
+#include <QVariant>
 
 class QNetworkRequest;
 class QUrlQuery;

@@ -18,8 +18,8 @@
 #ifndef QGSLAYOUTMEASUREMENT_H
 #define QGSLAYOUTMEASUREMENT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsunittypes.h"
 
 /**

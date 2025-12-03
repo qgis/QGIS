@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayertreenode.h"
+
 #include <QObject>
 
 /**

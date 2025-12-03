@@ -18,15 +18,14 @@
 #ifndef QGSREGULARPOLYGON_H
 #define QGSREGULARPOLYGON_H
 
-#include <QString>
-
 #include "qgis_core.h"
+#include "qgscircle.h"
+#include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgscircle.h"
 #include "qgstriangle.h"
 
+#include <QString>
 
 /**
  * \ingroup core

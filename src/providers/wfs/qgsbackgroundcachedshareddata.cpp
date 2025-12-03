@@ -14,29 +14,28 @@
  ***************************************************************************/
 
 #include "qgsbackgroundcachedshareddata.h"
-#include "qgsbackgroundcachedfeatureiterator.h"
 
+#include <cpl_conv.h>
+#include <cpl_vsi.h>
+#include <gdal.h>
+#include <memory>
+#include <ogr_api.h>
+#include <set>
+#include <sqlite3.h>
+
+#include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
 #include "qgsthreadedfeaturedownloader.h"
 #include "qgsvectordataprovider.h"
-#include "qgswfsutils.h" // for isCompatibleType()
+#include "qgswfsutils.h"
 
 #include <QCryptographicHash>
 #include <QDir>
 #include <QJsonDocument>
 #include <QMutex>
-
-#include <set>
-
-#include <cpl_vsi.h>
-#include <cpl_conv.h>
-#include <gdal.h>
-#include <ogr_api.h>
-
-#include <sqlite3.h>
 
 QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData(
   const QString &providerName, const QString &componentTranslated
@@ -501,7 +500,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
     mMutex.lock();
     mDownloadFinished = false;
     mComputedExtent = QgsRectangle();
-    mDownloader.reset( new QgsThreadedFeatureDownloader( this ) );
+    mDownloader = std::make_unique<QgsThreadedFeatureDownloader>( this );
     mDownloader->startAndWait();
   }
   if ( mDownloadFinished )

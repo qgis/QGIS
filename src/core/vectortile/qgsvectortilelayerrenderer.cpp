@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayerrenderer.h"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
-#include "qgslogger.h"
-#include "qgsvectortilemvtdecoder.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectortileloader.h"
-#include "qgsvectortileutils.h"
 #include "qgslabelingengine.h"
-#include "qgsvectortilelabeling.h"
+#include "qgslogger.h"
 #include "qgsmapclippingutils.h"
 #include "qgsrendercontext.h"
-#include "qgsvectortiledataprovider.h"
-#include "qgstextrenderer.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
+#include "qgstextrenderer.h"
 #include "qgsthreadingutils.h"
+#include "qgsvectortiledataprovider.h"
+#include "qgsvectortilelabeling.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortileloader.h"
+#include "qgsvectortilemvtdecoder.h"
+#include "qgsvectortileutils.h"
 
 #include <QElapsedTimer>
 #include <QThread>
@@ -181,7 +184,7 @@ bool QgsVectorTileLayerRenderer::render()
   }
   else
   {
-    asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoomToFetch, viewCenter, mFeedback.get(), renderContext()->rendererUsage() ) );
+    asyncLoader = std::make_unique<QgsVectorTileLoader>( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoomToFetch, viewCenter, mFeedback.get(), renderContext()->rendererUsage() );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );

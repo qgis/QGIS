@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 
+#include "qgsapplication.h"
+#include "qgsfiledownloader.h"
 #include "qgstest.h"
-#include <QObject>
-#include <QTemporaryFile>
-#include <QTemporaryDir>
-#include <QUrl>
-#include <QEventLoop>
-#include <QTimer>
 
-#include <qgsapplication.h>
-#include <qgsfiledownloader.h>
+#include <QEventLoop>
+#include <QObject>
+#include <QTemporaryDir>
+#include <QTemporaryFile>
+#include <QTimer>
+#include <QUrl>
 
 class TestQgsFileDownloader : public QObject
 {

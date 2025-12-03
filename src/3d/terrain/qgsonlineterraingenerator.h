@@ -17,10 +17,8 @@
 #define QGSONLINETERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
-#include "qgsterraingenerator.h"
-
 #include "qgscoordinatetransformcontext.h"
+#include "qgsterraingenerator.h"
 
 class QgsDemHeightMapGenerator;
 

@@ -16,9 +16,10 @@
 #ifndef QGSCALLOUTSREGISTRY_H
 #define QGSCALLOUTSREGISTRY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsreadwritecontext.h"
+
 #include <QIcon>
 
 class QgsPathResolver;

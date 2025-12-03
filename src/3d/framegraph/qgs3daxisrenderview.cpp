@@ -16,20 +16,20 @@
 #include "qgs3daxisrenderview.h"
 
 #include "qgsframegraph.h"
+
+#include <QScreen>
+#include <QVector2D>
+#include <QVector3D>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QViewport>
+#include <Qt3DRender/QLayer>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QScreenRayCaster>
-#include <Qt3DRender/qsubtreeenabler.h>
 #include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QViewport>
+#include <Qt3DRender/qsubtreeenabler.h>
 
-#include <QVector3D>
-#include <QVector2D>
-#include <QScreen>
-
-#include <Qt3DRender/QLayer>
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QBuffer>
 typedef Qt3DRender::QBuffer Qt3DQBuffer;

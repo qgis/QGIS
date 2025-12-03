@@ -15,8 +15,10 @@
  ***************************************************************************/
 
 #include "qgsmodelsnapper.h"
-#include "qgssettings.h"
+
 #include <cmath>
+
+#include "qgssettings.h"
 
 QgsModelSnapper::QgsModelSnapper()
 {

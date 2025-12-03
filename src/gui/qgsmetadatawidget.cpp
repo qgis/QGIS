@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QIcon>
-#include <QPushButton>
+#include "qgsmetadatawidget.h"
+
+#include "qgsapplication.h"
+#include "qgsbox3d.h"
+#include "qgslayermetadatavalidator.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsprojectmetadata.h"
+
 #include <QComboBox>
-#include <QString>
+#include <QIcon>
 #include <QInputDialog>
+#include <QPushButton>
+#include <QString>
 #include <QStringListModel>
 
-#include "qgsbox3d.h"
-#include "qgsmetadatawidget.h"
 #include "moc_qgsmetadatawidget.cpp"
-#include "qgslogger.h"
-#include "qgslayermetadatavalidator.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsprojectmetadata.h"
-#include "qgsproject.h"
 
 QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent ), mLayer( layer )

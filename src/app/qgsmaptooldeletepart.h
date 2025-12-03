@@ -16,10 +16,10 @@
 #ifndef QGSMAPTOOLDELETEPART_H
 #define QGSMAPTOOLDELETEPART_H
 
-#include "qgsmaptooledit.h"
 #include "qgis_app.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
+#include "qgsmaptooledit.h"
 
 class QgsVertexMarker;
 

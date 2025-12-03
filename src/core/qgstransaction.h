@@ -18,14 +18,13 @@
 #ifndef QGSTRANSACTION_H
 #define QGSTRANSACTION_H
 
-#include <QSet>
-#include "qgis_sip.h"
-#include <QString>
-#include <QObject>
-#include <QStack>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QObject>
+#include <QSet>
+#include <QStack>
+#include <QString>
 
 class QgsVectorDataProvider;
 class QgsVectorLayer;

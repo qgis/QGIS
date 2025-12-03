@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrypointcoveredbylinecheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometrypointcoveredbylinecheck.h"
-#include "qgslinestring.h"
-#include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgslinestring.h"
 
 QgsGeometryCheck::Result QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {

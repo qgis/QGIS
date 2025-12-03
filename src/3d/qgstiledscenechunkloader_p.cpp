@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstiledscenechunkloader_p.h"
-#include "moc_qgstiledscenechunkloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
@@ -22,8 +21,8 @@
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeotransform.h"
-#include "qgsgltfutils.h"
 #include "qgsgltf3dutils.h"
+#include "qgsgltfutils.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
@@ -33,6 +32,7 @@
 
 #include <QtConcurrentRun>
 
+#include "moc_qgstiledscenechunkloader_p.cpp"
 
 ///@cond PRIVATE
 

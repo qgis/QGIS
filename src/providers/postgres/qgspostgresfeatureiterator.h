@@ -15,12 +15,11 @@
 #ifndef QGSPOSTGRESFEATUREITERATOR_H
 #define QGSPOSTGRESFEATUREITERATOR_H
 
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureiterator.h"
+#include "qgspostgresprovider.h"
 
 #include <QQueue>
-
-#include "qgspostgresprovider.h"
-#include "qgscoordinatetransform.h"
 
 class QgsPostgresProvider;
 class QgsPostgresResult;

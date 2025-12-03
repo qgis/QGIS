@@ -19,15 +19,14 @@
 #ifndef QGSLAYERTREEMODELLEGENDNODE_H
 #define QGSLAYERTREEMODELLEGENDNODE_H
 
-#include <QIcon>
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
 #include "qgspallabeling.h"
+
+#include <QIcon>
+#include <QObject>
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -407,7 +406,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param parent attach a parent QObject to the legend node.
      */
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsSymbolLegendNode();
+    ~QgsSymbolLegendNode() override;
 
     Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;

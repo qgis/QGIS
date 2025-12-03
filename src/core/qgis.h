@@ -19,14 +19,15 @@
 #define QGIS_H
 
 
-#include <QMetaEnum>
-#include <QTimeZone>
 #include <cfloat>
-#include <memory>
 #include <cmath>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QMetaEnum>
+#include <QTimeZone>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -7184,45 +7185,6 @@ typedef unsigned long long qgssize;
 #  endif
 #endif
 #endif
-#endif
-
-// see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute
-#if __cplusplus >= 201703L
-#define NODISCARD [[nodiscard]]
-#elif defined(__clang__)
-#define NODISCARD [[nodiscard]]
-#elif defined(_MSC_VER)
-#define NODISCARD // no support
-#elif defined(__has_cpp_attribute)
-#if __has_cpp_attribute(nodiscard)
-#define NODISCARD [[nodiscard]]
-#elif __has_cpp_attribute(gnu::warn_unused_result)
-#define NODISCARD [[gnu::warn_unused_result]]
-#else
-#define NODISCARD Q_REQUIRED_RESULT
-#endif
-#else
-#define NODISCARD Q_REQUIRED_RESULT
-#endif
-
-#if __cplusplus >= 201703L
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(__clang__)
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(_MSC_VER)
-#define MAYBE_UNUSED // no support
-#elif defined(__has_cpp_attribute)
-#if __has_cpp_attribute(gnu::unused)
-#define MAYBE_UNUSED [[gnu::unused]]
-#else
-#define MAYBE_UNUSED
-#endif
-#else
-#define MAYBE_UNUSED
-#endif
-
-#ifndef FINAL
-#define FINAL final
 #endif
 
 #ifndef SIP_RUN

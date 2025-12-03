@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 #include "qgsrelationreferenceconfigdlg.h"
-#include "moc_qgsrelationreferenceconfigdlg.cpp"
 
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfieldconstraints.h"
 #include "qgsfields.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfieldconstraints.h"
+
+#include "moc_qgsrelationreferenceconfigdlg.cpp"
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

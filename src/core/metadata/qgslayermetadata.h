@@ -18,12 +18,12 @@
 #ifndef QGSLAYERMETADATA_H
 #define QGSLAYERMETADATA_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsbox3d.h"
-#include "qgsrange.h"
+#include "qgis_sip.h"
 #include "qgsabstractmetadatabase.h"
+#include "qgsbox3d.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrange.h"
 
 class QgsMapLayer;
 

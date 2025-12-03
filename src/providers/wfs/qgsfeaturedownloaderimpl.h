@@ -15,8 +15,8 @@
 #ifndef QGSFEATUREDOWNLOADERIMPL_H
 #define QGSFEATUREDOWNLOADERIMPL_H
 
-#include "qgsnetworkaccessmanager.h"
 #include "qgsfeaturedownloadcommon.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QMutex>
 #include <QTimer>

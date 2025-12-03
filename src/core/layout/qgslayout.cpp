@@ -15,31 +15,35 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
-#include "moc_qgslayout.cpp"
-#include "qgslayoutframe.h"
-#include "qgslayoutitem.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutmodel.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutguidecollection.h"
-#include "qgsreadwritecontext.h"
-#include "qgsproject.h"
-#include "qgslayoutitemundocommand.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutitemgroupundocommand.h"
-#include "qgslayoutmultiframe.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutundostack.h"
+
+#include <memory>
+
 #include "qgscompositionconverter.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutguidecollection.h"
+#include "qgslayoutitem.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemgroupundocommand.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemundocommand.h"
+#include "qgslayoutmodel.h"
+#include "qgslayoutmultiframe.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
-#include "qgslayoutrendercontext.h"
-#include "qgslayoutreportcontext.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgsunittypes.h"
+
+#include "moc_qgslayout.cpp"
 
 const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates = new QgsSettingsEntryStringList( QStringLiteral( "search-paths-for-templates" ), QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
 
@@ -54,7 +58,7 @@ QgsLayout::QgsLayout( QgsProject *project )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
-  mItemsModel.reset( new QgsLayoutModel( this ) );
+  mItemsModel = std::make_unique<QgsLayoutModel>( this );
 }
 
 QgsLayout::~QgsLayout()
@@ -583,7 +587,7 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
   if ( !mUndoStack->isBlocked() )
   {
     mUndoStack->beginMacro( tr( "Delete Items" ) );
-    deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Delete Item" ) ) );
+    deleteCommand = std::make_unique<QgsLayoutItemDeleteUndoCommand>( item, tr( "Delete Item" ) );
   }
   removeLayoutItemPrivate( item );
   if ( deleteCommand )

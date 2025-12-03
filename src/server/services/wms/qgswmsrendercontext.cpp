@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayertree.h"
-
-#include "qgsrasterlayer.h"
 #include "qgswmsrendercontext.h"
-#include "qgswmsserviceexception.h"
+
+#include "qgslayertree.h"
+#include "qgsrasterlayer.h"
 #include "qgsserverprojectutils.h"
+#include "qgswmsserviceexception.h"
 
 using namespace QgsWms;
 

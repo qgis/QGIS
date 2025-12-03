@@ -8,6 +8,7 @@
 
 
 
+
 class Qgs25DRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")

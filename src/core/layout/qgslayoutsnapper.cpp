@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgslayoutsnapper.h"
+
 #include "qgslayout.h"
-#include "qgsreadwritecontext.h"
-#include "qgsproject.h"
 #include "qgslayoutpagecollection.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include "qgssettings.h"
 
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )

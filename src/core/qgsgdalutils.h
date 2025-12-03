@@ -18,9 +18,9 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
 #include <gdal.h>
 
+#include "qgis_core.h"
 #include "qgsogrutils.h"
 
 class QgsRasterBlock;

@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsbookmarkmodel.h"
-#include "moc_qgsbookmarkmodel.cpp"
+
+#include "qgsapplication.h"
 #include "qgsbookmarkmanager.h"
 
 #include <QIcon>
+
+#include "moc_qgsbookmarkmodel.cpp"
 
 QgsBookmarkManagerModel::QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager, QObject *parent )
   : QAbstractTableModel( parent )

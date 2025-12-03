@@ -15,9 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslayouteffect.h"
+
 #include <QPainter>
 
-#include "qgslayouteffect.h"
 #include "moc_qgslayouteffect.cpp"
 
 void QgsLayoutEffect::draw( QPainter *painter )

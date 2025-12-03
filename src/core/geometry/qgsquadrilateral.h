@@ -20,9 +20,9 @@
 
 
 #include "qgis_core.h"
+#include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
-#include "qgslinestring.h"
 
 /**
  * \ingroup core

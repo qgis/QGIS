@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpointslayerfromtable.h"
+
 #include "qgsvariantutils.h"
 
 ///@cond PRIVATE

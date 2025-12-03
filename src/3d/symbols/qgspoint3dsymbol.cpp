@@ -15,17 +15,17 @@
 
 #include "qgspoint3dsymbol.h"
 
-#include "qgs3dutils.h"
-#include "qgsreadwritecontext.h"
-#include "qgsxmlutils.h"
-#include "qgssymbollayerutils.h"
 #include "qgs3d.h"
-#include "qgsmaterialregistry.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
+#include "qgs3dutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmaterialregistry.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
+#include "qgsxmlutils.h"
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {

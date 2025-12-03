@@ -15,13 +15,13 @@
 #ifndef QGSDELIMITEDTEXTFEATUREITERATOR_H
 #define QGSDELIMITEDTEXTFEATUREITERATOR_H
 
-#include <QList>
-#include "qgsfeatureiterator.h"
-#include "qgsfeature.h"
-#include "qgsexpressioncontext.h"
 #include "qgscoordinatetransform.h"
-
 #include "qgsdelimitedtextprovider.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+
+#include <QList>
 
 class QgsDelimitedTextFeatureSource final : public QgsAbstractFeatureSource
 {

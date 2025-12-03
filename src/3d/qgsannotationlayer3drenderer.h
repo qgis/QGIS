@@ -18,11 +18,10 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
-#include "qgstextformat.h"
 #include "qgsmaplayerref.h"
+#include "qgstextformat.h"
 
 class QgsAnnotationLayer;
 

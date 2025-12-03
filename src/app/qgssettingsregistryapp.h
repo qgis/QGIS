@@ -30,7 +30,7 @@ class APP_EXPORT QgsSettingsRegistryApp : public QgsSettingsRegistry
     // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
     QgsSettingsRegistryApp();
-    ~QgsSettingsRegistryApp();
+    ~QgsSettingsRegistryApp() override;
 };
 
 #endif // QGSSETTINGSREGISTRYAPP_H

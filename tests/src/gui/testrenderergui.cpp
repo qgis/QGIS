@@ -14,12 +14,12 @@
  ***************************************************************************/
 #include "testrenderergui.h"
 
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
-#include <qgsproject.h>
-#include <qgsrendererpropertiesdialog.h>
-#include <qgsstyle.h>
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgsstyle.h"
+#include "qgsvectorlayer.h"
 
 #include <QApplication>
 #include <QToolBar>

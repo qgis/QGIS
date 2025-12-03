@@ -17,7 +17,9 @@
  ***************************************************************************/
 
 #include "qgsgdalprovider.h"
+
 #include "moc_qgsgdalprovider.cpp"
+
 ///@cond PRIVATE
 
 #include "qgis.h"
@@ -3149,7 +3151,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, Qgis::RasterBand
       | Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean
       | Qgis::RasterBandStatistic::StdDev;
 
-  QgsDebugMsgLevel( QStringLiteral( "theStats = %1 supportedStats = %2" ).arg( stats, 0, 2 ).arg( supportedStats, 0, 2 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "theStats = %1 supportedStats = %2" ).arg( static_cast<int>( stats ), 0, 2 ).arg( static_cast<int>( supportedStats ), 0, 2 ), 2 );
 
   if ( myRasterBandStats.extent != extent() ||
        ( stats & ( ~supportedStats ) ) )

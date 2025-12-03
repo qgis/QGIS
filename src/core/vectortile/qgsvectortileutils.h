@@ -17,12 +17,10 @@
 #define QGSVECTORTILEUTILS_H
 
 #include "qgis_core.h"
+#include "qgshttpheaders.h"
 
 #include <QSet>
 #include <QVariantMap>
-
-#include "qgshttpheaders.h"
-
 
 class QPointF;
 class QPolygon;

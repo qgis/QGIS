@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAlignmentComboBox : QComboBox
 {
 %Docstring(signature="appended")

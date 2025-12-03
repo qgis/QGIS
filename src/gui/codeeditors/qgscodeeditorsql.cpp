@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include "qgscodeeditorsql.h"
-#include "moc_qgscodeeditorsql.cpp"
 
-#include <QWidget>
-#include <QString>
 #include <QFont>
+#include <QString>
+#include <QWidget>
 
+#include "moc_qgscodeeditorsql.cpp"
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   : QgsCodeEditor( parent )

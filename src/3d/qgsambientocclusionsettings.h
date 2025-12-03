@@ -16,10 +16,10 @@
 #ifndef QGSAMBIENTOCCLUSIONSETTINGS_H
 #define QGSAMBIENTOCCLUSIONSETTINGS_H
 
-#include <QString>
-#include <QMap>
-
 #include "qgis_3d.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsReadWriteContext;
 class QDomElement;

@@ -16,9 +16,9 @@
 #ifndef QGSVECTORLAYER3DPROPERTIESWIDGET_H
 #define QGSVECTORLAYER3DPROPERTIESWIDGET_H
 
-#include <QWidget>
-
 #include "ui_qgsvectorlayer3dpropertieswidget.h"
+
+#include <QWidget>
 
 class QgsAbstractVectorLayer3DRenderer;
 

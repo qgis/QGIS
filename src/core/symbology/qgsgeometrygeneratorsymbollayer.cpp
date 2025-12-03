@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsexpressionutils.h"
-#include "qgsgeometry.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgspolygon.h"
-#include "qgslegendpatchshape.h"
-#include "qgsstyle.h"
-#include "qgsunittypes.h"
+
+#include <memory>
 
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeometry.h"
+#include "qgslegendpatchshape.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgspolygon.h"
+#include "qgsstyle.h"
+#include "qgsunittypes.h"
 
 QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer() = default;
 
@@ -279,7 +281,7 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
 
 void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
 {
-  mExpression.reset( new QgsExpression( exp ) );
+  mExpression = std::make_unique<QgsExpression>( exp );
 }
 
 QString QgsGeometryGeneratorSymbolLayer::geometryExpression() const

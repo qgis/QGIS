@@ -16,14 +16,17 @@
  ***************************************************************************/
 
 #include "qgswinnative.h"
-#include "moc_qgswinnative.cpp"
+
+#include <QAbstractEventDispatcher>
 #include <QCoreApplication>
 #include <QDebug>
-#include <QString>
 #include <QDir>
-#include <QWindow>
 #include <QProcess>
-#include <QAbstractEventDispatcher>
+#include <QString>
+#include <QWindow>
+
+#include "moc_qgswinnative.cpp"
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <QtWinExtras/QWinTaskbarButton>
 #include <QtWinExtras/QWinTaskbarProgress>

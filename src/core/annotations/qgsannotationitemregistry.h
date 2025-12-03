@@ -16,13 +16,15 @@
 #ifndef QGSANNOTATIONITEMREGISTRY_H
 #define QGSANNOTATIONITEMREGISTRY_H
 
+#include <functional>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include <QGraphicsItem> //for QGraphicsItem::UserType
+
+#include <QGraphicsItem>
 #include <QIcon>
-#include <functional>
 
 class QgsAnnotationItem;
 class QDomElement;

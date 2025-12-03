@@ -18,8 +18,9 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QWidget>
+
 #include <QString>
+#include <QWidget>
 
 class QgsFilterLineEdit;
 class QToolButton;

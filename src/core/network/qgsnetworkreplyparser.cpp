@@ -16,15 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsnetworkreplyparser.h"
-#include "moc_qgsnetworkreplyparser.cpp"
+
+#include "qgslogger.h"
 
 #include <QNetworkReply>
 #include <QObject>
 #include <QRegularExpression>
 #include <QString>
 #include <QStringList>
+
+#include "moc_qgsnetworkreplyparser.cpp"
 
 QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   : mReply( reply )

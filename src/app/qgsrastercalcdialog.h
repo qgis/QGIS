@@ -19,8 +19,9 @@
 #define QGSRASTERCALCDIALOG_H
 
 #include "ui_qgsrastercalcdialogbase.h"
-#include "qgsrastercalculator.h"
+
 #include "qgis_app.h"
+#include "qgsrastercalculator.h"
 
 class QgsMapCanvas;
 

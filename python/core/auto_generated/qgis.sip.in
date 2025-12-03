@@ -11,6 +11,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -4006,9 +4007,6 @@ empty string if the path is not associated with a vsi prefix.
 
 
 typedef unsigned long long qgssize;
-
-
-
 
 
 

@@ -16,11 +16,11 @@
 #ifndef QGSLAYERTREEEMBEDDEDWIDGETREGISTRY_H
 #define QGSLAYERTREEEMBEDDEDWIDGETREGISTRY_H
 
-#include <QMap>
 #include "qgis.h"
-#include <QWidget>
 #include "qgis_gui.h"
 
+#include <QMap>
+#include <QWidget>
 
 class QgsMapLayer;
 

@@ -18,10 +18,11 @@
 #define QGS_GEOMETRYCHECKERUTILS_H
 
 #include "qgis_analysis.h"
-#include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
-#include "qgspoint.h"
+#include "qgsfeature.h"
 #include "qgsgeometrycheckcontext.h"
+#include "qgspoint.h"
+
 #include <qmath.h>
 
 class QgsGeometryEngine;

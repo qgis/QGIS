@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRasterRendererRegistry
 {
 %Docstring(signature="appended")

@@ -16,8 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSVERTEXID_H
 #define QGSVERTEXID_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 class QgsAbstractGeometry;
 

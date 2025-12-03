@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelComponentGraphicItem : QGraphicsObject
 {
 %Docstring(signature="appended")

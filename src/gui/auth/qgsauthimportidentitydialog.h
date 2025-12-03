@@ -17,15 +17,15 @@
 #ifndef QGSAUTHIMPORTIDENTITYDIALOG_H
 #define QGSAUTHIMPORTIDENTITYDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
 #include "ui_qgsauthimportidentitydialog.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthconfig.h"
+
+#include <QDialog>
 #include <QSslCertificate>
 #include <QSslKey>
-
-#include "qgsauthconfig.h"
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui

@@ -15,20 +15,22 @@
  ***************************************************************************/
 
 #include "qgsogrproviderconnection.h"
-#include "qgsogrprovider.h"
-#include "qgsmessagelog.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsfielddomain.h"
-#include "qgsogrproviderutils.h"
-#include "qgssqlstatement.h"
+
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsfeedback.h"
+#include "qgsfielddomain.h"
+#include "qgsmessagelog.h"
+#include "qgsogrprovider.h"
+#include "qgsogrproviderutils.h"
+#include "qgsogrutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgssqlstatement.h"
+#include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
+
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
 #include "qgsgdalutils.h"
 #endif

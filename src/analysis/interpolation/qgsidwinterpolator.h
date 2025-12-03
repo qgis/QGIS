@@ -18,8 +18,8 @@
 #ifndef QGSIDWINTERPOLATOR_H
 #define QGSIDWINTERPOLATOR_H
 
-#include "qgsinterpolator.h"
 #include "qgis_analysis.h"
+#include "qgsinterpolator.h"
 
 /**
  * \ingroup analysis

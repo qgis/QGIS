@@ -21,22 +21,21 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsabstractprofilesource.h"
+#include "qgscontrastenhancement.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterviewport.h"
+
 #include <QColor>
 #include <QDateTime>
 #include <QList>
 #include <QMap>
 #include <QPair>
 #include <QVector>
-
-#include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsmaplayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterviewport.h"
-#include "qgscontrastenhancement.h"
-#include "qgsabstractprofilesource.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -388,8 +387,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     double rasterUnitsPerPixelY() const;
 
-    void setOpacity( double opacity ) FINAL;
-    double opacity() const FINAL;
+    void setOpacity( double opacity ) final;
+    double opacity() const final;
 
     /**
      * \brief Set contrast enhancement algorithm
@@ -562,7 +561,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *
      * \since QGIS 3.8
      */
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   signals:
 

@@ -15,9 +15,11 @@
 
 
 #include "qgsmaptoolidentifyfeature.h"
-#include "moc_qgsmaptoolidentifyfeature.cpp"
+
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+
+#include "moc_qgsmaptoolidentifyfeature.cpp"
 
 QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl )
   : QgsMapToolIdentify( canvas )

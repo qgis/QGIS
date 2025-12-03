@@ -19,12 +19,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspropertycollection.h"
-#include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
-#include <QObject>
+#include "qgsobjectcustomproperties.h"
+#include "qgspropertycollection.h"
+
 #include <QDomNode>
 #include <QMap>
+#include <QObject>
 #include <QPointer>
 
 class QgsLayout;

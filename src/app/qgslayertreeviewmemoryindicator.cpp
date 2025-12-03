@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewmemoryindicator.h"
-#include "moc_qgslayertreeviewmemoryindicator.cpp"
-#include "qgslayertreeview.h"
+
+#include "qgisapp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
+
+#include "moc_qgslayertreeviewmemoryindicator.cpp"
 
 QgsLayerTreeViewMemoryIndicatorProvider::QgsLayerTreeViewMemoryIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

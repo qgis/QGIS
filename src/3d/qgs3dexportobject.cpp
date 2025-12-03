@@ -15,10 +15,10 @@
 
 #include "qgs3dexportobject.h"
 
-#include <QVector3D>
 #include <QDir>
 #include <QImage>
 #include <QMatrix4x4>
+#include <QVector3D>
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

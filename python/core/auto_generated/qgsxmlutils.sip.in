@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsXmlUtils
 {
 %Docstring(signature="appended")

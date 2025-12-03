@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgrassdatafile.h"
+
 #include "moc_qgsgrassdatafile.cpp"
 
 #ifdef Q_OS_UNIX

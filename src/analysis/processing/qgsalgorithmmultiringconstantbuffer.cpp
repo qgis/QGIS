@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmultiringconstantbuffer.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

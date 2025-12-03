@@ -15,14 +15,15 @@
 
 
 #include "qgssettingseditorwidgetwrapperimpl.h"
-#include "moc_qgssettingseditorwidgetwrapperimpl.cpp"
+
+#include "qgscolorbutton.h"
 #include "qgslogger.h"
 #include "qgssettingsentryimpl.h"
-#include "qgscolorbutton.h"
 
-#include <QLineEdit>
 #include <QCheckBox>
+#include <QLineEdit>
 
+#include "moc_qgssettingseditorwidgetwrapperimpl.cpp"
 
 // *******
 // String with line edit (= default)

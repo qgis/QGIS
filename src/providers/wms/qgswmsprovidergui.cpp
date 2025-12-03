@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgswmsprovidergui.h"
-#include "qgswmsprovider.h"
-#include "qgswmssourceselect.h"
-#include "qgsxyzsourceselect.h"
+
+#include "qgsmaplayer.h"
+#include "qgsproviderguimetadata.h"
+#include "qgsprovidersourcewidgetprovider.h"
 #include "qgssourceselectprovider.h"
 #include "qgstilescalewidget.h"
-#include "qgsproviderguimetadata.h"
 #include "qgswmsdataitemguiproviders.h"
 #include "qgswmsdataitems.h"
-#include "qgsprovidersourcewidgetprovider.h"
-#include "qgsxyzsourcewidget.h"
+#include "qgswmsprovider.h"
+#include "qgswmssourceselect.h"
 #include "qgswmstsettingswidget.h"
-#include "qgsmaplayer.h"
+#include "qgsxyzsourceselect.h"
+#include "qgsxyzsourcewidget.h"
 
 //! Provider for WMS layers source select
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider

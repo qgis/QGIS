@@ -19,10 +19,10 @@
 #define QGSPOINTCLOUDLAYEREXPORTER_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/PointView.hpp>

@@ -18,14 +18,14 @@
 #ifndef QGSMESHRENDERERSETTINGS_H
 #define QGSMESHRENDERERSETTINGS_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgscolorrampshader.h"
+#include "qgsinterpolatedlinerenderer.h"
+#include "qgsmesh3daveraging.h"
+
 #include <QColor>
 #include <QDomElement>
-
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgscolorrampshader.h"
-#include "qgsmesh3daveraging.h"
-#include "qgsinterpolatedlinerenderer.h"
 
 /**
  * \ingroup core

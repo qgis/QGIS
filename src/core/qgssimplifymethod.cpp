@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgssimplifymethod.h"
-#include "qgslogger.h"
-#include "qgsgeometrysimplifier.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
 
+#include "qgsgeometrysimplifier.h"
+#include "qgslogger.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 
 void QgsSimplifyMethod::setMethodType( MethodType methodType )
 {

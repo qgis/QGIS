@@ -13,16 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
-#include "moc_qgsspatialiteconnection.cpp"
-#include "qgssettings.h"
+
+#include <cstdlib>
+
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsspatialiteutils.h"
 #include "qgssqliteutils.h"
 #include "qgsvariantutils.h"
 
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <cstdlib> // atoi
+
+#include "moc_qgsspatialiteconnection.cpp"
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )

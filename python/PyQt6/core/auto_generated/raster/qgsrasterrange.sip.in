@@ -10,6 +10,7 @@
 
 
 
+
 typedef QList<QgsRasterRange> QgsRasterRangeList;
 
 class QgsRasterRange

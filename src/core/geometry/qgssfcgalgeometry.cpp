@@ -18,6 +18,7 @@
 #ifdef WITH_SFCGAL
 
 #include "qgssfcgalgeometry.h"
+
 #include "qgsvector3d.h"
 #include "qgswkbptr.h"
 

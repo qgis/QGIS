@@ -16,16 +16,15 @@
 #ifndef QGSGRASSIMPORT_H
 #define QGSGRASSIMPORT_H
 
-#include <QFutureWatcher>
-#include <QObject>
-
+#include "qgsanimatedicon.h"
 #include "qgsdataitem.h"
+#include "qgsgrass.h"
 #include "qgslogger.h"
 #include "qgsrasterpipe.h"
 #include "qgsvectordataprovider.h"
-#include "qgsanimatedicon.h"
 
-#include "qgsgrass.h"
+#include <QFutureWatcher>
+#include <QObject>
 
 class GRASS_LIB_EXPORT QgsGrassImportIcon : public QgsAnimatedIcon
 {

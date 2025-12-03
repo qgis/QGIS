@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudexpressionnodeimpl.h"
+
 #include "qgspointcloudexpression.h"
 
 const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =

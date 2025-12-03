@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapCanvasItem : QGraphicsItem
 {
 %Docstring(signature="appended")

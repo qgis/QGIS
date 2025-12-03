@@ -13,35 +13,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
+#include "qgsmaptoolidentifyaction.h"
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsattributetabledialog.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
-#include "qgslogger.h"
 #include "qgsidentifycontext.h"
-#include "qgsidentifyresultsdialog.h"
 #include "qgsidentifymenu.h"
+#include "qgsidentifyresultsdialog.h"
+#include "qgslayertreeview.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolidentifyaction.h"
-#include "moc_qgsmaptoolidentifyaction.cpp"
+#include "qgsmaplayeraction.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptoolselectionhandler.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgssettings.h"
+#include "qgsstatusbar.h"
+#include "qgsunittypes.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsstatusbar.h"
-#include "qgssettings.h"
-#include "qgsmapmouseevent.h"
-#include "qgslayertreeview.h"
-#include "qgsmaplayeraction.h"
-#include "qgsunittypes.h"
 
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
 #include <QVariant>
+
+#include "moc_qgsmaptoolidentifyaction.cpp"
 
 QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   : QgsMapToolIdentify( canvas )

@@ -18,10 +18,11 @@
 #ifndef QGISAPPSTYLESHEET_H
 #define QGISAPPSTYLESHEET_H
 
-#include <QObject>
+#include "qgis_app.h"
+
 #include <QFont>
 #include <QMap>
-#include "qgis_app.h"
+#include <QObject>
 
 /**
  * \class QgisAppStyleSheet

@@ -14,12 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgscheckboxfieldformatter.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
 
 QString QgsCheckBoxFieldFormatter::id() const
 {

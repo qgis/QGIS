@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmdalsourceselect.h"
+
+#include "qgshelp.h"
+#include "qgsproviderregistry.h"
+
 #include <QMessageBox>
 
-#include "qgsmdalsourceselect.h"
 #include "moc_qgsmdalsourceselect.cpp"
-#include "qgsproviderregistry.h"
-#include "qgshelp.h"
 
 QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

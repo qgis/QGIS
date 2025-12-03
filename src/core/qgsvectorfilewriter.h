@@ -19,17 +19,18 @@
 #ifndef QGSVECTORFILEWRITER_H
 #define QGSVECTORFILEWRITER_H
 
+#include <ogr_api.h>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsfields.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsrenderer.h"
-#include "qgsgeometryengine.h"
 #include "qgsfeaturesink.h"
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgsgeometryengine.h"
+#include "qgsogrutils.h"
 #include "qgsrendercontext.h"
-#include <ogr_api.h>
+#include "qgsrenderer.h"
 
 class QgsSymbolLayer;
 class QTextCodec;

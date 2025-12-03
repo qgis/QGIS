@@ -14,19 +14,18 @@
  ***************************************************************************/
 #include "qgsspatialitefeatureiterator.h"
 
-#include "qgsspatialiteconnection.h"
-#include "qgsspatialiteconnpool.h"
-#include "qgsspatialiteprovider.h"
-#include "qgssqliteexpressioncompiler.h"
-#include "qgsspatialiteexpressioncompiler.h"
-
+#include "qgsdbquerylog_p.h"
+#include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgsjsonutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsjsonutils.h"
-#include "qgsexception.h"
-#include "qgsgeometryengine.h"
-#include "qgsdbquerylog_p.h"
+#include "qgsspatialiteconnection.h"
+#include "qgsspatialiteconnpool.h"
+#include "qgsspatialiteexpressioncompiler.h"
+#include "qgsspatialiteprovider.h"
+#include "qgssqliteexpressioncompiler.h"
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )

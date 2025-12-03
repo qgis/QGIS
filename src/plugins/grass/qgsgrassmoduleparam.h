@@ -17,16 +17,16 @@
 #ifndef QGSGRASSMODULEPARAM_H
 #define QGSGRASSMODULEPARAM_H
 
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfields.h"
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
-
-#include "qgis.h"
-#include "qgsfields.h"
-#include "qgscoordinatereferencesystem.h"
 
 class QDomNode;
 class QDomElement;

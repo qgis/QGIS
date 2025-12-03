@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsvaluerelationconfigdlg.h"
-#include "moc_qgsvaluerelationconfigdlg.cpp"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsproject.h"
 #include "qgsvaluerelationfieldformatter.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsvaluerelationconfigdlg.cpp"
 
 QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

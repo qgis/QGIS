@@ -8,6 +8,7 @@
 
 
 
+
 class QgsApplicationExitBlockerInterface
 {
 %Docstring(signature="appended")

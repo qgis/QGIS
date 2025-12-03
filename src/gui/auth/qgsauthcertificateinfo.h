@@ -18,8 +18,9 @@
 #ifndef QGSAUTHCERTIFICATEINFO_H
 #define QGSAUTHCERTIFICATEINFO_H
 
-#include <QFile>
 #include "qgis_sip.h"
+
+#include <QFile>
 
 #ifndef QT_NO_SSL
 #include <QtCrypto>

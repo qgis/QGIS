@@ -16,73 +16,77 @@
  ***************************************************************************/
 
 #include "qgsprocessingwidgetwrapperimpl.h"
-#include "moc_qgsprocessingwidgetwrapperimpl.cpp"
-#include "qgsprocessingparameters.h"
+
+#include <memory>
+
 #include "processing/models/qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsprojectionselectionwidget.h"
-#include "qgsprocessingmatrixparameterdialog.h"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
-#include "qgsprocessingcontext.h"
-#include "qgsauthconfigselect.h"
+#include "qgsannotationlayer.h"
 #include "qgsapplication.h"
-#include "qgsfilewidget.h"
-#include "qgssettings.h"
-#include "qgsexpressionlineedit.h"
-#include "qgsfieldexpressionwidget.h"
-#include "qgsexpressionbuilderwidget.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgslayoutmanager.h"
-#include "qgsproject.h"
-#include "qgslayoutcombobox.h"
-#include "qgslayoutitemcombobox.h"
-#include "qgsprintlayout.h"
-#include "qgsscalewidget.h"
-#include "qgssnapindicator.h"
-#include "qgsmapmouseevent.h"
-#include "qgsfilterlineedit.h"
-#include "qgsmapcanvas.h"
-#include "qgsmessagebar.h"
+#include "qgsauthconfigselect.h"
+#include "qgscheckablecombobox.h"
 #include "qgscolorbutton.h"
 #include "qgscoordinateoperationwidget.h"
-#include "qgsdatumtransformdialog.h"
-#include "qgsfieldcombobox.h"
-#include "qgsmapthemecollection.h"
-#include "qgsdatetimeedit.h"
-#include "qgsproviderconnectioncombobox.h"
 #include "qgsdatabaseschemacombobox.h"
 #include "qgsdatabasetablecombobox.h"
-#include "qgsextentwidget.h"
-#include "qgsprocessingenummodelerwidget.h"
-#include "qgsprocessingmatrixmodelerwidget.h"
-#include "qgsprocessingmaplayercombobox.h"
-#include "qgsrasterbandcombobox.h"
-#include "qgsprocessingoutputdestinationwidget.h"
-#include "qgscheckablecombobox.h"
-#include "qgsexpressioncontext.h"
+#include "qgsdatetimeedit.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsdoublespinbox.h"
 #include "qgsdoublevalidator.h"
+#include "qgsexpressionbuilderwidget.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressionlineedit.h"
+#include "qgsextentwidget.h"
+#include "qgsfieldcombobox.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsfilewidget.h"
+#include "qgsfilterlineedit.h"
+#include "qgsgeometrywidget.h"
+#include "qgslayoutcombobox.h"
+#include "qgslayoutitemcombobox.h"
+#include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayercombobox.h"
-#include "qgsannotationlayer.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmessagebar.h"
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingenummodelerwidget.h"
+#include "qgsprocessingmaplayercombobox.h"
+#include "qgsprocessingmatrixmodelerwidget.h"
+#include "qgsprocessingmatrixparameterdialog.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingoutputdestinationwidget.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgsproviderconnectioncombobox.h"
+#include "qgsrasterbandcombobox.h"
+#include "qgsscalewidget.h"
+#include "qgssettings.h"
+#include "qgssnapindicator.h"
+#include "qgsspinbox.h"
 #include "qgsunittypes.h"
-#include "qgsgeometrywidget.h"
 
-#include <QToolButton>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
+#include <QMenu>
 #include <QPlainTextEdit>
 #include <QRadioButton>
-#include <QButtonGroup>
-#include <QMenu>
-#include <QFileDialog>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgsprocessingwidgetwrapperimpl.cpp"
 
 ///@cond PRIVATE
 
@@ -3739,7 +3743,7 @@ QgsProcessingPointMapTool::QgsProcessingPointMapTool( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 }
 
 QgsProcessingPointMapTool::~QgsProcessingPointMapTool() = default;

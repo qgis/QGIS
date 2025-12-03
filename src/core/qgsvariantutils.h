@@ -16,9 +16,9 @@
 #ifndef QGSVARIANTUTILS_H
 #define QGSVARIANTUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 /**
  * \ingroup core

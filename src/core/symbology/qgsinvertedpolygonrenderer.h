@@ -15,14 +15,14 @@
 #ifndef QGSINVERTEDPOLYGONRENDERER_H
 #define QGSINVERTEDPOLYGONRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsmergedfeaturerenderer.h"
+#include "qgsrenderer.h"
 
 /**
  * \ingroup core

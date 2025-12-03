@@ -15,12 +15,13 @@
  ***************************************************************************/
 
 #include "qgsconfig.h"
-
 #include "qgssensorregistry.h"
-#include "moc_qgssensorregistry.cpp"
+
 #include "qgsiodevicesensor.h"
 #include "qgsproject.h"
 #include "qgssensormanager.h"
+
+#include "moc_qgssensorregistry.cpp"
 
 QgsSensorRegistry::QgsSensorRegistry( QObject *parent )
   : QObject( parent )

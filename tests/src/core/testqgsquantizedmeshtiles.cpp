@@ -16,9 +16,11 @@
 
 // qgis_core doesn't export its tinygltf, so we build our own for the test
 #include <cstdlib>
+#include <sstream>
+
 #include <qnamespace.h>
 #include <qtestcase.h>
-#include <sstream>
+
 #define TINYGLTF_IMPLEMENTATION
 
 #include "qgstest.h"

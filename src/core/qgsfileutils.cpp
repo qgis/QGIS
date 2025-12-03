@@ -12,19 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
 #include "qgsfileutils.h"
+
 #include "qgis.h"
 #include "qgsexception.h"
-#include "qgsconfig.h"
-#include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
+#include <QDir>
+#include <QDirIterator>
+#include <QFileInfo>
 #include <QObject>
 #include <QRegularExpression>
-#include <QFileInfo>
-#include <QDir>
 #include <QSet>
-#include <QDirIterator>
 
 #ifdef Q_OS_UNIX
 // For getrlimit()

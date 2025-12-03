@@ -12,16 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include <memory>
 
-#include "qgsvectorlayerutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QMetaType>
 #include <QThread>
 #include <QtGlobal>
-
-#include <memory>
 
 /**
  * \ingroup UnitTests
@@ -143,7 +142,7 @@ void TestQgsVectorLayerUtils::testGetValues()
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
 
-  std::unique_ptr<QgsVectorLayer> pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  auto pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
 
   // from an attribute
@@ -211,7 +210,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
 
-  std::unique_ptr<QgsVectorLayer> pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  auto pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // from an attribute
   {
@@ -302,7 +301,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
 
   // from an attribute - layer with a null value
   {
-    std::unique_ptr<QgsVectorLayer> uniqueLayer = std::make_unique<QgsVectorLayer>( "Point?crs=EPSG:4326", "points_test", "memory" );
+    auto uniqueLayer = std::make_unique<QgsVectorLayer>( "Point?crs=EPSG:4326", "points_test", "memory" );
     QVERIFY( uniqueLayer->isValid() );
     uniqueLayer->dataProvider()->addAttributes( { QgsField( "name", QMetaType::Type::QString ) } );
     uniqueLayer->updateFields();

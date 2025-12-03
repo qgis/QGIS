@@ -15,23 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
-#include "qgsrangewidgetwrapper.h"
-#include "qgsrangeconfigdlg.h"
-#include "qgsdoublespinbox.h"
-#include "qgsspinbox.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
+#include "qgsdoublespinbox.h"
 #include "qgsfilterlineedit.h"
+#include "qgslogger.h"
+#include "qgsrangeconfigdlg.h"
+#include "qgsrangewidgetwrapper.h"
+#include "qgsspinbox.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QLineEdit>
 #include <QObject>
 #include <QtTest/QSignalSpy>
-
-#include <memory>
 
 #define SPECIAL_TEXT_WHEN_EMPTY QString( QChar( 0x2063 ) )
 

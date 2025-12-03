@@ -27,9 +27,9 @@
 // version without notice, or even be removed.
 //
 
+#include "qgschunkedentity.h"
 #include "qgschunkloader.h"
 #include "qgsfeature3dhandler_p.h"
-#include "qgschunkedentity.h"
 
 #define SIP_NO_FILE
 
@@ -63,7 +63,7 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
     QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
@@ -90,8 +90,8 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     ~QgsVectorLayerChunkLoader() override;
 
     void start() override;
-    virtual void cancel() override;
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    void cancel() override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsVectorLayerChunkLoaderFactory *mFactory;
@@ -123,7 +123,7 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
-    ~QgsVectorLayerChunkedEntity();
+    ~QgsVectorLayerChunkedEntity() override;
   private slots:
     void onTerrainElevationOffsetChanged();
 

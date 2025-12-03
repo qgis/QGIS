@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgsannotation.h"
-#include "moc_qgsannotation.cpp"
-#include "qgssymbollayerutils.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsshapegenerator.h"
-#include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgspainting.h"
 
-#include <QPen>
+#include "qgsfillsymbol.h"
+#include "qgsmaplayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgspainting.h"
+#include "qgsproject.h"
+#include "qgsshapegenerator.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+
 #include <QPainter>
+#include <QPen>
+
+#include "moc_qgsannotation.cpp"
 
 QgsAnnotation::QgsAnnotation( QObject *parent )
   : QObject( parent )

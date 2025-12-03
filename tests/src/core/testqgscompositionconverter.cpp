@@ -15,29 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
-
-#include "qgstest.h"
-#include "qgsprintlayout.h"
 #include "qgscompositionconverter.h"
-#include "qgsproject.h"
-#include "qgsreadwritecontext.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutpagecollection.h"
+#include "qgsfontutils.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemhtml.h"
 #include "qgslayoutitemlabel.h"
-#include "qgslayoutitemshape.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
-#include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutatlas.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
-#include "qgsfontutils.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+#include "qgstest.h"
+
+#include <QDebug>
 
 // Debug output for dom nodes
 QDebug operator<<( QDebug dbg, const QDomNode &node )

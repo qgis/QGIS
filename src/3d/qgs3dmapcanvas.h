@@ -16,9 +16,8 @@
 #ifndef QGS3DMAPCANVAS_H
 #define QGS3DMAPCANVAS_H
 
-#include "qgis_3d.h"
-
 #include "qgis.h"
+#include "qgis_3d.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
 
@@ -86,7 +85,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     Q_OBJECT
   public:
     Qgs3DMapCanvas();
-    ~Qgs3DMapCanvas();
+    ~Qgs3DMapCanvas() override;
 
     //! Returns access to the 3D scene configuration
     Qgs3DMapSettings *mapSettings() { return mMapSettings; }

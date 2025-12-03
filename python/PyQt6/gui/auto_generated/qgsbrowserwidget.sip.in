@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBrowserWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

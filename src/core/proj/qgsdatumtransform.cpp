@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdatumtransform.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsapplication.h"
-#include "qgssqliteutils.h"
+
+#include <proj.h>
 #include <sqlite3.h>
 
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsprojutils.h"
-#include <proj.h>
+#include "qgssqliteutils.h"
 
 QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded )
 {

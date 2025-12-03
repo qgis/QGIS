@@ -16,9 +16,10 @@
 #ifndef QGSLAYERTREEVIEW_H
 #define QGSLAYERTREEVIEW_H
 
-#include <QTreeView>
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QTreeView>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;

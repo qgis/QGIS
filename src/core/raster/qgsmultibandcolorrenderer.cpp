@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmultibandcolorrenderer.h"
+
 #include "qgscontrastenhancement.h"
-#include "qgsrastertransparency.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsrastertransparency.h"
 #include "qgssldexportcontext.h"
 
 #include <QDomDocument>

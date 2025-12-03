@@ -16,26 +16,24 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include <climits>
 #include <functional>
+#include <limits>
+#include <memory>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsabstractgeometry.h"
+#include "qgsfeatureid.h"
+#include "qgspoint.h"
+#include "qgspointxy.h"
+#include "qgsvertexid.h"
 
 #include <QDomDocument>
 #include <QJsonObject>
 #include <QSet>
 #include <QString>
 #include <QVector>
-
-#include <climits>
-#include <limits>
-#include <memory>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
-
-#include "qgsabstractgeometry.h"
-#include "qgspointxy.h"
-#include "qgspoint.h"
-#include "qgsfeatureid.h"
-#include "qgsvertexid.h"
 
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>

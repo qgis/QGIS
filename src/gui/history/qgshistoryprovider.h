@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QString>
 #include <QVariantMap>
 
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
     SIP_END
 #endif
 
-    virtual ~QgsAbstractHistoryProvider();
+    ~QgsAbstractHistoryProvider() override;
 
     /**
      * Returns the provider's unique id, which is used to associate existing history entries with the provider.

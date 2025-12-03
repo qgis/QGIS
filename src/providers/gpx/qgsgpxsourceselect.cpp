@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsgpxsourceselect.h"
-#include "moc_qgsgpxsourceselect.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
 
 #include <QMessageBox>
 
+#include "moc_qgsgpxsourceselect.cpp"
 
 QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

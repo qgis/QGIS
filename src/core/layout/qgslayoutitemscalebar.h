@@ -19,11 +19,12 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutitem.h"
-#include "qgsscalebarsettings.h"
 #include "qgsscalebarrenderer.h"
+#include "qgsscalebarsettings.h"
+
+#include <QColor>
 #include <QFont>
 #include <QPen>
-#include <QColor>
 
 class QgsLayoutItemMap;
 

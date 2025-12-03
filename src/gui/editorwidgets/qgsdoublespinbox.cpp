@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdoublespinbox.h"
+
+#include "qgsapplication.h"
+#include "qgsexpression.h"
+#include "qgsfilterlineedit.h"
+#include "qgslogger.h"
+
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
 #include <QTimer>
 
-#include "qgsdoublespinbox.h"
 #include "moc_qgsdoublespinbox.cpp"
-#include "qgsexpression.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsfilterlineedit.h"
 
 #define CLEAR_ICON_SIZE 16
 

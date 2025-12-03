@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetfactory.h"
+
 #include "qgsdefaultsearchwidgetwrapper.h"
-#include "qgssearchwidgetwrapper.h"
 #include "qgsfields.h"
+#include "qgssearchwidgetwrapper.h"
 #include "qgsvectordataprovider.h"
 
 #include <QSettings>

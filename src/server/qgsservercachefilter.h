@@ -20,11 +20,12 @@
 #ifndef QGSSERVERCACHEFILTER_H
 #define QGSSERVERCACHEFILTER_H
 
-#include <QMultiMap>
-#include <QDomDocument>
-#include "qgsserverrequest.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsserverrequest.h"
+
+#include <QDomDocument>
+#include <QMultiMap>
 
 class QgsProject;
 

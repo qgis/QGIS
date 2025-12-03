@@ -10,7 +10,6 @@
 
 
 
-
 class QgsPointCloudAttributeComboBox : QComboBox
 {
 %Docstring(signature="appended")

@@ -12,43 +12,43 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmessagelog.h"
 #include "qgsvertextool.h"
-#include "moc_qgsvertextool.cpp"
 
-#include "qgsavoidintersectionsoperation.h"
+#include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgscurve.h"
-#include "qgslinestring.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
 #include "qgsguiutils.h"
+#include "qgslinestring.h"
+#include "qgslockedfeature.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
 #include "qgsmulticurve.h"
 #include "qgsmultipoint.h"
 #include "qgspointlocator.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsvertexmarker.h"
 #include "qgsstatusbar.h"
-#include "qgisapp.h"
-#include "qgslockedfeature.h"
-#include "qgsvertexeditor.h"
-#include "qgsmapmouseevent.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmessagebar.h"
-#include "qgssettingsentryimpl.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayereditutils.h"
-
+#include "qgsvertexeditor.h"
+#include "qgsvertexmarker.h"
 
 #include <QMenu>
 #include <QRubberBand>
 #include <QTimer>
+
+#include "moc_qgsvertextool.cpp"
 
 uint qHash( const Vertex &v )
 {

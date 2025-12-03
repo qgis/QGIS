@@ -18,12 +18,12 @@
 #ifndef QGSLAYOUTTABLECOLUMN_H
 #define QGSLAYOUTTABLECOLUMN_H
 
-#include <QDomDocument>
-#include <QDomElement>
-#include <QColor>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QColor>
+#include <QDomDocument>
+#include <QDomElement>
 
 /**
  * \ingroup core

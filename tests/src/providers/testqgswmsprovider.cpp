@@ -12,21 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgshillshaderenderer.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+#include "qgsrasterlayer.h"
+#include "qgssinglebandgrayrenderer.h"
+#include "qgstest.h"
+#include "qgswmsprovider.h"
+#include "qgsxyzconnection.h"
+
 #include <QFile>
 #include <QObject>
 #include <QUrlQuery>
-
-#include "qgstest.h"
-#include "qgswmsprovider.h"
-#include "qgsapplication.h"
-#include "qgsrasterlayer.h"
-#include "qgsproviderregistry.h"
-#include "qgsxyzconnection.h"
-#include "qgssinglebandgrayrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgshillshaderenderer.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayerdetails.h"
 
 /**
  * \ingroup UnitTests

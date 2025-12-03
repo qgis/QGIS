@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdbscanclustering.h"
-#include "qgsspatialindexkdbush.h"
+
 #include <unordered_set>
+
+#include "qgsspatialindexkdbush.h"
 
 ///@cond PRIVATE
 

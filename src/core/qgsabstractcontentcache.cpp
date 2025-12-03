@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgsabstractcontentcache.h"
-#include "moc_qgsabstractcontentcache.cpp"
+
 #include "qgssetrequestinitiator_p.h"
+
 #include <QRegularExpression>
+
+#include "moc_qgsabstractcontentcache.cpp"
 
 //
 // QgsAbstractContentCacheEntry

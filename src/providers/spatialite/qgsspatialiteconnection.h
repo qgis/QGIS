@@ -15,12 +15,12 @@
 #ifndef QGSSPATIALITECONNECTION_H
 #define QGSSPATIALITECONNECTION_H
 
-#include <QStringList>
-#include <QObject>
-#include <QMutex>
-
 #include "qgsspatialiteutils.h"
 #include "qgsvectordataprovider.h"
+
+#include <QMutex>
+#include <QObject>
+#include <QStringList>
 
 extern "C"
 {

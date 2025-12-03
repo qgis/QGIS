@@ -18,9 +18,9 @@
 #ifndef QGSWCSSERVICEEXCEPTION_H
 #define QGSWCSSERVICEEXCEPTION_H
 
-#include <QString>
-
 #include "qgsserverexception.h"
+
+#include <QString>
 
 namespace QgsWcs
 {

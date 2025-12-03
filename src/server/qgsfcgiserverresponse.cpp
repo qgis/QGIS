@@ -17,14 +17,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsfcgiserverresponse.h"
+
+#include "qgis.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include <fcgi_stdio.h>
+
 #include <QDebug>
 #include <QThread>
 
-#include "qgslogger.h"
+#include <fcgi_stdio.h>
 
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
 #include <unistd.h>
@@ -130,7 +132,7 @@ void QgsSocketMonitoringThread::run()
   {
     // 'select' function will check if the socket is still valid after a 10ms timeout
     // see https://stackoverflow.com/a/30395738
-    int rv = select( mIpcFd + 1, &setOptions, NULL, NULL, &timeout );
+    int rv = select( mIpcFd + 1, &setOptions, nullptr, nullptr, &timeout );
     if ( rv == -1 )
     {
       // socket closed, nothing can be read
