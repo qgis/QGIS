@@ -335,7 +335,7 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<Q
         // this needs to be taken into account to get the whole transformation
         const QMatrix4x4 nodeTransformMatrix = node->entity()->findChild<QgsGeoTransform *>()->matrix();
         const QMatrix4x4 fullTransformMatrix = transformMatrix * nodeTransformMatrix;
-        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, context.maximumDistance(), fullTransformMatrix, nodeIntPoint, triangleIndex ) )
+        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, context, fullTransformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG
           hits++;

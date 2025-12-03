@@ -510,7 +510,7 @@ QList<QgsRayCastHit> QgsGlobeEntity::rayIntersection( const QgsRay3D &ray, const
       {
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
-        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, context.maximumDistance(), nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
+        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, context, nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
         if ( success )
         {
           float dist = ( ray.origin() - nodeIntPoint ).length();
