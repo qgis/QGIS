@@ -4164,7 +4164,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 {
   auto param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Raster );
   QVariantList selectedOptions;
-  auto dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), selectedOptions, QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  auto dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), selectedOptions, QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   QCOMPARE( dlg->mModel->rowCount(), 0 );
@@ -4195,7 +4195,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QgsAnnotationLayer *annotationLayer = new QgsAnnotationLayer( QStringLiteral( "secondary annotations" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
   QgsProject::instance()->addMapLayer( annotationLayer );
 
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   // should be filtered to raster layers only
   QCOMPARE( dlg->mModel->rowCount(), 1 );
@@ -4204,7 +4204,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   // existing value using layer id should match to project layer
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->id(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->id(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->id() );
@@ -4212,7 +4212,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->id() );
   // existing value using layer source should also match to project layer
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
@@ -4220,7 +4220,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
   // existing value using full layer path not matching a project layer should work
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
@@ -4233,12 +4233,11 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
 
   // should remember layer order
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) << raster->source(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) << raster->source(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
-  // QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(),  nullptr );
   QVERIFY( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>().isNull() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), raster->source() );
@@ -4249,7 +4248,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // mesh
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Mesh );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "mesh" ) );
@@ -4258,7 +4257,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // plugin
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Plugin );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "plugin" ) );
@@ -4268,7 +4267,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 #ifdef HAVE_EPT
   // point cloud
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::PointCloud );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "pointcloud [EPSG:28356]" ) );
@@ -4278,7 +4277,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // annotation
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Annotation );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "secondary annotations" ) );
@@ -4290,7 +4289,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector points
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorPoint );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "point [EPSG:4326]" ) );
@@ -4299,7 +4298,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector lines
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorLine );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "line [EPSG:4326]" ) );
@@ -4308,7 +4307,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector polygons
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorPolygon );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "polygon [EPSG:4326]" ) );
@@ -4317,7 +4316,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector any geometry type
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorAnyGeometry );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 3 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "line [EPSG:4326]" ) );
@@ -4332,7 +4331,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector any type
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Vector );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 4 );
   QSet<QString> titles;
@@ -4342,7 +4341,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // any type
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::MapLayer );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
 #ifdef HAVE_EPT
   QCOMPARE( dlg->mModel->rowCount(), 10 );
@@ -4361,7 +4360,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // files
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::File );
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>(), nullptr, nullptr );
+  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 0 );
 }
