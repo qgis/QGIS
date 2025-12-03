@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 ###########################################################################
 #    code_fixup.py
 #    ---------------
@@ -46,6 +46,8 @@ input_file_stem = input_file.stem
 
 lines = [l[0:-1] if l[-1] == "\n" else l for l in open(input_file).readlines()]
 
+output = []
+
 # scan till first include
 while True:
     try:
@@ -56,7 +58,7 @@ while True:
     if re.match(r"\s*#include", line):
         break
 
-    print(line)
+    output.append(line)
     lines.pop(0)
 
 # collect all includes
@@ -165,7 +167,7 @@ def sort_standard_includes(includes: list[str]) -> list[str]:
     return sorted(includes, key=cmp_to_key(compare))
 
 
-def print_sorted_includes(includes: list[str]):
+def sort_includes(includes: list[str]):
     matching_header = None
     moc_header = None
     qgs_config_include = None
@@ -214,50 +216,52 @@ def print_sorted_includes(includes: list[str]):
 
     if special_case_first_includes:
         for header in special_case_first_includes:
-            print(f"#include <{header}>")
-        print()
+            output.append(f"#include <{header}>")
+        output.append("")
 
     if qgs_config_include:
         # this header MUST come first, as it defines macros which may
         # impact on how other headers behave
-        print(f'#include "{qgs_config_include}"')
+        output.append(f'#include "{qgs_config_include}"')
     if ui_includes:
         for header in ui_includes:
-            print(f'#include "{header}"')
+            output.append(f'#include "{header}"')
     if matching_header:
-        print(f'#include "{matching_header}"')
+        output.append(f'#include "{matching_header}"')
 
     if qgs_config_include or matching_header or ui_includes:
-        print()
+        output.append("")
 
     if std_includes:
         for header in std_includes:
-            print(f"#include <{header}>")
-        print()
+            output.append(f"#include <{header}>")
+        output.append("")
 
     if qgis_includes:
         for header in qgis_includes:
-            print(f'#include "{header}"')
-        print()
+            output.append(f'#include "{header}"')
+        output.append("")
 
     if qt_includes:
         for header in qt_includes:
-            print(f"#include <{header}>")
-        print()
+            output.append(f"#include <{header}>")
+        output.append("")
 
     if moc_header:
         # moc include should come last -- this may rely on other includes
         # to resolve forward declared classes
-        print(f'#include "{moc_header}"')
-        print()
+        output.append(f'#include "{moc_header}"')
+        output.append("")
 
     if special_case_last_includes:
         for header in special_case_last_includes:
-            print(f"#include <{header}>")
-        print()
+            output.append(f"#include <{header}>")
+        output.append("")
 
 
-print_sorted_includes(include_lines)
+sort_includes(include_lines)
 
-for line in lines:
-    print(line)
+output.extend(lines)
+
+with open(input_file, "w") as file:
+    file.write("\n".join(output) + "\n")
