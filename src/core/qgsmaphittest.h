@@ -22,7 +22,6 @@
 #include "qgslayertreefiltersettings.h"
 #include "qgsmapsettings.h"
 #include "qgstaskmanager.h"
-#include "qgscoordinatetransform.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmeshlayer.h"
