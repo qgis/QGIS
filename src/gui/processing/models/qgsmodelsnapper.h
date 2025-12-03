@@ -33,6 +33,7 @@
 class GUI_EXPORT QgsModelSnapper
 {
   public:
+
     /**
      * Constructor for QgsModelSnapper, attached to the specified \a layout.
      */

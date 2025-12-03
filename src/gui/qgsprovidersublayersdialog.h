@@ -42,6 +42,7 @@ class GUI_EXPORT QgsProviderSublayerDialogModel : public QgsProviderSublayerMode
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      */
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor.
      */

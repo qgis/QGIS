@@ -41,6 +41,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     Q_PROPERTY( QgsGradientColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsGradientColorRampDialog.
      * \param ramp initial ramp to show in dialog

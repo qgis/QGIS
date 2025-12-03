@@ -196,6 +196,7 @@ Utility classes for "en masse" size definition.
 #include "qgsrendererwidget.h"
 %End
   public:
+
     QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );
 %Docstring
 Constructor
@@ -232,6 +233,7 @@ Returns the vector layer associated with the widget.
     void dataDefinedChanged();
 
   protected:
+
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:

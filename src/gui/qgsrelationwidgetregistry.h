@@ -34,6 +34,7 @@
 class GUI_EXPORT QgsRelationWidgetRegistry
 {
   public:
+
     /**
      * Constructor
      */

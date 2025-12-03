@@ -46,6 +46,7 @@ class GUI_EXPORT QgsModelGroupBoxDefinitionDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsModelGroupBoxDefinitionWidget, for the specified group \a box.
      */

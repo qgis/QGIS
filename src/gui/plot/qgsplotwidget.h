@@ -37,6 +37,7 @@ class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget, public QgsExpressionCont
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotWidget.
      * \param parent parent widget
@@ -66,6 +67,7 @@ class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget, public QgsExpressionCont
     QgsExpressionContext createExpressionContext() const override;
 
   protected:
+
     /**
      * Initiate a data-defined property button tied to a plot widget.
      */
@@ -104,6 +106,7 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBarChartPlotWidget.
      * \param parent parent widget
@@ -145,6 +148,7 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLineChartPlotWidget.
      * \param parent parent widget
@@ -185,6 +189,7 @@ class GUI_EXPORT QgsPieChartPlotWidget : public QgsPlotWidget, private Ui::QgsPi
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLineChartPlotWidget.
      * \param parent parent widget

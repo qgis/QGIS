@@ -34,6 +34,7 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCodeEditorOptionsWidget with the specified \a parent widget.
      */

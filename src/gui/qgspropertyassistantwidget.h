@@ -110,6 +110,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPropertyAssistantWidget. Aside from a \a parent widget, the constructor accepts a
      * corresponding property \a definition from which it customizes the displayed options (eg a color based

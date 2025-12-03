@@ -36,6 +36,7 @@ class ConsoleFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */

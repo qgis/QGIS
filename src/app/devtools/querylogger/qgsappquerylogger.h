@@ -41,6 +41,7 @@ class QgsAppQueryLogger : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAppQueryLogger, logging requests from the specified \a manager.
      *
@@ -115,6 +116,7 @@ class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDatabaseQueryLoggerProxyModel, filtering the specified network \a logger.
      */

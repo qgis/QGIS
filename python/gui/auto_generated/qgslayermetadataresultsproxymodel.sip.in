@@ -21,6 +21,7 @@ text and extent filtering.
 #include "qgslayermetadataresultsproxymodel.h"
 %End
   public:
+
     explicit QgsLayerMetadataResultsProxyModel( QObject *parent = 0 );
 %Docstring
 Constructs a QgsLayerMetadataResultsProxyModel with an optional

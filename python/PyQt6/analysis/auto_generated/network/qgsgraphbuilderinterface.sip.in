@@ -35,6 +35,7 @@ Contains the settings of the graph.
       sipType = NULL;
 %End
   public:
+
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
 Default constructor

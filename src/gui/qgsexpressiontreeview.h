@@ -143,6 +143,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
 {
     Q_OBJECT
   public:
+
     /**
      * \ingroup gui
      * \class MenuProvider

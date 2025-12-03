@@ -37,6 +37,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsSymbolLevelsWidget
      */

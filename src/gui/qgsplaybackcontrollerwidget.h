@@ -34,6 +34,7 @@ class GUI_EXPORT QgsPlaybackControllerWidget : public QWidget, private Ui::QgsPl
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlaybackControllerWidget, with the specified \a parent widget.
      */

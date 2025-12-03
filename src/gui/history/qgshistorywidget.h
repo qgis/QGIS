@@ -57,6 +57,7 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsHistoryWidget, with the specified \a parent widget.
      *

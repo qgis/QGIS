@@ -49,6 +49,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSearchWidgetToolButton.
      * \param parent parent object

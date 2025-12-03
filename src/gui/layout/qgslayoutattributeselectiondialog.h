@@ -57,6 +57,7 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModelBase : public QAbstractTableM
     Q_OBJECT
 
   public:
+
     /**
      * Controls whether a row/column is shifted up or down
      */
@@ -127,6 +128,7 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel : public QgsLayoutAttributeT
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutAttributeTableColumnModel.
      * \param table QgsLayoutItemAttributeTable the model is attached to
@@ -162,6 +164,7 @@ class GUI_EXPORT QgsLayoutTableSortModel : public QgsLayoutAttributeTableColumnM
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutTableSortColumnsProxyModel.
      * \param table QgsLayoutItemAttributeTable the model is attached to
@@ -211,6 +214,7 @@ class GUI_EXPORT QgsLayoutColumnSourceDelegate : public QItemDelegate, private Q
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutColumnSourceDelegate.
      *

@@ -17,19 +17,18 @@
 #ifndef QGSBENCH_H
 #define QGSBENCH_H
 
+#include "qgsmapsettings.h"
+
 #include <QCoreApplication>
 #include <QDomDocument>
 #include <QDomNode>
+#include <QElapsedTimer>
 #include <QMap>
 #include <QPainter>
 #include <QString>
 #include <QTime>
 #include <QVariant>
 #include <QVector>
-#include <QElapsedTimer>
-
-
-#include "qgsmapsettings.h"
 
 class QgsBench : public QObject
 {

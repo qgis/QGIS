@@ -32,6 +32,7 @@ class GUI_EXPORT QgsLayoutViewToolTemporaryKeyZoom : public QgsLayoutViewToolZoo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolTemporaryKeyZoom.
      */

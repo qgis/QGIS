@@ -37,6 +37,7 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutChartSeriesDetailsWidget
      * \param layer the vector layer associated to the series

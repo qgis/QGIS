@@ -24,6 +24,7 @@ rather accessed through :py:func:`QgsGui.shortcutsManager()`.
 #include "qgsshortcutsmanager.h"
 %End
   public:
+
     enum class CommonAction
     {
       CodeToggleComment,

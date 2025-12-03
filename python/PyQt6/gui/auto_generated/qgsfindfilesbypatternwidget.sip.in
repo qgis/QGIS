@@ -23,6 +23,7 @@ A reusable widget for finding files (recursively) by file pattern.
 #include "qgsfindfilesbypatternwidget.h"
 %End
   public:
+
     QgsFindFilesByPatternWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFindFilesByPatternWidget, with the specified
@@ -63,6 +64,7 @@ A dialog for finding files (recursively) by file pattern.
 #include "qgsfindfilesbypatternwidget.h"
 %End
   public:
+
     QgsFindFilesByPatternDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFindFilesByPatternDialog, with the specified

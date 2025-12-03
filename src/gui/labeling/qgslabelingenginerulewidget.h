@@ -44,6 +44,7 @@ class GUI_EXPORT QgsLabelingEngineRuleWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRuleWidget.
      */
@@ -91,6 +92,7 @@ class GUI_EXPORT QgsLabelingEngineRuleDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRuleDialog.
      * \param widget rule widget to show in dialog

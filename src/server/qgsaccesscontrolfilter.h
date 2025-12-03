@@ -51,6 +51,7 @@ class QgsFeature;
 class SERVER_EXPORT QgsAccessControlFilter
 {
   public:
+
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors

@@ -32,6 +32,7 @@ class Qgs3DModelSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for Qgs3DModelSourceLineEdit, with the specified \a parent widget.
      */

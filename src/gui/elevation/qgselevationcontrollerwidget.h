@@ -89,6 +89,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsElevationControllerWidget, with the specified \a parent widget.
      */

@@ -35,6 +35,7 @@ class GUI_EXPORT QgsModelViewToolZoom : public QgsModelViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewToolZoom.
      */

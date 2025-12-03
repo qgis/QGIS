@@ -42,6 +42,7 @@ class GUI_EXPORT QgsNetworkLogger : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNetworkLogger, logging requests from the specified \a manager.
      *
@@ -135,6 +136,7 @@ class GUI_EXPORT QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsNetworkLoggerProxyModel, filtering the specified network \a logger.
      */

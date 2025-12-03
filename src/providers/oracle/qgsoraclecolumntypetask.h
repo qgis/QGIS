@@ -28,6 +28,7 @@ class QgsOracleColumnTypeTask : public QgsTask
 {
     Q_OBJECT
   public:
+
     /**
      *
      * \param connName

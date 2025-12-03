@@ -24,6 +24,7 @@ refine the filtering.
 #include "qgslegendfilterbutton.h"
 %End
   public:
+
     QgsLegendFilterButton( QWidget *parent = 0 );
 %Docstring
 Construct a new filter legend button

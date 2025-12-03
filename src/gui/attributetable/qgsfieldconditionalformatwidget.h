@@ -36,6 +36,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsFieldConditionalFormatWidget.
      */
@@ -128,6 +129,7 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFieldConditionalFormatWidget, with the specified \a parent widget.
      */

@@ -32,6 +32,7 @@ email                : matthias@opengis.ch
 class ANALYSIS_EXPORT QgsGeometryIsValidCheckError : public QgsSingleGeometryCheckError
 {
   public:
+
     /**
      * Creates a new is valid check error.
      */
@@ -55,6 +56,7 @@ class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
 {
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryIsValidCheck )
   public:
+
     /**
      * Creates a new is valid check with the provided \a context. No options are supported in \a configuration.
      */

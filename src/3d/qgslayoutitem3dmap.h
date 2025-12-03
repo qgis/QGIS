@@ -62,6 +62,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
 #endif
 
   public:
+
     /**
      * Constructor for QgsLayoutItem3DMap, with the specified parent \a layout.
      *

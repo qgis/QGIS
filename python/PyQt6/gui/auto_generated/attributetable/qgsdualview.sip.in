@@ -29,6 +29,7 @@ the currently selected feature are shown in a form.
 #include "qgsdualview.h"
 %End
   public:
+
     enum ViewMode /BaseType=IntEnum/
     {
 
@@ -316,6 +317,7 @@ A QAction subclass for map layer actions shown in an attribute table.
 #include "qgsdualview.h"
 %End
   public:
+
     QgsAttributeTableAction( const QString &name, QgsDualView *dualView, QUuid action, const QModelIndex &fieldIdx );
 %Docstring
 Create a new attribute table action.

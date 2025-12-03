@@ -29,6 +29,7 @@ class GUI_EXPORT QgsLayoutViewToolPan : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolPan.
      */

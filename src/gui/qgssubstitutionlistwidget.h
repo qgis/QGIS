@@ -40,6 +40,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
     Q_PROPERTY( QgsStringReplacementCollection substitutions READ substitutions WRITE setSubstitutions NOTIFY substitutionsChanged )
 
   public:
+
     /**
      * Constructor for QgsSubstitutionListWidget.
      * \param parent parent widget
@@ -89,6 +90,7 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
     Q_PROPERTY( QgsStringReplacementCollection substitutions READ substitutions WRITE setSubstitutions )
 
   public:
+
     /**
      * Constructor for QgsSubstitutionListDialog.
      * \param parent parent widget

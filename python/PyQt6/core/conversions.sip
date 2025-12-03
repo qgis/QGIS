@@ -31,6 +31,7 @@ which are not wrapped by PyQt:
 {
 %TypeHeaderCode
 #include "qgis.h"
+
 %End
 
 %ConvertFromTypeCode
