@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgslayertreemapcanvasbridge.h"
-#include "moc_qgslayertreemapcanvasbridge.cpp"
 
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayertreemapcanvasbridge.cpp"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )

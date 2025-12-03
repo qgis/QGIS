@@ -18,11 +18,13 @@
 #ifndef QGSAUTHSSLERRORSDIALOG_H
 #define QGSAUTHSSLERRORSDIALOG_H
 
-#include <QDialog>
-#include <QSslError>
 #include "ui_qgsauthsslerrorsdialog.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDialog>
+#include <QSslError>
 
 class QNetworkReply;
 class QPushButton;
@@ -35,6 +37,7 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 {
     Q_OBJECT
   public:
+
     /**
      * Construct a dialog to handle SSL errors and saving SSL server certificate exceptions
      * \param reply Network reply that hand error(s)

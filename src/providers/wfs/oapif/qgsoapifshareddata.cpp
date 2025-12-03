@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsoapifshareddata.h"
-#include "moc_qgsoapifshareddata.cpp"
 
 #include "qgsexpressionnodeimpl.h"
 #include "qgslogger.h"
@@ -25,6 +24,8 @@
 
 #include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsoapifshareddata.cpp"
 
 QgsOapifSharedData::QgsOapifSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( "oapif", tr( "OAPIF" ) )

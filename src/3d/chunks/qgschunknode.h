@@ -27,10 +27,10 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis.h"
 #include "qgsaabb.h"
 #include "qgsbox3d.h"
 
-#include "qgis.h"
 #include <QTime>
 
 #define SIP_NO_FILE
@@ -60,6 +60,7 @@ class QgsChunkQueueJobFactory;
  */
 struct QgsChunkNodeId
 {
+
     /**
    * Constructs node ID from depth, x, y and z.
    */

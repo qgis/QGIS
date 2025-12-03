@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAuthConfigurationStorage: QObject
 {
 %Docstring(signature="appended")

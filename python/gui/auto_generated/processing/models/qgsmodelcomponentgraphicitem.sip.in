@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelComponentGraphicItem : QGraphicsObject
 {
 %Docstring(signature="appended")
@@ -272,6 +273,7 @@ The default implementation does nothing.
 %End
 
   protected:
+
     QString truncatedTextForItem( const QString &text ) const;
 %Docstring
 Truncates a ``text`` string so that it fits nicely within the item's
@@ -345,6 +347,7 @@ designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
+
     QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelParameterGraphicItem for the specified
@@ -402,6 +405,7 @@ A graphic item representing a child algorithm in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
+
     QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelChildAlgorithmGraphicItem for the specified
@@ -499,6 +503,7 @@ A graphic item representing a model output in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
+
     QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelOutputGraphicItem for the specified ``output``,
@@ -550,6 +555,7 @@ A graphic item representing a model comment in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
+
     QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelCommentGraphicItem for the specified
@@ -610,6 +616,7 @@ A graphic item representing a group box in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
+
     QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelGroupBoxGraphicItem for the specified group

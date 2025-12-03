@@ -17,8 +17,9 @@
 #define QGSCUSTOMPROJECTOPENHANDLER_H
 
 #include "qgis_gui.h"
-#include <QStringList>
+
 #include <QObject>
+#include <QStringList>
 
 /**
  * \ingroup gui
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsCustomProjectOpenHandler : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Called when the specified project \a file has been opened within QGIS. If TRUE
      * is returned, then the handler has accepted this file and it should not

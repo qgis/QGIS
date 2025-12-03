@@ -16,15 +16,15 @@
 #ifndef QGSMESHEDITOR_H
 #define QGSMESHEDITOR_H
 
-#include <QObject>
-#include <QUndoCommand>
-#include <QPointer>
-
 #include "qgis.h"
-#include "qgsmeshdataset.h"
 #include "qgsmeshdataprovider.h"
-#include "qgstriangularmesh.h"
+#include "qgsmeshdataset.h"
 #include "qgstopologicalmesh.h"
+#include "qgstriangularmesh.h"
+
+#include <QObject>
+#include <QPointer>
+#include <QUndoCommand>
 
 class QgsMeshAdvancedEditing;
 

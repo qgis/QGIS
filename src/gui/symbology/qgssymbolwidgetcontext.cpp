@@ -15,10 +15,11 @@
 #include "qgssymbolwidgetcontext.h"
 
 #include <memory>
+
+#include "qgsexpressioncontextutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgstemporalcontroller.h"
 
 QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other )

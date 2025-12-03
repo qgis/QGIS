@@ -30,9 +30,9 @@ class QgsMapClippingRegion;
 
 #define SIP_NO_FILE
 
+#include <QElapsedTimer>
 #include <QList>
 #include <QPainter>
-#include <QElapsedTimer>
 
 typedef QList<int> QgsAttributeList;
 

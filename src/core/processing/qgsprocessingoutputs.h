@@ -18,8 +18,8 @@
 #ifndef QGSPROCESSINGOUTPUTS_H
 #define QGSPROCESSINGOUTPUTS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 class QgsProcessingContext;
 

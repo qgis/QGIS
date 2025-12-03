@@ -29,16 +29,16 @@
 
 #define SIP_NO_FILE
 
-#include <QtConcurrent/QtConcurrentRun>
-#include <QFutureWatcher>
-#include <QElapsedTimer>
-#include <QMutex>
-
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader.h"
 #include "qgstilingscheme.h"
+
+#include <QElapsedTimer>
+#include <QFutureWatcher>
+#include <QMutex>
+#include <QtConcurrent/QtConcurrentRun>
 
 class QgsRasterDataProvider;
 class QgsRasterLayer;
@@ -82,6 +82,7 @@ class QgsDemHeightMapGenerator : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructs height map generator based on a raster layer with elevation model,
      * terrain's tiling scheme and height map resolution (number of height values on each side of tile)

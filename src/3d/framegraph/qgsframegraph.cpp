@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsframegraph.h"
-#include "moc_qgsframegraph.cpp"
-#include "qgsdirectionallightsettings.h"
-#include "qgspostprocessingentity.h"
+
 #include "qgs3dutils.h"
-#include "qgsframegraphutils.h"
 #include "qgsabstractrenderview.h"
+#include "qgsdirectionallightsettings.h"
+#include "qgsframegraphutils.h"
+#include "qgspostprocessingentity.h"
 #include "qgsshadowrenderview.h"
 
+#include "moc_qgsframegraph.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

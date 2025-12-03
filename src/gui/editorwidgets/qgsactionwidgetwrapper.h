@@ -16,10 +16,10 @@
 #ifndef QGSACTIONWIDGETWRAPPER_H
 #define QGSACTIONWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
-#include "qgsaction.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsaction.h"
+#include "qgswidgetwrapper.h"
 
 #include <QPushButton>
 
@@ -35,6 +35,7 @@ class GUI_EXPORT QgsActionWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Create an action widget wrapper
      *
@@ -46,6 +47,7 @@ class GUI_EXPORT QgsActionWidgetWrapper : public QgsWidgetWrapper
     QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar = nullptr );
 
   public:
+
     /**
      * Sets the \a action.
      */

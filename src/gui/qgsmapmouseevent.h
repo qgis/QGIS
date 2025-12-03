@@ -16,11 +16,11 @@
 #ifndef QGSMAPMOUSEEVENT_H
 #define QGSMAPMOUSEEVENT_H
 
-#include <QMouseEvent>
-
-#include "qgspointxy.h"
-#include "qgspointlocator.h"
 #include "qgis_gui.h"
+#include "qgspointlocator.h"
+#include "qgspointxy.h"
+
+#include <QMouseEvent>
 
 class QgsMapCanvas;
 class QgsMapToolAdvancedDigitizing;
@@ -46,6 +46,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 #endif
 
   public:
+
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *

@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgspostgresutils.cpp  -  Utils for PostgreSQL/PostGIS 
+      qgspostgresutils.cpp  -  Utils for PostgreSQL/PostGIS
                              -------------------
     begin                : Jan 2, 2004
     copyright            : (C) 2003 by Gary E.Sherman
@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgspostgresutils.h"
+
+#include "qgslogger.h"
 #include "qgsstringutils.h"
 
 // ----------

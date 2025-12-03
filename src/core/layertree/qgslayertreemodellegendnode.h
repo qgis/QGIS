@@ -19,15 +19,14 @@
 #ifndef QGSLAYERTREEMODELLEGENDNODE_H
 #define QGSLAYERTREEMODELLEGENDNODE_H
 
-#include <QIcon>
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
 #include "qgspallabeling.h"
+
+#include <QIcon>
+#include <QObject>
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;

@@ -15,55 +15,56 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswfsprovider.h"
+
+#include <cfloat>
+#include <cpl_string.h>
+#include <gdal.h>
+
 #include "qgis.h"
-#include "qgscplhttpfetchoverrider.h"
-#include "qgssetrequestinitiator_p.h"
 #include "qgsbackgroundcachedfeaturesource.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscplhttpfetchoverrider.h"
 #include "qgsfeature.h"
 #include "qgsfeaturedownloader.h"
 #include "qgsfeedback.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
 #include "qgsogrutils.h"
-#include "qgssqliteutils.h"
-#include "qgswfsconstants.h"
-#include "qgswfsfeaturedownloaderimpl.h"
-#include "qgswfsprovider.h"
-#include "moc_qgswfsprovider.cpp"
-#include "qgswfscapabilities.h"
-#include "qgswfsdescribefeaturetype.h"
-#include "qgswfsgetcapabilities.h"
-#include "qgswfstransactionrequest.h"
-#include "qgswfsshareddata.h"
-#include "qgswfsutils.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgssettings.h"
-
-#include "cpl_string.h"
-#include "gdal.h"
+#include "qgssqliteutils.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsconstants.h"
+#include "qgswfsdescribefeaturetype.h"
+#include "qgswfsfeaturedownloaderimpl.h"
+#include "qgswfsgetcapabilities.h"
+#include "qgswfsshareddata.h"
+#include "qgswfstransactionrequest.h"
+#include "qgswfsutils.h"
 
 #include <QAbstractButton>
 #include <QApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QDomDocument>
-#include <QMessageBox>
 #include <QDomNodeList>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QFile>
-#include <QUrl>
-#include <QWidget>
+#include <QMessageBox>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPair>
-#include <QTimer>
-#include <QUrlQuery>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QTimer>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QWidget>
 
-#include <cfloat>
+#include "moc_qgswfsprovider.cpp"
 
 const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
 const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );

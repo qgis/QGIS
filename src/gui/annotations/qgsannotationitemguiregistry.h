@@ -16,14 +16,16 @@
 #ifndef QGSANNOTATIONITEMGUIREGISTRY_H
 #define QGSANNOTATIONITEMGUIREGISTRY_H
 
+#include <functional>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsannotationitemregistry.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include "qgsannotationitemregistry.h"
-#include "qgis.h"
+
 #include <QIcon>
-#include <functional>
 
 class QgsAnnotationLayer;
 class QgsAnnotationItem;
@@ -45,6 +47,7 @@ class QgsAdvancedDigitizingDockWidget;
 class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
 {
   public:
+
     /**
      * Constructor for QgsAnnotationItemAbstractGuiMetadata with the specified class \a type.
      *
@@ -153,6 +156,7 @@ typedef std::function<void( QgsAnnotationItem *, QgsAnnotationLayer *layer )> Qg
 class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstractGuiMetadata
 {
   public:
+
     /**
      * Constructor for QgsAnnotationItemGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the various
@@ -250,6 +254,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
 class GUI_EXPORT QgsAnnotationItemGuiGroup
 {
   public:
+
     /**
      * Constructor for QgsAnnotationItemGuiGroup.
      */
@@ -294,6 +299,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new empty item GUI registry.
      *

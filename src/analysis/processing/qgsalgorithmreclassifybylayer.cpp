@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gdal.h"
 #include "qgsalgorithmreclassifybylayer.h"
+
+#include <gdal.h>
+
+#include "qgis.h"
+#include "qgsrasteranalysisutils.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsreclassifyutils.h"
-#include "qgsrasteranalysisutils.h"
-#include "qgis.h"
 #include "qgsvariantutils.h"
 
 ///@cond PRIVATE

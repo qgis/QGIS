@@ -15,28 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaprenderertask.h"
+
+#include <cpl_conv.h>
+#include <gdal.h>
+#include <memory>
+
+#include "qgsabstractgeopdfexporter.h"
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
-#include "qgsmaprenderertask.h"
-#include "moc_qgsmaprenderertask.cpp"
+#include "qgsfeaturerequest.h"
+#include "qgslogger.h"
+#include "qgsmaprendererstagedrenderjob.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsogrutils.h"
-#include "qgslogger.h"
-#include "qgsabstractgeopdfexporter.h"
-#include "qgsmaprendererstagedrenderjob.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
 
 #include <QFile>
 #include <QImageWriter>
+#include <QPdfWriter>
 #include <QTextStream>
 #include <QTimeZone>
-#include <QPdfWriter>
-#include <memory>
 
-#include "gdal.h"
-#include "cpl_conv.h"
+#include "moc_qgsmaprenderertask.cpp"
 
 ///@cond PRIVATE
 

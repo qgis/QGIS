@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsgpsdetector.h"
-#include "moc_qgsgpsdetector.cpp"
+
 #include "qgsgpsconnection.h"
-#include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
-#include "qgssettingstree.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgslogger.h"
+#include "qgsnmeaconnection.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingstree.h"
+
+#include "moc_qgsgpsdetector.cpp"
 
 #if defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"

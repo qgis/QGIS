@@ -12,12 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QClipboard>
-#include <QMessageBox>
+#include "qgsapplayertreeviewmenuprovider.h"
 
 #include "qgisapp.h"
-#include "qgsapplayertreeviewmenuprovider.h"
-#include "moc_qgsapplayertreeviewmenuprovider.cpp"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
 #include "qgscolorschemeregistry.h"
@@ -32,14 +29,20 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvasutils.h"
+#include "qgsmaplayeraction.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgsmaplayerstyleguiutils.h"
-#include "qgsmaplayerutils.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmeshlayer.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
 #include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsqueryresultwidget.h"
+#include "qgsrasterlabeling.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymbolrenderer.h"
@@ -50,15 +53,13 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsxmlutils.h"
-#include "qgsmeshlayer.h"
-#include "qgsmapcanvasutils.h"
-#include "qgsmaplayeraction.h"
 #include "qgsvectortilelayer.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsrasterlabeling.h"
-#include "qgssymbollayerutils.h"
+#include "qgsxmlutils.h"
+
+#include <QClipboard>
+#include <QMessageBox>
+
+#include "moc_qgsapplayertreeviewmenuprovider.cpp"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )

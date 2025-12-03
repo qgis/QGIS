@@ -16,10 +16,10 @@
 #ifndef QGSPOINTCLOUDRENDERERPROPERTIESWIDGET_H
 #define QGSPOINTCLOUDRENDERERPROPERTIESWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-
 #include "ui_qgspointcloudrendererpropsdialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsmaplayerconfigwidget.h"
 
 class QgsPointCloudLayer;
@@ -40,6 +40,7 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPointCloudRendererPropertiesWidget, associated with the specified \a layer and \a style database.
      */

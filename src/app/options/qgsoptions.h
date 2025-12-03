@@ -18,16 +18,16 @@
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsoptionsbase.h"
-#include "qgsguiutils.h"
-#include "qgisapp.h"
-#include "qgshelp.h"
 
+#include "qgis_app.h"
+#include "qgisapp.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsoptionsdialogbase.h"
 
 #include <QList>
-#include "qgis_app.h"
 
 class QgsExpressionContext;
 class QgsOptionsPageWidget;
@@ -45,6 +45,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 {
     Q_OBJECT
   public:
+
     /**
      * Behavior to use when encountering a layer with an unknown CRS
      * \since QGIS 3.10

@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsfielddomainsitem.h"
-#include "moc_qgsfielddomainsitem.cpp"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsapplication.h"
 #include "qgsfielddomain.h"
 #include "qgsmessagelog.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include "moc_qgsfielddomainsitem.cpp"
 
 QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
     const QString &path,

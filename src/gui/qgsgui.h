@@ -18,12 +18,14 @@
 #ifndef QGSGUI_H
 #define QGSGUI_H
 
+#include <memory>
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgssettingstree.h"
 #include "qgis_sip.h"
+#include "qgssettingstree.h"
+
 #include <QWidget>
-#include <memory>
 
 class QgsSettingsRegistryGui;
 class QgsEditorWidgetRegistry;

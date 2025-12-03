@@ -15,13 +15,13 @@
 #ifndef QGSTABBARPROXYSTYLE_H
 #define QGSTABBARPROXYSTYLE_H
 
-#include "qgsproxystyle.h"
 #include "qgsattributeeditorelement.h"
+#include "qgsproxystyle.h"
 
-#include <QProxyStyle>
-#include <QFont>
 #include <QColor>
+#include <QFont>
 #include <QMap>
+#include <QProxyStyle>
 #include <QTabBar>
 
 #define SIP_NO_FILE
@@ -60,6 +60,7 @@ class QgsTabBar : public QTabBar
     Q_OBJECT
 
   public:
+
     /**
      * Create a new QgsTabBar with the optionally provided parent.
      */

@@ -17,22 +17,25 @@
 
 
 #include "qgsprocessingparameterdefinitionwidget.h"
-#include "moc_qgsprocessingparameterdefinitionwidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgscolorbutton.h"
 #include "qgsgui.h"
 #include "qgsprocessingguiregistry.h"
-#include "qgsapplication.h"
-#include "qgsprocessingregistry.h"
 #include "qgsprocessingparametertype.h"
-#include "qgscolorbutton.h"
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
+#include "qgsprocessingregistry.h"
+
 #include <QCheckBox>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QTabWidget>
 #include <QTextEdit>
+#include <QVBoxLayout>
+
+#include "moc_qgsprocessingparameterdefinitionwidget.cpp"
 
 QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &, const QgsProcessingParameterWidgetContext &context, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *, QWidget *parent )
   : QWidget( parent )

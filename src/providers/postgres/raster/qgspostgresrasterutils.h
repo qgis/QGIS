@@ -17,12 +17,13 @@
 #define QGSPOSTGRESRASTERUTILS_H
 
 #include "qgis.h"
-#include <QVariantMap>
 
+#include <QVariantMap>
 
 //! Raster utility functions
 struct QgsPostgresRasterUtils
 {
+
     /**
    * Parses a \a wkb raster hex and returns information as a variant map
    * for a particular \a bandNo or for all bands if bandNo is 0

@@ -15,13 +15,14 @@
 #ifndef QGSLABELINGENGINERULEWIDGET_H
 #define QGSLABELINGENGINERULEWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgsguiutils.h"
 #include "ui_qgslabelingruleavoidoverlapwidgetbase.h"
-#include "ui_qgslabelingrulemindistancelabeltofeaturewidgetbase.h"
 #include "ui_qgslabelingrulemaxdistancelabeltofeaturewidgetbase.h"
+#include "ui_qgslabelingrulemindistancelabeltofeaturewidgetbase.h"
 #include "ui_qgslabelingrulemindistancelabeltolabelwidgetbase.h"
+
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgspanelwidget.h"
 
 #include <QDialog>
 
@@ -43,6 +44,7 @@ class GUI_EXPORT QgsLabelingEngineRuleWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRuleWidget.
      */
@@ -90,6 +92,7 @@ class GUI_EXPORT QgsLabelingEngineRuleDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRuleDialog.
      * \param widget rule widget to show in dialog

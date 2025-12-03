@@ -19,6 +19,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgseditformconfig.h"
+
 #include <QObject>
 
 class QgsGrassTools;
@@ -46,6 +47,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.

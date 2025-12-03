@@ -16,10 +16,11 @@
 #ifndef QGSOPTIONSWIDGETFACTORY_H
 #define QGSOPTIONSWIDGETFACTORY_H
 
-#include <QListWidgetItem>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsoptionsdialoghighlightwidget.h"
+
+#include <QListWidgetItem>
 
 /**
  * \ingroup gui
@@ -31,6 +32,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsOptionsPageWidget.
      */
@@ -85,6 +87,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     virtual void cancel() { return; }
 
   protected:
+
     /**
      * Register a highlight widget to be used to search and highlight text in
      * options dialogs. This can be used to provide a custom implementation of

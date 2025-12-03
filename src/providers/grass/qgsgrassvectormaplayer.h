@@ -17,14 +17,14 @@
 #ifndef QGSGRASSVECTORMAPLAYER_H
 #define QGSGRASSVECTORMAPLAYER_H
 
+#include "qgis_grass_lib.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
+
 #include <QDateTime>
 #include <QMap>
 #include <QObject>
 #include <QPair>
-
-#include "qgsfields.h"
-#include "qgsfeature.h"
-#include "qgis_grass_lib.h"
 
 extern "C"
 {

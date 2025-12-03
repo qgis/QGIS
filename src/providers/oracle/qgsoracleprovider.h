@@ -18,13 +18,14 @@
 #ifndef QGSORACLEPROVIDER_H
 #define QGSORACLEPROVIDER_H
 
-#include "qgsvectordataprovider.h"
-#include "qgsrectangle.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
 #include "qgsoracleconn.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrectangle.h"
+#include "qgsvectordataprovider.h"
+
 #ifdef HAVE_GUI
 #include "qgsproviderguimetadata.h"
 #endif
@@ -208,6 +209,7 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
   private:
+
     /**
      * \returns relation kind
      */

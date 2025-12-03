@@ -16,19 +16,17 @@
 #ifndef QGSATTRIBUTEFORM_H
 #define QGSATTRIBUTEFORM_H
 
-#include "qgsfeature.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetwrapper.h"
 #include "qgsattributeeditorelement.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsfeature.h"
 
-#include <QWidget>
-#include <QLabel>
 #include <QDialogButtonBox>
+#include <QLabel>
 #include <QMultiMap>
-
-#include "qgis_gui.h"
-
+#include <QWidget>
 
 class QgsAttributeFormInterface;
 class QgsAttributeFormEditorWidget;
@@ -73,7 +71,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsAttributeForm() override;
 
-    /** Returns feature of attribute form. */
+    /**
+     * Returns feature of attribute form.
+     */
     const QgsFeature &feature() const { return mFeature; }
 
     /**

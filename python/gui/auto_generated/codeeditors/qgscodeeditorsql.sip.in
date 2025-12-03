@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCodeEditorSQL : QgsCodeEditor
 {
 %Docstring(signature="appended")

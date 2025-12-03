@@ -18,9 +18,9 @@
 
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
-#include "qgsgcptransformer.h"
-#include "qgsgcppoint.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgcppoint.h"
+#include "qgsgcptransformer.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
@@ -35,6 +35,7 @@ class QgsFeatureSink;
 class ANALYSIS_EXPORT QgsVectorWarper
 {
   public:
+
     /**
      * Constructor for QgsVectorWarper.
      *
@@ -78,6 +79,7 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsVectorWarperTask.
      *

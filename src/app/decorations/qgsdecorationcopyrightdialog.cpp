@@ -11,16 +11,17 @@
  ***************************************************************************/
 
 #include "qgsdecorationcopyrightdialog.h"
-#include "moc_qgsdecorationcopyrightdialog.cpp"
-#include "qgsdecorationcopyright.h"
 
 #include "qgisapp.h"
+#include "qgsdecorationcopyright.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressionfinder.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
-#include "qgsgui.h"
-#include "qgsexpressionfinder.h"
+
+#include "moc_qgsdecorationcopyrightdialog.cpp"
 
 //qt includes
 #include <QColorDialog>

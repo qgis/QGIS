@@ -16,8 +16,9 @@
 #define QGSGPSDEVICEOPTIONS_H
 
 #include "ui_qgsgpsdevicedialogbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QgsBabelGpsDeviceFormat;
 
@@ -33,6 +34,7 @@ class QgsGpsDeviceOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGp
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGpsDeviceOptionsWidget with the specified \a parent widget.
      */

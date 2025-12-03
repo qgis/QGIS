@@ -15,21 +15,22 @@
 #ifndef QGSFEATUREREQUEST_H
 #define QGSFEATUREREQUEST_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QFlags>
-#include <QList>
 #include <memory>
 
 #include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsrectangle.h"
-#include "qgsexpression.h"
-#include "qgsexpressioncontext.h"
-#include "qgssimplifymethod.h"
-#include "qgscoordinatetransformcontext.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
+#include "qgsrectangle.h"
+#include "qgssimplifymethod.h"
+
+#include <QFlags>
+#include <QList>
 
 /**
  * \ingroup core

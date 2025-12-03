@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgscodeeditorcolorscheme.h"
+
 #include <QList>
 
 /**
@@ -35,6 +36,7 @@
 class GUI_EXPORT QgsCodeEditorColorSchemeRegistry
 {
   public:
+
     /**
      * Constructor for a color scheme registry.
      */

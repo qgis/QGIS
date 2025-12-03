@@ -11,6 +11,7 @@
 
 
 
+
 class QgsServer
 {
 %Docstring(signature="appended")
@@ -21,6 +22,7 @@ A server which provides OGC web services.
 #include "qgsserver.h"
 %End
   public:
+
     QgsServer();
 %Docstring
 Creates the server instance

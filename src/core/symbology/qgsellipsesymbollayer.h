@@ -17,9 +17,10 @@
 
 #define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsmarkersymbollayer.h"
+
 #include <QPainterPath>
 
 class QgsExpression;

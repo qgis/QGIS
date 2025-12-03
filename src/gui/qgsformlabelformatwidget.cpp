@@ -14,11 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsformlabelformatwidget.h"
-#include "moc_qgsformlabelformatwidget.cpp"
-#include "qgsguiutils.h"
+
 #include "qgsfontutils.h"
+#include "qgsguiutils.h"
 
 #include <QGroupBox>
+
+#include "moc_qgsformlabelformatwidget.cpp"
 
 /// @cond private
 

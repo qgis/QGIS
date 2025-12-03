@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelGraphicsView : QGraphicsView
 {
 %Docstring(signature="appended")
@@ -26,6 +27,7 @@ QGraphicsView subclass representing the model designer.
 #include "qgsmodelgraphicsview.h"
 %End
   public:
+
     QgsModelGraphicsView( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsModelGraphicsView, with the specified ``parent``
@@ -141,6 +143,7 @@ Pastes items from clipboard, using the specified ``mode``.
 %End
 
   public slots:
+
     void snapSelected();
 %Docstring
 Snaps the selected items to the grid.

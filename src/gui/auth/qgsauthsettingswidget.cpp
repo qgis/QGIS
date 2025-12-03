@@ -14,12 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthsettingswidget.h"
-#include "moc_qgsauthsettingswidget.cpp"
-#include "qgsauthmanager.h"
-#include "qgsauthconfig.h"
+
 #include "qgsapplication.h"
+#include "qgsauthconfig.h"
+#include "qgsauthmanager.h"
 
 #include <QDateTime>
+
+#include "moc_qgsauthsettingswidget.cpp"
 
 QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent, const QString &configId, const QString &username, const QString &password, const QString &dataprovider )
   : QWidget( parent )

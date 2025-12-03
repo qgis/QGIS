@@ -16,9 +16,8 @@
 #ifndef QGS3DMAPCANVAS_H
 #define QGS3DMAPCANVAS_H
 
-#include "qgis_3d.h"
-
 #include "qgis.h"
+#include "qgis_3d.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
 
@@ -252,6 +251,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void updateHighlightSizes();
 
   protected:
+
     /**
      * Manages the display events specified in e.
      */

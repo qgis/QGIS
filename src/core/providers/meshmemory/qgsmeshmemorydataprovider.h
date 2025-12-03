@@ -22,13 +22,14 @@
 
 ///@cond PRIVATE
 
-#include <QString>
 #include <memory>
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
+
+#include <QString>
 
 /**
  * \ingroup core

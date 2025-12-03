@@ -15,16 +15,17 @@
 #ifndef QGSFIELDCONDITIONALFORMATWIDGET_H
 #define QGSFIELDCONDITIONALFORMATWIDGET_H
 
-#include <QWidget>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "ui_qgseditconditionalformatrulewidget.h"
+#include "ui_qgsfieldconditionalformatwidget.h"
+
+#include "qgis_gui.h"
+#include "qgsconditionalstyle.h"
 #include "qgspanelwidget.h"
 #include "qgspanelwidgetstack.h"
 
-#include "ui_qgsfieldconditionalformatwidget.h"
-#include "ui_qgseditconditionalformatrulewidget.h"
-#include "qgsconditionalstyle.h"
-#include "qgis_gui.h"
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -35,6 +36,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsFieldConditionalFormatWidget.
      */
@@ -127,6 +129,7 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFieldConditionalFormatWidget, with the specified \a parent widget.
      */

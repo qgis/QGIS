@@ -15,14 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QThread>
-
 #include "qgslocatorfilter.h"
-#include "moc_qgslocatorfilter.cpp"
-#include "qgsstringutils.h"
+
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
+#include "qgsstringutils.h"
 
+#include <QThread>
+
+#include "moc_qgslocatorfilter.cpp"
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )

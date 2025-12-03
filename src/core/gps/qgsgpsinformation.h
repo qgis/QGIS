@@ -26,7 +26,6 @@
 #include <QObject>
 #include <QString>
 
-
 /**
  * \ingroup core
  * \class QgsGpsInformation

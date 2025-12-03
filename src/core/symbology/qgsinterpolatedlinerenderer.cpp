@@ -13,16 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
+#include "qgsinterpolatedlinerenderer.h"
+
 #include <memory>
 
-#include "qgsgeometryutils_base.h"
-#include "qgsinterpolatedlinerenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyle.h"
-#include "qgsunittypes.h"
 #include "qgscolorutils.h"
+#include "qgsgeometryutils_base.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
+#include <QPainter>
 
 void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth )
 {

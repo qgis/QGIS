@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsRichTextEditor : QWidget
 {
 %Docstring(signature="appended")
@@ -27,6 +29,7 @@ documents via HTML formatted strings.
 #include "qgsrichtexteditor.h"
 %End
   public:
+
     enum class Mode
     {
       QTextDocument,

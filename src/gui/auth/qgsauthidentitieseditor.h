@@ -17,13 +17,14 @@
 #ifndef QGSAUTHIDENTITIESEDITOR_H
 #define QGSAUTHIDENTITIESEDITOR_H
 
-#include <QWidget>
-#include "qgis_sip.h"
-#include <QSslCertificate>
-
 #include "ui_qgsauthidentitieseditor.h"
-#include "qgsauthmanager.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthmanager.h"
+
+#include <QSslCertificate>
+#include <QWidget>
 
 class QgsMessageBar;
 
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     Q_OBJECT
 
   public:
+
     /**
      * Widget for editing authentication configurations directly in database
      * \param parent Parent widget

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsHttpHeaderWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -23,6 +24,7 @@ pairs.
 #include "qgshttpheaderwidget.h"
 %End
   public:
+
     explicit QgsHttpHeaderWidget( QWidget *parent = 0 );
 %Docstring
 Default constructor

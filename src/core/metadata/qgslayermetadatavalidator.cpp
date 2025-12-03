@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayermetadatavalidator.h"
+
 #include "qgslayermetadata.h"
 #include "qgsprojectmetadata.h"
 

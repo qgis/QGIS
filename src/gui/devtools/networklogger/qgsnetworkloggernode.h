@@ -17,15 +17,17 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsdevtoolsmodelnode.h"
-#include <QElapsedTimer>
-#include <QVariant>
-#include <QColor>
-#include <QUrl>
-#include <memory>
 #include <deque>
+#include <memory>
+
+#include "qgis_gui.h"
+#include "qgsdevtoolsmodelnode.h"
+#include "qgsnetworkaccessmanager.h"
+
+#include <QColor>
+#include <QElapsedTimer>
+#include <QUrl>
+#include <QVariant>
 
 class QAction;
 
@@ -213,6 +215,7 @@ class QgsNetworkLoggerPostContentGroup;
 class GUI_EXPORT QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerRequestDetailsGroup, populated from the
      * specified \a request details.
@@ -243,6 +246,7 @@ class GUI_EXPORT QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsM
 class GUI_EXPORT QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerRequestHeadersGroup, populated from the
      * specified \a request details.
@@ -267,6 +271,7 @@ class GUI_EXPORT QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsM
 class GUI_EXPORT QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerRequestQueryGroup, populated from the
      * specified \a url.
@@ -289,6 +294,7 @@ class GUI_EXPORT QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsMod
 class GUI_EXPORT QgsNetworkLoggerPostContentGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerPostContentGroup, populated from the
      * specified \a request details.
@@ -317,6 +323,7 @@ class QgsNetworkLoggerReplyHeadersGroup;
 class GUI_EXPORT QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerReplyGroup, populated from the
      * specified \a reply details.
@@ -345,6 +352,7 @@ class GUI_EXPORT QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
 class GUI_EXPORT QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerReplyHeadersGroup, populated from the
      * specified \a reply details.
@@ -369,6 +377,7 @@ class GUI_EXPORT QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsMod
 class GUI_EXPORT QgsNetworkLoggerSslErrorGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerSslErrorGroup, populated from the
      * specified \a errors.

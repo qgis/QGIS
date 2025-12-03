@@ -16,8 +16,9 @@
 #define QGSGPSOPTIONS_H
 
 #include "ui_qgsgpsoptionswidgetbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgis_app.h"
+#include "qgsoptionswidgetfactory.h"
 
 /**
  * \ingroup app
@@ -31,6 +32,7 @@ class APP_EXPORT QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGpsOptionsWidget with the specified \a parent widget.
      */

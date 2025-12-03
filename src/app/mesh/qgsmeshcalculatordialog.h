@@ -19,8 +19,9 @@
 #define QGSMESHCALCULATORDIALOG_H
 
 #include "ui_qgsmeshcalculatordialogbase.h"
-#include "qgsmeshcalculator.h"
+
 #include "qgis_app.h"
+#include "qgsmeshcalculator.h"
 
 class QgsMapCanvas;
 
@@ -29,6 +30,7 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for mesh calculator dialog
      * \param meshLayer main mesh layer, will be used for default extent and projection

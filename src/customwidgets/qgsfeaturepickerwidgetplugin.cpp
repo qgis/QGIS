@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsfeaturepickerwidgetplugin.h"
-#include "moc_qgsfeaturepickerwidgetplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsfeaturepickerwidget.h"
 
+#include "moc_qgsfeaturepickerwidgetplugin.cpp"
 
 QgsFeaturePickerWidgetPlugin::QgsFeaturePickerWidgetPlugin( QObject *parent )
   : QObject( parent )

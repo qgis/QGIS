@@ -16,9 +16,9 @@
 #ifndef QGSABSTRACTINPUTCONTROLLER_H
 #define QGSABSTRACTINPUTCONTROLLER_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 #include <QObject>
 
@@ -50,6 +50,7 @@ class GUI_EXPORT QgsAbstractInputController : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAbstractInputController, with the specified \a parent object.
      */

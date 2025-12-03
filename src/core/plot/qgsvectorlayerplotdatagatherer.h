@@ -22,8 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsplot.h"
 #include "qgstaskmanager.h"
-#include <qgsvectorlayerfeatureiterator.h>
-
+#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup core

@@ -18,31 +18,31 @@
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
 
-#include "qgis_core.h"
-#include <QMap>
-#include <QSet>
-#include <QList>
-#include <QStringList>
-#include <QFont>
-#include <QMutex>
-
 #include "qgis.h"
-#include "qgsmaplayer.h"
+#include "qgis_core.h"
+#include "qgsabstractprofilesource.h"
+#include "qgsaggregatecalculator.h"
+#include "qgsattributetableconfig.h"
+#include "qgseditformconfig.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeaturesource.h"
 #include "qgsfields.h"
+#include "qgsmaplayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayertoolscontext.h"
-#include "qgseditformconfig.h"
-#include "qgsattributetableconfig.h"
-#include "qgsaggregatecalculator.h"
-#include "qgsfeatureiterator.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsexpressioncontextscopegenerator.h"
-#include "qgsexpressioncontext.h"
-#include "qgsabstractprofilesource.h"
 #include "qgsvectorsimplifymethod.h"
+
+#include <QFont>
+#include <QList>
+#include <QMap>
+#include <QMutex>
+#include <QSet>
+#include <QStringList>
 
 class QPainter;
 class QImage;

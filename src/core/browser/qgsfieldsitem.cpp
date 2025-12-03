@@ -18,14 +18,16 @@
 #include "qgsfieldsitem.h"
 
 #include <memory>
-#include "moc_qgsfieldsitem.cpp"
-#include "qgsiconutils.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgslogger.h"
+
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsfieldmodel.h"
+#include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfieldsitem.cpp"
 
 QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
                               const QString &path,

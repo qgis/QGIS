@@ -14,9 +14,10 @@ email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************/
 
 #include "qgsgeometryutils_base.h"
-#include "qgsvector3d.h"
-#include "qgsvector.h"
+
 #include "qgsexception.h"
+#include "qgsvector.h"
+#include "qgsvector3d.h"
 
 double QgsGeometryUtilsBase::sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX, double &minDistY, double epsilon )
 {

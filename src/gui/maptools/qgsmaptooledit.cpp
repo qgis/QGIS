@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgsmaptooledit.h"
-#include "moc_qgsmaptooledit.cpp"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
+
 #include "qgsgeometryrubberband.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 #include <QKeyEvent>
 
+#include "moc_qgsmaptooledit.cpp"
 
 QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

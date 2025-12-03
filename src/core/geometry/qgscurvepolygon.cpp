@@ -16,22 +16,24 @@
  ***************************************************************************/
 
 #include "qgscurvepolygon.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
+#include "qgsmulticurve.h"
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
-#include "qgsmulticurve.h"
-#include "qgsfeedback.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsCurvePolygon::QgsCurvePolygon()
 {

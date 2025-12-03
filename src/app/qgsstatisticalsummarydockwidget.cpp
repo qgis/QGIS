@@ -13,26 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsstatisticalsummarydockwidget.h"
+
+#include <memory>
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsclipboard.h"
+#include "qgsdatetimestatisticalsummary.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgsstatisticalsummarydockwidget.h"
-#include "moc_qgsstatisticalsummarydockwidget.cpp"
 #include "qgsstatisticalsummary.h"
-#include "qgsvectorlayer.h"
 #include "qgsstringstatisticalsummary.h"
-#include "qgsdatetimestatisticalsummary.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
 
-#include <QTableWidget>
 #include <QAction>
 #include <QMenu>
-#include <memory>
+#include <QTableWidget>
+
+#include "moc_qgsstatisticalsummarydockwidget.cpp"
 
 typedef QList<Qgis::Statistic> StatsList;
 typedef QList<Qgis::StringStatistic> StringStatsList;

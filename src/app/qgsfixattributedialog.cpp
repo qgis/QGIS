@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfixattributedialog.h"
-#include "moc_qgsfixattributedialog.cpp"
 
-#include "qgsattributeform.h"
-#include "qgsapplication.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
 
 #include <QtWidgets/QPushButton>
 
+#include "moc_qgsfixattributedialog.cpp"
 
 QgsFixAttributeDialog::QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList &features, QWidget *parent, const QgsAttributeEditorContext &context )
   : QDialog( parent )

@@ -30,6 +30,7 @@ class QgsO2 : public O2
     Q_OBJECT
 
   public:
+
     /**
      * Construct QgsO2
      * \param authcfg authentication configuration id

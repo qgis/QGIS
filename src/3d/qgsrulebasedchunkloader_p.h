@@ -27,10 +27,11 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader.h"
-#include "qgschunkedentity.h"
-#include "qgsrulebased3drenderer.h"
 #include "qgs3drendercontext.h"
+#include "qgschunkedentity.h"
+#include "qgschunkloader.h"
+#include "qgsrulebased3drenderer.h"
+
 #include <QFutureWatcher>
 
 #define SIP_NO_FILE

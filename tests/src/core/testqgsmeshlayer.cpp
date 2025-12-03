@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
-#include <memory>
 
 //qgis includes...
 #include "qgsmaplayer.h"

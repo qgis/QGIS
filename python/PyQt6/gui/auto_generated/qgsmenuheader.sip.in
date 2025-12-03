@@ -8,6 +8,7 @@
 
 
 
+
 class QgsMenuHeader : QWidget
 {
 %Docstring(signature="appended")
@@ -21,6 +22,7 @@ style.
 #include "qgsmenuheader.h"
 %End
   public:
+
     explicit QgsMenuHeader( const QString &text, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMenuHeader, showing the specified ``text``.
@@ -50,6 +52,7 @@ standard style.
 #include "qgsmenuheader.h"
 %End
   public:
+
     QgsMenuHeaderWidgetAction( const QString &text, QObject *parent = 0 );
 %Docstring
 Constructor for QgsMenuHeaderWidgetAction, showing the specified

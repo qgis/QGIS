@@ -16,21 +16,19 @@
 #ifndef QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H
 #define QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H
 
-#include <QColor>
-
 #include "qgis_gui.h"
-#include "qgssettingseditorwidgetwrapper.h"
-#include "qgslogger.h"
-
-#include "qgssettingsentryimpl.h"
 #include "qgscolorbutton.h"
-#include <QComboBox>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QTableWidget>
+#include "qgslogger.h"
+#include "qgssettingseditorwidgetwrapper.h"
+#include "qgssettingsentryimpl.h"
 
+#include <QCheckBox>
+#include <QColor>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QTableWidget>
 
 //TODO variant map
 
@@ -178,8 +176,10 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor ), mMode( mode ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
-    //! Constructor of the wrapper for a given \a setting and its widget \a editor
-    //! \since QGIS 3.44.3
+    /**
+     * Constructor of the wrapper for a given \a setting and its widget \a editor
+     * \since QGIS 3.44.3
+     */
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor ), mMode( mode ), mDataRole( role ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 

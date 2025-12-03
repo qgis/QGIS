@@ -22,10 +22,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingutils.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
 
 ///@cond PRIVATE
 

@@ -14,27 +14,29 @@
  ***************************************************************************/
 
 #include "qgsgpstoolbar.h"
-#include "moc_qgsgpstoolbar.cpp"
-#include "qgsappgpsconnection.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
+
 #include "qgis.h"
-#include "qgscoordinateutils.h"
 #include "qgisapp.h"
+#include "qgsappgpsconnection.h"
+#include "qgsappgpsdigitizing.h"
 #include "qgsappgpssettingsmenu.h"
 #include "qgsapplication.h"
-#include "qgsprojectgpssettings.h"
+#include "qgscoordinatetransform.h"
+#include "qgscoordinateutils.h"
+#include "qgsgpsinformation.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
-#include "qgsappgpsdigitizing.h"
-#include "qgsunittypes.h"
-#include "qgsgpsinformation.h"
+#include "qgsproject.h"
+#include "qgsprojectgpssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingstree.h"
+#include "qgsunittypes.h"
 
 #include <QLabel>
 #include <QToolButton>
+
+#include "moc_qgsgpstoolbar.cpp"
 
 const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> *QgsGpsToolBar::settingShowInToolbar = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( QStringLiteral( "show-in-toolbar" ), QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Location, QStringLiteral( "GPS information components to show in GPS toolbar" ) );
 

@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsmaplayeractioncontext.h"
+
 #include "qgsattributedialog.h"
 #include "qgsmessagebar.h"
-
 
 QgsMapLayerActionContext::QgsMapLayerActionContext() = default;
 

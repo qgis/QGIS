@@ -16,9 +16,10 @@
 #ifndef QGSPIXMAPLABEL_H
 #define QGSPIXMAPLABEL_H
 
-#include <QLabel>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QLabel>
 
 /**
  * \ingroup gui

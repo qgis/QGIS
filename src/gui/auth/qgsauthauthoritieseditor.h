@@ -17,14 +17,15 @@
 #ifndef QGSAUTHAUTHORITIESEDITOR_H
 #define QGSAUTHAUTHORITIESEDITOR_H
 
-#include <QWidget>
-#include "qgis_sip.h"
-#include <QSslCertificate>
-
 #include "ui_qgsauthauthoritieseditor.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
-#include "qgis_gui.h"
+
+#include <QSslCertificate>
+#include <QWidget>
 
 class QgsMessageBar;
 class QMenu;
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     Q_OBJECT
 
   public:
+
     /**
      * Widget for viewing and editing certificate authorities directly in database
      * \param parent Parent widget

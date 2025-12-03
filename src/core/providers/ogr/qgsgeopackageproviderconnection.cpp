@@ -14,20 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <sqlite3.h>
-
 #include "qgsgeopackageproviderconnection.h"
-#include "qgssettings.h"
-#include "qgsmessagelog.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgscoordinatetransform.h"
-
-#include <QTextCodec>
-#include <QRegularExpression>
 
 #include <chrono>
+#include <sqlite3.h>
+
+#include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsmessagelog.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QRegularExpression>
+#include <QTextCodec>
 
 ///@cond PRIVATE
 

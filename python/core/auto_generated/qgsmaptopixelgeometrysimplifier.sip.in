@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
 {
 %Docstring(signature="appended")

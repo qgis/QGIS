@@ -15,8 +15,8 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERER_H
 #define QGSCATEGORIZEDSYMBOLRENDERER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsrenderer.h"
 
 #include <QHash>

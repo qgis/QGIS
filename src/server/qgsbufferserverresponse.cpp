@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "qgsbufferserverresponse.h"
+
 #include "qgsmessagelog.h"
 
 //

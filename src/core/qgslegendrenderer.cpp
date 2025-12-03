@@ -15,20 +15,19 @@
 
 #include "qgslegendrenderer.h"
 
+#include <memory>
+
+#include "qgsexpressioncontextutils.h"
 #include "qgslayertree.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendstyle.h"
 #include "qgsrendercontext.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgstextrenderer.h"
-#include "qgslayertreefilterproxymodel.h"
 
 #include <QJsonObject>
 #include <QPainter>
-#include <memory>
-
-
 
 QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
   : mLegendModel( legendModel )

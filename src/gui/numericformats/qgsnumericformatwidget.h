@@ -15,11 +15,13 @@
 #ifndef QGSNUMERICFORMATWIDGET_H
 #define QGSNUMERICFORMATWIDGET_H
 
+#include <memory>
+
 #include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
-#include "qgsexpressioncontextgenerator.h"
-#include <memory>
+
 #include <QDialog>
 
 class QgsFractionNumericFormat;
@@ -36,6 +38,7 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpre
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNumericFormatWidget.
      */
@@ -95,6 +98,7 @@ class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, pr
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBasicNumericFormatWidget, initially showing the specified \a format.
      */
@@ -125,6 +129,7 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBearingNumericFormatWidget, initially showing the specified \a format.
      */
@@ -152,6 +157,7 @@ class GUI_EXPORT QgsBearingNumericFormatDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBearingNumericFormatDialog, initially showing the specified \a format.
      */
@@ -184,6 +190,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericF
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing the specified \a format.
      */
@@ -211,6 +218,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeographicCoordinateNumericFormatDialog, initially showing the specified \a format.
      */
@@ -243,6 +251,7 @@ class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified \a format.
      */
@@ -274,6 +283,7 @@ class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPercentageNumericFormatWidget, initially showing the specified \a format.
      */
@@ -305,6 +315,7 @@ class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsScientificNumericFormatWidget, initially showing the specified \a format.
      */
@@ -334,6 +345,7 @@ class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFractionNumericFormatWidget, initially showing the specified \a format.
      */
@@ -363,6 +375,7 @@ class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormat
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsExpressionBasedNumericFormatWidget, initially showing the specified \a format.
      */

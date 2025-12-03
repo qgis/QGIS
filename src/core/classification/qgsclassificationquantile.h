@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgsclassificationmethod.h"
 
-
 /**
  * \ingroup core
  * \brief A classification method which creates classes based on quantiles.

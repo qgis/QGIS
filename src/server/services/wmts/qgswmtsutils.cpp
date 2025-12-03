@@ -16,18 +16,18 @@
  ***************************************************************************/
 
 #include "qgswmtsutils.h"
-#include "qgswmtsparameters.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsserverprojectutils.h"
 
-#include "qgsproject.h"
-#include "qgsexception.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgslayertree.h"
-#include "qgssettings.h"
-#include "qgsprojectviewsettings.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgslayertree.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsserverprojectutils.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgswmtsparameters.h"
 
 namespace QgsWmts
 {

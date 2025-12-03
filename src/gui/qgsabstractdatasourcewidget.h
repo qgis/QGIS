@@ -19,11 +19,11 @@
 #ifndef QGSABSTRACTDATASOURCEWIDGET_H
 #define QGSABSTRACTDATASOURCEWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-
-#include "qgsproviderregistry.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
 
@@ -48,6 +48,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Sets a browser \a model to use with the widget.
      *

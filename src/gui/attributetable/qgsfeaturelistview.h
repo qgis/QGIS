@@ -16,13 +16,13 @@
 #ifndef QGSFEATURELISTVIEW_H
 #define QGSFEATURELISTVIEW_H
 
-#include <QListView>
-#include "qgis_sip.h"
-#include <qdebug.h>
-
-#include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsfeature.h"
+
+#include <QListView>
 #include <QTimer>
+#include <qdebug.h>
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
@@ -48,6 +48,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     Q_OBJECT
 
   public:
+
     /**
      * Creates a feature list view
      *

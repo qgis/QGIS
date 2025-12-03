@@ -16,11 +16,13 @@
 #ifndef QGSFONTTEXTUREATLASGENERATOR_H
 #define QGSFONTTEXTUREATLASGENERATOR_H
 
+#include <vector>
+
 #include "qgis_3d.h"
 #include "qgstextformat.h"
-#include <vector>
-#include <QRect>
+
 #include <QImage>
+#include <QRect>
 
 ///@cond PRIVATE
 class QgsCharTextureRect;
@@ -64,6 +66,7 @@ class _3D_EXPORT QgsFontTextureAtlas
      */
     QRect rect( const QString &grapheme ) const;
 #else
+
     /**
      * Returns the packed rectangle for the texture for the specified \a grapheme.
      *
@@ -182,6 +185,7 @@ class _3D_EXPORT QgsFontTextureAtlas
 class _3D_EXPORT QgsFontTextureAtlasGenerator
 {
   public:
+
     /**
      * Creates the texture atlas for a set of \a strings, using the specified text \a format.
      */

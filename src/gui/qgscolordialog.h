@@ -17,11 +17,13 @@
 #ifndef QGSCOLORDIALOG_H
 #define QGSCOLORDIALOG_H
 
-#include <QColorDialog>
 #include "ui_qgscolordialog.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
+
+#include <QColorDialog>
 
 class QColor;
 
@@ -39,6 +41,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     Q_OBJECT
 
   public:
+
     /**
      * Create a new color picker dialog
      * \param parent parent widget

@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudrendererregistry.h"
-#include "qgspointcloudrenderer.h"
+
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgspointcloudrenderer.h"
 
 // default renderers
 #include "qgspointcloudattributebyramprenderer.h"

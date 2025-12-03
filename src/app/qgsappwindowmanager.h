@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgswindowmanagerinterface.h"
+
 #include <QPointer>
 
 class QgsStyleManagerDialog;

@@ -14,11 +14,12 @@ email                : david dot marteau at 3liz dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmodule.h"
 #include "qgsdxfwriter.h"
 
 #include <memory>
+
 #include "qgsdxfexport.h"
+#include "qgsmodule.h"
 #include "qgswmsrenderer.h"
 #include "qgswmsrestorer.h"
 

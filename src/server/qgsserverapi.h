@@ -22,9 +22,10 @@
 #define QGSSERVERAPI_H
 
 #include "qgis_server.h"
-#include <QRegularExpression>
 #include "qgsserverexception.h"
 #include "qgsserverrequest.h"
+
+#include <QRegularExpression>
 
 class QgsServerResponse;
 class QgsProject;
@@ -79,6 +80,7 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServerApi
 {
   public:
+
     /**
      * Creates a QgsServerApi object
      */

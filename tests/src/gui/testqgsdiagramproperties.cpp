@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsdiagramproperties.h"
 #include "qgspiediagram.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 class TestQgsDiagramProperties : public QgsTest

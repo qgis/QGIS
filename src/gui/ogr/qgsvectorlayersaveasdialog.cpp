@@ -15,29 +15,33 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslogger.h"
 #include "qgsvectorlayersaveasdialog.h"
-#include "moc_qgsvectorlayersaveasdialog.cpp"
-#include "qgsvectordataprovider.h"
+
+#include <gdal.h>
+#include <limits>
+
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatums.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
-#include "qgssettings.h"
-#include "qgsmapcanvas.h"
 #include "qgsgui.h"
-#include "qgsmaplayerutils.h"
 #include "qgshelp.h"
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QTextCodec>
-#include <QSpinBox>
-#include <QRegularExpression>
-#include <limits>
-#include "gdal.h"
-#include "qgsdatums.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayerutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgssettings.h"
+#include "qgsvectordataprovider.h"
+
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QSpinBox>
+#include <QTextCodec>
+
+#include "moc_qgsvectorlayersaveasdialog.cpp"
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

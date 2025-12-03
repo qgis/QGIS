@@ -16,13 +16,13 @@
 #ifndef QGSACTIONMENU_H
 #define QGSACTIONMENU_H
 
-#include <QMenu>
-#include "qgis_sip.h"
-
-#include "qgsfeature.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgsaction.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsaction.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsfeature.h"
+
+#include <QMenu>
 
 class QgsMapLayer;
 class QgsMapLayerAction;

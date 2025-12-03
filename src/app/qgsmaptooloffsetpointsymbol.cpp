@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptooloffsetpointsymbol.h"
-#include "moc_qgsmaptooloffsetpointsymbol.cpp"
+
 #include "qgsmapcanvas.h"
-#include "qgspointmarkeritem.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayer.h"
-#include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmarkersymbol.h"
+#include "qgspointmarkeritem.h"
+#include "qgsproperty.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QGraphicsPixmapItem>
+
+#include "moc_qgsmaptooloffsetpointsymbol.cpp"
 
 QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )

@@ -16,10 +16,10 @@
 #ifndef QGSDATABASESCHEMACOMBOBOX_H
 #define QGSDATABASESCHEMACOMBOBOX_H
 
-#include <QComboBox>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QComboBox>
 #include <QSortFilterProxyModel>
 
 class QgsDatabaseSchemaModel;
@@ -53,6 +53,7 @@ class GUI_EXPORT QgsDatabaseSchemaComboBox : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDatabaseSchemaComboBox, for the specified \a provider and \a connection.
      *

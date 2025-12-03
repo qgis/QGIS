@@ -15,8 +15,9 @@
 
 
 #include "qgslayoutviewmouseevent.h"
-#include "qgslayoutview.h"
+
 #include "qgslayout.h"
+#include "qgslayoutview.h"
 
 QgsLayoutViewMouseEvent::QgsLayoutViewMouseEvent( QgsLayoutView *view, QMouseEvent *event, bool snap )
   : QMouseEvent( event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )

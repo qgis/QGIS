@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgsrubberband.h"
-#include "moc_qgsrubberband.cpp"
+
+#include "qgsfillsymbol.h"
 #include "qgsgeometry.h"
+#include "qgsguiutils.h"
+#include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
-#include "qgssymbol.h"
 #include "qgsrendercontext.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsguiutils.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
+
+#include "moc_qgsrubberband.cpp"
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geometryType )
   : QObject( nullptr )

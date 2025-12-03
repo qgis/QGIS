@@ -16,11 +16,15 @@ email                : marco dot hugentobler at hugis dot net
  ***************************************************************************/
 
 #include "qgstextannotation.h"
-#include "moc_qgstextannotation.cpp"
+
+#include <memory>
+
 #include "qgsrendercontext.h"
+
 #include <QDomDocument>
 #include <QPainter>
-#include <memory>
+
+#include "moc_qgstextannotation.cpp"
 
 QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
   : QgsAnnotation( parent )

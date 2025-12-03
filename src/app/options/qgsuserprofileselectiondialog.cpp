@@ -13,16 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsuserprofileselectiondialog.h"
+
+#include "qgsapplication.h"
+#include "qgsnewnamedialog.h"
+#include "qgsuserprofilemanager.h"
+
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
 
-#include "qgsapplication.h"
-#include "qgsuserprofilemanager.h"
-#include "qgsnewnamedialog.h"
-
-#include "qgsuserprofileselectiondialog.h"
 #include "moc_qgsuserprofileselectiondialog.cpp"
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )

@@ -35,13 +35,12 @@ class QgsProject;
 class QgsScaleWidget;
 
 
+#include "qgis_app.h"
 #include "qgssnappingconfig.h"
 
 #include <QMenu>
-#include <QWidget>
 #include <QSettings>
-
-#include "qgis_app.h"
+#include <QWidget>
 
 /**
   * A widget which lets the user defines settings for snapping on a project
@@ -53,6 +52,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param project The project with which this widget configuration will be synchronized

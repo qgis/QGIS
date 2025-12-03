@@ -16,10 +16,12 @@
 #ifndef QGSRASTERATTRIBUTETABLEADDCOLUMNDIALOG_H
 #define QGSRASTERATTRIBUTETABLEADDCOLUMNDIALOG_H
 
-#include <QDialog>
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgsrasterattributetableaddcolumndialogbase.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 
@@ -36,6 +38,7 @@ class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, privat
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new QgsRasterAttributeTableAddColumnDialog
      * \param attributeTable the raster attribute table

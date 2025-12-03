@@ -8,6 +8,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include "qgssearchwidgettoolbutton.h"
 %End
@@ -30,6 +31,7 @@ filtering/searching operates.
       sipType = nullptr;
 %End
   public:
+
     explicit QgsSearchWidgetToolButton( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSearchWidgetToolButton.

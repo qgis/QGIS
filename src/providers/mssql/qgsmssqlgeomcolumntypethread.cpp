@@ -13,14 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmssqlgeomcolumntypethread.h"
-#include "moc_qgsmssqlgeomcolumntypethread.cpp"
+
+#include "qgslogger.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlprovider.h"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-#include "qgslogger.h"
-#include "qgsmssqlprovider.h"
-#include "qgsmssqldatabase.h"
+#include "moc_qgsmssqlgeomcolumntypethread.cpp"
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata, bool disableInvalidGeometryHandling )
   : mService( service )

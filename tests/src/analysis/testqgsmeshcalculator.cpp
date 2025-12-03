@@ -12,18 +12,18 @@ Email                : zilolv at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <limits>
 #include <cmath>
+#include <limits>
 #include <memory>
 
-#include "qgsmeshcalculator.h"
+#include "qgsapplication.h"
 #include "qgsmeshcalcnode.h"
-#include "qgsmeshvirtualdatasetgroup.h"
+#include "qgsmeshcalculator.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
-#include "qgsapplication.h"
+#include "qgsmeshvirtualdatasetgroup.h"
 #include "qgsproject.h"
+#include "qgstest.h"
 
 Q_DECLARE_METATYPE( QgsMeshCalcNode::Operator )
 

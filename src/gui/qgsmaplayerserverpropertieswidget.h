@@ -17,6 +17,7 @@
 #define QGSMAPLAYERSERVERPROPERTIESWIDGET
 
 #include "ui_qgsmaplayerserverpropertieswidgetbase.h"
+
 #include "qgis_gui.h"
 
 #define SIP_NO_FILE
@@ -37,6 +38,7 @@ class GUI_EXPORT QgsMapLayerServerPropertiesWidget : public QWidget, private Ui:
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param parent parent widget

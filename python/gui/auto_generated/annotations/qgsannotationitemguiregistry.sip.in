@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsAnnotationItemAbstractGuiMetadata
 {
 %Docstring(signature="appended")
@@ -28,6 +30,7 @@ item.
 #include "qgsannotationitemguiregistry.h"
 %End
   public:
+
     QgsAnnotationItemAbstractGuiMetadata( const QString &type, const QString &visibleName, const QString &groupId = QString(), Qgis::AnnotationItemGuiFlags flags = Qgis::AnnotationItemGuiFlags() );
 %Docstring
 Constructor for QgsAnnotationItemAbstractGuiMetadata with the specified
@@ -123,6 +126,7 @@ toolbars.
 #include "qgsannotationitemguiregistry.h"
 %End
   public:
+
     QgsAnnotationItemGuiGroup( const QString &id = QString(), const QString &name = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsAnnotationItemGuiGroup.
@@ -156,6 +160,7 @@ items.
 #include "qgsannotationitemguiregistry.h"
 %End
   public:
+
     QgsAnnotationItemGuiRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty item GUI registry.

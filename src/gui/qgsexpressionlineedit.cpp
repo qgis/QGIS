@@ -14,22 +14,24 @@
 ***************************************************************************/
 
 #include "qgsexpressionlineedit.h"
-#include "moc_qgsexpressionlineedit.cpp"
-#include "qgsfilterlineedit.h"
-#include "qgsexpressioncontext.h"
-#include "qgsapplication.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgscodeeditorexpression.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QToolButton>
 #include <memory>
 
+#include "qgsapplication.h"
+#include "qgscodeeditorexpression.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfilterlineedit.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+
+#include <QHBoxLayout>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgsexpressionlineedit.cpp"
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )

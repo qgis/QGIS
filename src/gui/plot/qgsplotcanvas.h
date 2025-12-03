@@ -19,8 +19,9 @@
 #define QGSPLOTCANVAS_H
 
 #include "qgsconfig.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #include <QGraphicsView>
 #include <QPointer>
@@ -66,6 +67,7 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotCanvas, with the specified \a parent widget.
      */

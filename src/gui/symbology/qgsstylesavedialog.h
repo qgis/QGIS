@@ -18,12 +18,13 @@
 #ifndef QGSSTYLESAVEDIALOG_H
 #define QGSSTYLESAVEDIALOG_H
 
-#include <QDialog>
 #include "ui_qgsstylesavedialog.h"
 
-#include "qgsstyle.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsstyle.h"
+
+#include <QDialog>
 
 /**
  * \ingroup gui
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsStyleSaveDialog : public QDialog, private Ui::QgsStyleSaveDi
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSymbolSaveDialog
      * \param parent parent widget

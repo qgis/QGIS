@@ -18,10 +18,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgsmaplayerrenderer.h"
-#include "qgsvectortilerenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsmaplayerrenderer.h"
 #include "qgsvectortilematrixset.h"
+#include "qgsvectortilerenderer.h"
 
 class QgsVectorTileLayer;
 class QgsVectorTileRawData;

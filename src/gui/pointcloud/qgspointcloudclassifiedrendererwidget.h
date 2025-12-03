@@ -18,12 +18,13 @@
 #ifndef QGSPOINTCLOUDCLASSIFIEDRENDERERWIDGET_H
 #define QGSPOINTCLOUDCLASSIFIEDRENDERERWIDGET_H
 
-#include "qgspointcloudrendererwidget.h"
-#include "qgspointcloudclassifiedrenderer.h"
 #include "ui_qgspointcloudclassifiedrendererwidgetbase.h"
+
 #include "qgis_gui.h"
-#include "qgsproxystyle.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudrendererwidget.h"
+#include "qgsproxystyle.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;

@@ -18,10 +18,9 @@
 #ifndef QGSMAPTOOLSHOWHIDELABELS_H
 #define QGSMAPTOOLSHOWHIDELABELS_H
 
-#include "qgsmaptoollabel.h"
-#include "qgsfeatureid.h"
 #include "qgis_app.h"
-
+#include "qgsfeatureid.h"
+#include "qgsmaptoollabel.h"
 
 //! A map tool for showing or hiding a feature's label
 class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel

@@ -16,16 +16,16 @@
  ***************************************************************************/
 
 #include "qgslayoutpicturewidget.h"
-#include "moc_qgslayoutpicturewidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsfilecontentsourcelineedit.h"
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
-#include "qgslayout.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgssvgcache.h"
 #include "qgssettings.h"
+#include "qgssvgcache.h"
 #include "qgssvgselectorwidget.h"
-#include "qgsfilecontentsourcelineedit.h"
 
 #include <QDoubleValidator>
 #include <QFileDialog>
@@ -35,6 +35,8 @@
 #include <QPainter>
 #include <QProgressDialog>
 #include <QSvgRenderer>
+
+#include "moc_qgslayoutpicturewidget.cpp"
 
 QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   : QgsLayoutItemBaseWidget( nullptr, picture )

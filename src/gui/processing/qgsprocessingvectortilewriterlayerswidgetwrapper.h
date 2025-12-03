@@ -18,12 +18,12 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgsvectortilewriter.h"
-
 #include "ui_qgsprocessingvectortilewriterlayerdetailswidgetbase.h"
+
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingwidgetwrapper.h"
+#include "qgsvectortilewriter.h"
 
 class QLineEdit;
 class QToolButton;
@@ -52,6 +52,7 @@ class QgsProcessingVectorTileWriterLayersPanelWidget : public QgsProcessingMulti
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingVectorTileWriterLayersPanelWidget.
      */

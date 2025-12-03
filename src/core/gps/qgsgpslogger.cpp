@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgsgpslogger.h"
-#include "moc_qgsgpslogger.cpp"
-#include "qgsgpsconnection.h"
-#include "gmath.h"
-#include "qgsgeometry.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgssettingstree.h"
 
-#include <QTimer>
-#include <QTimeZone>
 #include <memory>
 
+#include "gmath.h"
+#include "qgsgeometry.h"
+#include "qgsgpsconnection.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
+#include <QTimeZone>
+#include <QTimer>
+
+#include "moc_qgsgpslogger.cpp"
 
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettingsTree::sTreeGps, 0 );
 const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( QStringLiteral( "applyLeapSeconds" ), QgsSettingsTree::sTreeGps, true );

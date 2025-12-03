@@ -16,10 +16,11 @@
 #ifndef QGSMODELVIEWTOOL_H
 #define QGSMODELVIEWTOOL_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include <QCursor>
+#include "qgis_sip.h"
+
 #include <QAction>
+#include <QCursor>
 #include <QPointer>
 
 class QMouseEvent;
@@ -176,6 +177,7 @@ class GUI_EXPORT QgsModelViewTool : public QObject
     void itemFocused( QgsModelComponentGraphicItem *item );
 
   protected:
+
     /**
      * Sets the combination of \a flags that will be used for the tool.
      * \see flags()

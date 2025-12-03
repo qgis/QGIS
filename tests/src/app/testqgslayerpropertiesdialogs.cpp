@@ -13,31 +13,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-
+#include "annotations/qgsannotationlayerproperties.h"
 #include "qgisapp.h"
+#include "qgsannotationlayer.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmessagebar.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerproperties.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayerproperties.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerproperties.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectortilelayerproperties.h"
-#include "qgstiledscenelayer.h"
-#include "qgstiledscenelayerproperties.h"
-#include "qgsannotationlayer.h"
-#include "annotations/qgsannotationlayerproperties.h"
+#include "qgsprovidersourcewidget.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerproperties.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsprovidersourcewidget.h"
+#include "qgstest.h"
+#include "qgstiledscenelayer.h"
+#include "qgstiledscenelayerproperties.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilelayerproperties.h"
+
+#include <QObject>
 
 class DummySourceWidget : public QgsProviderSourceWidget
 {

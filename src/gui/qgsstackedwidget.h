@@ -18,8 +18,9 @@
 
 #define SIP_NO_FILE
 
-#include <QStackedWidget>
 #include "qgis_gui.h"
+
+#include <QStackedWidget>
 
 class QSize;
 
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
     Q_OBJECT
 
   public:
+
     /**
      * Possible modes for calculating a QgsStackedWidget's size
      */

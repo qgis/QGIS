@@ -9,6 +9,7 @@
 
 
 
+
 class QgsVideoExporter : QObject
 {
 %Docstring(signature="appended")

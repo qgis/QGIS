@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsorientedbox3d.h"
+
 #include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmatrix4x4.h"

@@ -13,25 +13,42 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptoolidentify.h"
+
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinateutils.h"
+#include "qgscurve.h"
 #include "qgsdistancearea.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturestore.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
+#include "qgsguiutils.h"
 #include "qgsidentifymenu.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolidentify.h"
-#include "moc_qgsmaptoolidentify.cpp"
-#include "qgsmeshlayer.h"
 #include "qgsmaplayer.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudrenderer.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
-#include "qgsrasterlayer.h"
 #include "qgsrasteridentifyresult.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
+#include "qgssymbol.h"
+#include "qgstiles.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
@@ -39,29 +56,14 @@
 #include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortileutils.h"
-#include "qgsproject.h"
-#include "qgsrenderer.h"
-#include "qgstiles.h"
-#include "qgsgeometryutils.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurve.h"
-#include "qgscoordinateutils.h"
-#include "qgsexception.h"
-#include "qgssettings.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudlayerelevationproperties.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgssymbol.h"
-#include "qgsguiutils.h"
-#include "qgsmessagelog.h"
 
-#include <QMouseEvent>
 #include <QCursor>
+#include <QMouseEvent>
 #include <QPixmap>
 #include <QStatusBar>
 #include <QVariant>
+
+#include "moc_qgsmaptoolidentify.cpp"
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

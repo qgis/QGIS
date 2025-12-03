@@ -16,10 +16,11 @@
 #ifndef QGSSCALEVISIBILITYDIALOG_H
 #define QGSSCALEVISIBILITYDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include <QGroupBox>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QDialog>
+#include <QGroupBox>
 
 class QgsMapCanvas;
 class QgsScaleRangeWidget;
@@ -37,6 +38,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     Q_PROPERTY( double maximumScale READ maximumScale WRITE setMaximumScale )
 
   public:
+
     /**
      * Constructor for QgsScaleVisibilityDialog, with specified dialog \a title. The \a mapCanvas argument
      * can be used to associate the dialog with a map canvas, allowing use of the current map scale

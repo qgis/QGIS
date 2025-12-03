@@ -18,9 +18,9 @@
 #ifndef TOPOLERROR_H
 #define TOPOLERROR_H
 
+#include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
-#include "qgsfeature.h"
 
 class TopolError;
 typedef QList<TopolError *> ErrorList;
@@ -112,6 +112,7 @@ class TopolError
     bool fixUnion( const FeatureLayer &fl1, const FeatureLayer &fl2 );
 
   public:
+
     /**
      * Constructor
      * \param boundingBox bounding box of the two features

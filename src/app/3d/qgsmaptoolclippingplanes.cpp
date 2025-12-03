@@ -15,20 +15,21 @@
 
 
 #include "qgsmaptoolclippingplanes.h"
-#include "moc_qgsmaptoolclippingplanes.cpp"
+
+#include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
-#include "qgs3dmapcanvaswidget.h"
-#include "qgs3dmapscene.h"
-#include "qgisapp.h"
-#include "qgscoordinatetransform.h"
 #include "qgsrubberband.h"
 
 #include <QVector4D>
 
+#include "moc_qgsmaptoolclippingplanes.cpp"
 
 QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas )
   : QgsMapTool( canvas ), m3DCanvasWidget( mapCanvas )

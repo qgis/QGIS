@@ -18,9 +18,10 @@
 #ifndef QGSPDALPROVIDER_H
 #define QGSPDALPROVIDER_H
 
+#include <memory>
+
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-#include <memory>
 
 class QgsPdalIndexingTask;
 

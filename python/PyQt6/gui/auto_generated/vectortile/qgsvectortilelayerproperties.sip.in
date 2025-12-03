@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorTileLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")

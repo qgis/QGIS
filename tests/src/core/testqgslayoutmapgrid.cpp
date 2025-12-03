@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsfontutils.h"
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapgrid.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfontutils.h"
-#include "qgsproject.h"
-#include <QObject>
-#include "qgstest.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsLayoutMapGrid : public QgsTest
 {

@@ -15,10 +15,10 @@
 #ifndef QGSLEASTSQUARES_H
 #define QGSLEASTSQUARES_H
 
-#include <QVector>
-
 #include "qgis_analysis.h"
 #include "qgspointxy.h"
+
+#include <QVector>
 
 #define SIP_NO_FILE
 
@@ -32,6 +32,7 @@
 class ANALYSIS_EXPORT QgsLeastSquares
 {
   public:
+
     /**
      * Transforms the point at \a origin in-place, using a linear transformation calculated from the list of source and destination Ground Control Points (GCPs).
      */

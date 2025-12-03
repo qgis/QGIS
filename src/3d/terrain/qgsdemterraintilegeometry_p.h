@@ -30,6 +30,7 @@
 #define SIP_NO_FILE
 
 #include <Qt3DExtras/qt3dextras_global.h>
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QGeometry>
 #else
@@ -69,6 +70,7 @@ class DemTerrainTileGeometry : public Qt3DCore::QGeometry
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a terrain tile geometry. Resolution is the number of vertices on one side of the tile,
      * heightMap is array of float values with one height value for each vertex

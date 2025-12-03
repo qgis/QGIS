@@ -18,20 +18,21 @@
 #include "qgsafsprovider.h"
 
 #include <memory>
-#include "moc_qgsafsprovider.cpp"
-#include "qgsarcgisrestutils.h"
-#include "qgsarcgisrestquery.h"
+
 #include "qgsafsfeatureiterator.h"
-#include "qgsdatasourceuri.h"
-#include "qgsarcgisrestdataitems.h"
-#include "qgslogger.h"
-#include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
-#include "qgsruntimeprofiler.h"
+#include "qgsarcgisrestdataitems.h"
+#include "qgsarcgisrestquery.h"
+#include "qgsarcgisrestutils.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 #include "qgsreadwritelocker.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsvariantutils.h"
 
+#include "moc_qgsafsprovider.cpp"
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )

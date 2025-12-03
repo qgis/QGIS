@@ -18,10 +18,12 @@
 
 #define SIP_NO_FILE
 
+#include "ui_qgsmodeloutputreorderwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsmodeloutputreorderwidgetbase.h"
 #include "qgsprocessingmodeloutput.h"
+
 #include <QDialog>
 
 class QStandardItemModel;
@@ -40,6 +42,7 @@ class GUI_EXPORT QgsModelOutputReorderWidget : public QWidget, private Ui::QgsMo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelOutputReorderWidget.
      */
@@ -78,6 +81,7 @@ class GUI_EXPORT QgsModelOutputReorderDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelOutputReorderDialog.
      */

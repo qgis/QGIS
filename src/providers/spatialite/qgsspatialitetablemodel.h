@@ -18,8 +18,8 @@
 #ifndef QGSSPATIALITETABLEMODEL_H
 #define QGSSPATIALITETABLEMODEL_H
 
-#include "qgswkbtypes.h"
 #include "qgsabstractdbtablemodel.h"
+#include "qgswkbtypes.h"
 
 class QIcon;
 

@@ -20,16 +20,16 @@
 
 #include "qgsconfig.h"
 
-#include <QCache>
-#include <QTimer>
-#include <QFileSystemWatcher>
-#include <QObject>
-#include <QDomDocument>
-
 #include "qgis_server.h"
 #include "qgis_sip.h"
 #include "qgsproject.h"
 #include "qgsserversettings.h"
+
+#include <QCache>
+#include <QDomDocument>
+#include <QFileSystemWatcher>
+#include <QObject>
+#include <QTimer>
 
 #ifndef SIP_RUN
 
@@ -76,6 +76,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Initialize from settings.
      *
@@ -207,6 +208,7 @@ class SERVER_EXPORT QgsFileSystemCacheStrategy : public QgsAbstractCacheStrategy
 class SERVER_EXPORT QgsPeriodicCacheStrategy : public QgsAbstractCacheStrategy
 {
   public:
+
     /**
      *  Creates a new periodic strategy
      *  \param interval The invalidation check interval in milliseconds

@@ -16,32 +16,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgselevationprofilecanvas.h"
-#include "moc_qgselevationprofilecanvas.cpp"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsplotcanvasitem.h"
-#include "qgsprofilerequest.h"
-#include "qgsabstractprofilesource.h"
-#include "qgscurve.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgsabstractprofilegenerator.h"
-#include "qgsprofilerenderer.h"
-#include "qgspoint.h"
-#include "qgsgeos.h"
-#include "qgsplot.h"
-#include "qgsnumericformat.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsprofilesnapping.h"
-#include "qgsmaplayerelevationproperties.h"
-#include "qgsscreenhelper.h"
-#include "qgsfillsymbol.h"
-#include "qgsprofilesourceregistry.h"
 
-#include <QWheelEvent>
-#include <QTimer>
+#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesource.h"
+#include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsnumericformat.h"
+#include "qgsplot.h"
+#include "qgsplotcanvasitem.h"
+#include "qgspoint.h"
+#include "qgsprofilerenderer.h"
+#include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
+#include "qgsprofilesourceregistry.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsscreenhelper.h"
+#include "qgsterrainprovider.h"
+
 #include <QPalette>
+#include <QTimer>
+#include <QWheelEvent>
+
+#include "moc_qgselevationprofilecanvas.cpp"
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem

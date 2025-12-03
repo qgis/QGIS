@@ -14,31 +14,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QRegularExpressionMatch>
-
-#include "qgssettings.h"
+#include "qgsgrassmoduleparam.h"
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-
 #include "qgsgrass.h"
 #include "qgsgrassfeatureiterator.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassmoduleinput.h"
-#include "qgsgrassmoduleparam.h"
-#include "moc_qgsgrassmoduleparam.cpp"
 #include "qgsgrassplugin.h"
 #include "qgsgrassprovider.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QRegularExpressionValidator>
+
+#include "moc_qgsgrassmoduleparam.cpp"
 
 #if 0
 extern "C"

@@ -12,22 +12,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QTimeZone>
-
-#include "qgisapp.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsappgpsconnection.h"
 #include "gps/qgsappgpsdigitizing.h"
 #include "gps/qgsappgpssettingsmenu.h"
 #include "options/qgsgpsoptions.h"
-#include "qgsprojectgpssettings.h"
+#include "qgisapp.h"
+#include "qgsappgpsconnection.h"
+#include "qgsapplication.h"
 #include "qgsgpsconnection.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsprojectgpssettings.h"
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <QSignalSpy>
+#include <QTimeZone>
 
 /**
  * \ingroup UnitTests

@@ -17,18 +17,19 @@
 #ifndef QGSELEVATIONPROFILEWIDGET_H
 #define QGSELEVATIONPROFILEWIDGET_H
 
-#include "qmenu.h"
-#include "qgsdockwidget.h"
-#include "qgis_app.h"
-#include "qgsgeometry.h"
-#include "qobjectuniqueptr.h"
-#include "qgselevationprofilelayertreeview.h"
 #include "ui_qgselevationprofileaddlayersdialogbase.h"
 
-#include <QWidgetAction>
+#include "qgis_app.h"
+#include "qgsdockwidget.h"
+#include "qgselevationprofilelayertreeview.h"
+#include "qgsgeometry.h"
+#include "qobjectuniqueptr.h"
+
 #include <QElapsedTimer>
-#include <QTimer>
 #include <QPointer>
+#include <QTimer>
+#include <QWidgetAction>
+#include <qmenu.h>
 
 class QgsElevationProfile;
 class QgsDockableWidgetHelper;

@@ -18,9 +18,10 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QBrush>
-#include <QPen>
 #include <QObject>
+#include <QPen>
 
 #define SIP_NO_FILE
 
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsModelViewRubberBand : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewRubberBand.
      */
@@ -116,6 +118,7 @@ class GUI_EXPORT QgsModelViewRubberBand : public QObject
     void sizeChanged( const QString &size );
 
   protected:
+
     /**
      * Calculates an updated bounding box rectangle from a original \a start position
      * and new \a position. If \a constrainSquare is TRUE then the bounding box will be
@@ -142,6 +145,7 @@ class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBa
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewRectangularRubberBand.
      */
@@ -172,6 +176,7 @@ class GUI_EXPORT QgsModelViewBezierRubberBand : public QgsModelViewRubberBand
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewRectangularRubberBand.
      */

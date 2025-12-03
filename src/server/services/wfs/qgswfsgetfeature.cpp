@@ -19,28 +19,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
-#include "qgsserverfeatureid.h"
-#include "qgsfields.h"
-#include "qgsdatetimefieldformatter.h"
-#include "qgsexpression.h"
-#include "qgsgeometry.h"
-#include "qgsmaplayer.h"
-#include "qgsfeatureiterator.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayer.h"
-#include "qgsfilterrestorer.h"
-#include "qgsproject.h"
-#include "qgsogcutils.h"
-#include "qgsjsonutils.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgswkbtypes.h"
-
 #include "qgswfsgetfeature.h"
 
-#include <QRegularExpression>
 #include <memory>
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdatetimefieldformatter.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgsfilterrestorer.h"
+#include "qgsgeometry.h"
+#include "qgsjsonutils.h"
+#include "qgsmaplayer.h"
+#include "qgsogcutils.h"
+#include "qgsproject.h"
+#include "qgsserverfeatureid.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
+#include "qgswfsutils.h"
+#include "qgswkbtypes.h"
+
+#include <QRegularExpression>
 
 namespace QgsWfs
 {

@@ -17,9 +17,10 @@
 #ifndef QGSPROVIDERSOURCEWIDGET_H
 #define QGSPROVIDERSOURCEWIDGET_H
 
-#include <QWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsMapCanvas;
 
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProviderSourceWidget with the specified \a parent widget.
      */

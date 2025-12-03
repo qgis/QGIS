@@ -18,9 +18,9 @@
 #ifndef QGSCACHEDPOINTCLOUDBLOCKREQUEST_H
 #define QGSCACHEDPOINTCLOUDBLOCKREQUEST_H
 
-#include <QObject>
-
 #include "qgspointcloudblockrequest.h"
+
+#include <QObject>
 
 #define SIP_NO_FILE
 

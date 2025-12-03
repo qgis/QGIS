@@ -16,47 +16,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsfields.h"
+#include "qgsvectorfilewriter.h"
 
-#include "qgsgdalutils.h"
+#include <cassert>
+#include <cpl_conv.h>
+#include <cpl_error.h>
+#include <cpl_string.h>
+#include <cstdlib>
+#include <gdal.h>
+#include <limits>
+#include <memory>
+#include <ogr_srs_api.h>
+
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfielddomain.h"
+#include "qgsfields.h"
+#include "qgsgdalutils.h"
+#include "qgslocalec.h"
 #include "qgslogger.h"
 #include "qgsmaplayerutils.h"
 #include "qgsmessagelog.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectorfilewriter.h"
+#include "qgsogrutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsreadwritelocker.h"
 #include "qgssettings.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
-#include "qgslocalec.h"
-#include "qgsogrutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsproviderregistry.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsreadwritelocker.h"
 
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QDir>
-#include <QTextCodec>
-#include <QTextStream>
-#include <QSet>
+#include <QJsonDocument>
 #include <QMetaType>
 #include <QMutex>
 #include <QRegularExpression>
-#include <QJsonDocument>
-
-#include <cassert>
-#include <cstdlib> // size_t
-#include <limits> // std::numeric_limits
-#include <memory>
-
-#include <ogr_srs_api.h>
-#include <cpl_error.h>
-#include <cpl_conv.h>
-#include <cpl_string.h>
-#include <gdal.h>
+#include <QSet>
+#include <QTextCodec>
+#include <QTextStream>
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {

@@ -13,45 +13,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QPainter>
-#include <QTime>
-#include <QApplication>
-#include <QDesktopServices>
 #include <memory>
 
-#include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsapplication.h"
-#include "qgsfield.h"
 #include "qgis.h"
-#include "qgsmaprenderersequentialjob.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "qgsnullpainterdevice.h"
-#include "qgsmaplayer.h"
-#include "qgsreadwritecontext.h"
-#include "qgsproject.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsmaprendererstagedrenderjob.h"
-#include "qgspallabeling.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsfontutils.h"
-#include "qgsrasterlayer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgslinesymbol.h"
-#include "qgslabelsink.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudattributebyramprenderer.h"
-#include "qgsmeshlayer.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
+#include "qgsgeometry.h"
+#include "qgslabelsink.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayer.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmaprendererstagedrenderjob.h"
+#include "qgsmeshlayer.h"
+#include "qgsnullpainterdevice.h"
+#include "qgspallabeling.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgstest.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QObject>
+#include <QPainter>
+#include <QString>
+#include <QStringList>
+#include <QTime>
 
 /**
  * \ingroup UnitTests

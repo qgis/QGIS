@@ -16,10 +16,9 @@
 #ifndef QGSJSONEDITWRAPPER_H
 #define QGSJSONEDITWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
-
-#include "qgsattributeform.h"
 #include "qgis_gui.h"
+#include "qgsattributeform.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsJsonEditWidget;
 
@@ -41,6 +40,7 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsJsonEditWrapper.
      *

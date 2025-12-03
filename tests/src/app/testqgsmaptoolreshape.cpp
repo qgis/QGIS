@@ -13,23 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssnappingconfig.h"
-#include "qgssnappingutils.h"
+#include "qgsmapcanvastracer.h"
 #include "qgsmaptoolreshape.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapcanvastracer.h"
 #include "testqgsmaptoolutils.h"
 
 #include <QSignalSpy>
-#include <memory>
-
 
 /**
  * \ingroup UnitTests

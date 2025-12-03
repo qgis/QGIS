@@ -13,36 +13,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include "qgsconfig.h"
 
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectortilelayer.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
-#include "qgsmeshlayer.h"
-#include "qgsmaptoolidentifyaction.h"
-#include "qgssettings.h"
-#include "qgsidentifymenu.h"
+#include <cpl_conv.h>
+
 #include "qgisapp.h"
 #include "qgsaction.h"
 #include "qgsactionmanager.h"
 #include "qgsactionmenu.h"
+#include "qgsapplication.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsidentifymenu.h"
 #include "qgsidentifyresultsdialog.h"
-#include "qgsmapmouseevent.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolidentifyaction.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsconfig.h"
 #include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 
 #include <QTimer>
-
-#include "cpl_conv.h"
 
 class TestQgsIdentify : public QObject
 {

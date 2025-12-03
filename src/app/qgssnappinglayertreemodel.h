@@ -17,12 +17,13 @@
 #define QGSSNAPPINGLAYERTREEVIEW_H
 
 
-#include <QSortFilterProxyModel>
-#include <QItemDelegate>
-
+#include "qgis_app.h"
 #include "qgslayertreemodel.h"
 #include "qgssnappingconfig.h"
-#include "qgis_app.h"
+
+#include <QItemDelegate>
+#include <QMenu>
+#include <QSortFilterProxyModel>
 
 class QgsMapCanvas;
 class QgsProject;

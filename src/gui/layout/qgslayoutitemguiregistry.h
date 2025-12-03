@@ -16,16 +16,17 @@
 #ifndef QGSLAYOUTITEMGUIREGISTRY_H
 #define QGSLAYOUTITEMGUIREGISTRY_H
 
+#include <functional>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsapplication.h"
-#include "qgspathresolver.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
-#include <QGraphicsItem> //for QGraphicsItem::UserType
-#include <QIcon>
-#include <functional>
+#include "qgspathresolver.h"
 
-#include "qgslayoutitem.h" // temporary
+#include <QGraphicsItem>
+#include <QIcon>
 
 class QgsLayout;
 class QgsLayoutView;
@@ -194,6 +195,7 @@ typedef std::function<void( QgsLayoutItem *, Qgis::MouseHandlesAction action )> 
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
   public:
+
     /**
      * Constructor for QgsLayoutItemGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the various
@@ -334,6 +336,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
 class GUI_EXPORT QgsLayoutItemGuiGroup
 {
   public:
+
     /**
      * Constructor for QgsLayoutItemGuiGroup.
      */
@@ -377,6 +380,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new empty item GUI registry.
      *
@@ -538,7 +542,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     /**
      * Emitted whenever an item type is removed from the registry, with the specified
      * \a metadataId.
-     * 
+     *
      * \since QGIS 4.0
      */
     void typeRemoved( int metadataId );

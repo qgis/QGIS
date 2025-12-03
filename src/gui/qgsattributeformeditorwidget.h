@@ -16,10 +16,10 @@
 #ifndef QGSATTRIBUTEFORMEDITORWIDGET_H
 #define QGSATTRIBUTEFORMEDITORWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgseditorwidgetwrapper.h"
+#include "qgis_sip.h"
 #include "qgsattributeformwidget.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsEditorWidgetWrapper;
 class QgsMultiEditToolButton;
@@ -47,6 +47,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributeFormEditorWidget.
      * \param editorWidget associated editor widget wrapper (for default/edit modes)

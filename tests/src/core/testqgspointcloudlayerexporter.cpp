@@ -12,13 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include "qgsproject.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudlayerexporter.h"
+#include "qgsconfig.h"
 
 #include <memory>
-#include "qgsconfig.h"
+
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerexporter.h"
+#include "qgsproject.h"
+#include "qgstest.h"
 
 class TestQgsPointCloudLayerExporter : public QObject
 {

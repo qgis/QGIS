@@ -16,8 +16,8 @@
 #ifndef QGSFILLSYMBOL_H
 #define QGSFILLSYMBOL_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbol.h"
 
 /**

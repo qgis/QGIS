@@ -14,8 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslistfieldformatter.h"
+
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
+
 #include <QSettings>
 
 QString QgsListFieldFormatter::id() const

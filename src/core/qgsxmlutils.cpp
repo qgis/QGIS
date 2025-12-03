@@ -14,14 +14,14 @@
  ***************************************************************************/
 #include "qgsxmlutils.h"
 
-#include <QDomElement>
-
-#include "qgsrectangle.h"
-#include "qgsproperty.h"
 #include "qgscolorutils.h"
 #include "qgsprocessingparameters.h"
+#include "qgsproperty.h"
+#include "qgsrectangle.h"
 #include "qgsremappingproxyfeaturesink.h"
 #include "qgsunittypes.h"
+
+#include <QDomElement>
 
 Qgis::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {

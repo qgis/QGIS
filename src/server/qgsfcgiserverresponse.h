@@ -22,12 +22,13 @@
 #define SIP_NO_FILE
 
 
+#include <mutex>
+#include <thread>
+
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 
 #include <QBuffer>
-#include <thread>
-#include <mutex>
 
 /**
  * \ingroup server
@@ -38,6 +39,7 @@
 class QgsSocketMonitoringThread
 {
   public:
+
     /**
      * Constructor for QgsSocketMonitoringThread
      * \param  feedback used to cancel rendering jobs when socket timedout
@@ -71,6 +73,7 @@ class QgsSocketMonitoringThread
 class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
 {
   public:
+
     /**
      * Constructor for QgsFcgiServerResponse.
      * \param method The HTTP method (Get by default)

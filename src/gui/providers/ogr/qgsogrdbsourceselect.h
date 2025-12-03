@@ -18,11 +18,11 @@
 #ifndef QGSGOGRDBSOURCESELECT_H
 #define QGSGOGRDBSOURCESELECT_H
 
+#include "qgis_sip.h"
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsabstractdbsourceselect.h"
 #include "qgsproviderregistry.h"
-#include "qgis_sip.h"
 
 class QPushButton;
 class QgsOgrDbTableModel;
@@ -40,6 +40,7 @@ class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
     Q_OBJECT
 
   public:
+
     /**
      * Construct a DB Source Select with \a theOgrDriverName specified (i.e. "GPKG", "SQLite" etc.)
      * and \a theName as string for describing the layers managed by the source select (e.g. : "GeoPackage" etc.)

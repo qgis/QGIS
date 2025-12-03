@@ -18,15 +18,15 @@
 
 
 #include "ui_qgscptcitycolorrampdialogbase.h"
-#include "qgis_sip.h"
-#include <QDialog>
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscptcityarchive.h"
 
 #include <QAbstractProxyModel>
-#include <QSortFilterProxyModel>
+#include <QDialog>
 #include <QFileInfo>
-#include "qgis_gui.h"
+#include <QSortFilterProxyModel>
 
 class QgsCptCityColorRamp;
 class TreeFilterProxyModel;
@@ -44,6 +44,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     Q_PROPERTY( QgsCptCityColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsCptCityColorRampDialog.
      * \param ramp initial ramp to show in dialog

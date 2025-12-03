@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgssettingsregistryapp.h"
-#include "qgsidentifyresultsdialog.h"
-#include "qgspluginmanager.h"
-#include "qgssettingsentryimpl.h"
+
 #include "qgsgui.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgssettingseditorwidgetregistry.h"
-#include "qgssettingsenumflageditorwidgetwrapper.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgsimagewarper.h"
+#include "qgspluginmanager.h"
+#include "qgssettingseditorwidgetregistry.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
+
 #ifdef HAVE_GEOREFERENCER
 #include "qgsgcptransformer.h"
 #endif

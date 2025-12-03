@@ -18,6 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgsreport.h"
+
 #include <QAbstractItemModel>
 
 /**
@@ -30,6 +31,7 @@ class QgsReportSectionModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsReportSectionModel, for the specified \a report.
      */

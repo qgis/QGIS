@@ -27,15 +27,16 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader.h"
+#include <memory>
+
 #include "qgschunkedentity.h"
+#include "qgschunkloader.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloud3dsymbol_p.h"
 #include "qgspointcloudlayer3drenderer.h"
 
-#include <memory>
-
 #include <QFutureWatcher>
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QBuffer>
@@ -59,6 +60,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
 
   public:
+
     /**
      * Constructs the factory
      * The factory takes ownership over the passed \a symbol
@@ -95,6 +97,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     Q_OBJECT
 
   public:
+
     /**
      * Constructs the loader
      * QgsPointCloudLayerChunkLoader takes ownership over symbol

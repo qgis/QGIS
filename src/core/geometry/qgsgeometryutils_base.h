@@ -15,11 +15,12 @@ email                : loic dot bartoletti at oslandia dot com
 
 #pragma once
 
+#include <iterator>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgsvector.h"
-#include <iterator>
+#include "qgsvector3d.h"
 
 /**
  * \ingroup core

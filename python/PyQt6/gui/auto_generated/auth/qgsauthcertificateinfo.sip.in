@@ -11,6 +11,7 @@
 
 
 
+
 class QgsAuthCertInfo : QWidget
 {
 %Docstring(signature="appended")
@@ -46,6 +47,7 @@ its hierarchical trust chain.
 #include "qgsauthcertificateinfo.h"
 %End
   public:
+
     explicit QgsAuthCertInfoDialog( const QSslCertificate &cert, bool manageCertTrust, QWidget *parent /TransferThis/ = 0, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
 Construct a dialog displaying detailed info on a certificate and its

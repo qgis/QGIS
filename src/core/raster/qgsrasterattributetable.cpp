@@ -15,20 +15,21 @@
  ***************************************************************************/
 
 #include "qgsrasterattributetable.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsogrprovider.h"
-#include "qgsfileutils.h"
-#include "qgsrasterlayer.h"
-#include "qgspalettedrasterrenderer.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastershader.h"
-#include "qgsrastershaderfunction.h"
 
-#include <QLocale>
-
+#include <cmath>
 #include <memory>
 #include <mutex>
-#include <cmath>
+
+#include "qgsfileutils.h"
+#include "qgsogrprovider.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgsrasterlayer.h"
+#include "qgsrastershader.h"
+#include "qgsrastershaderfunction.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsvectorfilewriter.h"
+
+#include <QLocale>
 
 ///@cond private
 std::once_flag usageInformationLoaderFlag;

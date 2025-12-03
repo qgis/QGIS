@@ -10,7 +10,6 @@
 
 
 
-
 class QgsAdvancedDigitizingTool : QObject
 {
 %Docstring(signature="appended")
@@ -23,6 +22,7 @@ An abstract class for advanced digitizing tools.
 #include "qgsadvanceddigitizingtools.h"
 %End
   public:
+
     explicit QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
 The advanced digitizing tool constructor.

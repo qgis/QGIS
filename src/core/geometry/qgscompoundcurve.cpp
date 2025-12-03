@@ -15,20 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmessagelog.h"
 #include "qgscompoundcurve.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
+#include "qgsmessagelog.h"
 #include "qgswkbptr.h"
-#include "qgsfeedback.h"
 
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsCompoundCurve::QgsCompoundCurve()
 {

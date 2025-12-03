@@ -26,11 +26,11 @@
 #ifndef MODELTEST_H
 #define MODELTEST_H
 
+#include "qgis_core.h"
+
 #include <QAbstractItemModel>
 #include <QObject>
 #include <QStack>
-
-#include "qgis_core.h"
 
 class CORE_EXPORT ModelTest : public QObject
 {

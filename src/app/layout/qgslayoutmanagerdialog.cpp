@@ -15,23 +15,23 @@
  ***************************************************************************/
 
 #include "qgslayoutmanagerdialog.h"
-#include "moc_qgslayoutmanagerdialog.cpp"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbusyindicatordialog.h"
-#include "qgslayoutdesignerdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslayout.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgslayoutview.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutmanagermodel.h"
-#include "qgsproject.h"
-#include "qgsgui.h"
+#include "qgslayoutview.h"
+#include "qgslogger.h"
 #include "qgsprintlayout.h"
-#include "qgsreport.h"
+#include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgshelp.h"
+#include "qgsreport.h"
+#include "qgssettings.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -41,6 +41,8 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QUrl>
+
+#include "moc_qgslayoutmanagerdialog.cpp"
 
 QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

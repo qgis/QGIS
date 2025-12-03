@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -68,6 +68,7 @@ class QgsVirtualRasterCalculatorModelerAlgorithm : public QgsVirtualRasterCalcul
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     /**
      * Generates Excel-like names from the number
      * A, B, C, …, Y, Z, AA, AB, AC, …, AZ, BA, BB, BC…

@@ -20,11 +20,11 @@
 #ifndef QGSREQUESTHANDLER_H
 #define QGSREQUESTHANDLER_H
 
-#include <QMap>
-#include "qgis_sip.h"
-#include <QString>
-
 #include "qgis_server.h"
+#include "qgis_sip.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsServerException;
 class QgsServerRequest;
@@ -38,6 +38,7 @@ class QgsServerResponse;
 class SERVER_EXPORT QgsRequestHandler
 {
   public:
+
     /**
      * Constructor
      *

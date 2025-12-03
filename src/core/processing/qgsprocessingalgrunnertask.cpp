@@ -18,11 +18,13 @@
 #include "qgsprocessingalgrunnertask.h"
 
 #include <memory>
-#include "moc_qgsprocessingalgrunnertask.cpp"
-#include "qgsprocessingfeedback.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingalgorithm.h"
+
 #include "qgsmessagelog.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingfeedback.h"
+
+#include "moc_qgsprocessingalgrunnertask.cpp"
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, Flags flags )
   : QgsTask(

@@ -16,10 +16,9 @@
  ***************************************************************************/
 
 
+#include "qgsquerybuilder.h"
 #include "qgstest.h"
-
-#include <qgsvectorlayer.h>
-#include <qgsquerybuilder.h>
+#include "qgsvectorlayer.h"
 
 class TestQgsQueryBuilder : public QObject
 {

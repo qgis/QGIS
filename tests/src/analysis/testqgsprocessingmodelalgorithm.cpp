@@ -14,17 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsnativealgorithms.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingregistry.h"
+#include "qgstest.h"
+#include "qgsxmlutils.h"
 
 #include <QObject>
-#include "qgstest.h"
-#include "qgsapplication.h"
-#include "qgsnativealgorithms.h"
-#include "qgsprocessingregistry.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsxmlutils.h"
-#include "qgsprocessingprovider.h"
-
 
 class DummyAlgorithm2 : public QgsProcessingAlgorithm
 {

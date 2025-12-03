@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsrangeconfigdlg.h"
-#include "moc_qgsrangeconfigdlg.cpp"
 
-#include "qgsvectorlayer.h"
 #include "qgsrangewidgetwrapper.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsrangeconfigdlg.cpp"
 
 QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

@@ -16,10 +16,10 @@
 #ifndef QGSSETTINGSEDITORWIDGETWRAPPER_H
 #define QGSSETTINGSEDITORWIDGETWRAPPER_H
 
-#include <QVariant>
-
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QVariant>
 
 class QgsSettingsEntryBase;
 

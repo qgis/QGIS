@@ -14,46 +14,49 @@
  ***************************************************************************/
 
 #include "qgsmodeldesignerdialog.h"
-#include "moc_qgsmodeldesignerdialog.cpp"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsfileutils.h"
-#include "qgsmessagebar.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsgui.h"
-#include "qgsprocessingparametertype.h"
-#include "qgsmodelundocommand.h"
-#include "qgsmodelviewtoolselect.h"
-#include "qgsmodelviewtoolpan.h"
-#include "qgsmodelgraphicsscene.h"
-#include "qgsmodelcomponentgraphicitem.h"
-#include "processing/models/qgsprocessingmodelgroupbox.h"
+
 #include "processing/models/qgsmodelinputreorderwidget.h"
 #include "processing/models/qgsmodeloutputreorderwidget.h"
-#include "qgsmessageviewer.h"
+#include "processing/models/qgsprocessingmodelgroupbox.h"
+#include "qgsapplication.h"
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include "qgspanelwidget.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgsprocessinghelpeditorwidget.h"
-#include "qgsscreenhelper.h"
 #include "qgsmessagelog.h"
+#include "qgsmessageviewer.h"
+#include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelundocommand.h"
+#include "qgsmodelviewtoolpan.h"
+#include "qgsmodelviewtoolselect.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsprocessinghelpeditorwidget.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingparametertype.h"
+#include "qgsprocessingregistry.h"
 #include "qgsproject.h"
-#include <QShortcut>
-#include <QKeySequence>
-#include <QFileDialog>
-#include <QPdfWriter>
-#include <QSvgGenerator>
-#include <QToolButton>
-#include <QCloseEvent>
-#include <QMessageBox>
-#include <QUndoView>
-#include <QPushButton>
-#include <QUrl>
-#include <QTextStream>
+#include "qgsscreenhelper.h"
+#include "qgssettings.h"
+
 #include <QActionGroup>
+#include <QCloseEvent>
+#include <QFileDialog>
+#include <QKeySequence>
+#include <QMessageBox>
+#include <QPdfWriter>
+#include <QPushButton>
+#include <QShortcut>
+#include <QSvgGenerator>
+#include <QTextStream>
+#include <QToolButton>
+#include <QUndoView>
+#include <QUrl>
+
+#include "moc_qgsmodeldesignerdialog.cpp"
 
 ///@cond NOT_STABLE
 

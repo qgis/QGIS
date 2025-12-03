@@ -22,13 +22,15 @@
 #define SIP_NO_FILE
 
 #include <SFCGAL/capi/sfcgal_c.h>
+#include <source_location>
 
+#include "qgis_core.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsvector3d.h"
-#include "qgis_core.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgslogger.h"
+
 #include <QtGui/qmatrix4x4.h>
 
 class QgsGeometry;

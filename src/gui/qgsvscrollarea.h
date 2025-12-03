@@ -32,6 +32,7 @@ class GUI_EXPORT QgsVScrollArea : public QgsScrollArea
     Q_OBJECT
 
   public:
+
     /**
      * QgsVScrollArea
      * \param parent The parent widget

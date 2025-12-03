@@ -16,12 +16,13 @@
 #ifndef QGSGRADIENTCOLORRAMPDIALOG_H
 #define QGSGRADIENTCOLORRAMPDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgsgradientcolorrampdialogbase.h"
-#include "qgshelp.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgshelp.h"
+
+#include <QDialog>
 
 class QgsGradientColorRamp;
 class QwtPlot;
@@ -40,6 +41,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     Q_PROPERTY( QgsGradientColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsGradientColorRampDialog.
      * \param ramp initial ramp to show in dialog

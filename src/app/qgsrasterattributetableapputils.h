@@ -25,6 +25,7 @@ class QgsMessageBar;
  */
 struct QgsRasterAttributeTableAppUtils
 {
+
     /**
    * Open the Raster Attribute Table for the raster layer.
 

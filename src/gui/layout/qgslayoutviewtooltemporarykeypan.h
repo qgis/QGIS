@@ -16,8 +16,8 @@
 #ifndef QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H
 #define QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutviewtool.h"
 
 /**
@@ -29,6 +29,7 @@ class GUI_EXPORT QgsLayoutViewToolTemporaryKeyPan : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolTemporaryKeyPan.
      */

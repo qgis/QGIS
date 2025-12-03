@@ -14,21 +14,23 @@
  ***************************************************************************/
 
 #include "qgsattributeformeditorwidget.h"
-#include "moc_qgsattributeformeditorwidget.cpp"
-#include "qgsapplication.h"
-#include "qgsattributeform.h"
-#include "qgsmultiedittoolbutton.h"
-#include "qgseditorwidgetwrapper.h"
-#include "qgssearchwidgetwrapper.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetregistry.h"
+
 #include "qgsaggregatetoolbutton.h"
+#include "qgsapplication.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsattributeform.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsgui.h"
+#include "qgsmultiedittoolbutton.h"
+#include "qgssearchwidgetwrapper.h"
 #include "qgsvectorlayerutils.h"
 
-#include <QLayout>
 #include <QLabel>
+#include <QLayout>
 #include <QStackedWidget>
+
+#include "moc_qgsattributeformeditorwidget.cpp"
 
 QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form )
   : QgsAttributeFormWidget( editorWidget, form )

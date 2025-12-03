@@ -17,23 +17,25 @@
  ***************************************************************************/
 
 #include "qgsdecorationlayoutextent.h"
-#include "moc_qgsdecorationlayoutextent.cpp"
-#include "qgsdecorationlayoutextentdialog.h"
 
-#include "qgslayoutitemmap.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgslinesymbollayer.h"
-#include "qgslayoutdesignerdialog.h"
+#include <memory>
+
 #include "qgisapp.h"
-#include "qgsproject.h"
-#include "qgssymbollayerutils.h"
-#include "qgsreadwritecontext.h"
-#include "qgstextrenderer.h"
+#include "qgsdecorationlayoutextentdialog.h"
+#include "qgsexception.h"
 #include "qgsfillsymbol.h"
+#include "qgsgeometry.h"
+#include "qgslayoutdesignerdialog.h"
+#include "qgslayoutitemmap.h"
+#include "qgslinesymbollayer.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
-#include <memory>
+
+#include "moc_qgsdecorationlayoutextent.cpp"
 
 QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   : QgsDecorationItem( parent )

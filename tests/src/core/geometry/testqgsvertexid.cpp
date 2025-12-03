@@ -21,7 +21,6 @@
 
 #include <QObject>
 
-
 class TestQgsVertexId : public QObject
 {
     Q_OBJECT

@@ -16,10 +16,9 @@
 #ifndef QGSWINDOW3DENGINE_H
 #define QGSWINDOW3DENGINE_H
 
-#include <QSize>
-
 #include "qgsabstract3dengine.h"
 
+#include <QSize>
 
 namespace Qt3DExtras
 {
@@ -46,6 +45,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsWindow3DEngine with the specified \a parent Qgs3DMapCanvas.
      */

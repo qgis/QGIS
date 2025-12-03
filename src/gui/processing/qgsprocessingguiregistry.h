@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsprocessingwidgetwrapper.h"
+
 #include <QList>
 #include <QMap>
 
@@ -42,6 +43,7 @@ class QgsProcessingParameterWidgetContext;
 class GUI_EXPORT QgsProcessingGuiRegistry
 {
   public:
+
     /**
      * Constructor. Should never be called manually, is already
      * created by QgsGui.

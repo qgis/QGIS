@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-
-#include "qgsfilewidget.h"
-#include "qgsmimedatautils.h"
-#include "qgsdataitem.h"
-#include "qgsbrowsermodel.h"
-#include "qgslayeritem.h"
-#include "qgsdirectoryitem.h"
 #include <memory>
+
+#include "qgsbrowsermodel.h"
+#include "qgsdataitem.h"
+#include "qgsdirectoryitem.h"
+#include "qgsfilewidget.h"
+#include "qgslayeritem.h"
+#include "qgsmimedatautils.h"
+#include "qgstest.h"
 
 class TestQgsFileWidget : public QObject
 {

@@ -15,6 +15,7 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsmssqlsqlquerybuilder.h"
+
 #include "qgsmssqlutils.h"
 
 QString QgsMsSqlSqlQueryBuilder::createLimitQueryForTable( const QString &schema, const QString &name, int limit ) const

@@ -23,13 +23,13 @@
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QMap>
 #include <QNetworkRequest>
-#include <QVector>
+#include <QString>
+#include <QStringList>
 #include <QUrl>
+#include <QVector>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -117,6 +117,7 @@ class QgsWcsCapabilities : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *

@@ -15,14 +15,13 @@
 
 #include "qgsvectorlayerundopassthroughcommand.h"
 
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayereditbuffer.h"
-
 #include "qgslogger.h"
 #include "qgstransaction.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 
 #include <QUuid>
 

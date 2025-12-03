@@ -16,11 +16,12 @@
 #ifndef QGSSHORTCUTSMANAGER_H
 #define QGSSHORTCUTSMANAGER_H
 
-#include <QHash>
-#include <QList>
-#include <QAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QAction>
+#include <QHash>
+#include <QList>
 
 class QShortcut;
 
@@ -38,6 +39,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Contains common actions which are used across a variety of classes.
      * \since QGIS 4.0

@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgscolorswatchgrid.h"
-#include "moc_qgscolorswatchgrid.cpp"
+
 #include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
 #include "qgscolortooltip_p.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QMenu>
+#include "qgssymbollayerutils.h"
+
 #include <QBuffer>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+
+#include "moc_qgscolorswatchgrid.cpp"
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpolygonstolines.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
+
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
 #include "qgsmultilinestring.h"
 
 ///@cond PRIVATE

@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsDbRelationWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -21,6 +23,7 @@ database.
 #include "qgsdbrelationshipwidget.h"
 %End
   public:
+
     QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDbRelationWidget with the specified ``parent``
@@ -77,6 +80,7 @@ database.
 #include "qgsdbrelationshipwidget.h"
 %End
   public:
+
     explicit QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsDbRelationDialog, with the specified ``parent``

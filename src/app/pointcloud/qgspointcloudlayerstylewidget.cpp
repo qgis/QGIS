@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerstylewidget.h"
-#include "moc_qgspointcloudlayerstylewidget.cpp"
-#include "qgspointcloudrendererpropertieswidget.h"
-#include "qgsstyle.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudrendererpropertieswidget.h"
+#include "qgsstyle.h"
+
+#include "moc_qgspointcloudlayerstylewidget.cpp"
 
 QgsPointCloudRendererWidgetFactory::QgsPointCloudRendererWidgetFactory( QObject *parent )
   : QObject( parent )

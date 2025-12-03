@@ -16,18 +16,19 @@
 #include "qgsmodelviewtoollink.h"
 
 #include <memory>
-#include "moc_qgsmodelviewtoollink.cpp"
-#include "qgsprocessingmodelerparameterwidget.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingguiregistry.h"
-#include "qgsprocessingmodelchildalgorithm.h"
-#include "qgsmodelgraphicsscene.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelviewtoolselect.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsmodelviewrubberband.h"
-#include "qgsmodelgraphicitem.h"
 
+#include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewrubberband.h"
+#include "qgsmodelviewtoolselect.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelerparameterwidget.h"
+
+#include "moc_qgsmodelviewtoollink.cpp"
 
 QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )
@@ -125,8 +126,9 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   /**
    * Reorder input and output socket
    * whether the user dragged :
-   *    - From an input socket to an output socket
-   *    - From an output socket to an input socket
+   *
+   * - From an input socket to an output socket
+   * - From an output socket to an input socket
    *
    * In the code, we always come back to the first case
    */

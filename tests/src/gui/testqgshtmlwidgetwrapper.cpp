@@ -15,6 +15,7 @@
 
 #ifdef WITH_QTWEBKIT
 #include <QWebFrame>
+
 #endif
 
 #include "qgstest.h"

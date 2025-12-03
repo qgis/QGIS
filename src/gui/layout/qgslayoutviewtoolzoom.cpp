@@ -14,13 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolzoom.h"
-#include "moc_qgslayoutviewtoolzoom.cpp"
-#include "qgslayoutviewmouseevent.h"
+
+#include <memory>
+
 #include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
 #include "qgslayoutviewrubberband.h"
 #include "qgsrectangle.h"
+
 #include <QScrollBar>
-#include <memory>
+
+#include "moc_qgslayoutviewtoolzoom.cpp"
 
 QgsLayoutViewToolZoom::QgsLayoutViewToolZoom( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Pan" ) )

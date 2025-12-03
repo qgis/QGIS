@@ -22,8 +22,8 @@
 
 #include "ui_qgsrastersinglecolorrendererwidgetbase.h"
 
-#include "qgsrasterrendererwidget.h"
 #include "qgis_gui.h"
+#include "qgsrasterrendererwidget.h"
 
 /**
  * \brief Renderer widget for the single color renderer.
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsRasterSingleColorRendererWidget : public QgsRasterRendererWi
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsRasterSingleColorRendererWidget.
      * \param layer associated raster layer

@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsfeaturepickermodelbase.h"
-#include "moc_qgsfeaturepickermodelbase.cpp"
-#include "qgsfeatureexpressionvaluesgatherer.h"
 
-#include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureexpressionvaluesgatherer.h"
 #include "qgsvaluerelationfieldformatter.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfeaturepickermodelbase.cpp"
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )

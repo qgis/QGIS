@@ -18,10 +18,11 @@
 
 #include "ui_qgsstyleitemslistwidgetbase.h"
 
-#include "qgsstylemodel.h"
-#include <QWidget>
-#include <QStyledItemDelegate>
 #include "qgis_gui.h"
+#include "qgsstylemodel.h"
+
+#include <QStyledItemDelegate>
+#include <QWidget>
 
 class QgsStyle;
 class QMenu;
@@ -54,6 +55,7 @@ class QgsStyleModelDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsStyleModelDelegate, with the specified \a parent object.
      */
@@ -77,6 +79,7 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsStyleItemsListWidget, with the specified \a parent widget.
      */

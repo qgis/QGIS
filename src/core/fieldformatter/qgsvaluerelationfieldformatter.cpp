@@ -15,18 +15,19 @@
  ***************************************************************************/
 #include "qgsvaluerelationfieldformatter.h"
 
+#include <nlohmann/json.hpp>
+
 #include "qgis.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressionnodeimpl.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayerref.h"
-#include "qgspostgresstringutils.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsmessagelog.h"
+#include "qgspostgresstringutils.h"
+#include "qgsproject.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerref.h"
 
-#include <nlohmann/json.hpp>
 using namespace nlohmann;
 
 #include <QSettings>

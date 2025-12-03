@@ -26,9 +26,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgssettingstree.h"
 
-#include <QStringList>
 #include <QPushButton>
-
+#include <QStringList>
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;

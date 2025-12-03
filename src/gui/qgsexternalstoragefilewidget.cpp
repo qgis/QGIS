@@ -14,24 +14,26 @@
  ***************************************************************************/
 
 #include "qgsexternalstoragefilewidget.h"
-#include "moc_qgsexternalstoragefilewidget.cpp"
 
-#include <QLineEdit>
-#include <QToolButton>
-#include <QLabel>
-#include <QGridLayout>
-#include <QUrl>
-#include <QDropEvent>
-#include <QRegularExpression>
-#include <QProgressBar>
 #include <memory>
 
-#include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsexpression.h"
 #include "qgsexternalstorage.h"
 #include "qgsexternalstorageregistry.h"
+#include "qgslogger.h"
 #include "qgsmessagebar.h"
-#include "qgsexpression.h"
+
+#include <QDropEvent>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QProgressBar>
+#include <QRegularExpression>
+#include <QToolButton>
+#include <QUrl>
+
+#include "moc_qgsexternalstoragefilewidget.cpp"
 
 #define FILEPATH_VARIABLE "selected_file_path"
 

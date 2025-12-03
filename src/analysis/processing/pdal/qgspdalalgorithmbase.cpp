@@ -18,11 +18,11 @@
 #include "qgspdalalgorithmbase.h"
 
 #include "qgsapplication.h"
-#include "qgsrunprocess.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudexpression.h"
-#include "qgsrasterlayerelevationproperties.h"
 #include "qgscopcprovider.h"
+#include "qgspointcloudexpression.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrunprocess.h"
 
 #include <QRegularExpression>
 

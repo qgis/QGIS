@@ -14,14 +14,16 @@
  ***************************************************************************/
 #ifndef QGSPOINTCLOUDQUERYBUILDER_H
 #define QGSPOINTCLOUDQUERYBUILDER_H
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QModelIndex>
 #include "ui_qgspointcloudquerybuilderbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
-#include "qgis_gui.h"
 #include "qgssubsetstringeditorinterface.h"
+
+#include <QModelIndex>
+#include <QStandardItem>
+#include <QStandardItemModel>
 
 class QgsPointCloudLayer;
 class QgsCodeEditor;
@@ -42,6 +44,7 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 {
     Q_OBJECT
   public:
+
     /**
      * This constructor is used when the query builder is called from the
      * layer properties dialog

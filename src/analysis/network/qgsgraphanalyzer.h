@@ -16,10 +16,10 @@
 #ifndef QGSGRAPHANALYZER_H
 #define QGSGRAPHANALYZER_H
 
-#include <QVector>
-
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
+
+#include <QVector>
 
 class QgsGraph;
 
@@ -31,6 +31,7 @@ class QgsGraph;
 class ANALYSIS_EXPORT QgsGraphAnalyzer
 {
   public:
+
     /**
      * Solve shortest path problem using Dijkstra algorithm
      * \param source source graph

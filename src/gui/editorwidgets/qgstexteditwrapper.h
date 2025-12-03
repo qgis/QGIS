@@ -16,13 +16,13 @@
 #ifndef QGSTEXTEDITWRAPPER_H
 #define QGSTEXTEDITWRAPPER_H
 
+#include "qgis_gui.h"
+#include "qgsattributeform.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QTextBrowser>
-#include "qgsattributeform.h"
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -42,6 +42,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsTextEditWrapper.
      *

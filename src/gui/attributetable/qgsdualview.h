@@ -16,16 +16,15 @@
 #ifndef QGSDUALVIEW_H
 #define QGSDUALVIEW_H
 
-#include <QStackedWidget>
-
 #include "ui_qgsdualviewbase.h"
 
-#include "qgsattributeeditorcontext.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsattributeform.h"
 #include "qgis_gui.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsattributeform.h"
+#include "qgsattributetablefiltermodel.h"
 
 #include <QPointer>
+#include <QStackedWidget>
 #include <QUuid>
 
 class QgsFeatureRequest;
@@ -49,6 +48,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     Q_OBJECT
 
   public:
+
     /**
      * The view modes, in which this widget can present information.
      * Relates to the QStackedWidget stacks.
@@ -399,6 +399,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void filterError( const QString &errorMessage );
 
   private:
+
     /**
      * Initialize the attribute form to a given \a feature.
      *
@@ -462,6 +463,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     Q_OBJECT
 
   public:
+
     /**
      * Create a new attribute table action.
      *

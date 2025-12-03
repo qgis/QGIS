@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelchildalgorithm.h"
+
 #include "qgsapplication.h"
-#include "qgsprocessingregistry.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingregistry.h"
 
 ///@cond NOT_STABLE
 

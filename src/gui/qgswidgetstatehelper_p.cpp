@@ -14,14 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswidgetstatehelper_p.h"
-#include "moc_qgswidgetstatehelper_p.cpp"
-#include <QWindow>
-#include <QWidget>
+
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+
 #include <QEvent>
 #include <QObject>
 #include <QVariant>
-#include "qgsguiutils.h"
-#include "qgslogger.h"
+#include <QWidget>
+#include <QWindow>
+
+#include "moc_qgswidgetstatehelper_p.cpp"
 
 QgsWidgetStateHelper::QgsWidgetStateHelper( QObject *parent )
   : QObject( parent )

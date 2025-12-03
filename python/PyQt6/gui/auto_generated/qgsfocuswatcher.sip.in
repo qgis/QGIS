@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFocusWatcher : QObject
 {
 %Docstring(signature="appended")
@@ -24,6 +25,7 @@ using the emitted signals.
 #include "qgsfocuswatcher.h"
 %End
   public:
+
     explicit QgsFocusWatcher( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsFocusWatcher.

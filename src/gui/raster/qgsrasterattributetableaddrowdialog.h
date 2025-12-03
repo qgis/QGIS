@@ -16,10 +16,12 @@
 #ifndef QGSRASTERATTRIBUTETABLEADDROWDIALOG_H
 #define QGSRASTERATTRIBUTETABLEADDROWDIALOG_H
 
-#include <QDialog>
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgsrasterattributetableaddrowdialogbase.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 
@@ -34,6 +36,7 @@ class GUI_EXPORT QgsRasterAttributeTableAddRowDialog : public QDialog, private U
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new QgsRasterAttributeTableAddRowDialog
      * \param parent optional parent

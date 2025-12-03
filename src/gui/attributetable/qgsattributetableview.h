@@ -16,12 +16,12 @@
 #ifndef QGSATTRIBUTETABLEVIEW_H
 #define QGSATTRIBUTETABLEVIEW_H
 
-#include <QAction>
+#include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 #include "qgsfeatureid.h"
 #include "qgstableview.h"
 
-#include "qgis_gui.h"
-#include "qgsattributetableconfig.h"
+#include <QAction>
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
@@ -110,6 +110,7 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
     void closeCurrentEditor();
 
   protected:
+
     /**
      * Called for mouse press events on a table cell.
      * Disables selection change for these events.

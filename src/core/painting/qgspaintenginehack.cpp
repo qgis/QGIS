@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspaintenginehack.h"
 #include "qgsconfig.h"
+#include "qgspaintenginehack.h"
 
 // Hack to workaround Qt #5114 by disabling PatternTransform
 void QgsPaintEngineHack::fixFlags()

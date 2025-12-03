@@ -15,14 +15,15 @@
 
 
 #include "qgslabelsettingswidgetbase.h"
-#include "moc_qgslabelsettingswidgetbase.cpp"
+
+#include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgspropertyoverridebutton.h"
-#include "qgsauxiliarystorage.h"
-#include "qgsgui.h"
 
+#include "moc_qgslabelsettingswidgetbase.cpp"
 
 QgsLabelSettingsWidgetBase::QgsLabelSettingsWidgetBase( QWidget *parent, QgsMapLayer *vl )
   : QgsPanelWidget( parent )

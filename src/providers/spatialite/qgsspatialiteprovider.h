@@ -19,10 +19,11 @@ email                : a.furieri@lqt.it
 
 extern "C"
 {
-#include <sys/types.h>
 #include <sqlite3.h>
-#include <spatialite/gaiageo.h>
+#include <sys/types.h>
 #include <spatialite.h>
+#include <spatialite/gaiageo.h>
+
 }
 
 #include "qgsvectordataprovider.h"

@@ -19,14 +19,15 @@
 #define QGIS_H
 
 
-#include <QMetaEnum>
-#include <QTimeZone>
 #include <cfloat>
-#include <memory>
 #include <cmath>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QMetaEnum>
+#include <QTimeZone>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

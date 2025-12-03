@@ -17,11 +17,11 @@
 #ifndef QGSWFSDOWNLOADERIMPL_H
 #define QGSWFSDOWNLOADERIMPL_H
 
-#include "qgsfeaturedownloaderimpl.h"
-#include "qgswfsrequest.h"
-#include "qgswfsfeaturehitsasyncrequest.h"
-
 #include <memory>
+
+#include "qgsfeaturedownloaderimpl.h"
+#include "qgswfsfeaturehitsasyncrequest.h"
+#include "qgswfsrequest.h"
 
 class QgsWFSSharedData;
 

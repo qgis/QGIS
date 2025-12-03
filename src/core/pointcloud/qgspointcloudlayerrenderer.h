@@ -18,26 +18,25 @@
 #ifndef QGSPOINTCLOUDLAYERRENDERER_H
 #define QGSPOINTCLOUDLAYERRENDERER_H
 
+#include <optional>
+
 #include "qgis_core.h"
 #include "qgscolorramp.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsreadwritecontext.h"
-#include "qgspointcloudindex.h"
-#include "qgsgeometry.h"
-
 #include "qgserror.h"
-#include "qgspointcloudindex.h"
+#include "qgsgeometry.h"
 #include "qgsidentifycontext.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudextentrenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrenderer.h"
 #include "qgsrasterinterface.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDomElement>
-#include <QString>
-#include <QPainter>
 #include <QElapsedTimer>
-#include <optional>
+#include <QPainter>
+#include <QString>
 
 class QgsRenderContext;
 class QgsPointCloudLayer;

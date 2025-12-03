@@ -16,9 +16,11 @@
 #ifndef QGSDIRECTIONALLIGHTWIDGET_H
 #define QGSDIRECTIONALLIGHTWIDGET_H
 
-#include <QWidget>
 #include "ui_qgsdirectionallightwidget.h"
+
 #include "qgis_gui.h"
+
+#include <QWidget>
 
 /**
  * \ingroup gui

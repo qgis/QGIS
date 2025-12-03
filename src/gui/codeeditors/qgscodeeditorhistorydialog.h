@@ -17,11 +17,13 @@
 #define QGSCODEEDITORHISTORYDIALOG_H
 
 #include "ui_qgscodeditorhistorydialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QDialog>
 #include <QPointer>
 #include <QStringListModel>
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 
 #define SIP_NO_FILE
 
@@ -57,6 +59,7 @@ class GUI_EXPORT QgsCodeEditorHistoryDialog : public QDialog, private Ui::QgsCod
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCodeEditorHistoryDialog.
      * \param editor associated code editor widget

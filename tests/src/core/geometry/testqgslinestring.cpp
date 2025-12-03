@@ -16,12 +16,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
 #include <memory>
+#include <testtransformer.h>
 
 #include "qgscircularstring.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinesegment.h"
@@ -29,10 +28,11 @@
 #include "qgsmultipoint.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-#include "qgscoordinatetransform.h"
+#include "qgstest.h"
 #include "testgeometryutils.h"
-#include "testtransformer.h"
 
+#include <QObject>
+#include <QString>
 
 class TestQgsLineString : public QObject
 {

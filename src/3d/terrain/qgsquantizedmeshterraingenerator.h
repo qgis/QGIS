@@ -17,13 +17,14 @@
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
-#include "qgsterrainentity.h"
-#include "qgsrectangle.h"
-#include "qgsterraingenerator.h"
 #include "qgsquantizedmeshdataprovider.h"
+#include "qgsrectangle.h"
+#include "qgsterrainentity.h"
+#include "qgsterraingenerator.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiles.h"
+
 #include <QPointer>
 
 #define SIP_NO_FILE
@@ -37,6 +38,7 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new instance of a QgsQuantizedMeshTerrainGenerator object.
      */

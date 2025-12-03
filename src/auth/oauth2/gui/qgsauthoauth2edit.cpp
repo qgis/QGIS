@@ -12,25 +12,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthoauth2edit.h"
-#include "moc_qgsauthoauth2edit.cpp"
 #include "ui_qgsauthoauth2edit.h"
+#include "qgsauthoauth2edit.h"
 
-#include <QDir>
-#include <QFileDialog>
-#include <QDesktopServices>
-#include <QUrl>
+#include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
+#include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
-#include "qgsauthconfigedit.h"
+#include "qgsjsonutils.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsjsonutils.h"
 
-#include <nlohmann/json.hpp>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
+#include <QUrl>
+
+#include "moc_qgsauthoauth2edit.cpp"
 
 QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

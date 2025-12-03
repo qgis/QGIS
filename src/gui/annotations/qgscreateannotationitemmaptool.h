@@ -43,6 +43,7 @@ class GUI_EXPORT QgsCreateAnnotationItemMapToolHandler : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCreateAnnotationItemMapToolHandler, with the specified \a parent object.
      */

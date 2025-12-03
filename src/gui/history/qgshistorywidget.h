@@ -16,11 +16,12 @@
 #ifndef QGSHISTORYWIDGET_H
 #define QGSHISTORYWIDGET_H
 
+#include "ui_qgshistorywidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgshistorywidgetbase.h"
-#include "qgspanelwidget.h"
 #include "qgshistorywidgetcontext.h"
+#include "qgspanelwidget.h"
 
 #include <QSortFilterProxyModel>
 
@@ -56,6 +57,7 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsHistoryWidget, with the specified \a parent widget.
      *

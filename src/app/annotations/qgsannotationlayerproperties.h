@@ -16,12 +16,11 @@
 #ifndef QGSANNOTATIONLAYERPROPERTIES_H
 #define QGSANNOTATIONLAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
-
 #include "ui_qgsannotationlayerpropertiesbase.h"
 
-#include "qgsannotationlayer.h"
 #include "qgis_app.h"
+#include "qgsannotationlayer.h"
+#include "qgslayerpropertiesdialog.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;

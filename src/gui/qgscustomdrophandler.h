@@ -16,8 +16,8 @@
 #ifndef QGSCUSTOMDROPHANDLER_H
 #define QGSCUSTOMDROPHANDLER_H
 
-#include "qgsmimedatautils.h"
 #include "qgis_gui.h"
+#include "qgsmimedatautils.h"
 
 class QgsMapCanvas;
 
@@ -48,6 +48,7 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Type of custom URI recognized by the handler. This must match
      * the URI entry's providerKey in order for handleCustomUriDrop()

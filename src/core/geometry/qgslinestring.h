@@ -19,13 +19,13 @@
 #define QGSLINESTRING_H
 
 
-#include <QPolygonF>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgscurve.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometryutils_base.h"
+
+#include <QPolygonF>
 
 class QgsLineSegment2D;
 class QgsBox3D;

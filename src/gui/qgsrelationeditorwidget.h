@@ -16,21 +16,20 @@
 #ifndef QGSRELATIONEDITORWIDGET_H
 #define QGSRELATIONEDITORWIDGET_H
 
-#include <QWidget>
-#include <QToolButton>
-#include <QButtonGroup>
-#include <QGridLayout>
-#include "qobjectuniqueptr.h"
-
 #include "ui_qgsrelationeditorconfigwidgetbase.h"
 
+#include "qgis_gui.h"
 #include "qgsabstractrelationeditorwidget.h"
-#include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayerselectionmanager.h"
-#include "qgis_gui.h"
+#include "qobjectuniqueptr.h"
+
+#include <QButtonGroup>
+#include <QGridLayout>
+#include <QToolButton>
+#include <QWidget>
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -92,6 +91,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     Q_PROPERTY( Buttons visibleButtons READ visibleButtons WRITE setVisibleButtons )
 
   public:
+
     /**
      * Possible buttons shown in the relation editor
      * \since QGIS 3.18
@@ -281,6 +281,7 @@ class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEdito
     Q_OBJECT
 
   public:
+
     /**
      * Create a new configuration widget
      *

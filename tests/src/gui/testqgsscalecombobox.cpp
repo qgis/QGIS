@@ -19,11 +19,12 @@
 #include "qgslogger.h"
 #include "qgsscalecombobox.h"
 #include "qgssettingsregistrycore.h"
-#include <QObject>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QtTest/QSignalSpy>
 #include "qgstest.h"
+
+#include <QComboBox>
+#include <QLineEdit>
+#include <QObject>
+#include <QtTest/QSignalSpy>
 
 class TestQgsScaleComboBox : public QObject
 {

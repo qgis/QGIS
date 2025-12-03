@@ -14,21 +14,23 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QHBoxLayout>
-#include <QObject>
-#include <QKeyEvent>
+#include "qgsfieldexpressionwidget.h"
 
 #include "qgsapplication.h"
-#include "qgsfieldexpressionwidget.h"
-#include "moc_qgsfieldexpressionwidget.cpp"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsfieldproxymodel.h"
 #include "qgsdistancearea.h"
-#include "qgsfieldmodel.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QObject>
+
+#include "moc_qgsfieldexpressionwidget.cpp"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )

@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsColorSwatchGrid : QWidget
 {
 %Docstring(signature="appended")
@@ -21,6 +22,7 @@ Colors are taken from an associated :py:class:`QgsColorScheme`.
 #include "qgscolorswatchgrid.h"
 %End
   public:
+
     QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color swatch grid.
@@ -132,6 +134,7 @@ A color swatch grid which can be embedded into a menu.
 #include "qgscolorswatchgrid.h"
 %End
   public:
+
     QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu = 0, const QString &context = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color swatch grid action.

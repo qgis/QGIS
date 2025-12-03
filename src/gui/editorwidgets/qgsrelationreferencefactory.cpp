@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsproject.h"
 #include "qgsrelationreferencefactory.h"
 
+#include "qgsproject.h"
 #include "qgsrelation.h"
-#include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsrelationreferenceconfigdlg.h"
 #include "qgsrelationreferencesearchwidgetwrapper.h"
 #include "qgsrelationreferencewidget.h"
+#include "qgsrelationreferencewidgetwrapper.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )

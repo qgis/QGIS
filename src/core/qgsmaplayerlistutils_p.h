@@ -24,10 +24,10 @@
 // version without notice, or even be removed.
 //
 
-#include <QPointer>
-
 #include "qgsmaplayer.h"
 #include "qgsmaplayerref.h"
+
+#include <QPointer>
 
 /// @cond PRIVATE
 

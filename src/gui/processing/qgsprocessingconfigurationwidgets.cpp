@@ -17,19 +17,21 @@
 
 
 #include "qgsprocessingconfigurationwidgets.h"
-#include "moc_qgsprocessingconfigurationwidgets.cpp"
-#include "qgsprocessingalgorithm.h"
-#include "qgsexpressionlineedit.h"
+
 #include "qgsapplication.h"
+#include "qgsexpressionlineedit.h"
 #include "qgsgui.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsprocessingguiregistry.h"
 
-#include <QTableWidget>
-#include <QGridLayout>
-#include <QToolButton>
-#include <QLabel>
 #include <QCheckBox>
+#include <QGridLayout>
 #include <QHeaderView>
+#include <QLabel>
+#include <QTableWidget>
+#include <QToolButton>
+
+#include "moc_qgsprocessingconfigurationwidgets.cpp"
 
 ///@cond PRIVATE
 

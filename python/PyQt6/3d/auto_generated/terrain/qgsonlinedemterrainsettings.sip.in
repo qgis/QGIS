@@ -26,6 +26,7 @@ build terrain.
 #include "qgsonlinedemterrainsettings.h"
 %End
   public:
+
     static QgsAbstractTerrainSettings *create() /Factory/;
 %Docstring
 Creates a new instance of a QgsOnlineDemTerrainSettings object.

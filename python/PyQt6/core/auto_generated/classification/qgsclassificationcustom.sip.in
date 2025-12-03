@@ -8,7 +8,6 @@
 
 
 
-
 class QgsClassificationCustom : QgsClassificationMethod
 {
 %Docstring(signature="appended")

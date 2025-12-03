@@ -18,8 +18,8 @@
 #ifndef QGSRUGGEDNESSFILTER_H
 #define QGSRUGGEDNESSFILTER_H
 
-#include "qgsninecellfilter.h"
 #include "qgis_analysis.h"
+#include "qgsninecellfilter.h"
 
 /**
  * \ingroup analysis

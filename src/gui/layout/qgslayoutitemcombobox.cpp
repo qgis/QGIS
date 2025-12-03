@@ -14,8 +14,10 @@
 ***************************************************************************/
 
 #include "qgslayoutitemcombobox.h"
-#include "moc_qgslayoutitemcombobox.cpp"
+
 #include "qgslayoutmodel.h"
+
+#include "moc_qgslayoutitemcombobox.cpp"
 
 //
 // QgsLayoutItemComboBox

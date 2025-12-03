@@ -16,14 +16,15 @@
 #ifndef QGSLAYOUTRENDERCONTEXT_H
 #define QGSLAYOUTRENDERCONTEXT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgslayoutmeasurementconverter.h"
-#include "qgsvectorsimplifymethod.h"
 #include "qgsmaskrendersettings.h"
-#include "qgis.h"
-#include <QtGlobal>
+#include "qgsvectorsimplifymethod.h"
+
 #include <QColor>
 #include <QVector>
+#include <QtGlobal>
 
 class QgsLayout;
 class QgsFeatureFilterProvider;

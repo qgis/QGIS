@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgsdefaultsearchwidgetwrapper.h"
-#include "moc_qgsdefaultsearchwidgetwrapper.cpp"
 
-#include "qgsfields.h"
-#include "qgsfieldvalidator.h"
-#include "qgsexpression.h"
-#include "qgsfieldvalueslineedit.h"
-#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsdoublevalidator.h"
+#include "qgsexpression.h"
+#include "qgsfields.h"
+#include "qgsfieldvalidator.h"
+#include "qgsfieldvalueslineedit.h"
+#include "qgssettings.h"
 
 #include <QHBoxLayout>
+
+#include "moc_qgsdefaultsearchwidgetwrapper.cpp"
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

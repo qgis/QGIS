@@ -17,12 +17,10 @@
 #ifndef QGSMESHTRIANGULATION_H
 #define QGSMESHTRIANGULATION_H
 
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshadvancedediting.h"
-
 #include "qgis_analysis.h"
-
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmeshadvancedediting.h"
+#include "qgsmeshdataprovider.h"
 
 class QgsVectorLayer;
 class QgsCoordinateTransformContext;
@@ -136,6 +134,7 @@ class QgsMeshZValueDataset : public QgsMeshDataset
 class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
+
     /**
      * Constructor
      *

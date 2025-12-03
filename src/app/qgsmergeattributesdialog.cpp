@@ -16,23 +16,26 @@
  ***************************************************************************/
 
 #include "qgsmergeattributesdialog.h"
-#include "moc_qgsmergeattributesdialog.cpp"
-#include "qgsapplication.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
-#include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsstatisticalsummary.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsgui.h"
-#include "qgsfieldformatter.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgseditorwidgetwrapper.h"
 
 #include <limits>
+
+#include "qgsapplication.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfields.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsrubberband.h"
+#include "qgsstatisticalsummary.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QComboBox>
+
+#include "moc_qgsmergeattributesdialog.cpp"
 
 const QList<Qgis::Statistic> QgsMergeAttributesDialog::DISPLAY_STATS = QList<Qgis::Statistic>() << Qgis::Statistic::Count
                                                                                                 << Qgis::Statistic::Sum

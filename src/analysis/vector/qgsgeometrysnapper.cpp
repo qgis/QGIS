@@ -14,20 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrysnapper.h"
+
+#include <geos_c.h>
+#include <memory>
+
+#include "qgscurve.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometrysnapper.h"
-#include "moc_qgsgeometrysnapper.cpp"
-#include "qgsvectordataprovider.h"
 #include "qgsgeometryutils.h"
-#include "qgssurface.h"
 #include "qgsmultisurface.h"
-#include "qgscurve.h"
+#include "qgssurface.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QtConcurrentMap>
-#include <memory>
-#include <geos_c.h>
+
+#include "moc_qgsgeometrysnapper.cpp"
 
 ///@cond PRIVATE
 

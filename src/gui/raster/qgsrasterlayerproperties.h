@@ -17,13 +17,14 @@
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
-#include "qgsresamplingutils.h"
-#include "qgsrasterpipe.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsguiutils.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgsrasterpipe.h"
+#include "qgsresamplingutils.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -55,6 +56,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     Q_OBJECT
 
   public:
+
     /**
      * enumeration for the different types of style
      */

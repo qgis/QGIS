@@ -22,17 +22,17 @@
 
 #include "ui_qgsprojectpropertiesbase.h"
 
+#include "qgis.h"
+#include "qgis_app.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgsoptionswidgetfactory.h"
-#include "qgis.h"
-#include "qgsunittypes.h"
-#include "qgsguiutils.h"
 #include "qgsscalewidget.h"
-#include "qgshelp.h"
-#include "qgis_app.h"
+#include "qgsunittypes.h"
 
-#include <QList>
 #include <QColorSpace>
+#include <QList>
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -237,6 +237,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 #endif
 
   private:
+
     /**
       * Called when the user sets a CRS for the project.
       */

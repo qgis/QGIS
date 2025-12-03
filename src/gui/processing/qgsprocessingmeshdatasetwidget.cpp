@@ -14,23 +14,25 @@
  ***************************************************************************/
 
 #include "qgsprocessingmeshdatasetwidget.h"
-#include "moc_qgsprocessingmeshdatasetwidget.cpp"
+
 #include "qgsdatetimeedit.h"
+#include "qgsmapcanvas.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsmeshlayerutils.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingoutputs.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshlayertemporalproperties.h"
-#include "qgspanelwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgsprocessingmodelparameter.h"
-#include "qgsprocessingmodelalgorithm.h"
 
-#include <QLineEdit>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
 #include <QToolButton>
 #include <QVBoxLayout>
+
+#include "moc_qgsprocessingmeshdatasetwidget.cpp"
 
 /// @cond PRIVATE
 

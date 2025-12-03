@@ -13,21 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplayerhandling.h"
-#include "moc_qgsapplayerhandling.cpp"
-
 #include "qgsconfig.h"
+#include "qgsapplayerhandling.h"
+
+#include "qgisapp.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsmessagebar.h"
+#include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojecttimesettings.h"
-#include "qgspointcloudlayer.h"
-#include "qgsmeshlayertemporalproperties.h"
-#include "qgisapp.h"
-#include "qgsmessagebar.h"
 #include "qgsterrainprovider.h"
+
+#include "moc_qgsapplayerhandling.cpp"
+
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgstiledscenelayer3drenderer.h"

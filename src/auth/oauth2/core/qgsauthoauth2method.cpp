@@ -13,22 +13,23 @@
  ***************************************************************************/
 
 #include "qgsauthoauth2method.h"
-#include "moc_qgsauthoauth2method.cpp"
 
 #include "o0globals.h"
 #include "o0requestparameter.h"
-
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgsprovidermetadata.h"
-#include "qgsproject.h"
-#include "qgso2.h"
 #include "qgsauthoauth2config.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgso2.h"
+#include "qgsproject.h"
+#include "qgsprovidermetadata.h"
 #include "qgsreadwritelocker.h"
+
+#include "moc_qgsauthoauth2method.cpp"
+
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif

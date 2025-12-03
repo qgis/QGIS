@@ -18,17 +18,19 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-
 #include "qgscontrastenhancement.h"
+
+#include <memory>
+
+#include "qgscliptominmaxenhancement.h"
 #include "qgscontrastenhancementfunction.h"
 #include "qgslinearminmaxenhancement.h"
 #include "qgslinearminmaxenhancementwithclip.h"
-#include "qgscliptominmaxenhancement.h"
+#include "qgslogger.h"
 #include "qgsrasterblock.h"
+
 #include <QDomDocument>
 #include <QDomElement>
-#include <memory>
 
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   : mMinimumValue( minimumValuePossible( dataType ) )

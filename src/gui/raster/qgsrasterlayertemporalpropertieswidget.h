@@ -19,8 +19,10 @@
 #define QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H
 
 #include "ui_qgsrasterlayertemporalpropertieswidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgsrange.h"
+
 #include <QStyledItemDelegate>
 
 class QgsRasterLayer;
@@ -79,6 +81,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsRasterLayerTemporalPropertiesWidget.
      */

@@ -14,25 +14,26 @@
  ***************************************************************************/
 
 #include "qgsvectortilebasicrendererwidget.h"
-#include "moc_qgsvectortilebasicrendererwidget.cpp"
+
+#include <memory>
 
 #include "qgsguiutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsprojectutils.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelayer.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
-#include "qgsmapcanvas.h"
 #include "qgsvectortileutils.h"
-#include "qgsprojectutils.h"
 
 #include <QAbstractListModel>
 #include <QInputDialog>
 #include <QMenu>
-#include <QScreen>
 #include <QPointer>
-#include <memory>
+#include <QScreen>
 
+#include "moc_qgsvectortilebasicrendererwidget.cpp"
 
 ///@cond PRIVATE
 

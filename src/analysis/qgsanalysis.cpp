@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgsanalysis.h"
-#include "qgsgeometrycheckregistry.h"
-#include "qgsgeometrycheckfactory.h"
-#include "qgis.h"
 
-#include "qgsgeometryselfintersectioncheck.h"
+#include "qgis.h"
+#include "qgsgeometrycheckfactory.h"
+#include "qgsgeometrycheckregistry.h"
 #include "qgsgeometrygapcheck.h"
+#include "qgsgeometryisvalidcheck.h"
 #include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometryoverlapcheck.h"
-#include "qgsgeometryisvalidcheck.h"
+#include "qgsgeometryselfintersectioncheck.h"
 
 QgsAnalysis *QgsAnalysis::instance()
 {

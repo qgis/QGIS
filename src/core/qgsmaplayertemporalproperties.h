@@ -21,9 +21,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgstemporalproperty.h"
-#include "qgsreadwritecontext.h"
 #include "qgsrange.h"
+#include "qgsreadwritecontext.h"
+#include "qgstemporalproperty.h"
 
 #include <QDomElement>
 

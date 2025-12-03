@@ -19,8 +19,9 @@
 #define QGSNEWAUXILIARYLAYERDIALOG_H
 
 #include "ui_qgsnewauxiliarylayerdialogbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
 
 class QgsVectorLayer;
 
@@ -33,6 +34,7 @@ class GUI_EXPORT QgsNewAuxiliaryLayerDialog : public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      *

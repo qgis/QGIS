@@ -21,10 +21,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
-
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmbtiles.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -93,6 +92,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
+
     /**
      * Creates common parameters used in all algorithms
      */

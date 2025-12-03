@@ -18,15 +18,16 @@
 #ifndef QGSPROVIDERSUBLAYERMODEL_H
 #define QGSPROVIDERSUBLAYERMODEL_H
 
+#include <deque>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsprovidersublayerdetails.h"
 
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QIcon>
-#include <memory>
-#include <deque>
+#include <QSortFilterProxyModel>
 
 ///@cond PRIVATE
 class QgsProviderSublayerModelNode;

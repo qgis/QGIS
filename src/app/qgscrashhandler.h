@@ -31,6 +31,7 @@
 class APP_EXPORT QgsCrashHandler
 {
   public:
+
     /**
      * This class doesn't need to be created by anyone as is only used to handle
      * crashes in the application.

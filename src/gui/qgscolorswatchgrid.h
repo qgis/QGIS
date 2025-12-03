@@ -15,11 +15,12 @@
 #ifndef QGSCOLORSWATCHGRID_H
 #define QGSCOLORSWATCHGRID_H
 
-#include "qgscolorscheme.h"
-#include <QWidget>
-#include <QWidgetAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscolorscheme.h"
+
+#include <QWidget>
+#include <QWidgetAction>
 
 /**
  * \ingroup gui
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color swatch grid.
      * \param scheme QgsColorScheme for colors to show in grid
@@ -190,6 +192,7 @@ class GUI_EXPORT QgsColorSwatchGridAction : public QWidgetAction
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color swatch grid action.
      * \param scheme QgsColorScheme for colors to show in grid

@@ -16,10 +16,10 @@
 #ifndef QGSEXPRESSIONFINDER_H
 #define QGSEXPRESSIONFINDER_H
 
-#include <QString>
-
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QString>
 
 #define SIP_NO_FILE
 
@@ -36,6 +36,7 @@ class QPlainTextEdit;
 class GUI_EXPORT QgsExpressionFinder
 {
   public:
+
     /**
      * Find an expression at the given position in the given text
      *

@@ -16,12 +16,12 @@
 #ifndef QGSSENSORTHINGSSHAREDDATA_H
 #define QGSSENSORTHINGSSHAREDDATA_H
 
-#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgshttpheaders.h"
 #include "qgsfeature.h"
-#include "qgsspatialindex.h"
+#include "qgsfields.h"
+#include "qgshttpheaders.h"
 #include "qgssensorthingsutils.h"
+#include "qgsspatialindex.h"
 
 #include <QReadWriteLock>
 

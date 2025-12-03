@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsHistoryEntryNode
 {
 %Docstring(signature="appended")

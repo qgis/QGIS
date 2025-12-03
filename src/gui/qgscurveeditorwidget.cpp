@@ -15,14 +15,17 @@
 
 
 #include "qgscurveeditorwidget.h"
-#include "moc_qgscurveeditorwidget.cpp"
-#include "qgsvectorlayer.h"
 
-#include <QPainter>
-#include <QVBoxLayout>
-#include <QMouseEvent>
 #include <algorithm>
 #include <memory>
+
+#include "qgsvectorlayer.h"
+
+#include <QMouseEvent>
+#include <QPainter>
+#include <QVBoxLayout>
+
+#include "moc_qgscurveeditorwidget.cpp"
 
 // QWT Charting widget
 #include <qwt_global.h>

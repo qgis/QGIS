@@ -15,41 +15,43 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmeshlayer.h"
+
 #include <cstddef>
 #include <limits>
-
-#include <QUuid>
-#include <QUrl>
 #include <memory>
 
+#include "qgsapplication.h"
 #include "qgscolorrampimpl.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
-#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerlegend.h"
+#include "qgsmesh3daveraging.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgroupstore.h"
-#include "qgsmeshlayer.h"
-#include "moc_qgsmeshlayer.cpp"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayerelevationproperties.h"
+#include "qgsmeshlayerlabeling.h"
+#include "qgsmeshlayerprofilegenerator.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
+#include "qgsmessagelog.h"
 #include "qgspainting.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
-#include "qgsstyle.h"
-#include "qgstriangularmesh.h"
-#include "qgsmesh3daveraging.h"
-#include "qgslayermetadataformatter.h"
-#include "qgsmesheditor.h"
-#include "qgsmessagelog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmeshlayerprofilegenerator.h"
-#include "qgsmeshlayerelevationproperties.h"
-#include "qgsthreadingutils.h"
-#include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsmeshlayerlabeling.h"
+#include "qgsstyle.h"
+#include "qgsthreadingutils.h"
+#include "qgstriangularmesh.h"
+
+#include <QUrl>
+#include <QUuid>
+
+#include "moc_qgsmeshlayer.cpp"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,

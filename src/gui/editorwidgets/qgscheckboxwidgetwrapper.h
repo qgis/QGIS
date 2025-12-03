@@ -16,11 +16,11 @@
 #ifndef QGSCHECKBOXWIDGETWRAPPER_H
 #define QGSCHECKBOXWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QCheckBox>
 #include <QGroupBox>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -41,6 +41,7 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsCheckboxWidgetWrapper.
      *

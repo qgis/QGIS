@@ -19,8 +19,9 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
-#include <QGraphicsObject>
+
 #include <QFont>
+#include <QGraphicsObject>
 #include <QPicture>
 #include <QPointer>
 
@@ -237,7 +238,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     /**
      * Returns the output socket graphics items at the specified \a index.
-     * 
+     *
      * May return NULLPTR if no corresponding output socket exists.
      * \since QGIS 3.44
      */
@@ -312,6 +313,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual void editComponent() {}
 
   protected:
+
     /**
      * Truncates a \a text string so that it fits nicely within the item's width,
      * accounting for margins and interactive buttons.
@@ -414,6 +416,7 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelParameterGraphicItem for the specified \a parameter, with the specified \a parent item.
      *
@@ -456,6 +459,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelChildAlgorithmGraphicItem for the specified \a child, with the specified \a parent item.
      *
@@ -541,6 +545,7 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelOutputGraphicItem for the specified \a output, with the specified \a parent item.
      *
@@ -580,6 +585,7 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelCommentGraphicItem for the specified \a comment, with the specified \a parent item.
      *
@@ -629,6 +635,7 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelGroupBoxGraphicItem for the specified group \a box, with the specified \a parent item.
      *

@@ -16,25 +16,27 @@
  ***************************************************************************/
 
 
-#include "qgsfields.h"
+#include "qgsvectorlayerexporter.h"
+
+#include "qgsabstractgeometry.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsgeometrycollection.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerexporter.h"
-#include "moc_qgsvectorlayerexporter.cpp"
 #include "qgsproviderregistry.h"
-#include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsabstractgeometry.h"
-#include "qgscoordinatetransform.h"
 
 #include <QProgressDialog>
 #include <QThread>
+
+#include "moc_qgsvectorlayerexporter.cpp"
 
 typedef Qgis::VectorExportResult createEmptyLayer_t(
   const QString &uri,

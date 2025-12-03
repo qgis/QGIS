@@ -15,19 +15,21 @@
 #ifndef QGSGMLSCHEMA_H
 #define QGSGMLSCHEMA_H
 
-#include "qgis_core.h"
 #include <expat.h>
-#include "qgis_sip.h"
-#include "qgserror.h"
-#include "qgsfields.h"
 #include <list>
 #include <set>
 #include <stack>
-#include <QPair>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgserror.h"
+#include "qgsfields.h"
+
 #include <QByteArray>
 #include <QDomElement>
-#include <QStringList>
+#include <QPair>
 #include <QStack>
+#include <QStringList>
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;

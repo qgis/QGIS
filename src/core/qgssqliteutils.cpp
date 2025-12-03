@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgssqliteutils.h"
+
+#include <cstdarg>
+#include <sqlite3.h>
+
 #include "qgsvariantutils.h"
 
-#include <sqlite3.h>
-#include <cstdarg>
-#include <QVariant>
 #include <QSet>
+#include <QVariant>
 
 // Temporary solution until GDAL Unique support is available
 #include <regex>

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsNumericFormatConfigurationWidgetFactory
 {
 %Docstring(signature="appended")
@@ -48,6 +49,7 @@ but rather accessed through
 #include "qgsnumericformatguiregistry.h"
 %End
   public:
+
     QgsNumericFormatGuiRegistry();
 %Docstring
 Constructor. Should never be called manually, is already created by

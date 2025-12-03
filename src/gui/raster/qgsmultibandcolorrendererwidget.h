@@ -18,9 +18,10 @@
 #ifndef QGSMULTIBANDCOLORRENDERERWIDGET_H
 #define QGSMULTIBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgsrasterrendererwidget.h"
 
 class QgsContrastEnhancement;
 class QgsMultiBandColorRenderer;
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMultiBandColorRendererWidget.
      * \param layer associated raster layer

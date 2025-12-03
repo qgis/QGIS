@@ -16,15 +16,14 @@
 #ifndef QGSADVANCEDDIGITIZINGTOOLS
 #define QGSADVANCEDDIGITIZINGTOOLS
 
-#include <QWidget>
-#include <QString>
-
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmapmouseevent.h"
 
 #include <QPointer>
+#include <QString>
+#include <QWidget>
 
 class QgsAdvancedDigitizingDockWidget;
 class QgsDoubleSpinBox;
@@ -40,6 +39,7 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * The advanced digitizing tool constructor.
      * \param canvas The map canvas on which the widget operates
@@ -120,6 +120,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvanc
     Q_OBJECT
 
   public:
+
     /**
      * The advanced digitizing's circles intersection tool constructor.
      * \param canvas The map canvas on which the widget operates

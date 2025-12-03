@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsreportlayoutsectionwidget.h"
-#include "moc_qgsreportlayoutsectionwidget.cpp"
-#include "qgsreportsectionlayout.h"
+
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgsreportorganizerwidget.h"
+#include "qgsreportsectionlayout.h"
+
+#include "moc_qgsreportlayoutsectionwidget.cpp"
 
 QgsReportLayoutSectionWidget::QgsReportLayoutSectionWidget( QgsReportOrganizerWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionLayout *section )
   : QWidget( parent )

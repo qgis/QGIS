@@ -16,8 +16,8 @@
 #ifndef QGSLAYOUTVIEWTOOLPAN_H
 #define QGSLAYOUTVIEWTOOLPAN_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutviewtool.h"
 
 /**
@@ -29,6 +29,7 @@ class GUI_EXPORT QgsLayoutViewToolPan : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolPan.
      */

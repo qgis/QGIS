@@ -19,6 +19,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrasterlayer.h"
+
 #include <QComboBox>
 #include <QPointer>
 
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
     Q_PROPERTY( int band READ currentBand WRITE setBand NOTIFY bandChanged )
 
   public:
+
     /**
      * Constructor for QgsRasterBandComboBox.
      */

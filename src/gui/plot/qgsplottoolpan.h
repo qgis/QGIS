@@ -18,10 +18,9 @@
 #ifndef QGSPLOTTOOLPAN_H
 #define QGSPLOTTOOLPAN_H
 
-#include "qgsplottool.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
+#include "qgsplottool.h"
 
 /**
  * \ingroup gui
@@ -34,6 +33,7 @@ class GUI_EXPORT QgsPlotToolPan : public QgsPlotTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolPan, with the associated \a canvas.
      */

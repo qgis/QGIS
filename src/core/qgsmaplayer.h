@@ -18,30 +18,30 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataprovider.h"
+#include "qgserror.h"
+#include "qgslayermetadata.h"
+#include "qgslogger.h"
+#include "qgsmaplayerdependency.h"
+#include "qgsmaplayerselectionproperties.h"
+#include "qgsmaplayerserverproperties.h"
+#include "qgsobjectcustomproperties.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
+
 #include <QDateTime>
 #include <QDomNode>
+#include <QIcon>
 #include <QImage>
 #include <QObject>
 #include <QPainter>
+#include <QSet>
 #include <QUndoStack>
 #include <QVariant>
-#include <QIcon>
-#include <QSet>
-
-#include "qgis_sip.h"
-#include "qgserror.h"
-#include "qgsobjectcustomproperties.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmaplayerdependency.h"
-#include "qgslayermetadata.h"
-#include "qgsmaplayerserverproperties.h"
-#include "qgsmaplayerselectionproperties.h"
-#include "qgsreadwritecontext.h"
-#include "qgsdataprovider.h"
-#include "qgis.h"
-#include "qgslogger.h"
 
 class QgsAbstract3DRenderer;
 class QgsAbstractProfileSource;

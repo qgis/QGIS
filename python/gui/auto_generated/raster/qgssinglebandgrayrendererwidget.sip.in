@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSingleBandGrayRendererWidget : QgsRasterRendererWidget
 {
 %Docstring(signature="appended")
@@ -20,6 +21,7 @@ A widget for configuring a :py:class:`QgsSingleBandGrayRenderer`.
 #include "qgssinglebandgrayrendererwidget.h"
 %End
   public:
+
     QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Constructor for QgsSingleBandGrayRendererWidget.

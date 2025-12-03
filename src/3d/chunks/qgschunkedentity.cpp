@@ -14,21 +14,20 @@
  ***************************************************************************/
 
 #include "qgschunkedentity.h"
-#include "moc_qgschunkedentity.cpp"
-
-#include <QElapsedTimer>
-#include <QVector4D>
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
+#include "qgseventtracing.h"
 #include "qgsgeotransform.h"
 
-#include "qgseventtracing.h"
-
+#include <QElapsedTimer>
+#include <QVector4D>
 #include <queue>
+
+#include "moc_qgschunkedentity.cpp"
 
 ///@cond PRIVATE
 

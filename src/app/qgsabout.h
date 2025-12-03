@@ -18,6 +18,7 @@
 #define QGSABOUT_H
 
 #include "ui_qgsabout.h"
+
 #include "qgis_app.h"
 #include "qgsoptionsdialogbase.h"
 

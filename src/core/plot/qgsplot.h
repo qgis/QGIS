@@ -17,14 +17,15 @@
 #ifndef QGSPLOT_H
 #define QGSPLOT_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgstextformat.h"
 #include "qgsmargins.h"
 #include "qgspropertycollection.h"
+#include "qgstextformat.h"
 
 #include <QSizeF>
-#include <memory>
 
 class QgsColorRamp;
 class QgsMarkerSymbol;

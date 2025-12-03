@@ -15,21 +15,24 @@
  ***************************************************************************/
 
 #include "qgslayoutitempage.h"
-#include "moc_qgslayoutitempage.cpp"
+
+#include <memory>
+
+#include "qgsfillsymbol.h"
 #include "qgslayout.h"
-#include "qgslayoututils.h"
-#include "qgspagesizeregistry.h"
-#include "qgssymbollayerutils.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
+#include "qgspagesizeregistry.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
-#include "qgsfillsymbol.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <memory>
+
+#include "moc_qgslayoutitempage.cpp"
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout, false )

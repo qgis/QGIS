@@ -18,11 +18,9 @@
 #include "qgsapplication.h"
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
-
 #include "qgsspatialitedataitemguiprovider.h"
-#include "qgsspatialitesourceselect.h"
 #include "qgsspatialiteprovider.h"
-
+#include "qgsspatialitesourceselect.h"
 
 //! Provider for spatialite source select
 class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider

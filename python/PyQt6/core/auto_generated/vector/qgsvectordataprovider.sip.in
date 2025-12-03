@@ -9,6 +9,7 @@
 
 
 
+
 typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 

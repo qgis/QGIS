@@ -10,6 +10,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include "qgsplotcanvasitem.h"
 %End
@@ -33,6 +34,7 @@ An abstract class for items that can be placed on a
       sipType = nullptr;
 %End
   protected:
+
     QgsPlotCanvasItem( QgsPlotCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor for QgsPlotCanvasItem for the specified ``canvas``.

@@ -17,9 +17,10 @@
 #define QGSMESHRENDERERSCALARSETTINGSWIDGET_H
 
 #include "ui_qgsmeshrendererscalarsettingswidgetbase.h"
+
 #include "qgis_gui.h"
-#include "qgsmeshrenderersettings.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshrenderersettings.h"
 
 #include <QWidget>
 
@@ -40,6 +41,7 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     Q_OBJECT
 
   public:
+
     /**
      * A widget to hold the renderer scalar settings for a mesh layer.
      * \param parent Parent object

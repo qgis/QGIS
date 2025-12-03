@@ -15,11 +15,13 @@
 #ifndef QGSAPPQUERYLOGGER_H
 #define QGSAPPQUERYLOGGER_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QElapsedTimer>
-#include "qgsdbquerylog.h"
 #include <memory>
+
+#include "qgsdbquerylog.h"
+
+#include <QAbstractItemModel>
+#include <QElapsedTimer>
+#include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 
 class QgsDevToolsModelNode;
@@ -39,6 +41,7 @@ class QgsAppQueryLogger : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAppQueryLogger, logging requests from the specified \a manager.
      *
@@ -113,6 +116,7 @@ class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDatabaseQueryLoggerProxyModel, filtering the specified network \a logger.
      */

@@ -17,10 +17,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfeature.h"
-#include "qgsfields.h"
-#include "qgsfeaturesink.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsfeaturesink.h"
+#include "qgsfields.h"
+
 #include <QList>
 #include <QMetaType>
 #include <QVariant>

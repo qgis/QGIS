@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgstriangulatedsurface.h"
-#include "qgspolyhedralsurface.h"
-#include "qgslogger.h"
-#include "qgstriangle.h"
-#include "qgsvertexid.h"
-#include "qgsgeometryutils.h"
 
 #include <memory>
 #include <nlohmann/json.hpp>
+
+#include "qgsgeometryutils.h"
+#include "qgslogger.h"
+#include "qgspolyhedralsurface.h"
+#include "qgstriangle.h"
+#include "qgsvertexid.h"
 
 QgsTriangulatedSurface::QgsTriangulatedSurface()
 {

@@ -16,13 +16,13 @@
 #ifndef QGSLAYOUTITEMCOMBOBOX_H
 #define QGSLAYOUTITEMCOMBOBOX_H
 
-#include <QComboBox>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
-#include "qgis_gui.h"
 #include "qgslayoutmodel.h"
 
+#include <QComboBox>
 
 /**
  * \class QgsLayoutItemComboBox
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * QgsLayoutItemComboBox creates a combo box to display a list of items in a
      * \a layout. The items can optionally be filtered by type.

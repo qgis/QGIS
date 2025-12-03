@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutViewToolTemporaryKeyZoom : QgsLayoutViewToolZoom
 {
 %Docstring(signature="appended")
@@ -19,6 +20,7 @@ depressed.
 #include "qgslayoutviewtooltemporarykeyzoom.h"
 %End
   public:
+
     QgsLayoutViewToolTemporaryKeyZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolTemporaryKeyZoom.

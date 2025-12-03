@@ -16,12 +16,13 @@
 #ifndef QGSFEATUREDOWNLOADER_H
 #define QGSFEATUREDOWNLOADER_H
 
+#include <memory>
+
 #include "qgsfeaturedownloadcommon.h"
 #include "qgsfeaturedownloaderimpl.h"
 
 #include <QObject>
 #include <QVector>
-#include <memory>
 
 /**
  * Interface of the downloader, typically called by QgsThreadedFeatureDownloader.

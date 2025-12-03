@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRasterLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
@@ -21,6 +22,7 @@ A dialog for raster layer properties.
 #include "qgsrasterlayerproperties.h"
 %End
   public:
+
 
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 %Docstring

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelGraphicsScene : QGraphicsScene
 {
 %Docstring(signature="appended")
@@ -245,6 +246,7 @@ algorithm with matching ID.
 %End
 
   protected:
+
     virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;
 %Docstring
 Creates a new graphic item for a model parameter.

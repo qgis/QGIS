@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLFILLRING_H
 #define QGSMAPTOOLFILLRING_H
 
-#include "qgsmaptoolcapture.h"
 #include "qgis_app.h"
+#include "qgsmaptoolcapture.h"
 
 /**
  * A tool to cut holes into polygon and multipolygon features and fill them

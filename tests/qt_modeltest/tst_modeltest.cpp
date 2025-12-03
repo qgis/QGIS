@@ -45,18 +45,18 @@
 ****************************************************************************/
 
 
-#include <QtTest/QTest>
-#include <QObject>
-#include <QStringListModel>
-#include <QSortFilterProxyModel>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QStandardItemModel>
-#include <QRegularExpression>
+#include <dynamictreemodel.h>
 
 #include "modeltest.h"
-#include "dynamictreemodel.h"
 
+#include <QObject>
+#include <QRegularExpression>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QStringListModel>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QtTest/QTest>
 
 class tst_ModelTest : public QObject
 {

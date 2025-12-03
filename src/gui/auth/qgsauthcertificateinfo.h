@@ -18,8 +18,9 @@
 #ifndef QGSAUTHCERTIFICATEINFO_H
 #define QGSAUTHCERTIFICATEINFO_H
 
-#include <QFile>
 #include "qgis_sip.h"
+
+#include <QFile>
 
 #ifndef QT_NO_SSL
 #include <QtCrypto>
@@ -141,6 +142,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
      * \param cert Certificate object

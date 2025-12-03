@@ -17,10 +17,9 @@
 #define QGSLAYOUTITEM3DMAP_H
 
 #include "qgis_3d.h"
-
+#include "qgscamerapose.h"
 #include "qgslayoutitem.h"
 #include "qgstemporalrangeobject.h"
-#include "qgscamerapose.h"
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
@@ -63,6 +62,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
 #endif
 
   public:
+
     /**
      * Constructor for QgsLayoutItem3DMap, with the specified parent \a layout.
      *

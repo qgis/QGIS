@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstaskmanager.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+#include <memory>
+
 #include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgsproxyprogresstask.h"
+#include "qgstaskmanager.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
-#include <QThread>
 #include <QSignalSpy>
+#include <QThread>
 #include <QThreadPool>
 #include <QTimer>
-#include <memory>
-#include "qgstest.h"
 
 class TestTask : public QgsTask
 {

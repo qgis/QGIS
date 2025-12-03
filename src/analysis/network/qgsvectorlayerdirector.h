@@ -17,9 +17,8 @@
 #define QGSVECTORLAYERDIRECTOR_H
 
 #include "qgis.h"
-
-#include "qgsgraphdirector.h"
 #include "qgis_analysis.h"
+#include "qgsgraphdirector.h"
 
 class QgsGraphBuilderInterface;
 class QgsFeatureSource;
@@ -34,6 +33,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     Q_OBJECT
 
   public:
+
     /**
      * Edge direction
      * Edge can be one-way with direct flow (one can move only from the start

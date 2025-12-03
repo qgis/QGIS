@@ -16,7 +16,9 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
+
 #include "moc_qgsogrprovider.cpp"
+
 ///@cond PRIVATE
 
 #include "qgscplerrorhandler_p.h"

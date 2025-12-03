@@ -10,6 +10,7 @@
 
 
 
+
 class QgsEditorWidgetRegistry : QObject
 {
 %Docstring(signature="appended")
@@ -23,6 +24,7 @@ rather accessed through :py:func:`QgsGui.editorWidgetRegistry()`.
 #include "qgseditorwidgetregistry.h"
 %End
   public:
+
     QgsEditorWidgetRegistry();
 %Docstring
 Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not

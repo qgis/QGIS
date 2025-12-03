@@ -12,7 +12,6 @@
 
 
 
-
 class Qgs3DMapCanvas : QWindow
 {
 %Docstring(signature="appended")
@@ -141,6 +140,7 @@ Emitted when the cross section mode is enabled or disabled
 %End
 
   protected:
+
     virtual void showEvent( QShowEvent *e );
 
 %Docstring

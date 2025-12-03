@@ -16,11 +16,13 @@
 #ifndef QGSEXPRESSIONLINEEDIT_H
 #define QGSEXPRESSIONLINEEDIT_H
 
-#include <QWidget>
+#include <memory>
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
-#include "qgis_gui.h"
-#include <memory>
+
+#include <QWidget>
 
 class QgsFilterLineEdit;
 class QToolButton;
@@ -49,6 +51,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsExpressionLineEdit.
      * \param parent parent widget

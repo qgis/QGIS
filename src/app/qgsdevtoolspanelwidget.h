@@ -16,6 +16,7 @@
 #define QGSDEVTOOLSPANELWIDGET_H
 
 #include "ui_qgsdevtoolswidgetbase.h"
+
 #include "qgis_app.h"
 #include "qgssettingstree.h"
 

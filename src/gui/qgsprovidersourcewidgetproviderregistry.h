@@ -17,10 +17,10 @@
 #ifndef QGSPROVIDERSOURCEWIDGETPROVIDERREGISTRY_H
 #define QGSPROVIDERSOURCEWIDGETPROVIDERREGISTRY_H
 
-#include <QWidget>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsProviderSourceWidget;

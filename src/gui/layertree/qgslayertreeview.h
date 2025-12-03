@@ -16,9 +16,10 @@
 #ifndef QGSLAYERTREEVIEW_H
 #define QGSLAYERTREEVIEW_H
 
-#include <QTreeView>
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QTreeView>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructs QgsLayerTreeProxyModel with source model \a treeModel and a \a parent
      */
@@ -355,6 +357,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
     void collapseAllNodes();
 
   protected:
+
     /**
      * Updates the expanded state from a \a node.
      */

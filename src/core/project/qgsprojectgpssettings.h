@@ -15,9 +15,9 @@
 #ifndef QGSPROJECTGPSSETTINGS_H
 #define QGSPROJECTGPSSETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsvectorlayerref.h"
 
 #include <QObject>

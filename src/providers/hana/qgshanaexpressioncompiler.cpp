@@ -14,11 +14,12 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
-#include "qgsexpressionnodeimpl.h"
 #include "qgshanaexpressioncompiler.h"
+
+#include "qgsexpressionnodeimpl.h"
 #include "qgshanautils.h"
-#include "qgssqlexpressioncompiler.h"
 #include "qgslogger.h"
+#include "qgssqlexpressioncompiler.h"
 
 QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger | QgsSqlExpressionCompiler::NoNullInBooleanLogic, ignoreStaticNodes )

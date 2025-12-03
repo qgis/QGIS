@@ -18,11 +18,12 @@
 #ifndef QGSSINGLEBANDGRAYRENDERERWIDGET_H
 #define QGSSINGLEBANDGRAYRENDERERWIDGET_H
 
-#include "qgsrasterrendererwidget.h"
-#include "qgis_sip.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscolorramplegendnodesettings.h"
+#include "qgsrasterrendererwidget.h"
 
 class QgsRasterMinMaxWidget;
 
@@ -35,6 +36,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidge
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsSingleBandGrayRendererWidget.
      * \param layer associated raster layer

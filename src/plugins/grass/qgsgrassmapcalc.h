@@ -14,9 +14,10 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
-#include "qgsgrassmoduleinput.h"
 #include "ui_qgsgrassmapcalcbase.h"
+
 #include "qgsgrassmodule.h"
+#include "qgsgrassmoduleinput.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>

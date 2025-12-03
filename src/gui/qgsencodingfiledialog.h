@@ -16,9 +16,10 @@
 #ifndef QGSENCODINGFILEDIALOG_H
 #define QGSENCODINGFILEDIALOG_H
 
-#include <QFileDialog>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QFileDialog>
 
 class QComboBox;
 class QPushButton;
@@ -31,6 +32,7 @@ class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsEncodingFileDialog
      */
@@ -67,6 +69,7 @@ class GUI_EXPORT QgsEncodingSelectionDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsEncodingSelectionDialog.
      *

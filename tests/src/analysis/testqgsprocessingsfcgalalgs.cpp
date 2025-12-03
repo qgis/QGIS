@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgsabstractgeometry.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
-#include "qgstest.h"
 #include "qgsnativealgorithms.h"
-#include "qgsprocessingregistry.h"
 #include "qgsprocessingcontext.h"
-#include "qgsvectorlayer.h"
+#include "qgsprocessingregistry.h"
 #include "qgssfcgalgeometry.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <qtestcase.h>
-#include <memory>
 
 // #include <QThread>
 

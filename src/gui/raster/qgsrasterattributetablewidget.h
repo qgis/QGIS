@@ -16,16 +16,16 @@
 #ifndef QGSRASTERATTRIBUTETABLEWIDGET_H
 #define QGSRASTERATTRIBUTETABLEWIDGET_H
 
-#include "qgis_gui.h"
 #include "ui_qgsrasterattributetablewidgetbase.h"
-#include "qgsrasterattributetablemodel.h"
+
+#include "qgis_gui.h"
 #include "qgscolorrampimpl.h"
-#include "qgspanelwidget.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
+#include "qgspanelwidget.h"
+#include "qgsrasterattributetablemodel.h"
 
-#include <QWidget>
 #include <QStyledItemDelegate>
-
+#include <QWidget>
 
 #ifndef SIP_RUN
 class QgsRasterLayer;
@@ -120,6 +120,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsRasterAttributeTableWidget
      * \param parent parent widget

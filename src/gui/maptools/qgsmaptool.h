@@ -17,15 +17,15 @@
 #define QGSMAPTOOL_H
 
 #include "qgsconfig.h"
-#include "qgis.h"
 
-#include <QCursor>
-#include <QString>
-#include <QObject>
-#include <QPointer>
-#include <QGestureEvent>
+#include "qgis.h"
 #include "qgis_gui.h"
 
+#include <QCursor>
+#include <QGestureEvent>
+#include <QObject>
+#include <QPointer>
+#include <QString>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -102,6 +102,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Enumeration of flags that adjust the way the map tool operates
      */

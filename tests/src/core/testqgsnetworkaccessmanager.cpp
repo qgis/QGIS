@@ -15,16 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnetworkaccessmanager.h"
-#include "qgsapplication.h"
 #include "qgis.h"
-#include <QObject>
+#include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgstest.h"
+
+#include <QAuthenticator>
+#include <QHttpMultiPart>
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
-#include <QAuthenticator>
+#include <QObject>
 #include <QThread>
-#include <QHttpMultiPart>
 
 class BackgroundRequest : public QThread
 {

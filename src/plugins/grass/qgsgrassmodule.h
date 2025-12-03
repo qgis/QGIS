@@ -19,10 +19,9 @@
 #include "ui_qgsgrassmodulebase.h"
 
 #include "qgis.h"
+#include "qgsgrassmoduleoptions.h"
 
 #include <QProcess>
-
-#include "qgsgrassmoduleoptions.h"
 
 class QDomNode;
 class QDomElement;
@@ -128,6 +127,7 @@ class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
     //void mapsetChanged();
 
   private:
+
     /**
      * Set progress bar or busy indicator if percent is 100
      * \param percent progress to show in %

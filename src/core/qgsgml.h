@@ -15,22 +15,22 @@
 #ifndef QGSGML_H
 #define QGSGML_H
 
-#include "qgis_core.h"
 #include <expat.h>
+#include <string>
+
+#include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"
-#include "qgsfeature.h"
 
-#include <QPair>
 #include <QByteArray>
 #include <QDomElement>
-#include <QStringList>
+#include <QPair>
 #include <QStack>
+#include <QStringList>
 #include <QVector>
-
-#include <string>
 
 #ifndef SIP_RUN
 #include <nlohmann/json.hpp>

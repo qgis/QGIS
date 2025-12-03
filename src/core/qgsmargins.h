@@ -16,8 +16,9 @@
 #ifndef QGSMARGINS_H
 #define QGSMARGINS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QString>
 
 /**

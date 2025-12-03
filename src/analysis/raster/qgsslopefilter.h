@@ -18,8 +18,8 @@
 #ifndef QGSSLOPEFILTER_H
 #define QGSSLOPEFILTER_H
 
-#include "qgsderivativefilter.h"
 #include "qgis_analysis.h"
+#include "qgsderivativefilter.h"
 
 /**
  * \ingroup analysis

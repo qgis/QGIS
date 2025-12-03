@@ -8,6 +8,7 @@
 
 
 
+
 class QgsPointCloudRendererWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -20,6 +21,7 @@ Base class for point cloud 2D renderer settings widgets.
 #include "qgspointcloudrendererwidget.h"
 %End
   public:
+
     QgsPointCloudRendererWidget( QgsPointCloudLayer *layer, QgsStyle *style );
 %Docstring
 Constructor for QgsPointCloudRendererWidget, associated with the

@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgsdatetimeeditconfig.h"
-#include "moc_qgsdatetimeeditconfig.cpp"
+
 #include "qgsdatetimeeditfactory.h"
-#include "qgsvectorlayer.h"
 #include "qgsdatetimefieldformatter.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsdatetimeeditconfig.cpp"
 
 QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

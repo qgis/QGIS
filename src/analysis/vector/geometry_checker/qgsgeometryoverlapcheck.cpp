@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryoverlapcheck.h"
+
+#include "qgsapplication.h"
+#include "qgsfeaturepool.h"
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
-#include "qgsgeometryoverlapcheck.h"
-#include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgsapplication.h"
 
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )

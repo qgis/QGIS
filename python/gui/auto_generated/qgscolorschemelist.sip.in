@@ -8,6 +8,7 @@
 
 
 
+
 class QgsColorSwatchDelegate : QAbstractItemDelegate
 {
 %Docstring(signature="appended")
@@ -43,6 +44,7 @@ A model for colors in a color scheme.
 #include "qgscolorschemelist.h"
 %End
   public:
+
     explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -149,6 +151,7 @@ An editable list of color swatches, taken from an associated
 #include "qgscolorschemelist.h"
 %End
   public:
+
     QgsColorSchemeList( QWidget *parent /TransferThis/ = 0, QgsColorScheme *scheme = 0, const QString &context = QString(), const QColor &baseColor = QColor() );
 %Docstring
 Construct a new color swatch grid.

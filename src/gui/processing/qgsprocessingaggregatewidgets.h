@@ -16,14 +16,14 @@
 #ifndef QGSPROCESSINGAGGREGATEWIDGETS_H
 #define QGSPROCESSINGAGGREGATEWIDGETS_H
 
-#include <QAbstractTableModel>
-#include <QStyledItemDelegate>
-#include <QPointer>
-
-#include "qgsfields.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsfieldmappingmodel.h"
+#include "qgsfields.h"
 #include "qgspanelwidget.h"
+
+#include <QAbstractTableModel>
+#include <QPointer>
+#include <QStyledItemDelegate>
 
 class QLineEdit;
 class QToolButton;
@@ -43,6 +43,7 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */
@@ -147,6 +148,7 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a QgsAggregateMappingWidget from a set of \a sourceFields. A \a parent object
      * can also be specified.

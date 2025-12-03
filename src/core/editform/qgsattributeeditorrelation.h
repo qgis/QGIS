@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsrelation.h"
+
 #include <QColor>
 
 class QgsRelationManager;

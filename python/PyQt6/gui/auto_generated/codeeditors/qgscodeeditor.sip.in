@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCodeInterpreter
 {
 %Docstring(signature="appended")
@@ -48,6 +49,7 @@ a ``state``.
 %End
 
   protected:
+
     virtual int execCommandImpl( const QString &command ) = 0;
 %Docstring
 Pure virtual method for executing commands in the interpreter.
@@ -591,6 +593,7 @@ Emitted when either:
 %End
 
   protected:
+
     static bool isFixedPitch( const QFont &font );
 %Docstring
 Returns ``True`` if a ``font`` is a fixed pitch font.
@@ -605,6 +608,7 @@ Returns ``True`` if a ``font`` is a fixed pitch font.
     virtual bool event( QEvent *event );
 
     virtual bool eventFilter( QObject *watched, QEvent *event );
+
 
     virtual void initializeLexer();
 %Docstring

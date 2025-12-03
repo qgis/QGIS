@@ -14,20 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cpl_conv.h>
+#include <gdal.h>
+
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
+#include <QPainter>
+#include <QSignalSpy>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QPainter>
 #include <QTime>
-#include <QDesktopServices>
-#include <QSignalSpy>
-
-#include "cpl_conv.h"
-#include "gdal.h"
 
 //qgis includes...
 #include <qgsrasterlayer.h>

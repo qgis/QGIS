@@ -15,7 +15,9 @@
  *
  ***************************************************************************/
 #include "qgshanaconnectionstringbuilder.h"
+
 #include "qgis.h"
+
 #include <QRegularExpression>
 
 QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSourceUri &uri )

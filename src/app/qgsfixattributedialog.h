@@ -16,15 +16,15 @@
 #ifndef QGSFIXATTRIBUTEDIALOG_H
 #define QGSFIXATTRIBUTEDIALOG_H
 
-#include "qgsattributeeditorcontext.h"
+#include "qgis_app.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsattributeform.h"
 #include "qgstrackedvectorlayertools.h"
 
 #include <QDialog>
 #include <QGridLayout>
 #include <QProgressBar>
-#include "qgis_app.h"
 
 /**
  * \ingroup app
@@ -38,6 +38,7 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Feedback code on closing the dialog
      */

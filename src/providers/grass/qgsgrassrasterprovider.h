@@ -20,11 +20,11 @@
 #ifndef QGSGRASSRASTERPROVIDER_H
 #define QGSGRASSRASTERPROVIDER_H
 
+#include "qgis_grass_lib.h"
+#include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
-#include "qgscolorrampshader.h"
-#include "qgis_grass_lib.h"
 
 extern "C"
 {
@@ -89,6 +89,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *

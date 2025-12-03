@@ -16,14 +16,15 @@
 #include "qgslayoutviewtoolselect.h"
 
 #include <memory>
-#include "moc_qgslayoutviewtoolselect.cpp"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslayoutview.h"
+
 #include "qgslayout.h"
+#include "qgslayoutitemgroup.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutmousehandles.h"
-#include "qgslayoutitemgroup.h"
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
 
+#include "moc_qgslayoutviewtoolselect.cpp"
 
 const double QgsLayoutViewToolSelect::sSearchToleranceInMillimeters = 2.0;
 

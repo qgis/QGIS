@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgsconfig.h"
-
 #include "qgssensorguiregistry.h"
-#include "moc_qgssensorguiregistry.cpp"
+
 #include "qgssensorwidget.h"
+
+#include "moc_qgssensorguiregistry.cpp"
 
 QgsSensorGuiRegistry::QgsSensorGuiRegistry( QObject *parent )
   : QObject( parent )

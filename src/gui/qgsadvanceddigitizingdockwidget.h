@@ -16,21 +16,21 @@
 #ifndef QGSADVANCEDDIGITIZINGDOCK
 #define QGSADVANCEDDIGITIZINGDOCK
 
-#include <QList>
-#include <QQueue>
+#include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 
 #include <memory>
 
-#include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsadvanceddigitizingtools.h"
 #include "qgsdockwidget.h"
 #include "qgsmessagebaritem.h"
-#include "qgspointxy.h"
 #include "qgspointlocator.h"
+#include "qgspointxy.h"
 #include "qgssnapindicator.h"
 
+#include <QList>
+#include <QQueue>
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsAdvancedDigitizingFloater;
@@ -53,6 +53,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Q_OBJECT
 
   public:
+
     /**
      * The CadCapacity enum defines the possible constraints to be set
      * depending on the number of points in the CAD point list (the list of points
@@ -90,6 +91,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     class GUI_EXPORT CadConstraint
     {
       public:
+
         /**
          * The lock mode
          */
@@ -1021,6 +1023,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void settingsButtonTriggered( QAction *action );
 
   private:
+
     /**
      * Returns the layer currently associated with the map tool using the dock widget.
      */

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsServerProjectUtils
 {
 %Docstring(signature="appended")
@@ -24,6 +25,7 @@ Contains utility functions to retrieve specific entries from a
 #include "qgsserverprojectutils.h"
 %End
   public:
+
 
 
     static bool owsServiceCapabilities( const QgsProject &project );

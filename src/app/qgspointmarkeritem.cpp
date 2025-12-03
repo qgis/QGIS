@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgspointmarkeritem.h"
-#include "qgssymbol.h"
-#include "qgsmapcanvas.h"
-#include "qgsmapsettings.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
 
-#include <QPainter>
 #include <cmath>
 
+#include "qgsexpressioncontextutils.h"
+#include "qgslinesymbol.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapsettings.h"
+#include "qgsmarkersymbol.h"
+#include "qgsproject.h"
+#include "qgssymbol.h"
+
+#include <QPainter>
 
 //
 // QgsMapCanvasSymbolItem

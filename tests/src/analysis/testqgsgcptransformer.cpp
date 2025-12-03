@@ -13,16 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <gdal.h>
 
-#include "qgsgcptransformer.h"
 #include "qgsapplication.h"
 #include "qgsgcpgeometrytransformer.h"
+#include "qgsgcptransformer.h"
 #include "qgsgeometry.h"
+#include "qgstest.h"
 
 #include <QDir>
-
-#include <gdal.h>
 
 class TestQgsGcpTransformer : public QgsTest
 {

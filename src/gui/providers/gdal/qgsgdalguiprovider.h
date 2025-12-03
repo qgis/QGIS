@@ -21,15 +21,15 @@
 
 class QgsProviderMetadata;
 
-#include "qgsproviderguimetadata.h"
-#include "qgsgdalsourceselect.h"
+#include "qgis_sip.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgsgdalsourceselect.h"
+#include "qgsproviderguimetadata.h"
 #include "qgsproviderguiregistry.h"
 #include "qgsprovidersourcewidgetprovider.h"
+
 #include <QObject>
 #include <QPointer>
-
-#include "qgis_sip.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

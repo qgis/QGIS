@@ -19,12 +19,14 @@
 #define QGSPOINTCLOUDLAYERSAVEASDIALOG_H
 
 #include "ui_qgspointcloudlayersaveasdialogbase.h"
-#include <QDialog>
-#include "qgshelp.h"
-#include "qgsfields.h"
-#include "qgsvectorfilewriter.h"
+
 #include "qgis_gui.h"
+#include "qgsfields.h"
+#include "qgshelp.h"
 #include "qgspointcloudlayerexporter.h"
+#include "qgsvectorfilewriter.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 
@@ -41,6 +43,7 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new QgsPointCloudLayerSaveAsDialog
      */

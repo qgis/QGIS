@@ -18,6 +18,7 @@ Layout view tool for panning the layout.
 #include "qgslayoutviewtoolpan.h"
 %End
   public:
+
     QgsLayoutViewToolPan( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolPan.

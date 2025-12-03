@@ -8,6 +8,7 @@
 
 
 
+
 class QgsBrowserProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")

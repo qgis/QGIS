@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
-#include <QMessageBox>
-
-#include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
-#include "moc_qgsrasterminmaxwidget.cpp"
+
+#include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterminmaxorigin.h"
-#include "qgsdoublespinbox.h"
+
+#include <QMessageBox>
+#include <QSettings>
+
+#include "moc_qgsrasterminmaxwidget.cpp"
 
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent )
   : QWidget( parent )

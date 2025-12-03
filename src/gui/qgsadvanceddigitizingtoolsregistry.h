@@ -16,8 +16,8 @@
 #ifndef QGSADVANCEDDIGITIZINGTOOLSREGSITRY_H
 #define QGSADVANCEDDIGITIZINGTOOLSREGSITRY_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #include <QIcon>
 #include <QMap>
@@ -34,6 +34,7 @@ class QgsMapCanvas;
 class GUI_EXPORT QgsAdvancedDigitizingToolAbstractMetadata
 {
   public:
+
     /**
      * Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the specified tool \a name.
      *
@@ -80,6 +81,7 @@ typedef std::function<QgsAdvancedDigitizingTool *( QgsMapCanvas *, QgsAdvancedDi
 class GUI_EXPORT QgsAdvancedDigitizingToolMetadata : public QgsAdvancedDigitizingToolAbstractMetadata
 {
   public:
+
     /**
      * Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the specified tool \a name.
      *

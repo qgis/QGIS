@@ -16,12 +16,13 @@
 #ifndef QGSSERVERQUERYSTRINGPARAMETER_H
 #define QGSSERVERQUERYSTRINGPARAMETER_H
 
-#include "qgsserverapicontext.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsserverapicontext.h"
+
+#include <QObject>
 #include <QString>
 #include <QVariant>
-#include <QObject>
 
 #ifndef SIP_RUN
 #include <nlohmann/json.hpp>
@@ -50,6 +51,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     typedef std::function<bool( const QgsServerApiContext &, QVariant & )> customValidator;
 #endif
   public:
+
     /**
      * The Type enum represents the parameter type
      */

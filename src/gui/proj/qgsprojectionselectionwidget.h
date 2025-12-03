@@ -17,17 +17,17 @@
 #ifndef QGSPROJECTIONSELECTIONWIDGET_H
 #define QGSPROJECTIONSELECTIONWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QLineEdit>
-#include <QToolButton>
-#include <QComboBox>
-#include <QPointer>
-#include <QConcatenateTablesProxyModel>
-
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystemmodel.h"
-#include "qgis_gui.h"
+
+#include <QComboBox>
+#include <QConcatenateTablesProxyModel>
+#include <QLineEdit>
+#include <QPointer>
+#include <QToolButton>
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsHighlightableComboBox;
@@ -46,6 +46,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Predefined CRS options shown in widget
      */

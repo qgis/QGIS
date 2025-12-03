@@ -17,14 +17,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsfcgiserverresponse.h"
+
+#include "qgis.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include <fcgi_stdio.h>
+
 #include <QDebug>
 #include <QThread>
 
-#include "qgslogger.h"
+#include <fcgi_stdio.h>
 
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
 #include <unistd.h>

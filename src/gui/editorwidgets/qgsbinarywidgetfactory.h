@@ -16,8 +16,8 @@
 #ifndef QGSBINARYWIDGETFACTORY_H
 #define QGSBINARYWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 class QgsMessageBar;
 
@@ -34,6 +34,7 @@ SIP_NO_FILE
 class GUI_EXPORT QgsBinaryWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor for QgsBinaryWidgetFactory, where \a name is a human-readable
      * name for the factory and \a icon provides a visual representation of this widget type.

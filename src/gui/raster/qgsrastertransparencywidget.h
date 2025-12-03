@@ -15,15 +15,14 @@
 #ifndef QGSRASTERTRANSPARENCYWIDGET_H
 #define QGSRASTERTRANSPARENCYWIDGET_H
 
-#include <QWidget>
-
 #include "ui_qgsrastertransparencywidget.h"
 
+#include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsrasterpipe.h"
 #include "qgssymbolwidgetcontext.h"
 
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -39,6 +38,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Widget to control a layers transparency and related options
      */

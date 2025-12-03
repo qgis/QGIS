@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgsappcanvasfiltering.h"
-#include "moc_qgsappcanvasfiltering.cpp"
-#include "qgselevationcontrollerwidget.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsmapcanvas.h"
+
 #include "qgisapp.h"
+#include "qgselevationcontrollerwidget.h"
 #include "qgselevationutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsprojectelevationproperties.h"
 
 #include <QInputDialog>
+
+#include "moc_qgsappcanvasfiltering.cpp"
 
 QgsAppCanvasFiltering::QgsAppCanvasFiltering( QObject *parent )
   : QObject( parent )

@@ -14,18 +14,13 @@
  ***************************************************************************/
 #include <cmath>
 
-#include <QApplication>
-#include <QDir>
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QTemporaryFile>
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgsgrass.h"
+#include "qgsgrassimport.h"
+#include "qgsgrassprovider.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
@@ -34,12 +29,16 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
+#include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsgrass.h"
-#include "qgsgrassimport.h"
-#include "qgsgrassprovider.h"
+#include <QApplication>
+#include <QDir>
+#include <QObject>
+#include <QString>
+#include <QStringList>
+#include <QTemporaryFile>
 
 extern "C"
 {
