@@ -1277,7 +1277,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
         QString parameterValueAsString;
 
-        if ( paramSources.empty() )
+        if ( !paramSources.empty() )
         {
           QgsProcessingModelChildParameterSource firstParameterSource = paramSources[0];
 
@@ -1309,7 +1309,6 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
             }
 
             case Qgis::ProcessingModelChildParameterSource::StaticValue:
-            default:
               const QVariant paramValue = paramSources[0].staticValue();
               parameterValueAsString = QStringLiteral( ": %1" ).arg( param->userFriendlyString( paramValue ) );
           }
