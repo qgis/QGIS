@@ -94,6 +94,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
      * \deprecated QGIS 3.44. Use creationOptions() instead.
      */
     Q_DECL_DEPRECATED QStringList createOptions() const;
+
     /**
      * Raster creation options set for the output layer.
      * \since QGIS 3.44

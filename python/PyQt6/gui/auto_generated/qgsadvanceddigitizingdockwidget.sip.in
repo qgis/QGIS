@@ -27,6 +27,7 @@ implementing filters called from
 #include "qgsadvanceddigitizingdockwidget.h"
 %End
   public:
+
     enum CadCapacity /BaseType=IntEnum/
     {
       AbsoluteAngle,
@@ -61,6 +62,7 @@ and pointers to corresponding widgets.
 #include "qgsadvanceddigitizingdockwidget.h"
 %End
       public:
+
         enum LockMode /BaseType=IntEnum/
         {
           NoLock,

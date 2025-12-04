@@ -45,6 +45,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */

@@ -21,6 +21,7 @@ Plot tool for temporarily panning a plot while a key is depressed.
 #include "qgsplottransienttools.h"
 %End
   public:
+
     QgsPlotToolTemporaryKeyPan( QgsPlotCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor for QgsPlotToolTemporaryKeyPan.
@@ -48,6 +49,7 @@ depressed.
 #include "qgsplottransienttools.h"
 %End
   public:
+
     QgsPlotToolTemporaryMousePan( QgsPlotCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor for QgsPlotToolTemporaryMousePan.
@@ -74,6 +76,7 @@ Plot tool for temporarily zooming a plot while a key is depressed.
 #include "qgsplottransienttools.h"
 %End
   public:
+
     QgsPlotToolTemporaryKeyZoom( QgsPlotCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor for QgsPlotToolTemporaryKeyZoom.

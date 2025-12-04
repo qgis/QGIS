@@ -32,6 +32,7 @@
 class ANALYSIS_EXPORT QgsLeastSquares
 {
   public:
+
     /**
      * Transforms the point at \a origin in-place, using a linear transformation calculated from the list of source and destination Ground Control Points (GCPs).
      */

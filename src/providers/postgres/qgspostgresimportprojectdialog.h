@@ -37,6 +37,7 @@ class QgsPostgresImportProjectDialog : public QDialog
     QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent = nullptr );
 
     ~QgsPostgresImportProjectDialog() override;
+
     /**
      * Returns pairs of project path and name under which it should be saved.
      */

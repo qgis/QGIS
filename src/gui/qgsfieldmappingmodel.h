@@ -43,6 +43,7 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */

@@ -45,6 +45,7 @@ class QgsQueryHistoryDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsQueryHistoryDialog.
      */

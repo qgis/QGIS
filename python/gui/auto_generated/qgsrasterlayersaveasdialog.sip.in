@@ -83,6 +83,7 @@ Name of the output layer within GeoPackage file
 
    Use :py:func:`~QgsRasterLayerSaveAsDialog.creationOptions` instead.
 %End
+
     QStringList creationOptions() const;
 %Docstring
 Raster creation options set for the output layer.

@@ -81,6 +81,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     void showStatusMessage( const QString &message );
 
   protected:
+
     /**
      * List of image formats (encodings) supported by provider
      * \returns list of format/label pairs

@@ -39,6 +39,7 @@ class GUI_EXPORT QgsProcessingEnumModelerWidget : public QWidget, private Ui::Qg
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingEnumModelerWidget.
      */

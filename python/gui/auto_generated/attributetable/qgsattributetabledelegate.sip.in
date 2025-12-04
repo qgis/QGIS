@@ -22,6 +22,7 @@ documentation for QItemDelegate).
 #include "qgsattributetabledelegate.h"
 %End
   public:
+
     QgsAttributeTableDelegate( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

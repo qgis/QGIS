@@ -35,6 +35,7 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProviderSourceWidget with the specified \a parent widget.
      */

@@ -51,6 +51,7 @@ class GUI_EXPORT QgsAttributesFormTreeViewIndicator : public QObject
     void setToolTip( const QString &tip );
 
   signals:
+
     /**
      * Emitted when the indicator changes state (e.g. icon).
      */

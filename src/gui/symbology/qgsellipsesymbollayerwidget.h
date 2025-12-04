@@ -33,6 +33,7 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsEllipseSymbolLayerWidget.
      * \param vl associated vector layer

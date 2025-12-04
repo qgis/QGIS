@@ -37,6 +37,7 @@ class QgsProject;
  */
 struct QgsLandingPageUtils
 {
+
     /**
    * Returns a list of available projects from various sources:
    *

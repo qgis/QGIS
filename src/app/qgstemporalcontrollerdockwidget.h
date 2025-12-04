@@ -35,6 +35,7 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsTemporalControllerDockWidget, with the specified \a parent widget.
       */

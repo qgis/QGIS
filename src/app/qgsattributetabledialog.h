@@ -42,6 +42,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param layer layer pointer

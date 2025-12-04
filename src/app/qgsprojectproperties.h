@@ -237,6 +237,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 #endif
 
   private:
+
     /**
       * Called when the user sets a CRS for the project.
       */

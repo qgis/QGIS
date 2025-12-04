@@ -196,6 +196,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 
   protected:
+
     /**
      * Performs the identification.
      * To avoid being forced to specify IdentifyMode with a list of layers

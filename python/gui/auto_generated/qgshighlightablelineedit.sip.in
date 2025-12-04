@@ -22,6 +22,7 @@ the edges of the widget.
 #include "qgshighlightablelineedit.h"
 %End
   public:
+
     QgsHighlightableLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsHighlightableLineEdit, with the specified ``parent``

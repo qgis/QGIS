@@ -53,6 +53,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Q_OBJECT
 
   public:
+
     /**
      * The CadCapacity enum defines the possible constraints to be set
      * depending on the number of points in the CAD point list (the list of points
@@ -90,6 +91,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     class GUI_EXPORT CadConstraint
     {
       public:
+
         /**
          * The lock mode
          */
@@ -1021,6 +1023,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void settingsButtonTriggered( QAction *action );
 
   private:
+
     /**
      * Returns the layer currently associated with the map tool using the dock widget.
      */

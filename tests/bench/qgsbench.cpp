@@ -14,12 +14,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtGlobal>
-
 #include <cmath>
+#include <cstdio>
 #include <ctime>
 #include <iostream>
-#include <cstdio>
+
+#include <QtGlobal>
+
 #ifndef Q_OS_WIN
 #include <sys/resource.h>
 #endif

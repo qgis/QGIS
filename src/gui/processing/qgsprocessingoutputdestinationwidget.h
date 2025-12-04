@@ -41,6 +41,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingLayerOutputDestinationWidget, associated with the specified \a parameter.
      */

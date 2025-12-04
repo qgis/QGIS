@@ -47,6 +47,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
      * QgsGui::editorWidgetRegistry().
@@ -140,7 +141,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param widgetId The widget type to get the icon for
      *
      * \returns An icon
-     * 
+     *
      * \since QGIS 4.0
      */
     QIcon icon( const QString &widgetId );

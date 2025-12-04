@@ -73,6 +73,7 @@ class GUI_EXPORT CharacterWidget : public QWidget
     Q_PROPERTY( QFont font READ font WRITE setFont )
 
   public:
+
     /**
      * Constructor for CharacterWidget.
      */

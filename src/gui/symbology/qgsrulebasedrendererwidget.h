@@ -53,6 +53,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRuleBasedRendererModel, for the specified \a renderer.
      */
@@ -208,6 +209,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     Q_OBJECT
 
   public:
+
     /**
        * Widget to edit the details of a rule based renderer rule.
        * \param rule The rule to edit.
@@ -267,6 +269,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRendererRulePropsDialog
      * \param rule associated rule based renderer rule

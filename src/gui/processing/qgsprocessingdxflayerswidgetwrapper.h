@@ -51,6 +51,7 @@ class GUI_EXPORT QgsProcessingDxfLayersPanelWidget : public QgsProcessingMultipl
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingDxfLayersPanelWidget.
      */

@@ -52,6 +52,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     Q_OBJECT
 
   public:
+
     /**
      * QgsEffectStackPropertiesWidget constructor
      * \param stack QgsEffectStack to modify in the widget
@@ -167,6 +168,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog : public QgsDialog
     Q_OBJECT
 
   public:
+
     /**
      * QgsEffectStackPropertiesDialog constructor
      * \param stack QgsEffectStack to modify in the dialog
@@ -212,6 +214,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * QgsEffectStackCompactWidget constructor
      * \param parent parent widget

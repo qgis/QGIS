@@ -36,6 +36,7 @@ class GUI_EXPORT QgsBinaryWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsBinaryWidgetWrapper.
      *

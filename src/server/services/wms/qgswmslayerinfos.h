@@ -75,6 +75,7 @@ class QgsWmsLayerInfos
     Qgis::LayerType type;
 
   public:
+
     /**
      * Returns the WMS layers definition to build WMS capabilities
      *

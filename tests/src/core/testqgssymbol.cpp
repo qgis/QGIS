@@ -74,7 +74,8 @@ class TestQgsSymbol : public QgsTest
     // Regression Testing
     //
 
-    /** To check if the interval of the marker symbols of a marker line is set
+    /**
+     * To check if the interval of the marker symbols of a marker line is set
  *  correctly after loading a style from a sld-file. It is a regression test
  *  for ticket #24954 which was fixed with change r22a1
  */

@@ -99,6 +99,7 @@ the system is aware of the available geometry checks.
     static const QMetaObject staticMetaObject;
 
   public:
+
     struct LayerFeatureIds
     {
         LayerFeatureIds();
@@ -265,6 +266,7 @@ Returns the context
 %End
 
   protected:
+
 
 
 

@@ -21,6 +21,7 @@
 class Qgs3DAppUtils
 {
   public:
+
     /**
      * Initializes 3D components belonging to the app library.
      */

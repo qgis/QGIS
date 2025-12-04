@@ -46,6 +46,7 @@ Returns the total size required for the atlas, i.e. the total size for
 the texture.
 %End
 
+
     QRect rect( const QString &grapheme ) const;
 %Docstring
 Returns the packed rectangle for the texture for the specified
@@ -145,6 +146,7 @@ characters required for a set of strings.
 #include "qgsfonttextureatlasgenerator.h"
 %End
   public:
+
     static QgsFontTextureAtlas create( const QgsTextFormat &format, const QStringList &strings );
 %Docstring
 Creates the texture atlas for a set of ``strings``, using the specified

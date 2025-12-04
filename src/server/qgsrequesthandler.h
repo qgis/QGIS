@@ -38,6 +38,7 @@ class QgsServerResponse;
 class SERVER_EXPORT QgsRequestHandler
 {
   public:
+
     /**
      * Constructor
      *

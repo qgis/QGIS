@@ -41,6 +41,7 @@ class QgsPointCloudLayer;
 class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
+
     /**
      * Constructor for QgsPointCloud3DRenderContext.
      *

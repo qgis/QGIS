@@ -27,6 +27,7 @@ fields, by default only the mapping expression is editable.
 #include "qgsfieldmappingmodel.h"
 %End
   public:
+
     enum class ColumnDataIndex
     {
       SourceExpression,

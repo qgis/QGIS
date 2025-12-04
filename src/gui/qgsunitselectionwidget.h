@@ -48,6 +48,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
     Q_PROPERTY( QgsMapUnitScale mapUnitScale READ mapUnitScale WRITE setMapUnitScale NOTIFY mapUnitScaleChanged )
 
   public:
+
     /**
      * Constructor for QgsMapUnitScaleWidget.
      * \param parent parent widget
@@ -111,6 +112,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
     Q_PROPERTY( QgsMapUnitScale mapUnitScale READ getMapUnitScale WRITE setMapUnitScale )
 
   public:
+
     /**
      * Constructor for QgsMapUnitScaleDialog.
      * \param parent parent widget
@@ -164,6 +166,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsUnitSelectionWidget.
      * \param parent parent widget

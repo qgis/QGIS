@@ -115,6 +115,7 @@ class GUI_EXPORT QgsGdalCredentialOptionsWidget : public QWidget, private Ui::Qg
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGdalCredentialOptionsWidget, with the specified \a parent widget.
      */

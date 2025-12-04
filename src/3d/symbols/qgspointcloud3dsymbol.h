@@ -36,6 +36,7 @@
 class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 {
   public:
+
     /**
      * How to render the point cloud
      */

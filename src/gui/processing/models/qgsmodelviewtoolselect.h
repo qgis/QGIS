@@ -40,6 +40,7 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewToolSelect.
      */

@@ -38,6 +38,7 @@ class APP_EXPORT QgsMapThemes : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Returns the instance QgsVisibilityPresets.
      */

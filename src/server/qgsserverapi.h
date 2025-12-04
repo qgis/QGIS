@@ -80,6 +80,7 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServerApi
 {
   public:
+
     /**
      * Creates a QgsServerApi object
      */

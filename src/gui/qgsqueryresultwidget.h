@@ -183,7 +183,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
     /**
      * Triggered when the threaded API fetcher has new \a tokens to add.
      *
-     * \deprecated QGIS 3.44, has no effect
+     * \deprecated QGIS 3.44. Has no effect.
      */
     Q_DECL_DEPRECATED void tokensReady( const QStringList &tokens ) SIP_DEPRECATED;
 
@@ -264,6 +264,7 @@ class GUI_EXPORT QgsQueryResultPanelWidget : public QgsPanelWidget, private Ui::
     Q_OBJECT
 
   public:
+
     /**
      * Creates a QgsQueryResultPanelWidget with the given \a connection, ownership is transferred to the widget.
      */
@@ -432,6 +433,7 @@ class GUI_EXPORT QgsQueryResultDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsQueryResultDialog.
      *
@@ -466,6 +468,7 @@ class GUI_EXPORT QgsQueryResultMainWindow : public QMainWindow
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsQueryResultMainWindow.
      *

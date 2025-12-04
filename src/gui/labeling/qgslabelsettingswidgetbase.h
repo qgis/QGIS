@@ -40,6 +40,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelSettingsWidgetBase.
      * \param parent parent widget
@@ -137,6 +138,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelSettingsWidgetDialog.
      * \param widget label settings widget to embed in the dialog. Ownership is transferred to the dialog.

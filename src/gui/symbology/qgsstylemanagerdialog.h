@@ -296,6 +296,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void detagSelectedSymbols();
 
   protected:
+
     /**
      * Populate combo box with known style items (symbols, color ramps).
      *

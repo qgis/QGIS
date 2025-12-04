@@ -48,6 +48,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     Q_PROPERTY( QString settingGroup READ settingGroup WRITE setSettingGroup )
 
   public:
+
     /**
      * Constructor for QgsVariableEditorWidget.
      * \param parent parent widget

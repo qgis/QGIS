@@ -51,6 +51,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsExpressionLineEdit.
      * \param parent parent widget

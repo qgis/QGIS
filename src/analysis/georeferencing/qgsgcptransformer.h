@@ -38,6 +38,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
     Q_GADGET
 
   public:
+
     /**
      * Available transformation methods.
      */

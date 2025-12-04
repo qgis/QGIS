@@ -35,6 +35,7 @@ class QgsRasterLayer;
 class _3D_EXPORT QgsDemTerrainSettings : public QgsAbstractTerrainSettings
 {
   public:
+
     /**
      * Creates a new instance of a QgsDemTerrainSettings object.
      */

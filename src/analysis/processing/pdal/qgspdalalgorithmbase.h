@@ -31,6 +31,7 @@
 class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
+
     /**
      * Builds a command line string to run required pdal_wrench tool.
      */
@@ -91,14 +92,14 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      *
      * \param filename name of the original dataset
      *
-     * \since 3.44
+     * \since QGIS 3.44
      */
     static QString copcIndexFile( const QString &filename );
 
     /**
      * Override that prefers copc.laz index file as datasource for faster processing (if the index file exists) otherwise uses original layer.
      *
-     * \since 3.44
+     * \since QGIS 3.44
      */
     QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const;
 

@@ -31,6 +31,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Base class for any widget that can be shown as an inline panel
      * \param parent Parent widget.
@@ -183,6 +184,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     void acceptPanel();
 
   protected:
+
     /**
      * \brief Overridden key press event to handle the esc event on the widget.
      * \param event The key event
@@ -208,6 +210,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper : public QgsPanelWidget
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Wrapper widget for existing widgets which can't have
      * the inheritance tree changed, e.g dialogs.

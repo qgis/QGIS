@@ -86,6 +86,7 @@ class _3D_EXPORT QgsRubberBand3D
     //! Icons
     enum MarkerType
     {
+
       /**
        * A box is used to highlight points (□)
        */

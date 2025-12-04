@@ -42,6 +42,7 @@ class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     Q_OBJECT
 
   public:
+
     /**
      * A widget to hold the renderer properties for a mesh layer.
      * \param layer The mesh layer to style

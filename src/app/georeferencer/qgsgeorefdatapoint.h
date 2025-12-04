@@ -32,6 +32,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeorefDataPoint
      * \param srcCanvas

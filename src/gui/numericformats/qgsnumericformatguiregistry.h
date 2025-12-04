@@ -56,6 +56,7 @@ class GUI_EXPORT QgsNumericFormatConfigurationWidgetFactory
 class GUI_EXPORT QgsNumericFormatGuiRegistry
 {
   public:
+
     /**
      * Constructor. Should never be called manually, is already
      * created by QgsGui.

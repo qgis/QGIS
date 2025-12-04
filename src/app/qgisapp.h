@@ -214,6 +214,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
+
     /**
      * Options to configure the QGIS application behavior at startup.
      *

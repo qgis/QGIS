@@ -58,6 +58,7 @@ class QgsBrowserPropertiesWrapLabel : public QTextEdit
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserPropertiesWrapLabel
       * \param text label text
@@ -76,6 +77,7 @@ class QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserPropertiesWidget
       * \param parent parent widget
@@ -103,6 +105,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserLayerProperties
       * \param parent parent widget
@@ -136,6 +139,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget, private
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserDirectoryProperties
       * \param parent parent widget
@@ -157,6 +161,7 @@ class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBro
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserPropertiesDialog
       * \param settingsSection prefix for settings (from the object name)
@@ -186,6 +191,7 @@ class QgsDockBrowserTreeView : public QgsBrowserTreeView
     Q_OBJECT
 
   public:
+
     /**
       * Constructor for QgsDockBrowserTreeView
       * \param parent parent widget

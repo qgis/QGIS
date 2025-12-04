@@ -94,6 +94,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     Q_GADGET
 
   public:
+
     /**
      * A list of layers and feature ids for each of these layers.
      * In C++, the member `ids` can be accessed directly.
@@ -341,6 +342,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
+
     /**
      * Returns all layers and feature ids.
      *

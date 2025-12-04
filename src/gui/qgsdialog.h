@@ -34,6 +34,7 @@ class GUI_EXPORT QgsDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDialog.
      */

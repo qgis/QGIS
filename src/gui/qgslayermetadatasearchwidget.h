@@ -40,6 +40,7 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new QgsLayerMetadataSearchWidget.
      */

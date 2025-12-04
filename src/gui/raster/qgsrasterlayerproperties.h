@@ -56,6 +56,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     Q_OBJECT
 
   public:
+
     /**
      * enumeration for the different types of style
      */

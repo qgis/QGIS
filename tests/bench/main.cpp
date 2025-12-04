@@ -14,6 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <cstdio>
+#include <cstdlib>
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
@@ -22,9 +25,6 @@
 #include <QString>
 #include <QStringList>
 #include <QtTest/QTest>
-
-#include <cstdio>
-#include <cstdlib>
 
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */

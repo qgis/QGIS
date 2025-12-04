@@ -37,6 +37,7 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
     Q_PROPERTY( int band READ currentBand WRITE setBand NOTIFY bandChanged )
 
   public:
+
     /**
      * Constructor for QgsRasterBandComboBox.
      */

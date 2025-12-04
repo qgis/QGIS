@@ -39,6 +39,7 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
     Q_PROPERTY( QgsColorBrewerColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsColorBrewerColorRampWidget.
      * \param ramp initial ramp to show in dialog
@@ -87,6 +88,7 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
     Q_PROPERTY( QgsColorBrewerColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsColorBrewerColorRampDialog.
      * \param ramp initial ramp to show in dialog

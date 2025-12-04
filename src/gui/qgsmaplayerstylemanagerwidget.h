@@ -34,6 +34,7 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Style manager widget to manage the layers styles.
      * \param layer The layer for the widget

@@ -47,10 +47,11 @@ class QgsAmbientOcclusionBlurEntity;
  *
  * \note Not available in Python bindings
  *
- * This renderview create 2 passes with their own entity: 
- *  - the first pass computes the ambient occlusion (creates a QgsAmbientOcclusionRenderEntity)
- *  - the second generates a blur (creates a QgsAmbientOcclusionBlurEntity)
- * 
+ * This renderview create 2 passes with their own entity:
+ *
+ * - the first pass computes the ambient occlusion (creates a QgsAmbientOcclusionRenderEntity)
+ * - the second generates a blur (creates a QgsAmbientOcclusionBlurEntity)
+ *
  * \since QGIS 3.44
  */
 class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView

@@ -65,6 +65,7 @@ class _3D_EXPORT QgsTextureAtlas
      */
     QRect rect( int index ) const;
 #else
+
     /**
      * Returns the packed rectangle for the texture with the specified \a index.
      *
@@ -137,6 +138,7 @@ class _3D_EXPORT QgsTextureAtlas
 class _3D_EXPORT QgsTextureAtlasGenerator
 {
   public:
+
     /**
      * Creates a texture atlas for a set of \a rectangles.
      *
@@ -163,6 +165,7 @@ class _3D_EXPORT QgsTextureAtlasGenerator
     static QgsTextureAtlas createFromImages( const QVector< QImage > &images, int maxSide = 1000 );
 
   private:
+
     /**
      * Generates the packing solution for a set of texture \a rects.
      *

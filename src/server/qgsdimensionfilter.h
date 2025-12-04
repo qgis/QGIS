@@ -34,6 +34,7 @@
 class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
 {
   public:
+
     /**
      * Creates a new dimension filter object with a list of filters to be applied to
      * vector layers.

@@ -110,6 +110,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
 class GUI_EXPORT QgsCoordinateReferenceSystemModelGroupNode : public QgsCoordinateReferenceSystemModelNode
 {
   public:
+
     /**
      * Constructor for QgsCoordinateReferenceSystemModelGroupNode.
      */
@@ -147,6 +148,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelGroupNode : public QgsCoordina
 class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinateReferenceSystemModelNode
 {
   public:
+
     /**
      * Constructor for QgsCoordinateReferenceSystemModelCrsNode, associated
      * with the specified \a record.

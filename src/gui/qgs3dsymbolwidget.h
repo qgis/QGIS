@@ -37,6 +37,7 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for Qgs3DSymbolWidget with the specified \a parent widget.
      */
@@ -78,6 +79,7 @@ class GUI_EXPORT Qgs3DSymbolDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for Qgs3DSymbolDialog, initially showing the specified \a symbol.
      */

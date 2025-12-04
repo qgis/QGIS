@@ -36,6 +36,7 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingFeatureSourceOptionsWidget, with the specified \a parent widget.
      */

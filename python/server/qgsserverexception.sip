@@ -1,7 +1,8 @@
 %Exception QgsServerApiBadRequestException(SIP_Exception) /PyName=QgsServerApiBadRequestException/
 {
 %TypeHeaderCode
-#include <qgsserverexception.h>
+#include "qgsserverexception.h"
+
 %End
 %RaiseCode
   SIP_BLOCK_THREADS

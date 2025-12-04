@@ -100,8 +100,10 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     ~QgsDockableWidgetHelper() override;
 
-    //! Returns if the widget is docked
-    //! \since 3.42
+    /**
+     * Returns if the widget is docked
+     * \since QGIS 3.42
+     */
     bool isDocked() const { return mIsDocked; }
 
     //! Reads the dimensions of both the dock widget and the top level window

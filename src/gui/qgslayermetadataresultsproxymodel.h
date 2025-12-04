@@ -32,6 +32,7 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a QgsLayerMetadataResultsProxyModel with an optional \a parent.
      */

@@ -34,6 +34,7 @@ class APP_EXPORT QgsDecorationNorthArrow : public QgsDecorationItem
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDecorationNorthArrow, with the specified \a parent object.
      */

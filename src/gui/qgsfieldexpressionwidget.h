@@ -55,6 +55,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_PROPERTY( bool buttonVisible READ buttonVisible WRITE setButtonVisible NOTIFY buttonVisibleChanged )
 
   public:
+
     /**
      * \brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */

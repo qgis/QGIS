@@ -40,6 +40,7 @@ class GUI_EXPORT QgsMapLayerRefreshSettingsWidget : public QWidget, private Ui::
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsMapLayerRefreshSettingsWidget.
      */

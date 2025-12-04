@@ -7,6 +7,16 @@ exclude: |
 fail_fast: false
 
 repos:
+  # MUST run first, before clang-format
+  - repo: local
+    hooks:
+      - id: prepare_commit
+        name: prepare_commit
+        entry: ./scripts/prepare_commit.sh
+        language: system
+        always_run: true
+        pass_filenames: true
+
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v19.1.6
     # if adding directory handled by clang-format
@@ -37,12 +47,12 @@ repos:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
 
+  # MUST run last
   - repo: local
     hooks:
-      - id: prepare_commit
-        name: prepare_commit
-        entry: ./scripts/prepare_commit.sh
+      - id: prepare_sip
+        name: prepare_sip
+        entry: ./scripts/prepare_commit_sip.sh
         language: system
         always_run: true
-        pass_filenames: false
-
+        pass_filenames: true

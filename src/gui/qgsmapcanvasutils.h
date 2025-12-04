@@ -31,6 +31,7 @@ class QString;
 class GUI_EXPORT QgsMapCanvasUtils
 {
   public:
+
     /**
      * Zooms a map \a canvas to features from the specified \a layer which match the given \a filter expression string.
      *

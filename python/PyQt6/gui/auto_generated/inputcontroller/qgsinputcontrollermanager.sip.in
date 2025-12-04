@@ -25,6 +25,7 @@ but rather accessed through :py:func:`QgsGui.inputControllerManager()`.
 #include "qgsinputcontrollermanager.h"
 %End
   public:
+
     QgsInputControllerManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsInputControllerManager, with the specified ``parent``

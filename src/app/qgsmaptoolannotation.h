@@ -41,6 +41,7 @@ class APP_EXPORT QgsMapToolAnnotation : public QgsMapTool
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
 
   protected:
+
     /**
      * Creates a new item. To be implemented by subclasses.
      */

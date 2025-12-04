@@ -1,7 +1,8 @@
 %Exception QgsCsException(SIP_Exception) /PyName=QgsCsException/
 {
 %TypeHeaderCode
-#include <qgsexception.h>
+#include "qgsexception.h"
+
 %End
 %RaiseCode
   SIP_BLOCK_THREADS

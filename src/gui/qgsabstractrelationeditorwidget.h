@@ -56,6 +56,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */
@@ -350,6 +351,7 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 
     Q_OBJECT
   public:
+
     /**
      * Create a new configuration widget
      *
@@ -419,6 +421,7 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 class GUI_EXPORT QgsAbstractRelationEditorWidgetFactory
 {
   public:
+
     /**
      * Creates a new relation widget factory with given \a name
      */

@@ -38,6 +38,7 @@
 class GUI_EXPORT QgsLayoutReportSectionLabel : public QGraphicsRectItem
 {
   public:
+
     /**
      * Constructor for QgsLayoutReportSectionLabel.
      */

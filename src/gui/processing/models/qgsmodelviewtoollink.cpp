@@ -126,8 +126,9 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   /**
    * Reorder input and output socket
    * whether the user dragged :
-   *    - From an input socket to an output socket
-   *    - From an output socket to an input socket
+   *
+   * - From an input socket to an output socket
+   * - From an output socket to an input socket
    *
    * In the code, we always come back to the first case
    */

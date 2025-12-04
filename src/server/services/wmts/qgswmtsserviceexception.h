@@ -34,6 +34,7 @@ namespace QgsWmts
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
+
       /**
        * Constructor for QgsServiceException (empty locator attribute).
        * \param code Error code name
@@ -65,6 +66,7 @@ namespace QgsWmts
   class QgsSecurityAccessException : public QgsServiceException
   {
     public:
+
       /**
        * Constructor for QgsSecurityAccessException (Security code name).
        * \param message Exception message to return to the client
@@ -84,6 +86,7 @@ namespace QgsWmts
   class QgsRequestNotWellFormedException : public QgsServiceException
   {
     public:
+
       /**
        * Constructor for QgsRequestNotWellFormedException (RequestNotWellFormed code name).
        * \param message Exception message to return to the client

@@ -42,6 +42,7 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNumericFormatSelectorWidget with the specified \a parent widget.
      */
@@ -107,6 +108,7 @@ class GUI_EXPORT QgsNumericFormatSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNumericFormatSelectorDialog.
      * \param parent parent widget

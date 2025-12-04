@@ -159,6 +159,7 @@ A dialog that can be used to select and build a symbol.
 #include "qgssymbolselectordialog.h"
 %End
   public:
+
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, bool embedded = false );
 %Docstring
 Constructor for QgsSymbolSelectorDialog.

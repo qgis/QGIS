@@ -29,6 +29,7 @@ class GUI_EXPORT QgsLayoutViewToolTemporaryKeyPan : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolTemporaryKeyPan.
      */

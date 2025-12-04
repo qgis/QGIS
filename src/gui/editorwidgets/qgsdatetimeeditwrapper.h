@@ -44,6 +44,7 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDateTimeEditWrapper.
      *

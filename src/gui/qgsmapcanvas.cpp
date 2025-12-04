@@ -108,6 +108,7 @@ email                : sherman at mrcc.com
 class QgsMapCanvas::CanvasProperties
 {
   public:
+
     /**
      * Constructor for CanvasProperties.
      */

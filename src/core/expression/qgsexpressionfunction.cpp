@@ -2907,6 +2907,29 @@ static QVariant fcnToDegreeMinuteSecond( const QVariantList &values, const QgsEx
   return floatToDegreeFormat( format, values, context, parent, node );
 }
 
+static QVariant fcnExtractDegrees( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const double decimalDegrees = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
+  return static_cast< int >( decimalDegrees );
+}
+
+static QVariant fcnExtractMinutes( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const double absoluteDecimalDegrees = std::abs( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
+  const double remainder = absoluteDecimalDegrees - static_cast<int>( absoluteDecimalDegrees );
+  return static_cast< int >( remainder * 60 );
+}
+
+static QVariant fcnExtractSeconds( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const double absoluteDecimalDegrees = std::abs( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
+  const double remainder = absoluteDecimalDegrees - static_cast<int>( absoluteDecimalDegrees );
+  const double remainderInMinutes = remainder * 60;
+  const double remainderSecondsFraction = remainderInMinutes - static_cast< int >( remainderInMinutes );
+  // do not truncate to int, this function returns decimal seconds!
+  return remainderSecondsFraction * 60;
+}
+
 static QVariant fcnAge( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QDateTime d1 = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
@@ -8600,6 +8623,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "to_dm" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "axis" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "formatting" ), true ), fcnToDegreeMinute, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todm" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_dms" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "axis" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "formatting" ), true ), fcnToDegreeMinuteSecond, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todms" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_decimal" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToDecimal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todecimal" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "extract_degrees" ), { QgsExpressionFunction::Parameter{ QStringLiteral( "value" ) } }, fcnExtractDegrees, QStringLiteral( "Conversions" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "extract_minutes" ), { QgsExpressionFunction::Parameter{ QStringLiteral( "value" ) } }, fcnExtractMinutes, QStringLiteral( "Conversions" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "extract_seconds" ), { QgsExpressionFunction::Parameter{ QStringLiteral( "value" ) } }, fcnExtractSeconds, QStringLiteral( "Conversions" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "nullif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value2" ) ), fcnNullIf, QStringLiteral( "Conditionals" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "if" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "condition" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "result_when_true" ) )  << QgsExpressionFunction::Parameter( QStringLiteral( "result_when_false" ) ), fcnIf, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )

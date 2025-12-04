@@ -20,6 +20,7 @@ Widget for editing the trust policy associated with a Certificate
 #include "qgsauthcerttrustpolicycombobox.h"
 %End
   public:
+
     explicit QgsAuthCertTrustPolicyComboBox(
       QWidget *parent /TransferThis/ = 0,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,

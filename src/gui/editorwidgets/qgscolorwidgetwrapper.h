@@ -33,6 +33,7 @@ class GUI_EXPORT QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsColorWidgetWrapper.
      *

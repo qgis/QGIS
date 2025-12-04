@@ -28,6 +28,7 @@ set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be bui
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 set (WITH_EXIV2 TRUE CACHE BOOL "Determines whether exiv2 functionality should be added")
+set (WITH_AUTH TRUE CACHE BOOL "Determines whether AUTH support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
@@ -622,7 +623,10 @@ if(WITH_CORE)
 
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
-    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat SqlPrivate REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+    if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
+      find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
+    endif()
   endif()
 
   if (NOT IOS)
@@ -716,7 +720,9 @@ if(WITH_CORE)
     find_package(Qt5Keychain CONFIG REQUIRED)
   endif()
   # Master password hash and authentication encryption
-  find_package(QCA REQUIRED)
+  if(WITH_AUTH)
+    find_package(QCA REQUIRED)
+  endif()
   # Check for runtime dependency of qca-ossl plugin
   # REQUIRED if unit tests are to be run from build directory
   if(NOT MSVC)

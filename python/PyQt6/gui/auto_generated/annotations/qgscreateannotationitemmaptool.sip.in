@@ -28,6 +28,7 @@ ownership of the newly created item whenever this signal is emitted.
 #include "qgscreateannotationitemmaptool.h"
 %End
   public:
+
     QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent = 0 );
 %Docstring
 Constructor for QgsCreateAnnotationItemMapToolHandler, with the

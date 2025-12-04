@@ -31,6 +31,7 @@ class QgsNetworkLogger;
 class GUI_EXPORT QgsNetworkLoggerWidgetFactory : public QgsDevToolWidgetFactory
 {
   public:
+
     /**
      * Constructor for a QgsNetworkLoggerWidgetFactory.
      */

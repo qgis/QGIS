@@ -38,6 +38,7 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributesFormBaseView, with the given \a parent.
      *
@@ -98,6 +99,7 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
     QgsAttributesFormModel *sourceModel() const;
 
   public slots:
+
     /**
      * Selects the first item that matches a \a itemType and a \a itemId.
      *
@@ -133,6 +135,7 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsView : public QgsAttributesFormBas
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributesAvailableWidgetsView, with the given \a parent.
      *
@@ -160,6 +163,7 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributesFormLayoutView, with the given \a parent.
      *

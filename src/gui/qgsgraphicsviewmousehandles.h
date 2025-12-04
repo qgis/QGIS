@@ -80,7 +80,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     /**
      * Returns TRUE is user is currently rotating with the handles.
-     * 
+     *
      * \since QGIS 4.0
      */
     bool isRotating() const { return mIsRotating; }
@@ -92,19 +92,19 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     /**
      * Returns TRUE if rotation functionality is enabled.
-     * 
+     *
      * Rotation is not enabled by default.
-     * 
+     *
      * \since QGIS 4.0
      */
     bool isRotationEnabled() const { return mRotationEnabled; }
 
     /**
      * Sets whether rotation functionality is enabled.
-     * 
+     *
      * Rotation is not enabled by default. Subclasses must implement the
      * rotateItem() method in order to support rotation.
-     * 
+     *
      * \since QGIS 4.0
      */
     void setRotationEnabled( bool enable );

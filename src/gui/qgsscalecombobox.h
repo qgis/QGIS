@@ -36,6 +36,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     Q_PROPERTY( RatioMode ratioMode READ ratioMode WRITE setRatioMode NOTIFY ratioModeChanged )
 
   public:
+
     /**
      * Scale ratio modes.
      *

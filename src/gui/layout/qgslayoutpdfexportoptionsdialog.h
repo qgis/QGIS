@@ -43,6 +43,7 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutPdfExportOptionsDialog
      * \param parent parent widget

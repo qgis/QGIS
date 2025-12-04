@@ -29,6 +29,7 @@ class GUI_EXPORT QgsLayoutViewToolMoveItemContent : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolMoveItemContent.
      */

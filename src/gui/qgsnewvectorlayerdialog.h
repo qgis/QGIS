@@ -35,6 +35,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVec
     Q_OBJECT
 
   public:
+
     /**
      * Runs the dialog and creates a layer matching the dialog parameters.
      *

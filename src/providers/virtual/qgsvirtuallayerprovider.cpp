@@ -18,6 +18,7 @@ extern "C"
 {
 #include <sqlite3.h>
 #include <spatialite.h>
+
 }
 
 #include <stdexcept>

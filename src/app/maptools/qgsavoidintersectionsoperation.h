@@ -37,6 +37,7 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */

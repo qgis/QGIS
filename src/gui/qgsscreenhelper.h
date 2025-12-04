@@ -37,6 +37,7 @@ class GUI_EXPORT QgsScreenHelper : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsScreenHelper for the specified parent \a widget.
      */

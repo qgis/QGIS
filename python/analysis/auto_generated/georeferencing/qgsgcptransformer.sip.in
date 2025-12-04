@@ -29,6 +29,7 @@ GCPs.
     static const QMetaObject staticMetaObject;
 
   public:
+
     enum class TransformMethod
     {
       Linear,

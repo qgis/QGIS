@@ -27,7 +27,7 @@
  * \ingroup server
  * \class QgsFeatureFilterProviderGroup
  * \brief A filter filter provider grouping several filter providers.
- * \deprecated QGIS 3.4. Use QgsGroupedFeatureFilterProvider
+ * \deprecated QGIS 3.4. Use QgsGroupedFeatureFilterProvider.
  */
 class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvider
 {

@@ -20,6 +20,9 @@ endif()
 if(WITH_EXIV2)
   list(APPEND VCPKG_MANIFEST_FEATURES "exiv2")
 endif()
+if(WITH_AUTH)
+  list(APPEND VCPKG_MANIFEST_FEATURES "auth")
+endif()
 
 # Binarycache can only be used on Windows or if mono is available.
 find_program(_VCPKG_MONO mono)

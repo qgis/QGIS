@@ -44,6 +44,7 @@ class GUI_EXPORT QgsColorRampLegendNodeWidget : public QgsPanelWidget, private U
     Q_OBJECT
 
   public:
+
     /**
      * Capabilities to expose in the widget.
      *
@@ -120,6 +121,7 @@ class GUI_EXPORT QgsColorRampLegendNodeDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsColorRampLegendNodeDialog, initially showing the specified \a settings.
      *

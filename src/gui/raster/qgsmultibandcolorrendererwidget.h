@@ -40,6 +40,7 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMultiBandColorRendererWidget.
      * \param layer associated raster layer

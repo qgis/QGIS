@@ -39,6 +39,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsMessageBarItem, containing a message with the specified \a text to be displayed on the bar.
      *

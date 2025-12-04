@@ -36,6 +36,7 @@ class GUI_EXPORT QgsLegendFilterButton : public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new filter legend button
      *

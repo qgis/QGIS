@@ -36,6 +36,7 @@ class QgsFeatureRequest;
 class SERVER_EXPORT QgsServerFeatureId
 {
   public:
+
     /**
    * Returns the feature id based on primary keys.
    * \param feature the feature

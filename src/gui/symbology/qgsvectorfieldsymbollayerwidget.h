@@ -32,6 +32,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget : public QgsSymbolLayerWidget, 
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsVectorFieldSymbolLayerWidget.
      * \param vl associated vector layer

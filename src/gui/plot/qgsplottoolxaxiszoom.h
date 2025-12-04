@@ -40,6 +40,7 @@ class GUI_EXPORT QgsPlotToolXAxisZoom : public QgsPlotToolZoom
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolXAxisZoom, with the associated \a canvas.
      */

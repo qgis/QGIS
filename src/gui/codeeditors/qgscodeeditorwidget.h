@@ -50,6 +50,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCodeEditorWidget, wrapping the specified \a editor widget.
      *

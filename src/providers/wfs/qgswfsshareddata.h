@@ -75,12 +75,14 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Creates a deep copy of this shared data
     QgsWFSSharedData *clone() const;
 
-    /** Returns TRUE if the initial GetFeature request was issued
+    /**
+     * Returns TRUE if the initial GetFeature request was issued
      * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
      */
     bool initialGetFeatureIssued() const;
 
-    /** Sets whether the initial GetFeature request was \a issued
+    /**
+     * Sets whether the initial GetFeature request was \a issued
      * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
      */
     void setInitialGetFeatureIssued( bool issued );

@@ -52,6 +52,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
 #endif
 
   public:
+
     /**
      * Default constructor
      * \param crs Coordinate reference system for new graph vertex

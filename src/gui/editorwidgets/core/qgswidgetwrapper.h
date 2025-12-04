@@ -220,6 +220,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     void contextChanged();
 
   protected:
+
     /**
      * This method should create a new widget with the provided parent. This will only be called
      * if the form did not already provide a widget, so it is not guaranteed to be called!
@@ -262,6 +263,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual void setEnabled( bool enabled );
 
   private:
+
     /**
      * Called when the containing attribute form is about to save.
      * Use this to push any widget states to the edit buffer.

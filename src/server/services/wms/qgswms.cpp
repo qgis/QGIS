@@ -51,6 +51,7 @@ namespace QgsWms
   class Service : public QgsService
   {
     public:
+
       /**
        * Constructor for WMS service.
        * \param version Version of the WMS service.

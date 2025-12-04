@@ -37,6 +37,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutNewItemPropertiesDialog.
      */

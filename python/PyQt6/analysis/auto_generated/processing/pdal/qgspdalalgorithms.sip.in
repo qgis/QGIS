@@ -22,6 +22,7 @@ PDAL Processing algorithm provider.
 #include "qgspdalalgorithms.h"
 %End
   public:
+
     QgsPdalAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for QgsPdalAlgorithms.

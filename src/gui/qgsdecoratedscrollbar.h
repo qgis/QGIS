@@ -39,6 +39,7 @@ class QgsScrollBarHighlightOverlay;
 class GUI_EXPORT QgsScrollBarHighlight
 {
   public:
+
     /**
     * Priority, which dictates how overlapping highlights are rendered
     */

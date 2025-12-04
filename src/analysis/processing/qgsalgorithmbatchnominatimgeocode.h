@@ -34,6 +34,7 @@
 class QgsBatchNominatimGeocodeAlgorithm : public QgsBatchGeocodeAlgorithm
 {
   public:
+
     /**
      * Constructor for QgsBatchNominatimGeocodeAlgorithm.
      */

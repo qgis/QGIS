@@ -28,6 +28,7 @@ is set to a color with an ambiguous hue (e.g., black or white shades).
 #include "qgscolorwidgets.h"
 %End
   public:
+
     enum ColorComponent
     {
       Multiple,
@@ -361,6 +362,7 @@ An action containing a color widget, which can be embedded into a menu.
 #include "qgscolorwidgets.h"
 %End
   public:
+
     QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color widget action.
@@ -423,6 +425,7 @@ selection.
 #include "qgscolorwidgets.h"
 %End
   public:
+
     QgsColorWheel( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructs a new color wheel widget.
@@ -470,6 +473,7 @@ horizontal and vertical axis.
 #include "qgscolorwidgets.h"
 %End
   public:
+
     QgsColorBox( QWidget *parent /TransferThis/ = 0, ColorComponent component = Value );
 %Docstring
 Construct a new color box widget.
@@ -523,6 +527,7 @@ saturation from 0 to 100%).
 #include "qgscolorwidgets.h"
 %End
   public:
+
     enum Orientation
     {
       Horizontal,
@@ -655,6 +660,7 @@ manual value entry.
 #include "qgscolorwidgets.h"
 %End
   public:
+
     QgsColorSliderWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = QgsColorWidget::Red );
 %Docstring
 Construct a new color slider widget.
@@ -685,6 +691,7 @@ representations of colors.
 #include "qgscolorwidgets.h"
 %End
   public:
+
     enum ColorTextFormat
     {
       HexRgb,
@@ -729,6 +736,7 @@ A preview box which displays one or two colors as swatches.
 #include "qgscolorwidgets.h"
 %End
   public:
+
     QgsColorPreviewWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color preview widget.

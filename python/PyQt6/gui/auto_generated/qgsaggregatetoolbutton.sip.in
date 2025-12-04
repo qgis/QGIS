@@ -21,6 +21,7 @@ Functions are filtered based on the type.
 #include "qgsaggregatetoolbutton.h"
 %End
   public:
+
     QgsAggregateToolButton();
 %Docstring
 Constructor

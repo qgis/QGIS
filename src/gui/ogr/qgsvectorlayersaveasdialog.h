@@ -36,6 +36,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     Q_OBJECT
 
   public:
+
     /**
      * Available dialog options.
      */

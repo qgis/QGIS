@@ -42,6 +42,7 @@ class QgsFilteredTableWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * \brief QgsFilteredTableWidget constructor
      * \param parent
@@ -142,6 +143,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsValueRelationWidgetWrapper.
      *

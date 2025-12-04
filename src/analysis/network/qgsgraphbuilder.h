@@ -34,6 +34,7 @@ class QgsGraph;
 class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODEFAULTCTORS
 {
   public:
+
     /**
      * Default constructor
      */

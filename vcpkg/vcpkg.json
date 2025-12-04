@@ -66,13 +66,6 @@
     "proj",
     "protobuf",
     {
-      "name": "qca",
-      "default-features": false,
-      "features": [
-        "ossl"
-      ]
-    },
-    {
       "name": "qtbase",
       "features": [
         "sql-odbc"
@@ -145,7 +138,18 @@
         "python3"
       ]
     },
-
+    "auth": {
+      "description": "Determines whether the EXIV2 should be built",
+      "dependencies": [
+        {
+          "name": "qca",
+          "default-features": false,
+          "features": [
+            "ossl"
+          ]
+        }
+      ]
+    },
     "exiv2": {
       "description": "Determines whether EXIV2 should be built",
       "dependencies": [

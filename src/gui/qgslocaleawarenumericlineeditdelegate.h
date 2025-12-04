@@ -38,6 +38,7 @@ class QgsLocaleAwareNumericLineEditDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     /**
      * QgsLocaleAwareNumericLineEditDelegate
      * \param dataType raster band data type

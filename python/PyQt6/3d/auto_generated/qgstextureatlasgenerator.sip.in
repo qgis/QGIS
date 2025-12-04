@@ -46,6 +46,7 @@ Returns the total size required for the atlas, i.e. the total size for
 the packed images and rectangles.
 %End
 
+
     QRect rect( int index ) const;
 %Docstring
 Returns the packed rectangle for the texture with the specified
@@ -118,6 +119,7 @@ containing the results.
 #include "qgstextureatlasgenerator.h"
 %End
   public:
+
     static QgsTextureAtlas createFromRects( const QVector< QRect > &rectangles, int maxSide = 1000 );
 %Docstring
 Creates a texture atlas for a set of ``rectangles``.

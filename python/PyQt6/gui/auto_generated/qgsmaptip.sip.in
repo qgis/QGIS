@@ -35,6 +35,7 @@ it. see https://jakearchibald.com/2016/link-in-body
 #include "qgsmaptip.h"
 %End
   public:
+
     QgsMapTip();
 %Docstring
 Default constructor

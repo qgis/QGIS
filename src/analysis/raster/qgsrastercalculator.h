@@ -41,6 +41,7 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
   public:
+
     /**
      * Creates a list of raster entries from the current project.
      *

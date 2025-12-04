@@ -42,6 +42,7 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserWidget
       * \param browserModel instance of the (shared) browser model

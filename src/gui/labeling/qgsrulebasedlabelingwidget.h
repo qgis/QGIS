@@ -216,6 +216,7 @@ class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingRulePropsDialog
      * \param rule associated rule based labeling rule

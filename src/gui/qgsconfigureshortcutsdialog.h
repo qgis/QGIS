@@ -38,6 +38,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsConfigureShortcutsDialog.
      * \param parent parent widget

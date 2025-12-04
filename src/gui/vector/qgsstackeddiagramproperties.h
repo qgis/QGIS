@@ -110,6 +110,7 @@ class QgsStackedDiagramsViewStyle : public QgsProxyStyle
     Q_OBJECT
 
   public:
+
     /**
     * Constructor for QgsStackedDiagramsViewStyle
     * \param parent parent object
@@ -211,6 +212,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsStackedDiagramPropertiesDialog
      * \param layer source vector layer

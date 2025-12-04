@@ -76,6 +76,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Initialize from settings.
      *
@@ -207,6 +208,7 @@ class SERVER_EXPORT QgsFileSystemCacheStrategy : public QgsAbstractCacheStrategy
 class SERVER_EXPORT QgsPeriodicCacheStrategy : public QgsAbstractCacheStrategy
 {
   public:
+
     /**
      *  Creates a new periodic strategy
      *  \param interval The invalidation check interval in milliseconds

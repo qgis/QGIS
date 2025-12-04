@@ -29,6 +29,7 @@ class QgsField;
 class QgsMssqlUtils
 {
   public:
+
     /**
      * Returns a quoted string version of \a value, for safe use in a SQL query.
      */

@@ -115,6 +115,7 @@ class QgsImageWarperTask : public QgsTask
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsImageWarperTask.
      *

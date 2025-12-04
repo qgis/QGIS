@@ -38,6 +38,7 @@ class GUI_EXPORT QgsMapLayerServerPropertiesWidget : public QWidget, private Ui:
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param parent parent widget

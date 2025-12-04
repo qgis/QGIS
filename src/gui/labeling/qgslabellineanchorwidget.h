@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLabelLineAnchorWidget : public QgsLabelSettingsWidgetBase, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelLineAnchorWidget.
      * \param parent parent widget

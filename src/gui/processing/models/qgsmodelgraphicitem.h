@@ -39,6 +39,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsModelDesignerFlatButtonGraphicItem, with the specified \a parent item.
      *
@@ -95,6 +96,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     void clicked();
 
   protected:
+
     /**
      * Sets the \a picture to render for the button graphics.
      */
@@ -118,6 +120,7 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsModelDesignerFoldButtonGraphicItem, with the specified \a parent item.
      *
@@ -159,6 +162,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
      *
@@ -172,7 +176,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
-     * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets 
+     * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets
      * or QgsModelDesignerSocketGraphicItem::mOutSockets array
      */
     int index() const { return mIndex; };
@@ -187,7 +191,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
     /**
      * Returns whether the socket is an input socket or not.
-     * 
+     *
      * Convenient function around mEdge member
      */
     bool isInput() const { return mEdge == Qt::TopEdge; };

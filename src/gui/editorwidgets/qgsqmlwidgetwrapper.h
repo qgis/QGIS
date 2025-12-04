@@ -32,6 +32,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Create a qml widget wrapper
      *

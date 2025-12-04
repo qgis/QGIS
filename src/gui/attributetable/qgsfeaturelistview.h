@@ -48,6 +48,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     Q_OBJECT
 
   public:
+
     /**
      * Creates a feature list view
      *

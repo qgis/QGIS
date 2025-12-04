@@ -46,6 +46,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Predefined CRS options shown in widget
      */

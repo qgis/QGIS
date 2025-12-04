@@ -44,6 +44,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged )
 
   public:
+
     /**
      * Widget modes.
      * \since QGIS 3.2
@@ -247,6 +248,7 @@ class LinkItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     /**
      * \brief LinkItemDelegate constructor
      * \param parent
@@ -270,6 +272,7 @@ class ConstraintItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     /**
      * \brief ConstraintItemDelegate constructor
      * \param parent

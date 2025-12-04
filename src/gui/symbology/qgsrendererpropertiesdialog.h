@@ -46,6 +46,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRendererPropertiesDialog.
      * \param layer associated layer
@@ -133,6 +134,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     void syncToLayer();
 
   protected:
+
     /**
      * Connect the value changed event for the set of widgets to
      * widgetChanged signal. Each widget is checked for type and

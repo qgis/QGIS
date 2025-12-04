@@ -31,7 +31,7 @@ class QgsProcessingModelComponent;
 /**
  * \ingroup gui
  * \brief Model designer view tool for linking socket together
- * This tool is not exposed in the UI and is only set when the select tool click on a socket 
+ * This tool is not exposed in the UI and is only set when the select tool click on a socket
  * \since QGIS 3.44
  */
 class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
@@ -39,6 +39,7 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewToolLink.
      */
@@ -52,15 +53,16 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
 
     /**
      * Set the from socket
-     * 
-     * In the case the user started dragging from an already linked input socket 
+     *
+     * In the case the user started dragging from an already linked input socket
      * we need to figure out, which is the output socket used as the source at the other side of the link.
-     * 
-     * This is used when the user disconnects a a link or relinks to another input socket 
+     *
+     * This is used when the user disconnects a a link or relinks to another input socket
      */
     void setFromSocket( QgsModelDesignerSocketGraphicItem *socket );
 
   signals:
+
     /**
      * Emitted when a change was made to the model that requires a full rebuild of the scene.
      */

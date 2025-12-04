@@ -47,6 +47,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributeFormEditorWidget.
      * \param editorWidget associated editor widget wrapper (for default/edit modes)

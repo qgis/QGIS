@@ -29,6 +29,7 @@ doubles with both local and C interpretation as a fallback.
 #include "qgsdoublevalidator.h"
 %End
   public:
+
     explicit QgsDoubleValidator( QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.

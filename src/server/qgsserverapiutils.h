@@ -54,6 +54,7 @@ using namespace nlohmann;
 class SERVER_EXPORT QgsServerApiUtils
 {
   public:
+
     /**
      * Parses a comma separated \a bbox into a (possibly empty) QgsRectangle.
      *
