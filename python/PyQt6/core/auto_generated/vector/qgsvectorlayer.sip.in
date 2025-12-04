@@ -715,17 +715,15 @@ clearAndSelect flag set.
 :param ids: feature IDs to select
 :param behavior: selection type, allows adding to current selection,
                  removing from selection, etc.
-:param validateIds: if ``True``, filters out invalid feature IDs before
-                    selection. Set to ``False`` (default) for best
-                    performance. Enable validation when calling from
-                    Python or when ID validity is uncertain to avoid
-                    incorrect selection counts.
+:param validateIds: (since QGIS 4.0) if ``True``, filters out invalid
+                    feature IDs before selection. Set to ``False``
+                    (default) for best performance. Enable validation
+                    when calling from Python or when ID validity is
+                    uncertain to avoid incorrect selection counts.
 
 .. seealso:: :py:func:`selectByRect`
 
 .. seealso:: :py:func:`selectByExpression`
-
-.. versionadded:: 3.40
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
