@@ -878,7 +878,10 @@ QString QgsModelParameterGraphicItem::linkedParameterDataType( Qt::Edge /* unuse
 
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
   {
-    return this->model()->parameterDefinition( parameter->parameterName() )->type();
+    if ( const QgsProcessingParameterDefinition *parameterDefinition = model()->parameterDefinition( parameter->parameterName() ) )
+    {
+      return parameterDefinition->type();
+    }
   }
 
   return QString();
@@ -894,7 +897,10 @@ QColor QgsModelParameterGraphicItem::linkColor( Qt::Edge /* unused in this imple
 
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
   {
-    return this->model()->parameterDefinition( parameter->parameterName() )->modelColor();
+    if ( const QgsProcessingParameterDefinition *parameterDefinition = model()->parameterDefinition( parameter->parameterName() ) )
+    {
+      return parameterDefinition->modelColor();
+    }
   }
 
   return fallbackColor();
