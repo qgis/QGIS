@@ -61,7 +61,7 @@ class QgsFeature3DHandler
      * When feature iteration has finished, finalize() is called to turn the extracted data
      * to a 3D entity object(s) attached to the given parent.
      */
-    virtual void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) = 0;
+    virtual QList<Qt3DCore::QEntity *> finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) = 0;
 
     /**
      * Returns minimal Z value of the data (in world coordinates).
