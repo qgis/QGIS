@@ -79,7 +79,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
-    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+    QList<Qt3DCore::QEntity *> finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
     static QgsMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
@@ -92,7 +92,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
         QVector<QVector3D> positions; // contains triplets of float x,y,z for each point
     };
 
-    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
+    Qt3DCore::QEntity *makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
@@ -129,10 +129,19 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
   mFeatureCount++;
 }
 
-void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+QList<Qt3DCore::QEntity *> QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
-  makeEntity( parent, context, outNormal, false );
-  makeEntity( parent, context, outSelected, true );
+  QList<Qt3DCore::QEntity *> createdEntities;
+  Qt3DCore::QEntity *normalEntity = makeEntity( parent, context, outNormal, false );
+  if ( normalEntity )
+  {
+    createdEntities.append( normalEntity );
+  }
+  Qt3DCore::QEntity *selectedEntity = makeEntity( parent, context, outSelected, true );
+  if ( selectedEntity )
+  {
+    createdEntities.append( selectedEntity );
+  }
 
   updateZRangeFromPositions( outNormal.positions );
   updateZRangeFromPositions( outSelected.positions );
@@ -202,13 +211,15 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
   mZMin += symbolOffset;
   mZMax += symbolOffset;
+
+  return createdEntities;
 }
 
-void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
+Qt3DCore::QEntity *QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
   if ( out.positions.isEmpty() )
   {
-    return; // nothing to show - no need to create the entity
+    return nullptr; // nothing to show - no need to create the entity
   }
 
   // build the default material
@@ -228,8 +239,7 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   entity->addComponent( tr );
   entity->setParent( parent );
 
-  // cppcheck wrongly believes entity will leak
-  // cppcheck-suppress memleak
+  return entity;
 }
 
 
@@ -425,11 +435,11 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
-    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+    QList<Qt3DCore::QEntity *> finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
-    static void addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
-    static void addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
+    static Qt3DCore::QEntity *addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
+    static Qt3DCore::QEntity *addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
     static QgsGeoTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin );
 
     //! temporary data we will pass to the tessellator
@@ -438,7 +448,7 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
         QVector<QVector3D> positions; // contains triplets of float x,y,z for each point
     };
 
-    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
+    Qt3DCore::QEntity *makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
@@ -474,10 +484,19 @@ void QgsModelPoint3DSymbolHandler::processFeature( const QgsFeature &feature, co
   mFeatureCount++;
 }
 
-void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+QList<Qt3DCore::QEntity *> QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
-  makeEntity( parent, context, outNormal, false );
-  makeEntity( parent, context, outSelected, true );
+  QList<Qt3DCore::QEntity *> createdEntities;
+  Qt3DCore::QEntity *normalEntity = makeEntity( parent, context, outNormal, false );
+  if ( normalEntity )
+  {
+    createdEntities.append( normalEntity );
+  }
+  Qt3DCore::QEntity *selectedEntity = makeEntity( parent, context, outSelected, true );
+  if ( selectedEntity )
+  {
+    createdEntities.append( selectedEntity );
+  }
 
   updateZRangeFromPositions( outNormal.positions );
   updateZRangeFromPositions( outSelected.positions );
@@ -486,18 +505,21 @@ void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
   const float symbolHeight = mSymbol->transform().data()[14];
   mZMin += symbolHeight;
   mZMax += symbolHeight;
+
+  return createdEntities;
 }
 
-void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
+Qt3DCore::QEntity *QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
   if ( out.positions.isEmpty() )
   {
-    return; // nothing to show - no need to create the entity
+    return nullptr; // nothing to show - no need to create the entity
   }
 
+  Qt3DCore::QEntity *entity = nullptr;
   if ( selected )
   {
-    addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, true );
+    entity = addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, true );
   }
   else
   {
@@ -505,19 +527,22 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
     if ( mSymbol->shapeProperty( QStringLiteral( "overwriteMaterial" ) ).toBool()
          || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != QLatin1String( "null" ) ) )
     {
-      addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, false );
+      entity = addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, false );
     }
     else
     {
-      addSceneEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent );
+      entity = addSceneEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent );
     }
   }
+
+  return entity;
 }
 
 
-void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent )
+Qt3DCore::QEntity *QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent )
 {
   Q_UNUSED( context );
+  Qt3DCore::QEntity *entity = nullptr;
   const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
   // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
   if ( !source.isEmpty() )
@@ -525,7 +550,7 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &c
     for ( const QVector3D &position : positions )
     {
       // build the entity
-      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+      entity = new Qt3DCore::QEntity;
 
       const QUrl url = QUrl::fromLocalFile( source );
       Qt3DRender::QSceneLoader *modelLoader = new Qt3DRender::QSceneLoader;
@@ -534,21 +559,22 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &c
       entity->addComponent( modelLoader );
       entity->addComponent( transform( position, symbol, chunkOrigin ) );
       entity->setParent( parent );
-
-      // cppcheck wrongly believes entity will leak
-      // cppcheck-suppress memleak
     }
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "File '%1' is not accessible!" ).arg( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() ), 1 );
   }
+
+  return entity;
 }
 
-void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected )
+Qt3DCore::QEntity *QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected )
 {
+  Qt3DCore::QEntity *entity = nullptr;
+
   if ( positions.empty() )
-    return;
+    return entity;
 
   const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
   if ( !source.isEmpty() )
@@ -565,7 +591,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
     for ( const QVector3D &position : positions )
     {
       // build the entity
-      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+      entity = new Qt3DCore::QEntity;
 
       Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
       mesh->setSource( url );
@@ -574,15 +600,14 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
       entity->addComponent( mat );
       entity->addComponent( transform( position, symbol, chunkOrigin ) );
       entity->setParent( parent );
-
-      // cppcheck wrongly believes entity will leak
-      // cppcheck-suppress memleak
     }
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "File '%1' is not accessible!" ).arg( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() ), 1 );
   }
+
+  return entity;
 }
 
 QgsGeoTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin )
@@ -607,7 +632,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
-    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+    QList<Qt3DCore::QEntity *> finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
     //! temporary data we will pass to the tessellator
@@ -616,7 +641,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
         QVector<QVector3D> positions; // contains triplets of float x,y,z for each point
     };
 
-    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
+    Qt3DCore::QEntity *makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
@@ -652,10 +677,19 @@ void QgsPoint3DBillboardSymbolHandler::processFeature( const QgsFeature &feature
   mFeatureCount++;
 }
 
-void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+QList<Qt3DCore::QEntity *> QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
-  makeEntity( parent, context, outNormal, false );
-  makeEntity( parent, context, outSelected, true );
+  QList<Qt3DCore::QEntity *> createdEntities;
+  Qt3DCore::QEntity *normalEntity = makeEntity( parent, context, outNormal, false );
+  if ( normalEntity )
+  {
+    createdEntities.append( normalEntity );
+  }
+  Qt3DCore::QEntity *selectedEntity = makeEntity( parent, context, outSelected, true );
+  if ( selectedEntity )
+  {
+    createdEntities.append( selectedEntity );
+  }
 
   updateZRangeFromPositions( outNormal.positions );
   updateZRangeFromPositions( outSelected.positions );
@@ -664,13 +698,15 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   const float billboardHeight = mSymbol->billboardHeight();
   mZMin += billboardHeight;
   mZMax += billboardHeight;
+
+  return createdEntities;
 }
 
-void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
+Qt3DCore::QEntity *QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
   if ( out.positions.isEmpty() )
   {
-    return; // nothing to show - no need to create the entity
+    return nullptr; // nothing to show - no need to create the entity
   }
 
   // Billboard Geometry
@@ -708,8 +744,7 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   entity->addComponent( billboardGeometryRenderer );
   entity->setParent( parent );
 
-  // cppcheck wrongly believes entity will leak
-  // cppcheck-suppress memleak
+  return entity;
 }
 
 
