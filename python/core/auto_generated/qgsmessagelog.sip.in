@@ -41,17 +41,29 @@ Adds a ``message`` to the log instance (and creates it if necessary).
 If ``notifyUser`` is ``True``, then the message should be brought to the
 user's attention by various UI hints. If it is ``False``, the message
 should appear in logs silently. Note that log viewer implementations may
-only respect notification hints for certain message levels.
+only respect notification hints for certain message levels. The ``type``
+argument was added in QGIS 4.0
 %End
 
   signals:
 
-    void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type );
+ void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level ) /Deprecated="Since 4.0. Use messageReceivedWithType() instead."/;
 %Docstring
 Emitted whenever the log receives a ``message``.
 
 This signal is emitted for all messages received by the log, regardless
 of the ``notifyUser`` flag's value for the message.
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsMessageLog.messageReceivedWithType` instead.
+%End
+
+    void messageReceivedWithType( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type );
+%Docstring
+Emitted whenever the log receives a ``message`` with a ``type``.
+
+This signal is emitted in addition to the messageReceived signal.
 %End
 
 

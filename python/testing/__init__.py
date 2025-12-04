@@ -1135,7 +1135,7 @@ def start_app(cleanup=True):
         def debug_log_message(message, tag, level):
             print(f"{tag}({level}): {message}")
 
-        QgsApplication.instance().messageLog().messageReceived.connect(
+        QgsApplication.instance().messageLog().messageReceivedWithType.connect(
             debug_log_message
         )
 

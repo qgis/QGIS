@@ -167,7 +167,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         )
 
         app_log = QgsApplication.messageLog()
-        log_spy = QSignalSpy(app_log.messageReceived)
+        log_spy = QSignalSpy(app_log.messageReceivedWithType)
 
         # Identify pixel from area not containing data
         identify = rl.dataProvider().identify(
@@ -912,7 +912,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         )
 
         app_log = QgsApplication.messageLog()
-        log_spy = QSignalSpy(app_log.messageReceived)
+        log_spy = QSignalSpy(app_log.messageReceivedWithType)
 
         project.addMapLayer(rl)
         sleep_time = 0.001

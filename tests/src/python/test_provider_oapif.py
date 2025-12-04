@@ -1666,7 +1666,7 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         app_log = QgsApplication.messageLog()
 
         # signals should be emitted by application log
-        app_spy = QSignalSpy(app_log.messageReceived)
+        app_spy = QSignalSpy(app_log.messageReceivedWithType)
 
         vl = QgsVectorLayer(
             "url='http://" + endpoint + "?apikey=mykey' typename='mycollection'",
