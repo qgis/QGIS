@@ -724,6 +724,11 @@ QString QgsVectorLayerProfileGenerator::sourceId() const
   return mId;
 }
 
+QString QgsVectorLayerProfileGenerator::type() const
+{
+  return QStringLiteral( "vector" );
+}
+
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
 
 bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext & )

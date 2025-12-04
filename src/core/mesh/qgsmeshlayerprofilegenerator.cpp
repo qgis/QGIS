@@ -87,6 +87,11 @@ QString QgsMeshLayerProfileGenerator::sourceId() const
   return mId;
 }
 
+QString QgsMeshLayerProfileGenerator::type() const
+{
+  return QStringLiteral( "mesh" );
+}
+
 QgsMeshLayerProfileGenerator::~QgsMeshLayerProfileGenerator() = default;
 
 bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext & )
