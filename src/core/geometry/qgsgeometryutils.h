@@ -1450,6 +1450,8 @@ class CORE_EXPORT QgsGeometryUtils
                                    QgsPoint filletPoints[3],
                                    double epsilon = 1e-8 ) SIP_SKIP;
 
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
+
   private:
 
     /**

@@ -1372,6 +1372,8 @@ Applies fillet to a vertex in a curve geometry.
 %End
 
 
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
