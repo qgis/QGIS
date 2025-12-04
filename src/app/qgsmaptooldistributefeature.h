@@ -84,10 +84,10 @@ class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizi
     //! The current feature ID, geometry, and layer
     QgsFeatureId mFeatureId;
     QgsGeometry mFeatureGeom;
-    QgsVectorLayer *mFeatureLayer;
+    QgsVectorLayer *mFeatureLayer = nullptr;
 
     //! The user widget
-    std::unique_ptr<QgsDistributeFeatureUserWidget> mUserInputWidget;
+    QgsDistributeFeatureUserWidget *mUserInputWidget = nullptr;
 
     //! The rubberband that shows the feature being distributed
     std::unique_ptr<QgsRubberBand> mRubberBand;
