@@ -20,10 +20,10 @@
 
 #include <memory>
 
+#include "qgsabstractmaterialsettings.h"
+
 #include <QWidget>
 
-class QgsAbstractMaterialSettings;
-enum class QgsMaterialSettingsRenderingTechnique;
 class QgsVectorLayer;
 
 //! Widget for configuration of material settings
