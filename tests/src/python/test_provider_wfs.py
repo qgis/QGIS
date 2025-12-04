@@ -104,11 +104,11 @@ class MessageLogger(QObject):
         self.tag = tag
 
     def __enter__(self):
-        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
+        QgsApplication.messageLog().messageReceivedWithType.connect(self.logMessage)
         return self
 
     def __exit__(self, type, value, traceback):
-        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
+        QgsApplication.messageLog().messageReceivedWithType.disconnect(self.logMessage)
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:
