@@ -3879,7 +3879,7 @@ void TestQgsProcessing::parameterExtent()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QVariant( QStringLiteral( "LineString (10 10, 20 20)" ) ) );
 
-  QCOMPARE( def->userFriendlyString( QgsReferencedRectangle( QgsRectangle( 11, 12, 13, 14 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "[EPSG:4326] Polygon" ) );
+  QCOMPARE( def->userFriendlyString( QgsReferencedRectangle( QgsRectangle( 11, 12, 13, 14 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "Polygon [EPSG:4326]" ) );
   QCOMPARE( def->userFriendlyString( QgsRectangle( 11, 12, 13, 14 ) ), QStringLiteral( "Polygon" ) );
   QCOMPARE( def->userFriendlyString( QVariant( "1,2,3,4" ) ), QStringLiteral( "1,2,3,4" ) );
 
@@ -4124,10 +4124,10 @@ void TestQgsProcessing::parameterPoint()
   QCOMPARE( def->valueAsJsonObject( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context ), QVariant( QStringLiteral( "11,12 [EPSG:4326]" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QVariant( QStringLiteral( "LineString (10 10, 20 20)" ) ) );
 
-  QCOMPARE( def->userFriendlyString( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "[EPSG:4326] 11, 12" ) );
+  QCOMPARE( def->userFriendlyString( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "11, 12 [EPSG:4326]" ) );
   QCOMPARE( def->userFriendlyString( QgsPointXY( 11, 12 ) ), QStringLiteral( "11, 12" ) );
 
-  QCOMPARE( def->userFriendlyString( QgsReferencedPointXY( QgsPointXY( 11.1, 12.2 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "[EPSG:4326] 11.1, 12.2" ) );
+  QCOMPARE( def->userFriendlyString( QgsReferencedPointXY( QgsPointXY( 11.1, 12.2 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "11.1, 12.2 [EPSG:4326]" ) );
   QCOMPARE( def->userFriendlyString( QgsPointXY( 11.1, 12.2 ) ), QStringLiteral( "11.1, 12.2" ) );
 
   bool ok = false;
@@ -4346,7 +4346,7 @@ void TestQgsProcessing::parameterGeometry()
   QCOMPARE( def->valueAsPythonString( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ), context ), QStringLiteral( "'CRS=EPSG:4326;LineString (10 10, 20 20)'" ) );
 
   QCOMPARE( def->userFriendlyString( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) ) ), QStringLiteral( "Polygon" ) );
-  QCOMPARE( def->userFriendlyString( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ), QStringLiteral( "[EPSG:4326] Line" ) );
+  QCOMPARE( def->userFriendlyString( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ), QStringLiteral( "Line [EPSG:4326]" ) );
   QCOMPARE( def->userFriendlyString( QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) ), QStringLiteral( "Polygon" ) );
 
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
@@ -5398,7 +5398,7 @@ void TestQgsProcessing::parameterArea()
   QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "5" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "1.1" ), context ), QStringLiteral( "1.1" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
-  QCOMPARE( def->userFriendlyString( QVariant( 5 ) ), QStringLiteral( "5 square feet" ) );
+  QCOMPARE( def->userFriendlyString( QVariant( 5 ) ), QStringLiteral( "5 ft²" ) );
 
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( 5 ) );
@@ -5515,7 +5515,7 @@ void TestQgsProcessing::parameterVolume()
   QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "5" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "1.1" ), context ), QStringLiteral( "1.1" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
-  QCOMPARE( def->userFriendlyString( QVariant( 5 ) ), QStringLiteral( "5 cubic feet" ) );
+  QCOMPARE( def->userFriendlyString( QVariant( 5 ) ), QStringLiteral( "5 ft³" ) );
 
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( 5 ) );
