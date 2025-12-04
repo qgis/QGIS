@@ -4213,6 +4213,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorProfileType );
 
     /**
+     * Types of elevation profiles to generate for point cloud sources.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PointCloudProfileType : int
+    {
+      IndividualPoints, //!< Sample individual points from the point cloud
+      TriangulatedSurface, //!< Create a TIN from the point cloud using Delaunay triangulation
+    };
+    Q_ENUM( PointCloudProfileType );
+
+    /**
      * Flags that control the way the QgsAbstractProfileGenerator operate.
      *
      * \since QGIS 3.26
