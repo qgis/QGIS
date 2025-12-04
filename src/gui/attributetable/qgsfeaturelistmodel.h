@@ -32,6 +32,8 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
+#define QGSFEATURELISTMODEL_CACHE_INDEX 1
+
 /**
  * \ingroup gui
  * \class QgsFeatureListModel
