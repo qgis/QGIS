@@ -29,6 +29,7 @@ widget, you should instead inherit from
 #include "qgslayoutitemwidget.h"
 %End
   public:
+
     QgsLayoutConfigObject( QWidget *parent /TransferThis/, QgsLayoutObject *layoutObject );
 %Docstring
 Constructor for QgsLayoutConfigObject, linked with the specified
@@ -72,6 +73,7 @@ All layout item widgets should inherit from this base class.
 #include "qgslayoutitemwidget.h"
 %End
   public:
+
     QgsLayoutItemBaseWidget( QWidget *parent /TransferThis/, QgsLayoutObject *layoutObject );
 %Docstring
 Constructor for QgsLayoutItemBaseWidget, linked with the specified
@@ -116,6 +118,7 @@ Sets the master layout associated with the item.
 %End
 
   protected:
+
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );
 %Docstring
 Registers a data defined ``button``, setting up its initial value,
@@ -165,6 +168,7 @@ embedded into other layout item widgets.
 #include "qgslayoutitemwidget.h"
 %End
   public:
+
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
 %Docstring
 Constructs a QgsLayoutItemPropertiesWidget with a ``parent`` and for the

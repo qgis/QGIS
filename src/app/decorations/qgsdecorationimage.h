@@ -31,6 +31,7 @@ class APP_EXPORT QgsDecorationImage : public QgsDecorationItem
     Q_OBJECT
 
   public:
+
     /**
      * Format of source image
      */

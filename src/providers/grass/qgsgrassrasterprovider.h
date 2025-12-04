@@ -89,6 +89,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *

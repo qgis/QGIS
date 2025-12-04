@@ -52,6 +52,7 @@ class QgsProcessingVectorTileWriterLayersPanelWidget : public QgsProcessingMulti
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingVectorTileWriterLayersPanelWidget.
      */

@@ -45,6 +45,7 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsHistoryEntryModel, with the specified \a parent object.
      *

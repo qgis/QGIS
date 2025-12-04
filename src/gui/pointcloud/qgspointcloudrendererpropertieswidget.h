@@ -40,6 +40,7 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPointCloudRendererPropertiesWidget, associated with the specified \a layer and \a style database.
      */

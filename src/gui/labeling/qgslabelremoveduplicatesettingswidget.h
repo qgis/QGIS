@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLabelRemoveDuplicatesSettingsWidget : public QgsLabelSetting
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelRemoveDuplicatesSettingsWidget.
      * \param parent parent widget

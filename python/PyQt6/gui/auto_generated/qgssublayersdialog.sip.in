@@ -24,6 +24,7 @@ Presents a choice of sublayers.
 #include "qgssublayersdialog.h"
 %End
   public:
+
     enum PromptMode /BaseType=IntEnum/
     {
 
@@ -114,6 +115,7 @@ Returns column with count or -1
 
 
   protected:
+
 
 
 };

@@ -40,6 +40,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsTemporalControllerWidget, with the specified \a parent widget.
       */

@@ -28,6 +28,7 @@
 class SERVER_EXPORT QgsServerStaticHandler : public QgsServerOgcApiHandler
 {
   public:
+
     /**
      * Creates QgsServerStaticHandler
      * \param pathRegExp optional regular expression to capture static file names, defaults to "/static/(?<staticFilePath>.*)$",

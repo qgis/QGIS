@@ -135,6 +135,7 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
     void setShowCalloutLines( bool show );
 
     // TODO -- consider exposing via QgsSimpleLineMaterialSettings, for now, for testing only
+
     /**
      * Sets the callout line \a color.
      *

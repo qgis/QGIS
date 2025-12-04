@@ -29,6 +29,7 @@ class QgsIdeOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsIdeOptio
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsIdeOptionsWidget with the specified \a parent widget.
      */

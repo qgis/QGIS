@@ -190,6 +190,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     void itemFocused( QgsLayoutItem *item );
 
   protected:
+
     /**
      * Sets the combination of \a flags that will be used for the tool.
      * \see flags()

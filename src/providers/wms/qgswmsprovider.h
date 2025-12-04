@@ -641,6 +641,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     void canceled();
 
   protected:
+
     /**
      * \brief Relaunch tile request cloning previous request parameters and managing max repeat
      *

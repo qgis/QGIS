@@ -38,6 +38,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Widget to control a layers transparency and related options
      */

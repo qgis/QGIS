@@ -66,6 +66,7 @@ class _3D_EXPORT QgsFontTextureAtlas
      */
     QRect rect( const QString &grapheme ) const;
 #else
+
     /**
      * Returns the packed rectangle for the texture for the specified \a grapheme.
      *
@@ -184,6 +185,7 @@ class _3D_EXPORT QgsFontTextureAtlas
 class _3D_EXPORT QgsFontTextureAtlasGenerator
 {
   public:
+
     /**
      * Creates the texture atlas for a set of \a strings, using the specified text \a format.
      */

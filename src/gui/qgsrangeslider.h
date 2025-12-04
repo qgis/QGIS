@@ -33,6 +33,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRangeSlider, with the specified \a parent widget.
      */

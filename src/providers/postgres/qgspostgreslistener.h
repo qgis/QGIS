@@ -38,6 +38,7 @@ class QgsPostgresListener : public QThread
     Q_OBJECT
 
   public:
+
     /**
      * create an instance if possible and starts the associated thread
      * /returns NULLPTR on error

@@ -25,10 +25,10 @@
 
 #include "modeltest.h"
 
-#include <QStringList>
-#include <QSize>
 #include <QAbstractItemModel>
 #include <QDebug>
+#include <QSize>
+#include <QStringList>
 
 /*!
     Connect to all of the models signals.  Whenever anything happens

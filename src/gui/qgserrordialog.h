@@ -35,6 +35,7 @@ class GUI_EXPORT QgsErrorDialog : public QDialog, private Ui::QgsErrorDialogBase
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsErrorDialog
      */

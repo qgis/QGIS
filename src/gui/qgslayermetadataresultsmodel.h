@@ -73,6 +73,7 @@ class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a QgsLayerMetadataResultsModel from a \a searchContext and
      * an optional \a parent.

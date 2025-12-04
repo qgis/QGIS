@@ -33,6 +33,7 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
     Q_OBJECT
 
   public:
+
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied

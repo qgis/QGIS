@@ -26,6 +26,7 @@ but rather accessed through :py:func:`QgsGui.processingGuiRegistry()`.
 #include "qgsprocessingguiregistry.h"
 %End
   public:
+
     QgsProcessingGuiRegistry();
 %Docstring
 Constructor. Should never be called manually, is already created by

@@ -50,6 +50,7 @@ class GUI_EXPORT QgsAbstractInputController : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAbstractInputController, with the specified \a parent object.
      */

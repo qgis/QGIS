@@ -39,6 +39,7 @@ class GUI_EXPORT QgsExtentBufferWidget : public QgsPanelWidget, public QgsExpres
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsExtentBufferWidget
      */

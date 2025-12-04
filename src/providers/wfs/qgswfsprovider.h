@@ -130,7 +130,8 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     static QString buildIsNullGeometryFilter( const QgsWfsCapabilities &caps, const QString &geometryElement );
     static QString buildGeometryCollectionFilter( const QgsWfsCapabilities &caps, const QString &geometryElement );
 
-    /** Perform an initial GetFeature request with a 1-feature limit.
+    /**
+     * Perform an initial GetFeature request with a 1-feature limit.
      *  \param force If true, the request will be issued even if the provider already has a known wkbType set.
     */
     void issueInitialGetFeature( bool force = false );

@@ -35,6 +35,7 @@ class GUI_EXPORT QgsLayoutComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * QgsLayoutComboBox creates a combo box to display a list of items in a
      * layout \a manager. The layouts can optionally be filtered by type.

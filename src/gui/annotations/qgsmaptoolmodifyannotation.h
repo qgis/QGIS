@@ -45,6 +45,7 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMapToolModifyAnnotation
      */

@@ -20,6 +20,7 @@ Widget allowing editing a QVariantMap, using a table.
 #include "qgskeyvaluewidget.h"
 %End
   public:
+
     explicit QgsKeyValueWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor.

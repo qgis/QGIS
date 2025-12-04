@@ -38,6 +38,7 @@ class QgsTiledSceneLayer;
 class _3D_EXPORT QgsQuantizedMeshTerrainSettings : public QgsAbstractTerrainSettings
 {
   public:
+
     /**
      * Creates a new instance of a QgsQuantizedMeshTerrainSettings object.
      */

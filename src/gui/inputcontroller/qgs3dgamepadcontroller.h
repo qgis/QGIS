@@ -62,6 +62,7 @@ class GUI_EXPORT QgsGamepad3DMapController : public QgsAbstract3DMapController
 #endif
 
   public:
+
     /**
      * Constructor for QgsGamepad3DMapController, with the specified \a gamepadDeviceId and \a parent object.
      */

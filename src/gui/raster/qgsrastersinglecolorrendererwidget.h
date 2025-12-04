@@ -34,6 +34,7 @@ class GUI_EXPORT QgsRasterSingleColorRendererWidget : public QgsRasterRendererWi
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsRasterSingleColorRendererWidget.
      * \param layer associated raster layer

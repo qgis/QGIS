@@ -36,6 +36,7 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsCodeEditorDockWidget, with the specified window geometry settings key.
      *

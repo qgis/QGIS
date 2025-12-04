@@ -112,7 +112,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
   protected:
     /**
      * Adds a new option to the widget.
-     * 
+     *
      * \a icon added in QGIS 4.0
      */
     void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );

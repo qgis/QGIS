@@ -231,6 +231,7 @@ class QgsPostgresConn : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Get a new PostgreSQL connection
      *

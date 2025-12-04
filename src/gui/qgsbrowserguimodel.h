@@ -39,6 +39,7 @@ class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBrowserGuiModel, with the specified \a parent object.
      *

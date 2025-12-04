@@ -44,6 +44,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsScrollArea.
      */

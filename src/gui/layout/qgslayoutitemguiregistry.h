@@ -195,6 +195,7 @@ typedef std::function<void( QgsLayoutItem *, Qgis::MouseHandlesAction action )> 
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
   public:
+
     /**
      * Constructor for QgsLayoutItemGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the various
@@ -335,6 +336,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
 class GUI_EXPORT QgsLayoutItemGuiGroup
 {
   public:
+
     /**
      * Constructor for QgsLayoutItemGuiGroup.
      */
@@ -378,6 +380,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new empty item GUI registry.
      *
@@ -539,7 +542,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     /**
      * Emitted whenever an item type is removed from the registry, with the specified
      * \a metadataId.
-     * 
+     *
      * \since QGIS 4.0
      */
     void typeRemoved( int metadataId );

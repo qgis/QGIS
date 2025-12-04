@@ -40,6 +40,7 @@ class QgsProject;
 class SERVER_EXPORT QgsServerApiContext
 {
   public:
+
     /**
     * QgsServerApiContext constructor
     *

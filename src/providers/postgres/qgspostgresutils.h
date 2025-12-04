@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgspostgresutils.h  -  Utils for PostgreSQL/PostGIS 
+      qgspostgresutils.h  -  Utils for PostgreSQL/PostGIS
                              -------------------
     begin                : Jan 2, 2004
     copyright            : (C) 2003 by Gary E.Sherman
@@ -105,7 +105,7 @@ class QgsPostgresUtils
     * Check if projects table exists in the specified schema
     *
     * \returns true if the table exists
-    * 
+    *
     * \since QGIS 3.44
     */
     static bool projectsTableExists( QgsPostgresConn *conn, const QString &schemaName );
@@ -114,7 +114,7 @@ class QgsPostgresUtils
     * Creates projects table exists in the specified schema
     *
     * \returns true on success
-    * 
+    *
     * \since QGIS 3.44
     */
     static bool createProjectsTable( QgsPostgresConn *conn, const QString &schemaName );
@@ -123,7 +123,7 @@ class QgsPostgresUtils
     * Deletes projects from project's table in the specified schema
     *
     * \returns true on success
-    * 
+    *
     * \since QGIS 3.44
     */
     static bool deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName );
@@ -154,7 +154,7 @@ class QgsPostgresUtils
     static QString variantMapToHtml( const QVariantMap &variantMap, const QString &title = QString() );
 
     /*
-    * Set comment for a project 
+    * Set comment for a project
     *
     * \returns true on success
     *

@@ -151,6 +151,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */

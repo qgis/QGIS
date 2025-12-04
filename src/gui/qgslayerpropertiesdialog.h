@@ -158,6 +158,7 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     void loadDefaultStyle();
 
   protected:
+
     /**
      * Initialize the dialog. Must be called in the subclass constructor
      * as the final call.
@@ -222,6 +223,7 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     void openUrl( const QUrl &url );
 
   private:
+
     /**
      * Generates the window title for the dialog.
      */

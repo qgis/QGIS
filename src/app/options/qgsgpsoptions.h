@@ -32,6 +32,7 @@ class APP_EXPORT QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGpsOptionsWidget with the specified \a parent widget.
      */
