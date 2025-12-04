@@ -23,6 +23,7 @@
 #include "qgsreadwritelocker.h"
 #include "qgssetrequestinitiator_p.h"
 
+#include <QCryptographicHash>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkRequest>

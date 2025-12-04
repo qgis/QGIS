@@ -25,6 +25,8 @@
 #include "qgssetrequestinitiator_p.h"
 #include "qgsvariantutils.h"
 
+#include <QCryptographicHash>
+#include <QFile>
 #include <QImageReader>
 #include <QJsonParseError>
 #include <QRegularExpression>
