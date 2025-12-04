@@ -2296,8 +2296,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
-
-
     void showProgress( int progress, int totalSteps );
 
     /**
