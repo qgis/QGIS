@@ -20,7 +20,7 @@ extern "C"
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <fcntl.h>
 #include <io.h>
 #endif

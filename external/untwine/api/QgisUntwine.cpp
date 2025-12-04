@@ -3,7 +3,7 @@
 
 #include "QgisUntwine.hpp"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "QgisUntwine_win.cpp"
 #else
 #include "QgisUntwine_unix.cpp"

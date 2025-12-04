@@ -9,14 +9,14 @@
 
 #include <stdio.h>
 #include <memory.h>
-#ifdef WIN32
+#ifdef _WIN32
 #include <crtdbg.h>
-#endif //WIN32
+#endif //_WIN32
 
 #include <random>
 
 // Use CRT Debug facility to dump memory leaks on app exit
-#ifdef WIN32
+#ifdef _WIN32
   // These two are for MSVS 2005 security consciousness until safe std lib funcs are available
 #pragma warning(disable : 4996) // Deprecated functions
 #define _CRT_SECURE_NO_DEPRECATE // Allow old unsecure standard library functions, Disable some 'warning C4996 - function was deprecated'
@@ -32,7 +32,7 @@
 #define  SET_CRT_DEBUG_FIELD(a)   ((void) 0)
 #define  CLEAR_CRT_DEBUG_FIELD(a) ((void) 0)
 #endif
-#endif //WIN32
+#endif //_WIN32
 
 //
 // Get a random float b/n two values
@@ -236,10 +236,10 @@ int main(int argc, char* argv[])
         printf("No memory leaks detected by app\n");
     }
 
-#ifdef WIN32
+#ifdef _WIN32
     // Use CRT Debug facility to dump memory leaks on app exit
     SET_CRT_DEBUG_FIELD(_CRTDBG_LEAK_CHECK_DF);
-#endif //WIN32
+#endif //_WIN32
 
     return 0;
 }

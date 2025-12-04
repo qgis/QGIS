@@ -46,7 +46,7 @@
 #include "sigwatch.h"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <fcntl.h> /*  _O_BINARY */
 #include <windows.h>
 #include <dbghelp.h>
@@ -521,7 +521,7 @@ int main( int argc, char *argv[] )
 #endif
 
   QgsDebugMsgLevel( QStringLiteral( "Starting qgis main" ), 1 );
-#ifdef WIN32 // Windows
+#ifdef _WIN32 // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
 #else  //MinGW
