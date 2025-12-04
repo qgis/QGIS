@@ -4186,7 +4186,7 @@ QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &valu
       const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
       if ( !g.isNull() )
       {
-        return QStringLiteral( "%1 [%2]" ).arg( QgsWkbTypes::geometryDisplayString( g.type() ), g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ));
+        return QStringLiteral( "%1 [%2]" ).arg( QgsWkbTypes::geometryDisplayString( g.type() ), g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
       }
       return QgsWkbTypes::geometryDisplayString( g.type() );
     }
@@ -5529,7 +5529,7 @@ QString QgsProcessingParameterEnum::userFriendlyString( const QVariant &value ) 
   if ( QgsVariantUtils::isNull( value ) )
     return QString();
 
-  return options().at( value.toInt() );
+  return options().value( value.toInt() );
 }
 
 QStringList QgsProcessingParameterEnum::options() const
