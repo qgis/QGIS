@@ -38,10 +38,6 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert, bool manageCertTr
   , mConnectionCAs( connectionCAs )
   , mDefaultItemForeground( QBrush() )
   , mManageTrust( manageCertTrust )
-  , mTrustCacheRebuilt( false )
-  , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-  , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-
 {
   if ( QgsApplication::authManager()->isDisabled() )
   {

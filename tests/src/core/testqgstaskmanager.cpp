@@ -253,7 +253,6 @@ class FinishTask : public QgsTask
   public:
     FinishTask( bool *result, const QString &desc )
       : QgsTask( desc )
-      , desiredResult( false )
       , resultObtained( result )
     {
       qDebug() << "created task " << desc;
@@ -264,7 +263,7 @@ class FinishTask : public QgsTask
       qDebug() << "deleting task " << description();
     }
 
-    bool desiredResult;
+    bool desiredResult = false;
     bool *resultObtained = nullptr;
 
   protected:

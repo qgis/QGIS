@@ -98,7 +98,7 @@ class QgsTerrainTextureGenerator : public QObject
     };
 
     QHash<QgsMapRendererSequentialJob *, JobData> mJobs;
-    int mLastJobId;
+    int mLastJobId = 0;
     QSize mTextureSize;
 };
 

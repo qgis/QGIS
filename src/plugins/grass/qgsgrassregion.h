@@ -116,7 +116,7 @@ class QgsGrassRegion : public QWidget, private Ui::QgsGrassRegionBase
     void refreshGui();
 
     //! Currently updating GUI, don't run *Changed methods
-    bool mUpdatingGui;
+    bool mUpdatingGui = false;
 
     // Format N, S, E, W value
     QString formatExtent( double v );

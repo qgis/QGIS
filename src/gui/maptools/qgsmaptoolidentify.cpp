@@ -68,8 +68,6 @@
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
   , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
-  , mLastMapUnitsPerPixel( -1.0 )
-  , mCoordinatePrecision( 6 )
 {
   connect( mIdentifyMenu, &QgsIdentifyMenu::messageEmitted, this, &QgsMapTool::messageEmitted );
   connect( mIdentifyMenu, &QgsIdentifyMenu::messageDiscarded, this, &QgsMapTool::messageDiscarded );

@@ -365,7 +365,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
   protected:
     QgsLayerTreeLayer *mLayerNode = nullptr;
-    bool mEmbeddedInParent;
+    bool mEmbeddedInParent = false;
     QString mUserLabel;
     QgsLegendPatchShape mPatchShape;
     QSizeF mUserSize;
@@ -563,7 +563,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QgsLegendSymbolItem mItem;
     mutable QPixmap mPixmap; // cached symbol preview
     QString mLabel;
-    bool mSymbolUsesMapUnits;
+    bool mSymbolUsesMapUnits = false;
 
     QSize mIconSize;
 
@@ -773,7 +773,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     QImage mImage;
 
-    bool mValid;
+    bool mValid = false;
 
     mutable std::unique_ptr<QgsImageFetcher> mFetcher;
 };

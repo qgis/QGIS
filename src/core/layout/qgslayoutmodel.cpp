@@ -950,7 +950,6 @@ void QgsLayoutModel::setSelected( const QModelIndex &index )
 QgsLayoutProxyModel::QgsLayoutProxyModel( QgsLayout *layout, QObject *parent )
   : QSortFilterProxyModel( parent )
   , mLayout( layout )
-  , mItemTypeFilter( QgsLayoutItemRegistry::LayoutItem )
 {
   if ( mLayout )
     setSourceModel( mLayout->itemsModel() );

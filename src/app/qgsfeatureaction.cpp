@@ -41,7 +41,6 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVecto
   , mFeature( &f )
   , mActionId( actionId )
   , mIdx( defaultAttr )
-  , mFeatureSaved( false )
 {
 }
 

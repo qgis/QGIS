@@ -45,7 +45,6 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   : QMainWindow( iface->mainWindow(), Qt::Dialog )
   , QgsGrassMapcalcBase()
   , QgsGrassModuleOptions( tools, module, iface, false )
-  , mTool( -1 )
 {
   Q_UNUSED( parent )
   Q_UNUSED( f )
@@ -1352,15 +1351,7 @@ void QgsGrassMapcalc::clear()
 QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
   : QGraphicsRectItem( -1000, -1000, 50, 20, nullptr )
   , mType( type )
-  , mRound( 0. )
   , mCenter( -1000, -1000 )
-  , mSocketHalf( 0. )
-  , mMargin( 0. )
-  , mSpace( 0. )
-  , mTextHeight( 0 )
-  , mInputTextWidth( 0 )
-  , mSelectionBoxSize( 5 )
-  , mOutputConnectorEnd( 0 )
 {
   QGraphicsRectItem::setZValue( 20 );
 

@@ -23,7 +23,6 @@
 
 QgsPreviewEffect::QgsPreviewEffect( QObject *parent )
   : QGraphicsEffect( parent )
-  , mMode( PreviewGrayscale )
 {
   //effect is disabled by default
   setEnabled( false );

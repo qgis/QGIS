@@ -73,9 +73,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool trans
 }
 
 QgsOracleConn::QgsOracleConn( const QgsDataSourceUri &uri, bool transaction )
-  : mRef( 1 )
-  , mCurrentUser( QString() )
-  , mHasSpatial( -1 )
+  : mCurrentUser( QString() )
   , mTransaction( transaction )
 {
   QgsDebugMsgLevel( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ), 2 );

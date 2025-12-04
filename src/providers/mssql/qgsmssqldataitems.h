@@ -89,9 +89,9 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QString mDatabase;
     QString mUsername;
     QString mPassword;
-    bool mUseGeometryColumns;
-    bool mUseEstimatedMetadata;
-    bool mAllowGeometrylessTables;
+    bool mUseGeometryColumns = false;
+    bool mUseEstimatedMetadata = false;
+    bool mAllowGeometrylessTables = true;
     QgsMssqlGeomColumnTypeThread *mColumnTypeThread = nullptr;
     QVariantMap mSchemaSettings;
     bool mSchemasFilteringEnabled = false;

@@ -102,7 +102,7 @@ namespace Sqlite
 {
   Query::Query( sqlite3 *db, const QString &q )
     : db_( db )
-    , nBind_( 1 )
+
   {
     const QByteArray ba( q.toUtf8() );
     const int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );

@@ -231,7 +231,6 @@ class QgsPostgresConn : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Get a new PostgreSQL connection
      *
@@ -500,44 +499,44 @@ class QgsPostgresConn : public QObject
     static QString connectionInfo( const QgsDataSourceUri &uri, const bool expandAuthCfg = true );
 
   private:
-    int mRef;
-    int mOpenCursors;
+    int mRef = 1;
+    int mOpenCursors = 0;
     PGconn *mConn = nullptr;
     QString mConnInfo;
     QgsDataSourceUri mUri;
 
     //! GEOS capability
-    mutable bool mGeosAvailable;
+    mutable bool mGeosAvailable = false;
 
     //! PROJ capability
-    mutable bool mProjAvailable;
+    mutable bool mProjAvailable = false;
 
     //! Topology capability
-    mutable bool mTopologyAvailable;
+    mutable bool mTopologyAvailable = false;
 
     //! PostGIS version string
     mutable QString mPostgisVersionInfo;
 
     //! Are mPostgisVersionMajor, mPostgisVersionMinor, mGeosAvailable, mTopologyAvailable valid?
-    mutable bool mGotPostgisVersion;
+    mutable bool mGotPostgisVersion = false;
 
     //! PostgreSQL version
-    mutable int mPostgresqlVersion;
+    mutable int mPostgresqlVersion = 0;
 
     //! PostGIS major version
-    mutable int mPostgisVersionMajor;
+    mutable int mPostgisVersionMajor = 0;
 
     //! PostGIS minor version
-    mutable int mPostgisVersionMinor;
+    mutable int mPostgisVersionMinor = 0;
 
     //! pointcloud support available
-    mutable bool mPointcloudAvailable;
+    mutable bool mPointcloudAvailable = false;
 
     //! raster support available
-    mutable bool mRasterAvailable;
+    mutable bool mRasterAvailable = false;
 
     //! encode wkb in hex
-    mutable bool mUseWkbHex;
+    mutable bool mUseWkbHex = false;
 
     bool mReadOnly;
 
@@ -575,7 +574,7 @@ class QgsPostgresConn : public QObject
      * XXX to little-endian; but the inverse transaction is possible, too, and
      * XXX that's not reflected in this variable
      */
-    bool mSwapEndian;
+    bool mSwapEndian = false;
     void deduceEndian();
 
     static QAtomicInt sNextCursorId;

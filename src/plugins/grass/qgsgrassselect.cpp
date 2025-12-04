@@ -34,7 +34,6 @@ extern "C"
 QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   : QDialog( parent )
   , QgsGrassSelectBase()
-  , selectedType( 0 )
 {
   QgsDebugMsgLevel( QString( "QgsGrassSelect() type = %1" ).arg( type ), 3 );
 

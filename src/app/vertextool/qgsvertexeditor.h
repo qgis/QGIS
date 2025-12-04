@@ -44,8 +44,7 @@ class APP_EXPORT QgsVertexEntry
 {
   public:
     QgsVertexEntry( const QgsPoint &p, QgsVertexId vertexId )
-      : mSelected( false )
-      , mPoint( p )
+      : mPoint( p )
       , mVertexId( vertexId )
     {
     }
@@ -59,7 +58,7 @@ class APP_EXPORT QgsVertexEntry
     void setSelected( bool selected ) { mSelected = selected; }
 
   private:
-    bool mSelected;
+    bool mSelected = false;
     QgsPoint mPoint;
     QgsVertexId mVertexId;
 };

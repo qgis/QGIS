@@ -44,7 +44,6 @@ class QgsPointCloudExpressionPrivate
       , mEvalErrorString( other.mEvalErrorString )
       , mParserErrors( other.mParserErrors )
       , mExp( other.mExp )
-      , mIsPrepared( false )
     {}
 
     ~QgsPointCloudExpressionPrivate()

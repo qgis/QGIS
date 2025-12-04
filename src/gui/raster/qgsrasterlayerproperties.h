@@ -56,7 +56,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     Q_OBJECT
 
   public:
-
     /**
      * enumeration for the different types of style
      */
@@ -183,12 +182,12 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     QString mDefaultContrastEnhancementAlgorithm;
 
     //! \brief default standard deviation
-    double mDefaultStandardDeviation;
+    double mDefaultStandardDeviation = 0;
 
     //! \brief Default band combination
-    int mDefaultRedBand;
-    int mDefaultGreenBand;
-    int mDefaultBlueBand;
+    int mDefaultRedBand = 0;
+    int mDefaultGreenBand = 0;
+    int mDefaultBlueBand = 0;
 
     //! \brief Flag to indicate if Gray minimum maximum values are actual minimum maximum values
     bool mGrayMinimumMaximumEstimated;
@@ -232,14 +231,14 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     QLinearGradient blueGradient();
     QLinearGradient grayGradient();
     QLinearGradient highlightGradient();
-    qreal mGradientHeight;
-    qreal mGradientWidth;
+    qreal mGradientHeight = 0.0;
+    qreal mGradientWidth = 0.0;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 
-    bool mMetadataFilled;
+    bool mMetadataFilled = false;
 
     //! Synchronize state with associated raster layer
     void sync();

@@ -51,9 +51,6 @@ extern "C"
 QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct )
   : mModule( module )
   , mKey( key )
-  , mMultiple( false )
-  , mHidden( false )
-  , mRequired( false )
   , mDirect( direct )
 {
   Q_UNUSED( gdesc )
@@ -260,14 +257,8 @@ void QgsGrassModuleMultiParam::showAddRemoveButtons()
 
 QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mControlType( NoControl )
-  , mValueType( String )
-  , mOutputType( None )
-  , mHaveLimits( false )
   , mMin( std::numeric_limits<int>::max() )
   , mMax( std::numeric_limits<int>::min() )
-  , mIsOutput( false )
-  , mUsesRegion( false )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
 
@@ -1384,7 +1375,6 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
 )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mType( Old )
 {
   if ( mTitle.isEmpty() )
   {

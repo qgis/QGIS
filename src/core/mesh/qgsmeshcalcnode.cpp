@@ -23,7 +23,6 @@
 #include "qgsmeshmemorydataprovider.h"
 
 QgsMeshCalcNode::QgsMeshCalcNode()
-  : mType( tNoData )
 {
 }
 

@@ -58,7 +58,7 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
     QgsVectorLayer *mLayer = nullptr;
 
     std::unique_ptr<QgsAbstractMaterialSettings> mCurrentSettings;
-    QgsMaterialSettingsRenderingTechnique mTechnique;
+    QgsMaterialSettingsRenderingTechnique mTechnique = QgsMaterialSettingsRenderingTechnique::Triangles;
 };
 
 #endif // QGSMATERIALWIDGET_H

@@ -127,9 +127,6 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     bool overwrite,
     const QMap<QString, QVariant> &options,
     QgsFeatureSink::SinkFlags sinkFlags )
-  : mErrorCount( 0 )
-  , mAttributeCount( -1 )
-
 {
   mProvider = nullptr;
 

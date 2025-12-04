@@ -37,7 +37,6 @@
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( tr( "Data Source Manager" ), parent, fl )
   , ui( new Ui::QgsDataSourceManagerDialog )
-  , mPreviousRow( -1 )
   , mMapCanvas( canvas )
   , mBrowserModel( browserModel )
 {

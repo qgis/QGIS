@@ -132,8 +132,8 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
     std::unique_ptr<QgsAbstractGeometry> mGeometry = nullptr;
     QBrush mBrush;
     QPen mPen;
-    int mIconSize;
-    IconType mIconType;
+    int mIconSize = 5;
+    IconType mIconType = ICON_BOX;
     Qgis::GeometryType mGeometryType;
     bool mDrawVertices = true;
 

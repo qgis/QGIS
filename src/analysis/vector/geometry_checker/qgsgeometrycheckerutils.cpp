@@ -226,7 +226,6 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
   , mExtent( extent )
   , mGeometryTypes( geometryTypes )
   , mContext( context )
-  , mUseMapCrs( true )
 {
   for ( const QString &layerId : layerIds )
   {

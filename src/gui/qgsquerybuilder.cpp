@@ -39,7 +39,6 @@
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
-  , mPreviousFieldRow( -1 )
   , mLayer( layer )
 {
   setupUi( this );

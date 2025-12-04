@@ -49,7 +49,6 @@ class QgsFieldValuesLineEditValuesGatherer : public QThread
     QgsFieldValuesLineEditValuesGatherer( QgsVectorLayer *layer, int attributeIndex )
       : mLayer( layer )
       , mAttributeIndex( attributeIndex )
-      , mWasCanceled( false )
     {}
 
     /**
@@ -80,7 +79,7 @@ class QgsFieldValuesLineEditValuesGatherer : public QThread
     QStringList mValues;
     QgsFeedback *mFeedback = nullptr;
     QMutex mFeedbackMutex;
-    bool mWasCanceled;
+    bool mWasCanceled = false;
 };
 
 ///@endcond
@@ -103,7 +102,6 @@ class GUI_EXPORT QgsFieldValuesLineEdit : public QgsFilterLineEdit
     Q_PROPERTY( int attributeIndex READ attributeIndex WRITE setAttributeIndex NOTIFY attributeIndexChanged )
 
   public:
-
     /**
      * Constructor for QgsFieldValuesLineEdit
      * \param parent parent widget

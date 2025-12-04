@@ -53,7 +53,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Q_OBJECT
 
   public:
-
     /**
      * The CadCapacity enum defines the possible constraints to be set
      * depending on the number of points in the CAD point list (the list of points
@@ -91,7 +90,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     class GUI_EXPORT CadConstraint
     {
       public:
-
         /**
          * The lock mode
          */
@@ -114,10 +112,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
           , mLockerButton( lockerButton )
           , mRelativeButton( relativeButton )
           , mRepeatingLockButton( repeatingLockButton )
-          , mLockMode( NoLock )
-          , mRepeatingLock( false )
-          , mRelative( false )
-          , mValue( 0.0 )
         {}
 
         /**
@@ -240,10 +234,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         QToolButton *mLockerButton = nullptr;
         QToolButton *mRelativeButton = nullptr;
         QToolButton *mRepeatingLockButton = nullptr;
-        LockMode mLockMode;
-        bool mRepeatingLock;
-        bool mRelative;
-        double mValue;
+        LockMode mLockMode = NoLock;
+        bool mRepeatingLock = false;
+        bool mRelative = false;
+        double mValue = 0.0;
         int mPrecision = 6;
         Qgis::CadConstraintType mCadConstraintType = Qgis::CadConstraintType::Generic;
         QgsMapCanvas *mMapCanvas = nullptr;
@@ -1023,7 +1017,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void settingsButtonTriggered( QAction *action );
 
   private:
-
     /**
      * Returns the layer currently associated with the map tool using the dock widget.
      */

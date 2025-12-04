@@ -47,7 +47,6 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributeFormEditorWidget.
      * \param editorWidget associated editor widget wrapper (for default/edit modes)
@@ -165,9 +164,9 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
     QVariantList mPreviousAdditionalValues;
-    bool mBlockValueUpdate;
-    bool mIsMixed;
-    bool mIsChanged;
+    bool mBlockValueUpdate = false;
+    bool mIsMixed = false;
+    bool mIsChanged = false;
     bool mIsConstraintResultVisible = false;
 
     void updateWidgets() final;

@@ -336,7 +336,7 @@ class QOCISpatialRowId : public QSharedData
 
   private:
     QOCISpatialRowId( const QOCISpatialRowId &other )
-      : QSharedData( other ), id( nullptr ) { Q_ASSERT( false ); }
+      : QSharedData( other ) { Q_ASSERT( false ); }
     QOCISpatialRowId &operator=( const QOCISpatialRowId & ) = delete;
 };
 

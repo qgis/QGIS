@@ -33,7 +33,7 @@
 
 QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolCaptureLayerGeometry( canvas, cadDockWidget, mode )
-  , mCheckGeometryType( true )
+
 {
   mToolName = tr( "Digitize feature" );
   connect( QgsProject::instance(), &QgsProject::cleared, this, &QgsMapToolDigitizeFeature::stopCapturing );

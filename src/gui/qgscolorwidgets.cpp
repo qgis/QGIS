@@ -1863,8 +1863,6 @@ QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *
   : QWidgetAction( parent )
   , mMenu( menu )
   , mColorWidget( colorWidget )
-  , mSuppressRecurse( false )
-  , mDismissOnColorSelection( true )
 {
   setDefaultWidget( mColorWidget );
   connect( mColorWidget, &QgsColorWidget::colorChanged, this, &QgsColorWidgetAction::setColor );

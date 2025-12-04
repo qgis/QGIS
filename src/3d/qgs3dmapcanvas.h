@@ -251,7 +251,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void updateHighlightSizes();
 
   protected:
-
     /**
      * Manages the display events specified in e.
      */
@@ -281,9 +280,9 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     // Scene
     Qt3DCore::QEntity *m_root;
-    Qt3DCore::QEntity *m_userRoot;
+    Qt3DCore::QEntity *m_userRoot = nullptr;
 
-    bool m_initialized;
+    bool m_initialized = false;
 
     QgsWindow3DEngine *mEngine = nullptr;
 

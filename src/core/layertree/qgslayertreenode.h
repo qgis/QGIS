@@ -322,7 +322,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! list of children - node is responsible for their deletion
     QList<QgsLayerTreeNode *> mChildren;
     //! whether the node should be shown in GUI as expanded
-    bool mExpanded;
+    bool mExpanded = true;
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
 

@@ -69,11 +69,8 @@
 
 QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
   : QWidget( parent )
-  , mNotSupportedPage( 0 )
-  , mLayerPage( 1 )
   , mMapCanvas( canvas )
   , mMessageBar( messageBar )
-  , mBlockAutoApply( false )
   , mPageFactories( pages )
 {
   setupUi( this );

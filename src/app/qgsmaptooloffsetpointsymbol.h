@@ -54,7 +54,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol : public QgsMapToolPointSymbol
 
   private:
     //! True when user is dragging to offset a point
-    bool mOffsetting;
+    bool mOffsetting = false;
 
     //! Item that previews the offset during mouse move
     QgsMapCanvasMarkerSymbolItem *mOffsetItem = nullptr;
@@ -69,7 +69,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol : public QgsMapToolPointSymbol
     QgsPointXY mClickedPoint;
 
     //! Stores the symbol rotation so that offset can be adjusted to account for rotation
-    double mSymbolRotation;
+    double mSymbolRotation = 0.0;
 
     //! Create item with the point symbol for a specific feature. This will be used to show the offset to the user.
     void createPreviewItem( QgsMarkerSymbol *markerSymbol );
