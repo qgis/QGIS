@@ -1266,6 +1266,9 @@ void QgsLayoutItemMapGrid::drawGridFrameLine( QPainter *p, GridExtension *extens
 void QgsLayoutItemMapGrid::drawCoordinateAnnotations( QgsRenderContext &context, QgsExpressionContext &expressionContext,
     GridExtension *extension ) const
 {
+  if ( mGridLines.empty() )
+    return;
+
   QString currentAnnotationString;
   QList< GridLine >::const_iterator it = mGridLines.constBegin();
 
