@@ -19,9 +19,13 @@
 #ifndef QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H
 #define QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmarkersymbol.h"
 #include "qgsunittypes.h"
 
 /**
@@ -207,7 +211,169 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      */
     void setRespectLayerColors( bool enabled );
 
+    /**
+     * Sets the profile \a type used when generating elevation profile plots.
+     *
+     * \see renderType()
+     * \since QGIS 4.0
+     */
+    void setRenderType( Qgis::PointCloudProfileType type ) { mRenderType = type; }
+
+    Qgis::PointCloudProfileType renderType() const { return mRenderType; }
+
+    /**
+     * Returns the symbol used to render lines for the layer in elevation profile plots.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is TRUE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is TRUE
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see setProfileLineSymbol()
+     * \since QGIS 4.0
+     */
+    QgsLineSymbol *profileLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render lines for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is TRUE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is TRUE
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see profileLineSymbol()
+     * \since QGIS 4.0
+     */
+    void setProfileLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbol used to render polygons for the layer in elevation profile plots.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is TRUE
+     *
+     * \see setProfileFillSymbol()
+     * \since QGIS 4.0
+     */
+    QgsFillSymbol *profileFillSymbol() const;
+
+    /**
+     * Sets the fill \a symbol used to render polygons for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A polygon feature is intersected by a profile line and extrusionEnabled() is TRUE
+     *
+     * \see profileFillSymbol()
+     * \since QGIS 4.0
+     */
+    void setProfileFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbol used to render points for the layer in elevation profile plots.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is FALSE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see setProfileMarkerSymbol()
+     * \since QGIS 4.0
+     */
+    QgsMarkerSymbol *profileMarkerSymbol() const;
+
+    /**
+     * Sets the marker \a symbol used to render points for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * The symbol will be used in the following circumstances:
+     *
+     * - A point feature is shown on the profile chart when extrusionEnabled() is FALSE
+     * - A line feature is intersected by a profile line and extrusionEnabled() is FALSE
+     *
+     * \see profileMarkerSymbol()
+     * \since QGIS 4.0
+     */
+    void setProfileMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbology option used to render the point cloud profile in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setProfileSymbology()
+     * \since QGIS 4.0
+     */
+    Qgis::ProfileSurfaceSymbology profileSymbology() const { return mSymbology; }
+
+    /**
+     * Sets the \a symbology option used to render the point cloud profile in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setProfileSymbology()
+     * \since QGIS 4.0
+     */
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+
+    /**
+     * Returns the elevation limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * By default this is NaN, which indicates that there is no elevation limit.
+     *
+     * \see setElevationLimit()
+     * \since QGIS 4.0
+     */
+    double elevationLimit() const;
+
+    /**
+     * Sets the elevation \a limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * Set to NaN to indicate that there is no elevation limit.
+     *
+     * \see elevationLimit()
+     * \since QGIS 4.0
+     */
+    void setElevationLimit( double limit );
+
+    /**
+     * Returns TRUE if the marker symbol should also be shown in continuous surface plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setShowMarkerSymbolInSurfacePlots()
+     * \since QGIS 4.0
+     */
+    bool showMarkerSymbolInSurfacePlots() const { return mShowMarkerSymbolInSurfacePlots; }
+
+    /**
+     * Sets whether the marker symbol should also be shown in continuous surface plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see showMarkerSymbolInSurfacePlots()
+     * \since QGIS 4.0
+     */
+    void setShowMarkerSymbolInSurfacePlots( bool show );
+
+
   private:
+    void setDefaultProfileLineSymbol( const QColor &color );
+    void setDefaultProfileMarkerSymbol( const QColor &color );
+    void setDefaultProfileFillSymbol( const QColor &color );
 
     double mMaximumScreenError = 0.3;
     Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
@@ -215,9 +381,16 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     double mPointSize = 0.6;
     Qgis::RenderUnit mPointSizeUnit = Qgis::RenderUnit::Millimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
+    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::FillBelow;
+    double mElevationLimit = std::numeric_limits<double>::quiet_NaN();
+    bool mShowMarkerSymbolInSurfacePlots = false;
     QColor mPointColor;
     bool mRespectLayerColors = true;
     bool mApplyOpacityByDistanceEffect = false;
+    Qgis::PointCloudProfileType mRenderType = Qgis::PointCloudProfileType::IndividualPoints;
 };
 
 #endif // QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H
