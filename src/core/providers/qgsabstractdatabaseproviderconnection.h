@@ -198,6 +198,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         void appendColumn( const QString &columnName ) SIP_SKIP;
 
         /**
+         * Inserts \a columnName at a defined \a index into the list of column names.
+         *
+         * \note Not available in Python bindings
+         */
+        void insertColumn( int index, const QString &columnName ) SIP_SKIP;
+
+        /**
          * Constructs a QueryResult object from an \a iterator.
          *
          * \note Not available in Python bindings
