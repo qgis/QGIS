@@ -31,8 +31,6 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, Qg
   : QObject( parent )
   , mRoot( root )
   , mCanvas( canvas )
-  , mPendingCanvasUpdate( false )
-  , mAutoSetupOnFirstLayer( true )
   , mHasLayersLoaded( !root->findLayers().isEmpty() )
 {
   connect( root, &QgsLayerTreeGroup::customPropertyChanged, this, &QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged );

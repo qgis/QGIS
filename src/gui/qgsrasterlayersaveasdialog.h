@@ -172,7 +172,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;
     QgsCoordinateReferenceSystem mPreviousCrs;
-    ResolutionState mResolutionState;
+    ResolutionState mResolutionState = OriginalResolution;
     QVector<bool> mNoDataToEdited;
 
     void setValidators();

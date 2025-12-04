@@ -44,18 +44,12 @@ using namespace pal;
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Qgis::LabelQuadrantPosition quadrant )
   : id( id )
   , feature( feature )
-  , probFeat( 0 )
-  , nbOverlap( 0 )
   , alpha( alpha )
   , w( w )
   , h( h )
-  , partId( -1 )
-  , upsideDown( false )
   , mQuadrant( quadrant )
   , mDirectionToLine( directionToLine )
   , mCost( cost )
-  , mHasObstacleConflict( false )
-  , mUpsideDownCharCount( 0 )
 {
   type = GEOS_POLYGON;
   nbPoints = 4;

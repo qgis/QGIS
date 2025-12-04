@@ -124,7 +124,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     QUrl mUrl;
     QNetworkReply *mReply = nullptr;
     QFile mFile;
-    bool mDownloadCanceled;
+    bool mDownloadCanceled = false;
     Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
     QByteArray mData;
     QStringList mErrors;

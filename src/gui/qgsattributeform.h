@@ -467,7 +467,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QgsFeature mFeature;
     QgsFeature mCurrentFormFeature;
     QgsMessageBar *mMessageBar = nullptr;
-    bool mOwnsMessageBar;
+    bool mOwnsMessageBar = true;
     QgsMessageBarItem *mMultiEditUnsavedMessageBarItem = nullptr;
     QgsMessageBarItem *mMultiEditMessageBarItem = nullptr;
     QList<QgsWidgetWrapper *> mWidgets;
@@ -538,19 +538,19 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QString mPyFormVarName;
 
     //! Sets to TRUE while saving to prevent recursive saves
-    bool mIsSaving;
+    bool mIsSaving = false;
 
     //! Flag to prevent refreshFeature() to change mFeature
-    bool mPreventFeatureRefresh;
+    bool mPreventFeatureRefresh = false;
 
-    bool mIsSettingMultiEditFeatures;
+    bool mIsSettingMultiEditFeatures = false;
 
     QgsFeatureIds mMultiEditFeatureIds;
-    bool mUnsavedMultiEditChanges;
+    bool mUnsavedMultiEditChanges = false;
 
     QString mEditCommandMessage;
 
-    QgsAttributeEditorContext::Mode mMode;
+    QgsAttributeEditorContext::Mode mMode = QgsAttributeEditorContext::SingleEditMode;
 
     QMap<QWidget *, QSvgWidget *> mIconMap;
 

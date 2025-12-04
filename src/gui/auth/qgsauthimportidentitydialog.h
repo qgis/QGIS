@@ -108,11 +108,11 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
 
     QPushButton *okButton();
 
-    QgsAuthImportIdentityDialog::IdentityType mIdentityType;
+    QgsAuthImportIdentityDialog::IdentityType mIdentityType = CertIdentity;
     QPair<QSslCertificate, QSslKey> mCertBundle;
     QgsPkiBundle mPkiBundle;
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

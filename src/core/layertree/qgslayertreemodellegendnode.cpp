@@ -50,7 +50,6 @@
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )
   , mLayerNode( nodeL )
-  , mEmbeddedInParent( false )
 {
 }
 
@@ -333,7 +332,6 @@ double QgsSymbolLegendNode::MAXIMUM_SIZE = -1.0;
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mItem( item )
-  , mSymbolUsesMapUnits( false )
 {
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   mIconSize = QSize( iconSize, iconSize );
@@ -1289,7 +1287,6 @@ QJsonObject QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettin
 
 QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-  , mValid( false )
 {
 }
 

@@ -145,7 +145,6 @@ QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsTriangu
     const QgsMeshDataBlock &datasetVectorValues )
   : mTriangularMesh( triangularMesh )
   , mDatasetValues( datasetVectorValues )
-  , mUseScalarActiveFaceFlagValues( false )
 {}
 
 QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh,

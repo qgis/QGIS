@@ -90,7 +90,6 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface, bool direct, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassModuleBase()
-  , mSuccess( false )
   , mDirect( direct )
 {
   QgsDebugMsgLevel( "called", 4 );

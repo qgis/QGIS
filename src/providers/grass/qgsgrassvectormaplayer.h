@@ -186,14 +186,14 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     dbDriver *openDriver( QString &error );
     void addTopoField( QgsFields &fields );
     int mField;
-    bool mValid;
+    bool mValid = false;
     QgsGrassVectorMap *mMap = nullptr;
     struct field_info *mFieldInfo = nullptr;
     dbDriver *mDriver = nullptr;
 
-    bool mHasTable;
+    bool mHasTable = false;
     // index of key column
-    int mKeyColumn;
+    int mKeyColumn = -1;
 
     // table fields, updated if a field is added/deleted, if there is no table, it contains
     // cat field
@@ -217,7 +217,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     // timestamp when attributes were loaded
     QDateTime mLastLoaded;
     // number of instances using this layer
-    int mUsers;
+    int mUsers = 0;
 };
 
 #endif // QGSGRASSVECTORMAPLAYER_H

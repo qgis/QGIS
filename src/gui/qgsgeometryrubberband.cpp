@@ -25,7 +25,7 @@
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType )
-  : QgsMapCanvasItem( mapCanvas ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
+  : QgsMapCanvasItem( mapCanvas ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );

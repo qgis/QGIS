@@ -29,7 +29,6 @@
 
 QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas *mapCanvas )
   : mMapCanvas( mapCanvas )
-  , mRectRotation( 0.0 )
   , mItemSize( 0, 0 )
 {
   Q_ASSERT( mapCanvas && mapCanvas->scene() );

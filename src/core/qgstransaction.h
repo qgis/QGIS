@@ -189,9 +189,9 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     QgsTransaction( const QString &connString ) SIP_SKIP;
 
     QString mConnString;
-    bool mTransactionActive;
+    bool mTransactionActive = false;
     QStack< QString > mSavepoints;
-    bool mLastSavePointIsDirty;
+    bool mLastSavePointIsDirty = true;
 
   private slots:
     void onLayerDeleted();

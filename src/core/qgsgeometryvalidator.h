@@ -84,8 +84,8 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
 
     QgsGeometry mGeometry;
     QVector<QgsGeometry::Error> *mErrors;
-    bool mStop;
-    int mErrorCount;
+    bool mStop = false;
+    int mErrorCount = 0;
     Qgis::GeometryValidationEngine mMethod = Qgis::GeometryValidationEngine::QgisInternal;
 };
 

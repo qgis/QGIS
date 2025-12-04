@@ -47,7 +47,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringAbstract : public QgsMapToolShapeA
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
 
     //center point rubber band
-    bool mShowCenterPointRubberBand;
+    bool mShowCenterPointRubberBand = false;
     QgsGeometryRubberBand *mCenterPointRubberBand = nullptr;
 
     void createCenterPointRubberBand();

@@ -75,15 +75,15 @@ class QgsBench : public QObject
 
 
     QgsRectangle mExtent;
-    bool mSetExtent;
+    bool mSetExtent = false;
 
     QPainter::RenderHints mRendererHints;
 
     // log map
     QMap<QString, QVariant> mLogMap;
 
-    double mUserStart;
-    double mSysStart;
+    double mUserStart = 0.0;
+    double mSysStart = 0.0;
     QElapsedTimer mWallTime; // 'wall clock' time
 
     // user, sys, total times
@@ -93,7 +93,7 @@ class QgsBench : public QObject
 
     QgsMapSettings mMapSettings;
 
-    bool mParallel;
+    bool mParallel = false;
 };
 
 #endif // QGSBENCH_H

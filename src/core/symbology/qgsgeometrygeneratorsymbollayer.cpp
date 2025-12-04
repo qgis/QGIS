@@ -61,7 +61,6 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
 QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString &expression )
   : QgsSymbolLayer( Qgis::SymbolType::Hybrid )
   , mExpression( new QgsExpression( expression ) )
-  , mSymbolType( Qgis::SymbolType::Marker )
 {
 
 }

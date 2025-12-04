@@ -102,6 +102,6 @@ class TestQgsWcsPublicServers : public QObject
 
     QList<TestQgsWcsPublicServers::Server> mServers;
 
-    int mTimeout;
-    int mOrigTimeout;
+    int mTimeout = 300000;
+    int mOrigTimeout = 20000;
 };

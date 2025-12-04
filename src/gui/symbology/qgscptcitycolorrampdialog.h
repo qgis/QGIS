@@ -44,7 +44,6 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     Q_PROPERTY( QgsCptCityColorRamp ramp READ ramp WRITE setRamp )
 
   public:
-
     /**
      * Constructor for QgsCptCityColorRampDialog.
      * \param ramp initial ramp to show in dialog
@@ -114,7 +113,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
 
     QgsCptCityColorRamp mRamp;
     QgsCptCityArchive *mArchive = nullptr;
-    QgsCptCityBrowserModel::ViewType mArchiveViewType;
+    QgsCptCityBrowserModel::ViewType mArchiveViewType = QgsCptCityBrowserModel::Selections;
 
     /* void refreshModel( const QModelIndex& index ); */
     bool updateRamp();

@@ -167,7 +167,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLay
     int mFieldIndex;
     QVariant mOldValue;
     QVariant mNewValue;
-    bool mFirstChange;
+    bool mFirstChange = true;
 };
 
 /**

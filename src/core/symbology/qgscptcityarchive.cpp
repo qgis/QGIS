@@ -519,10 +519,8 @@ QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCit
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
   : mType( type )
   , mParent( parent )
-  , mPopulated( false )
   , mName( name )
   , mPath( path )
-  , mValid( true )
 {
 }
 
@@ -836,7 +834,6 @@ QIcon QgsCptCityColorRampItem::icon( QSize size )
 QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem *parent,
     const QString &name, const QString &path )
   : QgsCptCityDataItem( Collection, parent, name, path )
-  , mPopulatedRamps( false )
 {
 }
 

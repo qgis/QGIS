@@ -30,7 +30,6 @@
 
 QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   : mReply( reply )
-  , mValid( false )
 {
   if ( !mReply ) return;
 

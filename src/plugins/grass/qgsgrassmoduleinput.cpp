@@ -526,7 +526,6 @@ bool QgsGrassModuleInputCompleter::eventFilter( QObject *watched, QEvent *event 
 QgsGrassModuleInputComboBox::QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent )
   : QComboBox( parent )
   , mType( type )
-  , mSkipHide( false )
 {
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
@@ -766,10 +765,8 @@ bool QgsGrassModuleInputSelectedView::eventFilter( QObject *obj, QEvent *event )
 /**************************** QgsGrassModuleInput ****************************/
 QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module, QgsGrassModuleStandardOptions *options, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mType( QgsGrassObject::Vector )
   , mModuleStandardOptions( options )
-  , mUpdate( false )
-  , mUsesRegion( false )
+
 {
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
 

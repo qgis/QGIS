@@ -35,7 +35,6 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Construct a new color swatch grid.
      * \param scheme QgsColorScheme for colors to show in grid
@@ -120,11 +119,11 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     QgsNamedColorList mColors;
     QColor mBaseColor;
 
-    bool mDrawBoxDepressed;
-    int mCurrentHoverBox;
+    bool mDrawBoxDepressed = false;
+    int mCurrentHoverBox = -1;
 
-    bool mFocused;
-    int mCurrentFocusBox;
+    bool mFocused = false;
+    int mCurrentFocusBox = 0;
 
     int mWidth;
     //! Label rect height
@@ -143,7 +142,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     //! Horizontal/vertical gap between swatches
     int mSwatchSpacing = 0;
 
-    bool mPressedOnWidget;
+    bool mPressedOnWidget = false;
 
     /**
      * Calculate height of widget based on number of colors
@@ -192,7 +191,6 @@ class GUI_EXPORT QgsColorSwatchGridAction : public QWidgetAction
     Q_OBJECT
 
   public:
-
     /**
      * Construct a new color swatch grid action.
      * \param scheme QgsColorScheme for colors to show in grid
@@ -267,8 +265,8 @@ class GUI_EXPORT QgsColorSwatchGridAction : public QWidgetAction
     QgsColorSwatchGrid *mColorSwatchGrid = nullptr;
 
     //used to suppress recursion with hover events
-    bool mSuppressRecurse;
-    bool mDismissOnColorSelection;
+    bool mSuppressRecurse = false;
+    bool mDismissOnColorSelection = true;
 
   private slots:
 

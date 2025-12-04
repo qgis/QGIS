@@ -40,8 +40,7 @@
 #include <QUuid>
 
 QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &label, const QString &description, bool elseRule )
-  : mParent( nullptr )
-  , mSymbol( symbol )
+  : mSymbol( symbol )
   , mMaximumScale( scaleMinDenom )
   , mMinimumScale( scaleMaxDenom )
   , mFilterExp( filterExp )

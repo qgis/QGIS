@@ -844,7 +844,7 @@ QgsPalettedRendererClassGatherer::QgsPalettedRendererClassGatherer( QgsRasterLay
   , mBandNumber( bandNumber )
   , mRamp( ramp )
   , mClasses( existingClasses )
-  , mWasCanceled( false )
+
 {}
 
 void QgsPalettedRendererClassGatherer::run()

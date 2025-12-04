@@ -315,7 +315,7 @@ class QgsWFSProviderSQLFunctionValidator : public QgsSQLStatement::RecursiveVisi
   private:
     const QList<QgsWfsCapabilities::Function> &mSpatialPredicatesList;
     const QList<QgsWfsCapabilities::Function> &mFunctionList;
-    bool mError;
+    bool mError = false;
     QString mErrorMessage;
 };
 
@@ -325,7 +325,6 @@ QgsWFSProviderSQLFunctionValidator::QgsWFSProviderSQLFunctionValidator(
 )
   : mSpatialPredicatesList( spatialPredicatesList )
   , mFunctionList( functionList )
-  , mError( false )
 {
 }
 
@@ -383,7 +382,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
     const QMap<QString, QString> &mMapTableAliasToName;
     const QMap<QString, QgsFields> &mMapTypenameToFields;
     const QMap<QString, QString> &mMapTypenameToGeometryAttribute;
-    bool mError;
+    bool mError = false;
     QString mErrorMessage;
 };
 
@@ -399,7 +398,6 @@ QgsWFSProviderSQLColumnRefValidator::QgsWFSProviderSQLColumnRefValidator(
   , mMapTableAliasToName( mapTypenameAliasToTypename )
   , mMapTypenameToFields( mapTypenameToFields )
   , mMapTypenameToGeometryAttribute( mapTypenameToGeometryAttribute )
-  , mError( false )
 {
 }
 

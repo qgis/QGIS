@@ -480,7 +480,7 @@ class CORE_EXPORT QgsGml : public QObject
     QString mTypeName;
 
     //! True if the request is finished
-    bool mFinished;
+    bool mFinished = false;
 
     //! The features of the layer, map of feature maps for each feature type
     //QMap<QgsFeatureId, QgsFeature* > &mFeatures;

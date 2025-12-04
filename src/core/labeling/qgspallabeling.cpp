@@ -280,8 +280,7 @@ Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
-  : fieldIndex( 0 )
-  , mDataDefinedProperties( s.mDataDefinedProperties )
+  : mDataDefinedProperties( s.mDataDefinedProperties )
 {
   *this = s;
 }

@@ -50,8 +50,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   , m_defaultCamera( new Qt3DRender::QCamera )
   , m_inputSettings( new Qt3DInput::QInputSettings )
   , m_root( new Qt3DCore::QEntity )
-  , m_userRoot( nullptr )
-  , m_initialized( false )
 {
   setSurfaceType( QSurface::OpenGLSurface );
 

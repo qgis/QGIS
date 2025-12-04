@@ -389,9 +389,9 @@ namespace pal
       FeaturePart *feature = nullptr;
 
       // bug # 1 (maxence 10/23/2008)
-      int probFeat;
+      int probFeat = 0;
 
-      int nbOverlap;
+      int nbOverlap = 0;
 
       //! Rotation in radians
       double alpha;
@@ -399,10 +399,10 @@ namespace pal
       double w;
       double h;
 
-      int partId;
+      int partId = -1;
 
 
-      bool upsideDown;
+      bool upsideDown = false;
 
     private:
 
@@ -427,9 +427,9 @@ namespace pal
       mutable QgsRectangle mBoundsForConflictIndex;
 
       double mCost;
-      bool mHasObstacleConflict;
+      bool mHasObstacleConflict = false;
       bool mHasHardConflict = false;
-      int mUpsideDownCharCount;
+      int mUpsideDownCharCount = 0;
 
       /**
        * Calculates the total number of parts for this label position

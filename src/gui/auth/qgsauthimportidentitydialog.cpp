@@ -33,10 +33,7 @@
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent )
   : QDialog( parent )
-  , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
-  , mDisabled( false )
-
 {
   if ( QgsApplication::authManager()->isDisabled() )
   {

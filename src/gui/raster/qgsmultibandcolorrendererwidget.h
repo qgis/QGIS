@@ -40,7 +40,6 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidge
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMultiBandColorRendererWidget.
      * \param layer associated raster layer
@@ -88,7 +87,7 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidge
     //! Reads min/max values from contrast enhancement and fills values into the min/max line edits
     void setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit );
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
-    bool mDisableMinMaxWidgetRefresh;
+    bool mDisableMinMaxWidgetRefresh = false;
 
     void minMaxModified();
 };

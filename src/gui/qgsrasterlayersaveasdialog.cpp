@@ -48,7 +48,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   , mCurrentExtent( currentExtent )
   , mLayerCrs( layerCrs )
   , mCurrentCrs( currentCrs )
-  , mResolutionState( OriginalResolution )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );

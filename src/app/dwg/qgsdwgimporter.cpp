@@ -215,12 +215,7 @@ class QgsDrwDebugPrinter : public DRW::DebugPrinter
 QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs )
   : mDs( nullptr )
   , mDatabase( database )
-  , mInTransaction( false )
-  , mSplineSegs( 8 )
-  , mBlockHandle( -1 )
   , mCrs( crs.srsid() )
-  , mUseCurves( true )
-  , mEntities( 0 )
 {
   QgsDebugCall;
 

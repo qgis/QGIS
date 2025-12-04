@@ -28,7 +28,6 @@
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
-  , mRestoreProjectExtentOnProjectLoad( false )
 {
 
 }

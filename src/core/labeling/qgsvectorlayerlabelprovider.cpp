@@ -67,7 +67,6 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( Qgis::GeometryType geo
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( geometryType )
-  , mRenderer( nullptr )
   , mFields( fields )
   , mCrs( crs )
 {

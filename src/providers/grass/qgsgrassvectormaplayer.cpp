@@ -40,11 +40,7 @@ extern "C"
 
 QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int field )
   : mField( field )
-  , mValid( false )
   , mMap( map )
-  , mHasTable( false )
-  , mKeyColumn( -1 )
-  , mUsers( 0 )
 {
 }
 

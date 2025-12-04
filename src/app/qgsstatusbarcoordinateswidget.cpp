@@ -39,7 +39,6 @@
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   : QWidget( parent )
-  , mMousePrecisionDecimalPlaces( 0 )
 {
   // calculate the size of two chars
   mTwoCharSize = fontMetrics().boundingRect( 'O' ).width();

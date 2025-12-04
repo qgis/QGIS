@@ -93,7 +93,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
   private:
     QNetworkReply *mReply = nullptr;
 
-    bool mValid;
+    bool mValid = false;
 
     QString mError;
 

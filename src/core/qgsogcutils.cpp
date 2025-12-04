@@ -64,7 +64,6 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
     const QMap<QString, QString> &fieldNameToXPathMap,
     const QMap<QString, QString> &namespacePrefixToUriMap )
   : mDoc( doc )
-  , mGMLUsed( false )
   , mGMLVersion( gmlVersion )
   , mFilterVersion( filterVersion )
   , mNamespacePrefix( namespacePrefix )
@@ -76,7 +75,6 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
   , mNamespacePrefixToUriMap( namespacePrefixToUriMap )
   , mFilterPrefix( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes" : "ogc" )
   , mPropertyName( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "ValueReference" : "PropertyName" )
-  , mGeomId( 1 )
 {
   QgsCoordinateReferenceSystem crs;
   if ( !mSrsName.isEmpty() )
@@ -2668,7 +2666,6 @@ QgsOgcUtilsSQLStatementToFilter::QgsOgcUtilsSQLStatementToFilter( QDomDocument &
     const QMap<QString, QString> &fieldNameToXPathMap,
     const QMap<QString, QString> &namespacePrefixToUriMap )
   : mDoc( doc )
-  , mGMLUsed( false )
   , mGMLVersion( gmlVersion )
   , mFilterVersion( filterVersion )
   , mLayerProperties( layerProperties )
@@ -2676,7 +2673,6 @@ QgsOgcUtilsSQLStatementToFilter::QgsOgcUtilsSQLStatementToFilter( QDomDocument &
   , mInvertAxisOrientation( invertAxisOrientation )
   , mFilterPrefix( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes" : "ogc" )
   , mPropertyName( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "ValueReference" : "PropertyName" )
-  , mGeomId( 1 )
   , mMapUnprefixedTypenameToPrefixedTypename( mapUnprefixedTypenameToPrefixedTypename )
   , mFieldNameToXPathMap( fieldNameToXPathMap )
   , mNamespacePrefixToUriMap( namespacePrefixToUriMap )

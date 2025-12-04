@@ -27,7 +27,6 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *d
   : mSrcCanvas( srcCanvas )
   , mDstCanvas( dstCanvas )
   , mGcpPoint( sourceCoordinates, destinationPoint, destinationPointCrs, enabled )
-  , mId( -1 )
 {
   mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, this, true );
   mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, this, false );
@@ -45,8 +44,6 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
   : QObject( nullptr )
   , mSrcCanvas( p.mSrcCanvas )
   , mDstCanvas( p.mDstCanvas )
-  , mGCPSourceItem( nullptr )
-  , mGCPDestinationItem( nullptr )
   , mHovered( p.mHovered )
   , mGcpPoint( p.mGcpPoint )
   , mId( p.id() )

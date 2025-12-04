@@ -26,9 +26,6 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   : QObject( parent )
   , mRoot( root )
   , mProject( project )
-  , mRegistryRemovingLayers( false )
-  , mEnabled( true )
-  , mNewLayersVisible( true )
   , mInsertionPointGroup( root )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );

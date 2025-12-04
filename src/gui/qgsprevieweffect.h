@@ -63,7 +63,7 @@ class GUI_EXPORT QgsPreviewEffect : public QGraphicsEffect
     void draw( QPainter *painter ) override;
 
   private:
-    PreviewMode mMode;
+    PreviewMode mMode = PreviewGrayscale;
 
     QRgb simulateColorBlindness( QRgb &originalColor, PreviewMode type );
     void simulateGrayscale( int &r, int &g, int &b, int &red, int &green, int &blue );

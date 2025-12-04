@@ -27,7 +27,6 @@
 
 QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
-  , mConvertScaleToMapUnits( false )
 {
   setBackgroundEnabled( false );
 }
