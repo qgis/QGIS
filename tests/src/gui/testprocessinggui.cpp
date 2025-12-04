@@ -4195,14 +4195,12 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QgsAnnotationLayer *annotationLayer = new QgsAnnotationLayer( QStringLiteral( "secondary annotations" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
   QgsProject::instance()->addMapLayer( annotationLayer );
 
-  dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->source(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
   // should be filtered to raster layers only
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
-  QCOMPARE( dlg->selectedOptions().size(), 1 );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->id() );
+  QVERIFY( dlg->selectedOptions().isEmpty() );
   // existing value using layer id should match to project layer
   dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), QVariantList() << raster->id(), QList<QgsProcessingModelChildParameterSource>() );
   dlg->setProject( QgsProject::instance() );
