@@ -22,6 +22,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 class QgsMessageOutput;
 typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;
