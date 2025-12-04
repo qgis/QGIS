@@ -54,7 +54,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     Q_PROPERTY( ConstraintResult constraintResult READ constraintResult NOTIFY constraintStatusChanged )
 
   public:
-
     /**
      * Result of constraint checks.
      */
@@ -320,7 +319,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
 
   protected:
-
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.
@@ -360,7 +358,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
 
   private:
-
     /**
     * Is called when the value of the widget needs to be changed. Updates the widget representation
     * to reflect the new value.
@@ -390,10 +387,10 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Boolean storing the current validity of the constraint for this widget.
      */
-    bool mValidConstraint;
+    bool mValidConstraint = true;
 
     //! True if widget is blocking feature commits
-    bool mIsBlockingCommit;
+    bool mIsBlockingCommit = false;
 
     //! Contains the string explanation of why a constraint check failed
     QString mConstraintFailureReason;

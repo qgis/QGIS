@@ -47,8 +47,6 @@
 QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent )
   : QDialog( parent )
   , mRamp( ramp )
-  , mCurrentPlotColorComponent( -1 )
-  , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );

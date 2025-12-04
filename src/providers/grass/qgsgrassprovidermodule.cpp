@@ -384,7 +384,6 @@ QList<QgsGrassImport *> QgsGrassMapsetItem::sImports;
 QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem *parent, const QString &dirPath, const QString &path )
   : QgsDirectoryItem( parent, QString(), dirPath, path )
   , QgsGrassObjectItemBase( QgsGrassObject() )
-  , mRefreshLater( false )
 {
   QDir dir( mDirPath );
   mName = dir.dirName();

@@ -85,7 +85,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     int mMinimumWidth = 0;
 
     //! The number of decimal places to use if not automatic
-    unsigned int mMousePrecisionDecimalPlaces;
+    unsigned int mMousePrecisionDecimalPlaces = 0;
 
     QgsPointXY mLastCoordinate;
     QgsCoordinateReferenceSystem mLastCoordinateCrs;

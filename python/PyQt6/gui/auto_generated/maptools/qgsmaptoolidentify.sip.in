@@ -168,7 +168,6 @@ updated in user-facing displays.
 %End
 
   protected:
-
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Performs the identification. To avoid being forced to specify

@@ -29,8 +29,6 @@ email                : jef at norbit dot de
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors, Qgis::GeometryValidationEngine method )
   : mGeometry( geometry )
   , mErrors( errors )
-  , mStop( false )
-  , mErrorCount( 0 )
   , mMethod( method )
 {
 }

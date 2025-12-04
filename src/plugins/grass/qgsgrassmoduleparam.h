@@ -54,7 +54,6 @@ class QgsGrassModuleCheckBox : public QCheckBox
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      */
@@ -83,7 +82,6 @@ class QgsGrassModuleCheckBox : public QCheckBox
 class QgsGrassModuleParam
 {
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -140,7 +138,7 @@ class QgsGrassModuleParam
     QString mKey;
 
     //! Multiple values
-    bool mMultiple;
+    bool mMultiple = false;
 
     //! Optional option id used by other options which depend on this
     QString mId;
@@ -152,13 +150,13 @@ class QgsGrassModuleParam
     QString mToolTip;
 
     //! Hidden option or displayed
-    bool mHidden;
+    bool mHidden = false;
 
     //! Predefined answer from config
     QString mAnswer;
 
     //! Is it required
-    bool mRequired;
+    bool mRequired = false;
 
     bool mDirect;
 
@@ -177,7 +175,6 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -241,7 +238,6 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -317,16 +313,16 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
 
   private:
     //! Control type
-    ControlType mControlType;
+    ControlType mControlType = NoControl;
 
     //! Value type
-    ValueType mValueType;
+    ValueType mValueType = String;
 
     //! Output type
-    OutputType mOutputType;
+    OutputType mOutputType = None;
 
     //! If have defined value limits
-    bool mHaveLimits;
+    bool mHaveLimits = false;
     double mMin, mMax;
 
     //! Combobox
@@ -339,7 +335,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QList<QgsGrassModuleCheckBox *> mCheckBoxes;
 
     //! True if this option is GRASS output
-    bool mIsOutput;
+    bool mIsOutput = false;
 
     //! Output element
     QString mOutputElement;
@@ -348,7 +344,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QValidator *mValidator = nullptr;
 
     //! Uses region
-    bool mUsesRegion;
+    bool mUsesRegion = false;
 };
 /********************** QgsGrassModuleFlag ************************/
 
@@ -361,7 +357,6 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -445,7 +440,6 @@ class QgsGrassModuleField : public QgsGrassModuleOption
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -465,7 +459,6 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -585,7 +578,6 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -612,7 +604,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
 
   private:
     //! File type (New, Old)
-    int mType;
+    int mType = Old;
 
     //! Optionally split file to dir and file path
     QString mFileOption;

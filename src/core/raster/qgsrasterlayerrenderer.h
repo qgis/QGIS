@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
     void onNewData() override;
   private:
     QgsRasterLayerRenderer *mR = nullptr;   //!< Parent renderer instance
-    int mMinimalPreviewInterval;  //!< In milliseconds
+    int mMinimalPreviewInterval = 250;  //!< In milliseconds
     QTime mLastPreview;           //!< When last preview has been generated
 };
 

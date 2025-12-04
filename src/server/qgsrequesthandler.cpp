@@ -30,8 +30,7 @@
 #include <QUrlQuery>
 
 QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response )
-  : mExceptionRaised( false )
-  , mRequest( request )
+  : mRequest( request )
   , mResponse( response )
 {
 }

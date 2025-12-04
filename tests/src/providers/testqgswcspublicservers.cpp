@@ -50,8 +50,6 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString &cacheDirPath, i
   , mCoverage( coverage )
   , mVersion( version )
   , mForce( force )
-  , mTimeout( 300000 )
-  , mOrigTimeout( 20000 )
 {
 }
 

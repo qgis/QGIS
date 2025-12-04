@@ -659,7 +659,6 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   : QgsPanelWidget( parent )
   , mRule( rule )
   , mLayer( layer )
-  , mSettings( nullptr )
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );

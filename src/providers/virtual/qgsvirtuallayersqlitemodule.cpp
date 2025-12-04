@@ -262,11 +262,11 @@ struct VTableCursor
     // specific members
     QgsFeature mCurrentFeature;
     QgsFeatureIterator mIterator;
-    bool mEof;
+    bool mEof = true;
 
     explicit VTableCursor( VTable *vtab )
       : mVtab( vtab )
-      , mEof( true )
+
     {}
 
     void filter( const QgsFeatureRequest &request )

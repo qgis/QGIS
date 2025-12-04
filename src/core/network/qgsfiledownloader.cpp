@@ -34,7 +34,6 @@
 
 QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg, bool delayStart, Qgis::HttpMethod httpMethod, const QByteArray &data )
   : mUrl( url )
-  , mDownloadCanceled( false )
   , mHttpMethod( httpMethod )
   , mData( data )
 {

@@ -137,7 +137,6 @@ QString QgsVectorLayerFeatureSource::id() const
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
-  , mFetchedFid( false )
 {
   mTransform = mRequest.calculateTransform( mSource->mCrs );
   mHasValidTransform = mTransform.isValid();

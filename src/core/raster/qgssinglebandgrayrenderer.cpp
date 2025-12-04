@@ -35,7 +35,6 @@
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand )
   : QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) )
   , mGrayBand( grayBand )
-  , mGradient( BlackToWhite )
   , mContrastEnhancement( nullptr )
   , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
 {

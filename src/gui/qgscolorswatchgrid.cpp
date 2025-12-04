@@ -32,11 +32,6 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   : QWidget( parent )
   , mScheme( scheme )
   , mContext( context )
-  , mDrawBoxDepressed( false )
-  , mCurrentHoverBox( -1 )
-  , mFocused( false )
-  , mCurrentFocusBox( 0 )
-  , mPressedOnWidget( false )
 {
   //need to receive all mouse over events
   setMouseTracking( true );
@@ -362,8 +357,6 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu, const QString &context, QWidget *parent )
   : QWidgetAction( parent )
   , mMenu( menu )
-  , mSuppressRecurse( false )
-  , mDismissOnColorSelection( true )
 {
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 

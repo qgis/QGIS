@@ -23,7 +23,6 @@ A widget for configuring :py:class:`QgsPalettedRasterRenderer`.
 #include "qgspalettedrendererwidget.h"
 %End
   public:
-
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Constructor for :py:class:`QgsSingleBandPseudoColorRendererWidget`.

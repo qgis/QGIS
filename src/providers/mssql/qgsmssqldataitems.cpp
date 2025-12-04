@@ -41,9 +41,6 @@
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
-  , mUseGeometryColumns( false )
-  , mUseEstimatedMetadata( false )
-  , mAllowGeometrylessTables( true )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Collapse;
   mIconName = QStringLiteral( "mIconConnect.svg" );

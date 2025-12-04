@@ -30,9 +30,6 @@
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
-  , mDragging( false )
-  , mShowPinned( false )
-
 {
   mToolName = tr( "Pin labels" );
 

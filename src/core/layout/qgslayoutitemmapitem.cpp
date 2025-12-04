@@ -29,7 +29,6 @@ QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMa
   , mName( name )
   , mMap( map )
   , mUuid( QUuid::createUuid().toString() )
-  , mEnabled( true )
 {
 
 }

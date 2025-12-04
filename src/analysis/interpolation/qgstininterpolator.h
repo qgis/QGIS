@@ -75,7 +75,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
   private:
     QgsTriangulation *mTriangulation = nullptr;
     TriangleInterpolator *mTriangleInterpolator = nullptr;
-    bool mIsInitialized;
+    bool mIsInitialized = false;
     QgsFeedback *mFeedback = nullptr;
 
     //! Feature sink for triangulation

@@ -27,7 +27,6 @@
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QWidget( parent )
   , mCurrentSettings( std::make_unique<QgsPhongMaterialSettings>() )
-  , mTechnique( QgsMaterialSettingsRenderingTechnique::Triangles )
 {
   setupUi( this );
 

@@ -48,8 +48,7 @@ bool bigger( double l, double r )
 
 // O (size log size)
 PriorityQueue::PriorityQueue( int n, int maxId, bool min )
-  : size( 0 )
-  , maxsize( n )
+  : maxsize( n )
   , maxId( maxId )
 {
   heap = std::make_unique<int[]>( maxsize );

@@ -215,14 +215,14 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     Type mType;
     QgsCptCityDataItem *mParent = nullptr;
     QVector<QgsCptCityDataItem *> mChildren; // easier to have it always
-    bool mPopulated;
+    bool mPopulated = false;
     QString mName;
     QString mPath; // it is also used to identify item in tree
     QString mInfo;
     QString mShortInfo;
     QString mToolTip;
     QIcon mIcon;
-    bool mValid;
+    bool mValid = true;
 
   signals:
 
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     QVector<QgsCptCityDataItem *> childrenRamps( bool recursive );
 
   protected:
-    bool mPopulatedRamps;
+    bool mPopulatedRamps = false;
 };
 
 /**

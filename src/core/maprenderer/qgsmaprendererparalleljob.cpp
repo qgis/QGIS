@@ -32,7 +32,6 @@
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
-  , mStatus( Idle )
 {
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) )
   {

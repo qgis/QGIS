@@ -110,9 +110,9 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     QgsMapCanvas *mCanvas = nullptr;
     QgsMapOverviewCanvas *mOverviewCanvas = nullptr;
 
-    bool mPendingCanvasUpdate;
+    bool mPendingCanvasUpdate = false;
 
-    bool mAutoSetupOnFirstLayer;
+    bool mAutoSetupOnFirstLayer = true;
 
     bool mHasLayersLoaded;
     bool mHasValidLayersLoaded = false;

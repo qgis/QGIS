@@ -28,13 +28,6 @@ QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsBox3D &box3D,
   , mError( error )
   , mNodeId( nodeId )
   , mParent( parent )
-  , mState( Skeleton )
-  , mLoaderQueueEntry( nullptr )
-  , mReplacementQueueEntry( nullptr )
-  , mLoader( nullptr )
-  , mEntity( nullptr )
-  , mUpdaterFactory( nullptr )
-  , mUpdater( nullptr )
 {
 }
 

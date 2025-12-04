@@ -43,13 +43,6 @@ extern "C"
 
 QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
   : mGrassObject( grassObject )
-  , mValid( false )
-  , mOpen( false )
-  , mFrozen( false )
-  , mIsEdited( false )
-  , mVersion( 0 )
-  , mIs3d( false )
-  , mOldNumLines( 0 )
 {
   QgsDebugMsgLevel( "grassObject = " + grassObject.toString(), 2 );
   openMap();

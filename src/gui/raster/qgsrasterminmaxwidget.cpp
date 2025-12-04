@@ -31,8 +31,6 @@
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
-  , mLastRectangleValid( false )
-  , mBandsChanged( false )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   setupUi( this );

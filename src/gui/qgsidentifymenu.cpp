@@ -36,12 +36,6 @@
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   : QMenu( canvas )
   , mCanvas( canvas )
-  , mAllowMultipleReturn( true )
-  , mExecWithSingleResult( false )
-  , mShowFeatureActions( false )
-  , mResultsIfExternalAction( false )
-  , mMaxLayerDisplay( 10 )
-  , mMaxFeatureDisplay( 10 )
   , mDefaultActionName( tr( "Identify" ) )
 {
 }

@@ -66,15 +66,7 @@ const QString ORACLE_DESCRIPTION = "Oracle data provider";
 
 QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
-  , mValid( false )
-  , mIsQuery( false )
-  , mPrimaryKeyType( PktUnknown )
-  , mFeaturesCounted( -1 )
-  , mDetectedGeomType( Qgis::WkbType::Unknown )
-  , mRequestedGeomType( Qgis::WkbType::Unknown )
-  , mHasSpatialIndex( false )
   , mSpatialIndexName( QString() )
-  , mOracleVersion( -1 )
   , mShared( new QgsOracleSharedData )
 {
   static int geomMetaType = -1;

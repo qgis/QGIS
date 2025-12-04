@@ -157,7 +157,6 @@ QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const Q
   , mClonedProvider( dtm ? qgis::down_cast<QgsRasterDataProvider *>( dtm->dataProvider()->clone() ) : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
-  , mLastJobId( 0 )
   , mDownloader( dtm ? nullptr : new QgsTerrainDownloader( transformContext ) )
   , mTransformContext( transformContext )
 {

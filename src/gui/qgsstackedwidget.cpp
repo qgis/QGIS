@@ -22,7 +22,6 @@
 
 QgsStackedWidget::QgsStackedWidget( QWidget *parent )
   : QStackedWidget( parent )
-  , mSizeMode( SizeMode::ConsiderAllPages ) //#spellok
 {
 }
 

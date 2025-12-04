@@ -34,7 +34,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     Q_OBJECT
 
   public:
-
     /**
      * \brief QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
      * \param canvas the map canvas
@@ -82,7 +81,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     void digitizingCanceled();
 
   protected:
-
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
      */
@@ -107,7 +105,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     virtual void featureDigitized( const QgsFeature &feature ) { Q_UNUSED( feature ) }
 
   private:
-
     /**
      * individual layer per digitizing session
     */
@@ -122,7 +119,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
     */
-    bool mCheckGeometryType;
+    bool mCheckGeometryType = true;
 
     friend class TestQgsRelationReferenceWidget;
 };

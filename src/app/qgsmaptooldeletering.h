@@ -63,9 +63,9 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     QgsRubberBand *mRubberBand = nullptr;
 
     //The feature, part and ring the mouse was pressed in, to  check we are still in the same ring at release
-    QgsFeatureId mPressedFid;
-    int mPressedPartNum;
-    int mPressedRingNum;
+    QgsFeatureId mPressedFid = 0;
+    int mPressedPartNum = 0;
+    int mPressedRingNum = 0;
 };
 
 #endif

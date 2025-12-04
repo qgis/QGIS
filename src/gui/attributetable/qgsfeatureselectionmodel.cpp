@@ -25,8 +25,6 @@
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionManager, QObject *parent )
   : QItemSelectionModel( model, parent )
   , mFeatureModel( featureModel )
-  , mSyncEnabled( true )
-  , mClearAndSelectBuffer( false )
 {
   setFeatureSelectionManager( featureSelectionManager );
 }

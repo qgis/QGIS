@@ -69,7 +69,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     QItemSelectionModel *mEditSelectionModel = nullptr;
     QgsFeatureListModel *mListModel = nullptr;
     //! Sets to TRUE if the current edit selection has been edited
-    bool mCurrentFeatureEdited;
+    bool mCurrentFeatureEdited = false;
 };
 
 #endif // QGSATTRIBUTELISTVIEWDELEGATE_H

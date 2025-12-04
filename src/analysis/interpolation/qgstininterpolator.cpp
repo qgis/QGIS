@@ -35,7 +35,6 @@
 
 QgsTinInterpolator::QgsTinInterpolator( const QList<LayerData> &inputData, QgsTinInterpolator::TinInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )
-  , mIsInitialized( false )
   , mFeedback( feedback )
   , mInterpolation( interpolation )
 {

@@ -152,8 +152,8 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     QString mOutputFile;
     QString mOutputFormat;
 
-    int mRadiusField;
-    int mWeightField;
+    int mRadiusField = -1;
+    int mWeightField = -1;
     double mRadius;
     double mPixelSize;
     QgsRectangle mBounds;
@@ -162,10 +162,10 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     double mDecay;
     OutputValues mOutputValues;
 
-    int mBufferSize;
+    int mBufferSize = -1;
 
     gdal::dataset_unique_ptr mDatasetH;
-    GDALRasterBandH mRasterBandH;
+    GDALRasterBandH mRasterBandH = nullptr;
 
     //! Creates a new raster layer and initializes it to the no data value
     bool createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const;
