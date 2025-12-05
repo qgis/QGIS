@@ -21,6 +21,11 @@
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelviewtool.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -183,13 +188,35 @@ QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelCo
 
 void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  painter->setPen( QPen() );
-  painter->setBrush( QBrush( QColor( 0, 0, 0, mHoverState ? 200 : 33 ), Qt::SolidPattern ) );
+  QColor outlineColor = socketColor();
+  QColor fillColor = QColor( outlineColor );
+
+  if ( isInput() )
+  {
+    fillColor.setAlpha( isDefaultParameterValue() ? 30 : 255 );
+  }
+  else
+  {
+    // outputs are always filled sockets
+    fillColor.setAlpha( 255 );
+  }
+
+  // Outline style
+  painter->setPen( QPen( outlineColor, mHoverState ? mSocketOutlineWidth * 2 : mSocketOutlineWidth ) );
+
+  // Fill style
+  painter->setBrush( QBrush( fillColor, Qt::SolidPattern ) );
 
   painter->setRenderHint( QPainter::Antialiasing );
 
-  constexpr float DISPLAY_SIZE = 3.2;
-  painter->drawEllipse( position(), DISPLAY_SIZE, DISPLAY_SIZE );
+  // Radius of the socket circle
+  constexpr float DISPLAY_SIZE = 4;
+
+  // Offset of the socket to separate from the label
+  constexpr float ELLIPSE_OFFSET = 0.4;
+  QPointF ellipsePosition = QPointF( position().x() + ELLIPSE_OFFSET, position().y() + ELLIPSE_OFFSET );
+  painter->drawEllipse( ellipsePosition, DISPLAY_SIZE, DISPLAY_SIZE );
+
   /* Uncomment to display bounding box */
 #if 0
   painter->save();
@@ -198,6 +225,72 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
   painter->drawRect( boundingRect() );
   painter->restore();
 #endif
+}
+
+
+QColor QgsModelDesignerSocketGraphicItem::socketColor() const
+{
+  return mComponentItem->linkColor( mEdge, mIndex );
+}
+
+
+bool QgsModelDesignerSocketGraphicItem::isDefaultParameterValue() const
+{
+  if ( !mComponent )
+  {
+    return false;
+  }
+
+  const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( mComponent );
+
+  if ( !child )
+  {
+    return false;
+  }
+
+  bool isDefaultValue = true;
+
+  // We can only know if the socket should be filled if the algorithm is non null
+  if ( child->algorithm() )
+  {
+    switch ( mEdge )
+    {
+      // Input params
+      case Qt::TopEdge:
+      {
+        const QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
+        const QgsProcessingParameterDefinition *param = params.value( mIndex );
+        if ( !param )
+          break;
+
+        const QString name = param->name();
+
+        QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
+        if ( paramSources.empty() )
+        {
+          break;
+        }
+
+        // The default value can only happen in the case of the parameter uses a static value
+        if ( paramSources[0].source() != Qgis::ProcessingModelChildParameterSource::StaticValue )
+        {
+          isDefaultValue = false;
+          break;
+        }
+
+        isDefaultValue = paramSources[0].staticValue() == param->defaultValue();
+        break;
+      }
+
+      // Outputs
+      case Qt::BottomEdge:
+      case Qt::LeftEdge:
+      case Qt::RightEdge:
+        break;
+    }
+  }
+
+  return isDefaultValue;
 }
 
 ///@endcond

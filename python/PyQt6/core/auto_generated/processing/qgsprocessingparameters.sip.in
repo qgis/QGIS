@@ -440,6 +440,27 @@ Constructor for QgsProcessingParameterDefinition.
 
     virtual ~QgsProcessingParameterDefinition();
 
+    virtual QColor modelColor() const;
+%Docstring
+Returns the color to use for the parameter in model designer windows.
+
+The default implementation retrieves the color from the parameter type,
+see :py:func:`QgsProcessingParameterType.modelColor()`.
+
+.. versionadded:: 4.0
+%End
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
+%Docstring
+Returns a user-friendly string representation of the provided parameter
+``value``.
+
+The returned string is to be used for display purposes only, and should
+be translated as required.
+
+.. versionadded:: 4.0
+%End
+
     virtual QgsProcessingParameterDefinition *clone() const = 0 /Factory/;
 %Docstring
 Creates a clone of the parameter definition.
@@ -1996,6 +2017,9 @@ A coordinate reference system parameter for processing algorithms.
 Constructor for QgsProcessingParameterCrs.
 %End
 
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
+
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -2169,6 +2193,7 @@ Sets the allow multipart geometries
 .. seealso:: :py:func:`allowMultipart`
 %End
 
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
@@ -2318,6 +2343,7 @@ Constructor for QgsProcessingParameterMatrix.
 %Docstring
 Returns the type name for the parameter class.
 %End
+
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -2514,6 +2540,7 @@ Constructor for QgsProcessingParameterNumber.
 %Docstring
 Returns the type name for the parameter class.
 %End
+
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -2621,6 +2648,9 @@ Constructor for QgsProcessingParameterDistance.
 %Docstring
 Returns the type name for the parameter class.
 %End
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
 
     virtual QgsProcessingParameterDistance *clone() const /Factory/;
 
@@ -2760,6 +2790,8 @@ Sets the default area ``unit`` for the parameter.
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
 
 };
 
@@ -2850,6 +2882,8 @@ Sets the default volume ``unit`` for the parameter.
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
 
 };
 
@@ -2908,6 +2942,8 @@ Sets the default duration ``unit`` for the parameter.
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
 };
@@ -2979,6 +3015,7 @@ Constructor for QgsProcessingParameterRange.
 %Docstring
 Returns the type name for the parameter class.
 %End
+
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -3107,6 +3144,9 @@ values.
 %Docstring
 Constructor for QgsProcessingParameterEnum.
 %End
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
 
     static QString typeName();
 %Docstring
@@ -4525,6 +4565,7 @@ varying color opacity.
 %Docstring
 Returns the type name for the parameter class.
 %End
+
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -4862,6 +4903,8 @@ Sets the acceptable data ``type`` for the parameter.
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
     static QgsProcessingParameterDateTime *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;

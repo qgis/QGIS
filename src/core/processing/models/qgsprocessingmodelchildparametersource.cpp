@@ -225,8 +225,18 @@ QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessin
   switch ( mSource )
   {
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
-      return model ? model->parameterDefinition( mParameterName )->description() : mParameterName;
+    {
+      if ( model )
+      {
+        if ( const QgsProcessingParameterDefinition *paramDefinition = model->parameterDefinition( mParameterName ) )
+        {
+          // A model can be valid (non null) but the parameter may not exist yet (if input has not yet been set)
+          return paramDefinition->description();
+        }
+      }
 
+      return mParameterName;
+    }
     case Qgis::ProcessingModelChildParameterSource::ChildOutput:
     {
       if ( model )

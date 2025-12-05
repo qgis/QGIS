@@ -31,6 +31,9 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
+      - name: Install deps
+        run: sudo apt-get install -y silversearcher-ag astyle
+
       - name: Run pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
