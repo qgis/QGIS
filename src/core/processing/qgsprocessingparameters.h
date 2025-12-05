@@ -19,7 +19,6 @@
 #define QGSPROCESSINGPARAMETERS_H
 
 #include <limits>
-#include <QColor>
 
 #include "qgis.h"
 #include "qgis_core.h"
@@ -30,6 +29,7 @@
 #include "qgsproperty.h"
 #include "qgsremappingproxyfeaturesink.h"
 
+#include <QColor>
 #include <QMap>
 
 class QgsProcessingContext;
