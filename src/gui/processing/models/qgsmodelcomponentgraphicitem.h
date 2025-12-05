@@ -376,7 +376,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      *
      * \since QGIS 4.0
      */
-    static constexpr QColor FALLBACK_COLOR = QColor( 128, 128, 128 ); /* mid gray */
+    SIP_SKIP static constexpr QColor FALLBACK_COLOR = QColor( 128, 128, 128 ); /* mid gray */
 
   private:
     QSizeF itemSize() const;
