@@ -222,7 +222,6 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     QgsProcessingModelComponent *mComponent = nullptr;
     int mIndex = -1;
     Qt::Edge mEdge = Qt::Edge::TopEdge;
-    QColor mSocketColor = QColor( 200, 200, 200 );
     float mSocketOutlineWidth = 1.5;
 };
 

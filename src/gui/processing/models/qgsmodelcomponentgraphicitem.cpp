@@ -868,31 +868,11 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
   return QString();
 }
 
-
-QString QgsModelParameterGraphicItem::linkedParameterDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const
-{
-  if ( index < 0 )
-  {
-    return QString();
-  }
-
-  if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
-  {
-    if ( const QgsProcessingParameterDefinition *parameterDefinition = model()->parameterDefinition( parameter->parameterName() ) )
-    {
-      return parameterDefinition->type();
-    }
-  }
-
-  return QString();
-}
-
-
 QColor QgsModelParameterGraphicItem::linkColor( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const
 {
   if ( index < 0 )
   {
-    return fallbackColor();
+    return FALLBACK_COLOR;
   }
 
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
@@ -903,7 +883,7 @@ QColor QgsModelParameterGraphicItem::linkColor( Qt::Edge /* unused in this imple
     }
   }
 
-  return fallbackColor();
+  return FALLBACK_COLOR;
 }
 
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
@@ -1144,53 +1124,13 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
   return 0;
 }
 
-QString QgsModelComponentGraphicItem::linkedParameterDataType( Qt::Edge edge, int index ) const
-{
-  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
-  {
-    if ( !child->algorithm() )
-    {
-      return QString();
-    }
-
-    switch ( edge )
-    {
-      case Qt::BottomEdge:
-      {
-        if ( index <= child->algorithm()->outputDefinitions().size() - 1 )
-        {
-          return child->algorithm()->outputDefinitions().at( index )->type();
-        }
-        return QString();
-      }
-      case Qt::TopEdge:
-      {
-        QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
-
-        if ( index <= params.size() - 1 )
-        {
-          return params.at( index )->type();
-        }
-
-        return QString();
-      }
-
-      case Qt::LeftEdge:
-      case Qt::RightEdge:
-        break;
-    }
-  }
-
-  return QString();
-}
-
 QColor QgsModelComponentGraphicItem::linkColor( Qt::Edge edge, int index ) const
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
     if ( !child->algorithm() )
     {
-      return fallbackColor();
+      return FALLBACK_COLOR;
     }
 
     switch ( edge )
@@ -1201,7 +1141,7 @@ QColor QgsModelComponentGraphicItem::linkColor( Qt::Edge edge, int index ) const
         {
           return child->algorithm()->outputDefinitions().at( index )->modelColor();
         }
-        return fallbackColor();
+        return FALLBACK_COLOR;
       }
       case Qt::TopEdge:
       {
@@ -1212,7 +1152,7 @@ QColor QgsModelComponentGraphicItem::linkColor( Qt::Edge edge, int index ) const
           return params.at( index )->modelColor();
         }
 
-        return fallbackColor();
+        return FALLBACK_COLOR;
       }
 
       case Qt::LeftEdge:
@@ -1221,7 +1161,7 @@ QColor QgsModelComponentGraphicItem::linkColor( Qt::Edge edge, int index ) const
     }
   }
 
-  return fallbackColor();
+  return FALLBACK_COLOR;
 }
 
 QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int index ) const
