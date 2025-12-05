@@ -39,6 +39,7 @@
 #include "qgsfilewidget.h"
 #include "qgsgeometrywidget.h"
 #include "qgsgui.h"
+#include "qgsiconutils.h"
 #include "qgslayoutcombobox.h"
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutitemlabel.h"
@@ -4164,6 +4165,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   auto param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Raster );
   QVariantList selectedOptions;
   auto dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), selectedOptions, QList<QgsProcessingModelChildParameterSource>() );
+  dlg->setProject( QgsProject::instance() );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   QCOMPARE( dlg->mModel->rowCount(), 0 );
 
@@ -4204,6 +4206,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->id() );
   // existing value using layer source should also match to project layer
@@ -4211,6 +4214,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
   // existing value using full layer path not matching a project layer should work
@@ -4219,6 +4223,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
@@ -4231,8 +4236,10 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
+  QVERIFY( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>().isNull() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), raster->source() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), raster->source() );
@@ -4244,6 +4251,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "mesh" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), mesh->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( mesh ) );
 
   // plugin
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Plugin );
@@ -4252,6 +4260,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "plugin" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), plugin->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( plugin ) );
 
 #ifdef HAVE_EPT
   // point cloud
@@ -4261,6 +4270,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "pointcloud [EPSG:28356]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), pointCloud->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( pointCloud ) );
 #endif
 
   // annotation
@@ -4270,8 +4280,10 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "secondary annotations" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), annotationLayer->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( annotationLayer ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( "Annotations" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QStringLiteral( "main" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( QgsProject::instance()->mainAnnotationLayer() ) );
 
   // vector points
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorPoint );
@@ -4280,6 +4292,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "point [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), point->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( point ) );
 
   // vector lines
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorLine );
@@ -4288,6 +4301,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "line [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), line->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( line ) );
 
   // vector polygons
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorPolygon );
@@ -4296,6 +4310,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "polygon [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), polygon->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( polygon ) );
 
   // vector any geometry type
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorAnyGeometry );
@@ -4304,10 +4319,13 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 3 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "line [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), line->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( line ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( "point [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), point->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( point ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 2, 0 ) ).toString(), QStringLiteral( "polygon [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 2, 0 ), Qt::UserRole ).toString(), polygon->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 2, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( polygon ) );
 
   // vector any type
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Vector );
