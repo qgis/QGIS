@@ -91,6 +91,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( bool mapTipsEnabled READ mapTipsEnabled WRITE setMapTipsEnabled NOTIFY mapTipsEnabledChanged )
     Q_PROPERTY( QgsMapLayerSelectionProperties *selectionProperties READ selectionProperties )
+    Q_PROPERTY( QgsMapLayer::LayerFlags flags READ flags WRITE setFlags NOTIFY flagsChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
