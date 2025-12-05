@@ -18,6 +18,10 @@
 import re
 import sys
 
+from pathlib import Path
+
+input_file = Path(sys.argv[1])
+
 
 def exit_with_error(message):
     sys.exit(f"! Doxygen formatting error: {message}")
@@ -25,7 +29,7 @@ def exit_with_error(message):
 
 def process_file(file_path):
     with open(file_path) as file:
-        input_lines = file.readlines()
+        input_lines = file.read().splitlines()
 
     output = []
     inside_dox_block = False
@@ -207,8 +211,9 @@ def process_file(file_path):
         elif match := re.match(r"^(\s*)/\*\*(?!\*)\s*(.*)$", line):
             indent, content = match.groups()
             # Space around doxygen start blocks (force blank line before /**)
-            if not previous_was_blankline:
-                output.append("")
+            # INCOMPATIBLE WITH CLANG TIDY!!!
+            # if not previous_was_blankline:
+            #    output.append("")
             if content:
                 # new line after /** begin block
                 output.append(f"{indent}/**")
@@ -230,10 +235,4 @@ def process_file(file_path):
         file.write("\n".join(output) + "\n")
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python doxygen_space.py <file_path>")
-        sys.exit(1)
-
-    file_path = sys.argv[1]
-    process_file(file_path)
+process_file(input_file)
