@@ -1718,12 +1718,6 @@ void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QSt
   mColumns.push_back( columnName );
 }
 
-void QgsAbstractDatabaseProviderConnection::QueryResult::insertColumn( int index, const QString &columnName )
-{
-  mColumns.insert( index, columnName );
-}
-
-
 QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
   : mResultIterator( std::move( iterator ) )
 {}
