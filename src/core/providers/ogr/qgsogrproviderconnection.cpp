@@ -103,7 +103,6 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
         if ( !mGeometryColumns.empty() )
         {
           const int colIndex { mGeometryColumns.cbegin()->first };
-          const QString columnName { mGeometryColumns.cbegin()->second };
           if ( colIndex < 0 || colIndex >= f.fields().count() )
           {
             row.push_back( f.geometry().asWkb() );
