@@ -88,7 +88,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     virtual ~QgsProcessingOutputDefinition() = default;
 
     /**
-    * Returns the color to use for the output in model designer windows.
+    * Returns the color to use for the output in the model designer canvas.
     *
     * \since QGIS 4.0
     */
