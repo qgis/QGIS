@@ -469,8 +469,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      *  \note Precision is ignored for integers.
      *
      *  \since QGIS 3.22.1
+     * \deprecated QGIS 4.0. Use QgsVariantUtils::displayString() instead.
      */
-    static QString displayString( const QVariant &value, int precision = -1 );
+    Q_DECL_DEPRECATED static QString displayString( const QVariant &value, int precision = -1 ) SIP_DEPRECATED;
 
 
   protected:
