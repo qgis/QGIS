@@ -330,6 +330,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   {
     QDomElement creationDate = doc.createElement( QStringLiteral( "CreationDate" ) );
     QString creationDateString = QStringLiteral( "D:%1" ).arg( details.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
+#if QT_FEATURE_timezone > 0
     if ( details.creationDateTime.timeZone().isValid() )
     {
       int offsetFromUtc = details.creationDateTime.timeZone().offsetFromUtc( details.creationDateTime );
@@ -339,6 +340,9 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
       int offsetMins = ( offsetFromUtc % 3600 ) / 60;
       creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
     }
+#else
+    QgsDebugError( QStringLiteral( "Qt is built without timezone support, skipping timezone for pdf export" ) );
+#endif
     creationDate.appendChild( doc.createTextNode( creationDateString ) );
     metadata.appendChild( creationDate );
   }
