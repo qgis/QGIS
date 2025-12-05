@@ -492,9 +492,6 @@ QString QgsRasterLayer::htmlMetadata() const
   }
   myMetadata += QStringLiteral( "</td></tr>\n" ) %
 
-                // Insert provider-specific (e.g. WMS-specific) metadata
-                mDataProvider->htmlMetadata() %
-
                 // End Provider section
                 QStringLiteral( "</table>\n<br><br>" );
 
