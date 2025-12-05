@@ -219,16 +219,16 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      */
     void setRenderType( Qgis::PointCloudProfileType type ) { mRenderType = type; }
 
+    /**
+     * Returns the profile type used when generating elevation profile plots.
+     *
+     * \see setRenderType()
+     * \since QGIS 4.0
+     */
     Qgis::PointCloudProfileType renderType() const { return mRenderType; }
 
     /**
      * Returns the symbol used to render lines for the layer in elevation profile plots.
-     *
-     * The symbol will be used in the following circumstances:
-     *
-     * - A point feature is shown on the profile chart when extrusionEnabled() is TRUE
-     * - A line feature is intersected by a profile line and extrusionEnabled() is TRUE
-     * - A polygon feature is intersected by a profile line and extrusionEnabled() is FALSE
      *
      * \see setProfileLineSymbol()
      * \since QGIS 4.0
@@ -240,12 +240,6 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * Ownership of \a symbol is transferred to the plot.
      *
-     * The symbol will be used in the following circumstances:
-     *
-     * - A point feature is shown on the profile chart when extrusionEnabled() is TRUE
-     * - A line feature is intersected by a profile line and extrusionEnabled() is TRUE
-     * - A polygon feature is intersected by a profile line and extrusionEnabled() is FALSE
-     *
      * \see profileLineSymbol()
      * \since QGIS 4.0
      */
@@ -254,9 +248,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     /**
      * Returns the symbol used to render polygons for the layer in elevation profile plots.
      *
-     * The symbol will be used in the following circumstances:
-     *
-     * - A polygon feature is intersected by a profile line and extrusionEnabled() is TRUE
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
      *
      * \see setProfileFillSymbol()
      * \since QGIS 4.0
@@ -268,9 +260,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * Ownership of \a symbol is transferred to the plot.
      *
-     * The symbol will be used in the following circumstances:
-     *
-     * - A polygon feature is intersected by a profile line and extrusionEnabled() is TRUE
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
      *
      * \see profileFillSymbol()
      * \since QGIS 4.0
@@ -280,10 +270,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     /**
      * Returns the symbol used to render points for the layer in elevation profile plots.
      *
-     * The symbol will be used in the following circumstances:
-     *
-     * - A point feature is shown on the profile chart when extrusionEnabled() is FALSE
-     * - A line feature is intersected by a profile line and extrusionEnabled() is FALSE
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
      *
      * \see setProfileMarkerSymbol()
      * \since QGIS 4.0
@@ -295,10 +282,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * Ownership of \a symbol is transferred to the plot.
      *
-     * The symbol will be used in the following circumstances:
-     *
-     * - A point feature is shown on the profile chart when extrusionEnabled() is FALSE
-     * - A line feature is intersected by a profile line and extrusionEnabled() is FALSE
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
      *
      * \see profileMarkerSymbol()
      * \since QGIS 4.0
@@ -332,6 +316,8 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * By default this is NaN, which indicates that there is no elevation limit.
      *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
      * \see setElevationLimit()
      * \since QGIS 4.0
      */
@@ -343,6 +329,8 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      * to limit the fill to a specific elevation range.
      *
      * Set to NaN to indicate that there is no elevation limit.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
      *
      * \see elevationLimit()
      * \since QGIS 4.0

@@ -244,23 +244,18 @@ Sets the profile ``type`` used when generating elevation profile plots.
 %End
 
     Qgis::PointCloudProfileType renderType() const;
+%Docstring
+Returns the profile type used when generating elevation profile plots.
+
+.. seealso:: :py:func:`setRenderType`
+
+.. versionadded:: 4.0
+%End
 
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring
 Returns the symbol used to render lines for the layer in elevation
 profile plots.
-
-The symbol will be used in the following circumstances:
-
-- A point feature is shown on the profile chart when
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``True``
-- A line feature is intersected by a profile line and
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``True``
-- A polygon feature is intersected by a profile line and
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``False``
 
 .. seealso:: :py:func:`setProfileLineSymbol`
 
@@ -274,18 +269,6 @@ profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
 
-The symbol will be used in the following circumstances:
-
-- A point feature is shown on the profile chart when
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``True``
-- A line feature is intersected by a profile line and
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``True``
-- A polygon feature is intersected by a profile line and
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``False``
-
 .. seealso:: :py:func:`profileLineSymbol`
 
 .. versionadded:: 4.0
@@ -296,11 +279,9 @@ The symbol will be used in the following circumstances:
 Returns the symbol used to render polygons for the layer in elevation
 profile plots.
 
-The symbol will be used in the following circumstances:
+.. note::
 
-- A polygon feature is intersected by a profile line and
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``True``
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
 
 .. seealso:: :py:func:`setProfileFillSymbol`
 
@@ -314,11 +295,9 @@ elevation profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
 
-The symbol will be used in the following circumstances:
+.. note::
 
-- A polygon feature is intersected by a profile line and
-  :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is
-  ``True``
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
 
 .. seealso:: :py:func:`profileFillSymbol`
 
@@ -330,10 +309,9 @@ The symbol will be used in the following circumstances:
 Returns the symbol used to render points for the layer in elevation
 profile plots.
 
-The symbol will be used in the following circumstances:
+.. note::
 
-- A point feature is shown on the profile chart when :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is ``False``
-- A line feature is intersected by a profile line and :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is ``False``
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
 
 .. seealso:: :py:func:`setProfileMarkerSymbol`
 
@@ -347,10 +325,9 @@ elevation profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
 
-The symbol will be used in the following circumstances:
+.. note::
 
-- A point feature is shown on the profile chart when :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is ``False``
-- A line feature is intersected by a profile line and :py:func:`~QgsPointCloudLayerElevationProperties.extrusionEnabled` is ``False``
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
 
 .. seealso:: :py:func:`profileMarkerSymbol`
 
@@ -396,6 +373,10 @@ a specific elevation range.
 By default this is NaN, which indicates that there is no elevation
 limit.
 
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
 .. seealso:: :py:func:`setElevationLimit`
 
 .. versionadded:: 4.0
@@ -410,6 +391,10 @@ Sets the elevation ``limit``, which is used when
 a specific elevation range.
 
 Set to NaN to indicate that there is no elevation limit.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
 
 .. seealso:: :py:func:`elevationLimit`
 
