@@ -18,6 +18,7 @@
 
 #include "qgis_app.h"
 #include "qgscamerapose.h"
+#include "qgsgeometry.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
 
@@ -25,6 +26,7 @@
 #include <QMenu>
 #include <QPointer>
 #include <QToolBar>
+#include <QWidgetAction>
 
 #define SIP_NO_FILE
 
@@ -50,6 +52,10 @@ class QgsDockableWidgetHelper;
 class QgsMessageBar;
 class QgsRubberBand;
 class QgsDoubleSpinBox;
+class Qgs3DMapClippingToleranceWidgetSettingsAction;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryBool;
+class QgsGeometry;
 
 //! Helper validator for classification classes
 class ClassValidator : public QValidator
@@ -71,6 +77,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryDouble *settingClippingTolerance;
+    static const QgsSettingsEntryBool *settingDynamicClipping;
+
     Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
     ~Qgs3DMapCanvasWidget() override;
 
@@ -95,6 +104,12 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void updateLayerRelatedActions( QgsMapLayer *layer );
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
+
+    void nudgeLeft();
+
+    void nudgeRight();
+
+    void nudgeCurve( Qgis::BufferSide side );
 
   private slots:
     void resetView();
@@ -137,10 +152,14 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void onPointCloudChangeAttributeSettingsChanged();
 
-    void onCrossSectionToolFinished();
+    void onCrossSectionToolFinished( const QgsGeometry &geom, const double width );
 
   private:
     void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;
+    void setClippingTolerance( double tolerance );
+    void setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width );
+    void setDynamicClipping( bool enabled );
+    void updateClippingRubberBand();
 
     QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
@@ -154,6 +173,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     Qgs3DMapToolPointCloudChangeAttribute *mMapToolChangeAttribute = nullptr;
+    QgsGeometry mCrossSectionLine;
+    QObjectUniquePtr<QgsRubberBand> mCrossSectionRubberBand;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     std::unique_ptr<QgsMapToolClippingPlanes> mMapToolClippingPlanes;
     QgsMapTool *mMapToolPrevious = nullptr;
