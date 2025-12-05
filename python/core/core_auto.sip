@@ -384,7 +384,6 @@
 %Include auto_generated/gps/qgsgpsinformation.sip
 %Include auto_generated/gps/qgsgpslogger.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
-%Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/gps/qgssatelliteinformation.sip
 %Include auto_generated/gps/qgsvectorlayergpslogger.sip
