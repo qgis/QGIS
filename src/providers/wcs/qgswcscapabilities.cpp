@@ -71,9 +71,10 @@ QgsWcsCapabilities::QgsWcsCapabilities( const QgsWcsCapabilities &other )
   , mServiceExceptionReportDom( other.mServiceExceptionReportDom )
   , mCapabilities( other.mCapabilities )
   , mCoveragesSupported( other.mCoveragesSupported )
-  , mErrorTitle()  // not copied from other
-  , mError()       // not copied from other
-  , mErrorFormat() // not copied from other
+  , mCapabilitiesReply( nullptr ) // not copied from other
+  , mErrorTitle()                 // not copied from other
+  , mError()                      // not copied from other
+  , mErrorFormat()                // not copied from other
   , mCoverageCount( other.mCoverageCount )
   , mCoverageParents( other.mCoverageParents )
   , mCoverageParentIdentifiers( other.mCoverageParentIdentifiers )
