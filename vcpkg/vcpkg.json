@@ -83,7 +83,7 @@
       "features": [
         "omit-load-extension"
       ]
-    }
+    },
     "zlib"
   ],
   "features": {
