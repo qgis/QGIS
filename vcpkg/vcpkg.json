@@ -78,6 +78,12 @@
     "qtquickcontrols2",
     "qtsvg",
     "qttools",
+    {
+      "name": "sqlite3",
+      "features": [
+        "omit-load-extension"
+      ]
+    }
     "zlib"
   ],
   "features": {
