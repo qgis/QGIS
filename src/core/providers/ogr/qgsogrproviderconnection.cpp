@@ -16,6 +16,7 @@
 
 #include "qgsogrproviderconnection.h"
 
+#include "qgsapplication.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgsfeedback.h"
@@ -30,7 +31,6 @@
 #include "qgssqlstatement.h"
 #include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
-#include "qgsapplication.h"
 
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
 #include "qgsgdalutils.h"
@@ -141,7 +141,7 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
             const int size = OGR_G_WkbSize( hGeom );
             unsigned char *wkbData = new unsigned char[size];
             OGR_G_ExportToWkb( hGeom, wkbNDR, wkbData );
-            const QVariant wkbValue { QVariant( QByteArray::fromRawData( reinterpret_cast<char *>( wkbData ), size ) ) };
+            const QVariant wkbValue( QByteArray::fromRawData( reinterpret_cast<char *>( wkbData ), size ) );
 #else
             const QVariant wkbValue;
 #endif
