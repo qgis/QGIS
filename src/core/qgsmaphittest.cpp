@@ -107,6 +107,8 @@ void QgsMapHitTest::run()
       if ( !rl || !rl->renderer() || !rl->dataProvider() )
         continue;
 
+      QgsLogger::warning( QStringLiteral( "Solving Hit test raster layer %1" ).arg( rl->id() ) );
+
       context.setCoordinateTransform( mapSettings.layerTransform( rl ) );
 
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
@@ -116,11 +118,19 @@ void QgsMapHitTest::run()
       runHitTestRasterSource( rl->dataProvider(), rl->id(), rl->renderer()->inputBand(), minMaxOrigin, minMaxOrigin.limits(),
                               transform,
                               context, nullptr );
+
+      QgsLogger::warning( QStringLiteral( "Hit test raster layer %1: found %4 min/max = %2/%3" )
+                          .arg( rl->id() )
+                          .arg( mHitTestRenderersUpdatedCanvas.value( rl->id() ).first )
+                          .arg( mHitTestRenderersUpdatedCanvas.value( rl->id() ).second )
+                          .arg( mHitTestRenderersUpdatedCanvas.contains( rl->id() ) ) );
     }
     else if ( QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( layer ) )
     {
       if ( !ml )
         continue;
+
+      QgsLogger::warning( QStringLiteral( "Solving Hit test mesh layer %1" ).arg( ml->id() ) );
 
       context.setCoordinateTransform( mapSettings.layerTransform( ml ) );
 
@@ -130,6 +140,12 @@ void QgsMapHitTest::run()
       QgsMeshRendererScalarSettings scalarSettings = ml->rendererSettings().scalarSettings( datasetIndex.dataset() );
 
       runHitTestMeshSource( ml, ml->id(), datasetIndex, transform, context, nullptr );
+
+      QgsLogger::warning( QStringLiteral( "Hit test mesh layer %1: found %4 min/max = %2/%3" )
+                          .arg( ml->id() )
+                          .arg( mHitTestRenderersUpdatedCanvas.value( ml->id() ).first )
+                          .arg( mHitTestRenderersUpdatedCanvas.value( ml->id() ).second )
+                          .arg( mHitTestRenderersUpdatedCanvas.contains( ml->id() ) ) );
     }
   }
 
