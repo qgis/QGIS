@@ -107,6 +107,8 @@ void QgsMapHitTest::run()
       if ( !rl || !rl->renderer() || !rl->dataProvider() )
         continue;
 
+      context.setCoordinateTransform( mapSettings.layerTransform( rl ) );
+
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
 
       QgsCoordinateTransform transform = QgsCoordinateTransform( mapSettings.destinationCrs(), rl->crs(), mapSettings.transformContext() );
