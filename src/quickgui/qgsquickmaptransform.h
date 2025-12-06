@@ -45,7 +45,7 @@ class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
   public:
     //! Creates a new map transform
     QgsQuickMapTransform() = default;
-    ~QgsQuickMapTransform() = default;
+    ~QgsQuickMapTransform() override = default;
 
     /**
      * Applies transformation based on current map settings to a matrix.

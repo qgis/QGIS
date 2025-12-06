@@ -30,6 +30,13 @@ set_property(TARGET libdxfrw PROPERTY POSITION_INDEPENDENT_CODE ON)
 # require c++11
 target_compile_features(libdxfrw PRIVATE cxx_std_11)
 
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  target_compile_options(libdxfrw PRIVATE -Wno-suggest-override)
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  target_compile_options(libdxfrw PRIVATE -Wno-suggest-destructor-override)
+endif()
+
 if(FALSE)
 if(DOXYGEN_FOUND)
   add_custom_target(doxygen-dxfrw ALL
