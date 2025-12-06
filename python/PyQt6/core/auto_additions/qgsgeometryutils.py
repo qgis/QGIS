@@ -71,6 +71,7 @@ try:
     QgsGeometryUtils.maxFilletRadius = staticmethod(QgsGeometryUtils.maxFilletRadius)
     QgsGeometryUtils.chamferVertex = staticmethod(QgsGeometryUtils.chamferVertex)
     QgsGeometryUtils.filletVertex = staticmethod(QgsGeometryUtils.filletVertex)
+    QgsGeometryUtils.interpolateZ = staticmethod(QgsGeometryUtils.interpolateZ)
     QgsGeometryUtils.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

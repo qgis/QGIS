@@ -117,6 +117,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
 
@@ -185,6 +186,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     QgsCoordinateTransform mTargetToTerrainProviderTransform;
 
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     bool mRespectLayerSymbology = true;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;

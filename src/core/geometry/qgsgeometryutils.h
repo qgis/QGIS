@@ -1450,6 +1450,18 @@ class CORE_EXPORT QgsGeometryUtils
                                    QgsPoint filletPoints[3],
                                    double epsilon = 1e-8 ) SIP_SKIP;
 
+    /**
+     * Interpolates the Z value at point (x, y) inside the triangle defined by points a, b, and c.
+     * \param a first triangle vertex
+     * \param b second triangle vertex
+     * \param c third triangle vertex
+     * \param x x-coordinate of the point to interpolate
+     * \param y y-coordinate of the point to interpolate
+     * \returns interpolated Z value
+     * \since QGIS 4.0
+     */
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
+
   private:
 
     /**

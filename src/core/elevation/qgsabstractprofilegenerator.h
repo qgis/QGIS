@@ -451,6 +451,11 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      */
     virtual QgsAbstractProfileResults *takeResults() = 0 SIP_TRANSFERBACK;
 
+    /**
+     * Returns the unique string identifier for the results type.
+     */
+    virtual QString type() const = 0;
+
 };
 
 #endif // QGSABSTRACTPROFILEGENERATOR_H
