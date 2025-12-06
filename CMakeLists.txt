@@ -882,8 +882,24 @@ if (PEDANTIC)
     # add_definitions( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type-c-linkage")
     endif()
+
+    include(CheckCXXCompilerFlag)
+    macro (detect_and_set_cxx_warning_flag flag_name)
+      string(TOUPPER ${flag_name} flag_name_upper)
+      string(REPLACE "-" "_" flag_name_upper "${flag_name_upper}")
+      string(REPLACE "=" "_" flag_name_upper "${flag_name_upper}")
+      check_cxx_compiler_flag(-W${flag_name} "HAVE_WFLAG_${flag_name_upper}")
+      if (HAVE_WFLAG_${flag_name_upper})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W${flag_name}")
+      endif ()
+    endmacro ()
+
+    detect_and_set_cxx_warning_flag(overloaded-virtual)
+    detect_and_set_cxx_warning_flag(implicit-fallthrough)
+    detect_and_set_cxx_warning_flag(suggest-override)
+    detect_and_set_cxx_warning_flag(suggest-destructor-override)
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
     # command line -D option overrides environment variable
