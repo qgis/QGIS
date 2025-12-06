@@ -21,7 +21,7 @@
 
 #include <QDialog>
 
-class Qgs3DMapToolMeasureLine;
+class Qgs3DMapToolMeasure;
 
 class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
@@ -29,7 +29,7 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
   public:
     // Constructor
-    Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f = Qt::WindowFlags() );
+    Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, Qt::WindowFlags f = Qt::WindowFlags() );
 
     //! Save position
     void saveWindowLocation();
@@ -73,7 +73,7 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void unitsChanged( int index );
 
   private:
-    Qgs3DMapToolMeasureLine *mTool;
+    Qgs3DMapToolMeasure *mTool;
 
     //! Total length in map distance unit
     double mTotal = 0.0;
