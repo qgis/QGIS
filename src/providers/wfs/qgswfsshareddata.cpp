@@ -28,8 +28,7 @@
 #include "moc_qgswfsshareddata.cpp"
 
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
-  : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )
-  , mURI( uri )
+  : QgsBackgroundCachedSharedData( uri, "wfs", tr( "WFS" ) )
   , mHttpMethod( mURI.httpMethod() )
 {
   mHideProgressDialog = mURI.hideDownloadProgressDialog();

@@ -273,9 +273,9 @@ void QgsGml::calculateExtentFromFeatures()
 QgsCoordinateReferenceSystem QgsGml::crs() const
 {
   QgsCoordinateReferenceSystem crs;
-  if ( mParser.getEPSGCode() != 0 )
+  if ( !mParser.srsName().isEmpty() )
   {
-    crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( mParser.getEPSGCode() ) );
+    crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mParser.srsName() );
   }
   return crs;
 }
@@ -308,7 +308,6 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString &typeName,
   , mBoundedByNullFound( false )
   , mDimension( 0 )
   , mCoorMode( Coordinate )
-  , mEpsg( 0 )
   , mAxisOrientationLogic( axisOrientationLogic )
   , mInvertAxisOrientationRequest( invertAxisOrientation )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -365,7 +364,6 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
   , mBoundedByNullFound( false )
   , mDimension( 0 )
   , mCoorMode( Coordinate )
-  , mEpsg( 0 )
   , mAxisOrientationLogic( axisOrientationLogic )
   , mInvertAxisOrientationRequest( invertAxisOrientation )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -646,16 +644,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
       mStringCash.clear();
     }
     mCoorMode = QgsGmlStreamingParser::PosList;
-    if ( elDimension == 0 )
-    {
-      const QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
-      bool ok;
-      const int dimension = srsDimension.toInt( &ok );
-      if ( ok )
-      {
-        elDimension = dimension;
-      }
-    }
+    elDimension = readSrsNameAndDimensionAttributes( attr );
   }
   else if ( ( parseMode == Feature || parseMode == FeatureTuple ) &&
             mCurrentFeature &&
@@ -1028,17 +1017,9 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   if ( !mGeometryString.empty() )
     isGeom = true;
 
-  if ( elDimension == 0 && isGeom )
+  if ( isGeom )
   {
-    // srsDimension can also be set on the top geometry element
-    // e.g. https://data.linz.govt.nz/services;key=XXXXXXXX/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=data.linz.govt.nz:layer-524
-    const QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
-    bool ok;
-    const int dimension = srsDimension.toInt( &ok );
-    if ( ok )
-    {
-      elDimension = dimension;
-    }
+    elDimension = readSrsNameAndDimensionAttributes( attr );
   }
 
   if ( elDimension != 0 || mDimensionStack.isEmpty() )
@@ -1048,18 +1029,6 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   else
   {
     mDimensionStack.push( mDimensionStack.back() );
-  }
-
-  if ( mEpsg == 0 && isGeom )
-  {
-    if ( readEpsgFromAttribute( mEpsg, attr ) != 0 )
-    {
-      QgsDebugError( QStringLiteral( "error, could not get epsg id" ) );
-    }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "mEpsg = %1" ).arg( mEpsg ), 2 );
-    }
   }
 
   mParseDepth ++;
@@ -1538,48 +1507,58 @@ void QgsGmlStreamingParser::setAttribute( const QString &name, const QString &va
   }
 }
 
-int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **attr )
+int QgsGmlStreamingParser::readSrsNameAndDimensionAttributes( const XML_Char **attr )
 {
-  int i = 0;
-  while ( attr[i] )
+  int elDimension = 0;
+  for ( int i = 0; attr[i] && attr[i + 1]; i += 2 )
   {
     if ( strcmp( attr[i], "srsName" ) == 0 )
     {
       const QString srsName( attr[i + 1] );
-      QString authority;
-      QString code;
-      const QgsOgcCrsUtils::CRSFlavor crsFlavor = QgsOgcCrsUtils::parseCrsName( srsName, authority, code );
-      if ( crsFlavor == QgsOgcCrsUtils::CRSFlavor::UNKNOWN )
+      if ( mSrsName.isEmpty() )
       {
-        return 1;
-      }
-      const bool bIsUrn = ( crsFlavor == QgsOgcCrsUtils::CRSFlavor::OGC_URN ||
-                            crsFlavor == QgsOgcCrsUtils::CRSFlavor::X_OGC_URN ||
-                            crsFlavor == QgsOgcCrsUtils::CRSFlavor::OGC_HTTP_URI );
-      bool conversionOk;
-      const int eNr = code.toInt( &conversionOk );
-      if ( !conversionOk )
-      {
-        return 1;
-      }
-      epsgNr = eNr;
-      mSrsName = srsName;
-
-      const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
-      if ( crs.isValid() )
-      {
-        if ( ( ( mAxisOrientationLogic == Honour_EPSG_if_urn && bIsUrn ) ||
-               mAxisOrientationLogic == Honour_EPSG ) && crs.hasAxisInverted() )
+        QString authority;
+        QString code;
+        const QgsOgcCrsUtils::CRSFlavor crsFlavor = QgsOgcCrsUtils::parseCrsName( srsName, authority, code );
+        if ( crsFlavor != QgsOgcCrsUtils::CRSFlavor::UNKNOWN )
         {
-          mInvertAxisOrientation = !mInvertAxisOrientationRequest;
+          const bool bIsUrn = ( crsFlavor == QgsOgcCrsUtils::CRSFlavor::OGC_URN ||
+                                crsFlavor == QgsOgcCrsUtils::CRSFlavor::X_OGC_URN ||
+                                crsFlavor == QgsOgcCrsUtils::CRSFlavor::OGC_HTTP_URI );
+          const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsName );
+          if ( crs.isValid() )
+          {
+            mSrsName = srsName;
+            if ( ( ( mAxisOrientationLogic == Honour_EPSG_if_urn && bIsUrn ) ||
+                   mAxisOrientationLogic == Honour_EPSG ) && crs.hasAxisInverted() )
+            {
+              mInvertAxisOrientation = !mInvertAxisOrientationRequest;
+            }
+
+            mDimensionForCurSrsName = crs.hasVerticalAxis() ? 3 : 2;
+            if ( elDimension == 0 )
+              elDimension = mDimensionForCurSrsName;
+          }
         }
       }
-
-      return 0;
+      else if ( srsName == mSrsName && elDimension == 0 )
+      {
+        elDimension = mDimensionForCurSrsName;
+      }
     }
-    ++i;
+    else if ( strcmp( attr[i], "srsDimension" ) == 0 )
+    {
+      const QString srsDimension( attr[i + 1] );
+      bool ok = false;
+      const int dimension = srsDimension.toInt( &ok );
+      if ( ok )
+      {
+        elDimension = dimension;
+      }
+    }
   }
-  return 2;
+
+  return elDimension;
 }
 
 QString QgsGmlStreamingParser::readAttribute( const QString &attributeName, const XML_Char **attr ) const
