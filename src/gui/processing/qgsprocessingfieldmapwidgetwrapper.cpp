@@ -203,7 +203,14 @@ void QgsProcessingFieldMapPanelWidget::loadLayerFields()
 {
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
   {
-    mFieldsView->setDestinationFields( vl->fields() );
+    if ( mAppendFieldsCheckBox->isChecked() )
+    {
+      mFieldsView->appendDestinationFields( vl->fields() );
+    }
+    else
+    {
+      mFieldsView->setDestinationFields( vl->fields() );
+    }
   }
 }
 
