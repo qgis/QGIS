@@ -79,21 +79,7 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 def sanitize(endpoint, x):
-    if len(endpoint + x) > 256:
-        # print('Before: ' + endpoint + x)
-        x = x.replace("/", "_").encode()
-        ret = endpoint + hashlib.md5(x).hexdigest()
-        # print('After:  ' + ret)
-        return ret
-    ret = endpoint + x.replace("?", "_").replace("&", "_").replace("<", "_").replace(
-        ">", "_"
-    ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
-    # print('Sanitize: ' + x)
-    return ret
+    return QgsTestUtils.sanitizesFakeHttpEndpoint(f"{endpoint}{x}")
 
 
 class MessageLogger(QObject):
