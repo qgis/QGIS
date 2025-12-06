@@ -20,14 +20,14 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 #include "qgsmaplayerstyle.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerutils.h"
+#include "qgsrasterrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsrasterlayerutils.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterrenderer.h"
 
 #include "moc_qgsmaphittest.cpp"
 
@@ -106,6 +106,8 @@ void QgsMapHitTest::run()
     {
       if ( !rl || !rl->renderer() || !rl->dataProvider() )
         continue;
+
+      context.setCoordinateTransform( mapSettings.layerTransform( rl ) );
 
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
 
