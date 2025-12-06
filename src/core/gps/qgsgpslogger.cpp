@@ -510,12 +510,16 @@ QDateTime QgsGpsLogger::lastTimestamp() const
 
   if ( mTimeStampSpec == Qt::TimeSpec::TimeZone )
   {
+#if QT_FEATURE_timezone > 0
     // Get timezone from the combo
     const QTimeZone destTz( mTimeZone.toUtf8() );
     if ( destTz.isValid() )
     {
       time = time.toTimeZone( destTz );
     }
+#else
+    QgsDebugError( QStringLiteral( "Qt is built without timezone support, cannot convert GPS timestamps to specified timezone." ) );
+#endif
   }
   else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )
   {
