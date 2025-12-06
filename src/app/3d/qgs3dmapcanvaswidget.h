@@ -41,7 +41,7 @@ class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
-class Qgs3DMapToolMeasureLine;
+class Qgs3DMapToolMeasure;
 class Qgs3DMapToolPointCloudChangeAttribute;
 class Qgs3DNavigationWidget;
 class Qgs3DDebugWidget;
@@ -93,7 +93,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
-    Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
+    Qgs3DMapToolMeasure *measurementLineTool() { return mMapToolMeasureLine; }
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
