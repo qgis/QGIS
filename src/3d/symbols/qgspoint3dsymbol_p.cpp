@@ -200,6 +200,11 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
 void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
+  if ( out.positions.isEmpty() )
+  {
+    return; // nothing to show - no need to create the entity
+  }
+
   // build the default material
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
@@ -461,6 +466,11 @@ void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
 
 void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
+  if ( out.positions.isEmpty() )
+  {
+    return; // nothing to show - no need to create the entity
+  }
+
   if ( selected )
   {
     addMeshEntities( context, out.positions, mSymbol.get(), parent, true );
@@ -617,6 +627,11 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
 void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
+  if ( out.positions.isEmpty() )
+  {
+    return; // nothing to show - no need to create the entity
+  }
+
   // Billboard Geometry
   QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
   billboardGeometry->setPoints( out.positions );
