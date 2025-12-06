@@ -92,7 +92,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
   public:
     //! Create map canvas map
     explicit QgsQuickMapCanvasMap( QQuickItem *parent = nullptr );
-    ~QgsQuickMapCanvasMap();
+    ~QgsQuickMapCanvasMap() override;
 
     QSGNode *updatePaintNode( QSGNode *oldNode, QQuickItem::UpdatePaintNodeData * ) override;
 

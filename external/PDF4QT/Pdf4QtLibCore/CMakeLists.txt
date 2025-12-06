@@ -186,6 +186,17 @@ if(LINUX_GCC)
    # target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
 endif()
 
+set(PDF4QT_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND PDF4QT_COMPILE_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND PDF4QT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (PDF4QT_COMPILE_OPTIONS)
+  target_compile_options(Pdf4QtLibCore PRIVATE "${PDF4QT_COMPILE_OPTIONS}")
+endif()
+
 
 if(MINGW)
     target_link_libraries(Pdf4QtLibCore PRIVATE Secur32 Mscms Gdi32 User32 crypt32)

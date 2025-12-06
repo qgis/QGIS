@@ -48,7 +48,7 @@ class QTSIGNAL_EXPORT UnixSignalWatcher : public QObject
     Q_OBJECT
 public:
     explicit UnixSignalWatcher(QObject *parent = nullptr);
-    ~UnixSignalWatcher();
+    ~UnixSignalWatcher() override;
 
     void watchForSignal(int signal);
 

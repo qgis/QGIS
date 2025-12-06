@@ -63,14 +63,23 @@ set_target_properties(qgis_quick_plugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${QG
 target_compile_definitions(qgis_quick_plugin PRIVATE "-DQT_NO_FOREACH")
 
 # Copy qml files to output directory, we need qml files in the same directory as the plugin shared library
+set(copied_qml_files)
 foreach(qmlfile ${QGIS_QUICK_PLUGIN_RESOURCES} ${QGIS_QUICK_PLUGIN_QRC})
-  add_custom_command(TARGET qgis_quick_plugin
-    PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${qmlfile} ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  get_filename_component(qmlfile_name ${qmlfile} NAME)
+  set(qmlfile_dst ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}/${qmlfile_name})
+
+  add_custom_command(
+    OUTPUT ${qmlfile_dst}
+    COMMAND ${CMAKE_COMMAND} -E copy ${qmlfile} ${qmlfile_dst}
     DEPENDS ${qmlfile}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
+  list(APPEND copied_qml_files ${qmlfile_dst})
 endforeach(qmlfile)
+
+add_custom_target(copy_qml_files ALL DEPENDS ${copied_qml_files})
+add_dependencies(qgis_quick_plugin copy_qml_files)
+
 
 # Installation
 set(QUICK_PLUGIN_INSTALL_DIR ${QGIS_QML_DIR}/QgsQuick)

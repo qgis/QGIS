@@ -14,6 +14,18 @@ set(PDAL_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
+set(LAZPERF_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND LAZPERF_COMPILE_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND LAZPERF_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (LAZPERF_COMPILE_OPTIONS)
+  set_source_files_properties(qgspdalprovider.cpp PROPERTIES COMPILE_OPTIONS "${LAZPERF_COMPILE_OPTIONS}")
+endif()
+
+
 IF(WIN32)
   set_source_files_properties(
     ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
@@ -176,6 +188,13 @@ include_directories(
 add_executable(untwine ${UNTWINE_SRCS} ${UNTWINE_HDRS})
 target_compile_features(untwine PRIVATE cxx_std_20)
 
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  target_compile_options(untwine PRIVATE -Wno-suggest-override)
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  target_compile_options(untwine PRIVATE -Wno-suggest-destructor-override)
+endif()
+
 set_target_properties(untwine PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
 )
@@ -189,6 +208,13 @@ target_include_directories(untwine PRIVATE ${UNTWINE_OS_DIR} ${UNTWINE_INCLUDE_D
 if (PDAL_2_5_OR_HIGHER)
   add_executable(pdal_wrench ${PDAL_WRENCH_SRCS})
   target_compile_features(pdal_wrench PRIVATE cxx_std_20)
+
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    target_compile_options(pdal_wrench PRIVATE -Wno-suggest-override)
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    target_compile_options(pdal_wrench PRIVATE -Wno-suggest-destructor-override)
+  endif()
 
   set_target_properties(pdal_wrench PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}

@@ -147,7 +147,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
   public:
     //! Create new map settings
     explicit QgsQuickMapSettings( QObject *parent = nullptr );
-    ~QgsQuickMapSettings() = default;
+    ~QgsQuickMapSettings() override = default;
 
     //! Clone map settings
     QgsMapSettings mapSettings() const;
