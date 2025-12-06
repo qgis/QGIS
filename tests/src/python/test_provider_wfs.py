@@ -458,7 +458,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             sanitize(
                 endpoint,
                 """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsLike wildCard="%" matchCase="false" escapeChar="\\" singleChar="_">
+ <fes:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="_" wildCard="%">
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>%a%</fes:Literal>
  </fes:PropertyIsLike>
@@ -512,7 +512,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             sanitize(
                 endpoint,
                 """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsLike wildCard="%" matchCase="false" escapeChar="\\" singleChar="_">
+ <fes:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="_" wildCard="%">
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>%ney%</fes:Literal>
  </fes:PropertyIsLike>
@@ -624,7 +624,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
                 endpoint,
                 """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
-  <fes:PropertyIsLike xmlns:fes="http://www.opengis.net/fes/2.0" wildCard="%" matchCase="false" escapeChar="\\" singleChar="_">
+  <fes:PropertyIsLike xmlns:fes="http://www.opengis.net/fes/2.0" escapeChar="\\" matchCase="false" singleChar="_" wildCard="%">
    <fes:ValueReference>name</fes:ValueReference>
    <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">%a%</fes:Literal>
   </fes:PropertyIsLike>
@@ -9219,7 +9219,7 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
                         </my:typename>
                       </wfs:member>
                     </wfs:FeatureCollection>""",
-                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:PropertyIsLike wildCard="%" matchCase="false" escapeChar="\\" singleChar="_">\n    <fes:ValueReference>name</fes:ValueReference>\n    <fes:Literal>%a%</fes:Literal>\n   </fes:PropertyIsLike>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="_" wildCard="%">\n    <fes:ValueReference>name</fes:ValueReference>\n    <fes:Literal>%a%</fes:Literal>\n   </fes:PropertyIsLike>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
                     <wfs:FeatureCollection
                                            xmlns:wfs="http://www.opengis.net/wfs/2.0"
                                            xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -9257,7 +9257,7 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
                         </my:typename>
                       </wfs:member>
                     </wfs:FeatureCollection>""",
-                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:PropertyIsLike wildCard="%" matchCase="false" escapeChar="\\" singleChar="_">\n    <fes:ValueReference>name</fes:ValueReference>\n    <fes:Literal>%ney%</fes:Literal>\n   </fes:PropertyIsLike>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="_" wildCard="%">\n    <fes:ValueReference>name</fes:ValueReference>\n    <fes:Literal>%ney%</fes:Literal>\n   </fes:PropertyIsLike>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
                     <wfs:FeatureCollection
                                            xmlns:wfs="http://www.opengis.net/wfs/2.0"
                                            xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -9413,7 +9413,7 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
                         </my:typename>
                       </wfs:member>
                     </wfs:FeatureCollection>""",
-                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:And>\n    <fes:PropertyIsLike wildCard="%" matchCase="false" escapeChar="\\" xmlns:fes="http://www.opengis.net/fes/2.0" singleChar="_">\n     <fes:ValueReference>name</fes:ValueReference>\n     <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">%a%</fes:Literal>\n    </fes:PropertyIsLike>\n    <fes:And xmlns:fes="http://www.opengis.net/fes/2.0">\n     <fes:PropertyIsGreaterThan xmlns:fes="http://www.opengis.net/fes/2.0">\n      <fes:ValueReference>cnt</fes:ValueReference>\n      <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">100</fes:Literal>\n     </fes:PropertyIsGreaterThan>\n     <fes:PropertyIsLessThan xmlns:fes="http://www.opengis.net/fes/2.0">\n      <fes:ValueReference>cnt</fes:ValueReference>\n      <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">400</fes:Literal>\n     </fes:PropertyIsLessThan>\n    </fes:And>\n   </fes:And>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
+                b'<?xml version="1.0" encoding="UTF-8"?>\n<wfs:GetFeature xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" service="WFS" version="2.0.0" xmlns:fes="http://www.opengis.net/fes/2.0">\n <wfs:Query typeNames="my:typename" srsName="urn:ogc:def:crs:EPSG::4326">\n  <fes:Filter>\n   <fes:And>\n    <fes:PropertyIsLike xmlns:fes="http://www.opengis.net/fes/2.0" escapeChar="\\" matchCase="false" singleChar="_" wildCard="%">\n     <fes:ValueReference>name</fes:ValueReference>\n     <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">%a%</fes:Literal>\n    </fes:PropertyIsLike>\n    <fes:And xmlns:fes="http://www.opengis.net/fes/2.0">\n     <fes:PropertyIsGreaterThan xmlns:fes="http://www.opengis.net/fes/2.0">\n      <fes:ValueReference>cnt</fes:ValueReference>\n      <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">100</fes:Literal>\n     </fes:PropertyIsGreaterThan>\n     <fes:PropertyIsLessThan xmlns:fes="http://www.opengis.net/fes/2.0">\n      <fes:ValueReference>cnt</fes:ValueReference>\n      <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">400</fes:Literal>\n     </fes:PropertyIsLessThan>\n    </fes:And>\n   </fes:And>\n  </fes:Filter>\n </wfs:Query>\n</wfs:GetFeature>\n': b"""
                     <wfs:FeatureCollection
                                            xmlns:wfs="http://www.opengis.net/wfs/2.0"
                                            xmlns:gml="http://www.opengis.net/gml/3.2"
