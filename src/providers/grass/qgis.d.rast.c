@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <fcntl.h>
 #include <io.h>
 #endif
@@ -172,7 +172,7 @@ static int cell_draw( char *name, char *mapset, struct Colors *colors, RASTER_MA
 
   /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
   // Do not use Q_OS_WIN, we are in C file, no Qt headers
-#ifdef WIN32
+#ifdef _WIN32
   if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
     G_fatal_error( "Cannot set stdout mode" );
 #endif

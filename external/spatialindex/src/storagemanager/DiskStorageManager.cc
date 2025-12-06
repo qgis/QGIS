@@ -31,7 +31,7 @@
 // For checking if a file exists - hobu
 #include <sys/stat.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #define stat _stat64
 #endif
 
