@@ -1667,6 +1667,15 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
+if (WITH_QTWEBENGINE)
+  set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
+    web/qgswebengineview.cpp
+  )
+  set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS}
+    web/qgswebengineview.h
+  )
+endif()
+
 if(WITH_INTERNAL_QWT)
   set(QGIS_QWT_SRCS
     ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt.cpp
@@ -1935,6 +1944,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
+  ${CMAKE_SOURCE_DIR}/src/gui/web
 
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui

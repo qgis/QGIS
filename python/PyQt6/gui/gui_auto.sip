@@ -543,3 +543,6 @@
 %Include auto_generated/tiledscene/qgstiledscenerendererpropertieswidget.sip
 %Include auto_generated/tiledscene/qgstiledscenerendererwidget.sip
 %Include auto_generated/vectortile/qgsvectortilelayerproperties.sip
+%If ( HAVE_WEBENGINE_SIP )
+%Include auto_generated/web/qgswebengineview.sip
+%End

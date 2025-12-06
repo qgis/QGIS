@@ -1,0 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/web/qgswebengineview.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsWebEngineView : QWidget
+{
+%Docstring(signature="appended")
+A wrapper around the QWebEngineView class.
+
+.. warning::
+
+   This class is only available on QGIS builds with WebEngine support enabled.
+%End
+
+%TypeHeaderCode
+#include "qgswebengineview.h"
+%End
+  public:
+    QgsWebEngineView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsWebEngineView.
+%End
+    ~QgsWebEngineView();
+
+    void setUrl( const QUrl &url );
+%Docstring
+Sets the URL for the web engine view to load.
+
+:param url: The URL to load in the web engine view
+%End
+
+    void setAcceptDrops( bool accept );
+%Docstring
+Sets whether the web engine view accepts drops.
+
+:param accept: ``True`` to accept drops, ``False`` to reject them
+%End
+
+    void setContextMenuPolicy( Qt::ContextMenuPolicy policy );
+%Docstring
+Sets the context menu policy for the web engine view.
+
+:param policy: The context menu policy to set
+%End
+
+    void openDebugView();
+%Docstring
+Opens a debug view window connected to this webview. The debug view
+provides developer tools for inspecting and debugging the web content
+loaded in this view.
+%End
+
+  protected:
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+%Docstring
+Called for drag enter events. Can be reimplemented in Python to handle
+custom drag enter behavior.
+
+:param event: The drag enter event
+%End
+
+    virtual void dropEvent( QDropEvent *event );
+%Docstring
+Called for drop events. Can be reimplemented in Python to handle custom
+drop behavior.
+
+:param event: The drop event
+%End
+
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
+%Docstring
+Event filter to intercept events from the underlying QWebEngineView.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/web/qgswebengineview.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
