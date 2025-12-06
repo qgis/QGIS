@@ -947,6 +947,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         conn = md.createConnection(self.uri, {})
 
         sql = """
+        DROP TABLE IF EXISTS qgis_test.rename_field;
         CREATE TABLE qgis_test.rename_field (id SERIAL PRIMARY KEY);
         ALTER TABLE qgis_test.rename_field ADD COLUMN geom geometry(POINT,4326);
         ALTER TABLE qgis_test.rename_field ADD COLUMN column_1 TEXT;
@@ -974,6 +975,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             id SERIAL PRIMARY KEY,
             geom geometry(Geometry,4326)
         );
+        DROP SCHEMA IF EXISTS qgis_schema_test CASCADE;
         CREATE SCHEMA IF NOT EXISTS qgis_schema_test;
         """
 
@@ -1018,14 +1020,18 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # create raster table
         sql = """
+        DROP SCHEMA IF EXISTS qgis_schema_test CASCADE;
         CREATE SCHEMA IF NOT EXISTS qgis_schema_test;
+        DROP TABLE IF EXISTS qgis_test.raster_for_move;
         CREATE TABLE qgis_test.raster_for_move (
             id serial PRIMARY KEY,
             rast raster
         );
-        INSERT INTO qgis_test.raster_for_move (rast) 
+        INSERT INTO qgis_test.raster_for_move (rast)
         SELECT ST_SetSRID(ST_AsRaster(ST_Buffer(ST_Point(0,0),10),150, 150), 3857);
         SELECT AddRasterConstraints('qgis_test'::name, 'raster_for_move'::name, 'rast'::name);
+        DROP TABLE IF EXISTS qgis_test.o_2_raster_for_move;
+        DROP TABLE IF EXISTS qgis_test.o_4_raster_for_move;
         """
 
         conn.executeSql(sql)
@@ -1044,18 +1050,14 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # check that overviews were created
         sqlOverviews = """
-        SELECT o_table_schema, o_table_name FROM public.raster_overviews 
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews
         WHERE r_table_schema = 'qgis_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
         """
         overviews = conn.executeSql(sqlOverviews)
 
-        self.assertEqual(
-            [
-                ["qgis_test", "o_2_raster_for_move"],
-                ["qgis_test", "o_4_raster_for_move"],
-            ],
-            overviews,
-        )
+        self.assertEqual(len(overviews), 2)
+        self.assertIn(["qgis_test", "o_2_raster_for_move"], overviews)
+        self.assertIn(["qgis_test", "o_4_raster_for_move"], overviews)
 
         # move table to another schema - overviews should be moved too
         conn.moveTableToSchema(
@@ -1070,24 +1072,20 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # look at overviews after move
         sqlOverviews = """
-        SELECT o_table_schema, o_table_name FROM public.raster_overviews 
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews
         WHERE r_table_schema = 'qgis_schema_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
         """
 
         overviews = conn.executeSql(sqlOverviews)
 
-        self.assertEqual(
-            [
-                ["qgis_schema_test", "o_2_raster_for_move"],
-                ["qgis_schema_test", "o_4_raster_for_move"],
-            ],
-            overviews,
-        )
+        self.assertEqual(len(overviews), 2)
+        self.assertIn(["qgis_schema_test", "o_2_raster_for_move"], overviews)
+        self.assertIn(["qgis_schema_test", "o_4_raster_for_move"], overviews)
 
         # look for original overviews after move - should be empty
         sqlTables = """
-        SELECT tablename FROM pg_catalog.pg_tables 
-        WHERE schemaname = 'qgis_test' 
+        SELECT tablename FROM pg_catalog.pg_tables
+        WHERE schemaname = 'qgis_test'
         AND tablename LIKE '%raster_for_move'
         ORDER BY tablename;
         """
@@ -1101,8 +1099,8 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # look for overviews after move in the new schema - should be present
         sqlTables = """
-        SELECT tablename FROM pg_catalog.pg_tables 
-        WHERE schemaname = 'qgis_schema_test' 
+        SELECT tablename FROM pg_catalog.pg_tables
+        WHERE schemaname = 'qgis_schema_test'
         AND tablename LIKE '%raster_for_move'
         ORDER BY tablename;
         """

@@ -33,8 +33,9 @@ struct QgsOgrProviderResultIterator: public QgsAbstractDatabaseProviderConnectio
     ~QgsOgrProviderResultIterator() override;
 
     void setFields( const QgsFields &fields );
-    void setGeometryColumnName( const QString &geometryColumnName );
+    void addGeometryColumn( const QString &geometryColumnName, int index );
     void setPrimaryKeyColumnName( const QString &primaryKeyColumnName );
+    void setPrimaryKeyColumnIndex( int primaryKeyColumnIndex );
 
   private:
 
@@ -42,7 +43,8 @@ struct QgsOgrProviderResultIterator: public QgsAbstractDatabaseProviderConnectio
     OGRLayerH mOgrLayer;
     QgsFields mFields;
     QVariantList mNextRow;
-    QString mGeometryColumnName;
+    int mPrimaryKeyColumnIndex = -1;
+    std::map<int, QString> mGeometryColumns;
     QString mPrimaryKeyColumnName;
     long long mRowCount = -1;
 
