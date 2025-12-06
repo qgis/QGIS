@@ -27,7 +27,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
-#include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dmaptoolmeasure.h"
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
 #include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
@@ -409,7 +409,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
-  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( this );
+  mMapToolMeasureLine = new Qgs3DMapToolMeasure( this );
 
   mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
 
