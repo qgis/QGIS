@@ -77,7 +77,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       connect( this, &QgsWebView::pageLoadFinished, mPage, &QWebPage::loadFinished );
     }
 
-    ~QgsWebView()
+    ~QgsWebView() override
     {
       delete mSettings;
       delete mPage;

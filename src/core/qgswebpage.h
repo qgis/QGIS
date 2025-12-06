@@ -129,7 +129,7 @@ class CORE_EXPORT QWebPage : public QObject
       connect( mFrame, &QWebFrame::loadFinished, this, &QWebPage::loadFinished );
     }
 
-    ~QWebPage()
+    ~QWebPage() override
     {
       delete mFrame;
       delete mSettings;
