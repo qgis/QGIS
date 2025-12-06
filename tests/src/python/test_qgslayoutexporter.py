@@ -66,8 +66,8 @@ from qgis.core import (
     QgsVectorLayerSimpleLabeling,
     QgsRasterLayer,
     QgsLayoutItemLegend,
-    QgsSingleBandPseudoColorRenderer,
     QgsColorRampLegendNode,
+    QgsFontUtils,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1863,6 +1863,17 @@ class TestQgsLayoutExporter(QgisTestCase):
         legend.attemptSetSceneRect(QRectF(220, 10, 80, 80))
         l.addLayoutItem(legend)
         legend.setLinkedMap(map)
+
+        for component in [
+            Qgis.LegendComponent.Title,
+            Qgis.LegendComponent.Group,
+            Qgis.LegendComponent.Subgroup,
+            Qgis.LegendComponent.SymbolLabel,
+        ]:
+            font = QgsFontUtils.getStandardTestFont("Bold", 14)
+            style = legend.style(component)
+            style.setFont(font)
+            legend.setStyle(component, style)
 
         exporter = QgsLayoutExporter(l)
         # setup settings
