@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmaptoolmeasureline.h
+  qgs3dmaptoolmeasure.h
   --------------------------------------
   Date                 : Jun 2019
   Copyright            : (C) 2019 by Ismail Sunni
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPTOOLMEASURELINE_H
-#define QGS3DMAPTOOLMEASURELINE_H
+#ifndef QGS3DMAPTOOLMEASURE_H
+#define QGS3DMAPTOOLMEASURE_H
 
 #include <memory>
 
@@ -27,13 +27,13 @@ class Qgs3DMapCanvasWidget;
 class QgsRubberBand3D;
 
 
-class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
+class Qgs3DMapToolMeasure : public Qgs3DMapTool
 {
     Q_OBJECT
 
   public:
-    Qgs3DMapToolMeasureLine( Qgs3DMapCanvasWidget *canvas );
-    ~Qgs3DMapToolMeasureLine() override;
+    Qgs3DMapToolMeasure( Qgs3DMapCanvasWidget *canvas );
+    ~Qgs3DMapToolMeasure() override;
 
     //! When we have added our last point, and not following
     bool done() const { return mDone; }
@@ -82,4 +82,4 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QPoint mMouseClickPos;
 };
 
-#endif // QGS3DMAPTOOLMEASURELINE_H
+#endif // QGS3DMAPTOOLMEASURE_H
