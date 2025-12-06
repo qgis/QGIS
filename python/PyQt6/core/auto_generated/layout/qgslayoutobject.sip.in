@@ -173,6 +173,7 @@ A base class for objects which belong to a layout.
       MapGridFrameDivisionsRight,
       MapGridFrameDivisionsTop,
       MapGridFrameDivisionsBottom,
+      MapGridDrawAnnotation,
       MapCrs,
       StartDateTime,
       EndDateTime,

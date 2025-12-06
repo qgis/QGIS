@@ -1202,6 +1202,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mEvaluatedAnnotationFrameDistance = 0;
     double mEvaluatedCrossLength = 0;
     double mEvaluatedGridFrameLineThickness = 0;
+    std::unique_ptr< QgsProperty > mDrawAnnotationProperty;
     DisplayMode mEvaluatedLeftGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
     DisplayMode mEvaluatedRightGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
     DisplayMode mEvaluatedTopGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
@@ -1237,7 +1238,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     void drawCoordinateAnnotation( QgsRenderContext &context, GridLineAnnotation annot, const QString &annotationString, AnnotationCoordinate coordinateType, GridExtension *extension = nullptr ) const;
 
-    QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const;
+    QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext &expressionContext, bool isGeographic ) const;
 
     /**
      * Computes the grid lines with associated coordinate value
