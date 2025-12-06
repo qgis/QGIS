@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
-#include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dmaptoolmeasure.h"
 #include "qgshelp.h"
 #include "qgsunittypes.h"
 
@@ -30,7 +30,7 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
+Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, Qt::WindowFlags f )
   : QDialog( nullptr, f )
   , mTool( tool )
 {

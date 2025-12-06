@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmaptoolmeasureline.cpp
+  qgs3dmaptoolmeasure.cpp
   --------------------------------------
   Date                 : Jun 2019
   Copyright            : (C) 2019 by Ismail Sunni
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dmaptoolmeasure.h"
 
 #include <memory>
 
@@ -33,11 +33,11 @@
 #include <QKeyEvent>
 #include <QString>
 
-#include "moc_qgs3dmaptoolmeasureline.cpp"
+#include "moc_qgs3dmaptoolmeasure.cpp"
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
+Qgs3DMapToolMeasure::Qgs3DMapToolMeasure( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
   // Dialog
@@ -46,9 +46,9 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog->restorePosition();
 }
 
-Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
+Qgs3DMapToolMeasure::~Qgs3DMapToolMeasure() = default;
 
-void Qgs3DMapToolMeasureLine::activate()
+void Qgs3DMapToolMeasure::activate()
 {
   mRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() );
 
@@ -60,7 +60,7 @@ void Qgs3DMapToolMeasureLine::activate()
   mDialog->show();
 }
 
-void Qgs3DMapToolMeasureLine::deactivate()
+void Qgs3DMapToolMeasure::deactivate()
 {
   mRubberBand.reset();
 
@@ -68,12 +68,12 @@ void Qgs3DMapToolMeasureLine::deactivate()
   mDialog->hide();
 }
 
-QCursor Qgs3DMapToolMeasureLine::cursor() const
+QCursor Qgs3DMapToolMeasure::cursor() const
 {
   return Qt::CrossCursor;
 }
 
-void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
+void Qgs3DMapToolMeasure::handleClick( const QPoint &screenPos )
 {
   if ( mDone )
   {
@@ -105,7 +105,7 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
   mDialog->show();
 }
 
-void Qgs3DMapToolMeasureLine::updateSettings()
+void Qgs3DMapToolMeasure::updateSettings()
 {
   if ( mRubberBand )
   {
@@ -119,7 +119,7 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   }
 }
 
-void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
+void Qgs3DMapToolMeasure::addPoint( const QgsPoint &point )
 {
   // don't add points with the same coordinates
   if ( !mPoints.isEmpty() && mPoints.last() == point )
@@ -146,7 +146,7 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   mRubberBand->addPoint( newPoint );
 }
 
-void Qgs3DMapToolMeasureLine::restart()
+void Qgs3DMapToolMeasure::restart()
 {
   mPoints.clear();
   zMean = std::numeric_limits<float>::quiet_NaN();
@@ -157,7 +157,7 @@ void Qgs3DMapToolMeasureLine::restart()
   mRubberBand->setHideLastMarker( true );
 }
 
-void Qgs3DMapToolMeasureLine::undo()
+void Qgs3DMapToolMeasure::undo()
 {
   if ( mPoints.empty() )
   {
@@ -177,18 +177,18 @@ void Qgs3DMapToolMeasureLine::undo()
   }
 }
 
-QVector<QgsPoint> Qgs3DMapToolMeasureLine::points() const
+QVector<QgsPoint> Qgs3DMapToolMeasure::points() const
 {
   return mPoints;
 }
 
-void Qgs3DMapToolMeasureLine::mousePressEvent( QMouseEvent *event )
+void Qgs3DMapToolMeasure::mousePressEvent( QMouseEvent *event )
 {
   mMouseHasMoved = false;
   mMouseClickPos = event->pos();
 }
 
-void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
+void Qgs3DMapToolMeasure::mouseMoveEvent( QMouseEvent *event )
 {
   if ( !mMouseHasMoved && ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
@@ -202,7 +202,7 @@ void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
   mRubberBand->moveLastPoint( pointMap );
 }
 
-void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
+void Qgs3DMapToolMeasure::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( event->button() == Qt::LeftButton && !mMouseHasMoved )
   {
@@ -223,7 +223,7 @@ void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
   }
 }
 
-void Qgs3DMapToolMeasureLine::keyPressEvent( QKeyEvent *event )
+void Qgs3DMapToolMeasure::keyPressEvent( QKeyEvent *event )
 {
   if ( !mDone && ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
   {
