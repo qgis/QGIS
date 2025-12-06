@@ -129,6 +129,14 @@
         "data",
         "metadata"
       ]
+    },
+    "geoparquet-file": {
+      "href": "https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet",
+      "title": "GeoParquet File",
+      "type": "application/vnd.apache.parquet",
+      "roles": [
+        "data"
+      ]
     }
   }
 }
