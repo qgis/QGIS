@@ -17,13 +17,13 @@ Qgs3DMapCanvas.crossSectionEnabled: src/3d/qgs3dmapcanvas.h#L148
 Qgs3DMapCanvas.crossSectionEnabledChanged: src/3d/qgs3dmapcanvas.h#L245
 Qgs3DMapCanvas.disableCrossSection: src/3d/qgs3dmapcanvas.h#L140
 Qgs3DMapCanvas.enableCrossSection: src/3d/qgs3dmapcanvas.h#L133
-Qgs3DMapCanvas.eventFilter: src/3d/qgs3dmapcanvas.h#L265
+Qgs3DMapCanvas.eventFilter: src/3d/qgs3dmapcanvas.h#L264
 Qgs3DMapCanvas.mapSettings: src/3d/qgs3dmapcanvas.h#L91
 Qgs3DMapCanvas.mapTool: src/3d/qgs3dmapcanvas.h#L111
-Qgs3DMapCanvas.resizeEvent: src/3d/qgs3dmapcanvas.h#L263
+Qgs3DMapCanvas.resizeEvent: src/3d/qgs3dmapcanvas.h#L262
 Qgs3DMapCanvas.scene: src/3d/qgs3dmapcanvas.h#L94
 Qgs3DMapCanvas.setMapTool: src/3d/qgs3dmapcanvas.h#L104
-Qgs3DMapCanvas.showEvent: src/3d/qgs3dmapcanvas.h#L258
+Qgs3DMapCanvas.showEvent: src/3d/qgs3dmapcanvas.h#L257
 Qgs3DMapCanvas: src/3d/qgs3dmapcanvas.h#L83
 Qgs3DMapExportSettings.exportNormals: src/3d/qgs3dmapexportsettings.h#L48
 Qgs3DMapExportSettings.exportTextures: src/3d/qgs3dmapexportsettings.h#L50
