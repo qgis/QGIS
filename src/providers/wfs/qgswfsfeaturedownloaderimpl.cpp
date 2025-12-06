@@ -176,6 +176,8 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   if ( !mShared->mServerExpression.isEmpty() )
     filters.push_back( mShared->mServerExpression );
 
+  qDebug() << "OOO" << mShared->mServerExpression;
+
   const QgsRectangle &rect = mShared->currentRect();
   if ( !rect.isNull() && ( !mShared->mWFSFilter.isEmpty() || !mShared->mServerExpression.isEmpty() || !mShared->mWFSGeometryTypeFilter.isEmpty() ) )
   {

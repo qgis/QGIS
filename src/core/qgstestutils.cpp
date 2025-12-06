@@ -18,6 +18,7 @@
 #include "qgsconnectionpool.h"
 #include "qgsvectordataprovider.h"
 
+#include <QCryptographicHash>
 #include <QtConcurrentMap>
 
 ///@cond PRIVATE
@@ -150,6 +151,39 @@ bool QgsTestUtils::compareDomElements( const QDomElement &element1, const QDomEl
   }
 
   return true;
+}
+
+QString QgsTestUtils::sanitizesFakeHttpEndpoint( const QString &urlString )
+{
+  QString modifiedUrlString = urlString;
+
+  // For REST API using URL subpaths, normalize the subpaths
+  const int afterEndpointStartPos = static_cast<int>( modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" ) );
+  QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
+  afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
+  modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
+
+  const qsizetype posQuotationMark = modifiedUrlString.indexOf( '?' );
+  QString args = modifiedUrlString.mid( posQuotationMark );
+  if ( modifiedUrlString.size() > 256 )
+  {
+    args.replace( '/', '_' );
+    args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
+  }
+  else
+  {
+    args.replace( '?', '_' );
+    args.replace( '&', '_' );
+    args.replace( '<', '_' );
+    args.replace( '>', '_' );
+    args.replace( '\"', '_' );
+    args.replace( '\'', '_' );
+    args.replace( ' ', '_' );
+    args.replace( ':', '_' );
+    args.replace( '/', '_' );
+    args.replace( '\n', '_' );
+  }
+  return modifiedUrlString.mid( 0, posQuotationMark ) + args;
 }
 
 ///@endcond
