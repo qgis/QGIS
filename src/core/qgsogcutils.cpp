@@ -2089,39 +2089,26 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
   if ( !node )
     return QDomElement();
 
-  switch ( node->nodeType() )
+  QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
+  const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
+
+  if ( errorMessage )
   {
-    case QgsExpressionNode::ntFunction:
-    case QgsExpressionNode::ntLiteral:
-    case QgsExpressionNode::ntColumnRef:
-    case QgsExpressionNode::ntUnaryOperator:
-    {
-      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
-      const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
-
-      if ( errorMessage )
-        *errorMessage = utils.errorMessage();
-
-      if ( !exprRootElem.isNull() )
-      {
-        if ( requiresFilterElement )
-        {
-          QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
-
-          filterElem.appendChild( exprRootElem );
-          return filterElem;
-        }
-        return exprRootElem;
-      }
-      break;
-    }
-    default:
-    {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Node type not supported in expression translation: %1" ).arg( node->nodeType() );
-    }
+    *errorMessage = utils.errorMessage();
   }
-  // got an error
+
+  if ( !exprRootElem.isNull() )
+  {
+    if ( requiresFilterElement )
+    {
+      QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
+
+      filterElem.appendChild( exprRootElem );
+      return filterElem;
+    }
+    return exprRootElem;
+  }
+
   return QDomElement();
 }
 
