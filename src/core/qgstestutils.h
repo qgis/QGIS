@@ -44,6 +44,10 @@ class CORE_EXPORT QgsTestUtils
      */
     static bool compareDomElements( const QDomElement &element1, const QDomElement &element2 );
 
+    /**
+     * Sanitizes fake_qgis_http_endpoint URLs
+     */
+    static QString sanitizesFakeHttpEndpoint( const QString &urlString );
 };
 
 ///@endcond

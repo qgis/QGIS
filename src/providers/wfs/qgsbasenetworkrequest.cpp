@@ -22,10 +22,10 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgssettings.h"
+#include "qgstestutils.h"
 #include "qgsvariantutils.h"
 
 #include <QCache>
-#include <QCryptographicHash>
 #include <QEventLoop>
 #include <QFuture>
 #include <QNetworkCacheMetaData>
@@ -111,6 +111,10 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   // Specific code for testing
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
+    qDebug() << "xxx";
+    qDebug() << url;
+    qDebug() << QUrlQuery( url ).queryItems( QUrl::FullyDecoded );
+    qDebug() << "---";
     mIsSimulatedMode = true;
 
     // Just for testing with local files instead of http:// resources
@@ -162,35 +166,10 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     }
 #endif
 
-    // For REST API using URL subpaths, normalize the subpaths
-    const int afterEndpointStartPos = static_cast<int>( modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" ) );
-    QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
-    afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-    modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
-
     const auto posQuotationMark = modifiedUrlString.indexOf( '?' );
     if ( posQuotationMark > 0 )
     {
-      QString args = modifiedUrlString.mid( posQuotationMark );
-      if ( modifiedUrlString.size() > 256 )
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Args before MD5: %1" ).arg( args ), 4 );
-        args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
-      }
-      else
-      {
-        args.replace( '?', '_' );
-        args.replace( '&', '_' );
-        args.replace( '<', '_' );
-        args.replace( '>', '_' );
-        args.replace( '\'', '_' );
-        args.replace( '\"', '_' );
-        args.replace( ' ', '_' );
-        args.replace( ':', '_' );
-        args.replace( '/', '_' );
-        args.replace( '\n', '_' );
-      }
-      modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
+      modifiedUrlString = QgsTestUtils::sanitizesFakeHttpEndpoint( modifiedUrlString );
     }
     QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 4 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
