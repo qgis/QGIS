@@ -189,9 +189,9 @@ class CORE_EXPORT QgsMapHitTest
                                  const int band,
                                  const QgsRasterMinMaxOrigin minMaxOrigin,
                                  const Qgis::RasterRangeLimit rangeLimit,
-                                 const QgsCoordinateTransform &transform,
                                  QgsRenderContext &context,
-                                 QgsFeedback *feedback );
+                                 QgsFeedback *feedback,
+                                 const QgsGeometry &visibleExtent );
 
     /**
      * Runs test for visible symbols from a mesh layer
@@ -206,9 +206,9 @@ class CORE_EXPORT QgsMapHitTest
     void runHitTestMeshSource( QgsMeshLayer *layer,
                                const QString &layerId,
                                const QgsMeshDatasetIndex datasetIndex,
-                               const QgsCoordinateTransform &transform,
                                QgsRenderContext &context,
-                               QgsFeedback *feedback );
+                               QgsFeedback *feedback,
+                               const QgsGeometry &visibleExtent );
     //! The hit test
     HitTest mHitTest;
 
@@ -316,6 +316,7 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
       QgsRasterMinMaxOrigin minMaxOrigin;
       Qgis::RasterRangeLimit rangeLimit;
       QgsCoordinateTransform transform;
+      QgsGeometry extent;
     };
 
     struct PreparedMeshData
@@ -324,6 +325,7 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
       QString layerId;
       QgsMeshDatasetIndex datasetIndex;
       QgsCoordinateTransform transform;
+      QgsGeometry extent;
     };
 
     std::vector< PreparedLayerData > mPreparedData;

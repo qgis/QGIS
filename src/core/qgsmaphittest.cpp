@@ -64,31 +64,30 @@ void QgsMapHitTest::run()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  QgsRenderContext contextVectorLayers = context;
-
   const QList< QgsMapLayer * > layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
+
+    QgsGeometry extent;
+    if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
+    {
+      if ( !layer->isInScaleRange( mapSettings.scale() ) )
+      {
+        continue;
+      }
+
+      extent = mSettings.combinedVisibleExtentForLayer( layer );
+
+      context.setCoordinateTransform( mapSettings.layerTransform( layer ) );
+      context.setExtent( extent.boundingBox() );
+    }
+
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       if ( !vl || !vl->renderer() )
         continue;
 
-      QgsGeometry extent;
-      if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
-      {
-        if ( !vl->isInScaleRange( mapSettings.scale() ) )
-        {
-          continue;
-        }
-
-        extent = mSettings.combinedVisibleExtentForLayer( vl );
-
-        contextVectorLayers.setCoordinateTransform( mapSettings.layerTransform( vl ) );
-        contextVectorLayers.setExtent( extent.boundingBox() );
-      }
-
-      contextVectorLayers.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
+      context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
       SymbolSet &usedSymbols = mHitTest[vl->id()];
       SymbolSet &usedSymbolsRuleKey = mHitTestRuleKey[vl->id()];
 
@@ -99,7 +98,7 @@ void QgsMapHitTest::run()
       auto source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
       runHitTestFeatureSource( source.get(),
                                vl->id(), vl->fields(), vl->renderer(),
-                               usedSymbols, usedSymbolsRuleKey, contextVectorLayers,
+                               usedSymbols, usedSymbolsRuleKey, context,
                                nullptr, extent );
     }
     else if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
@@ -109,15 +108,12 @@ void QgsMapHitTest::run()
 
       QgsLogger::warning( QStringLiteral( "Solving Hit test raster layer %1" ).arg( rl->id() ) );
 
-      context.setCoordinateTransform( mapSettings.layerTransform( rl ) );
-
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
 
       QgsCoordinateTransform transform = QgsCoordinateTransform( mapSettings.destinationCrs(), rl->crs(), mapSettings.transformContext() );
 
       runHitTestRasterSource( rl->dataProvider(), rl->id(), rl->renderer()->inputBand(), minMaxOrigin, minMaxOrigin.limits(),
-                              transform,
-                              context, nullptr );
+                              context, nullptr, extent );
 
       QgsLogger::warning( QStringLiteral( "Hit test raster layer %1: found %4 min/max = %2/%3" )
                           .arg( rl->id() )
@@ -132,14 +128,12 @@ void QgsMapHitTest::run()
 
       QgsLogger::warning( QStringLiteral( "Solving Hit test mesh layer %1" ).arg( ml->id() ) );
 
-      context.setCoordinateTransform( mapSettings.layerTransform( ml ) );
-
       QgsCoordinateTransform transform = QgsCoordinateTransform( mapSettings.destinationCrs(), ml->crs(), mapSettings.transformContext() );
 
       QgsMeshDatasetIndex datasetIndex = ml->activeScalarDatasetIndex( context );
       QgsMeshRendererScalarSettings scalarSettings = ml->rendererSettings().scalarSettings( datasetIndex.dataset() );
 
-      runHitTestMeshSource( ml, ml->id(), datasetIndex, transform, context, nullptr );
+      runHitTestMeshSource( ml, ml->id(), datasetIndex, context, nullptr, extent );
 
       QgsLogger::warning( QStringLiteral( "Hit test mesh layer %1: found %4 min/max = %2/%3" )
                           .arg( ml->id() )
@@ -344,12 +338,22 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
     const int band,
     const QgsRasterMinMaxOrigin minMaxOrigin,
     const Qgis::RasterRangeLimit rangeLimit,
-    const QgsCoordinateTransform &transform,
     QgsRenderContext &context,
-    QgsFeedback *feedback )
+    QgsFeedback *feedback,
+    const QgsGeometry &visibleExtent )
 {
   if ( feedback && feedback->isCanceled() )
     return;
+
+  QgsRectangle transformedExtent;
+  if ( visibleExtent.type() != Qgis::GeometryType::Polygon )
+  {
+    transformedExtent = context.extent();
+  }
+  else
+  {
+    transformedExtent = visibleExtent.boundingBox();
+  }
 
   double min = std::numeric_limits<double>::quiet_NaN();
   double max = std::numeric_limits<double>::quiet_NaN();
@@ -359,17 +363,6 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
   {
     case Qgis::RasterRangeExtent::UpdatedCanvas:
     {
-
-      QgsRectangle transformedExtent( context.extent() );
-      try
-      {
-        transformedExtent = transform.transformBoundingBox( context.extent() );
-      }
-      catch ( const QgsCsException &cse )
-      {
-        QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
-      }
-
       if ( provider->extent().intersects( transformedExtent ) )
       {
         QgsRasterLayerUtils::computeMinMax( provider, band, minMaxOrigin, rangeLimit,
@@ -392,12 +385,22 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
 void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
     const QString &layerId,
     const QgsMeshDatasetIndex datasetIndex,
-    const QgsCoordinateTransform &transform,
     QgsRenderContext &context,
-    QgsFeedback *feedback )
+    QgsFeedback *feedback,
+    const QgsGeometry &visibleExtent )
 {
   if ( feedback && feedback->isCanceled() )
     return;
+
+  QgsRectangle transformedExtent;
+  if ( visibleExtent.type() != Qgis::GeometryType::Polygon )
+  {
+    transformedExtent = context.extent();
+  }
+  else
+  {
+    transformedExtent = visibleExtent.boundingBox();
+  }
 
   Qgis::MeshRangeExtent rangeExtent = layer->rendererSettings().scalarSettings( datasetIndex.group() ).extent();
   Qgis::MeshRangeLimit rangeLimit = layer->rendererSettings().scalarSettings( datasetIndex.group() ).limits();
@@ -416,16 +419,6 @@ void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
         {
           case Qgis::MeshRangeLimit::MinimumMaximum:
           {
-            QgsRectangle transformedExtent( context.extent() );
-            try
-            {
-              transformedExtent = transform.transformBoundingBox( context.extent() );
-            }
-            catch ( const QgsCsException &cse )
-            {
-              QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
-            }
-
             found  = layer->minimumMaximumActiveScalarDataset( transformedExtent, datasetIndex, min, max );
             break;
           }
@@ -484,6 +477,17 @@ void QgsMapHitTestTask::prepare()
 
   for ( QgsMapLayer *layer : layers )
   {
+    QgsGeometry extent;
+    if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
+    {
+      if ( !layer->isInScaleRange( mapSettings.scale() ) )
+      {
+        continue;
+      }
+
+      extent = mSettings.combinedVisibleExtentForLayer( layer );
+    }
+
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       if ( !vl || !vl->renderer() )
@@ -492,17 +496,6 @@ void QgsMapHitTestTask::prepare()
       QgsMapLayerStyleOverride styleOverride( vl );
       if ( mapSettings.layerStyleOverrides().contains( vl->id() ) )
         styleOverride.setOverrideStyle( mapSettings.layerStyleOverrides().value( vl->id() ) );
-
-      QgsGeometry extent;
-      if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
-      {
-        if ( !vl->isInScaleRange( mapSettings.scale() ) )
-        {
-          continue;
-        }
-
-        extent = mSettings.combinedVisibleExtentForLayer( vl );
-      }
 
       PreparedLayerData layerData;
       layerData.source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
@@ -530,7 +523,8 @@ void QgsMapHitTestTask::prepare()
       rasterData.band = rl->renderer()->inputBand();
       rasterData.minMaxOrigin = minMaxOrigin;
       rasterData.rangeLimit = minMaxOrigin.limits();
-      rasterData.transform = QgsCoordinateTransform( mapSettings.destinationCrs(), rl->crs(), mapSettings.transformContext() );
+      rasterData.transform = mapSettings.layerTransform( rl );
+      rasterData.extent = extent;
 
       mPreparedRasterData.emplace_back( std::move( rasterData ) );
     }
@@ -545,7 +539,8 @@ void QgsMapHitTestTask::prepare()
 
       meshData.layerId = ml->id();
       meshData.datasetIndex = ml->activeScalarDatasetIndex( context );
-      meshData.transform = QgsCoordinateTransform( mapSettings.destinationCrs(), ml->crs(), mapSettings.transformContext() );
+      meshData.transform = mapSettings.layerTransform( ml );
+      meshData.extent = extent;
 
       mPreparedMeshData.emplace_back( std::move( meshData ) );
     }
@@ -618,14 +613,17 @@ bool QgsMapHitTestTask::run()
     if ( mFeedback->isCanceled() )
       break;
 
+    context.setCoordinateTransform( rasterData.transform );
+    context.setExtent( rasterData.extent.boundingBox() );
+
     hitTest->runHitTestRasterSource( rasterData.provider.get(),
                                      rasterData.layerId,
                                      rasterData.band,
                                      rasterData.minMaxOrigin,
                                      rasterData.rangeLimit,
-                                     rasterData.transform,
                                      context,
-                                     mFeedback.get() );
+                                     mFeedback.get(),
+                                     rasterData.extent );
     layerIdx++;
   }
 
@@ -636,15 +634,18 @@ bool QgsMapHitTestTask::run()
     if ( mFeedback->isCanceled() )
       break;
 
+    context.setCoordinateTransform( meshData.transform );
+    context.setExtent( meshData.extent.boundingBox() );
+
     meshData.layer->moveToThread( QThread:: currentThread() );
     meshData.layer->updateTriangularMesh();
 
     hitTest->runHitTestMeshSource( meshData.layer.get(),
                                    meshData.layerId,
                                    meshData.datasetIndex,
-                                   meshData.transform,
                                    context,
-                                   mFeedback.get() );
+                                   mFeedback.get(),
+                                   meshData.extent );
     layerIdx++;
   }
 
