@@ -1,9 +1,9 @@
 /***************************************************************************
                          qgsalgorithmtransectfixeddistance.h
                          ------------------------------------
-    begin                : September 2024
-    copyright            : (C) 2024 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    begin                : September 2025
+    copyright            : (C) 2025 by Loïc Bartoletti
+    email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -21,50 +21,32 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
+#include "qgsalgorithmtransectbase.h"
 
 ///@cond PRIVATE
 
 /**
  * Native transect (fixed distance) algorithm.
  */
-class QgsTransectFixedDistanceAlgorithm : public QgsProcessingAlgorithm
+class QgsTransectFixedDistanceAlgorithm : public QgsTransectAlgorithmBase
 {
   public:
-    /**
-     * Draw the transect on which side of the line
-     */
-    enum Side
-    {
-      Left,
-      Right,
-      Both
-    };
     QgsTransectFixedDistanceAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsTransectFixedDistanceAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    void addAlgorithmParams() override;
+    bool prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    std::vector<QgsPoint> generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) override;
+    double calculateAzimuth( const QgsLineString &line, const QgsPoint &point, int pointIndex ) override;
 
   private:
-    /**
-     * Returns the transect of the point \a point with \a length, \a orientation and \a angle.
-     * \param point The vertex
-     * \param angleAtVertex Angle at the vertex
-     * \param length Length of the transect Distance to extend line from input feature
-     * \param orientation Orientation of the transect
-     * \param angle Angle of the transect relative to the segment [\a p1 - \a p2] (degrees clockwise)
-     */
-    QgsGeometry calcTransect( const QgsPoint &point, double angleAtVertex, double length, Side orientation, double angle );
+    double mInterval = 10.0;
 };
 
 ///@endcond PRIVATE
