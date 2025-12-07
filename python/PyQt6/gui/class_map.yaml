@@ -7775,6 +7775,14 @@ QgsVertexMarker.setIconType: src/gui/qgsvertexmarker.h#L78
 QgsVertexMarker.setPenWidth: src/gui/qgsvertexmarker.h#L112
 QgsVertexMarker.updatePosition: src/gui/qgsvertexmarker.h#L118
 QgsVertexMarker: src/gui/qgsvertexmarker.h#L36
+QgsWebEngineView.dragEnterEvent: src/gui/web/qgswebengineview.h#L77
+QgsWebEngineView.dropEvent: src/gui/web/qgswebengineview.h#L83
+QgsWebEngineView.eventFilter: src/gui/web/qgswebengineview.h#L88
+QgsWebEngineView.openDebugView: src/gui/web/qgswebengineview.h#L70
+QgsWebEngineView.setAcceptDrops: src/gui/web/qgswebengineview.h#L58
+QgsWebEngineView.setContextMenuPolicy: src/gui/web/qgswebengineview.h#L63
+QgsWebEngineView.setUrl: src/gui/web/qgswebengineview.h#L53
+QgsWebEngineView: src/gui/web/qgswebengineview.h#L39
 QgsWidgetWrapper.QgsWidgetWrapper: src/gui/editorwidgets/core/qgswidgetwrapper.h#L97
 QgsWidgetWrapper.config: src/gui/editorwidgets/core/qgswidgetwrapper.h#L141
 QgsWidgetWrapper.config: src/gui/editorwidgets/core/qgswidgetwrapper.h#L146
@@ -7794,11 +7802,3 @@ QgsWidgetWrapper.widget: src/gui/editorwidgets/core/qgswidgetwrapper.h#L104
 QgsWidgetWrapper: src/gui/editorwidgets/core/qgswidgetwrapper.h#L53
 QgsWindowManagerInterface.openStandardDialog: src/gui/qgswindowmanagerinterface.h#L57
 QgsWindowManagerInterface: src/gui/qgswindowmanagerinterface.h#L38
-QgsWebEngineView: src/gui/web/qgswebengineview.h#L39
-QgsWebEngineView.setUrl: src/gui/web/qgswebengineview.h#L53
-QgsWebEngineView.setAcceptDrops: src/gui/web/qgswebengineview.h#L58
-QgsWebEngineView.setContextMenuPolicy: src/gui/web/qgswebengineview.h#L63
-QgsWebEngineView.openDebugView: src/gui/web/qgswebengineview.h#L70
-QgsWebEngineView.dragEnterEvent: src/gui/web/qgswebengineview.h#L77
-QgsWebEngineView.dropEvent: src/gui/web/qgswebengineview.h#L83
-QgsWebEngineView.eventFilter: src/gui/web/qgswebengineview.h#L88
