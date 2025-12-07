@@ -352,37 +352,37 @@ class TestQgsMapHitTest(QgisTestCase):
 
     def test_hittest_mesh_task(self):
 
-        #     # load the same for testing with different settings, mesh3 does not have proper settings so it should be ignored by MapHitTest
-        #     path_dem = os.path.join(TEST_DATA_DIR, "mesh/manzese_1d2d_small_map.nc")
-        #     mesh_layer_1 = QgsMeshLayer(f'Ugrid:"{path_dem}":mesh2d', "mesh1", "mdal")
-        #     mesh_layer_1.updateTriangularMesh()
-        #     mesh_layer_2 = QgsMeshLayer(f'Ugrid:"{path_dem}":mesh2d', "mesh2", "mdal")
-        #     mesh_layer_2.updateTriangularMesh()
-        #     mesh_layer_3 = QgsMeshLayer(f'Ugrid:"{path_dem}":mesh2d', "mesh3", "mdal")
-        #     mesh_layer_3.updateTriangularMesh()
+        # load the same for testing with different settings, mesh3 does not have proper settings so it should be ignored by MapHitTest
+        path_dem = os.path.join(TEST_DATA_DIR, "mesh/manzese_1d2d_small_map.nc")
+        mesh_layer_1 = QgsMeshLayer(f'Ugrid:"{path_dem}":mesh2d', "mesh1", "mdal")
+        mesh_layer_1.updateTriangularMesh()
+        mesh_layer_2 = QgsMeshLayer(f'Ugrid:"{path_dem}":mesh2d', "mesh2", "mdal")
+        mesh_layer_2.updateTriangularMesh()
+        mesh_layer_3 = QgsMeshLayer(f'Ugrid:"{path_dem}":mesh2d', "mesh3", "mdal")
+        mesh_layer_3.updateTriangularMesh()
 
-        #     # renderer settings
-        #     renderer_settings = mesh_layer_1.rendererSettings()
+        # renderer settings
+        renderer_settings = mesh_layer_1.rendererSettings()
 
-        #     # mesh layer 1 - group 0
-        #     group_index = 0
+        # mesh layer 1 - group 0
+        group_index = 0
 
-        #     renderer_settings.setActiveScalarDatasetGroup(group_index)
-        #     scalarRendererSettings = renderer_settings.scalarSettings(group_index)
-        #     scalarRendererSettings.setLimits(Qgis.MeshRangeLimit.MinimumMaximum)
-        #     scalarRendererSettings.setExtent(Qgis.MeshRangeExtent.UpdatedCanvas)
-        #     renderer_settings.setScalarSettings(group_index, scalarRendererSettings)
-        #     mesh_layer_1.setRendererSettings(renderer_settings)
+        renderer_settings.setActiveScalarDatasetGroup(group_index)
+        scalarRendererSettings = renderer_settings.scalarSettings(group_index)
+        scalarRendererSettings.setLimits(Qgis.MeshRangeLimit.MinimumMaximum)
+        scalarRendererSettings.setExtent(Qgis.MeshRangeExtent.UpdatedCanvas)
+        renderer_settings.setScalarSettings(group_index, scalarRendererSettings)
+        mesh_layer_1.setRendererSettings(renderer_settings)
 
-        #     # mesh layer 2 - group 4
-        #     group_index = 4
+        # mesh layer 2 - group 4
+        group_index = 4
 
-        #     renderer_settings.setActiveScalarDatasetGroup(group_index)
-        #     scalarRendererSettings = renderer_settings.scalarSettings(group_index)
-        #     scalarRendererSettings.setLimits(Qgis.MeshRangeLimit.MinimumMaximum)
-        #     scalarRendererSettings.setExtent(Qgis.MeshRangeExtent.UpdatedCanvas)
-        #     renderer_settings.setScalarSettings(group_index, scalarRendererSettings)
-        #     mesh_layer_2.setRendererSettings(renderer_settings)
+        renderer_settings.setActiveScalarDatasetGroup(group_index)
+        scalarRendererSettings = renderer_settings.scalarSettings(group_index)
+        scalarRendererSettings.setLimits(Qgis.MeshRangeLimit.MinimumMaximum)
+        scalarRendererSettings.setExtent(Qgis.MeshRangeExtent.UpdatedCanvas)
+        renderer_settings.setScalarSettings(group_index, scalarRendererSettings)
+        mesh_layer_2.setRendererSettings(renderer_settings)
 
         # map settings
         map_settings = QgsMapSettings()
@@ -390,7 +390,7 @@ class TestQgsMapHitTest(QgisTestCase):
         map_settings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         map_settings.setOutputSize(QSize(1221, 750))
         map_settings.setExtent(QgsRectangle(525213, 9249013, 525679, 9249260))
-        # map_settings.setLayers([mesh_layer_1, mesh_layer_2, mesh_layer_3])
+        map_settings.setLayers([mesh_layer_1, mesh_layer_2, mesh_layer_3])
 
         # hit test task
         filter_settings = QgsLayerTreeFilterSettings(map_settings)
@@ -407,36 +407,36 @@ class TestQgsMapHitTest(QgisTestCase):
         QgsApplication.taskManager().addTask(map_hit_test_task)
         map_hit_test_task.waitForFinished()
 
-    #     # results
-    #     self.assertIsInstance(TestQgsMapHitTest.resultsRenderersUpdatedCanvas, dict)
-    #     self.assertEqual(len(TestQgsMapHitTest.resultsRenderersUpdatedCanvas), 2)
-    #     self.assertEqual(
-    #         list(TestQgsMapHitTest.resultsRenderersUpdatedCanvas.keys()),
-    #         [mesh_layer_1.id(), mesh_layer_2.id()],
-    #     )
+        # results
+        self.assertIsInstance(TestQgsMapHitTest.resultsRenderersUpdatedCanvas, dict)
+        self.assertEqual(len(TestQgsMapHitTest.resultsRenderersUpdatedCanvas), 2)
+        self.assertEqual(
+            list(TestQgsMapHitTest.resultsRenderersUpdatedCanvas.keys()),
+            [mesh_layer_1.id(), mesh_layer_2.id()],
+        )
 
-    #     # values for mesh layer 1
-    #     self.assertAlmostEqual(
-    #         TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_1.id()][0],
-    #         30.437649,
-    #         places=5,
-    #     )
-    #     self.assertAlmostEqual(
-    #         TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_1.id()][1],
-    #         37.86449,
-    #         places=4,
-    #     )
-    #     # values for mesh layer 2
-    #     self.assertAlmostEqual(
-    #         TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_2.id()][0],
-    #         523.899,
-    #         places=2,
-    #     )
-    #     self.assertAlmostEqual(
-    #         TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_2.id()][1],
-    #         625.0,
-    #         places=1,
-    #     )
+        # values for mesh layer 1
+        self.assertAlmostEqual(
+            TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_1.id()][0],
+            30.437649,
+            places=5,
+        )
+        self.assertAlmostEqual(
+            TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_1.id()][1],
+            37.86449,
+            places=4,
+        )
+        # values for mesh layer 2
+        self.assertAlmostEqual(
+            TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_2.id()][0],
+            523.899,
+            places=2,
+        )
+        self.assertAlmostEqual(
+            TestQgsMapHitTest.resultsRenderersUpdatedCanvas[mesh_layer_2.id()][1],
+            625.0,
+            places=1,
+        )
 
 
 if __name__ == "__main__":
