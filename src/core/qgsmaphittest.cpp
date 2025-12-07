@@ -106,27 +106,17 @@ void QgsMapHitTest::run()
       if ( !rl || !rl->renderer() || !rl->dataProvider() )
         continue;
 
-      QgsLogger::warning( QStringLiteral( "Solving Hit test raster layer %1" ).arg( rl->id() ) );
-
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
 
       QgsCoordinateTransform transform = QgsCoordinateTransform( mapSettings.destinationCrs(), rl->crs(), mapSettings.transformContext() );
 
       runHitTestRasterSource( rl->dataProvider(), rl->id(), rl->renderer()->inputBand(), minMaxOrigin, minMaxOrigin.limits(),
                               context, nullptr, extent );
-
-      QgsLogger::warning( QStringLiteral( "Hit test raster layer %1: found %4 min/max = %2/%3" )
-                          .arg( rl->id() )
-                          .arg( mHitTestRenderersUpdatedCanvas.value( rl->id() ).first )
-                          .arg( mHitTestRenderersUpdatedCanvas.value( rl->id() ).second )
-                          .arg( mHitTestRenderersUpdatedCanvas.contains( rl->id() ) ) );
     }
     else if ( QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( layer ) )
     {
       if ( !ml )
         continue;
-
-      QgsLogger::warning( QStringLiteral( "Solving Hit test mesh layer %1" ).arg( ml->id() ) );
 
       QgsCoordinateTransform transform = QgsCoordinateTransform( mapSettings.destinationCrs(), ml->crs(), mapSettings.transformContext() );
 
@@ -134,12 +124,6 @@ void QgsMapHitTest::run()
       QgsMeshRendererScalarSettings scalarSettings = ml->rendererSettings().scalarSettings( datasetIndex.dataset() );
 
       runHitTestMeshSource( ml, ml->id(), datasetIndex, context, nullptr, extent );
-
-      QgsLogger::warning( QStringLiteral( "Hit test mesh layer %1: found %4 min/max = %2/%3" )
-                          .arg( ml->id() )
-                          .arg( mHitTestRenderersUpdatedCanvas.value( ml->id() ).first )
-                          .arg( mHitTestRenderersUpdatedCanvas.value( ml->id() ).second )
-                          .arg( mHitTestRenderersUpdatedCanvas.contains( ml->id() ) ) );
     }
   }
 
