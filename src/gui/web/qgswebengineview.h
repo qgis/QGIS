@@ -34,6 +34,7 @@ class QDialog;
  * \ingroup gui
  * \brief A wrapper around the QWebEngineView class.
  * \warning This class is only available on QGIS builds with WebEngine support enabled.
+ * \since QGIS 4.0
  */
 class GUI_EXPORT QgsWebEngineView : public QWidget
 {

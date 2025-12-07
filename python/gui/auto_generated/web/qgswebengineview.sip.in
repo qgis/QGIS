@@ -19,6 +19,8 @@ A wrapper around the QWebEngineView class.
 .. warning::
 
    This class is only available on QGIS builds with WebEngine support enabled.
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
