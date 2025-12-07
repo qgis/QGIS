@@ -661,6 +661,19 @@ bool QgsMapHitTestTask::run()
 
   mFeedback.reset();
 
+  // data moved to the task thread above need to explicitly emptied here
+  // otherwise destructors run in the main thread may comply
+  // raster data
+  for ( auto &rasterData : mPreparedRasterData )
+  {
+    rasterData.provider.reset();
+  }
+  // mesh data
+  for ( auto &meshData : mPreparedMeshData )
+  {
+    meshData.layer.reset();
+  }
+
   return true;
 }
 
