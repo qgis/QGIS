@@ -32,7 +32,6 @@ class QDialog;
 
 /**
  * \ingroup gui
- * \class QgsWebEngineView
  * \brief A wrapper around the QWebEngineView class.
  * \warning This class is only available on QGIS builds with WebEngine support enabled.
  */
@@ -49,19 +48,16 @@ class GUI_EXPORT QgsWebEngineView : public QWidget
 
     /**
    * Sets the URL for the web engine view to load.
-   * \param url The URL to load in the web engine view
    */
     void setUrl( const QUrl &url );
 
     /**
    * Sets whether the web engine view accepts drops.
-   * \param accept TRUE to accept drops, FALSE to reject them
    */
     void setAcceptDrops( bool accept );
 
     /**
    * Sets the context menu policy for the web engine view.
-   * \param policy The context menu policy to set
    */
     void setContextMenuPolicy( Qt::ContextMenuPolicy policy );
 
@@ -76,14 +72,12 @@ class GUI_EXPORT QgsWebEngineView : public QWidget
     /**
      * Called for drag enter events.
      * Can be reimplemented in Python to handle custom drag enter behavior.
-     * \param event The drag enter event
      */
     virtual void dragEnterEvent( QDragEnterEvent *event ) override;
 
     /**
      * Called for drop events.
      * Can be reimplemented in Python to handle custom drop behavior.
-     * \param event The drop event
      */
     virtual void dropEvent( QDropEvent *event ) override;
 

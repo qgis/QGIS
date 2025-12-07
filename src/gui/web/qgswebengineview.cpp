@@ -27,11 +27,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 
-/**
- * Constructor for QgsWebEngineView.
- * Creates a new web engine view widget with drag and drop support.
- * \param parent The parent widget
- */
+
 QgsWebEngineView::QgsWebEngineView( QWidget *parent )
   : QWidget( parent )
   , mView { std::make_unique< QWebEngineView >() }
@@ -47,15 +43,8 @@ QgsWebEngineView::QgsWebEngineView( QWidget *parent )
   mView->installEventFilter( this );
 }
 
-/**
- * Destructor for QgsWebEngineView.
- */
 QgsWebEngineView::~QgsWebEngineView() = default;
 
-/**
- * Sets the URL to be loaded in the web engine view.
- * \param url The URL to load
- */
 void QgsWebEngineView::setUrl( const QUrl &url )
 {
   if ( mView )
@@ -64,10 +53,6 @@ void QgsWebEngineView::setUrl( const QUrl &url )
   }
 }
 
-/**
- * Sets whether the web engine view accepts drop events.
- * \param accept True to accept drops, false otherwise
- */
 void QgsWebEngineView::setAcceptDrops( bool accept )
 {
   QWidget::setAcceptDrops( accept );
@@ -77,10 +62,6 @@ void QgsWebEngineView::setAcceptDrops( bool accept )
   }
 }
 
-/**
- * Sets the context menu policy for the web engine view.
- * \param policy The context menu policy to apply
- */
 void QgsWebEngineView::setContextMenuPolicy( Qt::ContextMenuPolicy policy )
 {
   if ( mView )
@@ -89,15 +70,11 @@ void QgsWebEngineView::setContextMenuPolicy( Qt::ContextMenuPolicy policy )
   }
 }
 
-/**
- * Opens a web inspector debug view in a separate dialog.
- */
 void QgsWebEngineView::openDebugView()
 {
   if ( !mView || !mView->page() )
     return;
 
-  // Create debug view if it doesn't exist
   if ( !mDebugView )
   {
     // Create a new dialog to hold the debug view
@@ -117,7 +94,7 @@ void QgsWebEngineView::openDebugView()
     debugDialog->setLayout( layout );
 
     // Clean up debug view when dialog is closed
-    connect( debugDialog, &QDialog::destroyed, [this]() {
+    connect( debugDialog, &QDialog::destroyed, this, [this]() {
       mDebugView.reset();
     } );
   }
@@ -137,32 +114,16 @@ void QgsWebEngineView::openDebugView()
   }
 }
 
-/**
- * Handles drag enter events for the web engine view.
- * \param event The drag enter event
- */
 void QgsWebEngineView::dragEnterEvent( QDragEnterEvent *event )
 {
   event->acceptProposedAction();
 }
 
-/**
- * Handles drop events for the web engine view.
- * \param event The drop event
- */
 void QgsWebEngineView::dropEvent( QDropEvent *event )
 {
   QWidget::dropEvent( event );
 }
 
-/**
- * Event filter to intercept events from the web engine view.
- * Specifically handles drag and drop events by forwarding them to
- * the appropriate virtual methods for customization.
- * \param obj The object that received the event
- * \param event The event to process
- * \return True if the event was handled, false otherwise
- */
 bool QgsWebEngineView::eventFilter( QObject *obj, QEvent *event )
 {
   if ( obj == mView.get() )
