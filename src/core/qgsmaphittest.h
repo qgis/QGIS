@@ -179,9 +179,9 @@ class CORE_EXPORT QgsMapHitTest
      * \param band raster band to calculate min/max on
      * \param minMaxOrigin min/max origin settings
      * \param rangeLimit range limit settings
-     * \param transform coordinate transform to map CRS
      * \param context render context
      * \param feedback optional feedback argument for cancel support
+     * \param visibleExtent total visible area of layer
      * \note not available in Python bindings
      */
     void runHitTestRasterSource( QgsRasterDataProvider *provider,
@@ -198,9 +198,9 @@ class CORE_EXPORT QgsMapHitTest
      * \param layer mesh layer
      * \param layerId associated layer id
      * \param datasetIndex dataset index within the mesh layer
-     * \param transform coordinate transform to map CRS
      * \param context render context
      * \param feedback optional feedback argument for cancel support
+     * \param visibleExtent total visible area of layer
      * \note not available in Python bindings
      */
     void runHitTestMeshSource( QgsMeshLayer *layer,
