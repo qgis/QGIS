@@ -32,8 +32,8 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
     /**
-     * Draw the transect on which side of the line
-     */
+   * Draw the transect on which side of the line
+   */
     enum Side
     {
       Left,
@@ -50,36 +50,40 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
 
   protected:
     /**
-     * Adds specific subclass algorithm parameters. The common parameters (INPUT, LENGTH, ANGLE, SIDE, OUTPUT)
-     * are automatically added by the base class.
-     */
+   * Adds specific subclass algorithm parameters. The common parameters (INPUT,
+   * LENGTH, ANGLE, SIDE, OUTPUT) are automatically added by the base class.
+   */
     virtual void addAlgorithmParams() = 0;
 
     /**
-     * Prepares the transect algorithm subclass for execution.
-     */
-    virtual bool prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+   * Prepares the transect algorithm subclass for execution.
+   */
+    virtual bool
+      prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+      = 0;
 
     /**
-     * Processes a line geometry using the specific sampling strategy implemented in subclasses.
-     */
+   * Processes a line geometry using the specific sampling strategy implemented
+   * in subclasses.
+   */
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
     /**
-     * Pure virtual method that generates sampling points along a line geometry.
-     * Subclasses implement their specific sampling strategy here.
-     */
-    virtual std::vector<QgsPoint> generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) = 0;
+   * Pure virtual method that generates sampling points along a line geometry.
+   * Subclasses implement their specific sampling strategy here.
+   */
+    virtual std::vector<QgsPoint>
+      generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) = 0;
 
     /**
-     * Calculate the azimuth at a given point for transect orientation.
-     * Subclasses can override this if they need different azimuth calculation.
-     */
+   * Calculate the azimuth at a given point for transect orientation.
+   * Subclasses can override this if they need different azimuth calculation.
+   */
     virtual double calculateAzimuth( const QgsLineString &line, const QgsPoint &point, int pointIndex ) = 0;
 
     /**
-     * Returns the transect geometry at the specified point.
-     */
+   * Returns the transect geometry at the specified point.
+   */
     static QgsGeometry calcTransect( const QgsPoint &point, double angleAtVertex, double length, Side orientation, double angle );
 
     // Shared member variables accessible to subclasses
