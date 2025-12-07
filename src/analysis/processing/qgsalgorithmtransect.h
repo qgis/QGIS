@@ -21,14 +21,14 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
+#include "qgsalgorithmtransectbase.h"
 
 ///@cond PRIVATE
 
 /**
  * Native transect algorithm.
  */
-class QgsTransectAlgorithm : public QgsProcessingAlgorithm
+class QgsTransectAlgorithm : public QgsTransectAlgorithmBase
 {
   public:
     /**
@@ -41,15 +41,9 @@ class QgsTransectAlgorithm : public QgsProcessingAlgorithm
       Both
     };
     QgsTransectAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
     QString shortHelpString() const override;
-    QString shortDescription() const override;
-    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsTransectAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -65,6 +59,10 @@ class QgsTransectAlgorithm : public QgsProcessingAlgorithm
      * \param angle Angle of the transect relative to the segment [\a p1 - \a p2] (degrees clockwise)
      */
     QgsGeometry calcTransect( const QgsPoint &point, double angleAtVertex, double length, Side orientation, double angle );
+    void addAlgorithmParams() override;
+    bool prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    std::vector<QgsPoint> generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) override;
+    double calculateAzimuth( const QgsLineString &line, const QgsPoint &point, int pointIndex ) override;
 };
 
 ///@endcond PRIVATE
