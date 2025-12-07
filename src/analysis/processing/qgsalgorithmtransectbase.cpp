@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtransectbase.h"
-#include "qgsmultilinestring.h"
+
 #include "qgslinestring.h"
+#include "qgsmultilinestring.h"
 
 ///@cond PRIVATE
 
