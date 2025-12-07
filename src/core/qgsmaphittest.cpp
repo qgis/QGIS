@@ -534,13 +534,7 @@ void QgsMapHitTestTask::prepare()
         continue;
 
       PreparedMeshData meshData;
-      meshData.layer = std::make_unique< QgsMeshLayer >( ml->source(), ml->name(), ml->providerType() );
-      meshData.layer->setCrs( ml->crs() );
-      for ( const QString &additionalDataset : ml->extraDatasetUris() )
-      {
-        meshData.layer->addDatasets( additionalDataset );
-      }
-      meshData.layer->setRendererSettings( ml->rendererSettings() );
+      meshData.layer = std::unique_ptr< QgsMeshLayer >( ml->clone() );
       meshData.layer->moveToThread( nullptr );
 
       meshData.layerId = ml->id();
