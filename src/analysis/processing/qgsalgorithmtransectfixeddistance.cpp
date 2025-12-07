@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtransectfixeddistance.h"
-#include "qgsmultilinestring.h"
+
 #include "qgslinestring.h"
+#include "qgsmultilinestring.h"
 
 ///@cond PRIVATE
 
@@ -62,7 +63,7 @@ QgsTransectFixedDistanceAlgorithm *QgsTransectFixedDistanceAlgorithm::createInst
 
 void QgsTransectFixedDistanceAlgorithm::addAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), 10.0, QStringLiteral( "INPUT" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), 10.0, QStringLiteral( "INPUT" ), false, 0.0001 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "INCLUDE_START" ), QObject::tr( "Include transect at start of line" ), true ) );
 }
 
@@ -101,7 +102,19 @@ double QgsTransectFixedDistanceAlgorithm::calculateAzimuth( const QgsLineString 
   // For fixed distance sampling, find closest segment
   QgsPoint segPt;
   QgsVertexId vid;
-  line.closestSegment( point, segPt, vid, nullptr, Qgis::DEFAULT_SEGMENT_EPSILON );
+  const double sqrDist = line.closestSegment( point, segPt, vid, nullptr, Qgis::DEFAULT_SEGMENT_EPSILON );
+
+  // Validate closestSegment found a valid segment
+  if ( sqrDist < 0 || vid.vertex < 1 )
+  {
+    // Fallback: use azimuth from first to second vertex if line has at least 2 vertices
+    if ( line.numPoints() >= 2 )
+    {
+      return line.pointN( 0 ).azimuth( line.pointN( 1 ) ) * M_PI / 180.0;
+    }
+    return 0.0;
+  }
+
   QgsVertexId prev( vid.part, vid.ring, vid.vertex - 1 );
   return line.vertexAt( prev ).azimuth( line.vertexAt( vid ) ) * M_PI / 180.0;
 }
