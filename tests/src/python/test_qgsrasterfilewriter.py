@@ -17,8 +17,10 @@ import tempfile
 from osgeo import gdal
 from qgis.PyQt.QtCore import QDir, QTemporaryFile
 from qgis.core import (
+    QgsCoordinateTransformContext,
     QgsContrastEnhancement,
     QgsRaster,
+    QgsRasterBlockFeedback,
     QgsRasterChecker,
     QgsRasterFileWriter,
     QgsRasterLayer,
@@ -485,6 +487,68 @@ class TestQgsRasterFileWriter(QgisTestCase):
         self.assertEqual(ds.GetRasterBand(1).Checksum(), 4672)
         ds = None
         os.unlink(tmpName)
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 13, 0),
+        "GDAL 3.13.0 required",
+    )
+    def testWriteCOG(self):
+        """Test COG support"""
+        tmpName = tempfile.mktemp(suffix=".grd")
+        source = QgsRasterLayer(
+            os.path.join(self.testDataDir, "raster", "byte.tif"), "my", "gdal"
+        )
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+        fw.setOutputFormat("COG")
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        feedback = QgsRasterBlockFeedback()
+
+        class Progress:
+            def __init__(self, test):
+                self.test = test
+                self.last_percentage = 0
+                self.percentage_between_0_50_found = False
+                self.percentage_between_50_100_found = False
+
+            def onProgressChanged(self, percentage):
+                self.test.assertGreater(percentage, self.last_percentage)
+                if percentage > 0 and percentage < 50:
+                    self.percentage_between_0_50_found = True
+                if percentage > 50 and percentage < 100:
+                    self.percentage_between_50_100_found = True
+                self.last_percentage = percentage
+
+        progress = Progress(self)
+        feedback.progressChanged.connect(progress.onProgressChanged)
+
+        self.assertEqual(
+            fw.writeRaster(
+                pipe,
+                1025,
+                1024,
+                provider.extent(),
+                provider.crs(),
+                QgsCoordinateTransformContext(),
+                feedback,
+            ),
+            QgsRasterFileWriter.WriterError.NoError,
+        )
+
+        self.assertEqual(progress.last_percentage, 100.0)
+        self.assertTrue(progress.percentage_between_0_50_found)
+        self.assertTrue(progress.percentage_between_50_100_found)
+
+        del fw
+
+        with gdal.Open(tmpName) as ds:
+            self.assertEqual(ds.RasterXSize, 1025)
+            self.assertEqual(ds.RasterYSize, 1024)
+            self.assertTrue(ds.GetRasterBand(1).GetOverviewCount() > 0)
 
 
 if __name__ == "__main__":
