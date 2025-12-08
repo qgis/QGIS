@@ -14,14 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QStack>
 #include "qgsdualedgetriangulation.h"
+
 #include <map>
+
 #include "MathUtils.h"
 #include "qgsgeometry.h"
+#include "qgsinterpolator.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsinterpolator.h"
+
+#include <QStack>
 
 double leftOfTresh = 0;
 

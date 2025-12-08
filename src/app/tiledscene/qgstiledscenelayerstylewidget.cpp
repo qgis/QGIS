@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerstylewidget.h"
-#include "moc_qgstiledscenelayerstylewidget.cpp"
-#include "qgstiledscenerendererpropertieswidget.h"
-#include "qgsstyle.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
+#include "qgsstyle.h"
 #include "qgstiledscenelayer.h"
+#include "qgstiledscenerendererpropertieswidget.h"
+
+#include "moc_qgstiledscenelayerstylewidget.cpp"
 
 QgsTiledSceneRendererWidgetFactory::QgsTiledSceneRendererWidgetFactory( QObject *parent )
   : QObject( parent )

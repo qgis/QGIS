@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
-#include "qgsninecellfilter.h"
-#include "qgslogger.h"
-#include "cpl_string.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsmessagelog.h"
 #include "qgsconfig.h"
+#include "qgsninecellfilter.h"
+
+#include <cpl_string.h>
+
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogrutils.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"

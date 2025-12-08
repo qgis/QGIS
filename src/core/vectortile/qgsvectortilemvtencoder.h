@@ -18,10 +18,10 @@
 
 #define SIP_NO_FILE
 
+#include "qgscoordinatetransform.h"
 #include "qgstiles.h"
 #include "qgsvectortilerenderer.h"
 #include "vector_tile.pb.h"
-#include "qgscoordinatetransform.h"
 
 /**
  * \ingroup core

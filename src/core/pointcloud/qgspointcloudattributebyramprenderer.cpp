@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgspointcloudattributebyramprenderer.h"
+
+#include "qgscolorramp.h"
+#include "qgscolorramplegendnode.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgspointcloudblock.h"
 #include "qgsstyle.h"
-#include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
-#include "qgslayertreemodellegendnode.h"
-#include "qgscolorramplegendnode.h"
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {

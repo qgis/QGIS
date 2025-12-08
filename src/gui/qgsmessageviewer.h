@@ -18,12 +18,12 @@
 #define QGSMESSAGEVIEWER_H
 
 #include "ui_qgsmessageviewer.h"
+
+#include "qgis_gui.h"
 #include "qgsguiutils.h"
 #include "qgsmessageoutput.h"
-#include "qgis_gui.h"
 
 #include <QString>
-
 
 /**
  * \ingroup gui

@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgssensorthingsconnectionpropertiestask.h"
-#include "moc_qgssensorthingsconnectionpropertiestask.cpp"
+
 #include "qgsfeedback.h"
 #include "qgssensorthingsutils.h"
+
+#include "moc_qgssensorthingsconnectionpropertiestask.cpp"
 
 ///@cond PRIVATE
 

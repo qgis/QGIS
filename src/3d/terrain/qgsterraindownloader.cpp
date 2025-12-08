@@ -15,12 +15,13 @@
 
 #include "qgsterraindownloader.h"
 
+#include <memory>
+
 #include "qgs3dutils.h"
-#include "qgslogger.h"
-#include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgdalutils.h"
-
+#include "qgslogger.h"
+#include "qgsrasterlayer.h"
 
 QgsTerrainDownloader::QgsTerrainDownloader( const QgsCoordinateTransformContext &transformContext )
 {
@@ -59,7 +60,7 @@ void QgsTerrainDownloader::setDataSource( const QgsTerrainDownloader::DataSource
 {
   mDataSource = ds;
   const QString uri = QString( "type=xyz&url=%1&zmin=%2&zmax=%3" ).arg( mDataSource.uri ).arg( mDataSource.zMin ).arg( mDataSource.zMax );
-  mOnlineDtm.reset( new QgsRasterLayer( uri, "terrarium", "wms" ) );
+  mOnlineDtm = std::make_unique<QgsRasterLayer>( uri, "terrarium", "wms" );
 }
 
 

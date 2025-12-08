@@ -14,22 +14,21 @@
  ***************************************************************************/
 
 #include "qgsprocessingfieldmapwidgetwrapper.h"
-#include "moc_qgsprocessingfieldmapwidgetwrapper.cpp"
+
+#include "qgspanelwidget.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingparameterfieldmap.h"
 
 #include <QBoxLayout>
+#include <QItemSelectionModel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QToolButton>
-#include <QItemSelectionModel>
 
-#include "qgspanelwidget.h"
-
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingmodelalgorithm.h"
-
-#include "qgsprocessingparameterfieldmap.h"
+#include "moc_qgsprocessingfieldmapwidgetwrapper.cpp"
 
 /// @cond private
 

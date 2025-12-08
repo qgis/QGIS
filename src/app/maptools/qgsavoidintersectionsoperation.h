@@ -16,12 +16,12 @@
 #ifndef QGSAVOIDINTERSECTIONSOPERATION_H
 #define QGSAVOIDINTERSECTIONSOPERATION_H
 
-#include <QObject>
-
 #include "qgis.h"
 #include "qgis_app.h"
 #include "qgsfeatureid.h"
 #include "qgspoint.h"
+
+#include <QObject>
 
 class QgsVectorLayer;
 class QgsGeometry;
@@ -44,18 +44,17 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
 
     struct Result
     {
-        Result()
-          : operationResult( Qgis::GeometryOperationResult::NothingHappened ), geometryHasChanged( false ) {}
+        Result() = default;
 
         /**
        * The result of an avoid intersection operation
        */
-        Qgis::GeometryOperationResult operationResult;
+        Qgis::GeometryOperationResult operationResult = Qgis::GeometryOperationResult::NothingHappened;
 
         /**
        * True if the geometry has changed during the avoid intersection operation
        */
-        bool geometryHasChanged;
+        bool geometryHasChanged = false;
     };
 
     /**

@@ -13,15 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsabstractgeometry.h"
 #include "qgsvectorrenderingoptions.h"
-#include "moc_qgsvectorrenderingoptions.cpp"
-#include "qgssettings.h"
+
+#include "qgsabstractgeometry.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
+#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgsvectorlayer.h"
 
 #include <QThread>
+
+#include "moc_qgsvectorrenderingoptions.cpp"
+
 //
 // QgsVectorRenderingOptionsWidget
 //

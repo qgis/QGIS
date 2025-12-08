@@ -10,6 +10,9 @@
 
 
 
+
+
+
 class QgsNineCellFilter
 {
 %Docstring(signature="appended")

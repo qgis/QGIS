@@ -15,14 +15,15 @@
 
 #include "qgspropertytransformer.h"
 
-#include "qgslogger.h"
-#include "qgsexpression.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgssymbollayerutils.h"
+#include <memory>
+
 #include "qgscolorramp.h"
 #include "qgscolorutils.h"
+#include "qgsexpression.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgslogger.h"
 #include "qgspointxy.h"
-
+#include "qgssymbollayerutils.h"
 
 //
 // QgsPropertyTransformer
@@ -59,6 +60,9 @@ QgsPropertyTransformer::QgsPropertyTransformer( const QgsPropertyTransformer &ot
 
 QgsPropertyTransformer &QgsPropertyTransformer::operator=( const QgsPropertyTransformer &other )
 {
+  if ( &other == this )
+    return *this;
+
   mMinValue = other.mMinValue;
   mMaxValue = other.mMaxValue;
   mCurveTransform.reset( other.mCurveTransform ? new QgsCurveTransform( *other.mCurveTransform ) : nullptr );
@@ -79,7 +83,7 @@ bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 
   if ( !curve.isEmpty() )
   {
-    mCurveTransform.reset( new QgsCurveTransform() );
+    mCurveTransform = std::make_unique<QgsCurveTransform>( );
     mCurveTransform->loadVariant( curve );
   }
 
@@ -546,6 +550,9 @@ QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer 
 
 QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampTransformer &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsPropertyTransformer::operator=( other );
   mMinValue = other.mMinValue;
   mMaxValue = other.mMaxValue;

@@ -16,12 +16,14 @@
 #ifndef QGSMATERIALWIDGET_H
 #define QGSMATERIALWIDGET_H
 
-#include <QWidget>
-#include <memory>
-#include <ui_materialwidget.h>
+#include "ui_materialwidget.h"
 
-class QgsAbstractMaterialSettings;
-enum class QgsMaterialSettingsRenderingTechnique;
+#include <memory>
+
+#include "qgsabstractmaterialsettings.h"
+
+#include <QWidget>
+
 class QgsVectorLayer;
 
 //! Widget for configuration of material settings
@@ -56,7 +58,7 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
     QgsVectorLayer *mLayer = nullptr;
 
     std::unique_ptr<QgsAbstractMaterialSettings> mCurrentSettings;
-    QgsMaterialSettingsRenderingTechnique mTechnique;
+    QgsMaterialSettingsRenderingTechnique mTechnique = QgsMaterialSettingsRenderingTechnique::Triangles;
 };
 
 #endif // QGSMATERIALWIDGET_H

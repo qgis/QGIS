@@ -31,9 +31,9 @@
 
 #include "ui_qgsfeaturefilterwidget.h"
 
+#include "qgis_gui.h"
 #include "qgsattributeform.h"
 
-#include "qgis_gui.h"
 #include <QTimer>
 
 class QgsVectorLayer;

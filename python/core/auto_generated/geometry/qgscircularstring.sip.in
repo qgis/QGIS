@@ -10,7 +10,6 @@
 
 
 
-
 class QgsCircularString: QgsCurve
 {
 %Docstring(signature="appended")
@@ -187,6 +186,8 @@ circular string.
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
+
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
 
     virtual QgsCircularString *reversed() const  /Factory/;
 

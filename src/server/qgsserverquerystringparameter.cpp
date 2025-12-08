@@ -15,10 +15,13 @@
  ***************************************************************************/
 
 #include "qgsserverquerystringparameter.h"
-#include "moc_qgsserverquerystringparameter.cpp"
-#include "qgsserverrequest.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsserverexception.h"
-#include "nlohmann/json.hpp"
+#include "qgsserverrequest.h"
+
+#include "moc_qgsserverquerystringparameter.cpp"
 
 QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name, bool required, QgsServerQueryStringParameter::Type type, const QString &description, const QVariant &defaultValue )
   : mName( name ), mRequired( required ), mType( type ), mDescription( description ), mDefaultValue( defaultValue )

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProjectStoredObjectManagerBase : QObject
 {
 %Docstring(signature="appended")

@@ -35,6 +35,7 @@ class QgsAccessControl;
 class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
   public:
+
     /**
      * Default constructor for QgsOWSServerFilterRestorer.
      */

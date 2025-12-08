@@ -15,12 +15,12 @@
 #ifndef QGSMIMEDATAUTILS_H
 #define QGSMIMEDATAUTILS_H
 
-#include <QMimeData>
-#include <QStringList>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgswkbtypes.h"
+
+#include <QMimeData>
+#include <QStringList>
 
 class QgsLayerItem;
 class QgsLayerTreeNode;

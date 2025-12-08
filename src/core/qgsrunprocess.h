@@ -22,6 +22,7 @@
 #define QGSRUNPROCESS_H
 
 #include <QObject>
+
 #if QT_CONFIG(process)
 #include <QProcess>
 #endif

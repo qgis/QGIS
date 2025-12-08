@@ -16,9 +16,10 @@
 #ifndef QGSPOSTGRESSTRINGUTILS_H
 #define QGSPOSTGRESSTRINGUTILS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qlist.h"
+#include "qgis_core.h"
+
+#include <qlist.h>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

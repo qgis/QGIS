@@ -16,14 +16,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvectorlayer.h"
 #include "qgsaddtaborgroup.h"
-#include "moc_qgsaddtaborgroup.cpp"
-#include "qgssettings.h"
+
 #include "qgshelp.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QComboBox>
 #include <QRadioButton>
+
+#include "moc_qgsaddtaborgroup.cpp"
 
 QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentItemIndex, QWidget *parent )
   : QDialog( parent )

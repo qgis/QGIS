@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsspatialiteexpressioncompiler.h"
+
 #include "qgsexpressionnodeimpl.h"
 
 QgsSpatialiteExpressionCompiler::QgsSpatialiteExpressionCompiler( const QgsFields &fields, bool ignoreStaticNodes )

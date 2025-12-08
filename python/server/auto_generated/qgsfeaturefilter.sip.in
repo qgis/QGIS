@@ -19,7 +19,7 @@ per-layer basis.
 
 .. deprecated:: 3.4
 
-   Use :py:class:`QgsFeatureExpressionFilterProvider`
+   Use :py:class:`QgsFeatureExpressionFilterProvider`.
 %End
 
 %TypeHeaderCode

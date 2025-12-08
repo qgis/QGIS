@@ -19,10 +19,10 @@
 
 #include "ui_qgsmeasurebase.h"
 
-#include "qgspointxy.h"
+#include "qgis_app.h"
 #include "qgsdistancearea.h"
 #include "qgshelp.h"
-#include "qgis_app.h"
+#include "qgspointxy.h"
 
 class QCloseEvent;
 class QgsMeasureTool;

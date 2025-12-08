@@ -18,15 +18,16 @@
 #ifndef QGSPROCESSINGALGORITHM_H
 #define QGSPROCESSINGALGORITHM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
+#include "qgis_core.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingutils.h"
+
+#include <QIcon>
 #include <QString>
 #include <QVariant>
-#include <QIcon>
 
 class QgsProcessingProvider;
 class QgsProcessingFeedback;

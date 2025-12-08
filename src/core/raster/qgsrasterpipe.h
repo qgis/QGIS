@@ -18,9 +18,9 @@
 #ifndef QGSRASTERPIPE_H
 #define QGSRASTERPIPE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgspropertycollection.h"
 
 #include <QImage>

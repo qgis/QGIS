@@ -21,9 +21,9 @@
 
 #define SIP_NO_FILE
 
-#include <QNetworkReply>
-
 #include "qgis_core.h"
+
+#include <QNetworkReply>
 
 /**
  * \ingroup core
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
   private:
     QNetworkReply *mReply = nullptr;
 
-    bool mValid;
+    bool mValid = false;
 
     QString mError;
 

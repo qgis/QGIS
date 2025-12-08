@@ -16,11 +16,11 @@
 #ifndef QGSLAYERTREEMAPCANVASBRIDGE_H
 #define QGSLAYERTREEMAPCANVASBRIDGE_H
 
+#include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
+
 #include <QObject>
 #include <QStringList>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -110,9 +110,9 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     QgsMapCanvas *mCanvas = nullptr;
     QgsMapOverviewCanvas *mOverviewCanvas = nullptr;
 
-    bool mPendingCanvasUpdate;
+    bool mPendingCanvasUpdate = false;
 
-    bool mAutoSetupOnFirstLayer;
+    bool mAutoSetupOnFirstLayer = true;
 
     bool mHasLayersLoaded;
     bool mHasValidLayersLoaded = false;

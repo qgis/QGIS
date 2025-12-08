@@ -14,11 +14,13 @@
 ***************************************************************************/
 
 #include "qgsgroupwmsdatadialog.h"
+
 #include "qgsgui.h"
-#include "moc_qgsgroupwmsdatadialog.cpp"
 #include "qgsmaplayerserverproperties.h"
 
 #include <QRegularExpressionValidator>
+
+#include "moc_qgsgroupwmsdatadialog.cpp"
 
 QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
   : QgsGroupWmsDataDialog( QgsMapLayerServerProperties(), parent, fl )

@@ -17,8 +17,9 @@
 #ifndef QGSGRASSDATAFILE_H
 #define QGSGRASSDATAFILE_H
 
-#include <QFile>
 #include "qgis_grass_lib.h"
+
+#include <QFile>
 
 /*
  * This class does blocking reading which is necessary for QgsDataFile.

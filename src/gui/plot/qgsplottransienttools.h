@@ -18,9 +18,9 @@
 #ifndef QGSPLOTTRANSIENTTOOLS_H
 #define QGSPLOTTRANSIENTTOOLS_H
 
-#include "qgsplottool.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsplottool.h"
 #include "qgsplottoolzoom.h"
 
 /**
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsPlotToolTemporaryKeyPan : public QgsPlotTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolTemporaryKeyPan.
      */
@@ -58,6 +59,7 @@ class GUI_EXPORT QgsPlotToolTemporaryMousePan : public QgsPlotTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolTemporaryMousePan.
      */
@@ -82,6 +84,7 @@ class GUI_EXPORT QgsPlotToolTemporaryKeyZoom : public QgsPlotToolZoom
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolTemporaryKeyZoom.
      */

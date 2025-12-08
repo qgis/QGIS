@@ -16,8 +16,9 @@
 #ifndef QGS3DGAMEPADCONTROLLER_H
 #define QGS3DGAMEPADCONTROLLER_H
 
-#include "qgis_sip.h"
 #include "qgsconfig.h"
+
+#include "qgis_sip.h"
 
 SIP_IF_MODULE( HAVE_QTGAMEPAD )
 
@@ -61,6 +62,7 @@ class GUI_EXPORT QgsGamepad3DMapController : public QgsAbstract3DMapController
 #endif
 
   public:
+
     /**
      * Constructor for QgsGamepad3DMapController, with the specified \a gamepadDeviceId and \a parent object.
      */

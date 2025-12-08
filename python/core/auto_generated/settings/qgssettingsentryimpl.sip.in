@@ -105,6 +105,7 @@ Returns settings value.
 
     virtual Qgis::SettingsType settingsType() const;
 
+
     virtual QVariant convertFromVariant( const QVariant &value ) const;
 };
 
@@ -192,6 +193,7 @@ be used from plugins.
 %End
 
     virtual Qgis::SettingsType settingsType() const;
+
 
     int minLength() const;
 %Docstring
@@ -284,6 +286,7 @@ to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
+
     virtual QStringList convertFromVariant( const QVariant &value ) const;
 
 };
@@ -360,6 +363,7 @@ used from plugins.
 
 
     virtual Qgis::SettingsType settingsType() const;
+
 
     virtual bool convertFromVariant( const QVariant &value ) const;
 
@@ -448,6 +452,7 @@ be used from plugins.
 %End
 
     virtual Qgis::SettingsType settingsType() const;
+
 
     int minValue() const;
 %Docstring
@@ -563,6 +568,7 @@ be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
+
     double minValue() const;
 %Docstring
 Returns the minimum value.
@@ -672,6 +678,7 @@ be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
+
     bool allowAlpha() const;
 %Docstring
 Returns ``True`` if transparency is allowed for the color
@@ -760,6 +767,7 @@ is intended to be used from plugins.
 %End
 
     virtual Qgis::SettingsType settingsType() const;
+
 
     virtual QVariantMap convertFromVariant( const QVariant &value ) const;
 

@@ -15,13 +15,13 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerdefinition.h"
+
 #include "fromencodedcomponenthelper.h"
 
-#include <QUrl>
 #include <QRegularExpression>
 #include <QStringList>
+#include <QUrl>
 #include <QUrlQuery>
-
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
   : mFilePath( filePath )

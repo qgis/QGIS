@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmemoryfeatureiterator.h"
-#include "qgsmemoryprovider.h"
 
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 #include "qgslogger.h"
-#include "qgsspatialindex.h"
+#include "qgsmemoryprovider.h"
 #include "qgsproject.h"
-#include "qgsexception.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

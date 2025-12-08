@@ -18,9 +18,10 @@
 #ifndef QGSPOINTCLOUDATTRIBUTEBYRAMPRENDERERWIDGET_H
 #define QGSPOINTCLOUDATTRIBUTEBYRAMPRENDERERWIDGET_H
 
-#include "qgspointcloudrendererwidget.h"
 #include "ui_qgspointcloudattributebyramprendererwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgspointcloudrendererwidget.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;

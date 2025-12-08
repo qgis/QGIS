@@ -20,8 +20,9 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutscalebarwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
 
 #include <QButtonGroup>
@@ -103,6 +104,8 @@ class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, publi
     void connectUpdateSignal();
     void disconnectUpdateSignal();
     void populateDataDefinedButtons();
+
+    static QString linkedMapUnitsString( QgsLayoutItemScaleBar *scalebar );
 };
 
 #endif //QGSLAYOUTSCALEBARWIDGET_H

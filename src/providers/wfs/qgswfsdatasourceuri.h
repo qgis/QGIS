@@ -16,10 +16,10 @@
 #ifndef QGSWFSDATASOURCEURI_H
 #define QGSWFSDATASOURCEURI_H
 
-#include "qgsdatasourceuri.h"
-#include "qgsrectangle.h"
 #include "qgsapplication.h"
 #include "qgsauthorizationsettings.h"
+#include "qgsdatasourceuri.h"
+#include "qgsrectangle.h"
 
 #include <QNetworkRequest>
 #include <QSet>
@@ -150,7 +150,7 @@ class QgsWFSDataSourceURI
     FeatureMode featureMode() const;
 
     //! Builds a derived uri from a base uri
-    static QString build( const QString &uri, const QString &typeName, const QString &crsString = QString(), const QString &sql = QString(), const QString &filter = QString(), bool restrictToCurrentViewExtent = false );
+    static QString build( const QString &uri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent, const QString &featureFormat );
 
     //! Sets Get DCP endpoints
     void setGetEndpoints( const QgsStringMap &map );

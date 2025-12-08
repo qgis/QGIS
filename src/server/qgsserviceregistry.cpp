@@ -18,13 +18,13 @@
  ***************************************************************************/
 
 #include "qgsserviceregistry.h"
-#include "qgsservice.h"
-#include "qgsserverapi.h"
-#include "qgsmessagelog.h"
 
 #include <algorithm>
 #include <functional>
 
+#include "qgsmessagelog.h"
+#include "qgsserverapi.h"
+#include "qgsservice.h"
 
 namespace
 {
@@ -353,7 +353,7 @@ bool QgsServiceRegistry::registerApi( QgsServerApi *api )
     return false;
   }
 
-  QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2" ).arg( name, version ), QString(), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2 - root path: %3" ).arg( name, version, api->rootPath() ), QString(), Qgis::MessageLevel::Info );
   mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
 
   // Check the default version

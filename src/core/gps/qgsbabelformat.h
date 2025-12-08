@@ -17,8 +17,9 @@
 #ifndef QGSBABELFORMAT_H
 #define QGSBABELFORMAT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QStringList>
 
 class QString;

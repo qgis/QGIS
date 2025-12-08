@@ -19,8 +19,9 @@
 #define QGSNEWAUXILIARYFIELDDIALOG_H
 
 #include "ui_qgsnewauxiliaryfielddialogbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
 #include "qgsproperty.h"
 
 /**
@@ -32,6 +33,7 @@ class GUI_EXPORT QgsNewAuxiliaryFieldDialog : public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      *

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmssqlgeometryparser.h"
+
+#include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
 
 /*   SqlGeometry/SqlGeography serialization format
 

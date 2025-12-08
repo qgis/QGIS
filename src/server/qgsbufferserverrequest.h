@@ -30,6 +30,7 @@
 class SERVER_EXPORT QgsBufferServerRequest : public QgsServerRequest
 {
   public:
+
     /**
     * Constructor
     *

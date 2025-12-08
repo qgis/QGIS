@@ -11,6 +11,7 @@
 
 
 
+
 class QgsServerMetadataUrlProperties
 {
 %Docstring(signature="appended")
@@ -280,6 +281,13 @@ layer.
 .. seealso:: :py:func:`setShortName`
 
 .. versionadded:: 3.38
+%End
+
+    QString wfsTypeName() const;
+%Docstring
+Returns WFS typename for the layer
+
+.. versionadded:: 4.0.0
 %End
 
     void setTitle( const QString &title );

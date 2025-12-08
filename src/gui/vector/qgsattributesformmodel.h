@@ -40,6 +40,7 @@
 class GUI_EXPORT QgsAttributesFormData
 {
   public:
+
     /**
      * Custom item types.
      *
@@ -69,7 +70,8 @@ class GUI_EXPORT QgsAttributesFormData
 
         bool mEditable = true;
         bool mLabelOnTop = false;
-        bool mReuseLastValues = false;
+        Qgis::AttributeFormReuseLastValuePolicy mReuseLastValuePolicy = Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
+        bool mApplyDefaultValueOnUpdate = false;
         QgsFieldConstraints mFieldConstraints;
         QPushButton *mButton = nullptr;
         QString mEditorWidgetType;
@@ -77,6 +79,7 @@ class GUI_EXPORT QgsAttributesFormData
         QString mAlias;
         QgsPropertyCollection mDataDefinedProperties;
         QString mComment;
+        QString mDefaultValueExpression;
         Qgis::FieldDomainSplitPolicy mSplitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
         Qgis::FieldDuplicatePolicy mDuplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;
         Qgis::FieldDomainMergePolicy mMergePolicy = Qgis::FieldDomainMergePolicy::DefaultValue;
@@ -506,6 +509,22 @@ class GUI_EXPORT QgsAttributesFormItem : public QObject
      */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
+    /**
+     * Returns whether the \a item is a group. That is, a container or a widget type (e.g., Fields, Relations, Actions, etc.) item.
+     *
+     * \since QGIS 4.0
+     */
+    static bool isGroup( QgsAttributesFormItem *item );
+
+  signals:
+
+    /**
+     * Notifies other objects when children have been added to the \a item, informing the indices where added children are located.
+     *
+     * \since QGIS 4.0
+     */
+    void addedChildren( QgsAttributesFormItem *item, int indexFrom, int indexTo );
+
   private:
     QString mName = QString();
     QString mDisplayName = QString();
@@ -534,6 +553,7 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Custom model roles.
      *
@@ -565,6 +585,8 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+
     /**
      * Returns the first top-level model index that matches the given \a itemType and \a itemId.
      *
@@ -593,19 +615,37 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     void setShowAliases( bool show );
 
-  public slots:
-    /**
-     * Populates the model with initial data read from the layer.
-     */
-    virtual void populate() = 0;
-
-  protected:
     /**
      * Returns the underlying item that corresponds to the given \a index.
      *
      * If the given \a index is not valid the root item is returned.
      */
     QgsAttributesFormItem *itemForIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the root item in this model.
+     *
+     * \since QGIS 4.0
+     */
+    QgsAttributesFormItem *rootItem() const;
+
+  public slots:
+
+    /**
+     * Populates the model with initial data read from the layer.
+     */
+    virtual void populate() = 0;
+
+  signals:
+
+    /**
+     *  Notifies other objects that the field config data has changed in the \a item.
+     *
+     *  \since QGIS 4.0
+     */
+    void fieldConfigDataChanged( QgsAttributesFormItem *item );
+
+  protected:
 
     /**
      * Auxiliary function to sort indexes, returning true if index \a a is less than index \a b.
@@ -658,6 +698,7 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributesAvailableWidgetsModel, with the given \a parent.
      *
@@ -669,7 +710,6 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     Qt::DropActions supportedDragActions() const override;
     QStringList mimeTypes() const override;
@@ -712,6 +752,7 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
     void populateLayerActions( const QList< QgsAction > actions );
 
   private:
+
     /**
      * Refresh action items in the model.
      *
@@ -733,6 +774,7 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributesFormLayoutModel, with the given \a parent.
      *
@@ -745,7 +787,6 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Removes the index located at \a row within the given \a parent.
@@ -777,12 +818,22 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void addContainer( QModelIndex &parent, const QString &name, int columnCount, Qgis::AttributeEditorContainerType type );
 
     /**
+     * Updates the field config of all matching fields in the model.
+     *
+     * \param fieldName Name of the field to search.
+     * \param config    Field config to be set to matching fields.
+     *
+     * \since QGIS 4.0
+     */
+    void updateFieldConfigForFieldItems( const QString &fieldName, const QgsAttributesFormData::FieldConfig &config );
+
+    /**
      * Updates the aliases of all matching fields in the model.
      *
      * Required because a field might appear several times in the form layout.
      *
-     * \param fieldName Name of the field to search
-     * \param fieldAlias Alias to be set to matching fields
+     * \param fieldName   Name of the field to search.
+     * \param fieldAlias  Alias to be set to matching fields.
      */
     void updateAliasForFieldItems( const QString &fieldName, const QString &fieldAlias );
 
@@ -803,7 +854,11 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void internalItemDropped( QModelIndex &index );
 
   private:
+    //! Update the field config for all items in the model.
+    void updateFieldConfigForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QgsAttributesFormData::FieldConfig &config );
+    //! Update the field alias for all items in the model.
     void updateAliasForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QString &fieldAlias );
+
     QList< QgsAddAttributeFormContainerDialog::ContainerPair > recursiveListOfContainers( QgsAttributesFormItem *parent ) const;
     void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormItem *parent, const int position = -1 );
 
@@ -831,6 +886,7 @@ class GUI_EXPORT QgsAttributesFormProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributesFormProxyModel, with the given \a parent.
      */
@@ -845,6 +901,13 @@ class GUI_EXPORT QgsAttributesFormProxyModel : public QSortFilterProxyModel
      * Returns the text used to filter source model items.
      */
     const QString filterText() const;
+
+    /**
+     * Returns the source model.
+     *
+     * \since QGIS 4.0
+     */
+    QgsAttributesFormModel *sourceAttributesFormModel() const;
 
   public slots:
     //! Sets the filter text

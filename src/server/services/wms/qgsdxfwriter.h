@@ -17,6 +17,10 @@ email                : david dot marteau at 3liz dot com
 
 #include "qgswmsrequest.h"
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerResponse;
+
 namespace QgsWms
 {
 

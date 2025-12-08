@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsvectorfieldsymbollayer.h"
-#include "qgsunittypes.h"
-#include "qgssymbollayerutils.h"
+
 #include "qgslinesymbol.h"
 #include "qgssldexportcontext.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
 {

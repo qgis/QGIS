@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsGui : QObject
 {
 %Docstring(signature="appended")
@@ -272,6 +274,7 @@ Returns the screen at the given global ``point`` (pixel).
 
 .. versionadded:: 3.10
 %End
+
 
 
 

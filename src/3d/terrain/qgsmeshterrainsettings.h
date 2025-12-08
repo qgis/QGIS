@@ -39,6 +39,7 @@ class QgsMesh3DSymbol;
 class _3D_EXPORT QgsMeshTerrainSettings : public QgsAbstractTerrainSettings
 {
   public:
+
     /**
      * Creates a new instance of a QgsMeshTerrainSettings object.
      */

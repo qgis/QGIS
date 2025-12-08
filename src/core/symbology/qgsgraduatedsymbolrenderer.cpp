@@ -13,41 +13,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomDocument>
-#include <QDomElement>
-
-#include <ctime>
-#include <cmath>
-
 #include "qgsgraduatedsymbolrenderer.h"
 
+#include <cmath>
+#include <ctime>
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsattributes.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsclassificationcustom.h"
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationmethod.h"
+#include "qgsclassificationmethodregistry.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgspainteffect.h"
+#include "qgspointdistancerenderer.h"
 #include "qgsproperty.h"
+#include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsclassificationmethod.h"
-#include "qgsclassificationequalinterval.h"
-#include "qgsapplication.h"
-#include "qgsclassificationmethodregistry.h"
-#include "qgsclassificationcustom.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgspointdistancerenderer.h"
-#include "qgssldexportcontext.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
@@ -64,7 +65,7 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName,
     mRanges << range;
   }
 
-  mClassificationMethod.reset( new QgsClassificationCustom() );
+  mClassificationMethod = std::make_shared<QgsClassificationCustom>( );
 }
 
 QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
@@ -182,7 +183,7 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext &context, const Q
 
   if ( mAttrNum == -1 )
   {
-    mExpression.reset( new QgsExpression( mAttrName ) );
+    mExpression = std::make_unique<QgsExpression>( mAttrName );
     mExpression->prepare( &context.expressionContext() );
   }
 
@@ -938,11 +939,22 @@ void QgsGraduatedSymbolRenderer::setSymbolSizes( double minSize, double maxSize 
     const double size = mRanges.count() > 1
                         ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
                         : .5 * ( maxSize + minSize );
-    if ( symbol->type() == Qgis::SymbolType::Marker )
-      static_cast< QgsMarkerSymbol * >( symbol.get() )->setSize( size );
-    if ( symbol->type() == Qgis::SymbolType::Line )
-      static_cast< QgsLineSymbol * >( symbol.get() )->setWidth( size );
-    updateRangeSymbol( i, symbol.release() );
+    if ( symbol )
+    {
+      switch ( symbol->type() )
+      {
+        case Qgis::SymbolType::Marker:
+          static_cast< QgsMarkerSymbol * >( symbol.get() )->setSize( size );
+          break;
+        case Qgis::SymbolType::Line:
+          static_cast< QgsLineSymbol * >( symbol.get() )->setWidth( size );
+          break;
+        case Qgis::SymbolType::Fill:
+        case Qgis::SymbolType::Hybrid:
+          break;
+      }
+      updateRangeSymbol( i, symbol.release() );
+    }
   }
 }
 

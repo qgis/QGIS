@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgsgeometrytypecheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsgeometrycollection.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
-#include "qgsfeaturepool.h"
-
 
 QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry ) const
 {

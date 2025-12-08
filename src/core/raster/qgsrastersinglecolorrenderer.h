@@ -18,11 +18,11 @@
 #ifndef QGSRASTERSINGLECOLORRENDERER_H
 #define QGSRASTERSINGLECOLORRENDERER_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
-
-#include <memory>
 
 class QDomElement;
 

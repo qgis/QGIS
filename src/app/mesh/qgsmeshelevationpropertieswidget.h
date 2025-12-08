@@ -16,12 +16,12 @@
 #ifndef QGSMESHELEVATIONPROPERTIESWIDGET_H
 #define QGSMESHELEVATIONPROPERTIESWIDGET_H
 
+#include "ui_qgsmeshelevationpropertieswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 
 #include <QStyledItemDelegate>
-
-#include "ui_qgsmeshelevationpropertieswidgetbase.h"
 
 class QgsMeshLayer;
 

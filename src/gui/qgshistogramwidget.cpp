@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgshistogramwidget.h"
-#include "moc_qgshistogramwidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgssettings.h"
+#include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsstatisticalsummary.h"
-#include "qgssettings.h"
 
-#include <QObject>
 #include <QMouseEvent>
+#include <QObject>
+
+#include "moc_qgshistogramwidget.cpp"
 
 // QWT Charting widget
 #include <qwt_global.h>

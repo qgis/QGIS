@@ -9,6 +9,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgslayoutviewtooladditem.h>
 %End
@@ -172,6 +173,7 @@ windows.
 %End
 
   protected:
+
     void setFlags( QgsLayoutViewTool::Flags flags );
 %Docstring
 Sets the combination of ``flags`` that will be used for the tool.

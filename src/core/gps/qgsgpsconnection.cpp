@@ -16,14 +16,14 @@
  ***************************************************************************/
 
 #include "qgsgpsconnection.h"
-#include "moc_qgsgpsconnection.cpp"
+
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
-
 #include <QIODevice>
 
+#include "moc_qgsgpsconnection.cpp"
 
 const QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *QgsGpsConnection::settingsGpsConnectionType = new QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( QStringLiteral( "gps-connection-type" ), QgsSettingsTree::sTreeGps, Qgis::GpsConnectionType::Automatic, QStringLiteral( "GPS connection type" ) ) SIP_SKIP;
 

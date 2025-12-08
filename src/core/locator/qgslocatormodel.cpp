@@ -15,15 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslocatormodel.h"
+
+#include "qgsapplication.h"
+#include "qgslocator.h"
+#include "qgslogger.h"
+
 #include <QFont>
 #include <QPalette>
 
-#include "qgslocatormodel.h"
 #include "moc_qgslocatormodel.cpp"
-#include "qgslocator.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-
 
 //
 // QgsLocatorModel

@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsalgorithmjoinbynearest.h"
-#include "qgsprocessingoutputs.h"
-#include "qgslinestring.h"
-#include "qgsspatialindex.h"
+
 #include <algorithm>
+
+#include "qgslinestring.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

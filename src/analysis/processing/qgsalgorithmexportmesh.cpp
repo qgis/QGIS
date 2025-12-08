@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexportmesh.h"
-#include "qgsprocessingparametermeshdataset.h"
+
+#include "qgslinestring.h"
 #include "qgsmeshcontours.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshlayerinterpolator.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsmeshlayerutils.h"
 #include "qgspolygon.h"
+#include "qgsprocessingparametermeshdataset.h"
 #include "qgsrasterfilewriter.h"
-#include "qgslinestring.h"
 
 #include <QTextStream>
 
@@ -690,7 +691,10 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
         feat.setGeometry( geom );
         feat.setAttributes( attributes );
 
-        sink->addFeature( feat );
+        if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        {
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
+        }
       }
     }
   }

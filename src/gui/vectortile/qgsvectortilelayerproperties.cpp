@@ -14,29 +14,31 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayerproperties.h"
-#include "moc_qgsvectortilelayerproperties.cpp"
+
+#include "qgsapplication.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsmaplayerstylemanager.h"
+#include "qgsjsonutils.h"
+#include "qgsmapboxglstyleconverter.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmetadatawidget.h"
+#include "qgsprovidersourcewidget.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsvectortilebasiclabelingwidget.h"
+#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortileutils.h"
-#include "qgsgui.h"
-#include "qgsapplication.h"
-#include "qgsjsonutils.h"
-#include "qgsmetadatawidget.h"
-#include "qgsmaplayerloadstyledialog.h"
-#include "qgsmapboxglstyleconverter.h"
-#include "qgsprovidersourcewidget.h"
-#include "qgsdatumtransformdialog.h"
 
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QDesktopServices>
 #include <QTextStream>
+
+#include "moc_qgsvectortilelayerproperties.cpp"
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "VectorTileLayerProperties" ), parent, flags )

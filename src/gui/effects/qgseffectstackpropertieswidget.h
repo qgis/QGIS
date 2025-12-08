@@ -16,16 +16,17 @@
 #ifndef QGSEFFECTSTACKPROPERTIESWIDGET_H
 #define QGSEFFECTSTACKPROPERTIESWIDGET_H
 
-#include "qgsdialog.h"
-#include "qgis_sip.h"
+#include "ui_qgseffectstackpropertieswidgetbase.h"
+
 #include "qgis.h"
-#include <QWidget>
-#include <QStandardItemModel>
-#include <QPicture>
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsdialog.h"
 #include "qgspanelwidget.h"
 
-#include "ui_qgseffectstackpropertieswidgetbase.h"
-#include "qgis_gui.h"
+#include <QPicture>
+#include <QStandardItemModel>
+#include <QWidget>
 
 class EffectItem;
 class QgsPaintEffect;
@@ -51,6 +52,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     Q_OBJECT
 
   public:
+
     /**
      * QgsEffectStackPropertiesWidget constructor
      * \param stack QgsEffectStack to modify in the widget
@@ -166,6 +168,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog : public QgsDialog
     Q_OBJECT
 
   public:
+
     /**
      * QgsEffectStackPropertiesDialog constructor
      * \param stack QgsEffectStack to modify in the dialog
@@ -211,6 +214,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * QgsEffectStackCompactWidget constructor
      * \param parent parent widget

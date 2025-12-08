@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QtConcurrentMap>
 
-#include <qgsapplication.h>
 //header for class being tested
 #include "qgsexpression.h"
 #include "qgsfeature.h"

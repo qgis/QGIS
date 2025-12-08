@@ -13,6 +13,7 @@ try:
     QgsGeometryUtilsBase.circleAngleBetween = staticmethod(QgsGeometryUtilsBase.circleAngleBetween)
     QgsGeometryUtilsBase.angleOnCircle = staticmethod(QgsGeometryUtilsBase.angleOnCircle)
     QgsGeometryUtilsBase.circleLength = staticmethod(QgsGeometryUtilsBase.circleLength)
+    QgsGeometryUtilsBase.calculateArcLength = staticmethod(QgsGeometryUtilsBase.calculateArcLength)
     QgsGeometryUtilsBase.sweepAngle = staticmethod(QgsGeometryUtilsBase.sweepAngle)
     QgsGeometryUtilsBase.interpolateArcValue = staticmethod(QgsGeometryUtilsBase.interpolateArcValue)
     QgsGeometryUtilsBase.normalizedAngle = staticmethod(QgsGeometryUtilsBase.normalizedAngle)

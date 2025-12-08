@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsGcpTransformerInterface /Abstract/
 {
 %Docstring(signature="appended")
@@ -27,6 +29,7 @@ GCPs.
     static const QMetaObject staticMetaObject;
 
   public:
+
     enum class TransformMethod /BaseType=IntEnum/
     {
       Linear,

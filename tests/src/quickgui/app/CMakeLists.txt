@@ -41,8 +41,6 @@ if (QGISPOSTFIX)
   set_target_properties(qgis_quickapp PROPERTIES RUNTIME_OUTPUT_NAME qgis_quickapp${QGISPOSTFIX})
 endif()
 
-target_compile_features(${QGIS_QUICK_APP_NAME} PRIVATE cxx_std_17)
-
 target_link_libraries(${QGIS_QUICK_APP_NAME}
     ${QT_VERSION_BASE}::Gui
     ${QT_VERSION_BASE}::Qml

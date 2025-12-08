@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsPlaybackControllerWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -21,6 +23,7 @@ playback.
 #include "qgsplaybackcontrollerwidget.h"
 %End
   public:
+
     explicit QgsPlaybackControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPlaybackControllerWidget, with the specified

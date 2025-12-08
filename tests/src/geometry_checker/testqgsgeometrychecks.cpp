@@ -13,16 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsfeature.h"
 #include "qgsfeaturepool.h"
-#include "qgsvectorlayer.h"
-#include "qfuturewatcher.h"
-
-#include "qgsgeometrycollection.h"
-#include "qgsgeometrychecker.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryanglecheck.h"
 #include "qgsgeometryareacheck.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometrycontainedcheck.h"
 #include "qgsgeometrydanglecheck.h"
 #include "qgsgeometrydegeneratepolygoncheck.h"
@@ -31,9 +28,9 @@
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometryholecheck.h"
-#include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometrylineintersectioncheck.h"
 #include "qgsgeometrylinelayerintersectioncheck.h"
+#include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometrymultipartcheck.h"
 #include "qgsgeometryoverlapcheck.h"
 #include "qgsgeometrypointcoveredbylinecheck.h"
@@ -42,14 +39,16 @@
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
-#include "qgsgeos.h"
-#include "qgsvectordataproviderfeaturepool.h"
-#include "qgsmultilinestring.h"
-#include "qgslinestring.h"
-#include "qgsproject.h"
-#include "qgsfeedback.h"
-
 #include "qgsgeometrytypecheck.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorlayer.h"
+
+#include <qfuturewatcher.h>
 
 class TestQgsGeometryChecks : public QObject
 {

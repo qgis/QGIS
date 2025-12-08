@@ -16,12 +16,13 @@
 
 #include "qgsgltf3dutils.h"
 
-#include "qgsgltfutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgltfutils.h"
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgstexturematerial.h"
+#include "qgsziputils.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -47,6 +48,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QFile>
 #include <QFileInfo>
 #include <QMatrix4x4>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -270,12 +272,41 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
       return content.content();
     }
   }
-  else if ( url.isLocalFile() && QFile::exists( url.toLocalFile() ) )
+  else if ( url.isLocalFile() )
   {
-    QFile f( url.toLocalFile() );
-    if ( f.open( QIODevice::ReadOnly ) )
+    QString localFilePath = url.toLocalFile();
+    if ( localFilePath.contains( ".slpk/" ) ) // we need to extract the image from SLPK archive
     {
-      return f.readAll();
+      const QStringList parts = localFilePath.split( QStringLiteral( ".slpk/" ) );
+      if ( parts.size() == 2 )
+      {
+        QString slpkPath = parts[0] + ".slpk";
+        QString imagePath = parts[1];
+
+        QByteArray imageData;
+        if ( QgsZipUtils::extractFileFromZip( slpkPath, imagePath, imageData ) )
+        {
+          return imageData;
+        }
+        else
+        {
+          if ( errors )
+            *errors << QStringLiteral( "Unable to extract image '%1' from SLPK archive: %2" ).arg( imagePath ).arg( slpkPath );
+        }
+      }
+      else
+      {
+        if ( errors )
+          *errors << QStringLiteral( "Missing image path in SLPK archive: %1" ).arg( localFilePath );
+      }
+    }
+    else if ( QFile::exists( localFilePath ) )
+    {
+      QFile f( localFilePath );
+      if ( f.open( QIODevice::ReadOnly ) )
+      {
+        return f.readAll();
+      }
     }
     else
     {
@@ -397,7 +428,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       *matrix = parentTransform * *matrix;
     else
     {
-      matrix.reset( new QMatrix4x4( parentTransform ) );
+      matrix = std::make_unique<QMatrix4x4>( parentTransform );
     }
   }
 

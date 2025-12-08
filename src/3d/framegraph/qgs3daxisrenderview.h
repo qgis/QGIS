@@ -60,6 +60,7 @@ class Qgs3DAxis;
 class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
 {
   public:
+
     /**
      * Constructor for Qgs3DAxisRenderView with the specified \a parent object.
      */
@@ -82,7 +83,7 @@ class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
     //! Returns camera used for billboarded labels
     Qt3DRender::QCamera *labelCamera() const;
 
-    virtual void updateWindowResize( int width, int height ) override;
+    void updateWindowResize( int width, int height ) override;
 
     //! Updates viewport horizontal \a position
     void onHorizontalPositionChanged( Qt::AnchorPoint position );

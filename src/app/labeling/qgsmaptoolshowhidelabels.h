@@ -18,10 +18,9 @@
 #ifndef QGSMAPTOOLSHOWHIDELABELS_H
 #define QGSMAPTOOLSHOWHIDELABELS_H
 
-#include "qgsmaptoollabel.h"
-#include "qgsfeatureid.h"
 #include "qgis_app.h"
-
+#include "qgsfeatureid.h"
+#include "qgsmaptoollabel.h"
 
 //! A map tool for showing or hiding a feature's label
 class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
@@ -43,7 +42,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 
   protected:
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
 
     //! Stores actual select rect
     QRect mSelectRect;

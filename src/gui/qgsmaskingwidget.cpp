@@ -16,23 +16,25 @@
 
 ///@cond PRIVATE
 
-#include <QSet>
-#include <QCheckBox>
-
 #include "qgsmaskingwidget.h"
-#include "moc_qgsmaskingwidget.cpp"
+
 #include "qgsmasksourceselectionwidget.h"
-#include "qgssymbollayerselectionwidget.h"
-#include "qgssymbollayerreference.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbol.h"
-#include "qgsstyleentityvisitor.h"
-#include "symbology/qgsrenderer.h"
-#include "qgsproject.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsmasksymbollayer.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgsmessagebaritem.h"
+#include "qgsproject.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerreference.h"
+#include "qgssymbollayerselectionwidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsvectorlayerutils.h"
+#include "symbology/qgsrenderer.h"
+
+#include <QCheckBox>
+#include <QSet>
+
+#include "moc_qgsmaskingwidget.cpp"
 
 QgsMaskingWidget::QgsMaskingWidget( QWidget *parent )
   : QgsPanelWidget( parent )

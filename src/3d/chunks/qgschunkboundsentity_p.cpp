@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 #include "qgschunkboundsentity_p.h"
-#include "moc_qgschunkboundsentity_p.cpp"
 
-#include <Qt3DExtras/QPhongMaterial>
-
-#include "qgsaabb.h"
 #include "qgs3dwiredmesh_p.h"
+#include "qgsaabb.h"
 #include "qgsbox3d.h"
 #include "qgsgeotransform.h"
 
+#include <Qt3DExtras/QPhongMaterial>
+
+#include "moc_qgschunkboundsentity_p.cpp"
 
 ///@cond PRIVATE
 

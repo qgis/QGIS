@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 #include "qgsinterval.h"
+
 #include "qgsunittypes.h"
 
-#include <QString>
-#include <QStringList>
+#include <QDateTime>
+#include <QDebug>
 #include <QMap>
 #include <QObject>
-#include <QDebug>
-#include <QDateTime>
 #include <QRegularExpression>
+#include <QString>
+#include <QStringList>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

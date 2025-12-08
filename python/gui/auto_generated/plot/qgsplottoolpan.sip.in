@@ -9,7 +9,6 @@
 
 
 
-
 class QgsPlotToolPan : QgsPlotTool
 {
 %Docstring(signature="appended")
@@ -22,6 +21,7 @@ Plot tool for panning/zoom/navigating plots.
 #include "qgsplottoolpan.h"
 %End
   public:
+
     QgsPlotToolPan( QgsPlotCanvas *canvas );
 %Docstring
 Constructor for QgsPlotToolPan, with the associated ``canvas``.

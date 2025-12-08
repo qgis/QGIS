@@ -10,7 +10,6 @@
 
 
 
-
 class QgsVectorTileLabeling
 {
 %Docstring(signature="appended")

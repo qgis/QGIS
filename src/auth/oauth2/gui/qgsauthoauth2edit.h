@@ -15,14 +15,14 @@
 #ifndef QGSAUTHOAUTH2EDIT_H
 #define QGSAUTHOAUTH2EDIT_H
 
-#include <QWidget>
-#include <QNetworkReply>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthoauth2edit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 #include "qgsauthoauth2config.h"
 
+#include <QNetworkReply>
+#include <QWidget>
 
 /**
  * The QgsAuthOAuth2Edit class allows editing of an OAuth2 authentication configuration

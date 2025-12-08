@@ -16,21 +16,24 @@
  ***************************************************************************/
 
 #include "qgssensorthingsprovider.h"
-#include "moc_qgssensorthingsprovider.cpp"
-#include "qgssensorthingsutils.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
-#include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
-#include "qgsthreadingutils.h"
-#include "qgsreadwritelocker.h"
-#include "qgssensorthingsfeatureiterator.h"
-#include "qgssensorthingsdataitems.h"
-#include "qgssensorthingsconnection.h"
 #include "qgsmessagelog.h"
+#include "qgsreadwritelocker.h"
+#include "qgssensorthingsconnection.h"
+#include "qgssensorthingsdataitems.h"
+#include "qgssensorthingsfeatureiterator.h"
+#include "qgssensorthingsutils.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgsthreadingutils.h"
 
 #include <QIcon>
 #include <QNetworkRequest>
-#include <nlohmann/json.hpp>
+
+#include "moc_qgssensorthingsprovider.cpp"
 
 ///@cond PRIVATE
 

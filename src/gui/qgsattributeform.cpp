@@ -14,79 +14,77 @@
  ***************************************************************************/
 
 #include "qgsattributeform.h"
-#include "moc_qgsattributeform.cpp"
 
-#include "qgsattributeeditorspacerelement.h"
-#include "qgsattributeforminterface.h"
-#include "qgsattributeformlegacyinterface.h"
-#include "qgsattributeformrelationeditorwidget.h"
+#include "qgsactionwidgetwrapper.h"
+#include "qgsapplication.h"
 #include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorrelation.h"
-#include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorhtmlelement.h"
+#include "qgsattributeeditorqmlelement.h"
+#include "qgsattributeeditorrelation.h"
+#include "qgsattributeeditorspacerelement.h"
 #include "qgsattributeeditortextelement.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsfeatureiterator.h"
-#include "qgsgui.h"
-#include "qgsproject.h"
-#include "qgspythonrunner.h"
-#include "qgsrelationwidgetwrapper.h"
-#include "qgstextwidgetwrapper.h"
-#include "qgsvectordataprovider.h"
 #include "qgsattributeformeditorwidget.h"
+#include "qgsattributeforminterface.h"
+#include "qgsattributeformlegacyinterface.h"
+#include "qgsattributeformrelationeditorwidget.h"
+#include "qgscollapsiblegroupbox.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfieldmodel.h"
+#include "qgsgui.h"
+#include "qgshtmlwidgetwrapper.h"
+#include "qgslogger.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsnetworkcontentfetcherregistry.h"
-#include "qgseditorwidgetwrapper.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
+#include "qgspythonrunner.h"
+#include "qgsqmlwidgetwrapper.h"
 #include "qgsrelationmanager.h"
-#include "qgslogger.h"
-#include "qgstabwidget.h"
+#include "qgsrelationwidgetwrapper.h"
 #include "qgsscrollarea.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsspacerwidgetwrapper.h"
+#include "qgstabwidget.h"
+#include "qgstexteditwrapper.h"
+#include "qgstextwidgetwrapper.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayertoolscontext.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsactionwidgetwrapper.h"
-#include "qgsqmlwidgetwrapper.h"
-#include "qgshtmlwidgetwrapper.h"
-#include "qgsspacerwidgetwrapper.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfeaturerequest.h"
-#include "qgstexteditwrapper.h"
-#include "qgsfieldmodel.h"
-#include "qgscollapsiblegroupbox.h"
 
 #include <QDir>
-#include <QTextStream>
-#include <QFileInfo>
 #include <QFile>
+#include <QFileInfo>
 #include <QFormLayout>
 #include <QGridLayout>
 #include <QKeyEvent>
 #include <QLabel>
-#include <QPushButton>
-#include <QUiLoader>
-#include <QMessageBox>
-#include <QToolButton>
 #include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
 #include <QSvgWidget>
+#include <QTextStream>
+#include <QToolButton>
+#include <QUiLoader>
+
+#include "moc_qgsattributeform.cpp"
 
 int QgsAttributeForm::sFormCounter = 0;
 
 QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget *parent )
   : QWidget( parent )
   , mLayer( vl )
-  , mOwnsMessageBar( true )
   , mContext( context )
   , mFormNr( sFormCounter++ )
-  , mIsSaving( false )
-  , mPreventFeatureRefresh( false )
-  , mIsSettingMultiEditFeatures( false )
-  , mUnsavedMultiEditChanges( false )
   , mEditCommandMessage( tr( "Attributes changed" ) )
-  , mMode( QgsAttributeEditorContext::SingleEditMode )
 {
   init();
   initPython();
@@ -427,6 +425,35 @@ bool QgsAttributeForm::saveEdits( QString *error )
         {
           mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
+
+          const QgsFields fields = mLayer->fields();
+          const QgsAttributes newValues = updatedFeature.attributes();
+          const QVariant lastUsedValuesVariant = mLayer->property( "AttributeFormLastUsedValues" );
+          QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
+          for ( int idx = 0; idx < fields.count(); ++idx )
+          {
+            const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( idx );
+            if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+            {
+              const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+              QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+              if ( !rememberLastUsedValues.contains( idx ) )
+              {
+                const bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+                rememberLastUsedValues[idx] = remember;
+                mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
+              }
+
+              const QVariant newValue = rememberLastUsedValues[idx] ? newValues.at( idx ) : QVariant();
+              if ( !lastUsedValues.contains( idx ) || lastUsedValues[idx] != newValue )
+              {
+                lastUsedValues[idx] = newValue;
+                QgsDebugMsgLevel( QStringLiteral( "Saving %1 for %2" ).arg( ( newValue.toString() ).arg( idx ) ), 2 );
+              }
+            }
+          }
+          mLayer->setProperty( "AttributeFormLastUsedValues", QVariant::fromValue<QgsAttributeMap>( lastUsedValues ) );
+
           setMode( QgsAttributeEditorContext::SingleEditMode );
           changedLayer = true;
         }
@@ -1095,7 +1122,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   updateConstraints( eww );
 
   // Update dependent fields (only if form is not initializing)
-  if ( mValuesInitialized )
+  if ( mValuesInitialized && !mIsSettingMultiEditFeatures )
   {
     //append field index here, so it's not updated recursive
     mAlreadyUpdatedFields.append( eww->fieldIdx() );
@@ -2070,6 +2097,27 @@ void QgsAttributeForm::init()
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
         mFormWidgets.append( formWidget );
+
+        const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( idx );
+        if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+        {
+          bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+          const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+          QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+          if ( rememberLastUsedValues.contains( idx ) )
+          {
+            remember = rememberLastUsedValues[idx];
+          }
+
+          formWidget->setRememberLastValue( remember );
+          connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
+            const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+            QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+            rememberLastUsedValues[idx] = remember;
+            mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
+          } );
+        }
+
         formWidget->createSearchWidgetWrappers( mContext );
 
         label->setBuddy( eww->widget() );
@@ -2287,6 +2335,17 @@ void QgsAttributeForm::initPython()
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
        && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
+    const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+    if ( !allowed )
+    {
+      mMessageBar->pushMessage(
+        tr( "Security warning" ),
+        tr( "The attribute form contains an embedded script which has been denied execution." ),
+        Qgis::MessageLevel::Warning
+      );
+      return;
+    }
+
     QString initFunction = mLayer->editFormConfig().initFunction();
     QString initFilePath = mLayer->editFormConfig().initFilePath();
     QString initCode;
@@ -2336,10 +2395,14 @@ void QgsAttributeForm::initPython()
     // If we have a function code, run it
     if ( !initCode.isEmpty() )
     {
-      if ( QgsGui::pythonEmbeddedInProjectAllowed( nullptr, nullptr, Qgis::PythonEmbeddedType::Macro ) )
+      if ( QgsProjectUtils::checkUserTrust( QgsProject::instance() ) == Qgis::ProjectTrustStatus::Trusted )
+      {
         QgsPythonRunner::run( initCode );
+      }
       else
+      {
         mMessageBar->pushMessage( QString(), tr( "Python macro could not be run due to missing permissions." ), Qgis::MessageLevel::Warning );
+      }
     }
 
     QgsPythonRunner::run( QStringLiteral( "import inspect" ) );
@@ -2404,7 +2467,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( !elementDef )
         break;
 
-      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this );
+      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this, mMessageBar );
       actionWrapper->setAction( elementDef->action( vl ) );
       context.setAttributeFormMode( mMode );
       actionWrapper->setContext( context );
@@ -2431,6 +2494,25 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
         mFormEditorWidgets.insert( fldIdx, formWidget );
         mFormWidgets.append( formWidget );
+
+        const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( fldIdx );
+        if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+        {
+          bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+          const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+          QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+          if ( rememberLastUsedValues.contains( fldIdx ) )
+          {
+            remember = rememberLastUsedValues[fldIdx];
+          }
+          formWidget->setRememberLastValue( remember );
+          connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
+            const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+            QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+            rememberLastUsedValues[idx] = remember;
+            mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
+          } );
+        }
 
         formWidget->createSearchWidgetWrappers( mContext );
 
@@ -3326,4 +3408,31 @@ void QgsAttributeForm::reloadIcon( const QString &file, const QString &tooltip, 
   sw->load( QgsApplication::iconPath( file ) );
   sw->setToolTip( tooltip );
   sw->show();
+}
+
+QgsFeature QgsAttributeForm::createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext &context )
+{
+  const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value();
+  QgsDebugMsgLevel( QStringLiteral( "reuseAllLastValues: %1" ).arg( reuseAllLastValues ), 2 );
+
+  const QgsFields fields = layer->fields();
+  QgsAttributeMap initialAttributeValues;
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    if ( attributes.contains( idx ) )
+    {
+      initialAttributeValues.insert( idx, attributes.value( idx ) );
+    }
+    else if ( ( reuseAllLastValues || layer->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) )
+    {
+      const QVariant lastUsedValuesVariant = layer->property( "AttributeFormLastUsedValues" );
+      const QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
+      if ( lastUsedValues.contains( idx ) && layer->dataProvider() && layer->dataProvider()->defaultValueClause( idx ) != lastUsedValues[idx] )
+      {
+        initialAttributeValues.insert( idx, lastUsedValues[idx] );
+      }
+    }
+  }
+
+  return QgsVectorLayerUtils::createFeature( layer, geometry, initialAttributeValues, &context );
 }

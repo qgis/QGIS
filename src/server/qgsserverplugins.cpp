@@ -17,12 +17,12 @@
 
 
 #include "qgsserverplugins.h"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgspythonutils.h"
 
 #include <QLibrary>
-
 
 // Initialize static members
 QgsPythonUtils *QgsServerPlugins::sPythonUtils;

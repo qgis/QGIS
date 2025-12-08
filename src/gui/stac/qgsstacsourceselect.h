@@ -17,8 +17,9 @@
 #define QGSSTACSOURCESELECT_H
 
 #include "ui_qgsstacsourceselectbase.h"
-#include "qgsabstractdatasourcewidget.h"
+
 #include "qgis_gui.h"
+#include "qgsabstractdatasourcewidget.h"
 #include "qgsmimedatautils.h"
 #include "qobjectuniqueptr.h"
 

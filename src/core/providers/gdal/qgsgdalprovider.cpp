@@ -17,7 +17,9 @@
  ***************************************************************************/
 
 #include "qgsgdalprovider.h"
+
 #include "moc_qgsgdalprovider.cpp"
+
 ///@cond PRIVATE
 
 #include "qgis.h"
@@ -1817,7 +1819,7 @@ Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
          Qgis::RasterProviderCapability::BuildPyramids;
 }
 
-QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
+QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri, Qgis::SublayerQueryFlags flags )
 {
   if ( !dataset )
   {
@@ -1842,6 +1844,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
     {
       const char *name = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_NAME", i ) );
       const char *desc = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_DESC", i ) );
+      bool skippedContainerScan = false;
       if ( name && desc )
       {
         QString layerName = QString::fromUtf8( name );
@@ -1858,26 +1861,35 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         }
         else
         {
-
-          // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
-          GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
-
-          if ( datasetHandle )
+          if ( gdalDriverName == QLatin1String( "GTiff" ) )
           {
-
-            QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
-            if ( ! tagTIFFDocumentName.isEmpty() )
+            if ( flags.testFlag( Qgis::SublayerQueryFlag::OpenLayersToResolveDescriptions ) )
             {
-              layerName = tagTIFFDocumentName;
-            }
+              // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
+              GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
 
-            QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
-            if ( ! tagTIFFImageDescription.isEmpty() )
+              if ( datasetHandle )
+              {
+
+                QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
+                if ( ! tagTIFFDocumentName.isEmpty() )
+                {
+                  layerName = tagTIFFDocumentName;
+                }
+
+                QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
+                if ( ! tagTIFFImageDescription.isEmpty() )
+                {
+                  layerDesc = tagTIFFImageDescription;
+                }
+
+                GDALClose( datasetHandle );
+              }
+            }
+            else
             {
-              layerDesc = tagTIFFImageDescription;
+              skippedContainerScan = true;
             }
-
-            GDALClose( datasetHandle );
           }
 
           // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
@@ -1896,6 +1908,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
         details.setDriverName( gdalDriverName );
+        details.setSkippedContainerScan( skippedContainerScan );
 
         const QVariantMap layerUriParts = decodeGdalUri( uri );
         // update original uri parts with this layername and path -- this ensures that other uri components
@@ -2029,6 +2042,11 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
     }
   }
 
+  const double myScale { bandScale( bandNo ) };
+  // Adjust bin count according to scale
+  // Fix issue GH #59461
+  myHistogram.binCount = static_cast<int>( myHistogram.binCount * myScale );
+
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) ||
        !userNoDataValues( bandNo ).isEmpty() )
   {
@@ -2081,9 +2099,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   double myMinVal = myHistogram.minimum;
   double myMaxVal = myHistogram.maximum;
 
-  // unapply scale anf offset for min and max
-  double myScale = bandScale( bandNo );
-  double myOffset = bandOffset( bandNo );
+  // unapply scale and offset for min and max
+  const double myOffset = bandOffset( bandNo );
   if ( myScale != 1.0 || myOffset != 0. )
   {
     myMinVal = ( myHistogram.minimum - myOffset ) / myScale;
@@ -2994,7 +3011,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
   }
   else if ( GDALGetRasterCount( myDataset.get() ) == 0 )
   {
-    if ( QgsGdalProvider::sublayerDetails( myDataset.get(), fileName ).isEmpty() )
+    if ( QgsGdalProvider::sublayerDetails( myDataset.get(), fileName, Qgis::SublayerQueryFlags() ).isEmpty() )
     {
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
@@ -3134,7 +3151,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, Qgis::RasterBand
       | Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean
       | Qgis::RasterBandStatistic::StdDev;
 
-  QgsDebugMsgLevel( QStringLiteral( "theStats = %1 supportedStats = %2" ).arg( stats, 0, 2 ).arg( supportedStats, 0, 2 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "theStats = %1 supportedStats = %2" ).arg( static_cast<int>( stats ), 0, 2 ).arg( static_cast<int>( supportedStats ), 0, 2 ), 2 );
 
   if ( myRasterBandStats.extent != extent() ||
        ( stats & ( ~supportedStats ) ) )
@@ -3671,7 +3688,8 @@ void QgsGdalProvider::initBaseDataset()
               || mGeoTransform[4] != 0.0
               || mGeoTransform[5] > 0.0 ) )
        || GDALGetGCPCount( mGdalBaseDataset ) > 0
-       || GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+       || GDALGetMetadata( mGdalBaseDataset, "RPC" )
+       || GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Creating Warped VRT." ), 2 );
 
@@ -3682,14 +3700,15 @@ void QgsGdalProvider::initBaseDataset()
     // when the raster is rotated). For example, this fixes the issue for RGB rasters
     // (with no alpha channel) or single-band raster without "no data" value set.
 
-    // South-up oriented raster without any rotation, GCP or RPC doesn't need alpha band
+    // South-up oriented raster without any rotation, GCP, RPC or GEOLOCATION doesn't need alpha band
     const bool isSouthUpWithoutRotationGcpOrRPC = ( hasGeoTransform
         && ( mGeoTransform[1] > 0.0
              && mGeoTransform[2] == 0.0
              && mGeoTransform[4] == 0.0
              && mGeoTransform[5] > 0.0 ) )
         && GDALGetGCPCount( mGdalBaseDataset ) == 0
-        && !GDALGetMetadata( mGdalBaseDataset, "RPC" );
+        && !GDALGetMetadata( mGdalBaseDataset, "RPC" )
+        && !GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" );
 
     if ( !isSouthUpWithoutRotationGcpOrRPC && GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
     {
@@ -3744,7 +3763,7 @@ void QgsGdalProvider::initBaseDataset()
   }
 
   // get sublayers
-  mSubLayers = QgsGdalProvider::sublayerDetails( mGdalDataset,  dataSourceUri() );
+  mSubLayers = QgsGdalProvider::sublayerDetails( mGdalDataset,  dataSourceUri(), Qgis::SublayerQueryFlags() );
 
   // check if this file has bands or subdatasets
   CPLErrorReset();
@@ -3788,23 +3807,35 @@ void QgsGdalProvider::initBaseDataset()
       crsWkt = QgsOgrUtils::OGRSpatialReferenceToWkt( spatialRefSys );
     }
   }
+
+  // silence clang-tidy, RPC and GEOLOCATION are distinct cases and a duplicate branch should not matter
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( !crsWkt.isEmpty() )
   {
     mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
   }
-  else
+  else if ( mGdalBaseDataset != mGdalDataset &&
+            GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
   {
-    if ( mGdalBaseDataset != mGdalDataset &&
-         GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+    // Warped VRT of RPC is in EPSG:4326
+    mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  }
+  else if ( mGdalBaseDataset != mGdalDataset &&
+            GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
+  {
+    // Warped VRT of GEOLOCATION is not always in EPSG:4326, it may have a SRS defined
+    crsWkt = GDALGetMetadataItem( mGdalBaseDataset, "SRS", "GEOLOCATION" );
+    mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
+    if ( !mCrs.isValid() )
     {
-      // Warped VRT of RPC is in EPSG:4326
       mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
     }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "No valid CRS identified" ), 2 );
-    }
   }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No valid CRS identified" ), 2 );
+  }
+  // NOLINTEND(bugprone-branch-clone)
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
   //the inverese projection of the map extents of the canvas when zooming in etc. so
@@ -4190,7 +4221,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList &creationOpt
   {
     QString value = optionsMap.value( QStringLiteral( "PREDICTOR" ) );
     GDALDataType nDataType = ( !mGdalDataType.isEmpty() ) ? ( GDALDataType ) mGdalDataType.at( 0 ) : GDT_Unknown;
-    int nBitsPerSample = nDataType != GDT_Unknown ? GDALGetDataTypeSize( nDataType ) : 0;
+    const int nBitsPerSample = nDataType != GDT_Unknown ? GDALGetDataTypeSizeBits( nDataType ) : 0;
     QgsDebugMsgLevel( QStringLiteral( "PREDICTOR: %1 nbits: %2 type: %3" ).arg( value ).arg( nBitsPerSample ).arg( ( GDALDataType ) mGdalDataType.at( 0 ) ), 2 );
     // PREDICTOR=2 only valid for 8/16/32 bits per sample
     // TODO check for NBITS option (see geotiff.cpp)
@@ -4498,7 +4529,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
   if ( dataset )
   {
-    const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri );
+    const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri, flags );
     if ( res.empty() )
     {
       // may not have multiple sublayers, but may still be a single-raster layer dataset

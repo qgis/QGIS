@@ -15,8 +15,8 @@
 #ifndef QGSWFSDESCRIBEFEATURETYPE_H
 #define QGSWFSDESCRIBEFEATURETYPE_H
 
-#include "qgswfsrequest.h"
 #include "qgswfscapabilities.h"
+#include "qgswfsrequest.h"
 
 //! Manages the DescribeFeatureType request
 class QgsWFSDescribeFeatureType : public QgsWfsRequest

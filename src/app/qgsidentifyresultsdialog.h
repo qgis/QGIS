@@ -18,23 +18,24 @@
 #ifndef QGSIDENTIFYRESULTSDIALOG_H
 #define QGSIDENTIFYRESULTSDIALOG_H
 
-#include "qgis_app.h"
 #include "ui_qgsidentifyresultsbase.h"
-#include "qgshelp.h"
+
+#include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgshelp.h"
 #include "qgsmaptoolidentify.h"
-#include "qgswebview.h"
-#include "qgsexpressioncontext.h"
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsrelation.h"
+#include "qgswebview.h"
 
-#include <QWidget>
 #include <QList>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QUrl>
+#include <QWidget>
 
 class QCloseEvent;
 class QToolButton;
@@ -150,6 +151,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */
@@ -252,7 +254,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     void featureForm();
     void zoomToFeature();
     void identifyFeature();
-    void copyAttributeValue();
+    void copyAttributeValue( const QString &value );
     void copyFeature();
     void toggleFeatureSelection();
     void copyFeatureAttributes();
@@ -274,7 +276,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     void itemExpanded( QTreeWidgetItem *item );
 
     QgsAttributeMap retrieveAttributes( QTreeWidgetItem *item );
-    QVariant retrieveAttribute( QTreeWidgetItem *item );
+    QVariant retrieveAttribute( QTreeWidgetItem *item, const bool raw = false );
 
     void cmbIdentifyMode_currentIndexChanged( int index );
 

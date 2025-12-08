@@ -10,7 +10,6 @@
 
 
 
-
 class QgsRegularPolygon
 {
 %Docstring(signature="appended")

@@ -15,17 +15,19 @@
  ***************************************************************************/
 
 #include "qgslayoutpropertieswidget.h"
-#include "moc_qgslayoutpropertieswidget.cpp"
-#include "qgslayout.h"
-#include "qgslayoutsnapper.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
-#include "qgslayoutitemmap.h"
+
 #include "qgsexpressioncontextutils.h"
-#include "qgsprintlayout.h"
+#include "qgslayout.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoutsnapper.h"
+#include "qgslayoutundostack.h"
 #include "qgsmargins.h"
+#include "qgsprintlayout.h"
+
+#include "moc_qgslayoutpropertieswidget.cpp"
 
 QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout )
   : QgsPanelWidget( parent )

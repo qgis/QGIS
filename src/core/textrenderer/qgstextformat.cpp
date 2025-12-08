@@ -13,25 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstextformat.h"
-#include "qgstextrenderer_p.h"
-#include "qgstextrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsfontutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgspainting.h"
-#include "qgstextrendererutils.h"
-#include "qgspallabeling.h"
 #include "qgsconfig.h"
-#include "qgsfontmanager.h"
+#include "qgstextformat.h"
+
 #include "qgsapplication.h"
-#include "qgsunittypes.h"
 #include "qgscolorutils.h"
+#include "qgsfontmanager.h"
+#include "qgsfontutils.h"
+#include "qgspainting.h"
+#include "qgspallabeling.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
+#include "qgstextrenderer_p.h"
+#include "qgstextrendererutils.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
 
 #include <QFontDatabase>
 #include <QMimeData>
-#include <QWidget>
 #include <QScreen>
+#include <QWidget>
 
 QgsTextFormat::QgsTextFormat()
 {
@@ -39,6 +40,7 @@ QgsTextFormat::QgsTextFormat()
 }
 
 QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mBufferSettings( other.mBufferSettings )
   , mBackgroundSettings( other.mBackgroundSettings )
   , mShadowSettings( other.mShadowSettings )
@@ -46,18 +48,51 @@ QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
   , mTextFontFamily( other.mTextFontFamily )
   , mTextFontFound( other.mTextFontFound )
   , d( other.d )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{
+
+}
+
+QgsTextFormat::QgsTextFormat( QgsTextFormat &&other ) //NOLINT
+  : mBufferSettings( std::move( other.mBufferSettings ) )
+  , mBackgroundSettings( std::move( other.mBackgroundSettings ) )
+  , mShadowSettings( std::move( other.mShadowSettings ) )
+  , mMaskSettings( std::move( other.mMaskSettings ) )
+  , mTextFontFamily( std::move( other.mTextFontFamily ) )
+  , mTextFontFound( other.mTextFontFound )
+  , d( std::move( other.d ) )
 {
 
 }
 
 QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   d = other.d;
   mBufferSettings = other.mBufferSettings;
   mBackgroundSettings = other.mBackgroundSettings;
   mShadowSettings = other.mShadowSettings;
   mMaskSettings = other.mMaskSettings;
   mTextFontFamily = other.mTextFontFamily;
+  mTextFontFound = other.mTextFontFound;
+  return *this;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+}
+
+QgsTextFormat &QgsTextFormat::operator=( QgsTextFormat &&other )  //NOLINT
+{
+  if ( &other == this )
+    return *this;
+
+  d = std::move( other.d );
+  mBufferSettings = std::move( other.mBufferSettings );
+  mBackgroundSettings = std::move( other.mBackgroundSettings );
+  mShadowSettings = std::move( other.mShadowSettings );
+  mMaskSettings = std::move( other.mMaskSettings );
+  mTextFontFamily = std::move( other.mTextFontFamily );
   mTextFontFound = other.mTextFontFound;
   return *this;
 }

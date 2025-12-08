@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstylemanager.h"
-#include "moc_qgsmaplayerstylemanager.cpp"
-#include "qgsmaplayerstyle.h"
-#include "qgsmaplayer.h"
 
 #include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerstyle.h"
 
 #include <QDomElement>
 #include <QTextStream>
+
+#include "moc_qgsmaplayerstylemanager.cpp"
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   : mLayer( layer )

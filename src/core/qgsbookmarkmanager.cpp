@@ -14,14 +14,18 @@
  ***************************************************************************/
 
 #include "qgsbookmarkmanager.h"
-#include "moc_qgsbookmarkmanager.cpp"
+
+#include <sqlite3.h>
+
+#include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssqliteutils.h"
-#include "qgsapplication.h"
-#include <QUuid>
+
 #include <QTextStream>
-#include <sqlite3.h>
+#include <QUuid>
+
+#include "moc_qgsbookmarkmanager.cpp"
 
 //
 // QgsBookMark

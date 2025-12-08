@@ -18,7 +18,6 @@
 #include "qgsalgorithmshortestpathpointtolayer.h"
 
 #include "qgsgraphanalyzer.h"
-
 #include "qgsmessagelog.h"
 
 ///@cond PRIVATE

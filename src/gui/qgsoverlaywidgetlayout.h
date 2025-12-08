@@ -32,6 +32,7 @@ class GUI_EXPORT QgsOverlayWidgetLayout : public QLayout
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsOverlayWidgetLayout, with the specified \a parent widget.
      */

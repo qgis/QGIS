@@ -17,10 +17,10 @@
 #ifndef QGSCLASSIFICATIONMETHODREGISTRY_H
 #define QGSCLASSIFICATIONMETHODREGISTRY_H
 
-#include <QMap>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QMap>
 
 class QIcon;
 

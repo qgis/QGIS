@@ -18,12 +18,12 @@
 #ifndef QGSLOCATORMODELBRIDGE_H
 #define QGSLOCATORMODELBRIDGE_H
 
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
+
+#include <QObject>
 
 class QItemSelection;
 
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
   public:
     //! Constructor of QgsLocatorModelBridge
     explicit QgsLocatorModelBridge( QObject *parent = nullptr );
-    virtual ~QgsLocatorModelBridge() = default;
+    ~QgsLocatorModelBridge() override = default;
 
     //! Perform a search
     Q_INVOKABLE void performSearch( const QString &text );

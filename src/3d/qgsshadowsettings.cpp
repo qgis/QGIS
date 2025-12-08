@@ -15,10 +15,10 @@
 
 #include "qgsshadowsettings.h"
 
-#include <QDomDocument>
-
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+
+#include <QDomDocument>
 
 QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   : mRenderShadows( other.mRenderShadows )
@@ -31,6 +31,9 @@ QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
 
 QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
 {
+  if ( &rhs == this )
+    return *this;
+
   this->mRenderShadows = rhs.mRenderShadows;
   this->mSelectedDirectionalLight = rhs.mSelectedDirectionalLight;
   this->mMaximumShadowRenderingDistance = rhs.mMaximumShadowRenderingDistance;

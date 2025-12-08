@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipseabstract.h"
-#include "moc_qgsmaptoolshapeellipseabstract.cpp"
+
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
 #include "qgsmaptoolcapture.h"
 
+#include "moc_qgsmaptoolshapeellipseabstract.cpp"
 
 void QgsMapToolShapeEllipseAbstract::addEllipseToParentTool()
 {

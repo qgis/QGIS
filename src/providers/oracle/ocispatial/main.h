@@ -44,8 +44,9 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <qsqldriverplugin.h>
 #include "qsql_ocispatial.h"
+
+#include <qsqldriverplugin.h>
 
 class QOCISpatialDriverPlugin : public QSqlDriverPlugin
 {

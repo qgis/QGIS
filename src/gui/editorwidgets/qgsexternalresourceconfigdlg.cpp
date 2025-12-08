@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgsexternalresourceconfigdlg.h"
-#include "moc_qgsexternalresourceconfigdlg.cpp"
-#include "qgsexternalresourcewidget.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgspropertyoverridebutton.h"
-#include "qgseditorwidgetwrapper.h"
-#include "qgsexternalstorage.h"
-#include "qgsexternalstorageregistry.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexternalstoragefilewidget.h"
 
-#include <QFileDialog>
+#include "qgsapplication.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexternalresourcewidget.h"
+#include "qgsexternalstorage.h"
+#include "qgsexternalstoragefilewidget.h"
+#include "qgsexternalstorageregistry.h"
+#include "qgsproject.h"
+#include "qgspropertyoverridebutton.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
 #include <QComboBox>
+#include <QFileDialog>
+
+#include "moc_qgsexternalresourceconfigdlg.cpp"
 
 class QgsExternalResourceWidgetWrapper;
 

@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgscollapsiblegroupboxplugin.h"
+
 #include "qgiscustomwidgets.h"
 #include "qgscollapsiblegroupbox.h"
-#include "qgscollapsiblegroupboxplugin.h"
-#include "moc_qgscollapsiblegroupboxplugin.cpp"
 
+#include "moc_qgscollapsiblegroupboxplugin.cpp"
 
 QgsCollapsibleGroupBoxPlugin::QgsCollapsibleGroupBoxPlugin( QObject *parent )
   : QObject( parent )

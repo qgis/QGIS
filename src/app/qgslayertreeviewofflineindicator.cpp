@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewofflineindicator.h"
-#include "moc_qgslayertreeviewofflineindicator.cpp"
-#include "qgslayertreeview.h"
+
 #include "qgisapp.h"
+#include "qgslayertreeview.h"
+
+#include "moc_qgslayertreeviewofflineindicator.cpp"
 
 QgsLayerTreeViewOfflineIndicatorProvider::QgsLayerTreeViewOfflineIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

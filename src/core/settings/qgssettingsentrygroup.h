@@ -16,13 +16,14 @@
 #ifndef QGSSETTINGSENTRYGROUP_H
 #define QGSSETTINGSENTRYGROUP_H
 
-#include <QString>
-#include <QColor>
 #include <limits>
 
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QColor>
+#include <QString>
 
 class QgsSettingsEntryBase;
 

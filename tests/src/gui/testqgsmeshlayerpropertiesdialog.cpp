@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsmeshlayer.h"
+#include "qgsfeedback.h"
+#include "qgsmapcanvas.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
 #include "qgsmeshrendereractivedatasetwidget.h"
-#include "qgsfeedback.h"
-#include "qgis.h"
-#include "qgsmapcanvas.h"
+#include "qgstest.h"
 
 #include <QTemporaryFile>
 

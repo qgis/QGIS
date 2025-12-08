@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsvaluemapwidgetwrapper.h"
-#include "moc_qgsvaluemapwidgetwrapper.cpp"
+
+#include "qgsapplication.h"
 #include "qgsvaluemapconfigdlg.h"
 #include "qgsvaluemapfieldformatter.h"
-#include "qgsapplication.h"
 
 #include <QSettings>
+
+#include "moc_qgsvaluemapwidgetwrapper.cpp"
 
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

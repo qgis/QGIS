@@ -16,16 +16,14 @@
 #ifndef QGSABSTRACTLAYERMETADATAPROVIDER_H
 #define QGSABSTRACTLAYERMETADATAPROVIDER_H
 
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
-
-#include "qgslayermetadata.h"
-#include "qgsrectangle.h"
-#include "qgspolygon.h"
+#include "qgis_core.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgslayermetadata.h"
+#include "qgspolygon.h"
+#include "qgsrectangle.h"
 
+#include <QObject>
 
 class QgsFeedback;
 
@@ -146,7 +144,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     //! Layer spatial extent of the layer in EPSG:4326
     QgsPolygon mGeographicExtent;
     //! Layer geometry type (Point, Polygon, Linestring)
-    Qgis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
     //! Layer CRS authid
     QString mAuthid;
     //! Layer QgsDataSourceUri string
@@ -154,7 +152,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     //! Layer data provider name
     QString mDataProviderName;
     //! Layer type (vector, raster etc.)
-    Qgis::LayerType mLayerType;
+    Qgis::LayerType mLayerType = Qgis::LayerType::Vector;
     //! Metadata standard uri, QGIS QMD metadata format uses "http://mrcc.com/qgis.dtd"
     QString mStandardUri;
 };

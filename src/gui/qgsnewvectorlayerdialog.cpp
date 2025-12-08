@@ -16,27 +16,29 @@
  ***************************************************************************/
 
 #include "qgsnewvectorlayerdialog.h"
-#include "moc_qgsnewvectorlayerdialog.cpp"
-#include "qgsapplication.h"
-#include "qgsfilewidget.h"
-#include "qgis.h"
-#include "qgslogger.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorfilewriter.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsiconutils.h"
-#include "qgsfileutils.h"
-#include "qgsvariantutils.h"
-#include "qgsogrproviderutils.h"
 
 #include <gdal.h>
 
-#include <QPushButton>
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfileutils.h"
+#include "qgsfilewidget.h"
+#include "qgsgui.h"
+#include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsogrproviderutils.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
+
 #include <QComboBox>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgsnewvectorlayerdialog.cpp"
 
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

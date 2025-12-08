@@ -15,6 +15,7 @@
 
 
 #include "qgsclassificationquantile.h"
+
 #include "qgsapplication.h"
 
 QgsClassificationQuantile::QgsClassificationQuantile()

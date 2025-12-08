@@ -17,6 +17,7 @@
 #ifndef QGSPGNEWCONNECTION_H
 #define QGSPGNEWCONNECTION_H
 #include "ui_qgspgnewconnectionbase.h"
+
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 

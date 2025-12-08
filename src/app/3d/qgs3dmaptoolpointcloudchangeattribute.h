@@ -24,7 +24,6 @@
 
 #include <QMatrix4x4>
 
-
 class QgsBox3D;
 class QgsGeos;
 class QgsPointCloudLayer;
@@ -83,6 +82,7 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     virtual void run();
     //! Clear selection
     virtual void restart();
+
     /**
      * Changes the value of \a attributeName to \a newValue for points inside \a geometry
      * \note \a geometry is expected in screen coordinates

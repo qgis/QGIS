@@ -17,13 +17,12 @@
 #ifndef QGSLAYOUTITEMPAGE_H
 #define QGSLAYOUTITEMPAGE_H
 
-#include <QPageLayout>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
-#include "qgis_sip.h"
 
+#include <QPageLayout>
 
 ///@cond PRIVATE
 #ifndef SIP_RUN

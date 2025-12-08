@@ -19,8 +19,8 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
-#include "qgssettingsentry.h"
 #include "qgslogger.h"
+#include "qgssettingsentry.h"
 
 /**
  * \class QgsSettingsEntryEnumFlag
@@ -158,12 +158,12 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
         return false;
     }
 
-    virtual Qgis::SettingsType settingsType() const override
+    Qgis::SettingsType settingsType() const override
     {
       return Qgis::SettingsType::EnumFlag;
     }
 
-    virtual QString typeId() const override
+    QString typeId() const override
     {
       return QStringLiteral( "%1-%2" ).arg( this->QgsSettingsEntryBase::typeId(), QMetaEnum::fromType<T>().name() );
     }

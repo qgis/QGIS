@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 #include "qgscodeeditorhtml.h"
-#include "moc_qgscodeeditorhtml.cpp"
-#include "qgspythonrunner.h"
-#include "qgsprocessingutils.h"
 
-#include <QWidget>
-#include <QString>
+#include "qgsprocessingutils.h"
+#include "qgspythonrunner.h"
+
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexerhtml.h>
 
+#include "moc_qgscodeeditorhtml.cpp"
 
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )

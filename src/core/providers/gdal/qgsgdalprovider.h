@@ -19,20 +19,20 @@
 #ifndef QGSGDALPROVIDER_H
 #define QGSGDALPROVIDER_H
 
-#include "qgscoordinatereferencesystem.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsgdalproviderbase.h"
-#include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgdalproviderbase.h"
 #include "qgsogrutils.h"
-#include "qgsrasterbandstats.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrectangle.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QMap>
+#include <QString>
+#include <QStringList>
 #include <QVector>
 
 ///@cond PRIVATE
@@ -165,7 +165,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QString bandDescription( int bandNumber ) override;
     QStringList subLayers() const override;
 
-    static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri );
+    static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri, Qgis::SublayerQueryFlags flags );
 
     bool hasStatistics( int bandNo,
                         Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,

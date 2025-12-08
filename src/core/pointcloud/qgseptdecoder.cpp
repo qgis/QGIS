@@ -16,16 +16,16 @@
  ***************************************************************************/
 
 #include "qgseptdecoder.h"
-#include "qgslazdecoder.h"
-#include "qgspointcloudattribute.h"
-#include "qgsvector3d.h"
-#include "qgspointcloudexpression.h"
-#include "qgsrectangle.h"
-
-#include <QFile>
 
 #include <zstd.h>
 
+#include "qgslazdecoder.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudexpression.h"
+#include "qgsrectangle.h"
+#include "qgsvector3d.h"
+
+#include <QFile>
 
 ///@cond PRIVATE
 

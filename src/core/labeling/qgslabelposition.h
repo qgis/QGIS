@@ -18,10 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
+#include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
-#include "qgsgeometry.h"
 
 #include <QFont>
 

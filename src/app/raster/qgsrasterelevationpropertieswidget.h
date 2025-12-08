@@ -16,10 +16,11 @@
 #ifndef QGSRASTERELEVATIONPROPERTIESWIDGET_H
 #define QGSRASTERELEVATIONPROPERTIESWIDGET_H
 
+#include "ui_qgsrasterelevationpropertieswidgetbase.h"
+
+#include "qgsexpressioncontextgenerator.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "ui_qgsrasterelevationpropertieswidgetbase.h"
 
 #include <QAbstractItemModel>
 #include <QStyledItemDelegate>

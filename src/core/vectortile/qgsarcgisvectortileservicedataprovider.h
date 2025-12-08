@@ -18,8 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsxyzvectortiledataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsxyzvectortiledataprovider.h"
 
 #define SIP_NO_FILE
 

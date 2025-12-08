@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgshanadatatypes.h"
-#include "odbc/Types.h"
+
+#include <odbc/Types.h>
 
 using namespace NS_ODBC;
 

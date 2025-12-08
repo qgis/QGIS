@@ -16,9 +16,10 @@
 #ifndef QGSMSSQLUTILS_H
 #define QGSMSSQLUTILS_H
 
+#include "qgis.h"
+
 #include <QString>
 #include <QVariant>
-#include "qgis.h"
 
 class QgsField;
 
@@ -28,6 +29,7 @@ class QgsField;
 class QgsMssqlUtils
 {
   public:
+
     /**
      * Returns a quoted string version of \a value, for safe use in a SQL query.
      */

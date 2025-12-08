@@ -16,12 +16,13 @@
 
 
 #include "qgscrashdialog.h"
-#include "moc_qgscrashdialog.cpp"
 
 #include "qgscrashreport.h"
 
 #include <QClipboard>
 #include <QProcess>
+
+#include "moc_qgscrashdialog.cpp"
 
 QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   : QDialog( parent )

@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsauthcertificatemanager.h"
-#include "moc_qgsauthcertificatemanager.cpp"
+
 #include "qgssettings.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+#include "moc_qgsauthcertificatemanager.cpp"
 
 QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
   : QWidget( parent )

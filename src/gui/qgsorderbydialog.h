@@ -17,13 +17,14 @@
 #ifndef QGSORDERBYDIALOG_H
 #define QGSORDERBYDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgsorderbydialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsfeaturerequest.h"
 #include "qgshelp.h"
-#include "qgis_gui.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     Q_OBJECT
 
   public:
+
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
@@ -62,6 +64,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     void showHelp();
 
   private:
+
     /**
      * Initialize a row with the given information
      */

@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsopacitywidget.h"
-#include "moc_qgsopacitywidget.cpp"
-#include "qgsdoublespinbox.h"
+
 #include "qgis.h"
+#include "qgsdoublespinbox.h"
+
 #include <QHBoxLayout>
 #include <QSlider>
+
+#include "moc_qgsopacitywidget.cpp"
 
 QgsOpacityWidget::QgsOpacityWidget( QWidget *parent )
   : QWidget( parent )

@@ -26,6 +26,7 @@ Terrain settings for a simple flat area terrain.
 #include "qgsflatterrainsettings.h"
 %End
   public:
+
     static QgsAbstractTerrainSettings *create() /Factory/;
 %Docstring
 Creates a new instance of a QgsFlatTerrainSettings object.

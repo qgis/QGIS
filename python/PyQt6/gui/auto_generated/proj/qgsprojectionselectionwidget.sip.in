@@ -21,6 +21,7 @@ A widget for selecting a projection.
 #include "qgsprojectionselectionwidget.h"
 %End
   public:
+
     enum CrsOption /BaseType=IntEnum/
     {
       Invalid,

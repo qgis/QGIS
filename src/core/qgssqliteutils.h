@@ -18,10 +18,11 @@
 #ifndef QGSSQLITEUTILS_H
 #define QGSSQLITEUTILS_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include <memory>
 #include <QString>
 
 struct sqlite3;

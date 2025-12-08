@@ -15,10 +15,11 @@
 #ifndef QGSFLOATINGWIDGET_H
 #define QGSFLOATINGWIDGET_H
 
-#include <QWidget>
-#include <QPointer>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QPointer>
+#include <QWidget>
 
 class QgsFloatingWidgetEventFilter;
 

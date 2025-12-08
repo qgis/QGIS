@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgsmeshtracerenderer.h"
-#include "qgsmeshlayerrenderer.h"
-#include "qgsrendercontext.h"
+
+#include <memory>
+
 #include "qgslinestring.h"
 #include "qgsmeshlayerinterpolator.h"
+#include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsrastershader.h"
+#include "qgsrendercontext.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 
 #include <QPointer>
@@ -66,6 +69,9 @@ QgsVector QgsMeshVectorValueInterpolator::vectorValue( const QgsPointXY &point )
 
 QgsMeshVectorValueInterpolator &QgsMeshVectorValueInterpolator::operator=( const QgsMeshVectorValueInterpolator &other )
 {
+  if ( &other == this )
+    return *this;
+
   mTriangularMesh = other.mTriangularMesh;
   mDatasetValues = other.mDatasetValues;
   mActiveFaceFlagValues = other.mActiveFaceFlagValues;
@@ -139,7 +145,6 @@ QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsTriangu
     const QgsMeshDataBlock &datasetVectorValues )
   : mTriangularMesh( triangularMesh )
   , mDatasetValues( datasetVectorValues )
-  , mUseScalarActiveFaceFlagValues( false )
 {}
 
 QgsMeshVectorValueInterpolator::QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh,
@@ -222,26 +227,26 @@ QgsMeshStreamField::QgsMeshStreamField(
   if ( dataIsOnVertices )
   {
     if ( scalarActiveFaceFlagValues.isValid() )
-      mVectorValueInterpolator.reset( new QgsMeshVectorValueInterpolatorFromVertex(
-                                        triangularMesh,
-                                        dataSetVectorValues,
-                                        scalarActiveFaceFlagValues ) );
+      mVectorValueInterpolator = std::make_unique<QgsMeshVectorValueInterpolatorFromVertex>(
+                                   triangularMesh,
+                                   dataSetVectorValues,
+                                   scalarActiveFaceFlagValues );
     else
-      mVectorValueInterpolator.reset( new QgsMeshVectorValueInterpolatorFromVertex(
-                                        triangularMesh,
-                                        dataSetVectorValues ) );
+      mVectorValueInterpolator = std::make_unique<QgsMeshVectorValueInterpolatorFromVertex>(
+                                   triangularMesh,
+                                   dataSetVectorValues );
   }
   else
   {
     if ( scalarActiveFaceFlagValues.isValid() )
-      mVectorValueInterpolator.reset( new QgsMeshVectorValueInterpolatorFromFace(
-                                        triangularMesh,
-                                        dataSetVectorValues,
-                                        scalarActiveFaceFlagValues ) );
+      mVectorValueInterpolator = std::make_unique<QgsMeshVectorValueInterpolatorFromFace>(
+                                   triangularMesh,
+                                   dataSetVectorValues,
+                                   scalarActiveFaceFlagValues );
     else
-      mVectorValueInterpolator.reset( new QgsMeshVectorValueInterpolatorFromFace(
-                                        triangularMesh,
-                                        dataSetVectorValues ) );
+      mVectorValueInterpolator = std::make_unique<QgsMeshVectorValueInterpolatorFromFace>(
+                                   triangularMesh,
+                                   dataSetVectorValues );
   }
 }
 
@@ -267,7 +272,7 @@ QgsMeshStreamField::QgsMeshStreamField( const QgsMeshStreamField &other )
   , mMaxMagFilter( other.mMaxMagFilter )
   , mMinimizeFieldSize( other.mMinimizeFieldSize )
 {
-  mPainter.reset( new QPainter( &mTraceImage ) );
+  mPainter = std::make_unique<QPainter>( &mTraceImage );
   mVectorValueInterpolator =
     std::unique_ptr<QgsMeshVectorValueInterpolator>( other.mVectorValueInterpolator->clone() );
 }
@@ -713,12 +718,12 @@ void QgsMeshStreamlinesField::initImage()
 
   if ( !mTraceImage.isNull() )
   {
-    mPainter.reset( new QPainter( &mTraceImage ) );
+    mPainter = std::make_unique<QPainter>( &mTraceImage );
     mPainter->setRenderHint( QPainter::Antialiasing, true );
 
     mDrawingTraceImage = QImage( mTraceImage.size(), QImage::Format_ARGB32_Premultiplied );
     mDrawingTraceImage.fill( Qt::transparent );
-    mDrawingTracePainter.reset( new QPainter( &mDrawingTraceImage ) );
+    mDrawingTracePainter = std::make_unique<QPainter>( &mDrawingTraceImage );
     mDrawingTracePainter->setRenderHint( QPainter::Antialiasing, true );
   }
 }
@@ -919,6 +924,9 @@ void QgsMeshStreamField::setMinimizeFieldSize( bool minimizeFieldSize )
 
 QgsMeshStreamField &QgsMeshStreamField::operator=( const QgsMeshStreamField &other )
 {
+  if ( &other == this )
+    return *this;
+
   mFieldSize = other.mFieldSize ;
   mFieldResolution = other.mFieldResolution;
   mPen = other.mPen;
@@ -942,7 +950,7 @@ QgsMeshStreamField &QgsMeshStreamField::operator=( const QgsMeshStreamField &oth
   mVectorValueInterpolator =
     std::unique_ptr<QgsMeshVectorValueInterpolator>( other.mVectorValueInterpolator->clone() );
 
-  mPainter.reset( new QPainter( &mTraceImage ) );
+  mPainter = std::make_unique<QPainter>( &mTraceImage );
 
   return ( *this );
 }
@@ -953,7 +961,7 @@ void QgsMeshStreamField::initImage()
   if ( !mTraceImage.isNull() )
   {
     mTraceImage.fill( 0X00000000 );
-    mPainter.reset( new QPainter( &mTraceImage ) );
+    mPainter = std::make_unique<QPainter>( &mTraceImage );
     mPainter->setRenderHint( QPainter::Antialiasing, true );
     mPainter->setPen( mPen );
   }
@@ -1066,18 +1074,18 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer( const QgsTrian
     double magMax ):
   mRendererContext( rendererContext )
 {
-  mStreamlineField.reset(
-    new QgsMeshStreamlinesField(
-      triangularMesh,
-      dataSetVectorValues,
-      scalarActiveFaceFlagValues,
-      datasetMagValues,
-      layerExtent,
-      feedBack,
-      magMax,
-      dataIsOnVertices,
-      rendererContext,
-      settings.vectorStrokeColoring() ) );
+  mStreamlineField = std::make_unique<QgsMeshStreamlinesField>(
+
+                       triangularMesh,
+                       dataSetVectorValues,
+                       scalarActiveFaceFlagValues,
+                       datasetMagValues,
+                       layerExtent,
+                       feedBack,
+                       magMax,
+                       dataIsOnVertices,
+                       rendererContext,
+                       settings.vectorStrokeColoring() );
 
   mStreamlineField->updateSize( rendererContext );
   mStreamlineField->setPixelFillingDensity( settings.streamLinesSettings().seedingDensity() );
@@ -1298,6 +1306,9 @@ void QgsMeshParticleTracesField::setParticlesColor( const QColor &c )
 
 QgsMeshParticleTracesField &QgsMeshParticleTracesField::operator=( const QgsMeshParticleTracesField &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsMeshStreamField::operator=( other );
   mTimeField = other.mTimeField;
   mMagnitudeField = other.mMagnitudeField;
@@ -1512,14 +1523,14 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator( QgsM
                                    layer->nativeMesh()->faces.count() );
   }
 
-  mParticleField = std::unique_ptr<QgsMeshParticleTracesField>( new QgsMeshParticleTracesField( ( *layer->triangularMesh() ),
+  mParticleField = std::make_unique<QgsMeshParticleTracesField>( ( *layer->triangularMesh() ),
                    vectorDatasetValues,
                    scalarActiveFaceFlagValues,
                    layer->extent(),
                    magMax,
                    vectorDataOnVertices,
                    rendererContext,
-                   vectorSettings.vectorStrokeColoring() ) )  ;
+                   vectorSettings.vectorStrokeColoring() )  ;
 
   mParticleField->setMinimizeFieldSize( false );
   mParticleField->updateSize( mRendererContext );
@@ -1602,7 +1613,7 @@ void QgsMeshVectorTraceAnimationGenerator::setTailPersitence( double p )
 
 QgsMeshVectorTraceAnimationGenerator &QgsMeshVectorTraceAnimationGenerator::operator=( const QgsMeshVectorTraceAnimationGenerator &other )
 {
-  mParticleField.reset( new QgsMeshParticleTracesField( *( other.mParticleField ) ) );
+  mParticleField = std::make_unique<QgsMeshParticleTracesField>( *( other.mParticleField ) );
   const_cast<QgsRenderContext &>( mRendererContext ) = other.mRendererContext;
   mFPS = other.mFPS;
   mVpixMax = other.mVpixMax;

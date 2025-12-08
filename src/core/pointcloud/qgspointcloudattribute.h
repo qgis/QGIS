@@ -21,11 +21,11 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgsfields.h"
+#include "qgsvector3d.h"
+
+#include <QSet>
 #include <QString>
 #include <QVector>
-#include <QSet>
-
-#include "qgsvector3d.h"
 
 class QgsPointCloudAttributeCollection;
 

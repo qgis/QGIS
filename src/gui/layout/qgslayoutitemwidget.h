@@ -15,11 +15,13 @@
 #ifndef QGSLAYOUTITEMWIDGET_H
 #define QGSLAYOUTITEMWIDGET_H
 
+#include "ui_qgslayoutitemwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutobject.h"
 #include "qgspanelwidget.h"
-#include "qgslayoutitem.h"
-#include "ui_qgslayoutitemwidgetbase.h"
+
 #include <QObject>
 #include <QPointer>
 
@@ -63,6 +65,7 @@ class GUI_EXPORT QgsLayoutConfigObject : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsLayoutConfigObject, linked with the specified \a layoutObject.
      */
@@ -121,6 +124,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutItemBaseWidget, linked with the specified \a layoutObject.
      */
@@ -165,6 +169,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget : public QgsPanelWidget
     virtual void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
 
   protected:
+
     /**
      * Registers a data defined \a button, setting up its initial value, connections and description.
      * The corresponding property \a key must be specified.
@@ -212,6 +217,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget : public QWidget, private Ui::Qgs
 {
     Q_OBJECT
   public:
+
     /**
      * Constructs a QgsLayoutItemPropertiesWidget with a \a parent and for the given layout \a item.
      */

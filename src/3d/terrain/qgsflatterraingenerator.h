@@ -17,9 +17,9 @@
 #define QGSFLATTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
 #include "qgsterraingenerator.h"
 #include "qgsterraintileloader.h"
+
 #include <Qt3DExtras/QPlaneGeometry>
 
 #define SIP_NO_FILE
@@ -54,6 +54,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new instance of a QgsFlatTerrainGenerator object.
      */

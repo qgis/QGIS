@@ -13,33 +13,34 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
-#include "moc_qgsmapcanvasdockwidget.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsexception.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsscalecombobox.h"
-#include "qgsdoublespinbox.h"
-#include "qgssettings.h"
-#include "qgsmaptoolpan.h"
-#include "qgsmapthemecollection.h"
-#include "qgsproject.h"
-#include "qgslayertreeview.h"
-#include "qgslayertreeviewdefaultactions.h"
+
+#include "canvas/qgsappcanvasfiltering.h"
 #include "qgisapp.h"
-#include "qgsvertexmarker.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsdockablewidgethelper.h"
+#include "qgsdoublespinbox.h"
+#include "qgsexception.h"
+#include "qgslayertreeview.h"
+#include "qgslayertreeviewdefaultactions.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmaptoolpan.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsprojectviewsettings.h"
-#include "canvas/qgsappcanvasfiltering.h"
+#include "qgsrubberband.h"
+#include "qgsscalecombobox.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
 
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
+#include <QRadioButton>
 #include <QToolBar>
 #include <QToolButton>
-#include <QRadioButton>
 
+#include "moc_qgsmapcanvasdockwidget.cpp"
 
 QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent, bool isDocked )
   : QWidget( parent )

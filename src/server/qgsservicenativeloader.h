@@ -27,10 +27,11 @@ class QgsServiceRegistry;
 class QgsServiceNativeModuleEntry;
 class QgsServerInterface;
 
+#include <memory>
+
 #include "qgis_server.h"
 
 #include <QHash>
-#include <memory>
 
 /**
  * \ingroup server

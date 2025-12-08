@@ -249,7 +249,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::SelafinFile::createMesh( const std::string &fi
   reader->parseFile();
 
   std::unique_ptr<Mesh> mesh( new MeshSelafin( fileName, reader ) );
-  populateDataset( mesh.get(), reader );
+  populateDataset( mesh.get(), std::move( reader ) );
 
   return mesh;
 }
@@ -263,7 +263,7 @@ void MDAL::SelafinFile::populateDataset( MDAL::Mesh *mesh, const std::string &fi
   if ( mesh->verticesCount() != reader->verticesCount() || mesh->facesCount() != reader->facesCount() )
     throw MDAL::Error( MDAL_Status::Err_IncompatibleDataset, "Faces or vertices counts in the file are not the same" );
 
-  populateDataset( mesh, reader );
+  populateDataset( mesh, std::move( reader ) );
 }
 
 size_t MDAL::SelafinFile::facesCount()
@@ -669,7 +669,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
     MDAL::Log::error( error, name(), "Error while loading file " + meshFile );
     mesh.reset();
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
     mesh.reset();
@@ -689,7 +689,7 @@ void MDAL::DriverSelafin::load( const std::string &datFile, MDAL::Mesh *mesh )
   {
     MDAL::Log::error( error, name(), "Error while loading dataset in file " + datFile );
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
   }
@@ -708,7 +708,7 @@ bool MDAL::DriverSelafin::persist( MDAL::DatasetGroup *group )
     saveDatasetGroupOnFile( group );
     return false;
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
     return true;
@@ -739,7 +739,7 @@ bool MDAL::DriverSelafin::saveDatasetGroupOnFile( MDAL::DatasetGroup *datasetGro
 MDAL::MeshSelafin::MeshSelafin( const std::string &uri,
                                 std::shared_ptr<MDAL::SelafinFile> reader ):
   Mesh( "SELAFIN", reader->verticesPerFace(), uri )
-  , mReader( reader )
+  , mReader( std::move( reader ) )
 {}
 
 std::unique_ptr<MDAL::MeshVertexIterator> MDAL::MeshSelafin::readVertices()
@@ -805,7 +805,7 @@ void MDAL::MeshSelafin::calculateExtent() const
 }
 
 MDAL::MeshSelafinVertexIterator::MeshSelafinVertexIterator( std::shared_ptr<MDAL::SelafinFile> reader ):
-  mReader( reader )
+  mReader( std::move( reader ) )
 {}
 
 size_t MDAL::MeshSelafinVertexIterator::next( size_t vertexCount, double *coordinates )
@@ -825,7 +825,7 @@ size_t MDAL::MeshSelafinVertexIterator::next( size_t vertexCount, double *coordi
 }
 
 MDAL::MeshSelafinFaceIterator::MeshSelafinFaceIterator( std::shared_ptr<MDAL::SelafinFile> reader ):
-  mReader( reader )
+  mReader( std::move( reader ) )
 {}
 
 size_t MDAL::MeshSelafinFaceIterator::next( size_t faceOffsetsBufferLen, int *faceOffsetsBuffer, size_t vertexIndicesBufferLen, int *vertexIndicesBuffer )
@@ -870,7 +870,7 @@ size_t MDAL::MeshSelafinFaceIterator::next( size_t faceOffsetsBufferLen, int *fa
 MDAL::DatasetSelafin::DatasetSelafin( MDAL::DatasetGroup *parent,
                                       std::shared_ptr<MDAL::SelafinFile> reader, size_t timeStepIndex ):
   Dataset2D( parent )
-  , mReader( reader )
+  , mReader( std::move( reader ) )
   , mTimeStepIndex( timeStepIndex )
 {
 }

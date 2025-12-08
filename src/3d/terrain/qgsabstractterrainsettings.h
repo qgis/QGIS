@@ -16,10 +16,12 @@
 #ifndef QGSABSTRACTTERRAINSETTINGS_H
 #define QGSABSTRACTTERRAINSETTINGS_H
 
+#include <memory>
+
 #include "qgis_3d.h"
 #include "qgis_sip.h"
+
 #include <QString>
-#include <memory>
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -196,6 +198,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
     double elevationOffset() const { return mTerrainElevationOffset; }
 
   protected:
+
     /**
      * Writes common properties from the base class into an XML \a element.
      *

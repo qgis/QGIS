@@ -13,22 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslabelengineconfigdialog.h"
-#include "moc_qgslabelengineconfigdialog.cpp"
 
-#include "qgslabelingenginesettings.h"
-#include "qgsproject.h"
 #include "pal/pal.h"
-#include "qgshelp.h"
-#include "qgsmessagebar.h"
-#include "qgsmapcanvas.h"
-#include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslabelingenginesettings.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 #include "qgsrendercontext.h"
+
 #include <QAction>
 #include <QDialogButtonBox>
-#include <QPushButton>
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgslabelengineconfigdialog.cpp"
 
 QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent ), mCanvas( canvas )

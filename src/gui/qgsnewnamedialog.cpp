@@ -14,15 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsnewnamedialog.h"
+
+#include "qgslogger.h"
+
+#include <QCompleter>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRegularExpressionValidator>
 #include <QSizePolicy>
-#include <QCompleter>
 
-#include "qgslogger.h"
-#include "qgsnewnamedialog.h"
 #include "moc_qgsnewnamedialog.cpp"
 
 QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initial, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs, QWidget *parent, Qt::WindowFlags flags )

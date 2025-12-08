@@ -16,19 +16,22 @@
  ***************************************************************************/
 
 #include "qgstiledownloadmanager.h"
-#include "moc_qgstiledownloadmanager.cpp"
+
+#include <memory>
 
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrangerequestcache.h"
 #include "qgssettings.h"
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QElapsedTimer>
 #include <QNetworkReply>
-#include <QStandardPaths>
 #include <QRegularExpression>
+#include <QStandardPaths>
+
+#include "moc_qgstiledownloadmanager.cpp"
 
 /// @cond PRIVATE
 
@@ -192,7 +195,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
 QgsTileDownloadManager::QgsTileDownloadManager()
 {
-  mRangesCache.reset( new QgsRangeRequestCache );
+  mRangesCache = std::make_unique<QgsRangeRequestCache>( );
 
   const QgsSettings settings;
   QString cacheDirectory = QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value();

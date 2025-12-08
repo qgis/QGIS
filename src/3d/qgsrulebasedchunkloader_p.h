@@ -27,10 +27,11 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader.h"
-#include "qgschunkedentity.h"
-#include "qgsrulebased3drenderer.h"
 #include "qgs3drendercontext.h"
+#include "qgschunkedentity.h"
+#include "qgschunkloader.h"
+#include "qgsrulebased3drenderer.h"
+
 #include <QFutureWatcher>
 
 #define SIP_NO_FILE
@@ -63,7 +64,7 @@ class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
     ~QgsRuleBasedChunkLoaderFactory() override;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
@@ -90,8 +91,8 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
     ~QgsRuleBasedChunkLoader() override;
 
     void start() override;
-    virtual void cancel() override;
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    void cancel() override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsRuleBasedChunkLoaderFactory *mFactory;
@@ -122,9 +123,9 @@ class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
     explicit QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule );
 
-    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
-    ~QgsRuleBasedChunkedEntity();
+    ~QgsRuleBasedChunkedEntity() override;
   private slots:
     void onTerrainElevationOffsetChanged();
 

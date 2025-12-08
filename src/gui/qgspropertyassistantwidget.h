@@ -18,18 +18,20 @@
 #ifndef QGSPROPERTYASSISTANTWIDGET_H
 #define QGSPROPERTYASSISTANTWIDGET_H
 
-#include "qgspanelwidget.h"
-#include "qgis_sip.h"
 #include "ui_qgspropertyassistantwidgetbase.h"
-#include "ui_qgspropertysizeassistantwidget.h"
 #include "ui_qgspropertycolorassistantwidget.h"
 #include "ui_qgspropertygenericnumericassistantwidget.h"
-#include "qgsproperty.h"
+#include "ui_qgspropertysizeassistantwidget.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgis_gui.h"
-#include <QStandardItemModel>
+#include "qgspanelwidget.h"
+#include "qgsproperty.h"
+
 #include <QItemDelegate>
+#include <QStandardItemModel>
 
 class QgsMapCanvas;
 
@@ -108,6 +110,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPropertyAssistantWidget. Aside from a \a parent widget, the constructor accepts a
      * corresponding property \a definition from which it customizes the displayed options (eg a color based

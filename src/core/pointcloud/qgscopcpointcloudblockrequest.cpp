@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgscopcpointcloudblockrequest.h"
-#include "moc_qgscopcpointcloudblockrequest.cpp"
 
-#include "qgspointcloudindex.h"
-#include "qgstiledownloadmanager.h"
-#include "qgslazdecoder.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgslazdecoder.h"
+#include "qgspointcloudindex.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgstiledownloadmanager.h"
+
+#include "moc_qgscopcpointcloudblockrequest.cpp"
 
 //
 // QgsCopcPointCloudBlockRequest

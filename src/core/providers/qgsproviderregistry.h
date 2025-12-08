@@ -21,13 +21,13 @@
 
 #include <map>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsdataprovider.h"
+
 #include <QDir>
 #include <QLibrary>
 #include <QString>
-
-#include "qgsdataprovider.h"
-#include "qgis_core.h"
-#include "qgis_sip.h"
 
 class QgsProviderMetadata;
 class QgsVectorLayer;

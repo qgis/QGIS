@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgscachedfeatureiterator.h"
-#include "qgsvectorlayercache.h"
+
 #include "qgsexception.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometryengine.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
 
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest )
   : QgsAbstractFeatureIterator( featureRequest )

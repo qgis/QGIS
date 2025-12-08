@@ -18,9 +18,9 @@
 #ifndef QGSMAPTOOLANNOTATION_H
 #define QGSMAPTOOLANNOTATION_H
 
-#include "qgsmaptool.h"
 #include "qgis_app.h"
 #include "qgsmapcanvasannotationitem.h"
+#include "qgsmaptool.h"
 
 class QgsAnnotation;
 
@@ -41,6 +41,7 @@ class APP_EXPORT QgsMapToolAnnotation : public QgsMapTool
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
 
   protected:
+
     /**
      * Creates a new item. To be implemented by subclasses.
      */

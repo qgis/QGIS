@@ -27,34 +27,33 @@
 // AutoCAD 2014: http://images.autodesk.com/adsk/files/autocad_2014_pdf_dxf_reference_enu.pdf
 
 #include "qgsdxfexport.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
-#include "qgscompoundcurve.h"
-#include "qgscircularstring.h"
-#include "qgslinestring.h"
-#include "qgspointxy.h"
-#include "qgsproject.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfeatureiterator.h"
-#include "qgslinesymbollayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsunittypes.h"
-#include "qgstextlabelfeature.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsdxfexport_p.h"
-#include "qgssymbol.h"
-#include "qgsvariantutils.h"
-
-#include "qgswkbtypes.h"
-#include "qgspoint.h"
-#include "qgsgeos.h"
 
 #include "pal/feature.h"
 #include "pal/labelposition.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsdxfexport_p.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgspointxy.h"
+#include "qgsproject.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextlabelfeature.h"
+#include "qgsunittypes.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 #include <QIODevice>
 #include <QTextCodec>
@@ -270,7 +269,9 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
       const QgsRectangle extentRect = mMapSettings.mapToLayerCoordinates( vl, mExtent );
       request.setFilterRect( extentRect );
     }
-    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( request ) : vl->getFeatures( request );
+    // cppcheck-suppress accessMoved
+    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( std::move( request ) ) : vl->getFeatures( std::move( request ) );
+    // cppcheck-suppress accessMoved
     QgsFeature feature;
     if ( featureIt.nextFeature( feature ) )
     {
@@ -755,7 +756,7 @@ void QgsDxfExport::writeEntities()
   // iterate through the maplayers
   for ( DxfLayerJob *job : std::as_const( mJobs ) )
   {
-    QgsSymbolRenderContext sctx( mRenderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
+    QgsSymbolRenderContext sctx( job->renderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
     if ( mSymbologyExport == Qgis::FeatureSymbologyExport::PerSymbolLayer &&
          ( job->renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
@@ -771,7 +772,17 @@ void QgsDxfExport::writeEntities()
     QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
     QgsCoordinateTransform extentTransform = ct;
     extentTransform.setBallparkTransformsAreAppropriate( true );
-    request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
+
+    try
+    {
+      request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming DXF layer extent: %1" ).arg( e.what() ) );
+      continue;
+    }
+
     if ( mFlags & FlagOnlySelectedFeatures )
     {
       request.setFilterFids( job->selectedFeatureIds );
@@ -782,12 +793,12 @@ void QgsDxfExport::writeEntities()
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
-      mRenderContext.expressionContext().setFeature( fet );
+      job->renderContext.expressionContext().setFeature( fet );
       QString lName( dxfLayerName( job->splitLayerAttribute.isNull() ? job->layerDerivedName : fet.attribute( job->splitLayerAttribute ).toString() ) );
 
       sctx.setFeature( &fet );
 
-      if ( !job->renderer->willRenderFeature( fet, mRenderContext ) )
+      if ( !job->renderer->willRenderFeature( fet, job->renderContext ) )
         continue;
 
       if ( mSymbologyExport == Qgis::FeatureSymbologyExport::NoSymbology )
@@ -796,7 +807,7 @@ void QgsDxfExport::writeEntities()
       }
       else
       {
-        const QgsSymbolList symbolList = job->renderer->symbolsForFeature( fet, mRenderContext );
+        const QgsSymbolList symbolList = job->renderer->symbolsForFeature( fet, job->renderContext );
         bool hasSymbology = symbolList.size() > 0;
 
         if ( hasSymbology && mSymbologyExport == Qgis::FeatureSymbologyExport::PerSymbolLayer ) // symbol layer symbology, but layer does not use symbol levels
@@ -842,14 +853,14 @@ void QgsDxfExport::writeEntities()
 
         if ( job->labelProvider )
         {
-          job->labelProvider->registerFeature( fet, mRenderContext );
+          job->labelProvider->registerFeature( fet, job->renderContext );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
         }
         else if ( job->ruleBasedLabelProvider )
         {
-          job->ruleBasedLabelProvider->registerFeature( fet, mRenderContext );
+          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
@@ -1207,15 +1218,15 @@ void QgsDxfExport::appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QV
   switch ( QgsWkbTypes::flatType( c.wkbType() ) )
   {
     case Qgis::WkbType::LineString:
-      appendLineString( *dynamic_cast<const QgsLineString *>( &c ), points, bulges );
+      appendLineString( *qgis::down_cast<const QgsLineString *>( &c ), points, bulges );
       break;
 
     case Qgis::WkbType::CircularString:
-      appendCircularString( *dynamic_cast<const QgsCircularString *>( &c ), points, bulges );
+      appendCircularString( *qgis::down_cast<const QgsCircularString *>( &c ), points, bulges );
       break;
 
     case Qgis::WkbType::CompoundCurve:
-      appendCompoundCurve( *dynamic_cast<const QgsCompoundCurve *>( &c ), points, bulges );
+      appendCompoundCurve( *qgis::down_cast<const QgsCompoundCurve *>( &c ), points, bulges );
       break;
 
     default:
@@ -2409,12 +2420,12 @@ QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 
 void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings )
 {
-  Q_UNUSED( context )
-
   if ( !settings.drawLabels )
     return;
 
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !lf )
+    return;
 
   // Copy to temp, editable layer settings
   // these settings will be changed by any data defined values, then used for rendering label components
@@ -2648,7 +2659,16 @@ void QgsDxfExport::createDDBlockInfo()
         QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setExpressionContext( job->renderContext.expressionContext() );
         QgsCoordinateTransform extentTransform = ct;
         extentTransform.setBallparkTransformsAreAppropriate( true );
-        request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+        try
+        {
+          request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugError( QStringLiteral( "Could not transform extent to layer extent: %1" ).arg( e.what() ) );
+          continue;
+        }
+
         QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
         QHash <uint, QPair<int, DataDefinedBlockInfo> > blockSymbolMap; //symbolHash/occurrences/block Text

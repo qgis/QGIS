@@ -18,9 +18,9 @@
 #define QGSGPXSOURCESELECT_H
 
 #include "ui_qgsgpxsourceselectbase.h"
-#include "qgsabstractdatasourcewidget.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
+#include "qgsabstractdatasourcewidget.h"
 
 /**
  * \class QgsGpxSourceSelect

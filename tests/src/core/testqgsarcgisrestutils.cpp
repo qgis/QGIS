@@ -15,23 +15,23 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
+#include "geometry/qgsmultisurface.h"
 #include "qgis.h"
 #include "qgsarcgisrestutils.h"
-#include "qgssymbol.h"
-#include "qgssymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsrulebasedlabeling.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
-#include "geometry/qgsmultisurface.h"
-#include "qgsmulticurve.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmulticurve.h"
+#include "qgsrulebasedlabeling.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgstest.h"
 
 #include <QObject>
 

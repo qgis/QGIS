@@ -16,20 +16,20 @@
 #include "qgsframegraphutils.h"
 
 #include <QMetaEnum>
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QColorMask>
-#include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QPointSize>
-#include <Qt3DRender/QSeamlessCubemap>
-#include <Qt3DRender/QNoDepthMask>
-#include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QAbstractTexture>
-#include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QPointSize>
+#include <Qt3DRender/QSeamlessCubemap>
+#include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QTechnique>
 
 QStringList QgsFrameGraphUtils::dumpSceneGraph( const Qt3DCore::QNode *node, FgDumpContext context )
 {

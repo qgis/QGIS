@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsabstractrenderview.h"
+
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/qsubtreeenabler.h>
 

@@ -12,10 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <memory>
+
+#include <QApplication>
 #include <QObject>
 #include <QString>
-#include <QApplication>
-#include <memory> // for unique_ptr
 
 //qgis includes...
 #include "qgsabstractgeometry.h"

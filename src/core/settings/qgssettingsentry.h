@@ -16,14 +16,14 @@
 #ifndef QGSSETTINGSENTRY_H
 #define QGSSETTINGSENTRY_H
 
-#include <QString>
-#include <QColor>
 #include <limits>
 
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QColor>
+#include <QString>
 
 class QgsSettingsTreeNode;
 
@@ -37,7 +37,7 @@ static const inline QMetaEnum sSettingsTypeMetaEnum = QMetaEnum::fromType<Qgis::
  *
  * \brief Represents a settings entry and provides methods for reading and writing settings values.
  *
- * Different subclasses are provided for different settings types with metainformations
+ * Different subclasses are provided for different settings types with metainformation
  * to validate set values and provide more accurate settings description for the gui.
  *
  * \since QGIS 3.20
@@ -419,7 +419,7 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
     {}
 
 
-    virtual Qgis::SettingsType settingsType() const override = 0;
+    Qgis::SettingsType settingsType() const override = 0;
 
     /**
      * Returns settings value.

@@ -28,10 +28,11 @@
 
 #define SIP_NO_FILE
 
-#include <QSharedData>
-#include <QVariant>
 #include "qgsexpression.h"
 #include "qgspropertytransformer.h"
+
+#include <QSharedData>
+#include <QVariant>
 
 class QgsPropertyPrivate : public QSharedData
 {

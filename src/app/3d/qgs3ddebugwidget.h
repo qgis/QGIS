@@ -19,9 +19,10 @@
 class QStandardItemModel;
 class Qgs3DMapCanvas;
 
-#include <ui_3ddebugwidget.h>
-#include "qgs3dmapsettings.h"
+#include "ui_3ddebugwidget.h"
+
 #include "qgis_app.h"
+#include "qgs3dmapsettings.h"
 
 class APP_EXPORT Qgs3DDebugWidget : public QWidget, Ui::Q3DDebugWidget
 {

@@ -14,12 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QStringList>
-
 #include "qgsauthmethodmetadata.h"
 
-
-
+#include <QStringList>
 
 QString QgsAuthMethodMetadata::key() const
 {

@@ -13,7 +13,10 @@
     "examples": [{
       "expression": "year('2012-05-12')",
       "returns": "2012"
-    }]
+    },{
+      "expression": "year(now())",
+      "returns": "the current year"
+     }]
   }, {
     "variant": "Interval variant",
     "variant_description": "Calculates the length in years of an interval.",

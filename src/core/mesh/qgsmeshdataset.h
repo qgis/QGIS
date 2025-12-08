@@ -18,18 +18,18 @@
 #ifndef QGSMESHDATASET_H
 #define QGSMESHDATASET_H
 
-#include <QVector>
-#include <QString>
-#include <QMap>
-#include <QPair>
-#include <QDateTime>
-#include <QDomElement>
-
 #include <limits>
 #include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QDateTime>
+#include <QDomElement>
+#include <QMap>
+#include <QPair>
+#include <QString>
+#include <QVector>
 
 class QgsMeshLayer;
 class QgsMeshDatasetGroup;
@@ -256,6 +256,11 @@ class CORE_EXPORT QgsMesh3DDataBlock
     //! Constructs an invalid block
     QgsMesh3DDataBlock();
     ~QgsMesh3DDataBlock();
+
+    QgsMesh3DDataBlock( const QgsMesh3DDataBlock &other );
+    SIP_SKIP QgsMesh3DDataBlock( QgsMesh3DDataBlock &&other );
+    QgsMesh3DDataBlock &operator=( const QgsMesh3DDataBlock &other );
+    QgsMesh3DDataBlock &operator=( QgsMesh3DDataBlock &&other );
 
     //! Constructs a new block for count faces
     QgsMesh3DDataBlock( int count, bool isVector );
@@ -761,7 +766,7 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
     int datasetCount() const override;
     QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
     QgsMeshDataset *dataset( int index ) const override;
-    virtual QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Memory;}
+    QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Memory;}
 
     //! Returns a invalid DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context )  const override;

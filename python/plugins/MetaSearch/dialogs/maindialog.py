@@ -437,8 +437,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             key = "/MetaSearch/%s" % name
             self.settings.setValue("%s/url" % key, server.attrib.get("url"))
             self.settings.setValue(
-                "%s/catalog-type" % key,
-                server.attrib.get("catalog-type", "OGC CSW 2.0.2"),
+                "%s/catalog-type" % key, server.attrib.get("type", "OGC CSW 2.0.2")
             )
 
         self.populate_connection_list()

@@ -24,6 +24,8 @@ import subprocess
 import sys
 import tempfile
 import urllib
+import time
+from functools import partial
 
 __author__ = "Alessandro Pasotti"
 __date__ = "20/04/2017"
@@ -33,14 +35,20 @@ from shutil import rmtree
 
 from qgis.core import (
     QgsApplication,
+    QgsProject,
     QgsAuthMethodConfig,
     QgsRasterLayer,
     QgsVectorLayer,
+    QgsNetworkAccessManager,
+    QgsSettings,
 )
 from qgis.PyQt.QtNetwork import QSslCertificate
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath, waitServer
+
+TOKEN_TTL = 3  # seconds
+CACHE_HOUSEKEEPING_INTERVAL = TOKEN_TTL + 1  # seconds
 
 try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ["QGIS_SERVER_ENDPOINT_PORT"]
@@ -68,7 +76,7 @@ def setup_oauth(
     cfgjson = {
         "accessMethod": 0,
         "apiKey": "",
-        "clientId": "",
+        "clientId": "qgis_oauth_test",
         "clientSecret": "",
         "configType": 1,
         "grantFlow": 2,
@@ -109,6 +117,12 @@ class TestAuthManager(QgisTestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
+        # Hidden settings to speed up the tests (milliseconds)
+        QgsSettings().setValue(
+            "oauth2/cacheHousekeepingInterval",
+            CACHE_HOUSEKEEPING_INTERVAL * 1000,
+            QgsSettings.Section.Auth,
+        )
         authm = QgsApplication.authManager()
         assert authm.setMasterPassword("masterpassword", True)
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, "qgis_ca.crt")
@@ -135,10 +149,10 @@ class TestAuthManager(QgisTestCase):
         os.environ["QGIS_SERVER_OAUTH2_USERNAME"] = cls.username
         os.environ["QGIS_SERVER_OAUTH2_PASSWORD"] = cls.password
         os.environ["QGIS_SERVER_OAUTH2_AUTHORITY"] = cls.server_rootcert
-        # Set default token expiration to 2 seconds, note that this can be
+        # Set default token expiration to TOKEN_TTL, note that this can be
         # also controlled when issuing token requests by adding ttl=<int>
         # to the query string
-        os.environ["QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN"] = "2"
+        os.environ["QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN"] = f"{TOKEN_TTL}"
 
     @classmethod
     def setUpClass(cls):
@@ -289,6 +303,71 @@ class TestAuthManager(QgisTestCase):
         self.assertTrue(wfs_layer.isValid())
         wms_layer = self._getWMSLayer("testlayer_èé", authcfg=self.auth_config.id())
         self.assertTrue(wms_layer.isValid())
+
+    def testExpiration(self):
+        """
+        Access the protected layer with valid credentials,
+        wait for token expiration and access again
+        """
+
+        logs = []
+
+        def _logger(logs, reply):
+            logs.append(f"{time.time()} - {reply.request().url().toString()}")
+
+        nam = QgsNetworkAccessManager.instance()
+        nam.finished.connect(partial(_logger, logs))
+
+        wfs_layer = self._getWFSLayer("testlayer_èé", authcfg=self.auth_config.id())
+        self.assertTrue(wfs_layer.isValid())
+
+        def wait(wait_milliseconds):
+            end_time = time.time() * 1000 + wait_milliseconds
+            print(f"Waiting {wait_milliseconds} milliseconds for token expiration")
+            # Need to call processEvents while wait the token expiration
+            while time.time() * 1000 < end_time:
+                qgis_app.processEvents()
+                print(".", end="", flush=True)
+                time.sleep(0.1)
+            print(" done.")
+
+        def wait_log(logs, match_string, timeout_milliseconds):
+            logs.clear()
+            end_time = time.time() * 1000 + timeout_milliseconds
+            print(
+                f"Waiting up to {timeout_milliseconds} milliseconds for log matching '{match_string}'"
+            )
+            while time.time() * 1000 < end_time:
+                qgis_app.processEvents()
+                for l in logs:
+                    if l.endswith(match_string):
+                        print(" done.")
+                        return True
+                print(".", end="", flush=True)
+                time.sleep(0.1)
+            print(" timeout.")
+            return False
+
+        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 500))
+
+        # Make another request to ensure the refreshed token is used
+        logs.clear()
+        wfs_layer = self._getWFSLayer("testlayer_èé", authcfg=self.auth_config.id())
+        self.assertTrue(wfs_layer.isValid())
+        for log in logs:
+            self.assertFalse(log.endswith("/refresh"))
+
+        # Add the layer to the project to keep oauth refresh alive
+        self.assertTrue(QgsProject.instance().addMapLayer(wfs_layer))
+
+        # Wait for the cache housekeeping to run
+        wait(CACHE_HOUSEKEEPING_INTERVAL * 1000 + 500)
+        # Wait for the token to expire and be refreshed
+        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 500))
+
+        # Remove all layers from the project to allow oauth cache cleanup
+        QgsProject.instance().removeAllMapLayers()
+        self.assertFalse(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 500))
 
 
 if __name__ == "__main__":

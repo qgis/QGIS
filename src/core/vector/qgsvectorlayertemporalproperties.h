@@ -19,11 +19,11 @@
 #ifndef QGSVECTORLAYERTEMPORALPROPERTIES_H
 #define QGSVECTORLAYERTEMPORALPROPERTIES_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrange.h"
 
 class QgsVectorLayer;
 class QgsFields;

@@ -15,18 +15,19 @@
 #ifndef QGSANNOTATIONITEMWIDGETIMPL_H
 #define QGSANNOTATIONITEMWIDGETIMPL_H
 
-#include "qgsannotationitemwidget.h"
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgstextformat.h"
-#include "qgsexpressioncontextgenerator.h"
+#include "ui_qgsannotationlinetextwidgetbase.h"
+#include "ui_qgsannotationpicturewidgetbase.h"
+#include "ui_qgsannotationpointtextwidgetbase.h"
+#include "ui_qgsannotationrectangulartextwidgetbase.h"
+#include "ui_qgsannotationsymbolwidgetbase.h"
+
 #include <memory>
 
-#include "ui_qgsannotationpointtextwidgetbase.h"
-#include "ui_qgsannotationsymbolwidgetbase.h"
-#include "ui_qgsannotationlinetextwidgetbase.h"
-#include "ui_qgsannotationrectangulartextwidgetbase.h"
-#include "ui_qgsannotationpicturewidgetbase.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsannotationitemwidget.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgstextformat.h"
 
 class QgsSymbolSelectorWidget;
 class QgsFillSymbol;

@@ -10,7 +10,6 @@
 
 
 
-
 class QgsRasterTransparencyWidget : QgsMapLayerConfigWidget
 {
 %Docstring(signature="appended")
@@ -22,6 +21,7 @@ options.
 #include "qgsrastertransparencywidget.h"
 %End
   public:
+
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 Widget to control a layers transparency and related options

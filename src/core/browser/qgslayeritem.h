@@ -17,9 +17,9 @@
 #ifndef QGSLAYERITEM_H
 #define QGSLAYERITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdataitem.h"
 #include "qgslayermetadata.h"
 

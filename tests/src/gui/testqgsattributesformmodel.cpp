@@ -94,7 +94,7 @@ void TestQgsAttributesFormModel::cleanup()
 void TestQgsAttributesFormModel::testAttributesFormItem()
 {
   // Default constructor (used for the root item)
-  std::unique_ptr< QgsAttributesFormItem > rootItem = std::make_unique< QgsAttributesFormItem >();
+  auto rootItem = std::make_unique< QgsAttributesFormItem >();
   QVERIFY( rootItem->data( QgsAttributesFormModel::ItemIdRole ).toString().isEmpty() );
   QVERIFY( rootItem->data( QgsAttributesFormModel::ItemNameRole ).toString().isEmpty() );
   QVERIFY( rootItem->data( QgsAttributesFormModel::ItemDisplayRole ).toString().isEmpty() );
@@ -105,7 +105,7 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   // Second constructor
   const QString item1Name = QStringLiteral( "child item1 name" );
   const QString item1DisplayName = QStringLiteral( "child item1 display name" );
-  std::unique_ptr< QgsAttributesFormItem > item = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Field, item1Name, item1DisplayName );
+  auto item = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Field, item1Name, item1DisplayName );
   QVERIFY( !item->parent() );
   QCOMPARE( item->data( QgsAttributesFormModel::ItemNameRole ).toString(), item1Name );
   QCOMPARE( item->data( QgsAttributesFormModel::ItemDisplayRole ).toString(), item1DisplayName );
@@ -138,7 +138,7 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QgsAttributesFormData::AttributeFormItemData itemData;
   itemData.setShowLabel( false );
 
-  std::unique_ptr< QgsAttributesFormItem > item2 = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Field, itemData, item2Name, item2DisplayName, rootItem.get() );
+  auto item2 = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Field, itemData, item2Name, item2DisplayName, rootItem.get() );
   QVERIFY( item2->parent() );
   QCOMPARE( item2->data( QgsAttributesFormModel::ItemNameRole ).toString(), item2Name );
   QCOMPARE( item2->data( QgsAttributesFormModel::ItemDisplayRole ).toString(), item2DisplayName );
@@ -162,12 +162,12 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
 
   // Add container and grandchild
   const QString containerName = QStringLiteral( "Tab" );
-  std::unique_ptr< QgsAttributesFormItem > containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, containerName );
+  auto containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, containerName );
   QCOMPARE( containerItem->childCount(), 0 );
   containerItem->setData( QgsAttributesFormModel::ItemIdRole, containerName );
 
   const QString relationName = QStringLiteral( "Relation item" );
-  std::unique_ptr< QgsAttributesFormItem > relationItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Relation, relationName );
+  auto relationItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Relation, relationName );
 
   const QString relationId = QStringLiteral( "relationId" );
   relationItem->setData( QgsAttributesFormModel::ItemIdRole, relationId );

@@ -18,10 +18,11 @@
 #define QGS_GEOMETRYCHECKERUTILS_H
 
 #include "qgis_analysis.h"
-#include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
-#include "qgspoint.h"
+#include "qgsfeature.h"
 #include "qgsgeometrycheckcontext.h"
+#include "qgspoint.h"
+
 #include <qmath.h>
 
 class QgsGeometryEngine;
@@ -39,6 +40,7 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 {
   public:
+
     /**
      * \ingroup analysis
      *
@@ -50,6 +52,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
     class ANALYSIS_EXPORT LayerFeature
     {
       public:
+
         /**
          * Create a new layer/feature combination.
          * The layer is defined by \a pool, \a feature needs to be from this layer.
@@ -137,6 +140,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         class iterator
         {
           public:
+
             /**
              * Creates a new iterator.
              */

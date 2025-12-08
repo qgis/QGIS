@@ -14,34 +14,34 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckerresulttab.h"
+
+#include "qgisinterface.h"
+#include "qgsfeaturepool.h"
+#include "qgsfileutils.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheckerror.h"
+#include "qgsgeometrycheckfixdialog.h"
+#include "qgsmapcanvas.h"
+#include "qgsogrproviderutils.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgssettings.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+#include "qgsvscrollarea.h"
+
 #include <QComboBox>
+#include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QMessageBox>
-#include <QDialogButtonBox>
 #include <QPlainTextEdit>
 
-#include "qgsgeometrycheckerresulttab.h"
 #include "moc_qgsgeometrycheckerresulttab.cpp"
-#include "qgsgeometrycheckfixdialog.h"
-
-#include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeaturepool.h"
-#include "qgsfileutils.h"
-
-#include "qgsgeometry.h"
-#include "qgisinterface.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsvscrollarea.h"
-#include "qgssettings.h"
-#include "qgsgeometrycheckerror.h"
-#include "qgsogrproviderutils.h"
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
@@ -68,7 +68,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
       attribCombo->addItem( field.name() );
     }
     attribCombo->setCurrentIndex( 0 );
-    connect( attribCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateMergeAttributeIndices() ) );
+    connect( attribCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsGeometryCheckerResultTab::updateMergeAttributeIndices );
     ui.treeWidgetMergeAttribute->setItemWidget( item, 1, attribCombo );
   }
   updateMergeAttributeIndices();

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsConfigureShortcutsDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -22,6 +23,7 @@ Reusable dialog for allowing users to configure shortcuts contained in a
 #include "qgsconfigureshortcutsdialog.h"
 %End
   public:
+
     QgsConfigureShortcutsDialog( QWidget *parent /TransferThis/ = 0, QgsShortcutsManager *manager = 0 );
 %Docstring
 Constructor for QgsConfigureShortcutsDialog.

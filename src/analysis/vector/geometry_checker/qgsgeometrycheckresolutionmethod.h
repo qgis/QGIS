@@ -16,8 +16,9 @@
 #ifndef QGSGEOMETRYCHECKRESOLUTIONMETHOD_H
 #define QGSGEOMETRYCHECKRESOLUTIONMETHOD_H
 
-#include <QString>
 #include "qgis_analysis.h"
+
+#include <QString>
 
 /**
  * \ingroup analysis
@@ -28,6 +29,7 @@
 class ANALYSIS_EXPORT QgsGeometryCheckResolutionMethod
 {
   public:
+
     /**
      * Creates a new method with the specified parameters.
      */

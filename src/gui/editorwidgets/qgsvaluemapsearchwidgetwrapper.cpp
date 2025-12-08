@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsvaluemapsearchwidgetwrapper.h"
-#include "moc_qgsvaluemapsearchwidgetwrapper.cpp"
+
+#include "qgsfields.h"
+#include "qgsfieldvalidator.h"
 #include "qgstexteditconfigdlg.h"
 #include "qgsvaluemapconfigdlg.h"
 #include "qgsvaluemapfieldformatter.h"
 
-#include "qgsfields.h"
-#include "qgsfieldvalidator.h"
-
 #include <QSettings>
 #include <QSizePolicy>
+
+#include "moc_qgsvaluemapsearchwidgetwrapper.cpp"
 
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

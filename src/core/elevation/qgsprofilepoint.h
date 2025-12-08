@@ -17,9 +17,9 @@
 #ifndef QGSPROFILEPOINT_H
 #define QGSPROFILEPOINT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 /**
  * \brief Encapsulates a point on a distance-elevation profile.

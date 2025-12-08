@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexecutepostgisquery.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 ///@cond PRIVATE
 

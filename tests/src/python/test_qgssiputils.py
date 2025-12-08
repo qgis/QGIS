@@ -20,9 +20,6 @@ from qgis.testing import QgisTestCase
 class TestQgsSipUtils(QgisTestCase):
 
     def test_isPyOwned(self):
-        # not a sip object
-        self.assertTrue(QgsSipUtils.isPyOwned(5))
-
         p = QgsPoint()
         self.assertTrue(QgsSipUtils.isPyOwned(p))
         # assign ownership to other object

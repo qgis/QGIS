@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslabelingengineruleregistry.h"
+
+#include <geos_c.h>
+
 #include "qgslabelingenginerule.h"
 #include "qgslabelingenginerule_impl.h"
-#include <geos_c.h>
 
 QgsLabelingEngineRuleRegistry::QgsLabelingEngineRuleRegistry()
 {

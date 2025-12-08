@@ -20,11 +20,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslayoutmultiframe.h"
 #include "qgsconditionalstyle.h"
+#include "qgslayoutmultiframe.h"
 #include "qgstextformat.h"
-#include <QFont>
+
 #include <QColor>
+#include <QFont>
 #include <QPair>
 
 class QgsLayoutTableColumn;

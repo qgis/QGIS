@@ -16,9 +16,10 @@
 #define QGSARROWSYMBOLLAYERWIDGET_H
 
 #include "ui_qgsarrowsymbollayerwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssymbollayerwidget.h"
-#include "qgis_gui.h"
 
 class QgsArrowSymbolLayer;
 
@@ -32,6 +33,7 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget : public QgsSymbolLayerWidget, privat
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param layer the layer where this symbol layer is applied

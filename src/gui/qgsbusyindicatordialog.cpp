@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsbusyindicatordialog.h"
-#include "moc_qgsbusyindicatordialog.cpp"
 
 #include <QDialog>
-#include <QLayout>
 #include <QLabel>
+#include <QLayout>
 #include <QProgressBar>
+
+#include "moc_qgsbusyindicatordialog.cpp"
 
 QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString &message, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

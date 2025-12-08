@@ -17,34 +17,30 @@
 
 #include "qgs3d.h"
 
-#include "qgsapplication.h"
 #include "qgs3drendererregistry.h"
-
-#include "qgsabstract3drenderer.h"
-#include "qgs3drendererregistry.h"
-#include "qgsrulebased3drenderer.h"
-#include "qgsvectorlayer3drenderer.h"
-#include "qgsmeshlayer3drenderer.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgstiledscenelayer3drenderer.h"
 #include "qgs3dsymbolregistry.h"
-#include "qgspoint3dsymbol.h"
-#include "qgsline3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-#include "qgsmaterialregistry.h"
-
-#include "qgspolygon3dsymbol_p.h"
-#include "qgspoint3dsymbol_p.h"
-#include "qgsline3dsymbol_p.h"
-#include "qgsgoochmaterialsettings.h"
-#include "qgsmetalroughmaterialsettings.h"
-#include "qgssimplelinematerialsettings.h"
-#include "qgsphongtexturedmaterialsettings.h"
-#include "qgsnullmaterialsettings.h"
-
 #include "qgs3dterrainregistry.h"
-
+#include "qgsabstract3drenderer.h"
+#include "qgsannotationlayer3drenderer.h"
+#include "qgsapplication.h"
+#include "qgsgoochmaterialsettings.h"
+#include "qgsline3dsymbol.h"
+#include "qgsline3dsymbol_p.h"
+#include "qgsmaterialregistry.h"
+#include "qgsmeshlayer3drenderer.h"
+#include "qgsmetalroughmaterialsettings.h"
+#include "qgsnullmaterialsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspoint3dsymbol_p.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspolygon3dsymbol.h"
+#include "qgspolygon3dsymbol_p.h"
+#include "qgsrulebased3drenderer.h"
+#include "qgssimplelinematerialsettings.h"
 #include "qgsstyle.h"
+#include "qgstiledscenelayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
 
 Qgs3D *Qgs3D::instance()
 {
@@ -68,6 +64,7 @@ void Qgs3D::initialize()
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsPointCloudLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsTiledSceneLayer3DRendererMetadata );
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsAnnotationLayer3DRendererMetadata );
 
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "point" ), QObject::tr( "Point" ), &QgsPoint3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPoint3DSymbol ) );
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "line" ), QObject::tr( "Line" ), &QgsLine3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForLine3DSymbol ) );

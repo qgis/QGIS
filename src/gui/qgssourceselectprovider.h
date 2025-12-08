@@ -19,9 +19,9 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsabstractdatasourcewidget.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
 
 class QString;
 class QWidget;

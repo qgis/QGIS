@@ -14,25 +14,26 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
+#include <memory>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <attributetable/qgsattributetableview.h>
-#include <attributetable/qgsdualview.h>
-#include <editform/qgsattributeeditorhtmlelement.h>
-#include "qgsattributeform.h"
+#include "attributetable/qgsattributetableview.h"
+#include "attributetable/qgsdualview.h"
+#include "editform/qgsattributeeditorhtmlelement.h"
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "qgsapplication.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
+#include "qgsattributeform.h"
 #include "qgsattributeformeditorwidget.h"
-#include <qgsapplication.h>
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include <qgsvectorlayer.h>
-#include "qgsvectordataprovider.h"
-#include <qgsmapcanvas.h>
-#include <qgsfeature.h>
+#include "qgsfeaturelistmodel.h"
 #include "qgsgui.h"
-#include "qgsvectorlayercache.h"
+#include "qgsmapcanvas.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
 
 class TestQgsDualView : public QObject
 {
@@ -60,6 +61,7 @@ class TestQgsDualView : public QObject
 
     void testAttributeFormSharedValueScanning();
     void testNoGeom();
+    void testNoShowFirstFeature();
 
     void testDuplicateField();
 
@@ -334,7 +336,7 @@ void TestQgsDualView::testNoGeom()
 
   // request with NO geometry, but using filter rect (which should override and request geom)
   req = QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) );
-  dv.reset( new QgsDualView() );
+  dv = std::make_unique<QgsDualView>();
   dv->init( mPointsLayer, mCanvas, req );
   model = dv->masterModel();
   QVERIFY( model->layerCache()->cacheGeometry() );
@@ -342,7 +344,7 @@ void TestQgsDualView::testNoGeom()
 
   // request with NO geometry
   req = QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  dv.reset( new QgsDualView() );
+  dv = std::make_unique<QgsDualView>();
   dv->init( mPointsLayer, mCanvas, req );
   model = dv->masterModel();
   QVERIFY( !model->layerCache()->cacheGeometry() );
@@ -350,7 +352,7 @@ void TestQgsDualView::testNoGeom()
 
   // request with NO geometry but with an ordering expression which does
   req = QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  dv.reset( new QgsDualView() );
+  dv = std::make_unique<QgsDualView>();
   dv->init( mPointsLayer, mCanvas, req );
   auto config = mPointsLayer->attributeTableConfig();
   config.setSortExpression( "$x" );
@@ -358,6 +360,22 @@ void TestQgsDualView::testNoGeom()
   model = dv->masterModel();
   QVERIFY( model->layerCache()->cacheGeometry() );
   QVERIFY( !( model->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
+}
+
+void TestQgsDualView::testNoShowFirstFeature()
+{
+  auto dv = std::make_unique<QgsDualView>();
+
+  QgsAttributeTableConfig config = mPointsLayer->attributeTableConfig();
+  config.setSortExpression( QStringLiteral( "\"Class\"" ) );
+  mPointsLayer->setAttributeTableConfig( config );
+
+  QgsFeatureRequest req;
+  dv->init( mPointsLayer, mCanvas, req, QgsAttributeEditorContext(), true, false );
+  QCOMPARE( dv->mFeatureListModel->data( dv->mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().attribute( QStringLiteral( "Class" ) ), QStringLiteral( "B52" ) );
+
+  config.setSortExpression( QString() );
+  mPointsLayer->setAttributeTableConfig( config );
 }
 
 #ifdef WITH_QTWEBKIT

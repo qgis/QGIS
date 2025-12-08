@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrecentstylehandler.h"
+
 #include "qgssymbol.h"
 
 QgsRecentStyleHandler::QgsRecentStyleHandler() = default;

@@ -20,10 +20,10 @@
 #define QGSTEMPORALNAVIGATIONOBJECT_H
 
 #include "qgis_core.h"
-#include "qgsrange.h"
-#include "qgsinterval.h"
-#include "qgstemporalcontroller.h"
 #include "qgsexpressioncontextscopegenerator.h"
+#include "qgsinterval.h"
+#include "qgsrange.h"
+#include "qgstemporalcontroller.h"
 
 #include <QList>
 #include <QTimer>

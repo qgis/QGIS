@@ -18,13 +18,15 @@
 #ifndef QGSRELIEF_H
 #define QGSRELIEF_H
 
+#include <gdal.h>
+
+#include "qgis_analysis.h"
+#include "qgsogrutils.h"
+
 #include <QColor>
 #include <QMap>
 #include <QPair>
 #include <QString>
-#include "gdal.h"
-#include "qgsogrutils.h"
-#include "qgis_analysis.h"
 
 class QgsAspectFilter;
 class QgsSlopeFilter;
@@ -42,6 +44,7 @@ class ANALYSIS_EXPORT QgsRelief
     {
         ReliefColor( const QColor &c, double min, double max )
           : color( c ), minElevation( min ), maxElevation( max ) {}
+
         QColor color;
         double minElevation;
         double maxElevation;

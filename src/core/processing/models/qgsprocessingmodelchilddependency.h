@@ -18,9 +18,8 @@
 #ifndef QGSPROCESSINGMODELCHILDDEPENDENCY_H
 #define QGSPROCESSINGMODELCHILDDEPENDENCY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-
+#include "qgis_core.h"
 
 ///@cond NOT_STABLE
 

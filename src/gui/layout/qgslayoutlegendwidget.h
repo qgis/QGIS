@@ -21,13 +21,15 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include "ui_qgslayoutlegendwidgetbase.h"
 #include "ui_qgslayoutlegendmapfilteringwidgetbase.h"
-#include "qgslayoutitemwidget.h"
+#include "ui_qgslayoutlegendwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemlegend.h"
-#include <QWidget>
+#include "qgslayoutitemwidget.h"
+
 #include <QItemDelegate>
+#include <QWidget>
 
 class QgsLayoutLegendMapFilteringWidget;
 
@@ -44,6 +46,7 @@ class GUI_EXPORT QgsLegendLayerTreeProxyModel : public QgsLayerTreeProxyModel
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsLegendLayerTreeProxyModel, with the specified \a parent object.
      */
@@ -51,7 +54,7 @@ class GUI_EXPORT QgsLegendLayerTreeProxyModel : public QgsLayerTreeProxyModel
 
     /**
      * Sets whether the legend is showing the default legend for a project (as opposed
-     * to a customised legend).
+     * to a customized legend).
      */
     void setIsDefaultLegend( bool isDefault );
 

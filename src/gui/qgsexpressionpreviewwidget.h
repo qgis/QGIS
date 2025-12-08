@@ -16,16 +16,16 @@
 #ifndef QGSEXPRESSIONPREVIEWWIDGET_H
 #define QGSEXPRESSIONPREVIEWWIDGET_H
 
-#include <QWidget>
-
 #include "ui_qgsexpressionpreviewbase.h"
+
+#include <functional>
 
 #include "qgis_gui.h"
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 
-#include <functional>
+#include <QWidget>
 
 class QAction;
 class QgsVectorLayer;

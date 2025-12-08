@@ -14,14 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileDialog>
-
-#include "qgsrasterprojector.h"
+#include "ui_qgsgrassoptionsbase.h"
+#include "qgsgrassoptions.h"
 
 #include "qgsgrass.h"
-#include "qgsgrassoptions.h"
+#include "qgsrasterprojector.h"
+
+#include <QFileDialog>
+
 #include "moc_qgsgrassoptions.cpp"
-#include "ui_qgsgrassoptionsbase.h"
 
 extern "C"
 {

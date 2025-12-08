@@ -19,17 +19,17 @@
 #define QGSAFSPROVIDER_H
 
 #include <memory>
-#include "qgsvectordataprovider.h"
+
+#include "geometry/qgswkbtypes.h"
 #include "qgsafsshareddata.h"
 #include "qgscoordinatereferencesystem.h"
-#include "geometry/qgswkbtypes.h"
 #include "qgsfields.h"
+#include "qgshttpheaders.h"
 #include "qgslayermetadata.h"
+#include "qgsprovidermetadata.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
-
-#include "qgsprovidermetadata.h"
-#include "qgshttpheaders.h"
+#include "qgsvectordataprovider.h"
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service

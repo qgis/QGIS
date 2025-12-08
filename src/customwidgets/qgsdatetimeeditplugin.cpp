@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsdatetimeeditplugin.h"
-#include "moc_qgsdatetimeeditplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsdatetimeedit.h"
 
+#include "moc_qgsdatetimeeditplugin.cpp"
 
 QgsDateTimeEditPlugin::QgsDateTimeEditPlugin( QObject *parent )
   : QObject( parent )

@@ -18,19 +18,19 @@
 #ifndef QGSMESHDATAPROVIDER_H
 #define QGSMESHDATAPROVIDER_H
 
-#include <QVector>
-#include <QString>
-#include <QMap>
-#include <QPair>
-
 #include <limits>
 
 #include "qgis_core.h"
 #include "qgsdataprovider.h"
-#include "qgsprovidermetadata.h"
-#include "qgsmeshdataset.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsmeshdataset.h"
 #include "qgsmeshutils.h"
+#include "qgsprovidermetadata.h"
+
+#include <QMap>
+#include <QPair>
+#include <QString>
+#include <QVector>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

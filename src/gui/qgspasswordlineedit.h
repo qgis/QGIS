@@ -18,10 +18,10 @@
 #ifndef QGSPASSWORDLINEEDIT_H
 #define QGSPASSWORDLINEEDIT_H
 
-#include <QLineEdit>
-#include <QAction>
-
 #include "qgis_gui.h"
+
+#include <QAction>
+#include <QLineEdit>
 
 /**
  * \class QgsPasswordLineEdit
@@ -35,6 +35,7 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     Q_PROPERTY( bool showLockIcon READ showLockIcon WRITE setShowLockIcon )
 
   public:
+
     /**
      * Constructor for QgsPasswordLineEdit.
      * \param parent parent widget

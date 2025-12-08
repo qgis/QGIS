@@ -16,9 +16,10 @@
 #ifndef QGSSELECTBYFORMDIALOG_H
 #define QGSSELECTBYFORMDIALOG_H
 
-#include <QDialog>
-#include "qgsattributeeditorcontext.h"
 #include "qgis_app.h"
+#include "qgsattributeeditorcontext.h"
+
+#include <QDialog>
 
 class QgsAttributeForm;
 class QgsMessageBar;
@@ -36,6 +37,7 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSelectByFormDialog
      * \param layer vector layer to select from

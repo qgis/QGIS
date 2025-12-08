@@ -14,29 +14,33 @@
  ***************************************************************************/
 
 #include "qgsprocessingmultipleselectiondialog.h"
-#include "moc_qgsprocessingmultipleselectiondialog.cpp"
-#include "qgsgui.h"
-#include "qgssettings.h"
+
+#include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "qgsannotationlayer.h"
 #include "qgsfileutils.h"
-#include "qgsvectorlayer.h"
+#include "qgsgui.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
-#include "qgsrasterlayer.h"
+#include "qgsmimedatautils.h"
 #include "qgspluginlayer.h"
 #include "qgspointcloudlayer.h"
-#include "qgsannotationlayer.h"
-#include "qgsvectortilelayer.h"
 #include "qgsproject.h"
-#include "processing/models/qgsprocessingmodelchildparametersource.h"
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QToolButton>
-#include <QFileDialog>
+#include "qgsrasterlayer.h"
+#include "qgssettings.h"
+#include "qgstiledscenelayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+
 #include <QDirIterator>
-#include "qgsmimedatautils.h"
 #include <QDragEnterEvent>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QToolButton>
+
+#include "moc_qgsprocessingmultipleselectiondialog.cpp"
 
 ///@cond NOT_STABLE
 
@@ -712,6 +716,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
     {
       const QList<QgsVectorTileLayer *> options = QgsProcessingUtils::compatibleVectorTileLayers( project, false );
       for ( const QgsVectorTileLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
+    case Qgis::ProcessingSourceType::TiledScene:
+    {
+      const QList<QgsTiledSceneLayer *> options = QgsProcessingUtils::compatibleTiledSceneLayers( project, false );
+      for ( const QgsTiledSceneLayer *layer : options )
       {
         addLayer( layer );
       }

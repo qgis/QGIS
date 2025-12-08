@@ -17,12 +17,11 @@
 #ifndef QGSRENDEREDLAYERSTATISTICS_H
 #define QGSRENDEREDLAYERSTATISTICS_H
 
+#include <limits>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrendereditemdetails.h"
-
-#include <limits>
-
 
 /**
  * \ingroup core

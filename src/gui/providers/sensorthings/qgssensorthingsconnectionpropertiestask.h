@@ -19,8 +19,8 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include "qgstaskmanager.h"
 #include "qgis.h"
+#include "qgstaskmanager.h"
 
 class QgsSensorThingsConnectionPropertiesTask : public QgsTask
 {

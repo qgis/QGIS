@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgslayertreefiltersettings.h"
-#include "qgsmapsettings.h"
-#include "qgslayertreeutils.h"
-#include "qgslayertree.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsreferencedgeometry.h"
+
 #include "qgscoordinatetransform.h"
+#include "qgslayertree.h"
+#include "qgslayertreeutils.h"
 #include "qgslogger.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmapsettings.h"
+#include "qgsreferencedgeometry.h"
 
 QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsMapSettings &settings )
   : mMapSettings( std::make_unique<QgsMapSettings>( settings ) )
@@ -43,6 +44,9 @@ QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsLayerTreeFilter
 
 QgsLayerTreeFilterSettings &QgsLayerTreeFilterSettings::operator=( const QgsLayerTreeFilterSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   mLayerFilterExpressions = other.mLayerFilterExpressions;
   mMapSettings.reset( other.mMapSettings ? new QgsMapSettings( *other.mMapSettings ) : nullptr );
   mFilterPolygon = other.mFilterPolygon;

@@ -14,11 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmodeloutputreorderwidget.h"
-#include "moc_qgsmodeloutputreorderwidget.cpp"
+
 #include "qgsgui.h"
 #include "qgsprocessingmodelalgorithm.h"
+
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
+
+#include "moc_qgsmodeloutputreorderwidget.cpp"
+
 ///@cond NOT_STABLE
 
 QgsModelOutputReorderWidget::QgsModelOutputReorderWidget( QWidget *parent )

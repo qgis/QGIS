@@ -17,15 +17,16 @@
 
 #define SIP_NO_FILE
 
+#include <geos_c.h>
+
 #include "qgis_core.h"
-#include "geos_c.h"
-#include "qgsgeos.h"
-#include "qgsmargins.h"
-#include "qgslabelobstaclesettings.h"
-#include "qgslabellinesettings.h"
-#include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsgeos.h"
+#include "qgslabellinesettings.h"
+#include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
+#include "qgsmargins.h"
 
 namespace pal
 {

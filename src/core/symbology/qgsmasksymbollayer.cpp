@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmasksymbollayer.h"
+
+#include "qgsmarkersymbol.h"
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
-#include "qgsmarkersymbol.h"
 #include "qgssymbollayerreference.h"
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()

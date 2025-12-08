@@ -17,10 +17,10 @@
 #ifndef QGSLAYOUTMANAGERDIALOG_H
 #define QGSLAYOUTMANAGERDIALOG_H
 
+#include "ui_qgslayoutmanagerbase.h"
+
 #include <QItemDelegate>
 #include <QSortFilterProxyModel>
-
-#include "ui_qgslayoutmanagerbase.h"
 
 class QListWidgetItem;
 class QgsLayoutDesignerDialog;
@@ -45,6 +45,7 @@ class QgsLayoutManagerDialog : public QDialog, private Ui::QgsLayoutManagerBase
     void activate();
 
   private:
+
     /**
      * Returns the default templates (key: template name, value: absolute path to template file)
      * \param fromUser whether to return user templates from [profile folder]/composer_templates

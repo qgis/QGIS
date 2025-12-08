@@ -17,28 +17,30 @@
  ***************************************************************************/
 
 #include "qgslayoutmapwidget.h"
-#include "moc_qgslayoutmapwidget.cpp"
-#include "qgssettingsregistrycore.h"
-#include "qgslayoutitemmap.h"
-#include "qgsproject.h"
-#include "qgsmapthemecollection.h"
-#include "qgslayout.h"
+
+#include "qgsbookmarkmodel.h"
+#include "qgsfillsymbol.h"
+#include "qgsguiutils.h"
 #include "qgslayertree.h"
-#include "qgsmapcanvas.h"
-#include "qgslayoutmapgridwidget.h"
-#include "qgslayoutundostack.h"
+#include "qgslayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutdesignerinterface.h"
-#include "qgsguiutils.h"
-#include "qgsbookmarkmodel.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsprojectviewsettings.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmapgridwidget.h"
+#include "qgslayoutundostack.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayermodel.h"
-#include "qgsfillsymbol.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsreferencedgeometry.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QStringListModel>
+
+#include "moc_qgslayoutmapwidget.cpp"
 
 QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, item )
@@ -2161,6 +2163,14 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
+  connect( mClipFrameCheckBox, &QCheckBox::toggled, this, [this]( bool active ) {
+    if ( !mBlockUpdates )
+    {
+      mMapItem->beginCommand( tr( "Change Atlas Clipping Label Behavior" ) );
+      mMapItem->atlasClippingSettings()->setClipItemShape( active );
+      mMapItem->endCommand();
+    }
+  } );
   connect( mAtlasClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( !mBlockUpdates )
     {
@@ -2259,6 +2269,7 @@ void QgsLayoutMapClippingWidget::setReportTypeString( const QString &string )
   mClipToAtlasCheckBox->setTitle( tr( "Clip to %1 feature" ).arg( string ) );
   mClipToAtlasLabel->setText( tr( "<b>When enabled, map layers will be automatically clipped to the boundary of the current %1 feature.</b>" ).arg( string ) );
   mForceLabelsInsideCheckBox->setText( tr( "Force labels inside %1 feature" ).arg( string ) );
+  mClipFrameCheckBox->setText( tr( "Clip item frame to match %1 feature" ).arg( string ) );
 }
 
 bool QgsLayoutMapClippingWidget::setNewItem( QgsLayoutItem *item )
@@ -2292,6 +2303,7 @@ void QgsLayoutMapClippingWidget::updateGuiElements()
   mClipToAtlasCheckBox->setChecked( mMapItem->atlasClippingSettings()->enabled() );
   mAtlasClippingTypeComboBox->setCurrentIndex( mAtlasClippingTypeComboBox->findData( static_cast<int>( mMapItem->atlasClippingSettings()->featureClippingType() ) ) );
   mForceLabelsInsideCheckBox->setChecked( mMapItem->atlasClippingSettings()->forceLabelsInsideFeature() );
+  mClipFrameCheckBox->setChecked( mMapItem->atlasClippingSettings()->clipItemShape() );
 
   mRadioClipAllLayers->setChecked( !mMapItem->atlasClippingSettings()->restrictToLayers() );
   mRadioClipSelectedLayers->setChecked( mMapItem->atlasClippingSettings()->restrictToLayers() );

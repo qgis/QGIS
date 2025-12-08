@@ -77,12 +77,6 @@ if(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
   set(DOCSTRINGSTEMPLATE "")
 endif()
 
-if(${SIP_VERSION_STR} VERSION_GREATER 4.19.0)
-  set(SIP_FINAL "final")
-else()
-  set(SIP_FINAL "")
-endif()
-
 IF(BUILD_WITH_QT6)
   SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
   SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
@@ -129,6 +123,15 @@ if(NOT WITH_QTWEBENGINE)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_WEBENGINE_SIP)
 endif()
 
+if(NOT WITH_SFCGAL)
+    message(STATUS "SFCGAL not enabled - disabling bindings")
+    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_SFCGAL_SIP)
+endif()
+
+# sip 6.11 has support for the Movable Mapped Type Annotation
+if(${SIP_VERSION_STR} VERSION_LESS 6.11.0)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOVABLE_MAPPED_TYPE)
+endif()
 
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
@@ -199,10 +202,6 @@ set (PY_MODULES core)
 
 if(WITH_ANALYSIS)
   set(PY_MODULES ${PY_MODULES} analysis)
-
-  if (NOT WITH_PDAL OR (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER))
-    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_PDAL_PROVIDER)
-  endif()
 endif()
 
 # gui module
@@ -223,6 +222,7 @@ if (WITH_GUI)
   endif()
   if(QSCI_SIP_DIR)
     set(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -I ${QSCI_SIP_DIR})
+    set(SIP_BUILD_EXTRA_OPTIONS ${SIP_BUILD_EXTRA_OPTIONS} --include-dir=${QSCI_SIP_DIR})
   else()
     message(STATUS "Qsci sip file not found - disabling bindings for derived classes")
     set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QSCI_SIP)
@@ -260,6 +260,7 @@ if (WITH_3D)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/3d/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/3d/project.py @ONLY)
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp" "${toml}")
   execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml)
+  SET(SIP_CONCAT_PARTS 8) # 3D doesn't have enough .sip files to fill 15+ .cpp files
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._3d_p 3d/3d.sip "${sip_files_3d}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._3d_p 3d/3d.sip ${cpp_files} "" qgis_core qgis_3d)
 endif()
@@ -289,6 +290,7 @@ if (WITH_SERVER AND WITH_SERVER_PLUGINS)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/server/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/server/project.py @ONLY)
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/server/pyproject.toml.temp" "${toml}")
   execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/server/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/server/pyproject.toml)
+  SET(SIP_CONCAT_PARTS 10)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._server server/server.sip "${sip_files_server}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._server server/server.sip ${cpp_files} "" qgis_core qgis_server)
 endif()
@@ -303,13 +305,8 @@ if(WITH_ANALYSIS)
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
-  )
-
-  if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
-    include_directories(BEFORE
-      ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
     )
-  endif()
 
   # analysis module
   file(GLOB_RECURSE sip_files_analysis ${BINDING_FILES_ROOT_DIR}/analysis/*.sip ${BINDING_FILES_ROOT_DIR}/analysis/*.sip.in)
@@ -329,6 +326,7 @@ if(WITH_ANALYSIS)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/analysis/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/analysis/project.py @ONLY)
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/analysis/pyproject.toml.temp" "${toml}")
   execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/analysis/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/analysis/pyproject.toml)
+  SET(SIP_CONCAT_PARTS 10)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._analysis analysis/analysis.sip "${sip_files_analysis}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
 endif()
@@ -469,3 +467,6 @@ foreach(module ${PY_MODULES})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
   endif()
 endforeach(module)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml DESTINATION "${QGIS_PYTHON_INSTALL_DIR}/")

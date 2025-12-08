@@ -16,15 +16,17 @@
 #ifndef QGSALIGNRASTER_H
 #define QGSALIGNRASTER_H
 
+#include <gdal_version.h>
+
+#include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgsalignrasterdata.h"
+#include "qgsogrutils.h"
+
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
 #include <QString>
-#include <gdal_version.h>
-#include "qgis_analysis.h"
-#include "qgis_sip.h"
-#include "qgsogrutils.h"
-#include "qgsalignrasterdata.h"
 
 class QgsRectangle;
 
@@ -113,6 +115,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Helper struct to be sub-classed for progress reporting
     struct ProgressHandler
     {
+
         /**
        * Method to be overridden for progress reporting.
        * \param complete Overall progress of the alignment operation

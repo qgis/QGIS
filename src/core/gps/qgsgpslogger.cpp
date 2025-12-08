@@ -14,19 +14,22 @@
  ***************************************************************************/
 
 #include "qgsgpslogger.h"
-#include "moc_qgsgpslogger.cpp"
-#include "qgsgpsconnection.h"
+
+#include <memory>
+
 #include "gmath.h"
 #include "qgsgeometry.h"
+#include "qgsgpsconnection.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
-#include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
-#include <QTimer>
 #include <QTimeZone>
+#include <QTimer>
 
+#include "moc_qgsgpslogger.cpp"
 
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettingsTree::sTreeGps, 0 );
 const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( QStringLiteral( "applyLeapSeconds" ), QgsSettingsTree::sTreeGps, true );
@@ -48,7 +51,7 @@ QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
-  mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
+  mAcquisitionTimer = std::make_unique<QTimer>( this );
   mAcquisitionTimer->setSingleShot( true );
 
   updateGpsSettings();
@@ -507,12 +510,16 @@ QDateTime QgsGpsLogger::lastTimestamp() const
 
   if ( mTimeStampSpec == Qt::TimeSpec::TimeZone )
   {
+#if QT_FEATURE_timezone > 0
     // Get timezone from the combo
     const QTimeZone destTz( mTimeZone.toUtf8() );
     if ( destTz.isValid() )
     {
       time = time.toTimeZone( destTz );
     }
+#else
+    QgsDebugError( QStringLiteral( "Qt is built without timezone support, cannot convert GPS timestamps to specified timezone." ) );
+#endif
   }
   else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )
   {

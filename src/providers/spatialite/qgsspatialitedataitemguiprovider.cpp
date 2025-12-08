@@ -14,27 +14,27 @@
  ***************************************************************************/
 
 #include "qgsspatialitedataitemguiprovider.h"
-#include "moc_qgsspatialitedataitemguiprovider.cpp"
-#include "qgsspatialitedataitems.h"
-#include "qgsspatialitesourceselect.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsspatialiteproviderconnection.h"
 
 #include "qgsapplication.h"
-#include "qgsmessageoutput.h"
-#include "qgsmimedatautils.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsfileutils.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdbimportvectorlayerdialog.h"
+#include "qgsfileutils.h"
 #include "qgsmessagebar.h"
+#include "qgsmessageoutput.h"
+#include "qgsmimedatautils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgsspatialitedataitems.h"
+#include "qgsspatialiteproviderconnection.h"
+#include "qgsspatialitesourceselect.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerexporter.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "moc_qgsspatialitedataitemguiprovider.cpp"
 
 void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {

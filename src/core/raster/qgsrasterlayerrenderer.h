@@ -18,8 +18,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsmaplayerrenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsmaplayerrenderer.h"
 
 class QPainter;
 
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
     void onNewData() override;
   private:
     QgsRasterLayerRenderer *mR = nullptr;   //!< Parent renderer instance
-    int mMinimalPreviewInterval;  //!< In milliseconds
+    int mMinimalPreviewInterval = 250;  //!< In milliseconds
     QTime mLastPreview;           //!< When last preview has been generated
 };
 

@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgslayoutframe.h"
-#include "moc_qgslayoutframe.cpp"
-#include "qgslayoutmultiframe.h"
-#include "qgslayoutitemregistry.h"
-#include "qgslayout.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutmultiframe.h"
+
+#include "moc_qgslayoutframe.cpp"
 
 QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame )
   : QgsLayoutItem( layout )

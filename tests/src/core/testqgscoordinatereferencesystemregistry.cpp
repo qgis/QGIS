@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgstest.h"
+
 #include <QPixmap>
 #include <QSettings>
 #include <QSignalSpy>
-
-#include "qgsapplication.h"
-#include "qgslogger.h"
 
 //header for class being tested
 #include "qgscoordinatereferencesystemregistry.h"

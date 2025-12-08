@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspiediagram.h"
+
 #include "qgsdiagramrenderer.h"
-#include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgsrendercontext.h"
 
 #include <QPainter>
 

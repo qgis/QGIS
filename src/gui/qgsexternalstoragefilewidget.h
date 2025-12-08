@@ -24,12 +24,12 @@ class QProgressBar;
 class QgsExternalStorage;
 class QgsMessageBar;
 
-#include <QWidget>
-#include <QFileDialog>
-
-#include "qgsfilewidget.h"
-#include "qgsexpressioncontext.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfilewidget.h"
+
+#include <QFileDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -53,6 +53,7 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     Q_PROPERTY( QString storageUrlExpression READ storageUrlExpressionString WRITE setStorageUrlExpression )
 
   public:
+
     /**
      * \brief QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
      */

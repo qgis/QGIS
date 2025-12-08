@@ -19,17 +19,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswmsrequest.h"
 #include "qgswmsgetstyles.h"
-#include "qgswmsrendercontext.h"
 
+#include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgsserverresponse.h"
 #include "qgssldexportcontext.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgswmsrendercontext.h"
+#include "qgswmsrequest.h"
 
 namespace QgsWms
 {

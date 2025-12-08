@@ -264,7 +264,7 @@ QDateTime QwtDate::toDateTime( double value, Qt::TimeSpec timeSpec )
 
     const double days = static_cast< qint64 >( std::floor( value / msecsPerDay ) );
 
-    const double jd = QwtDate::JulianDayForEpoch + days;
+    const double jd =  static_cast< qint64 >( QwtDate::JulianDayForEpoch ) + days;
     if ( ( jd > maxJulianDayD ) || ( jd < minJulianDayD ) )
     {
         qWarning() << "QwtDate::toDateTime: overflow";

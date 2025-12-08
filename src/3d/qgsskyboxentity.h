@@ -16,19 +16,19 @@
 #ifndef QGSSKYBOXENTITY_H
 #define QGSSKYBOXENTITY_H
 
-#include <Qt3DCore/QEntity>
-#include <QVector3D>
-#include <Qt3DRender/QTexture>
-#include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QFilterKey>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DExtras/QPlaneMesh>
-#include <Qt3DRender/QParameter>
-
 #include "qgis_3d.h"
+
+#include <QVector3D>
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QFilterKey>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTexture>
 
 class QgsImageTexture;
 

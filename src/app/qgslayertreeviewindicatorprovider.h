@@ -16,11 +16,12 @@
 #ifndef QGSLAYERTREEVIEWINDICATORPROVIDER_H
 #define QGSLAYERTREEVIEWINDICATORPROVIDER_H
 
-#include <QObject>
-#include <QSet>
 #include <memory>
 
 #include "qgslayertreeviewindicator.h"
+
+#include <QObject>
+#include <QSet>
 
 class QgsLayerTreeNode;
 class QgsLayerTreeView;

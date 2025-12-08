@@ -20,10 +20,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QDomDocument>
+#include <QDomElement>
 #include <QHash>
 #include <QString>
-#include <QDomElement>
-#include <QDomDocument>
 
 #ifndef QT_NO_SSL
 #include <QSslCertificate>

@@ -16,8 +16,8 @@
 #ifndef QGSSPACERWIDGETWRAPPER_H
 #define QGSSPACERWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgswidgetwrapper.h"
 
 /**
  * \ingroup gui
@@ -28,6 +28,7 @@ class GUI_EXPORT QgsSpacerWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new widget wrapper
      *

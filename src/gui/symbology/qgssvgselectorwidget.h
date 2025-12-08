@@ -18,22 +18,22 @@
 #define QGSSVGSELECTORWIDGET_H
 
 #include "ui_widget_svgselector.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 #include "qgsproperty.h"
 
-#include <QSortFilterProxyModel>
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QLayout>
-#include <QStandardItemModel>
-#include <QWidget>
-#include <QThread>
 #include <QElapsedTimer>
 #include <QItemDelegate>
-
+#include <QLayout>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QThread>
+#include <QWidget>
 
 class QCheckBox;
 class QLayout;
@@ -150,6 +150,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSvgSelectorLoader
      * \param parent parent object
@@ -212,6 +213,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSvgGroupLoader
      * \param parent parent object
@@ -275,6 +277,7 @@ class GUI_EXPORT QgsSvgSelectorFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for creating a model for SVG files in a specific path.
      * \param parent parent object
@@ -301,6 +304,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
      * search paths will be shown.
@@ -481,6 +485,7 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsSvgSelectorDialog.
      */

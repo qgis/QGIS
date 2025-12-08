@@ -15,10 +15,12 @@
 #ifndef QGSDISCOVERRELATIONSDLG_H
 #define QGSDISCOVERRELATIONSDLG_H
 
-#include <QDialog>
 #include "ui_qgsdiscoverrelationsdialogbase.h"
-#include "qgsrelation.h"
+
 #include "qgis_app.h"
+#include "qgsrelation.h"
+
+#include <QDialog>
 
 class QgsRelationManager;
 class QgsVectorLayer;

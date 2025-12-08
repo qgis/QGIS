@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
-#include "moc_qgsencodingfiledialog.cpp"
-#include "qgsproject.h"
+
 #include "qgslogger.h"
-#include "qgsvectordataprovider.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsvectordataprovider.h"
 
 #include <QComboBox>
-#include <QPushButton>
+#include <QDialogButtonBox>
 #include <QLabel>
 #include <QLayout>
+#include <QPushButton>
 #include <QTextCodec>
-#include <QDialogButtonBox>
+
+#include "moc_qgsencodingfiledialog.cpp"
 
 QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent, const QString &caption, const QString &directory, const QString &filter, const QString &encoding )
   : QFileDialog( parent, caption, directory, filter )
@@ -91,7 +93,7 @@ void QgsEncodingFileDialog::addCancelAll()
   }
 }
 
-bool QgsEncodingFileDialog::cancelAll()
+bool QgsEncodingFileDialog::cancelAll() const
 {
   return mCancelAll;
 }

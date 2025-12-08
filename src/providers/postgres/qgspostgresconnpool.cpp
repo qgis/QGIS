@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgspostgresconnpool.h"
-#include "moc_qgspostgresconnpool.cpp"
-#include "qgspostgresconn.h"
+
 #include "qgslogger.h"
+#include "qgspostgresconn.h"
+
+#include "moc_qgspostgresconnpool.cpp"
 
 QgsPostgresConnPool *QgsPostgresConnPool::sInstance = nullptr;
 

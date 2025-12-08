@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgscacheindexfeatureid.h"
-#include "qgsfeaturerequest.h"
+
 #include "qgscachedfeatureiterator.h"
+#include "qgsfeaturerequest.h"
 #include "qgsvectorlayercache.h"
 
 QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )

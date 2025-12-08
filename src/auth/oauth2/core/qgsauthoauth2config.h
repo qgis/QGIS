@@ -17,10 +17,10 @@
 
 // TODO: add SimpleCrypt or QgsAuthCrypto for (en|de)crypting client secret key
 
+#include "qgis.h"
+
 #include <QObject>
 #include <QVariantMap>
-
-#include "qgis.h"
 
 /**
  * The QgsAuthOAuth2Config class stores the configuration for OAuth2 authentication plugin
@@ -169,10 +169,10 @@ class QgsAuthOAuth2Config : public QObject
 
     /**
      * Returns the extra tokens that will be added into the header for header access methods.
-     * 
+     *
      * The map key represents the response field to take the token from, and the associated value the header
      * name to be used for subsequent requests.
-     * 
+     *
      * \since QGIS 3.44
      */
     QVariantMap extraTokens() const { return mExtraTokens; }
@@ -330,10 +330,10 @@ class QgsAuthOAuth2Config : public QObject
 
     /**
      * Sets the extra \a tokens that will be added into the header for header access methods.
-     * 
+     *
      * The map key represents the response field to take the token from, and the associated value the header
      * name to be used for subsequent requests.
-     * 
+     *
      * \since QGIS 3.44
      */
     void setExtraTokens( const QVariantMap &tokens );

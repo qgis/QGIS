@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgs3dalgorithms.h"
-#include "moc_qgs3dalgorithms.cpp"
+
 #include "qgsalgorithmtessellate.h"
 #include "qgsapplication.h"
+
+#include "moc_qgs3dalgorithms.cpp"
 
 ///@cond PRIVATE
 

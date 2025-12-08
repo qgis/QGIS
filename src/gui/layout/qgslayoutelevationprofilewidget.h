@@ -21,15 +21,19 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutelevationprofilewidgetbase.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemelevationprofile.h"
+
 #include <functional>
+
+#include "qgis_gui.h"
+#include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemwidget.h"
+
 #include <QPointer>
 
 class QgsElevationProfileLayerTreeView;
 class QgsElevationProfileCanvas;
+class QgsProfileSourceRegistry;
 
 /**
  * \ingroup gui
@@ -63,11 +67,13 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget : public QgsLayoutItemBaseWidge
   private slots:
 
     void setGuiElementValues();
-    void updateItemLayers();
+    void updateItemSources();
     void layoutAtlasToggled( bool atlasEnabled );
     void atlasLayerChanged( QgsVectorLayer *layer );
 
   private:
+    void syncLayerTreeAndProfileItemSources();
+
     int mBlockChanges = 0;
 
     QgsLayoutDesignerInterface *mInterface = nullptr;

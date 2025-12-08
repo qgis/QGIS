@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshistogramdiagram.h"
+
 #include "qgsdiagramrenderer.h"
-#include "qgsrendercontext.h"
 #include "qgsexpression.h"
-#include "qgssymbollayerutils.h"
 #include "qgslinesymbol.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 

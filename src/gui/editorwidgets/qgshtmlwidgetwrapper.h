@@ -16,10 +16,10 @@
 #ifndef QGSHTMLWIDGETWRAPPER_H
 #define QGSHTMLWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
-#include "qgswebview.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgswebview.h"
+#include "qgswidgetwrapper.h"
 
 /**
  * \ingroup gui
@@ -31,6 +31,7 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Create a html widget wrapper
      *

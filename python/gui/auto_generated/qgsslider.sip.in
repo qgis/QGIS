@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSlider : QSlider
 {
 %Docstring(signature="appended")

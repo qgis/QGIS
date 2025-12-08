@@ -15,7 +15,6 @@
 
 #include "qgsabstract3dsymbol.h"
 
-
 QgsPropertiesDefinition QgsAbstract3DSymbol::sPropertyDefinitions;
 
 

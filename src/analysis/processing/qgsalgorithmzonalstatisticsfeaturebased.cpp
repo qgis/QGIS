@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmzonalstatisticsfeaturebased.h"
-#include "qgszonalstatistics.h"
+
 #include "qgsalgorithmzonalstatistics_private.h"
+#include "qgszonalstatistics.h"
 
 ///@cond PRIVATE
 

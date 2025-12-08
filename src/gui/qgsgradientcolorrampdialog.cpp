@@ -14,12 +14,11 @@
  ***************************************************************************/
 
 #include "qgsgradientcolorrampdialog.h"
-#include "moc_qgsgradientcolorrampdialog.cpp"
 
-#include "qgsdialog.h"
 #include "qgscptcityarchive.h"
-#include "qgssettings.h"
+#include "qgsdialog.h"
 #include "qgsgui.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
 #include <QHeaderView>
@@ -27,6 +26,8 @@
 #include <QPainter>
 #include <QTableWidget>
 #include <QTextEdit>
+
+#include "moc_qgsgradientcolorrampdialog.cpp"
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -46,8 +47,6 @@
 QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent )
   : QDialog( parent )
   , mRamp( ramp )
-  , mCurrentPlotColorComponent( -1 )
-  , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );

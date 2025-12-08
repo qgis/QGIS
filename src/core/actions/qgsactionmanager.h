@@ -25,13 +25,13 @@
 #define QGSACTIONMANAGER_H
 
 #include "qgis_core.h"
-#include <QString>
+#include "qgsaction.h"
+#include "qgsexpressioncontext.h"
+
 #include <QIcon>
 #include <QObject>
+#include <QString>
 #include <QUuid>
-
-#include "qgsexpressioncontext.h"
-#include "qgsaction.h"
 
 class QDomNode;
 class QDomDocument;

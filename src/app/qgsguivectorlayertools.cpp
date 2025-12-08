@@ -13,21 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QToolButton>
-
 #include "qgsguivectorlayertools.h"
-#include "moc_qgsguivectorlayertools.cpp"
 
-#include "qgsavoidintersectionsoperation.h"
 #include "qgisapp.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsfeatureaction.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsvectorlayertoolscontext.h"
+#include "qgsvectorlayerutils.h"
+
+#include <QMessageBox>
+#include <QToolButton>
+
+#include "moc_qgsguivectorlayertools.cpp"
 
 bool QgsGuiVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
 {

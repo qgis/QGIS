@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCustomLayerOrderWidget : QWidget
 {
 %Docstring(signature="appended")

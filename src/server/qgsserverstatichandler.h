@@ -16,8 +16,8 @@
 #ifndef QGSSERVERSTATICHANDLER_H
 #define QGSSERVERSTATICHANDLER_H
 
-#include "qgsserverogcapihandler.h"
 #include "qgis_server.h"
+#include "qgsserverogcapihandler.h"
 
 /**
  * \ingroup server
@@ -28,6 +28,7 @@
 class SERVER_EXPORT QgsServerStaticHandler : public QgsServerOgcApiHandler
 {
   public:
+
     /**
      * Creates QgsServerStaticHandler
      * \param pathRegExp optional regular expression to capture static file names, defaults to "/static/(?<staticFilePath>.*)$",

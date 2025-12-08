@@ -14,9 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-
 #include "qgsvector3d.h"
-
 
 /**
  * \ingroup UnitTests

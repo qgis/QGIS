@@ -17,13 +17,13 @@
 #ifndef QGSPROJECTUTILS_H
 #define QGSPROJECTUTILS_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsproject.h"
 
 #include <QList>
 
-class QgsProject;
 class QgsMapLayer;
 
 /**
@@ -58,6 +58,12 @@ class CORE_EXPORT QgsProjectUtils
      */
     static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
 
+    /**
+     * Returns the current trust status of the specified \a project.
+     *
+     * \since QGIS 4.0
+     */
+    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project );
 
 };
 

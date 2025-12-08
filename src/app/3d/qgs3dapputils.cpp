@@ -14,20 +14,21 @@
  ***************************************************************************/
 
 #include "qgs3dapputils.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
+
 #include "qgs3d.h"
-#include "qgsmaterialregistry.h"
-#include "qgspoint3dsymbolwidget.h"
-#include "qgspolygon3dsymbolwidget.h"
+#include "qgs3dicongenerator.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgsapplication.h"
+#include "qgsgoochmaterialwidget.h"
 #include "qgsline3dsymbolwidget.h"
+#include "qgsmaterialregistry.h"
 #include "qgsmetalroughmaterialwidget.h"
+#include "qgsnullmaterialwidget.h"
 #include "qgsphongmaterialwidget.h"
 #include "qgsphongtexturedmaterialwidget.h"
-#include "qgsgoochmaterialwidget.h"
+#include "qgspoint3dsymbolwidget.h"
+#include "qgspolygon3dsymbolwidget.h"
 #include "qgssimplelinematerialwidget.h"
-#include "qgsnullmaterialwidget.h"
-#include "qgs3dicongenerator.h"
 
 void Qgs3DAppUtils::initialize()
 {

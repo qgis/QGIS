@@ -16,7 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayermetadata.h"
+
 #include "qgsmaplayer.h"
+#include "qgstranslationcontext.h"
+
 #include <QRegularExpression>
 
 QgsLayerMetadata *QgsLayerMetadata::clone() const
@@ -132,9 +135,9 @@ void QgsLayerMetadata::readFromLayer( const QgsMapLayer *layer )
   mLinks = layer->customProperty( QStringLiteral( "metadata/links" ) ).value<QgsAbstractMetadataBase::LinkList>();
 }
 
-bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
+bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )
 {
-  QgsAbstractMetadataBase::readMetadataXml( metadataElement );
+  QgsAbstractMetadataBase::readMetadataXml( metadataElement, context );
 
   QDomNode mnl;
   QDomElement mne;
@@ -160,7 +163,8 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
   {
     mnl = rightsNodeList.at( i );
     mne = mnl.toElement();
-    rightsList.append( mne.text() );
+    const QString right = context.projectTranslator()->translate( "metadata", mne.text() );
+    rightsList.append( right );
   }
   setRights( rightsList );
 
@@ -240,9 +244,9 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
   return true;
 }
 
-bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const
+bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  QgsAbstractMetadataBase::writeMetadataXml( metadataElement, document );
+  QgsAbstractMetadataBase::writeMetadataXml( metadataElement, document, context );
 
   // fees
   QDomElement fees = document.createElement( QStringLiteral( "fees" ) );
@@ -340,6 +344,16 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   metadataElement.appendChild( extentElement );
 
   return true;
+}
+
+void QgsLayerMetadata::registerTranslations( QgsTranslationContext *translationContext ) const
+{
+  QgsAbstractMetadataBase::registerTranslations( translationContext );
+
+  for ( const QString &right : std::as_const( mRights ) )
+  {
+    translationContext->registerTranslation( QStringLiteral( "metadata" ), right );
+  }
 }
 
 void QgsLayerMetadata::combine( const QgsAbstractMetadataBase *other )

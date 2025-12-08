@@ -40,6 +40,7 @@ class GUI_EXPORT QgsProcessingFavoriteAlgorithmManager : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingFavoriteAlgorithmManager, with the specified
      * \a parent object.
@@ -75,7 +76,7 @@ class GUI_EXPORT QgsProcessingFavoriteAlgorithmManager : public QObject
     /**
      * Returns TRUE if the algorithm with matching \a id is in a favorite list.
      */
-    bool isFavorite( const QString &id );
+    bool isFavorite( const QString &id ) const;
 
 #ifndef SIP_RUN
     //! Settings entry favorite algorithms

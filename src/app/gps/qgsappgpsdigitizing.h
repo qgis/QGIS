@@ -16,13 +16,13 @@
 #ifndef QGSAPPGPSDIGITIZING_H
 #define QGSAPPGPSDIGITIZING_H
 
-#include <QObject>
-
-#include "qgscoordinatetransform.h"
 #include "qgis_app.h"
+#include "qgsattributes.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgpslogger.h"
 #include "qgsmaplayeraction.h"
-#include "qgsattributes.h"
+
+#include <QObject>
 
 class QgsAppGpsConnection;
 class QgsLineSymbol;

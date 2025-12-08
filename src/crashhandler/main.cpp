@@ -14,8 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <memory>
 #include <iostream>
+#include <memory>
+
 #include <QFile>
 
 #define _NO_CVCONST_H

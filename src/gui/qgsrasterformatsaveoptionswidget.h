@@ -19,8 +19,9 @@
 #define QGSRASTERFORMATSAVEOPTIONSWIDGET_H
 
 #include "ui_qgsrasterformatsaveoptionswidgetbase.h"
-#include "qgsraster.h"
+
 #include "qgis_gui.h"
+#include "qgsraster.h"
 
 class QgsRasterLayer;
 

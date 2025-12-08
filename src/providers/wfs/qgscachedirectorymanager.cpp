@@ -13,11 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscachedirectorymanager.h"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgscachedirectorymanager.h"
-#include "moc_qgscachedirectorymanager.cpp"
 #include "qgssettings.h"
+
+#include "moc_qgscachedirectorymanager.cpp"
 
 // 1 minute
 #define KEEP_ALIVE_DELAY ( 60 * 1000 )
@@ -29,6 +31,7 @@
 
 #if not defined( Q_OS_ANDROID )
 #include <QSharedMemory>
+#include <memory>
 #endif
 
 // -------------------------
@@ -167,7 +170,7 @@ std::unique_ptr<QSharedMemory> QgsCacheDirectoryManager::createAndAttachSHM()
   // For debug purpose. To test in the case where shared memory mechanism doesn't work
   if ( !getenv( "QGIS_USE_SHARED_MEMORY_KEEP_ALIVE" ) )
   {
-    sharedMemory.reset( new QSharedMemory( QStringLiteral( "qgis_%1_pid_%2" ).arg( mProviderName ).arg( QCoreApplication::applicationPid() ) ) );
+    sharedMemory = std::make_unique<QSharedMemory>( QStringLiteral( "qgis_%1_pid_%2" ).arg( mProviderName ).arg( QCoreApplication::applicationPid() ) );
     if ( sharedMemory->create( sizeof( qint64 ) ) && sharedMemory->lock() && sharedMemory->unlock() )
     {
       return sharedMemory;

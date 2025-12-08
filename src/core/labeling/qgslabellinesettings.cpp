@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgslabellinesettings.h"
-#include "moc_qgslabellinesettings.cpp"
-#include "qgspropertycollection.h"
+
 #include "qgsexpressioncontext.h"
 #include "qgslabelingengine.h"
 #include "qgspallabeling.h"
+#include "qgspropertycollection.h"
 
+#include "moc_qgslabellinesettings.cpp"
 
 void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {

@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "QtGlobal"
+#include "qgswfsdatasourceuri.h"
 
 #include "qgsmessagelog.h"
 #include "qgswfsconstants.h"
-#include "qgswfsdatasourceuri.h"
 
 #include <QUrlQuery>
+#include <QtGlobal>
 
 QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   : mURI( uri )
@@ -524,7 +524,7 @@ QgsWFSDataSourceURI::FeatureMode QgsWFSDataSourceURI::featureMode() const
   }
 }
 
-QString QgsWFSDataSourceURI::build( const QString &baseUri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent )
+QString QgsWFSDataSourceURI::build( const QString &baseUri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent, const QString &featureFormat )
 {
   QgsWFSDataSourceURI uri( baseUri );
   uri.setTypeName( typeName );
@@ -536,6 +536,10 @@ QString QgsWFSDataSourceURI::build( const QString &baseUri, const QString &typeN
   if ( uri.version() == QLatin1String( "OGC_API_FEATURES" ) )
   {
     uri.setVersion( QString() );
+  }
+  if ( !featureFormat.isEmpty() && featureFormat != QLatin1String( "default" ) )
+  {
+    uri.setOutputFormat( featureFormat );
   }
   return uri.uri();
 }

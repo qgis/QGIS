@@ -17,8 +17,9 @@
 #define QGSDUMMYCONFIGDLG_H
 
 #include "ui_qgsdummyconfigdlgbase.h"
-#include "qgseditorconfigwidget.h"
+
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 

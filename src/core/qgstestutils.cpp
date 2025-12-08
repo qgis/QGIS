@@ -14,9 +14,12 @@
  ***************************************************************************/
 
 #include "qgstestutils.h"
-#include "qgsvectordataprovider.h"
+
 #include "qgsconnectionpool.h"
+#include "qgsvectordataprovider.h"
+
 #include <QtConcurrentMap>
+
 ///@cond PRIVATE
 ///
 

@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsrasterbandcombobox.h"
-#include "moc_qgsrasterbandcombobox.cpp"
-#include "qgsrasterlayer.h"
+
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+
+#include "moc_qgsrasterbandcombobox.cpp"
 
 QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   : QComboBox( parent )

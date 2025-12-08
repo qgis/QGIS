@@ -18,12 +18,12 @@
 #ifndef QGSMESHTIMESETTINGS_H
 #define QGSMESHTIMESETTINGS_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgsreadwritecontext.h"
+
 #include <QDateTime>
 #include <QDomDocument>
-
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgsreadwritecontext.h"
 
 /**
  * \ingroup core

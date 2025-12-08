@@ -309,6 +309,50 @@
         "year": 2022
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "MK",
+        "name": "QGIS User Group North Macedonia",
+        "logo_url": "https:\/\/bit.ly\/qgismk",
+        "website": "https:\/\/qgis-mk.blogspot.com",
+        "year": 2024
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AL",
+        "name": "QGIS User Group Albania",
+        "logo_url": "https:\/\/bit.ly\/qgisal",
+        "website": "https:\/\/qgis-al.blogspot.com",
+        "year": 2024
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "XK",
+        "name": "QGIS User Group Kosova",
+        "logo_url": "https:\/\/bit.ly\/qgiskslogo",
+        "website": "https:\/\/www.facebook.com\/profile.php?id=100094072457586",
+        "year": 2024
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "TZ",
+        "name": "QGIS Tanzania User Group",
+        "logo_url": "https:\/\/qgis.org\/img\/logosign.svg",
+        "website": "https:\/\/heed725.github.io\/qgistz",
+        "year": 2025
+      },
+      "geometry": null
     }
   ]
 }

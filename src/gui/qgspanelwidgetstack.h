@@ -15,13 +15,14 @@
 #ifndef QGSPANELWIDGETSTACK_H
 #define QGSPANELWIDGETSTACK_H
 
-#include <QWidget>
-#include <QKeyEvent>
-#include <QStackedWidget>
-#include <QStack>
-
 #include "ui_qgsrenderercontainerbase.h"
+
 #include "qgis_gui.h"
+
+#include <QKeyEvent>
+#include <QStack>
+#include <QStackedWidget>
+#include <QWidget>
 
 class QgsPanelWidget;
 
@@ -38,6 +39,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
 {
     Q_OBJECT
   public:
+
     /**
       * A stack widget to manage panels in the interface. Handles the open and close events
       * for added panels.

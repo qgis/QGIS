@@ -70,7 +70,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     //! Returns current render target selector
     Qt3DRender::QRenderTargetSelector *renderTargetSelector() { return mRenderTargetSelector; }
 
-    virtual void updateWindowResize( int width, int height ) override;
+    void updateWindowResize( int width, int height ) override;
 
     //! Returns forward depth texture
     Qt3DRender::QTexture2D *depthTexture() const;

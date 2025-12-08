@@ -15,17 +15,17 @@
 #ifndef QGSSYMBOLLEVELSDIALOG_H
 #define QGSSYMBOLLEVELSDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include <QList>
-#include <QItemDelegate>
+#include "ui_qgssymbollevelsdialogbase.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgshelp.h"
 #include "qgspanelwidget.h"
 #include "qgsrenderer.h"
 
-#include "ui_qgssymbollevelsdialogbase.h"
-#include "qgis_gui.h"
+#include <QDialog>
+#include <QItemDelegate>
+#include <QList>
 
 /**
  * \class QgsSymbolLevelsWidget
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsSymbolLevelsWidget
      */

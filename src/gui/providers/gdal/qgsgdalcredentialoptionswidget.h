@@ -18,6 +18,7 @@
 #define QGGDALCREDENTIALOPTIONSWIDGET_H
 
 #include "ui_qgsgdalcredentialoptionswidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsgdalutils.h"
@@ -114,6 +115,7 @@ class GUI_EXPORT QgsGdalCredentialOptionsWidget : public QWidget, private Ui::Qg
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGdalCredentialOptionsWidget, with the specified \a parent widget.
      */

@@ -16,11 +16,11 @@
 #ifndef QGSMATERIALSETTINGSWIDGET_H
 #define QGSMATERIALSETTINGSWIDGET_H
 
-#include <QWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
 #include "qgspropertycollection.h"
+
+#include <QWidget>
 
 #define SIP_NO_FILE
 
@@ -40,6 +40,7 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMaterialSettingsWidget with the specified \a parent widget.
      */

@@ -19,8 +19,8 @@
 #define QGSMESHTERRAINTILELOADER_H
 
 #include "qgsmesh3dsymbol.h"
-#include "qgstriangularmesh.h"
 #include "qgsterraintileloader.h"
+#include "qgstriangularmesh.h"
 
 #define SIP_NO_FILE
 

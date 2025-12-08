@@ -19,6 +19,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgslayoutexporter.h"
+
 #include <QObject>
 
 class QgsLayout;
@@ -357,6 +358,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
     class ExportResults
     {
       public:
+
         /**
          * Result/error code of export.
          */

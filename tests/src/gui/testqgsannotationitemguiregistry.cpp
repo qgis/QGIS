@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationitemguiregistry.h"
+#include "qgsannotationitemregistry.h"
 #include "qgsannotationitemwidget.h"
 #include "qgsapplication.h"
-#include "qgsannotationitemregistry.h"
+#include "qgstest.h"
+
 #include <QSignalSpy>
 
 class TestQgsAnnotationItemGuiRegistry : public QObject

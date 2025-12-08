@@ -14,11 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthapiheaderedit.h"
-#include "moc_qgsauthapiheaderedit.cpp"
 #include "ui_qgsauthapiheaderedit.h"
+#include "qgsauthapiheaderedit.h"
 
 #include "qgslogger.h"
+
+#include "moc_qgsauthapiheaderedit.cpp"
 
 QgsAuthApiHeaderEdit::QgsAuthApiHeaderEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

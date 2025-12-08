@@ -16,11 +16,11 @@
 #ifndef QGSPOSTGRESRASTERSHAREDDATA_H
 #define QGSPOSTGRESRASTERSHAREDDATA_H
 
-#include <QMutex>
-
-#include "qgsrectangle.h"
 #include "qgsgenericspatialindex.h"
 #include "qgsgeometry.h"
+#include "qgsrectangle.h"
+
+#include <QMutex>
 
 class QgsPostgresConn;
 
@@ -142,9 +142,8 @@ class QgsPostgresRasterSharedData
     /**
     * Tile caches, index is a key generated from the overview factor (1 is the full resolution data)
     * and the where clause
-    * \note cannot be a smart pointer because spatial index cannot be copied
     */
-    std::map<QString, QgsGenericSpatialIndex<Tile> *> mSpatialIndexes;
+    std::map<QString, std::unique_ptr< QgsGenericSpatialIndex<Tile> > > mSpatialIndexes;
 
     //! Memory manager for owned tiles (and for tileId access)
     std::map<QString, std::map<TileIdType, std::unique_ptr<Tile>>> mTiles;

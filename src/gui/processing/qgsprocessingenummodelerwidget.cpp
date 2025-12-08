@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsprocessingenummodelerwidget.h"
-#include "moc_qgsprocessingenummodelerwidget.cpp"
+
 #include "qgsgui.h"
+
 #include <QMessageBox>
 #include <QToolButton>
+
+#include "moc_qgsprocessingenummodelerwidget.cpp"
 
 ///@cond NOT_STABLE
 

@@ -20,9 +20,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmapsettings.h"
-#include "qgstolerance.h"
 #include "qgspointlocator.h"
 #include "qgssnappingconfig.h"
+#include "qgstolerance.h"
 
 class QgsSnappingConfig;
 

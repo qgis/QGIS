@@ -11,6 +11,7 @@
 
 
 
+
 class QgsEffectStackPropertiesWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -28,6 +29,7 @@ including adding and reordering effects within the stack.
 #include "qgseffectstackpropertieswidget.h"
 %End
   public:
+
     QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsEffectStackPropertiesWidget constructor
@@ -145,6 +147,7 @@ including adding and reordering effects within the stack.
 #include "qgseffectstackpropertieswidget.h"
 %End
   public:
+
     QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 QgsEffectStackPropertiesDialog constructor
@@ -191,6 +194,7 @@ stack and a button for opening an effect stack customization dialog.
 #include "qgseffectstackpropertieswidget.h"
 %End
   public:
+
     QgsEffectStackCompactWidget( QWidget *parent /TransferThis/ = 0, QgsPaintEffect *effect = 0 );
 %Docstring
 QgsEffectStackCompactWidget constructor

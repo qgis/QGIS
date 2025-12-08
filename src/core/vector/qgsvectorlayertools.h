@@ -18,12 +18,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
-
 #include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayertoolscontext.h"
+
+#include <QObject>
 
 class QgsFeatureRequest;
 class QgsVectorLayer;

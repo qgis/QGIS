@@ -16,9 +16,10 @@
 #define QGSADVANCEDOPTIONS_H
 
 #include "ui_qgsadvancedsettingswidget.h"
+
 #include "qgsoptionswidgetfactory.h"
-#include "qgssettingstree.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 class QgsSettingsTreeWidget;
 class QgsSettingsTreeWidgetOld;

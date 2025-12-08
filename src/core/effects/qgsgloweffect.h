@@ -17,14 +17,13 @@
 #ifndef QGSGLOWEFFECT_H
 #define QGSGLOWEFFECT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgspainteffect.h"
+#include "qgis_core.h"
 #include "qgscolorramp.h"
 #include "qgsmapunitscale.h"
+#include "qgspainteffect.h"
 
 #include <QPainter>
-
 
 /**
  * \ingroup core

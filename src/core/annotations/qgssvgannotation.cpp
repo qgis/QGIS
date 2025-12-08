@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgssvgannotation.h"
-#include "moc_qgssvgannotation.cpp"
 
-#include "qgsreadwritecontext.h"
 #include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 
+#include "moc_qgssvgannotation.cpp"
 
 QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
   : QgsAnnotation( parent )

@@ -13,6 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssearchquerybuilder.h"
+
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgshelp.h"
+#include "qgsquerybuilder.h"
+#include "qgsvectorlayer.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
@@ -23,17 +34,7 @@
 #include <QStandardItem>
 #include <QTextStream>
 
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
-#include "qgssearchquerybuilder.h"
 #include "moc_qgssearchquerybuilder.cpp"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
-#include "qgshelp.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsquerybuilder.h"
-
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
-
 /**
  * \ingroup core
  * \brief Field formatter for a checkbox field.

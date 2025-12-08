@@ -18,8 +18,8 @@
 #ifndef QGSRELATIONWIDGETREGISTRY_H
 #define QGSRELATIONWIDGETREGISTRY_H
 
-#include "qgsabstractrelationeditorwidget.h"
 #include "qgis_gui.h"
+#include "qgsabstractrelationeditorwidget.h"
 
 /**
  * Keeps track of the registered relations widgets.
@@ -34,6 +34,7 @@
 class GUI_EXPORT QgsRelationWidgetRegistry
 {
   public:
+
     /**
      * Constructor
      */

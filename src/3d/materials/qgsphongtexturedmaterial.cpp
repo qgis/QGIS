@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QUrl>
+#include "qgsphongtexturedmaterial.h"
 
+#include <QUrl>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
 
-#include "qgsphongtexturedmaterial.h"
 #include "moc_qgsphongtexturedmaterial.cpp"
 
 ///@cond PRIVATE

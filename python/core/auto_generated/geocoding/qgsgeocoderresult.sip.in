@@ -8,8 +8,6 @@
 
 
 
-
-
 class QgsGeocoderResult
 {
 %Docstring(signature="appended")

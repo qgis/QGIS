@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgstablecell.h"
+
 #include "qgsapplication.h"
-#include "qgsnumericformatregistry.h"
 #include "qgsnumericformat.h"
+#include "qgsnumericformatregistry.h"
 #include "qgsreadwritecontext.h"
 
 QgsTableCell::QgsTableCell( const QVariant &content )
@@ -39,6 +40,9 @@ QgsTableCell::~QgsTableCell() = default;
 
 QgsTableCell &QgsTableCell::operator=( const QgsTableCell &other )
 {
+  if ( &other == this )
+    return *this;
+
   mContent = other.mContent;
   mBackgroundColor = other.mBackgroundColor;
   mForegroundColor = other.mForegroundColor;

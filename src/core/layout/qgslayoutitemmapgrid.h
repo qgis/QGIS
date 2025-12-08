@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgslayoutitemmapitem.h"
 #include "qgstextformat.h"
+
 #include <QPainter>
 #include <QVector2D>
 

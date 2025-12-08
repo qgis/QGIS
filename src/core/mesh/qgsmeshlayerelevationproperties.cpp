@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmeshlayerelevationproperties.h"
-#include "moc_qgsmeshlayerelevationproperties.cpp"
-#include "qgsmeshlayer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
+
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmeshlayer.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgsmeshlayerelevationproperties.cpp"
 
 QgsMeshLayerElevationProperties::QgsMeshLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

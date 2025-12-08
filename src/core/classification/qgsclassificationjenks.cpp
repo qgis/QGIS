@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
 #include "qgsclassificationjenks.h"
+
+#include <limits>
+
 #include "qgsapplication.h"
 
 #include <QRandomGenerator>

@@ -19,17 +19,19 @@
  ***************************************************************************/
 
 #include "qgsrunprocess.h"
-#include "moc_qgsrunprocess.cpp"
 
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
-#include "qgsfeedback.h"
-#include "qgsapplication.h"
-#include "qgis.h"
+
+#include <QApplication>
+#include <QMessageBox>
 #include <QProcess>
 #include <QTextCodec>
-#include <QMessageBox>
-#include <QApplication>
+
+#include "moc_qgsrunprocess.cpp"
 
 #if QT_CONFIG(process)
 QgsRunProcess::QgsRunProcess( const QString &action, bool capture )

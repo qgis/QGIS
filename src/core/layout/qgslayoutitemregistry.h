@@ -16,15 +16,16 @@
 #ifndef QGSLAYOUTITEMREGISTRY_H
 #define QGSLAYOUTITEMREGISTRY_H
 
+#include <functional>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsapplication.h"
+#include "qgslayoutitem.h"
 #include "qgspathresolver.h"
-#include <QGraphicsItem> //for QGraphicsItem::UserType
-#include <QIcon>
-#include <functional>
 
-#include "qgslayoutitem.h" // temporary
+#include <QGraphicsItem>
+#include <QIcon>
 
 class QgsLayout;
 class QgsLayoutView;
@@ -364,6 +365,8 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutMarker, //!< Marker item
 
       LayoutElevationProfile, //!< Elevation profile item \since QGIS 3.30
+
+      LayoutChart, //!< Chart item \since QGIS 4.0
 
       // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
       // values, and must be updated if any additional types are added

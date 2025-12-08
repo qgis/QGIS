@@ -13,15 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayoutlegendlayersdialog.h"
-#include "moc_qgslayoutlegendlayersdialog.cpp"
 
-#include <QStandardItem>
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgshelp.h"
+
+#include <QStandardItem>
+
+#include "moc_qgslayoutlegendlayersdialog.cpp"
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   : QDialog( parent )

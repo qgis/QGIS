@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgsprocessingprovider.h"
-#include "moc_qgsprocessingprovider.cpp"
+
 #include "qgsapplication.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsrasterfilewriter.h"
 #include "qgsmessagelog.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsvectorfilewriter.h"
+
+#include "moc_qgsprocessingprovider.cpp"
 
 QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )

@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include "qgspercentagenumericformat.h"
-#include "qgis.h"
 
+#include "qgis.h"
 
 QgsPercentageNumericFormat::QgsPercentageNumericFormat()
 {

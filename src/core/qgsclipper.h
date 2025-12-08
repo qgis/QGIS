@@ -21,14 +21,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsabstractgeometry.h"
+#include "qgsbox3d.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 
-#include <QVector>
 #include <QPolygonF>
-
-#include "qgsbox3d.h"
-#include "qgsabstractgeometry.h"
+#include <QVector>
 
 class QgsCurve;
 class QgsLineString;

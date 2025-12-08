@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudquerybuilder.h"
-#include "moc_qgspointcloudquerybuilder.cpp"
-#include "qgssettings.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudexpression.h"
-#include "qgshelp.h"
+
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgspointcloudexpression.h"
+#include "qgspointcloudlayer.h"
 #include "qgsquerybuilder.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -29,6 +29,7 @@
 #include <QPushButton>
 #include <QTextStream>
 
+#include "moc_qgspointcloudquerybuilder.cpp"
 
 QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )

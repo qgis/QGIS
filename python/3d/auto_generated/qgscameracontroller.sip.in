@@ -205,13 +205,26 @@ given new pitch and heading angle.
 .. versionadded:: 3.42
 %End
 
-    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
+ void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint ) /Deprecated="Since 3.44.4. Use version with oldDistanceFromCenterPoint argument instead."/;
 %Docstring
 Zooms camera by given zoom factor (>1 one means zoom in) while keeping
 the pivot point (given in world coordinates) at the same screen
 coordinates after the zoom.
 
 .. versionadded:: 3.42
+
+.. deprecated:: 3.44.4
+
+   Use version with oldDistanceFromCenterPoint argument instead.
+%End
+
+    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
+%Docstring
+Zooms camera by given zoom factor (>1 one means zoom in) while keeping
+the pivot point (given in world coordinates) at the same screen
+coordinates after the zoom.
+
+.. versionadded:: 3.44.4
 %End
 
     bool keyboardEventFilter( QKeyEvent *event );

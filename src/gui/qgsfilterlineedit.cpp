@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsfilterlineedit.h"
-#include "moc_qgsfilterlineedit.cpp"
-#include "qgsapplication.h"
-#include "qgsanimatedicon.h"
+
 #include "qgis.h"
+#include "qgsanimatedicon.h"
+#include "qgsapplication.h"
 
 #include <QAction>
-#include <QToolButton>
-#include <QStyle>
 #include <QFocusEvent>
 #include <QPainter>
+#include <QStyle>
+#include <QToolButton>
+
+#include "moc_qgsfilterlineedit.cpp"
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
   : QLineEdit( parent )

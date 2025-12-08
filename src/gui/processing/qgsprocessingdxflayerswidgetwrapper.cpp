@@ -14,7 +14,11 @@
  ***************************************************************************/
 
 #include "qgsprocessingdxflayerswidgetwrapper.h"
-#include "moc_qgsprocessingdxflayerswidgetwrapper.cpp"
+
+#include "qgspanelwidget.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingparameters.h"
 
 #include <QBoxLayout>
 #include <QLineEdit>
@@ -23,10 +27,7 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 
-#include "qgspanelwidget.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsprocessingparameterdxflayers.h"
+#include "moc_qgsprocessingdxflayerswidgetwrapper.cpp"
 
 /// @cond private
 

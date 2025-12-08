@@ -19,8 +19,15 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgswmsrequest.h"
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
+
 namespace QgsWms
 {
+  class QgsWmsRequest;
 
   /**
    * Output GetMap response in PDF format

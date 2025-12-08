@@ -14,35 +14,33 @@
  ***************************************************************************/
 
 #include "qgsrulebasedrenderer.h"
-#include "qgssymbollayer.h"
-#include "qgsexpression.h"
-#include "qgssymbollayerutils.h"
-#include "qgsrendercontext.h"
-#include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgsogcutils.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsinvertedpolygonrenderer.h"
-#include "qgsproperty.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsembeddedsymbolrenderer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgspointdistancerenderer.h"
-#include "qgsscaleutils.h"
-#include "qgssldexportcontext.h"
 
-#include <QSet>
+#include "qgsembeddedsymbolrenderer.h"
+#include "qgsexpression.h"
+#include "qgsfillsymbol.h"
+#include "qgsinvertedpolygonrenderer.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsogcutils.h"
+#include "qgspointdistancerenderer.h"
+#include "qgsproperty.h"
+#include "qgsrendercontext.h"
+#include "qgsscaleutils.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QSet>
 #include <QUuid>
 
-
 QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &label, const QString &description, bool elseRule )
-  : mParent( nullptr )
-  , mSymbol( symbol )
+  : mSymbol( symbol )
   , mMaximumScale( scaleMinDenom )
   , mMinimumScale( scaleMaxDenom )
   , mFilterExp( filterExp )

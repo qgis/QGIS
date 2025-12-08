@@ -18,8 +18,8 @@
 #ifndef QGSOGRGUIPROVIDER_H
 #define QGSOGRGUIPROVIDER_H
 
-#include "qgsproviderguimetadata.h"
 #include "qgis_sip.h"
+#include "qgsproviderguimetadata.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

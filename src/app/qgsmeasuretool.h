@@ -17,9 +17,9 @@
 #ifndef QGSMEASURETOOL_H
 #define QGSMEASURETOOL_H
 
-#include "qgsmaptool.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmaptool.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;

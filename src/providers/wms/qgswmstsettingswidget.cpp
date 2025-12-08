@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgswmstsettingswidget.h"
-#include "moc_qgswmstsettingswidget.cpp"
+
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
-#include "qgsrasterlayer.h"
 #include "qgsprojecttimesettings.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayertemporalproperties.h"
 #include "qgstemporalutils.h"
+
+#include "moc_qgswmstsettingswidget.cpp"
 
 QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

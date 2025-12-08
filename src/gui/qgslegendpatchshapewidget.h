@@ -16,10 +16,12 @@
 #ifndef QGSLEGENDPATCHSHAPEWIDGET_H
 #define QGSLEGENDPATCHSHAPEWIDGET_H
 
+#include "ui_qgslegendpatchshapewidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgslegendpatchshapewidgetbase.h"
 #include "qgslegendpatchshape.h"
+
 #include <QDialog>
 
 class QDialogButtonBox;
@@ -34,6 +36,7 @@ class GUI_EXPORT QgsLegendPatchShapeWidget : public QgsPanelWidget, private Ui::
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLegendPatchShapeWidget, with the specified \a parent widget.
      */
@@ -78,6 +81,7 @@ class GUI_EXPORT QgsLegendPatchShapeDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLegendPatchShapeDialog, initially showing the specified \a shape.
      */

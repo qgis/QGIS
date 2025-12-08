@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcheckvalidity.h"
-#include "qgsvectorlayer.h"
+
 #include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

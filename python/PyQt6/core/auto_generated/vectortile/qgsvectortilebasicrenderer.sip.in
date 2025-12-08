@@ -10,7 +10,6 @@
 
 
 
-
 class QgsVectorTileBasicRendererStyle
 {
 %Docstring(signature="appended")

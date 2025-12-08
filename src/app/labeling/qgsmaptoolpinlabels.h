@@ -18,8 +18,8 @@
 #ifndef QGSMAPTOOLPINLABELS_H
 #define QGSMAPTOOLPINLABELS_H
 
-#include "qgsmaptoollabel.h"
 #include "qgis_app.h"
+#include "qgsmaptoollabel.h"
 
 class QgsRubberBand;
 class QgsLabelPosition;
@@ -64,9 +64,9 @@ class APP_EXPORT QgsMapToolPinLabels : public QgsMapToolLabel
     QMap<QString, QgsRubberBand *> mHighlights;
 
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
     //! Flag to indicate whether to draw the highlight for pinned labels
-    bool mShowPinned;
+    bool mShowPinned = false;
 
     //! Stores actual select rect
     QRect mSelectRect;

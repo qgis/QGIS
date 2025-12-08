@@ -16,10 +16,10 @@
 #ifndef QGSPDALPROVIDERGUI_H
 #define QGSPDALPROVIDERGUI_H
 
+#include "qgsproviderguimetadata.h"
+
 #include <QList>
 #include <QMainWindow>
-
-#include "qgsproviderguimetadata.h"
 
 class QgsPdalProviderGuiMetadata : public QgsProviderGuiMetadata
 {

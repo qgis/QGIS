@@ -14,31 +14,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomElement>
-#include <QFileDialog>
-#include <QTextCodec>
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
+#include "qgsgrassmoduleoptions.h"
 
 #include "qgisinterface.h"
-
 #include "qgsapplication.h"
+#include "qgsgrass.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassmoduleinput.h"
+#include "qgsgrassmoduleparam.h"
+#include "qgsgrassplugin.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsscrollarea.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
-#include "qgsgrass.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrassmoduleinput.h"
-#include "qgsgrassmoduleoptions.h"
+#include <QDomElement>
+#include <QFileDialog>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QTextCodec>
+
 #include "moc_qgsgrassmoduleoptions.cpp"
-#include "qgsgrassmoduleparam.h"
-#include "qgsgrassplugin.h"
 
 /******************* QgsGrassModuleOptions *******************/
 

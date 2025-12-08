@@ -16,7 +16,6 @@
 
 #include "qgsattributeeditorcontainer.h"
 
-
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
   qDeleteAll( mChildren );

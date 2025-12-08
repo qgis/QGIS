@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-
 #include "qgs3d.h"
 #include "qgs3ddebugwidget.h"
 #include "qgs3dmapcanvas.h"
@@ -37,12 +35,13 @@
 #include "qgsprojectviewsettings.h"
 #include "qgsterrainprovider.h"
 
+#include <QApplication>
+#include <QCommandLineParser>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QScreen>
 #include <QToolBar>
-#include <QCommandLineParser>
 
 /**
  * \param viewIdxStr empty for blank 3D view, number or string for loading from project by index/name
@@ -88,7 +87,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     map->setTerrainSettings( flatTerrain );
 
     QgsPointLightSettings defaultPointLight;
-    defaultPointLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+    defaultPointLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
     defaultPointLight.setConstantAttenuation( 0 );
     map->setLightSources( { defaultPointLight.clone() } );
     if ( QScreen *screen = QGuiApplication::primaryScreen() )

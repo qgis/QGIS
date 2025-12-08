@@ -21,6 +21,7 @@
 #define SIP_NO_FILE
 
 #include <QtGlobal>
+
 #if QT_CONFIG( process )
 
 

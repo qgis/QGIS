@@ -28,7 +28,7 @@ namespace Qt3DRender
 /**
  * \ingroup qgis_3d
  * \brief Simple renderview to preview/debug textures
- * 
+ *
  * \see QgsDebugTextureEntity
  *
  * \note Not available in Python bindings

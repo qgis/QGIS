@@ -15,17 +15,19 @@
 
 
 #include "qgspainteffectwidget.h"
-#include "moc_qgspainteffectwidget.cpp"
+
+#include "qgsblureffect.h"
+#include "qgscoloreffect.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
+#include "qgsgloweffect.h"
 #include "qgslogger.h"
 #include "qgspainteffect.h"
 #include "qgsshadoweffect.h"
-#include "qgsblureffect.h"
-#include "qgsgloweffect.h"
-#include "qgstransformeffect.h"
-#include "qgscoloreffect.h"
 #include "qgsstyle.h"
-#include "qgscolorramp.h"
-#include "qgscolorrampbutton.h"
+#include "qgstransformeffect.h"
+
+#include "moc_qgspainteffectwidget.cpp"
 
 //
 // draw source

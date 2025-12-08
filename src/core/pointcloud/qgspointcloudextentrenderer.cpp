@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudextentrenderer.h"
+
 #include "qgscurve.h"
 #include "qgsfillsymbol.h"
 #include "qgslayertreemodellegendnode.h"

@@ -20,13 +20,13 @@
 
 #include <map>
 
-#include <QDir>
-#include <QString>
-#include <QStringList>
-#include <QMainWindow>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDir>
+#include <QMainWindow>
+#include <QString>
+#include <QStringList>
 
 class QgsProjectStorageGuiProvider;
 class QgsProviderGuiMetadata;
@@ -115,6 +115,7 @@ class GUI_EXPORT QgsProviderGuiRegistry
     SIP_SKIP typedef std::map<QString, QgsProviderGuiMetadata *> GuiProviders;
 
   private:
+
     /**
      * Loads the dynamic plugins on the given path
      * When QGIS is compiled with FORCE_STATIC_LIBS,

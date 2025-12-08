@@ -17,23 +17,24 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsbasicnumericformat.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsfontutils.h"
+#include "qgshollowscalebarrenderer.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgsfontutils.h"
-#include "qgsproperty.h"
-#include "qgsproject.h"
-#include "qgspallabeling.h"
-#include "qgsbasicnumericformat.h"
-#include "qgslinesymbollayer.h"
 #include "qgslayoutmanager.h"
-#include "qgsprintlayout.h"
-#include "qgsfillsymbollayer.h"
-#include "qgshollowscalebarrenderer.h"
-#include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgspallabeling.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgsproperty.h"
+#include "qgstest.h"
+
 #include <QLocale>
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsLayoutScaleBar : public QgsTest
 {

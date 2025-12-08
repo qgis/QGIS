@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgssettingsregistry.h"
+
+#include "qgslogger.h"
 #include "qgssettingsentry.h"
 #include "qgssettingsentrygroup.h"
-#include "qgslogger.h"
 
 QgsSettingsRegistry::QgsSettingsRegistry()
   : mSettingsEntriesMap()

@@ -16,8 +16,9 @@ email                : matthias@opengis.ch
 #ifndef QGSFEATUREID_H
 #define QGSFEATUREID_H
 
-#include <QSet>
 #include "qgis_sip.h"
+
+#include <QSet>
 
 // feature id (currently 64 bit)
 

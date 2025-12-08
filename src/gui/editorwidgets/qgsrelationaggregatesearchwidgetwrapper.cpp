@@ -15,14 +15,16 @@
 
 
 #include "qgsrelationaggregatesearchwidgetwrapper.h"
-#include "moc_qgsrelationaggregatesearchwidgetwrapper.cpp"
-#include "qgsattributeform.h"
-#include "qgsrelationwidgetwrapper.h"
-#include "qgslogger.h"
-#include "qgscollapsiblegroupbox.h"
 
-#include <QLabel>
+#include "qgsattributeform.h"
+#include "qgscollapsiblegroupbox.h"
+#include "qgslogger.h"
+#include "qgsrelationwidgetwrapper.h"
+
 #include <QGridLayout>
+#include <QLabel>
+
+#include "moc_qgsrelationaggregatesearchwidgetwrapper.cpp"
 
 QgsRelationAggregateSearchWidgetWrapper::QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *vl, QgsRelationWidgetWrapper *wrapper, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, -1, parent )

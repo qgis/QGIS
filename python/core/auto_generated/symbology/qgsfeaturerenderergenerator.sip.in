@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFeatureRendererGenerator
 {
 %Docstring(signature="appended")

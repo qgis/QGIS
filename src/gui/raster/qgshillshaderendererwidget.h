@@ -19,12 +19,12 @@
 #define QGSHILLSHADERENDERERWIDGET_H
 
 #include "ui_qgshillshaderendererwidget.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsrasterrendererwidget.h"
 
 #include <QDoubleSpinBox>
-
-#include "qgsrasterrendererwidget.h"
-#include "qgis_gui.h"
 
 /**
  * \brief Renderer widget for the hill shade renderer.
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget : public QgsRasterRendererWidget, pr
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Renderer widget for the hill shade renderer.
      * \param layer The layer attached for this widget.

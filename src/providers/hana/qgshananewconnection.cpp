@@ -14,12 +14,12 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshananewconnection.h"
+
 #include "qgsauthmanager.h"
 #include "qgsgui.h"
-#include "qgshanadriver.h"
 #include "qgshanaconnection.h"
-#include "qgshananewconnection.h"
-#include "moc_qgshananewconnection.cpp"
+#include "qgshanadriver.h"
 #include "qgshanasettings.h"
 #include "qgssettings.h"
 
@@ -28,6 +28,8 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+
+#include "moc_qgshananewconnection.cpp"
 
 using namespace std;
 

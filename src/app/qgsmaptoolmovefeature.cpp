@@ -13,6 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptoolmovefeature.h"
+
+#include <limits>
+
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsavoidintersectionsoperation.h"
@@ -20,19 +24,17 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolmovefeature.h"
-#include "moc_qgsmaptoolmovefeature.cpp"
+#include "qgsmapmouseevent.h"
 #include "qgsrubberband.h"
+#include "qgssnapindicator.h"
 #include "qgstolerance.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
-#include "qgssnapindicator.h"
-#include "qgsmapmouseevent.h"
 
 #include <QMessageBox>
 #include <QSettings>
-#include <limits>
 
+#include "moc_qgsmaptoolmovefeature.cpp"
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
@@ -252,7 +254,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
           if ( QgsProject::instance()->topologicalEditing() )
           {
-            if ( mSnapIndicator && ( mSnapIndicator->match().layer() ) )
+            if ( mSnapIndicator->match().layer() )
             {
               mSnapIndicator->match().layer()->addTopologicalPoints( vlayer->getGeometry( id ) );
             }

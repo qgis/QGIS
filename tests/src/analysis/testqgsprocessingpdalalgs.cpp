@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "limits"
+#include <limits>
 
-#include "qgstest.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingcontext.h"
-#include "qgspdalalgorithms.h"
 #include "qgspdalalgorithmbase.h"
+#include "qgspdalalgorithms.h"
 #include "qgspointcloudlayer.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingregistry.h"
+#include "qgstest.h"
 
 #include <QThread>
 

@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsgrouplayerrenderer.h"
-#include "qgsgrouplayer.h"
+
+#include <optional>
+
 #include "qgsfeedback.h"
+#include "qgsgrouplayer.h"
+#include "qgslogger.h"
 #include "qgspainteffect.h"
 #include "qgsrendercontext.h"
-#include "qgslogger.h"
-#include <optional>
 
 QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

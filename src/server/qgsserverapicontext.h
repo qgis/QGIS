@@ -17,6 +17,7 @@
 #define QGSSERVERAPICONTEXT_H
 
 #include "qgis_server.h"
+
 #include <QString>
 
 class QgsServerResponse;
@@ -39,6 +40,7 @@ class QgsProject;
 class SERVER_EXPORT QgsServerApiContext
 {
   public:
+
     /**
     * QgsServerApiContext constructor
     *

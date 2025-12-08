@@ -18,13 +18,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsmaplayer.h"
+
 #include <QMap>
 #include <QObject>
 #include <QPointer>
 #include <QSet>
 #include <QStringList>
-
-#include "qgsmaplayer.h"
 
 class QDomDocument;
 class QgsLayerTreeModel;

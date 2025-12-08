@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrange.h"
+
 #include <QWidget>
 #include <QWidgetAction>
 
@@ -88,6 +89,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsElevationControllerWidget, with the specified \a parent widget.
      */

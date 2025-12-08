@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterstackposition.h"
-#include "qgsrasterprojector.h"
-#include "qgsrasterfilewriter.h"
+
 #include "qgsrasteranalysisutils.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrasterprojector.h"
 
 ///@cond PRIVATE
 

@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsreportfieldgroupsectionwidget.h"
-#include "moc_qgsreportfieldgroupsectionwidget.cpp"
-#include "qgsreportsectionfieldgroup.h"
+
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgsreportorganizerwidget.h"
+#include "qgsreportsectionfieldgroup.h"
+
+#include "moc_qgsreportfieldgroupsectionwidget.cpp"
 
 QgsReportSectionFieldGroupWidget::QgsReportSectionFieldGroupWidget( QgsReportOrganizerWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionFieldGroup *section )
   : QWidget( parent )

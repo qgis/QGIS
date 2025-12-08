@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgslabelsink.h"
-#include "qgspallabeling.h"
-#include "qgsmapsettings.h"
+
 #include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgspallabeling.h"
 
 QgsLabelSinkProvider::QgsLabelSinkProvider( QgsVectorLayer *layer, const QString &providerId, QgsLabelSink *sink, const QgsPalLayerSettings *settings )
   : QgsVectorLayerLabelProvider( layer, providerId, false, settings )

@@ -16,12 +16,12 @@
 #ifndef QGSVALUERELATIONWIDGETWRAPPER_H
 #define QGSVALUERELATIONWIDGETWRAPPER_H
 
-#include <QTableWidget>
-
-#include "qgseditorwidgetwrapper.h"
-#include "qgsvaluerelationfieldformatter.h"
-#include "qgstooltipcombobox.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgstooltipcombobox.h"
+#include "qgsvaluerelationfieldformatter.h"
+
+#include <QTableWidget>
 
 class QLineEdit;
 class QgsValueRelationWidgetFactory;
@@ -42,6 +42,7 @@ class QgsFilteredTableWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * \brief QgsFilteredTableWidget constructor
      * \param parent
@@ -142,6 +143,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsValueRelationWidgetWrapper.
      *

@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgspresetcolorrampdialog.h"
-#include "moc_qgspresetcolorrampdialog.cpp"
 
-#include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
 #include "qgshelp.h"
+#include "qgssymbollayerutils.h"
 
-#include <QFileDialog>
 #include <QAbstractButton>
 #include <QDialogButtonBox>
+#include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgspresetcolorrampdialog.cpp"
 
 QgsPresetColorRampWidget::QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent )
   : QgsPanelWidget( parent )

@@ -14,9 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthauthoritieseditor.h"
-#include "moc_qgsauthauthoritieseditor.cpp"
 #include "ui_qgsauthauthoritieseditor.h"
+#include "qgsauthauthoritieseditor.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertificateinfo.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthimportcertdialog.h"
+#include "qgsauthmanager.h"
+#include "qgsauthtrustedcasdialog.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -30,16 +40,7 @@
 #include <QPushButton>
 #include <QSslConfiguration>
 
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsauthcertificateinfo.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthguiutils.h"
-#include "qgsauthimportcertdialog.h"
-#include "qgsauthmanager.h"
-#include "qgsauthtrustedcasdialog.h"
-#include "qgslogger.h"
-#include "qgsvariantutils.h"
+#include "moc_qgsauthauthoritieseditor.cpp"
 
 QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   : QWidget( parent )

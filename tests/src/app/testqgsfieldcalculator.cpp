@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsfieldcalculator.h"
+#include "qgsgeometry.h"
 #include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup UnitTests

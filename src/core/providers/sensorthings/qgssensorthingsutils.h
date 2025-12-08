@@ -15,9 +15,9 @@
 #ifndef QGSSENSORTHINGSUTILS_H
 #define QGSSENSORTHINGSUTILS_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsFields;
 class QgsFeedback;

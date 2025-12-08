@@ -18,17 +18,17 @@
 #ifndef QGSGEOMETRYRUBBERBAND_H
 #define QGSGEOMETRYRUBBERBAND_H
 
-#include "qgsmapcanvasitem.h"
-#include "qgswkbtypes.h"
-#include <QBrush>
-#include <QPen>
 #include "qgis_gui.h"
-
+#include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
-#include "qgscircularstring.h"
 #include "qgslinestring.h"
+#include "qgsmapcanvasitem.h"
 #include "qgspoint.h"
+#include "qgswkbtypes.h"
+
+#include <QBrush>
+#include <QPen>
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode
@@ -132,8 +132,8 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
     std::unique_ptr<QgsAbstractGeometry> mGeometry = nullptr;
     QBrush mBrush;
     QPen mPen;
-    int mIconSize;
-    IconType mIconType;
+    int mIconSize = 5;
+    IconType mIconType = ICON_BOX;
     Qgis::GeometryType mGeometryType;
     bool mDrawVertices = true;
 

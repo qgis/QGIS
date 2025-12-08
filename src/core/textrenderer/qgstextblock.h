@@ -16,11 +16,12 @@
 #ifndef QGSTEXTBLOCK_H
 #define QGSTEXTBLOCK_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgstextfragment.h"
-#include "qgstextblockformat.h"
+#include "qgis_sip.h"
 #include "qgsstringutils.h"
+#include "qgstextblockformat.h"
+#include "qgstextfragment.h"
+
 #include <QVector>
 
 /**

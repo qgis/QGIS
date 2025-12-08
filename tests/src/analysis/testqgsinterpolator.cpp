@@ -12,12 +12,11 @@ Email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgsdualedgetriangulation.h"
-#include "qgstininterpolator.h"
 #include "qgsidwinterpolator.h"
+#include "qgstest.h"
+#include "qgstininterpolator.h"
 #include "qgsvectorlayer.h"
 
 class TestQgsInterpolator : public QgsTest

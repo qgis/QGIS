@@ -16,9 +16,10 @@
 #ifndef QGSLAYERTREE_H
 #define QGSLAYERTREE_H
 
-#include "qgslayertreenode.h"
+#include "qgslayertreecustomnode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgslayertreenode.h"
 
 /**
  * \ingroup core
@@ -53,6 +54,16 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     }
 
     /**
+     * Check whether the node is a valid custom node
+     *
+     * \since QGIS 4.0
+     */
+    static inline bool isCustomNode( const QgsLayerTreeNode *node )
+    {
+      return node && node->nodeType() == QgsLayerTreeNode::NodeCustom;
+    }
+
+    /**
      * Cast node to a group.
      *
      * \note Not available in Python bindings, because cast is automatic.
@@ -80,6 +91,17 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node ) SIP_SKIP
     {
       return qobject_cast< const QgsLayerTreeLayer *>( node );
+    }
+
+    /**
+     * Cast node to a custom node.
+     *
+     * \note Not available in Python bindings, because cast is automatic.
+     * \since QGIS 4.0
+     */
+    static inline QgsLayerTreeCustomNode *toCustomNode( QgsLayerTreeNode *node ) SIP_SKIP
+    {
+      return qobject_cast<QgsLayerTreeCustomNode *>( node );
     }
 
     /**
@@ -139,7 +161,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * This property is read only.
      *
      * \see customLayerOrder
-     *
+     * \see layerAndCustomNodeOrder()
      */
     QList<QgsMapLayer *> layerOrder() const;
 
@@ -162,13 +184,30 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     void setHasCustomLayerOrder( bool hasCustomLayerOrder );
 
     /**
+     * The order in which layers and custom nodes will be rendered on the canvas.
+     *
+     * Since custom nodes don't support custom layer order, this
+     * returns the node order derived from the tree.
+     *
+     * Depending on the use case, not all custom nodes are to be rendered on the
+     * canvas, so callers of this method will probably need another layer of
+     * logic to use the returned order in a meaningful way.
+     *
+     * This property is read only.
+     *
+     * \see layerOrder()
+     * \since QGIS 4.0
+     */
+    QList<QgsLayerTreeNode *> layerAndCustomNodeOrder() const;
+
+    /**
      * Load the layer tree from an XML element.
      * It is not required that layers are loaded at this point.
      * resolveReferences() needs to be called after loading the layers and
      * before using the tree.
      *
      */
-    static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr< QgsLayerTree > readXml( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Load the layer order from an XML element.

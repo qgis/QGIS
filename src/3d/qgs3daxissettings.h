@@ -16,10 +16,10 @@
 #ifndef QGS3DAXISSETTINGS_H
 #define QGS3DAXISSETTINGS_H
 
-#include <QString>
-#include <QMap>
-
 #include "qgs3daxisrenderview.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsReadWriteContext;
 class QDomElement;
@@ -35,6 +35,7 @@ class QDomElement;
 class _3D_EXPORT Qgs3DAxisSettings
 {
   public:
+
     /**
      * \brief Axis representation enum
      */

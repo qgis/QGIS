@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsauthmaptilerhmacsha256method.h"
-#include "moc_qgsauthmaptilerhmacsha256method.cpp"
+
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
 
 #include <QMessageAuthenticationCode>
 #include <QUrlQuery>
 
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
+#include "moc_qgsauthmaptilerhmacsha256method.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsauthmaptilerhmacsha256edit.h"

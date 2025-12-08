@@ -16,10 +16,10 @@
 #ifndef QGSSHADOWSETTINGS_H
 #define QGSSHADOWSETTINGS_H
 
-#include <QString>
-#include <QMap>
-
 #include "qgis_3d.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsReadWriteContext;
 class QDomElement;

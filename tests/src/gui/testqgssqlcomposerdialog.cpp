@@ -14,10 +14,9 @@
  ***************************************************************************/
 
 
+#include "qgslogger.h"
+#include "qgssqlcomposerdialog.h"
 #include "qgstest.h"
-
-#include <qgslogger.h>
-#include <qgssqlcomposerdialog.h>
 
 class TestQgsSQLComposerDialog : public QObject
 {

@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdbquerylog.h"
-#include "moc_qgsdbquerylog.cpp"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
 #include <QDateTime>
+
+#include "moc_qgsdbquerylog.cpp"
 
 //
 // QgsDatabaseQueryLogEntry

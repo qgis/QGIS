@@ -8,6 +8,7 @@
 
 
 
+
 class QgsBrushStyleComboBox : QComboBox
 {
 %Docstring(signature="appended")

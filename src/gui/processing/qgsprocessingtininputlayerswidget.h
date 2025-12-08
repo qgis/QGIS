@@ -18,12 +18,13 @@
 
 #define SIP_NO_FILE
 
+#include "ui_qgsprocessingtinmeshdatawidgetbase.h"
+
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingwidgetwrapper.h"
+
 #include <QAbstractTableModel>
 #include <QStyledItemDelegate>
-
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingparametertininputlayers.h"
-#include "ui_qgsprocessingtinmeshdatawidgetbase.h"
 
 /// @cond PRIVATE
 

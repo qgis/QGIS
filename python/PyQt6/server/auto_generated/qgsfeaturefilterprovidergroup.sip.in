@@ -17,7 +17,7 @@ A filter filter provider grouping several filter providers.
 
 .. deprecated:: 3.4
 
-   Use :py:class:`QgsGroupedFeatureFilterProvider`
+   Use :py:class:`QgsGroupedFeatureFilterProvider`.
 %End
 
 %TypeHeaderCode

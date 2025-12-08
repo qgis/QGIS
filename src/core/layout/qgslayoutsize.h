@@ -18,11 +18,12 @@
 #ifndef QGSLAYOUTSIZE_H
 #define QGSLAYOUTSIZE_H
 
-#include "qgis_core.h"
-#include "qgis.h"
 #include "qgsconfig.h"
-#include <QSizeF>
 
+#include "qgis.h"
+#include "qgis_core.h"
+
+#include <QSizeF>
 
 /**
  * \ingroup core

@@ -21,10 +21,11 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutmapgridwidgetbase.h"
-#include "qgslayoutitemwidget.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemmapgrid.h"
+#include "qgslayoutitemwidget.h"
 
 /**
  * \ingroup gui

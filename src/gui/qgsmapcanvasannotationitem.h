@@ -21,7 +21,8 @@
 #ifdef SIP_RUN
 //%ModuleHeaderCode
 // For ConvertToSubClassCode.
-#include <qgsmapcanvasannotationitem.h>
+#include "qgsmapcanvasannotationitem.h"
+
 //%End
 #endif
 

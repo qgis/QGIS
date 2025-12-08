@@ -18,8 +18,8 @@
 
 #include "ui_qgsvaluemapconfigdlgbase.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 class QComboBox;
 

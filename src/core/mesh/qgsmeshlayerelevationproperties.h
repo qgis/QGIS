@@ -19,11 +19,11 @@
 #ifndef QGSMESHLAYERELEVATIONPROPERTIES_H
 #define QGSMESHLAYERELEVATIONPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmeshdataset.h"
-#include "qgis.h"
 
 class QgsLineSymbol;
 class QgsFillSymbol;

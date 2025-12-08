@@ -15,10 +15,11 @@
 #ifndef QGSAFSFEATUREITERATOR_H
 #define QGSAFSFEATUREITERATOR_H
 
-#include "qgsfeatureiterator.h"
+#include <memory>
+
 #include "qgsafsshareddata.h"
 #include "qgscoordinatetransform.h"
-#include <memory>
+#include "qgsfeatureiterator.h"
 
 class QgsSpatialIndex;
 

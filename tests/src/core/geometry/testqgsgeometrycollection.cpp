@@ -12,12 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <qtestcase.h>
+#include <testtransformer.h>
 
 #include "qgscircularstring.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgeometrycollection.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
@@ -25,11 +23,14 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgspolyhedralsurface.h"
-#include "qgstriangulatedsurface.h"
 #include "qgsproject.h"
-#include "qgscoordinatetransform.h"
+#include "qgstest.h"
+#include "qgstriangulatedsurface.h"
 #include "testgeometryutils.h"
-#include "testtransformer.h"
+
+#include <QObject>
+#include <QString>
+#include <qtestcase.h>
 
 class TestQgsGeometryCollection : public QObject
 {

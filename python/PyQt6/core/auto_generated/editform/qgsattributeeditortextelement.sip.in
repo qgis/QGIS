@@ -7,8 +7,6 @@
  ************************************************************************/
 
 
-
-
 class QgsAttributeEditorTextElement : QgsAttributeEditorElement
 {
 %Docstring(signature="appended")

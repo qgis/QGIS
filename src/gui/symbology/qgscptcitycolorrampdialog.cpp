@@ -14,22 +14,23 @@
  ***************************************************************************/
 
 #include "qgscptcitycolorrampdialog.h"
-#include "moc_qgscptcitycolorrampdialog.cpp"
 
-#include "qgscptcityarchive.h"
-#include "qgscolorramp.h"
-#include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgscolorramp.h"
+#include "qgscptcityarchive.h"
 #include "qgsdialog.h"
-#include "qgssymbollayerutils.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 
+#include <QMessageBox>
 #include <QPushButton>
+#include <QSortFilterProxyModel>
 #include <QTextEdit>
 #include <QTime>
-#include <QMessageBox>
-#include <QSortFilterProxyModel>
+
+#include "moc_qgscptcitycolorrampdialog.cpp"
 
 /////////
 
@@ -41,7 +42,6 @@
 QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent )
   : QDialog( parent )
   , mRamp( ramp )
-  , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );

@@ -20,9 +20,10 @@
 
 #include "qgsconfig.h"
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 #include <QPair>
+
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
 #endif

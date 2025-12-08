@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLegendPatchShapeButton : QToolButton
 {
 %Docstring(signature="appended")
@@ -21,6 +23,7 @@ settings.
 #include "qgslegendpatchshapebutton.h"
 %End
   public:
+
     QgsLegendPatchShapeButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new patch shape button with the specified ``parent`` widget.

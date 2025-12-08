@@ -18,13 +18,15 @@
 #define QGSTEXTFORMATWIDGET_H
 
 #include "ui_qgstextformatwidgetbase.h"
-#include "qgis_sip.h"
-#include "qgstextformat.h"
-#include "qgsstringutils.h"
-#include "qgsguiutils.h"
-#include "qgssymbolwidgetcontext.h"
-#include <QFontDatabase>
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgsstringutils.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgstextformat.h"
+
+#include <QFontDatabase>
 
 class QgsMapCanvas;
 class QgsCharacterSelectorDialog;
@@ -52,6 +54,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     Q_PROPERTY( QgsTextFormat format READ format )
 
   public:
+
     /**
      * Constructor for QgsTextFormatWidget.
      * \param format initial formatting settings to show in widget
@@ -358,6 +361,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTextFormatDialog.
      * \param format initial format settings to show in dialog
@@ -409,6 +413,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTextFormatPanelWidget.
      * \param format initial format settings to show in dialog

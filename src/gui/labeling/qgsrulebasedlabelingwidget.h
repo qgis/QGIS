@@ -18,14 +18,13 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QWidget>
-
-#include "qgspanelwidget.h"
-
 #include "ui_qgsrulebasedlabelingwidget.h"
 
-#include "qgsrulebasedlabeling.h"
 #include "qgis_gui.h"
+#include "qgspanelwidget.h"
+#include "qgsrulebasedlabeling.h"
+
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsVectorLayer;
@@ -199,7 +198,7 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsVectorLayer *mLayer = nullptr;
 
     QgsLabelingGui *mLabelingGui = nullptr;
-    QgsPalLayerSettings *mSettings; // a clone of original settings
+    QgsPalLayerSettings *mSettings = nullptr; // a clone of original settings
 
     QgsMapCanvas *mMapCanvas = nullptr;
 };

@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmessageoutput.h"
-#include "moc_qgsmessageoutput.cpp"
+
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
 #include <QRegularExpression>
+
+#include "moc_qgsmessageoutput.cpp"
 
 static QgsMessageOutput *messageOutputConsole_()
 {

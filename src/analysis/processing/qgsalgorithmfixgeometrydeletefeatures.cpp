@@ -70,7 +70,6 @@ void QgsFixGeometryDeleteFeaturesAlgorithm::initAlgorithm( const QVariantMap &co
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
     QList<int>()
@@ -86,7 +85,6 @@ void QgsFixGeometryDeleteFeaturesAlgorithm::initAlgorithm( const QVariantMap &co
     QString(), QStringLiteral( "ERRORS" )
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Cleaned layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );

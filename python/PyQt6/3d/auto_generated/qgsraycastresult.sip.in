@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsraycastresult.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRayCastResult
+{
+%Docstring(signature="appended")
+Contains the results of ray casting operations in a 3D map canvas.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsraycastresult.h"
+%End
+  public:
+    QgsRayCastResult();
+%Docstring
+Ctor
+%End
+
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` is ray did not intersect any layer or terrain entity
+%End
+
+    bool hasLayerHits() const;
+%Docstring
+Returns ``True`` is ray hit at least one entity from a layer
+%End
+
+    QList<QgsMapLayer *> layers() const;
+%Docstring
+Returns pointers to the map layers of entities that were intersected by
+the ray
+%End
+
+    QList<QgsRayCastHit> layerHits( QgsMapLayer *layer ) const;
+%Docstring
+Returns all hits from entities of the specific ``layer``
+%End
+
+    bool hasTerrainHits() const;
+%Docstring
+Returns ``True`` is the ray intersected the terrain
+%End
+
+    QList<QgsRayCastHit> terrainHits() const;
+%Docstring
+Returns all terrain intersection hits
+%End
+
+    QList<QgsRayCastHit> allHits() const;
+%Docstring
+Returns all the hits from both layer and terrain intersections
+%End
+
+    void addLayerHits( QgsMapLayer *layer, const QList<QgsRayCastHit> &hits );
+%Docstring
+Adds all ``hits`` from ``layer`` to the result
+%End
+
+    void addTerrainHits( const QList<QgsRayCastHit> &hits );
+%Docstring
+Adds all terrain ``hits`` to the result
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsraycastresult.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

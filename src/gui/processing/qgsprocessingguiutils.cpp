@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsprocessingguiutils.h"
-#include "qgslayertreelayer.h"
-#include "qgslayertree.h"
-#include "qgslayertreeview.h"
-#include "qgslayertreeregistrybridge.h"
+
 #include <optional>
+
+#include "qgslayertree.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertreeregistrybridge.h"
+#include "qgslayertreeview.h"
 
 void QgsProcessingGuiUtils::configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer )
 {

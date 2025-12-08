@@ -15,12 +15,12 @@
 
 #include "qgsrastercontourrenderer.h"
 
-#include "qgsreadwritecontext.h"
-#include "qgssymbollayerutils.h"
+#include <gdal_alg.h>
+
 #include "qgslayertreemodellegendnode.h"
 #include "qgslinesymbol.h"
-
-#include <gdal_alg.h>
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayerutils.h"
 
 QgsRasterContourRenderer::QgsRasterContourRenderer( QgsRasterInterface *input )
   : QgsRasterRenderer( input, QStringLiteral( "contour" ) )

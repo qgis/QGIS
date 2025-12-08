@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmzonalstatistics.h"
-#include "qgszonalstatistics.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsalgorithmzonalstatistics_private.h"
+#include "qgsvectorlayer.h"
+#include "qgszonalstatistics.h"
 
 ///@cond PRIVATE
 

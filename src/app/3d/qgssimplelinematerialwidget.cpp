@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgssimplelinematerialwidget.h"
-#include "moc_qgssimplelinematerialwidget.cpp"
 
-#include "qgssimplelinematerialsettings.h"
 #include "qgis.h"
+#include "qgssimplelinematerialsettings.h"
+
+#include "moc_qgssimplelinematerialwidget.cpp"
 
 QgsSimpleLineMaterialWidget::QgsSimpleLineMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )

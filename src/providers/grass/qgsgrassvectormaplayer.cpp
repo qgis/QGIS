@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 
-#include <QFileInfo>
-
-#include "qgslogger.h"
+#include "qgsgrassvectormaplayer.h"
 
 #include "qgsgrass.h"
-#include "qgsgrasswin.h"
 #include "qgsgrassvectormap.h"
-#include "qgsgrassvectormaplayer.h"
+#include "qgsgrasswin.h"
+#include "qgslogger.h"
+
+#include <QFileInfo>
+
 #include "moc_qgsgrassvectormaplayer.cpp"
 
 extern "C"
@@ -39,11 +40,7 @@ extern "C"
 
 QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int field )
   : mField( field )
-  , mValid( false )
   , mMap( map )
-  , mHasTable( false )
-  , mKeyColumn( -1 )
-  , mUsers( 0 )
 {
 }
 

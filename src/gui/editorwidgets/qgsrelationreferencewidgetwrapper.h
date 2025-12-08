@@ -16,9 +16,9 @@
 #ifndef QGSRELATIONREFERENCEWIDGETWRAPPER_H
 #define QGSRELATIONREFERENCEWIDGETWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsRelationReferenceWidget;
 class QgsMapCanvas;
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QgsRelationReferenceWidget *mWidget = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-    bool mIndeterminateState;
+    bool mIndeterminateState = false;
     int mBlockChanges = 0;
 };
 

@@ -27,12 +27,12 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
-#include <QVector3D>
-#include <QMatrix4x4>
-
 #include "qgsrange.h"
 #include "qgssettings.h"
+
+#include <QMatrix4x4>
+#include <QVector3D>
+#include <Qt3DCore/QEntity>
 
 class Qgs3DMapSettings;
 

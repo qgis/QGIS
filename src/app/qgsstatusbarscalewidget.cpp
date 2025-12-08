@@ -14,18 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsstatusbarscalewidget.h"
+
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsscalecombobox.h"
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QValidator>
 
-#include "qgsstatusbarscalewidget.h"
 #include "moc_qgsstatusbarscalewidget.cpp"
-
-#include "qgsmapcanvas.h"
-#include "qgsscalecombobox.h"
-#include "qgsproject.h"
-#include "qgsprojectviewsettings.h"
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )

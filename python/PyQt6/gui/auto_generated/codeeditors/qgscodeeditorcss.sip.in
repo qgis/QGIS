@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCodeEditorCSS : QgsCodeEditor
 {
 %Docstring(signature="appended")

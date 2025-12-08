@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsfielddomainsitem.h"
-#include "moc_qgsfielddomainsitem.cpp"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsapplication.h"
 #include "qgsfielddomain.h"
 #include "qgsmessagelog.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include "moc_qgsfielddomainsitem.cpp"
 
 QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
     const QString &path,
@@ -107,6 +109,8 @@ QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *dom
   Q_ASSERT( dynamic_cast<QgsFieldDomainsItem *>( parent ) );
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( domain->description().isEmpty() ? domain->name() : domain->description() );
+  QgsFieldDomainsItem *domainsItem = qobject_cast<QgsFieldDomainsItem *>( parent );
+  mConnectionUri = domainsItem->connectionUri();
 }
 
 QIcon QgsFieldDomainItem::icon()
@@ -130,3 +134,7 @@ const QgsFieldDomain *QgsFieldDomainItem::fieldDomain()
 
 QgsFieldDomainItem::~QgsFieldDomainItem() = default;
 
+QString QgsFieldDomainItem::connectionUri() const
+{
+  return mConnectionUri;
+}

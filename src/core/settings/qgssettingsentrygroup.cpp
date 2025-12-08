@@ -15,12 +15,13 @@
 
 
 #include "qgssettingsentrygroup.h"
+
+#include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgssettingsentry.h"
-#include "qgslogger.h"
 
-#include <QRegularExpression>
 #include <QDir>
+#include <QRegularExpression>
 
 QgsSettingsEntryGroup::QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings )
   : QgsSettingsEntryGroup( settings, true )

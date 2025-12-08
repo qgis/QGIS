@@ -17,14 +17,14 @@
 #ifndef QGSHANAFEATUREITERATOR_H
 #define QGSHANAFEATUREITERATOR_H
 
+#include <odbc/Forwards.h>
+
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureiterator.h"
 #include "qgshanaconnectionpool.h"
 #include "qgshanaprimarykeys.h"
 #include "qgshanaprovider.h"
 #include "qgshanaresultset.h"
-#include "qgscoordinatetransform.h"
-
-#include "odbc/Forwards.h"
 
 class QgsHanaFeatureSource : public QgsAbstractFeatureSource
 {

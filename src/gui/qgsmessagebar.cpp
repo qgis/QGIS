@@ -16,23 +16,25 @@
  ***************************************************************************/
 
 #include "qgsmessagebar.h"
-#include "moc_qgsmessagebar.cpp"
-#include "qgsmessagebaritem.h"
+
 #include "qgsapplication.h"
+#include "qgsmessagebaritem.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgssettings.h"
 
-#include <QWidget>
-#include <QPalette>
-#include <QStackedWidget>
-#include <QProgressBar>
-#include <QToolButton>
-#include <QTimer>
 #include <QGridLayout>
+#include <QLabel>
 #include <QMenu>
 #include <QMouseEvent>
-#include <QLabel>
+#include <QPalette>
+#include <QProgressBar>
+#include <QStackedWidget>
+#include <QTimer>
+#include <QToolButton>
+#include <QWidget>
+
+#include "moc_qgsmessagebar.cpp"
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
   : QFrame( parent )

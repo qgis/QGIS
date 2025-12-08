@@ -14,27 +14,30 @@
  ***************************************************************************/
 
 #include "qgsfontbutton.h"
-#include "moc_qgsfontbutton.cpp"
-#include "qgstextformatwidget.h"
-#include "qgssymbollayerutils.h"
+
+#include "qgsapplication.h"
 #include "qgscolorscheme.h"
-#include "qgsmapcanvas.h"
-#include "qgscolorwidgets.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
+#include "qgscolorwidgets.h"
 #include "qgsdoublespinbox.h"
-#include "qgsunittypes.h"
-#include "qgsmenuheader.h"
-#include "qgsfontutils.h"
-#include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayer.h"
-#include "qgstextrenderer.h"
+#include "qgsfontutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmenuheader.h"
 #include "qgsscreenhelper.h"
-#include <QMenu>
+#include "qgssymbollayerutils.h"
+#include "qgstextformatwidget.h"
+#include "qgstextrenderer.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
 #include <QClipboard>
 #include <QDrag>
+#include <QMenu>
 #include <QToolTip>
+
+#include "moc_qgsfontbutton.cpp"
 
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -98,7 +101,10 @@ void QgsFontButton::showSettingsDialog()
         mActivePanel->setPanelTitle( mDialogTitle );
         mActivePanel->setContext( symbolContext );
 
-        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [this] { setTextFormat( mActivePanel->format() ); } );
+        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [this] {
+          setTextFormat( mActivePanel->format() );
+          QgsFontUtils::addRecentFontFamily( mActivePanel->format().font().family() );
+        } );
         panel->openPanel( mActivePanel );
         return;
       }

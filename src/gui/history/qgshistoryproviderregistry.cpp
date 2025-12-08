@@ -15,19 +15,22 @@
  ***************************************************************************/
 
 #include "qgshistoryproviderregistry.h"
-#include "moc_qgshistoryproviderregistry.cpp"
-#include "qgshistoryprovider.h"
+
+#include <sqlite3.h>
+
 #include "qgsapplication.h"
-#include "qgsruntimeprofiler.h"
+#include "qgsdbqueryhistoryprovider.h"
+#include "qgshistoryentry.h"
+#include "qgshistoryprovider.h"
 #include "qgslogger.h"
-#include "qgsxmlutils.h"
 #include "qgsprocessinghistoryprovider.h"
 #include "qgsprocessingutils.h"
-#include "qgshistoryentry.h"
-#include "qgsdbqueryhistoryprovider.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsxmlutils.h"
 
 #include <QFile>
-#include <sqlite3.h>
+
+#include "moc_qgshistoryproviderregistry.cpp"
 
 QgsHistoryProviderRegistry::QgsHistoryProviderRegistry( QObject *parent, bool useMemoryDatabase )
   : QObject( parent )

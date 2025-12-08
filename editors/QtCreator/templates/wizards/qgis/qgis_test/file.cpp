@@ -19,9 +19,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgstest.h"
+
 #include <QObject>
-#include <qgsapplication.h>
 
 class % { CN } : public QObject
 {

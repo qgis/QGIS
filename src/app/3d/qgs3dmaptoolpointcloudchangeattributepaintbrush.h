@@ -16,8 +16,8 @@
 #ifndef QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPAINTBRUSH_H
 #define QGS3DMAPTOOLPOINTCLOUDCHANGEATTRIBUTEPAINTBRUSH_H
 #include "qgs3dmaptool.h"
-#include "qgspoint.h"
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
+#include "qgspoint.h"
 
 class QgsRubberBand3D;
 class Qgs3DMapToolPointCloudChangeAttributePaintbrush : public Qgs3DMapToolPointCloudChangeAttribute

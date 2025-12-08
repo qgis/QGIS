@@ -15,9 +15,9 @@
 #ifndef QGSSCREENPROPERTIES_H
 #define QGSSCREENPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 class QScreen;
 class QgsRenderContext;

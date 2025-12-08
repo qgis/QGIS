@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgssinglebandcolordatarenderer.h"
+
+#include <memory>
+
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
-#include <memory>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface *input, int band )
   : QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) )

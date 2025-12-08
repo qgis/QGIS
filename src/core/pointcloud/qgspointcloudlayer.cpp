@@ -15,40 +15,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseventtracing.h"
 #include "qgspointcloudlayer.h"
-#include "moc_qgspointcloudlayer.cpp"
-#include "qgspointcloudeditingindex.h"
-#include "qgspointcloudlayereditutils.h"
-#include "qgspointcloudlayerrenderer.h"
-#include "qgspointcloudindex.h"
-#include "qgspointcloudstatistics.h"
-#include "qgspointcloudsubindex.h"
-#include "qgsrectangle.h"
-#include "qgspointclouddataprovider.h"
-#include "qgsproviderregistry.h"
-#include "qgslogger.h"
-#include "qgslayermetadataformatter.h"
-#include "qgspointcloudrenderer.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
-#include "qgspainting.h"
-#include "qgspointcloudrendererregistry.h"
-#include "qgspointcloudlayerelevationproperties.h"
-#include "qgsmaplayerlegend.h"
-#include "qgsxmlutils.h"
-#include "qgsmaplayerfactory.h"
+
 #include "qgsabstractpointcloud3drenderer.h"
-#include "qgspointcloudstatscalculationtask.h"
+#include "qgsapplication.h"
+#include "qgseventtracing.h"
+#include "qgslayermetadataformatter.h"
+#include "qgslogger.h"
+#include "qgsmaplayerfactory.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
+#include "qgspointclouddataprovider.h"
+#include "qgspointcloudeditingindex.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayereditutils.h"
+#include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudlayerprofilegenerator.h"
+#include "qgspointcloudlayerrenderer.h"
+#include "qgspointcloudlayerundocommand.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrendererregistry.h"
+#include "qgspointcloudstatistics.h"
+#include "qgspointcloudstatscalculationtask.h"
+#include "qgspointcloudsubindex.h"
+#include "qgsproviderregistry.h"
+#include "qgsrectangle.h"
+#include "qgsruntimeprofiler.h"
 #include "qgstaskmanager.h"
 #include "qgsthreadingutils.h"
-#include "qgspointcloudlayerprofilegenerator.h"
-#include "qgspointcloudlayerundocommand.h"
 #include "qgsvirtualpointcloudprovider.h"
-
+#include "qgsxmlutils.h"
 
 #include <QUrl>
+
+#include "moc_qgspointcloudlayer.cpp"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,
@@ -839,11 +840,11 @@ bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   bool result = false;
-  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
-  if ( r )
+  if ( QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() ) )
   {
-    result = r->convertFrom2DRenderer( renderer() );
-    setRenderer3D( r );
+    std::unique_ptr< QgsAbstractPointCloud3DRenderer > newRenderer( static_cast< QgsAbstractPointCloud3DRenderer * >( r->clone() ) );
+    result = newRenderer->convertFrom2DRenderer( renderer() );
+    setRenderer3D( newRenderer.release() );
     trigger3DUpdate();
   }
   return result;

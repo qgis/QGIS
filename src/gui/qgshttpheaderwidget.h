@@ -21,10 +21,11 @@
 #ifndef QGSHTTPHEADERWIDGET_H
 #define QGSHTTPHEADERWIDGET_H
 
-#include <QWidget>
 #include "ui_qgshttpheaderwidget.h"
+
 #include "qgshttpheaders.h"
 
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -38,12 +39,13 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     Q_OBJECT
 
   public:
+
     /**
      * Default constructor
      * \param parent parent widget
      */
     explicit QgsHttpHeaderWidget( QWidget *parent = nullptr );
-    ~QgsHttpHeaderWidget();
+    ~QgsHttpHeaderWidget() override;
 
     /**
      * Returns the headers as defined in the widget.

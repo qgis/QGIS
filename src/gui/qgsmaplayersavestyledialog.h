@@ -19,11 +19,13 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QDialog>
 #include "ui_qgsmaplayersavestyledialog.h"
-#include "qgsmaplayer.h"
-#include "qgslayerpropertiesdialog.h"
+
 #include "qgis_gui.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgsmaplayer.h"
+
+#include <QDialog>
 
 class QgsMapLayerStyleCategoriesModel;
 

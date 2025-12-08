@@ -16,12 +16,13 @@
 #ifndef QGSAFSSHAREDDATA_H
 #define QGSAFSSHAREDDATA_H
 
-#include <QMutex>
-#include "qgsfields.h"
-#include "qgsfeature.h"
-#include "qgsdatasourceuri.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
 #include "qgsvectordataprovider.h"
+
+#include <QMutex>
 
 class QgsFeedback;
 

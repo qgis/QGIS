@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsmaplayerfactory.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgspointcloudlayer.h"
-#include "qgsvectortilelayer.h"
+
 #include "qgsannotationlayer.h"
 #include "qgsgrouplayer.h"
+#include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgstiledscenelayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 
 Qgis::LayerType QgsMapLayerFactory::typeFromString( const QString &string, bool &ok )
 {

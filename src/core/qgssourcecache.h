@@ -18,9 +18,9 @@
 #ifndef QGSSOURCECACHE_H
 #define QGSSOURCECACHE_H
 
-#include "qgsabstractcontentcache.h"
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsabstractcontentcache.h"
 
 class QTemporaryDir;
 

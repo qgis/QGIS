@@ -27,16 +27,17 @@
 #ifndef QGSSERVER_H
 #define QGSSERVER_H
 
-#include <QFileInfo>
-#include "qgsrequesthandler.h"
-#include "qgsconfigcache.h"
-#include "qgscapabilitiescache.h"
-#include "qgsserviceregistry.h"
-#include "qgsserversettings.h"
-#include "qgsserverplugins.h"
-#include "qgsserverinterfaceimpl.h"
 #include "qgis_server.h"
+#include "qgscapabilitiescache.h"
+#include "qgsconfigcache.h"
+#include "qgsrequesthandler.h"
+#include "qgsserverinterfaceimpl.h"
+#include "qgsserverplugins.h"
 #include "qgsserverrequest.h"
+#include "qgsserversettings.h"
+#include "qgsserviceregistry.h"
+
+#include <QFileInfo>
 
 class QgsServerResponse;
 class QgsProject;
@@ -48,6 +49,7 @@ class QgsProject;
 class SERVER_EXPORT QgsServer
 {
   public:
+
     /**
      * Creates the server instance
      */

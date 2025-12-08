@@ -15,13 +15,14 @@
 #ifndef QGSCOLORSCHEMELIST_H
 #define QGSCOLORSCHEMELIST_H
 
-#include "qgscolorscheme.h"
-#include <QTreeView>
-#include <QAbstractItemModel>
-#include <QItemDelegate>
-#include <QFile>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscolorscheme.h"
+
+#include <QAbstractItemModel>
+#include <QFile>
+#include <QItemDelegate>
+#include <QTreeView>
 
 class QMimeData;
 class QgsPanelWidget;
@@ -146,7 +147,7 @@ class GUI_EXPORT QgsColorSchemeModel : public QAbstractItemModel
     QgsColorScheme *mScheme = nullptr;
     QString mContext;
     QColor mBaseColor;
-    bool mIsDirty;
+    bool mIsDirty = false;
 };
 
 /**

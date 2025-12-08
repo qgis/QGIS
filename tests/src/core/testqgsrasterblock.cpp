@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
+
+#include <QLocale>
 #include <QObject>
 #include <QString>
 #include <QTemporaryFile>
-#include <QLocale>
-
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
 
 /**
  * \ingroup UnitTests
@@ -173,7 +173,7 @@ void TestQgsRasterBlock::testWrite()
 
   // generate unique filename (need to open the file first to generate it)
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.close();
 
   // create a GeoTIFF - this will create data provider in editable mode

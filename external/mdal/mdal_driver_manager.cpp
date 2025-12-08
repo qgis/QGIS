@@ -280,7 +280,7 @@ void MDAL::DriverManager::loadDynamicDrivers()
     std::shared_ptr<MDAL::Driver> driver( MDAL::DriverDynamic::create( dirPath + libFile ) );
 
     if ( driver )
-      mDrivers.push_back( driver );
+      mDrivers.emplace_back( std::move( driver ) );
   }
 
 }

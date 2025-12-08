@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmroundrastervalues.h"
+
 #include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE

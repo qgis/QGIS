@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmclip.h"
+
 #include "qgsgeometryengine.h"
 #include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"

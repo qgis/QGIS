@@ -36,12 +36,12 @@ namespace MDAL
       std::string mProj;
       GDALDatasetH mHDataset;
 
-      unsigned int mNBands; /* number of bands */
-      unsigned int mXSize; /* number of x pixels */
-      unsigned int mYSize; /* number of y pixels */
-      unsigned int mNPoints; /* nodes count */
-      unsigned int mNVolumes; /* Faces count */
-      double mGT[6]; /* affine transform matrix */
+      unsigned int mNBands = 0; /* number of bands */
+      unsigned int mXSize = 0; /* number of x pixels */
+      unsigned int mYSize = 0; /* number of y pixels */
+      unsigned int mNPoints = 0; /* nodes count */
+      unsigned int mNVolumes = 0; /* Faces count */
+      double mGT[6] = {0, 0, 0, 0, 0, 0}; /* affine transform matrix */
 
     private:
       void parseParameters();

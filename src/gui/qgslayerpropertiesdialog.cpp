@@ -14,26 +14,28 @@
  ***************************************************************************/
 
 #include "qgslayerpropertiesdialog.h"
-#include "moc_qgslayerpropertiesdialog.cpp"
-#include "qgsmaplayerloadstyledialog.h"
-#include "qgsmaplayersavestyledialog.h"
+
+#include "qgsfileutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmaplayerloadstyledialog.h"
+#include "qgsmaplayersavestyledialog.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsnative.h"
-#include "qgssettings.h"
-#include "qgsmaplayer.h"
 #include "qgsmetadatawidget.h"
+#include "qgsnative.h"
 #include "qgsproviderregistry.h"
-#include "qgsfileutils.h"
+#include "qgssettings.h"
 #include "qgssldexportcontext.h"
-#include "qstackedwidget.h"
-#include "qgsmapcanvas.h"
 
+#include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDesktopServices>
+#include <qstackedwidget.h>
+
+#include "moc_qgslayerpropertiesdialog.cpp"
 
 QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QgsOptionsDialogBase( settingsKey, parent, fl, settings )

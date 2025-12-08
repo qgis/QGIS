@@ -16,8 +16,8 @@
 #ifndef QGSGEOMETRYWIDGETWRAPPER_H
 #define QGSGEOMETRYWIDGETWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QLabel;
 class QToolButton;
@@ -36,6 +36,7 @@ class GUI_EXPORT QgsGeometryWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsGeometryWidgetWrapper.
      *

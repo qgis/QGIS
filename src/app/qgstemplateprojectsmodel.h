@@ -16,8 +16,8 @@
 #ifndef QGSTEMPLATEPROJECTSMODEL_H
 #define QGSTEMPLATEPROJECTSMODEL_H
 
-#include <QStandardItemModel>
 #include <QFileSystemWatcher>
+#include <QStandardItemModel>
 #include <QTemporaryDir>
 
 class QgsTemplateProjectsModel : public QStandardItemModel

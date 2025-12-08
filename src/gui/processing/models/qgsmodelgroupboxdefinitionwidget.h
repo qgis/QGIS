@@ -19,10 +19,11 @@
 #ifndef QGSPROCESSINGGROUPBBOXDEFINITIONWIDGET_H
 #define QGSPROCESSINGGROUPBBOXDEFINITIONWIDGET_H
 
-#include <QWidget>
-#include <QDialog>
-#include "qgsprocessingmodelgroupbox.h"
 #include "qgis_gui.h"
+#include "qgsprocessingmodelgroupbox.h"
+
+#include <QDialog>
+#include <QWidget>
 
 #define SIP_NO_FILE
 
@@ -45,6 +46,7 @@ class GUI_EXPORT QgsModelGroupBoxDefinitionDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsModelGroupBoxDefinitionWidget, for the specified group \a box.
      */

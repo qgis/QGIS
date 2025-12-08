@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsVectorLayerSaveAsDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -19,6 +21,7 @@ A dialog for configuring vector layer save to file operations.
 #include "qgsvectorlayersaveasdialog.h"
 %End
   public:
+
     enum class Option
     {
       Symbology,

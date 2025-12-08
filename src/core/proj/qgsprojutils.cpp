@@ -15,17 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojutils.h"
+
+#include <proj.h>
+#include <proj_experimental.h>
+
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
-#include <QString>
-#include <QSet>
-#include <QRegularExpression>
-#include <QDate>
 
-#include <proj.h>
-#include <proj_experimental.h>
+#include <QDate>
+#include <QRegularExpression>
+#include <QSet>
+#include <QString>
 
 #if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
 thread_local QgsProjContext QgsProjContext::sProjContext;

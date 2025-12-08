@@ -18,9 +18,10 @@
 #ifndef QGSSCALECOMBOBOX_H
 #define QGSSCALECOMBOBOX_H
 
-#include <QComboBox>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui
@@ -35,6 +36,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     Q_PROPERTY( RatioMode ratioMode READ ratioMode WRITE setRatioMode NOTIFY ratioModeChanged )
 
   public:
+
     /**
      * Scale ratio modes.
      *

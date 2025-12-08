@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgseffectstack.h"
-#include "qgspainteffectregistry.h"
-#include "qgsrendercontext.h"
+
 #include "qgsapplication.h"
+#include "qgspainteffectregistry.h"
 #include "qgspainting.h"
+#include "qgsrendercontext.h"
+
 #include <QPicture>
 
 QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
@@ -78,6 +80,9 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 
 QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
 {
+  if ( &other == this )
+    return *this;
+
   std::swap( mEffectList, other.mEffectList );
   mEnabled = other.enabled();
   return *this;

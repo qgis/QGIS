@@ -56,7 +56,7 @@ class QgsDepthRenderView : public QgsAbstractRenderView
     //! Returns the render capture object used to take an image of the depth buffer of the scene
     Qt3DRender::QRenderCapture *renderCapture() { return mDepthRenderCapture; }
 
-    virtual void updateWindowResize( int width, int height ) override;
+    void updateWindowResize( int width, int height ) override;
 
   private:
     Qt3DRender::QRenderCapture *mDepthRenderCapture = nullptr;

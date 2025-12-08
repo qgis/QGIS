@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsogrproxytextcodec.h"
-#include "qgslogger.h"
+
 #include <cpl_string.h>
 #include <mutex>
+
+#include "qgslogger.h"
 
 QgsOgrProxyTextCodec::QgsOgrProxyTextCodec( const QByteArray &name )
   : mName( name )

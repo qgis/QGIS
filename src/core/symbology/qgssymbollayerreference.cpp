@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgssymbollayerreference.h"
+
 #include "qgis.h"
+
 #include <QRegularExpression>
 
 QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList &lst )

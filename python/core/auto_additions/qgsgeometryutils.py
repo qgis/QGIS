@@ -66,6 +66,11 @@ try:
     QgsGeometryUtils.interpolatePointOnSegment = staticmethod(QgsGeometryUtils.interpolatePointOnSegment)
     QgsGeometryUtils.createChamfer = staticmethod(QgsGeometryUtils.createChamfer)
     QgsGeometryUtils.createFillet = staticmethod(QgsGeometryUtils.createFillet)
+    QgsGeometryUtils.createChamferGeometry = staticmethod(QgsGeometryUtils.createChamferGeometry)
+    QgsGeometryUtils.createFilletGeometry = staticmethod(QgsGeometryUtils.createFilletGeometry)
+    QgsGeometryUtils.maxFilletRadius = staticmethod(QgsGeometryUtils.maxFilletRadius)
+    QgsGeometryUtils.chamferVertex = staticmethod(QgsGeometryUtils.chamferVertex)
+    QgsGeometryUtils.filletVertex = staticmethod(QgsGeometryUtils.filletVertex)
     QgsGeometryUtils.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

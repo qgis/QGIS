@@ -16,8 +16,9 @@
 #ifndef QGSMSSQLTRANSACTION_H
 #define QGSMSSQLTRANSACTION_H
 
-#include "qgstransaction.h"
 #include <memory>
+
+#include "qgstransaction.h"
 
 class QgsMssqlDatabase;
 
@@ -27,9 +28,9 @@ class QgsMssqlTransaction : public QgsTransaction
     Q_OBJECT
   public:
     QgsMssqlTransaction( const QString &connString );
-    ~QgsMssqlTransaction();
+    ~QgsMssqlTransaction() override;
 
-    virtual bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
+    bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
 
     QString createSavepoint( const QString &savePointId, QString &error ) override;
     bool rollbackToSavepoint( const QString &name, QString &error ) override;
@@ -37,9 +38,9 @@ class QgsMssqlTransaction : public QgsTransaction
     std::shared_ptr<QgsMssqlDatabase> conn() { return mConn; }
 
   private:
-    virtual bool beginTransaction( QString &error, int statementTimeout ) override;
-    virtual bool commitTransaction( QString &error ) override;
-    virtual bool rollbackTransaction( QString &error ) override;
+    bool beginTransaction( QString &error, int statementTimeout ) override;
+    bool commitTransaction( QString &error ) override;
+    bool rollbackTransaction( QString &error ) override;
 
   private:
     //! connection is primarily owned by this class, but it may be also shared with QgsMssqlFeatureSource

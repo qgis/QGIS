@@ -8,6 +8,7 @@
 
 
 
+
 class QgsArrowSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
@@ -18,6 +19,7 @@ A widget for configuring a :py:class:`QgsArrowSymbolLayer`.
 #include "qgsarrowsymbollayerwidget.h"
 %End
   public:
+
     QgsArrowSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

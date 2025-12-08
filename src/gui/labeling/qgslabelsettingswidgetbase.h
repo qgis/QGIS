@@ -16,13 +16,13 @@
 #ifndef QGSLABELSETTINGSWIDGETBASE_H
 #define QGSLABELSETTINGSWIDGETBASE_H
 
-#include "qgssymbolwidgetcontext.h"
-#include "qgspallabeling.h"
-#include "qgspropertycollection.h"
-#include "qgspanelwidget.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgspallabeling.h"
+#include "qgspanelwidget.h"
+#include "qgspropertycollection.h"
+#include "qgssymbolwidgetcontext.h"
 
 #include <QDialog>
 
@@ -40,6 +40,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelSettingsWidgetBase.
      * \param parent parent widget
@@ -137,6 +138,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelSettingsWidgetDialog.
      * \param widget label settings widget to embed in the dialog. Ownership is transferred to the dialog.

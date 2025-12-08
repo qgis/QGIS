@@ -13,15 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryselfintersectioncheck.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsgeometryengine.h"
-#include "qgsmultipolygon.h"
-#include "qgsmultilinestring.h"
-#include "qgsgeometryutils.h"
+
 #include "qgsfeaturepool.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
 
 bool QgsGeometrySelfIntersectionCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
@@ -297,8 +298,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
 QStringList QgsGeometrySelfIntersectionCheck::resolutionMethods() const
 {
   static const QStringList methods = QStringList()
-                                     << tr( "Split feature into a multi-object feature" )
-                                     << tr( "Split feature into multiple single-object features" )
+                                     << tr( "Split feature into a multi-part feature" )
+                                     << tr( "Split feature into multiple single-part features" )
                                      << tr( "No action" );
   return methods;
 }

@@ -230,18 +230,6 @@ Files: external/qspatialite/smain.cpp
 Copyright: 2012, Digia Plc and/or its subsidiary(-ies).
 License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
-Files: external/qt3dextra-headers/*
-Copyright: 2014-2017, Klaralvdalens Datakonsult AB (KDAB)
-                2016, The Qt Company Ltd.
-                2015, Lorenz Esch (TU Ilmenau)
-License: QT-Commercial or LGPL-3 or GPL-2+
-
-Files: external/qt3dextra-headers/Qt3DExtras/qextrudedtextgeometry.h
- external/qt3dextra-headers/Qt3DExtras/qextrudedtextmesh.h
- external/qt3dextra-headers/Qt3DExtras/qt3dwindow.h
-Copyright: 2016-2017, Klaralvdalens Datakonsult AB (KDAB)
-License: QT-Commercial or BSD-3-Clause
-
 Files: external/wintoast/*
 Copyright: 2016, Mohammed Boujemaoui Boulaghmoudi
 License: MIT

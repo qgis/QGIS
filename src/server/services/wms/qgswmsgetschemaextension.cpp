@@ -18,9 +18,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
 #include "qgswmsgetschemaextension.h"
+
 #include "qgsapplication.h"
+#include "qgswmsutils.h"
 
 #include <QDir>
 #include <QFileInfo>

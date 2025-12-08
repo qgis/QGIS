@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgswfsgetfeature.h"
-#include "moc_qgswfsgetfeature.cpp"
+
 #include "qgsmessagelog.h"
 #include "qgswfsconstants.h"
+
 #include <QUrlQuery>
+
+#include "moc_qgswfsgetfeature.cpp"
 
 QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

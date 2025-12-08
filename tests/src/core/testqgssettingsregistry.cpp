@@ -12,11 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-
 #include "qgssettingsentry.h"
 #include "qgssettingsregistry.h"
 #include "qgstest.h"
+
+#include <QObject>
 
 /**
  * This is a helper class to test protected methods of QgsSettingsRegistry

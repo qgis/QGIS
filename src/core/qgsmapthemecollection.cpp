@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+
 #include "moc_qgsmapthemecollection.cpp"
 
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
@@ -414,8 +415,6 @@ QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QStr
 
 void QgsMapThemeCollection::reconnectToLayersStyleManager()
 {
-  // disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
-
   QSet<QgsMapLayer *> layers;
   for ( const MapThemeRecord &rec : std::as_const( mMapThemes ) )
   {

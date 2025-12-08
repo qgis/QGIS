@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfuzzifyraster.h"
+
 #include "qgsrasterfilewriter.h"
 #include "qgsstringutils.h"
 

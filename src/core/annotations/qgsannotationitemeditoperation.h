@@ -17,13 +17,13 @@
 #ifndef QGSANNOTATIONITEMEDITOPERATION_H
 #define QGSANNOTATIONITEMEDITOPERATION_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgspointxy.h"
-#include "qgsvertexid.h"
 #include "qgsgeometry.h"
+#include "qgspointxy.h"
 #include "qgsrendercontext.h"
+#include "qgsvertexid.h"
 
 /**
  * \ingroup core

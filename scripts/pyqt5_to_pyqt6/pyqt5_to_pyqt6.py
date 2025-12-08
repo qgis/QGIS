@@ -226,6 +226,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     extra_imports = defaultdict(set)
     removed_imports = defaultdict(set)
     import_offsets = {}
+    has_unfixed_errors = False  # True if there is at least one error impossible to fix
 
     object_types = {}
 
@@ -424,6 +425,9 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 )
 
     def visit_import(_node: ast.ImportFrom, _parent):
+
+        nonlocal has_unfixed_errors
+
         import_offsets[Offset(node.lineno, node.col_offset)] = (
             node.module,
             {name.name for name in node.names},
@@ -434,15 +438,20 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         for name in node.names:
             if name.name in import_warnings:
                 logging.warning(f"{filename}: {import_warnings[name.name]}")
+                has_unfixed_errors = True
+
             if name.name == "resources_rc":
                 logging.warning(
                     f"{filename}:{_node.lineno}:{_node.col_offset} - WARNING: support for compiled resources "
                     "is removed in Qt6. Directly load icon resources by file path and load UI fields using "
                     "uic.loadUiType by file path instead.\n"
                 )
+                has_unfixed_errors = True
+
         if _node.module == "qgis.PyQt.Qt":
-            extra_imports["qgis.PyQt.QtCore"].update({"Qt"})
-            removed_imports["qgis.PyQt.Qt"].update({"Qt"})
+            for node_name in _node.names:
+                extra_imports["qgis.PyQt.QtCore"].update({node_name.name})
+                removed_imports["qgis.PyQt.Qt"].update({node_name.name})
 
     tree = ast.parse(contents, filename=filename)
     for parent in ast.walk(tree):
@@ -541,6 +550,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             logging.warning(
                 f"{filename}: Missing import, manually add {import_statement}"
             )
+            has_unfixed_errors = True
 
     if dry_run:
         for key, value in fix_qt_enums.items():
@@ -598,7 +608,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             token_renames,
         ]
     ):
-        return 0
+        return has_unfixed_errors
 
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
@@ -679,7 +689,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
                 imports_to_add = extra_imports.get(module, set()) - current_imports
                 if imports_to_add:
-                    additional_import_string = ", ".join(imports_to_add)
+                    additional_import_string = ", ".join(sorted(imports_to_add))
                     if tokens[token_index - 1].src == ")":
                         token_index -= 1
                         while tokens[token_index].src.strip() in ("", ",", ")"):
@@ -772,7 +782,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     with open(filename, "w") as f:
         f.write(new_contents)
 
-    return new_contents != contents
+    return has_unfixed_errors or new_contents != contents
 
 
 def get_class_enums(item):

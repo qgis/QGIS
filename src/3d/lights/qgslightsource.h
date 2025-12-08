@@ -18,8 +18,8 @@
 #ifndef QGSLIGHTSOURCE_H
 #define QGSLIGHTSOURCE_H
 
-#include "qgis_3d.h"
 #include "qgis.h"
+#include "qgis_3d.h"
 #include "qgis_sip.h"
 #include "qgsreadwritecontext.h"
 

@@ -16,9 +16,10 @@
 #ifndef QGSBROWSERTREEVIEW_H
 #define QGSBROWSERTREEVIEW_H
 
-#include <QTreeView>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QTreeView>
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile

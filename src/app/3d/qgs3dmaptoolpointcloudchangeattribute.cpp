@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
-#include "moc_qgs3dmaptoolpointcloudchangeattribute.cpp"
+
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -33,6 +33,8 @@
 #include <QCamera>
 #include <QQueue>
 #include <QtConcurrentMap>
+
+#include "moc_qgs3dmaptoolpointcloudchangeattribute.cpp"
 
 class QgsPointCloudAttribute;
 class QgsMapLayer;

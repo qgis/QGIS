@@ -17,6 +17,7 @@
 
 
 
+
 class QgsPointLocator : QObject
 {
 %Docstring(signature="appended")

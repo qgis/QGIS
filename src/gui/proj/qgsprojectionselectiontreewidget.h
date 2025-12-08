@@ -13,16 +13,15 @@
 
 #include "ui_qgsprojectionselectorbase.h"
 
-#include <QSet>
-#include <QStringList>
-
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystemmodel.h"
 #include "qgsrecentcoordinatereferencesystemsmodel.h"
 
 #include <QIdentityProxyModel>
+#include <QSet>
+#include <QStringList>
 #include <QStyledItemDelegate>
 
 class QResizeEvent;
@@ -77,6 +76,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProjectionSelectionTreeWidget, with the specified \a parent widget.
      *

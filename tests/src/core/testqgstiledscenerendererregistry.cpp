@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstiledscenerendererregistry.h"
-#include "qgstiledscenerenderer.h"
 #include "qgsreadwritecontext.h"
+#include "qgstest.h"
+#include "qgstiledscenerenderer.h"
+#include "qgstiledscenerendererregistry.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 //dummy renderer for testing
 class DummyRenderer : public QgsTiledSceneRenderer

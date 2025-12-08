@@ -190,6 +190,7 @@ class TestQgsRenderContext(QgisTestCase):
             supports_lossless = False
 
         c = QgsRenderContext.fromQPainter(p)
+        p.end()
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Flag.Antialiasing), True)
         self.assertEqual(
@@ -940,6 +941,21 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
         size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderPixels)
         self.assertAlmostEqual(size, 2.0, places=5)
+
+    def testConvertFromPainterUnitsToMetersInMapUnits(self):
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 0.05242, 0.05242))
+        ms.setOutputSize(QSize(1108, 1108))
+        ms.setOutputDpi(300)
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        r = QgsRenderContext.fromMapSettings(ms)
+
+        meters = r.convertFromPainterUnits(100, Qgis.RenderUnit.MetersInMapUnits)
+        self.assertAlmostEqual(meters, 526.6576805877552, places=5)
+
+        pixels = r.convertToPainterUnits(meters, Qgis.RenderUnit.MetersInMapUnits)
+        self.assertAlmostEqual(pixels, 100, places=5)
 
     def testPixelSizeScaleFactor(self):
         ms = QgsMapSettings()

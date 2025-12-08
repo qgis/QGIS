@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgssphere.h"
-#include "qgspoint.h"
-#include "qgscircle.h"
+
 #include "qgsbox3d.h"
+#include "qgscircle.h"
+#include "qgspoint.h"
 #include "qgsvector3d.h"
 
 QgsSphere::QgsSphere( double x, double y, double z, double radius )

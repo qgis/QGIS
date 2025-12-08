@@ -36,6 +36,7 @@ class QgsLayerTreeView;
 class GUI_EXPORT QgsProcessingGuiUtils
 {
   public:
+
     /**
      * Contains details of a layer result from running an algorithm.
      * \ingroup gui
@@ -44,6 +45,7 @@ class GUI_EXPORT QgsProcessingGuiUtils
     class GUI_EXPORT ResultLayerDetails
     {
       public:
+
         /**
          * Constructor for ResultLayerDetails.
          *

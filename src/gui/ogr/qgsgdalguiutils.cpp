@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsgdalguiutils.h"
-#include "qgslogger.h"
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgsgdalutils.h"
-#include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 #include "qgsfilterlineedit.h"
+#include "qgsgdalutils.h"
+#include "qgslogger.h"
+#include "qgsspinbox.h"
 
 #include <QComboBox>
 

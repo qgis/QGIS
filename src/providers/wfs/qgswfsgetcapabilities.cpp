@@ -15,20 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswfsgetcapabilities.h"
-#include "moc_qgswfsgetcapabilities.cpp"
-#include "qgswfsconstants.h"
-#include "qgswfsutils.h"
-#include "qgslogger.h"
-#include "qgsogcutils.h"
-#include "qgssettings.h"
-#include "qgscoordinatetransform.h"
 
 #include <cpl_minixml.h>
 
+#include "qgscoordinatetransform.h"
+#include "qgslogger.h"
+#include "qgsogcutils.h"
+#include "qgssettings.h"
+#include "qgswfsconstants.h"
+#include "qgswfsutils.h"
+
 #include <QDomDocument>
+#include <QRegularExpression>
 #include <QStringList>
 #include <QUrlQuery>
-#include <QRegularExpression>
+
+#include "moc_qgswfsgetcapabilities.cpp"
 
 QgsWfsGetCapabilitiesRequest::QgsWfsGetCapabilitiesRequest( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ), mOptions( options )

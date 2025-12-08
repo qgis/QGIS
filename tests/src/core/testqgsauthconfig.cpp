@@ -13,11 +13,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsauthconfig.h"
+#include "qgsauthcrypto.h"
 #include "qgsauthmanager.h"
 #include "qgstest.h"
-#include "qgsapplication.h"
-#include "qgsauthcrypto.h"
-#include "qgsauthconfig.h"
 
 #include <QObject>
 #include <QString>

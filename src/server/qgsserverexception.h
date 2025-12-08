@@ -19,13 +19,14 @@
 #define QGSSERVEREXCEPTION_H
 
 
-#include <QString>
-#include <QByteArray>
+#include <nlohmann/json.hpp>
 
-#include "qgsexception.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
-#include "nlohmann/json.hpp"
+#include "qgsexception.h"
+
+#include <QByteArray>
+#include <QString>
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -118,6 +119,7 @@ class SERVER_EXPORT QgsOgcServiceException
 class SERVER_EXPORT QgsBadRequestException : public QgsOgcServiceException
 {
   public:
+
     /**
      * Constructor for QgsBadRequestException (HTTP error code 400).
      * \param code Error code name

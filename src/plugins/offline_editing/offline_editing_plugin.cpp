@@ -17,17 +17,18 @@
  ***************************************************************************/
 
 #include "offline_editing_plugin.h"
-#include "moc_offline_editing_plugin.cpp"
+
 #include "offline_editing_plugin_gui.h"
 #include "offline_editing_progress_dialog.h"
-
 #include "qgisinterface.h"
 #include "qgsguiutils.h"
-#include "qgsproject.h"
-#include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 
 #include <QAction>
+
+#include "moc_offline_editing_plugin.cpp"
 
 static const QString sName = QObject::tr( "OfflineEditing" );
 static const QString sDescription = QObject::tr( "Allow offline editing and synchronizing with database" );

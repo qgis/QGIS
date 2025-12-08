@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgslayercapabilitiesmodel.h"
-#include "moc_qgslayercapabilitiesmodel.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsproject.h"
+
+#include "moc_qgslayercapabilitiesmodel.cpp"
 
 QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObject *parent )
   : QSortFilterProxyModel( parent )

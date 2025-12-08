@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmvoronoipolygons.h"
-#include "qgsspatialindex.h"
-#include "qgsmultipoint.h"
+
 #include "qgsgeometryengine.h"
+#include "qgsmultipoint.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

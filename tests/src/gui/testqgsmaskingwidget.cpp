@@ -13,18 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTreeWidget>
-
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsmarkersymbol.h"
-#include "qgsmasksymbollayer.h"
 #include "qgsmaskingwidget.h"
+#include "qgsmasksymbollayer.h"
 #include "qgsproject.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 #include <QElapsedTimer>
+#include <QTreeWidget>
 
 class TestQgsMaskingWidget : public QgsTest
 {

@@ -13,21 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsgeometryutils.h"
-
-#include "testqgsmaptoolutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptooladdfeature.h"
 #include "qgsmaptoolshaperegularpolygon2points.h"
-#include "qgsmaptoolshaperegularpolygoncenterpoint.h"
 #include "qgsmaptoolshaperegularpolygoncentercorner.h"
-
+#include "qgsmaptoolshaperegularpolygoncenterpoint.h"
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolRegularPolygon : public QObject
 {

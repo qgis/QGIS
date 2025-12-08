@@ -15,12 +15,15 @@
  ***************************************************************************/
 
 #include "qgslegendpatchshapewidget.h"
-#include "moc_qgslegendpatchshapewidget.cpp"
-#include "qgsstylesavedialog.h"
+
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgsstylesavedialog.h"
+
 #include <QDialogButtonBox>
 #include <QMessageBox>
+
+#include "moc_qgslegendpatchshapewidget.cpp"
 
 QgsLegendPatchShapeWidget::QgsLegendPatchShapeWidget( QWidget *parent, const QgsLegendPatchShape &shape )
   : QgsPanelWidget( parent )

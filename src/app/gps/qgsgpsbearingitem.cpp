@@ -14,18 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-#include <QObject>
-
 #include "qgsgpsbearingitem.h"
-#include "moc_qgsgpsbearingitem.cpp"
+
 #include "qgscoordinatetransform.h"
-#include "qgsmapcanvas.h"
 #include "qgsexception.h"
-#include "qgsproject.h"
-#include "qgsmessagelog.h"
-#include "qgssymbol.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgssymbol.h"
+
+#include <QObject>
+#include <QPainter>
+
+#include "moc_qgsgpsbearingitem.cpp"
 
 QgsGpsBearingItem::QgsGpsBearingItem( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasLineSymbolItem( mapCanvas )

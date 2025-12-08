@@ -15,12 +15,13 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidgetfactory.h"
-#include "qgsfilewidget.h"
-#include "qgsexternalresourcewidgetwrapper.h"
-#include "qgsexternalresourceconfigdlg.h"
 
-QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar )
-  : QgsEditorWidgetFactory( name )
+#include "qgsexternalresourceconfigdlg.h"
+#include "qgsexternalresourcewidgetwrapper.h"
+#include "qgsfilewidget.h"
+
+QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
   , mMessageBar( messageBar )
 {
 }

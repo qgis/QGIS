@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgreslayermetadataprovider.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsfeedback.h"
-
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 QString QgsPostgresLayerMetadataProvider::id() const
 {

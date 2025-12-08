@@ -33,17 +33,18 @@
 #define SIP_NO_FILE
 
 
+#include <ctime>
+#include <iostream>
+#include <unordered_map>
+
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgssettingstree.h"
 
 #include <QList>
-#include <iostream>
-#include <ctime>
 #include <QMutex>
 #include <QStringList>
-#include <unordered_map>
 
 class QgsSettingsEntryInteger;
 

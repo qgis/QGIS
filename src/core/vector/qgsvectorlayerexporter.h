@@ -18,15 +18,15 @@
 #ifndef QGSVECTORLAYEREXPORTER_H
 #define QGSVECTORLAYEREXPORTER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsfeaturesink.h"
-#include "qgstaskmanager.h"
 #include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
 #include "qgsreferencedgeometry.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
 
 #include <QPointer>
 
@@ -354,13 +354,13 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
     Qgis::VectorExportResult mError;
     QString mErrorMessage;
 
-    int mErrorCount;
+    int mErrorCount = 0;
 
     QgsVectorDataProvider *mProvider = nullptr;
 
     //! Map attribute indexes to new field indexes
     QMap<int, int> mOldToNewAttrIdx;
-    int mAttributeCount;
+    int mAttributeCount = -1;
 
     QgsFeatureList mFeatureBuffer;
     int mFeatureBufferMemoryUsage = 0;

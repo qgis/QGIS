@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsprintlayout.h"
-#include "moc_qgsprintlayout.cpp"
+
+#include "qgsexpressioncontextutils.h"
 #include "qgslayoutatlas.h"
 #include "qgsreadwritecontext.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
+
+#include "moc_qgsprintlayout.cpp"
 
 QgsPrintLayout::QgsPrintLayout( QgsProject *project )
   : QgsLayout( project )

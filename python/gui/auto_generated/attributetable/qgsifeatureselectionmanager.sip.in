@@ -9,6 +9,7 @@
 
 
 
+
 class QgsIFeatureSelectionManager : QObject
 {
 %Docstring(signature="appended")

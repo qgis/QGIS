@@ -15,21 +15,23 @@
  ***************************************************************************/
 
 #include "qgsattributeactionpropertiesdialog.h"
-#include "moc_qgsattributeactionpropertiesdialog.cpp"
+
+#include "qgsactionscope.h"
+#include "qgsactionscoperegistry.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsactionscoperegistry.h"
-#include "qgsactionscope.h"
-#include "qgsexpressioncontextutils.h"
 
-#include <QComboBox>
-#include <QLineEdit>
-#include <QPlainTextEdit>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QFileDialog>
 #include <QImageWriter>
+#include <QLineEdit>
+#include <QPlainTextEdit>
+
+#include "moc_qgsattributeactionpropertiesdialog.cpp"
 
 QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( Qgis::AttributeActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )

@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsterraingenerator.h"
-#include "moc_qgsterraingenerator.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
-#include "qgscoordinatetransform.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgscoordinatetransform.h"
+
+#include "moc_qgsterraingenerator.cpp"
 
 QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) const
 {

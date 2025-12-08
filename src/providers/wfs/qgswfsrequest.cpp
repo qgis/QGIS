@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgswfsrequest.h"
-#include "qgswfsconstants.h"
-#include "moc_qgswfsrequest.cpp"
 
 #include "qgslogger.h"
+#include "qgswfsconstants.h"
+
+#include "moc_qgswfsrequest.cpp"
 
 QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : QgsBaseNetworkRequest( uri.auth(), tr( "WFS" ) )

@@ -17,12 +17,12 @@
 #ifndef QGS3DMEASUREDIALOG_H
 #define QGS3DMEASUREDIALOG_H
 
-#include <QCloseEvent>
-
 #include "ui_qgsmeasurebase.h"
+
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgsunittypes.h"
 
+#include <QCloseEvent>
 
 class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {

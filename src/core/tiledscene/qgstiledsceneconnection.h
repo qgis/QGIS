@@ -69,8 +69,8 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
      */
     QgsTiledSceneProviderConnection( const QString &uri, const QString &provider, const QVariantMap &configuration );
 
-    virtual void store( const QString &name ) const override;
-    virtual void remove( const QString &name ) const override;
+    void store( const QString &name ) const override;
+    void remove( const QString &name ) const override;
 
     /**
      * Returns the data provider associated with the connection.

@@ -50,6 +50,7 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
+    mutable Qgis::WkbType mOutputWkbType = Qgis::WkbType::Unknown;
     double mDeltaX = 0.0;
     bool mDynamicDeltaX = false;
     QgsProperty mDeltaXProperty;

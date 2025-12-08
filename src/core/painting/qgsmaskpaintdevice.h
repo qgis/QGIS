@@ -16,13 +16,14 @@
 #ifndef QGSMASKPAINTDEVICE_H
 #define QGSMASKPAINTDEVICE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include <QPainterPath>
 #include <QPaintDevice>
 #include <QPaintEngine>
-#include <memory>
+#include <QPainterPath>
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

@@ -14,22 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteproviderconnection.h"
-#include "qgsspatialiteconnection.h"
-#include "qgsspatialiteprovider.h"
-#include "qgsogrprovider.h"
-#include "qgssettings.h"
-#include "qgsmessagelog.h"
-#include "qgsproviderregistry.h"
+
+#include <chrono>
+
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsfeedback.h"
+#include "qgsmessagelog.h"
+#include "qgsogrprovider.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgsspatialiteconnection.h"
+#include "qgsspatialiteprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
 #include <QTextCodec>
-
-#include <chrono>
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -185,8 +186,7 @@ void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, co
   {
     errCause = QObject::tr( "Connection to database failed" );
   }
-
-  if ( errCause.isEmpty() )
+  else
   {
     sqlite3 *sqlite_handle = hndl->handle();
     int ret;

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsannotationitem.h"
+
 #include "qgsannotationitemnode.h"
-#include "qgscalloutsregistry.h"
 #include "qgsapplication.h"
+#include "qgscalloutsregistry.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"

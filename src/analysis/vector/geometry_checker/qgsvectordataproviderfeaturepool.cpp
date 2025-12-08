@@ -14,9 +14,9 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsthreadingutils.h"
 
 #include "qgsfeaturerequest.h"
+#include "qgsthreadingutils.h"
 
 QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
   : QgsFeaturePool( layer )

@@ -19,10 +19,10 @@
 #include "qgis.h"
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
-#include "qgslogger.h"
-#include "qgsmessageoutput.h"
-#include "qgsmessagelog.h"
 #include "qgsauthmethodmetadata.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmessageoutput.h"
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgsauthbasicmethod.h"

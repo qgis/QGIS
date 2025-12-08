@@ -18,9 +18,9 @@
 
 #include "qgis_3d.h"
 
-#include <QString>
-#include <QObject>
 #include <QDir>
+#include <QObject>
+#include <QString>
 
 /**
  * \brief Manages the various settings the user can choose from when exporting a 3D scene.

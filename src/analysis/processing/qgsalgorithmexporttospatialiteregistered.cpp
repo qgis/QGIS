@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexporttospatialiteregistered.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsvectorlayerexporter.h"
 
 ///@cond PRIVATE

@@ -17,10 +17,8 @@
 #define QGSGEOCODERRESULT_H
 
 #include "qgis_core.h"
-
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
-
 
 /**
  * \ingroup core

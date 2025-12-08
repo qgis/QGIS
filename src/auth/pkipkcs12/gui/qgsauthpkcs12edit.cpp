@@ -14,9 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthpkcs12edit.h"
-#include "moc_qgsauthpkcs12edit.cpp"
 #include "ui_qgsauthpkcs12edit.h"
+#include "qgsauthpkcs12edit.h"
+
+#include "qgsapplication.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -24,11 +28,7 @@
 #include <QSslCertificate>
 #include <QSslKey>
 
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
-#include "qgsauthguiutils.h"
-#include "qgslogger.h"
-
+#include "moc_qgsauthpkcs12edit.cpp"
 
 QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

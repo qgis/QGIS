@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckregistry.h"
-#include "qgsgeometrycheckfactory.h"
-#include "qgis.h"
 
+#include "qgis.h"
+#include "qgsgeometrycheckfactory.h"
 
 QgsGeometryCheckRegistry::~QgsGeometryCheckRegistry()
 {

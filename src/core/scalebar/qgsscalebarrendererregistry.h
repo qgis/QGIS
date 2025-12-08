@@ -16,8 +16,8 @@
 #ifndef QGSSCALEBARRENDERERREGISTRY_H
 #define QGSSCALEBARRENDERERREGISTRY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 class QgsScaleBarRenderer;
 

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsDatabaseSchemaModel : QAbstractItemModel
 {
 %Docstring(signature="appended")

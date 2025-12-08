@@ -16,11 +16,11 @@
 #ifndef QGSAGGREGATETOOLBUTTON_H
 #define QGSAGGREGATETOOLBUTTON_H
 
+#include "qgis_gui.h"
+#include "qgsaggregatecalculator.h"
+
 #include <QToolButton>
 #include <QVariant>
-
-#include "qgsaggregatecalculator.h"
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */

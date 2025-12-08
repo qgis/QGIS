@@ -16,13 +16,13 @@
 #ifndef QGSGRASSTOOLS_H
 #define QGSGRASSTOOLS_H
 
-#include "qgsdockwidget.h"
-
 #include "ui_qgsgrasstoolsbase.h"
 
+#include "qgsdockwidget.h"
+
+#include <QRegularExpression>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
-#include <QRegularExpression>
 
 class QDomElement;
 class QSortFilterProxyModel;

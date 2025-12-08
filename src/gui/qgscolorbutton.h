@@ -15,10 +15,11 @@
 #ifndef QGSCOLORBUTTON_H
 #define QGSCOLORBUTTON_H
 
-#include <QColorDialog>
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QColorDialog>
+#include <QToolButton>
 
 class QMimeData;
 class QgsColorSchemeRegistry;
@@ -58,6 +59,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
+
     /**
      * Specifies the behavior when the button is clicked
      */

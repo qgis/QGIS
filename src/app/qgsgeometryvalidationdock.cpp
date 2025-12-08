@@ -13,26 +13,27 @@ email                : matthias@opengis.ch
  *                                                                         *
  ***************************************************************************/
 
-#include <QButtonGroup>
-#include <QToolButton>
-#include <QPropertyAnimation>
-
 #include "qgsgeometryvalidationdock.h"
-#include "moc_qgsgeometryvalidationdock.cpp"
+
+#include "qgisapp.h"
+#include "qgsanalysis.h"
+#include "qgsapplication.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckerror.h"
+#include "qgsgeometrycheckfactory.h"
+#include "qgsgeometrycheckregistry.h"
+#include "qgsgeometryoptions.h"
 #include "qgsgeometryvalidationmodel.h"
 #include "qgsgeometryvalidationservice.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheck.h"
-#include "qgsgeometrycheckerror.h"
-#include "qgsanalysis.h"
-#include "qgsgeometrycheckregistry.h"
-#include "qgsgeometryoptions.h"
-#include "qgsgeometrycheckfactory.h"
-#include "qgisapp.h"
-#include "qgsapplication.h"
 
+#include <QButtonGroup>
+#include <QPropertyAnimation>
+#include <QToolButton>
+
+#include "moc_qgsgeometryvalidationdock.cpp"
 
 QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )

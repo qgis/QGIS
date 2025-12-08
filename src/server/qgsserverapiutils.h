@@ -22,14 +22,15 @@
 #define QGSSERVERAPIUTILS_H
 
 #include "qgis_server.h"
-#include <QString>
+#include "qgsjsonutils.h"
+#include "qgsmaplayerserverproperties.h"
 #include "qgsproject.h"
-#include "qgsserverprojectutils.h"
+#include "qgsrange.h"
 #include "qgsserverapicontext.h"
 #include "qgsserverexception.h"
-#include "qgsmaplayerserverproperties.h"
-#include "qgsrange.h"
-#include "qgsjsonutils.h"
+#include "qgsserverprojectutils.h"
+
+#include <QString>
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
@@ -53,6 +54,7 @@ using namespace nlohmann;
 class SERVER_EXPORT QgsServerApiUtils
 {
   public:
+
     /**
      * Parses a comma separated \a bbox into a (possibly empty) QgsRectangle.
      *

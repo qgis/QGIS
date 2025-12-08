@@ -16,14 +16,13 @@
 #ifndef QGSOPTIONSDIALOGHIGHLIGHTWIDGETSIMPL_H
 #define QGSOPTIONSDIALOGHIGHLIGHTWIDGETSIMPL_H
 
-#include <QObject>
-#include <QMap>
-#include <QBrush>
-
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsoptionsdialoghighlightwidget.h"
+
+#include <QBrush>
+#include <QMap>
+#include <QObject>
 
 class QLabel;
 class QCheckBox;

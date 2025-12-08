@@ -15,13 +15,14 @@
 #ifndef QGSRENDERERWIDGET_H
 #define QGSRENDERERWIDGET_H
 
-#include <QWidget>
+#include "qgsexpressioncontextgenerator.h"
+#include "qgspanelwidget.h"
+#include "qgsrenderer.h"
+#include "qgssymbolwidgetcontext.h"
+
 #include <QMenu>
 #include <QStackedWidget>
-#include "qgspanelwidget.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgsrenderer.h"
-#include "qgsexpressioncontextgenerator.h"
+#include <QWidget>
 
 class QgsDataDefinedSizeLegend;
 class QgsDataDefinedSizeLegendWidget;
@@ -193,6 +194,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget, public QgsExpression
     void updateDataDefinedProperty();
 
   private:
+
     /**
      * This will be called whenever the renderer is set on a layer.
      * This can be overwritten in subclasses.
@@ -222,6 +224,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param symbolList must not be empty
@@ -252,6 +255,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void dataDefinedChanged();
 
   protected:
+
     /**
      * Should be called in the constructor of child classes.
      *

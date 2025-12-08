@@ -16,8 +16,8 @@
 #ifndef QGSTEXTEDITSEARCHWIDGETWRAPPER_H
 #define QGSTEXTEDITSEARCHWIDGETWRAPPER_H
 
-#include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
 
 SIP_NO_FILE
 
@@ -35,6 +35,7 @@ class GUI_EXPORT QgsTextEditSearchWidgetWrapper : public QgsDefaultSearchWidgetW
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTextEditSearchWidgetWrapper.
      * \param vl associated vector layer

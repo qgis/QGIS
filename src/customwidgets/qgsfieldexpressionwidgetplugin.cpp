@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsfieldexpressionwidgetplugin.h"
-#include "moc_qgsfieldexpressionwidgetplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsfieldexpressionwidget.h"
 
+#include "moc_qgsfieldexpressionwidgetplugin.cpp"
 
 QgsFieldExpressionWidgetPlugin::QgsFieldExpressionWidgetPlugin( QObject *parent )
   : QObject( parent )

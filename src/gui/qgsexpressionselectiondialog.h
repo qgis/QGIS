@@ -17,11 +17,12 @@
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
 #include "ui_qgsexpressionselectiondialogbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshelp.h"
 
 #include <QDialog>
-#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMessageBar;
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new selection dialog.
      * \param layer     The layer on which the selection is to be performed.
@@ -92,6 +94,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void showHelp();
 
   protected:
+
     /**
      * Implementation for closeEvent
      * Saves the window geometry

@@ -17,12 +17,12 @@
 #ifndef QGSELEVATIONPROFILETOOLMEASURE_H
 #define QGSELEVATIONPROFILETOOLMEASURE_H
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsplottool.h"
 #include "qgsprofilepoint.h"
-#include "qgscoordinatereferencesystem.h"
 
-#include <QPointer>
 #include <QDialog>
+#include <QPointer>
 
 class QgsElevationProfileCanvas;
 class QGraphicsLineItem;

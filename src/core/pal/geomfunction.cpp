@@ -27,14 +27,16 @@
  *
  */
 
-#include "qgsgeometryutils_base.h"
 #include "geomfunction.h"
-#include "feature.h"
-#include "util.h"
-#include "qgis.h"
-#include "pal.h"
-#include "qgsmessagelog.h"
+
 #include <vector>
+
+#include "feature.h"
+#include "pal.h"
+#include "qgis.h"
+#include "qgsgeometryutils_base.h"
+#include "qgsmessagelog.h"
+#include "util.h"
 
 using namespace pal;
 

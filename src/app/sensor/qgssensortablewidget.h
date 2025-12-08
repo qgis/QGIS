@@ -16,14 +16,13 @@
 #ifndef QGSSENSORTABLEWIDGET_H
 #define QGSSENSORTABLEWIDGET_H
 
-#include "ui_qgssensortablewidgetbase.h"
 #include "ui_qgssensorsettingswidgetbase.h"
+#include "ui_qgssensortablewidgetbase.h"
 
 #include "qgis_app.h"
-#include "qgsdockwidget.h"
 #include "qgsabstractsensor.h"
+#include "qgsdockwidget.h"
 #include "qgspanelwidget.h"
-
 
 class QgsSensorModel;
 class QgsAbstractSensorWidget;

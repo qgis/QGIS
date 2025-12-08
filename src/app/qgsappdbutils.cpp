@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsappdbutils.h"
-#include "moc_qgsappdbutils.cpp"
-#include "qgisapp.h"
-#include "qgsgui.h"
-#include "qgsdbqueryhistoryprovider.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgsgui.h"
-#include "qgsdataitemguiproviderregistry.h"
+
 #include "browser/qgsinbuiltdataitemproviders.h"
+#include "qgisapp.h"
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsdbqueryhistoryprovider.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgshistoryproviderregistry.h"
 
 #include <QDialogButtonBox>
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
 
+#include "moc_qgsappdbutils.cpp"
 
 //
 // QgsQueryHistoryDialog
@@ -41,11 +42,12 @@ QgsQueryHistoryDialog::QgsQueryHistoryDialog( QWidget *parent )
   setWindowTitle( tr( "Query History" ) );
 
   QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 6, 6, 6, 6 );
   mWidget = new QgsDatabaseQueryHistoryWidget();
   vl->addWidget( mWidget, 1 );
   connect( mWidget, &QgsDatabaseQueryHistoryWidget::sqlTriggered, this, &QgsQueryHistoryDialog::openQueryDialog );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
 
   QPushButton *clearButton = new QPushButton( tr( "Clear" ) );
   clearButton->setToolTip( tr( "Clear history" ) );
@@ -53,7 +55,9 @@ QgsQueryHistoryDialog::QgsQueryHistoryDialog( QWidget *parent )
 
   connect( clearButton, &QPushButton::clicked, this, &QgsQueryHistoryDialog::clearHistory );
   connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [this]() { close(); } );
-
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#sql-history" ) );
+  } );
   vl->addWidget( mButtonBox );
 
   setLayout( vl );

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsRelief
 {
 %Docstring(signature="appended")
@@ -23,6 +25,7 @@ Produces colored relief rasters from DEM.
     struct ReliefColor
     {
         ReliefColor( const QColor &c, double min, double max );
+        QColor color;
         double minElevation;
         double maxElevation;
     };

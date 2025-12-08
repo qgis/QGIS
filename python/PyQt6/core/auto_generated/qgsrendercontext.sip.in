@@ -12,6 +12,7 @@
 
 
 
+
 class QgsRenderContext : QgsTemporalRangeObject
 {
 %Docstring(signature="appended")

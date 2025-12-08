@@ -13,6 +13,7 @@
 
 
 
+
 class QgsProviderSublayerModel: QAbstractItemModel
 {
 %Docstring(signature="appended")

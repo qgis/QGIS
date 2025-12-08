@@ -14,31 +14,34 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithmdialogbase.h"
-#include "moc_qgsprocessingalgorithmdialogbase.cpp"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsmessagebar.h"
-#include "qgsgui.h"
-#include "processing/qgsprocessingalgorithm.h"
-#include "processing/qgsprocessingprovider.h"
-#include "qgstaskmanager.h"
-#include "processing/qgsprocessingalgrunnertask.h"
-#include "qgsstringutils.h"
-#include "qgsapplication.h"
-#include "qgspanelwidget.h"
-#include "qgsjsonutils.h"
-#include "qgsunittypes.h"
-#include "qgsnative.h"
-#include <QToolButton>
-#include <QDesktopServices>
-#include <QScrollBar>
-#include <QApplication>
-#include <QClipboard>
-#include <QFileDialog>
-#include <QMimeData>
-#include <QMenu>
+
 #include <nlohmann/json.hpp>
 
+#include "processing/qgsprocessingalgorithm.h"
+#include "processing/qgsprocessingalgrunnertask.h"
+#include "processing/qgsprocessingprovider.h"
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsjsonutils.h"
+#include "qgsmessagebar.h"
+#include "qgsnative.h"
+#include "qgspanelwidget.h"
+#include "qgssettings.h"
+#include "qgsstringutils.h"
+#include "qgstaskmanager.h"
+#include "qgsunittypes.h"
+
+#include <QApplication>
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMimeData>
+#include <QScrollBar>
+#include <QToolButton>
+
+#include "moc_qgsprocessingalgorithmdialogbase.cpp"
 
 ///@cond NOT_STABLE
 

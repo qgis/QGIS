@@ -15,22 +15,23 @@
 #ifndef QGSLAYERSTYLESDOCK_H
 #define QGSLAYERSTYLESDOCK_H
 
-#include <QToolButton>
-#include <QWidget>
-#include <QLabel>
-#include <QTabWidget>
-#include <QStackedWidget>
-#include <QDialogButtonBox>
+#include "ui_qgsmapstylingwidgetbase.h"
+
+#include "qgis_app.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+
 #include <QCheckBox>
-#include <QUndoCommand>
+#include <QDialogButtonBox>
 #include <QDomNode>
+#include <QLabel>
+#include <QStackedWidget>
+#include <QTabWidget>
 #include <QTime>
 #include <QTimer>
-
-#include "ui_qgsmapstylingwidgetbase.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsmaplayerconfigwidget.h"
-#include "qgis_app.h"
+#include <QToolButton>
+#include <QUndoCommand>
+#include <QWidget>
 
 class QgsLabelingWidget;
 class QgsMaskingWidget;
@@ -161,13 +162,13 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void pushUndoItem( const QString &name, bool triggerRepaint = true );
     void emitLayerStyleChanged( const QString &currentStyleName ) { emit layerStyleChanged( currentStyleName ); };
     void emitLayerStyleRenamed();
-    int mNotSupportedPage;
-    int mLayerPage;
+    int mNotSupportedPage = 0;
+    int mLayerPage = 1;
     QTimer *mAutoApplyTimer = nullptr;
     QDomNode mLastStyleXml;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-    bool mBlockAutoApply;
+    bool mBlockAutoApply = false;
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;

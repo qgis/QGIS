@@ -18,11 +18,11 @@
 #define QGSNEWSPATIALITELAYERDIALOG_H
 
 #include "ui_qgsnewspatialitelayerdialogbase.h"
-#include "qgsguiutils.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgshelp.h"
 
 #include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 
 extern "C"
 {

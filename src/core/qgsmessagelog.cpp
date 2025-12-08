@@ -14,14 +14,18 @@
  ***************************************************************************/
 
 #include "qgsmessagelog.h"
-#include "moc_qgsmessagelog.cpp"
+
+#include <iostream>
+#include <stdio.h>
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
+
 #include <QDateTime>
 #include <QMetaType>
 #include <QTextStream>
-#include <iostream>
-#include <stdio.h>
+
+#include "moc_qgsmessagelog.cpp"
 
 class QgsMessageLogConsole;
 

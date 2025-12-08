@@ -16,10 +16,11 @@
 #ifndef QGSMAPCANVASITEM_H
 #define QGSMAPCANVASITEM_H
 
-#include <QGraphicsItem>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
-#include "qgis_gui.h"
+
+#include <QGraphicsItem>
 
 class QgsMapCanvas;
 class QgsRenderContext;
@@ -88,7 +89,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
      */
     QgsRectangle mRect;
 
-    double mRectRotation;
+    double mRectRotation = 0.0;
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;

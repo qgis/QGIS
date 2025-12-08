@@ -16,13 +16,13 @@
 #ifndef QGSOAPIFSCHEMAREQUEST_H
 #define QGSOAPIFSCHEMAREQUEST_H
 
-#include <QObject>
-#include <QMap>
-
+#include "qgsbasenetworkrequest.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
-#include "qgsbasenetworkrequest.h"
 #include "qgswkbtypes.h"
+
+#include <QMap>
+#include <QObject>
 
 //! Manages the schema request
 class QgsOapifSchemaRequest : public QgsBaseNetworkRequest

@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsiconutils.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 #include "qgspluginlayer.h"
+#include "qgsvectorlayer.h"
 
 #include <QIcon>
 

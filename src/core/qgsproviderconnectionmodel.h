@@ -16,12 +16,12 @@
 #ifndef QGSPROVIDERCONNECTIONMODEL_H
 #define QGSPROVIDERCONNECTIONMODEL_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QStringList>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
 
 class QgsProviderMetadata;
 

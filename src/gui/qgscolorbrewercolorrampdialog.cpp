@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgscolorbrewercolorrampdialog.h"
-#include "moc_qgscolorbrewercolorrampdialog.cpp"
 
 #include "qgscolorramp.h"
-#include "qgssymbollayerutils.h"
 #include "qgshelp.h"
+#include "qgssymbollayerutils.h"
 
 #include <QAbstractButton>
 #include <QDialogButtonBox>
+
+#include "moc_qgscolorbrewercolorrampdialog.cpp"
 
 #if 0 // unused
 static void updateColorButton( QAbstractButton *button, QColor color )

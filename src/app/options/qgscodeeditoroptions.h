@@ -16,8 +16,9 @@
 #define QGSCODEEDITOROPTIONS_H
 
 #include "ui_qgscodeditorsettings.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QgsCodeEditorShell;
 
@@ -33,6 +34,7 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCodeEditorOptionsWidget with the specified \a parent widget.
      */

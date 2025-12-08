@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFloatingWidget : QWidget
 {
 %Docstring(signature="appended")

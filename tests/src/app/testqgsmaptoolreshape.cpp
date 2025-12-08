@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssnappingconfig.h"
-#include "qgssnappingutils.h"
+#include "qgsmapcanvastracer.h"
 #include "qgsmaptoolreshape.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapcanvastracer.h"
 #include "testqgsmaptoolutils.h"
 
 #include <QSignalSpy>
-
 
 /**
  * \ingroup UnitTests
@@ -507,7 +507,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
 {
   // prepare vector layer
   std::unique_ptr<QgsVectorLayer> vl;
-  vl.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=name:string(20)" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=name:string(20)" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
   const QgsGeometry g0 = QgsGeometry::fromWkt( "LineString (0 0, 1 1, 1 2)" );
   QgsFeature f0;

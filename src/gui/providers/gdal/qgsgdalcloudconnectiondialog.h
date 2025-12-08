@@ -20,6 +20,7 @@
 #define SIP_NO_FILE
 
 #include <QDialog>
+
 class QgsGdalCredentialOptionsWidget;
 
 #include "ui_qgsgdalcloudconnectiondialog.h"

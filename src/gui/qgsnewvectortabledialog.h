@@ -16,17 +16,17 @@
 #ifndef QGSNEWVECTORTABLEDIALOG_H
 #define QGSNEWVECTORTABLEDIALOG_H
 
-#include <QStyledItemDelegate>
-
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgsfields.h"
-#include "qgswkbtypes.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfieldmodel.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-
 #include "ui_qgsnewvectortabledialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsfieldmodel.h"
+#include "qgsfields.h"
+#include "qgsvectordataprovider.h"
+#include "qgswkbtypes.h"
+
+#include <QStyledItemDelegate>
 
 class QgsNewVectorTableFieldModel;
 
@@ -50,6 +50,7 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
 {
     Q_OBJECT
   public:
+
     /**
      * QgsNewVectorTableDialog constructor
      * \param conn DB connection, ownership is NOT transferred

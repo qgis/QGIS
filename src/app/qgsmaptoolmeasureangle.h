@@ -16,10 +16,10 @@
 #ifndef QGSMAPTOOLMEASUREANGLE_H
 #define QGSMAPTOOLMEASUREANGLE_H
 
+#include "qgis_app.h"
+#include "qgsdistancearea.h"
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
-#include "qgsdistancearea.h"
-#include "qgis_app.h"
 
 class QgsDisplayAngle;
 class QgsRubberBand;

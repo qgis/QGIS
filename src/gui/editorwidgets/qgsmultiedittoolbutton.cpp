@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmultiedittoolbutton.h"
-#include "moc_qgsmultiedittoolbutton.cpp"
+
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
 #include <QMenu>
+
+#include "moc_qgsmultiedittoolbutton.cpp"
+
 QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   : QToolButton( parent )
 {

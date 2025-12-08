@@ -16,12 +16,13 @@
 #ifndef QGSGRADIENTCOLORRAMPDIALOG_H
 #define QGSGRADIENTCOLORRAMPDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgsgradientcolorrampdialogbase.h"
-#include "qgshelp.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgshelp.h"
+
+#include <QDialog>
 
 class QgsGradientColorRamp;
 class QwtPlot;
@@ -112,8 +113,8 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     QwtPlotCurve *mAlphaCurve = nullptr;
     QList<QwtPlotMarker *> mMarkers;
     QgsGradientPlotEventFilter *mPlotFilter = nullptr;
-    int mCurrentPlotColorComponent;
-    int mCurrentPlotMarkerIndex;
+    int mCurrentPlotColorComponent = -1;
+    int mCurrentPlotMarkerIndex = 0;
     int mBlockChanges = 0;
 
     void updatePlot();

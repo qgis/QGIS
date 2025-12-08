@@ -19,11 +19,12 @@
 #define QGSPOINTCLOUDSUBINDEX_H
 
 #include <memory>
-#include <QString>
 
-#include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
+#include "qgspointcloudindex.h"
 #include "qgsrange.h"
+
+#include <QString>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

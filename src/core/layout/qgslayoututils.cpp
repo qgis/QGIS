@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgslayoututils.h"
+
+#include <cmath>
+
 #include "qgslayout.h"
-#include "qgssettingsregistrycore.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutrendercontext.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
-#include "qgslayoutrendercontext.h"
+#include "qgssettingsregistrycore.h"
 
-#include <QStyleOptionGraphicsItem>
 #include <QPainter>
-#include <cmath>
+#include <QStyleOptionGraphicsItem>
 
 #ifndef M_DEG2RAD
 #define M_DEG2RAD 0.0174532925

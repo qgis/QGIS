@@ -23,13 +23,12 @@ class QVariant;
 class QHBoxLayout;
 class QgsFileDropEdit;
 
-#include <QWidget>
-#include <QFileDialog>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshighlightablelineedit.h"
 
+#include <QFileDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -58,6 +57,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     Q_PROPERTY( QFileDialog::Options options READ options WRITE setOptions )
 
   public:
+
     /**
      * \brief The StorageMode enum determines if the file picker should pick files or directories
      */
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * \see setFilePath()
      * \see splitFilePaths()
      */
-    QString filePath();
+    QString filePath() const;
 
     /**
      * \brief Split the the quoted and space separated \a path and returns a list of strings.
@@ -298,6 +298,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void fileDropped( const QString &filePath );
 
   protected:
+
     /**
      * Update buttons visibility
      */

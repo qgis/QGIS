@@ -17,8 +17,9 @@ email                : matthias@opengis.ch
 #define QGSGEOMETRYVALIDATIONPANEL_H
 
 #include "ui_qgsgeometryvalidationdockbase.h"
-#include "qgsdockwidget.h"
+
 #include "qgscoordinatetransform.h"
+#include "qgsdockwidget.h"
 
 class QgsMapCanvas;
 class QgsGeometryValidationModel;

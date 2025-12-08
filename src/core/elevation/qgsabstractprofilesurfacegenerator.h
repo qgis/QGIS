@@ -17,13 +17,13 @@
 #ifndef QGSABSTRACTPROFILESURFACEGENERATOR_H
 #define QGSABSTRACTPROFILESURFACEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilegenerator.h"
-#include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
-
-#include <memory>
+#include "qgslinesymbol.h"
 
 class QgsProfileRequest;
 

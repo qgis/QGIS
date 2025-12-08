@@ -18,15 +18,15 @@
 #ifndef QGSRANGEREQUESTCACHE_H
 #define QGSRANGEREQUESTCACHE_H
 
-#include <QtGlobal>
-#include <QMap>
-#include <QByteArray>
-#include <QUrl>
-#include <QFileInfoList>
-#include <QDir>
-#include <QNetworkRequest>
-
 #include "qgis_core.h"
+
+#include <QByteArray>
+#include <QDir>
+#include <QFileInfoList>
+#include <QMap>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QtGlobal>
 
 #define SIP_NO_FILE
 

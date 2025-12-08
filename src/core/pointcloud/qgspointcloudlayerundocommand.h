@@ -19,8 +19,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudindex.h"
 
 #include <QUndoCommand>
 

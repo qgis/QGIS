@@ -14,9 +14,8 @@
  ***************************************************************************/
 
 
+#include "editorwidgets/qgsdoublespinbox.h"
 #include "qgstest.h"
-
-#include <editorwidgets/qgsdoublespinbox.h>
 
 #include <QSignalSpy>
 

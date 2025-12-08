@@ -13,10 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialitedataitems.h"
-#include "moc_qgsspatialitedataitems.cpp"
-#include "qgsspatialiteprovider.h"
-#include "qgsspatialiteconnection.h"
+
 #include "qgsfieldsitem.h"
+#include "qgsspatialiteconnection.h"
+#include "qgsspatialiteprovider.h"
+
+#include "moc_qgsspatialitedataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsspatialitesourceselect.h"

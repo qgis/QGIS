@@ -1,5 +1,4 @@
 usr/lib/qgis-qt6/plugins/libplugin_geometrychecker.so
-usr/lib/qgis-qt6/plugins/libauthmethod_oauth2.so
 usr/lib/qgis-qt6/plugins/libplugin_offlineediting.so
 usr/lib/qgis-qt6/plugins/libplugin_topology.so
 usr/lib/qgis-qt6/qgiscrashhandler

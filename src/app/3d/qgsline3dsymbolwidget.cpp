@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsline3dsymbolwidget.h"
-#include "moc_qgsline3dsymbolwidget.cpp"
 
 #include "qgsline3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
+
+#include "moc_qgsline3dsymbolwidget.cpp"
 
 QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )

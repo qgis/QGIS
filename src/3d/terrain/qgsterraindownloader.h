@@ -16,13 +16,13 @@
 #ifndef QGSTERRAINDOWNLOADER_H
 #define QGSTERRAINDOWNLOADER_H
 
-#include "qgis_3d.h"
-
 #include <memory>
+
+#include "qgis_3d.h"
+#include "qgscoordinatetransformcontext.h"
+
 #include <QByteArray>
 #include <QImage>
-
-#include "qgscoordinatetransformcontext.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -48,6 +48,7 @@ class QgsCoordinateTransformContext;
 class _3D_EXPORT QgsTerrainDownloader
 {
   public:
+
     /**
      * Constructs a QgsTerrainDownloader object
      * \param transformContext coordinate transform context
@@ -80,6 +81,7 @@ class _3D_EXPORT QgsTerrainDownloader
     QByteArray getHeightMap( const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext(), QString tmpFilenameImg = QString(), QString tmpFilenameTif = QString() );
 
   private:
+
     /**
      * For the requested resolution given as map units per pixel, find out the best native tile resolution
      * (higher resolution = fewer map units per pixel)

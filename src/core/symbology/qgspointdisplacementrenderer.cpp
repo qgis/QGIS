@@ -16,23 +16,26 @@
  ***************************************************************************/
 
 #include "qgspointdisplacementrenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfontutils.h"
-#include "qgspointclusterrenderer.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
+
+#include <cmath>
+#include <memory>
+
 #include "qgscolorutils.h"
+#include "qgsfontutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgspointclusterrenderer.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
 #include <QPainter>
-#include <cmath>
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
   : QgsPointDistanceRenderer( QStringLiteral( "pointDisplacement" ), labelAttributeName )
   , mCircleColor( QColor( 125, 125, 125 ) )
 {
-  mCenterSymbol.reset( new QgsMarkerSymbol() );
+  mCenterSymbol = std::make_unique<QgsMarkerSymbol>( );
 }
 
 Qgis::FeatureRendererFlags QgsPointDisplacementRenderer::flags() const

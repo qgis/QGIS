@@ -16,10 +16,10 @@
 #ifndef QGSDATETIMEEDITWRAPPER_H
 #define QGSDATETIMEEDITWRAPPER_H
 
-#include <QDateTimeEdit>
-
-#include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
+
+#include <QDateTimeEdit>
 
 SIP_NO_FILE
 
@@ -44,6 +44,7 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDateTimeEditWrapper.
      *

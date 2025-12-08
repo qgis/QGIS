@@ -12,6 +12,7 @@
 
 
 
+
 class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
 %Docstring(signature="appended")
@@ -26,6 +27,7 @@ Base class for processing algorithm dialogs.
 #include "qgsprocessingalgorithmdialogbase.h"
 %End
   public:
+
     enum LogFormat /BaseType=IntEnum/
     {
       FormatPlainText,

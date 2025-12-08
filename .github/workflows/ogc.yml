@@ -19,6 +19,7 @@ on:
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
+    - '.ci/ogc/**'
   pull_request:
     branches:
       - master
@@ -32,6 +33,7 @@ on:
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
+    - '.ci/ogc/**'
 
 permissions:
   contents: read
@@ -41,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Restore build cache
         uses: actions/cache/restore@v4

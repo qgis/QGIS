@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolpointsymbol.h"
-#include "moc_qgsmaptoolpointsymbol.cpp"
-#include "qgsfeatureiterator.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
-#include "qgssnappingutils.h"
-#include "qgsmapmouseevent.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmarkersymbol.h"
+#include "qgsrenderer.h"
+#include "qgssnappingutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptoolpointsymbol.cpp"
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mFeatureNumber( -1 )
 {
   mToolName = tr( "Map tool point symbol" );
 }

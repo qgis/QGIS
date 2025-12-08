@@ -15,16 +15,18 @@
  ***************************************************************************/
 
 #include "qgslayoutpolylinewidget.h"
-#include "moc_qgslayoutpolylinewidget.cpp"
-#include "qgslayoutitemregistry.h"
+
 #include "qgslayout.h"
-#include "qgslayoutundostack.h"
-#include "qgsvectorlayer.h"
-#include "qgslinesymbol.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgslinesymbol.h"
+#include "qgsvectorlayer.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
+
+#include "moc_qgslayoutpolylinewidget.cpp"
 
 QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polyline )
   : QgsLayoutItemBaseWidget( nullptr, polyline )

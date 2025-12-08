@@ -16,8 +16,8 @@
 #include "qgsexternalstorageregistry.h"
 
 #include "qgsexternalstorage.h"
-#include "qgssimplecopyexternalstorage_p.h"
 #include "qgshttpexternalstorage_p.h"
+#include "qgssimplecopyexternalstorage_p.h"
 
 QgsExternalStorageRegistry::QgsExternalStorageRegistry()
 {

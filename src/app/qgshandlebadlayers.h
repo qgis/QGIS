@@ -18,8 +18,9 @@
 #define QGSHANDLEBADLAYERS_H
 
 #include "ui_qgshandlebadlayersbase.h"
-#include "qgsprojectbadlayerhandler.h"
+
 #include "qgis_app.h"
+#include "qgsprojectbadlayerhandler.h"
 
 class APP_EXPORT QgsHandleBadLayersHandler
   : public QObject,

@@ -17,6 +17,13 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUAL_SQLITE_LAYER_MODULE_H
 #define QGSVIRTUAL_SQLITE_LAYER_MODULE_H
 
+struct sqlite3;
+struct sqlite3_vtab;
+struct sqlite3_vtab_cursor;
+struct sqlite3_value;
+struct sqlite3_index_info;
+struct sqlite3_context;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -35,7 +42,7 @@ extern "C"
   int vtableNext( sqlite3_vtab_cursor *cursor );
   int vtableEof( sqlite3_vtab_cursor *cursor );
   int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *, int );
-  int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *out_rowid );
+  int vtableRowId( sqlite3_vtab_cursor *cursor, long long *out_rowid );
 
   int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ );
 

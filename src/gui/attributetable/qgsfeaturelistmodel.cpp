@@ -12,18 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfeaturelistmodel.h"
+
+#include "qgsapplication.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"
-#include "qgsfeaturelistmodel.h"
-#include "moc_qgsfeaturelistmodel.cpp"
-#include "qgsattributetablemodel.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsapplication.h"
 #include "qgsvectorlayercache.h"
+#include "qgsvectorlayereditbuffer.h"
 
 #include <QItemSelection>
 #include <QSettings>
+
+#include "moc_qgsfeaturelistmodel.cpp"
 
 QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -231,7 +233,9 @@ bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
   mDisplayExpression = exp;
 
   if ( mSortByDisplayExpression )
-    masterModel()->prefetchSortData( expression, 1 );
+  {
+    masterModel()->prefetchSortData( expression, QGSFEATURELISTMODEL_CACHE_INDEX );
+  }
 
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 
@@ -293,11 +297,18 @@ bool QgsFeatureListModel::sortByDisplayExpression() const
 
 void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpression, Qt::SortOrder order )
 {
+  if ( !mSortByDisplayExpression && sortByDisplayExpression )
+  {
+    masterModel()->prefetchSortData( mDisplayExpression.expression(), QGSFEATURELISTMODEL_CACHE_INDEX );
+  }
+
   mSortByDisplayExpression = sortByDisplayExpression;
 
   // If we are sorting by display expression, we do not support injected null
   if ( mSortByDisplayExpression )
+  {
     setInjectNull( false );
+  }
 
   setSortRole( static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) + 1 );
   setDynamicSortFilter( mSortByDisplayExpression );

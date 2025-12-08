@@ -15,19 +15,18 @@
 #ifndef QGSRUBBERBAND_H
 #define QGSRUBBERBAND_H
 
-#include "qgsmapcanvasitem.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvasitem.h"
 
 #include <QBrush>
-#include <QVector>
+#include <QObject>
 #include <QPen>
 #include <QPolygon>
-#include <QObject>
 #include <QSvgRenderer>
-
-#include "qgis_gui.h"
+#include <QVector>
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -418,6 +417,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   protected:
+
     /**
      * Paints the rubber band in response to an update event.
      *  \param p The QPainter object

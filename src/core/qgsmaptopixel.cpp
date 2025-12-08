@@ -15,12 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptopixel.h"
+
 #include "qgsunittypes.h"
 
 #include <QPoint>
 #include <QTextStream>
-#include <QVector>
 #include <QTransform>
+#include <QVector>
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double xc,

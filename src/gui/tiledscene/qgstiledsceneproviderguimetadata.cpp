@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgstiledsceneproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
+
 #include "qgsapplication.h"
-#include "qgstiledscenesourceselect.h"
+#include "qgssourceselectprovider.h"
 #include "qgstiledscenedataitemguiprovider.h"
+#include "qgstiledscenesourceselect.h"
 
 ///@cond PRIVATE
 

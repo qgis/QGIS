@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsprojectlistitemdelegate.h"
-#include "moc_qgsprojectlistitemdelegate.cpp"
-#include "qgis.h"
-#include "qgsnewsfeedmodel.h"
-#include "qgswebframe.h"
-#include "qgsapplication.h"
-#include "qgsrendercontext.h"
 
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsnewsfeedmodel.h"
+#include "qgsrendercontext.h"
+#include "qgswebframe.h"
+
+#include <QAbstractTextDocumentLayout>
 #include <QApplication>
 #include <QPainter>
 #include <QTextDocument>
-#include <QAbstractTextDocumentLayout>
+
+#include "moc_qgsprojectlistitemdelegate.cpp"
 
 QgsProjectListItemDelegate::QgsProjectListItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )

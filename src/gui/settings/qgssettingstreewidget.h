@@ -17,9 +17,7 @@
 #define QGSSETTINGSTREEWIDGET_H
 
 #include "qgis_gui.h"
-
 #include "qgsoptionsdialoghighlightwidget.h"
-
 
 class QTreeView;
 

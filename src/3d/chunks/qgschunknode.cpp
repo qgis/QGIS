@@ -15,9 +15,10 @@
 
 #include "qgschunknode.h"
 
-#include "qgschunkedentity.h" // for ChunkLoader destructor
+#include "qgschunkedentity.h"
 #include "qgschunklist_p.h"
 #include "qgschunkloader.h"
+
 #include <Qt3DCore/QEntity>
 
 ///@cond PRIVATE
@@ -27,13 +28,6 @@ QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsBox3D &box3D,
   , mError( error )
   , mNodeId( nodeId )
   , mParent( parent )
-  , mState( Skeleton )
-  , mLoaderQueueEntry( nullptr )
-  , mReplacementQueueEntry( nullptr )
-  , mLoader( nullptr )
-  , mEntity( nullptr )
-  , mUpdaterFactory( nullptr )
-  , mUpdater( nullptr )
 {
 }
 

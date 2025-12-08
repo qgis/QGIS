@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsBasicNumericFormat : QgsNumericFormat
 {
 %Docstring(signature="appended")

@@ -16,9 +16,10 @@
 #ifndef QGSALIGNMENTCOMBOBOX_H
 #define QGSALIGNMENTCOMBOBOX_H
 
-#include <QComboBox>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAlignmentComboBox, with the specified parent widget.
      */

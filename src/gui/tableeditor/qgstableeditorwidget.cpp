@@ -16,13 +16,16 @@
 // along with CppSheets. If not, see <https://www.gnu.org/licenses/>.
 
 #include "qgstableeditorwidget.h"
-#include "moc_qgstableeditorwidget.cpp"
+
 #include "qgsnumericformat.h"
-#include <QStringList>
-#include <QKeyEvent>
+
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QPlainTextEdit>
+#include <QStringList>
+
+#include "moc_qgstableeditorwidget.cpp"
 
 QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   : QTableWidget( parent )
@@ -692,7 +695,7 @@ QgsTextFormat QgsTableEditorWidget::selectionTextFormat()
     QgsTextFormat cellFormat = model()->data( index, TextFormat ).value<QgsTextFormat>();
     if ( first )
     {
-      format = cellFormat;
+      format = std::move( cellFormat );
       first = false;
     }
     else if ( cellFormat == format )
@@ -1578,9 +1581,9 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
   QgsTableEditorTextEdit *w = new QgsTableEditorTextEdit( parent );
   w->setWeakEditorMode( mWeakEditorMode );
 
-  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, 0, w ) )
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, nullptr, w ) )
     w->setFrameShape( QFrame::NoFrame );
-  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, 0, w ) )
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, nullptr, w ) )
     w->setWidgetOwnsGeometry( true );
 
   return w;

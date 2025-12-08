@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgscheckboxconfigdlg.h"
-#include "moc_qgscheckboxconfigdlg.cpp"
-#include "qgscheckboxwidgetwrapper.h"
+
 #include "qgscheckboxfieldformatter.h"
+#include "qgscheckboxwidgetwrapper.h"
+
+#include "moc_qgscheckboxconfigdlg.cpp"
 
 QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

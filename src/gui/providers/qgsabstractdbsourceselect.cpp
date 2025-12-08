@@ -13,16 +13,18 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgsabstractdbtablemodel.h"
 #include "qgsabstractdbsourceselect.h"
+
+#include "qgsabstractdbtablemodel.h"
 #include "qgssettings.h"
 #include "qgssettingstree.h"
-#include "moc_qgsabstractdbsourceselect.cpp"
 
+#include <QActionGroup>
+#include <QItemDelegate>
 #include <QMenu>
 #include <QSortFilterProxyModel>
-#include <QItemDelegate>
-#include <QActionGroup>
+
+#include "moc_qgsabstractdbsourceselect.cpp"
 
 const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchColumnAll = new QgsSettingsEntryBool( QStringLiteral( "%1/searchColumnAll" ), QgsSettingsTree::sTreeWindowState );
 const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%1/searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );

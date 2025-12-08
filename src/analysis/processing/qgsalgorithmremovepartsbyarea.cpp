@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmremovepartsbyarea.h"
+
 #include "qgsgeometrycollection.h"
 #include "qgssurface.h"
 
@@ -90,7 +91,7 @@ Qgis::ProcessingFeatureSourceFlags QgsRemovePartsByAreaAlgorithm::sourceFlags() 
 
 void QgsRemovePartsByAreaAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterArea > minArea = std::make_unique< QgsProcessingParameterArea >( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove parts with area less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minArea = std::make_unique< QgsProcessingParameterArea >( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove parts with area less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   minArea->setIsDynamic( true );
   minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove parts with area less than" ), QgsPropertyDefinition::DoublePositive ) );
   minArea->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -120,21 +121,20 @@ QgsFeatureList QgsRemovePartsByAreaAlgorithm::processFeature( const QgsFeature &
     QgsGeometry outputGeometry;
     if ( const QgsGeometryCollection *inputCollection = qgsgeometry_cast< const QgsGeometryCollection * >( geometry.constGet() ) )
     {
-      std::unique_ptr< QgsAbstractGeometry> filteredGeometry( geometry.constGet()->createEmptyWithSameType() );
-      QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( filteredGeometry.get() );
+      std::unique_ptr< QgsGeometryCollection> filteredGeometry( inputCollection->createEmptyWithSameType() );
       const int size = inputCollection->numGeometries();
-      collection->reserve( size );
+      filteredGeometry->reserve( size );
       for ( int i = 0; i < size; ++i )
       {
         if ( const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( inputCollection->geometryN( i ) ) )
         {
           if ( surface->area() >= minArea )
           {
-            collection->addGeometry( surface->clone() );
+            filteredGeometry->addGeometry( surface->clone() );
           }
         }
       }
-      if ( collection->numGeometries() == 0 )
+      if ( filteredGeometry->numGeometries() == 0 )
       {
         // skip empty features
         return {};

@@ -16,10 +16,11 @@
 #ifndef QGSSCALERANGEWIDGET_H
 #define QGSSCALERANGEWIDGET_H
 
-#include <QGridLayout>
-#include "qgis_sip.h"
-#include <QLabel>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QGridLayout>
+#include <QLabel>
 
 class QgsMapCanvas;
 class QgsScaleWidget;
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     Q_PROPERTY( double maximumScale READ maximumScale WRITE setMaximumScale )
 
   public:
+
     /**
      * Constructor for QgsScaleRangeWidget.
      */

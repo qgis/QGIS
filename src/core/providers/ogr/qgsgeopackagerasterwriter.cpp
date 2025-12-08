@@ -17,12 +17,13 @@
 ///@cond PRIVATE
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
-#include "gdal.h"
-#include "gdal_utils.h"
-#include "qgsogrutils.h"
-
 #include "qgsgeopackagerasterwriter.h"
+
+#include <gdal.h>
+#include <gdal_utils.h>
+
 #include "qgscplerrorhandler_p.h"
+#include "qgsogrutils.h"
 
 QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &outputUrl ):
   mSourceUri( sourceUri ),

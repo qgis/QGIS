@@ -16,60 +16,64 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
+#include "qgsvectorlayerproperties.h"
+
 #include <limits>
+#include <memory>
 
 #include "qgsactionmanager.h"
-#include "qgsjoindialog.h"
-#include "qgsvectorlayerselectionproperties.h"
-#include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
+#include "qgsattributesformproperties.h"
+#include "qgsattributetableconfig.h"
+#include "qgsauxiliarystorage.h"
+#include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdiagramwidget.h"
-#include "qgssourcefieldsproperties.h"
-#include "qgsattributesformproperties.h"
-#include "qgslabelingwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgsmetadatawidget.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerproperties.h"
-#include "moc_qgsvectorlayerproperties.cpp"
-#include "qgsvectordataprovider.h"
-#include "qgssubsetstringeditorinterface.h"
-#include "qgsdatasourceuri.h"
-#include "qgsrenderer.h"
 #include "qgsexpressioncontext.h"
-#include "qgssettings.h"
-#include "qgsrendererpropertiesdialog.h"
-#include "qgsstyle.h"
-#include "qgsauxiliarystorage.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfinder.h"
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgsjoindialog.h"
+#include "qgslabelinggui.h"
+#include "qgslabelingwidget.h"
+#include "qgslayertreemodel.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayersavestyledialog.h"
 #include "qgsmaplayerserverproperties.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgsnewauxiliaryfielddialog.h"
-#include "qgslabelinggui.h"
-#include "qgsmessagebar.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmaskingwidget.h"
-#include "qgsvectorlayertemporalpropertieswidget.h"
-#include "qgsprovidersourcewidget.h"
-#include "qgsproviderregistry.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgslayertreemodel.h"
 #include "qgsmaptip.h"
-#include "qgsgui.h"
+#include "qgsmaskingwidget.h"
+#include "qgsmessagebar.h"
+#include "qgsmetadatawidget.h"
 #include "qgsnative.h"
-#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgsnewauxiliaryfielddialog.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersourcewidget.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgsfileutils.h"
-#include "qgswebview.h"
+#include "qgsrenderer.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgssettings.h"
+#include "qgssourcefieldsproperties.h"
+#include "qgsstyle.h"
+#include "qgssubsetstringeditorinterface.h"
+#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerselectionproperties.h"
+#include "qgsvectorlayertemporalpropertieswidget.h"
 #include "qgswebframe.h"
-#include "qgsexpressionfinder.h"
+#include "qgswebview.h"
+#include "qgswmsdimensiondialog.h"
+
+#include "moc_qgsvectorlayerproperties.cpp"
+
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
@@ -166,13 +170,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
   initMapTipPreview();
 
+  mFeaturesSortOrderExpressionWidget->setLayer( lyr );
+  mFeaturesSortOrderExpressionWidget->registerExpressionContextGenerator( this );
+  connect( mFeaturesSortOrderDirectionButton, &QAbstractButton::clicked, this, [this]() {
+    mFeaturesSortOrderDirectionButton->setArrowType( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::DownArrow : Qt::UpArrow );
+  } );
+
   connect( mMapTipInsertFieldButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertField );
   connect( mMapTipInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertOrEditExpression );
 
   if ( !mLayer )
     return;
 
-  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
 
   QVBoxLayout *layout = nullptr;
@@ -363,10 +372,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teMetadataViewer->clear();
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
-  teMetadataViewer->setHtml( htmlMetadata() );
   teMetadataViewer->setOpenLinks( false );
   connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::openUrl );
-  mMetadataFilled = true;
 
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
@@ -540,6 +547,9 @@ void QgsVectorLayerProperties::syncToLayer()
   mDisplayExpressionWidget->setField( mLayer->displayExpression() );
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
   mMapTipWidget->setText( mLayer->mapTipTemplate() );
+
+  mFeaturesSortOrderExpressionWidget->setField( mLayer->attributeTableConfig().sortExpression() );
+  mFeaturesSortOrderDirectionButton->setArrowType( mLayer->attributeTableConfig().sortOrder() == Qt::AscendingOrder ? Qt::UpArrow : Qt::DownArrow );
 
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
@@ -715,6 +725,11 @@ void QgsVectorLayerProperties::apply()
   mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipsEnabled( mEnableMapTips->isChecked() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
+
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setSortExpression( mFeaturesSortOrderExpressionWidget->asExpression() );
+  config.setSortOrder( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::AscendingOrder : Qt::DescendingOrder );
+  mLayer->setAttributeTableConfig( config );
 
   mLayer->actions()->clearActions();
   const auto constActions = mActionDialog->actions();
@@ -1872,6 +1887,7 @@ void QgsVectorLayerProperties::initMapTipPreview()
   // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
   // Create the WebView
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
+  mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
 #if WITH_QTWEBKIT
   mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself

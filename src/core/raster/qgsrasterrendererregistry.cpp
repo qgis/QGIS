@@ -16,21 +16,22 @@
  ***************************************************************************/
 
 #include "qgsrasterrendererregistry.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrastershader.h"
-#include "qgsrastertransparency.h"
+
+#include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
+#include "qgscontrastenhancement.h"
+#include "qgshillshaderenderer.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
-#include "qgscolorrampimpl.h"
 #include "qgsrastercontourrenderer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrastershader.h"
+#include "qgsrastersinglecolorrenderer.h"
+#include "qgsrastertransparency.h"
+#include "qgssettings.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastersinglecolorrenderer.h"
-#include "qgshillshaderenderer.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgscontrastenhancement.h"
 
 #include <QIcon>
 

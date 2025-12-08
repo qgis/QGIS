@@ -14,10 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtGlobal>
+#include "qgsgrasswin.h"
 
 #include "qgslogger.h"
-#include "qgsgrasswin.h"
+
+#include <QtGlobal>
 
 #ifdef Q_OS_WIN
 #include "Windows.h"

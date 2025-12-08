@@ -14,17 +14,17 @@
  ***************************************************************************/
 
 #include "qgspointcloudeditingindex.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudlayereditutils.h"
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgscopcpointcloudindex.h"
 #include "qgscopcupdate.h"
 #include "qgslazdecoder.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayereditutils.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QMutex>
-
 
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
 {

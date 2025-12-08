@@ -17,6 +17,7 @@
 #define QGSABSTRACTLAYOUTITERATOR_H
 
 #include "qgis_core.h"
+
 #include <QString>
 
 class QgsLayout;

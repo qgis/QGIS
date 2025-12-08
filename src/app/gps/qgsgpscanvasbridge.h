@@ -16,13 +16,14 @@
 #ifndef QGSGPSCANVASBRIDGE_H
 #define QGSGPSCANVASBRIDGE_H
 
-#include <QObject>
-#include <QElapsedTimer>
-#include "qgspointxy.h"
+#include "qgis_app.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvasinteractionblocker.h"
-#include "qgis_app.h"
+#include "qgspointxy.h"
+
+#include <QElapsedTimer>
+#include <QObject>
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;

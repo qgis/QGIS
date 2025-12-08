@@ -12,14 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsmeasuretool.h"
-#include "qgsmeasuredialog.h"
-#include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsmeasuredialog.h"
+#include "qgsmeasuretool.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgstest.h"
 
 /**
  * \ingroup UnitTests

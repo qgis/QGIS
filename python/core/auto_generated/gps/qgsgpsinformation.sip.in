@@ -10,7 +10,6 @@
 
 
 
-
 class QgsGpsInformation
 {
 %Docstring(signature="appended")

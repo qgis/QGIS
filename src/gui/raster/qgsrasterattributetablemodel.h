@@ -17,8 +17,8 @@
 #define QGSRASTERATTRIBUTETABLEMODEL_H
 
 #include "qgis_gui.h"
-#include "qgsrasterattributetable.h"
 #include "qgis_sip.h"
+#include "qgsrasterattributetable.h"
 
 #include <QAbstractTableModel>
 #include <QObject>
@@ -33,6 +33,7 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsRasterAttributeTableModel from raster attribute table \a rat and optional \a parent.
      */

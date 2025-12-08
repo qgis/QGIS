@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include "qgsrasterblock.h"
 #include "qgsrasterdrawer.h"
+
+#include "qgslogger.h"
+#include "qgsmaptopixel.h"
+#include "qgsrasterblock.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterviewport.h"
-#include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
+
 #include <QImage>
 #include <QPainter>
 #include <QPdfWriter>

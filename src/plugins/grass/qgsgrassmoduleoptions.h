@@ -24,9 +24,8 @@
 //#include <QVBoxLayout>
 
 #include "qgis.h"
-#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
-
+#include "qgsfields.h"
 #include "qgsgrassmoduleparam.h"
 #include "qgsgrassprovider.h"
 #include "qgsgrassrasterprovider.h"
@@ -190,6 +189,7 @@ class QgsGrassModuleStandardOptions : public QWidget, public QgsGrassModuleOptio
     void switchAdvanced();
 
   private:
+
     /**
      * Read and parse module options (--interface-description).
      * \param errors list to which possible errors are added

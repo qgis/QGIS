@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle2points.h"
-#include "moc_qgsmaptoolshapecircle2points.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsmaptoolshapecircle2points.cpp"
 
 QString QgsMapToolShapeCircle2PointsMetadata::id() const
 {

@@ -36,6 +36,7 @@ void ToRasterTin::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output raster file", outputFile);
     argRes = &programArgs.add("resolution,r", "Resolution of the output grid", resolution);
+    argMaxTriangleEdgeLength = &programArgs.add("max-triangle-edge-length", "Maximum triangle edge length", maxTriangleEdgeLength);
     argTileSize = &programArgs.add("tile-size", "Size of a tile for parallel runs", tileAlignment.tileSize);
     argTileOriginX = &programArgs.add("tile-origin-x", "X origin of a tile for parallel runs", tileAlignment.originX);
     argTileOriginY = &programArgs.add("tile-origin-y", "Y origin of a tile for parallel runs", tileAlignment.originY);
@@ -51,6 +52,15 @@ bool ToRasterTin::checkArgs()
     if (!argRes->set())
     {
         std::cerr << "missing resolution" << std::endl;
+        return false;
+    }
+
+    if (!argMaxTriangleEdgeLength->set())
+    {
+        maxTriangleEdgeLength = -1;
+    } else if (maxTriangleEdgeLength <= 0)
+    {
+        std::cerr << "max-triangle-edge-length must be positive" << std::endl;
         return false;
     }
 
@@ -70,7 +80,7 @@ bool ToRasterTin::checkArgs()
 }
 
 
-std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resolution, double collarSize)
+std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resolution, double maxTriangleEdgeLength, double collarSize)
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
@@ -157,6 +167,10 @@ std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resoluti
 
     pdal::Options faceRaster_opts;
     faceRaster_opts.add(pdal::Option("resolution", resolution));
+    if (maxTriangleEdgeLength > 0)
+    {
+        faceRaster_opts.add(pdal::Option("max_triangle_edge_length", maxTriangleEdgeLength));
+    }
 
     if (box.valid())  // if box is not provided, filters.faceraster will calculate it from data
     {
@@ -252,7 +266,7 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
 
                 tileOutputFiles.push_back(tile.outputFilename);
 
-                pipelines.push_back(pipeline(&tile, resolution, collarSize));
+                pipelines.push_back(pipeline(&tile, resolution, maxTriangleEdgeLength, collarSize));
             }
         }
     }
@@ -300,7 +314,7 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
 
                 tileOutputFiles.push_back(tile.outputFilename);
 
-                pipelines.push_back(pipeline(&tile, resolution, collarSize));
+                pipelines.push_back(pipeline(&tile, resolution, maxTriangleEdgeLength, collarSize));
             }
         }
     }
@@ -309,7 +323,7 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
         ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
-        pipelines.push_back(pipeline(&tile, resolution, 0));
+        pipelines.push_back(pipeline(&tile, resolution, maxTriangleEdgeLength, 0));
     }
 }
 

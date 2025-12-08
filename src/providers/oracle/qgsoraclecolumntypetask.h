@@ -17,8 +17,8 @@
 #ifndef QGSORACLECOLUMNTYPETASK_H
 #define QGSORACLECOLUMNTYPETASK_H
 
-#include "qgstaskmanager.h"
 #include "qgsoracleconn.h"
+#include "qgstaskmanager.h"
 
 // A class that determines the geometry type of a given database
 // schema.table.column, with the option of doing so in a separate
@@ -28,6 +28,7 @@ class QgsOracleColumnTypeTask : public QgsTask
 {
     Q_OBJECT
   public:
+
     /**
      *
      * \param connName

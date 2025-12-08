@@ -27,9 +27,10 @@ back to QgsVectorLayer.
 #define SIP_NO_FILE
 
 #include "ui_qgsattributeactiondialogbase.h"
-#include "qgsattributetableconfig.h"
-#include "qgis_gui.h"
+
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 
 #include <QMap>
 

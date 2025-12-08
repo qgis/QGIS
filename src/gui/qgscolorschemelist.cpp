@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgscolorschemelist.h"
-#include "moc_qgscolorschemelist.cpp"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolordialog.h"
-#include "qgssettings.h"
 
-#include <QPainter>
-#include <QColorDialog>
-#include <QMimeData>
+#include "qgsapplication.h"
+#include "qgscolordialog.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+
 #include <QClipboard>
-#include <QKeyEvent>
+#include <QColorDialog>
 #include <QFileDialog>
+#include <QKeyEvent>
 #include <QMessageBox>
+#include <QMimeData>
+#include <QPainter>
+
+#include "moc_qgscolorschemelist.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -308,7 +310,6 @@ QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString 
   , mScheme( scheme )
   , mContext( context )
   , mBaseColor( baseColor )
-  , mIsDirty( false )
 {
   if ( scheme )
   {

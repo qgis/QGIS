@@ -13,13 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsxyzconnection.h"
 
-#include "qgsowsconnection.h"
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
-
 
 QString QgsXyzConnection::encodedUri() const
 {

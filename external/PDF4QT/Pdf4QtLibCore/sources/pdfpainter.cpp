@@ -1,23 +1,29 @@
-//    Copyright (C) 2019-2022 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfpainter.h"
 #include "pdfpattern.h"
 #include "pdfcms.h"
+#include "pdfpainterutils.h"
 
 #include <QPainter>
 #include <QCryptographicHash>
@@ -113,56 +119,12 @@ bool PDFPainterBase::isContentSuppressedByOC(PDFObjectReference ocgOrOcmd)
 
 QPen PDFPainterBase::getCurrentPenImpl() const
 {
-    const PDFPageContentProcessorState* graphicState = getGraphicState();
-    QColor color = graphicState->getStrokeColor();
-    if (color.isValid())
-    {
-        color.setAlphaF(getEffectiveStrokingAlpha());
-        const PDFReal lineWidth = graphicState->getLineWidth();
-        Qt::PenCapStyle penCapStyle = graphicState->getLineCapStyle();
-        Qt::PenJoinStyle penJoinStyle = graphicState->getLineJoinStyle();
-        const PDFLineDashPattern& lineDashPattern = graphicState->getLineDashPattern();
-        const PDFReal mitterLimit = graphicState->getMitterLimit();
-
-        QPen pen(color);
-
-        pen.setWidthF(lineWidth);
-        pen.setCapStyle(penCapStyle);
-        pen.setJoinStyle(penJoinStyle);
-        pen.setMiterLimit(mitterLimit);
-
-        if (lineDashPattern.isSolid())
-        {
-            pen.setStyle(Qt::SolidLine);
-        }
-        else
-        {
-            pen.setStyle(Qt::CustomDashLine);
-            pen.setDashPattern(lineDashPattern.createForQPen(pen.widthF()));
-            pen.setDashOffset(lineDashPattern.getDashOffset());
-        }
-
-        return pen;
-    }
-    else
-    {
-        return QPen(Qt::NoPen);
-    }
+    return PDFPainterHelper::createPenFromState(getGraphicState(), getEffectiveStrokingAlpha());
 }
 
 QBrush PDFPainterBase::getCurrentBrushImpl() const
 {
-    const PDFPageContentProcessorState* graphicState = getGraphicState();
-    QColor color = graphicState->getFillColor();
-    if (color.isValid())
-    {
-        color.setAlphaF(getEffectiveFillingAlpha());
-        return QBrush(color, Qt::SolidPattern);
-    }
-    else
-    {
-        return QBrush(Qt::NoBrush);
-    }
+    return PDFPainterHelper::createBrushFromState(getGraphicState(), getEffectiveFillingAlpha());
 }
 
 PDFReal PDFPainterBase::getEffectiveStrokingAlpha() const
@@ -726,13 +688,6 @@ void PDFPrecompiledPage::addClip(QPainterPath path)
 
 void PDFPrecompiledPage::addImage(QImage image)
 {
-    // Convert the image into format Format_ARGB32_Premultiplied for fast drawing.
-    // If this format is used, then no image conversion is performed while drawing.
-    if (image.format() != QImage::Format_ARGB32_Premultiplied)
-    {
-        image.convertTo(QImage::Format_ARGB32_Premultiplied);
-    }
-
     m_instructions.emplace_back(InstructionType::DrawImage, m_images.size());
     m_images.emplace_back(qMove(image));
 }

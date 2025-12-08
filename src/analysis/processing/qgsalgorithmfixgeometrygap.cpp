@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometrygap.h"
+
 #include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsgeometrycheckerror.h"
 
 ///@cond PRIVATE
 
@@ -68,7 +69,6 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
@@ -79,7 +79,6 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
     QStringLiteral( "GAPS" ), QObject::tr( "Gaps layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
 
-  // Specific inputs for this check
   QStringList methods;
   {
     QList<QgsGeometryCheckResolutionMethod> checkMethods = QgsGeometryGapCheck( nullptr, QVariantMap() ).availableResolutionMethods();
@@ -100,7 +99,6 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Gaps-filled layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
@@ -108,7 +106,7 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
     QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing gaps" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -158,7 +156,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in the gaps layer." ).arg( errorIdFieldName ) );
   if ( neighbors->fields().indexFromName( featIdFieldName ) == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in the neighbors layer." ).arg( featIdFieldName ) );
-  int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
+  const int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in input layer." ).arg( featIdFieldName ) );
 
@@ -184,10 +182,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext(
-    mTolerance, input->sourceCrs(), project->transformContext(), project
-  );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
 
   const QgsGeometryGapCheck check( &checkContext, QVariantMap() );
 
@@ -201,7 +196,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   // To add features into the layer, the geometry checker looks for the layer in the project
   if ( method == QgsGeometryGapCheck::ResolutionMethod::CreateNewFeature )
   {
-    project->addMapLayer( fixedLayer.get(), false, false );
+    context.project()->addMapLayer( fixedLayer.get(), false, false );
     fixedLayer->startEditing();
   }
 
@@ -271,7 +266,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   {
     if ( !fixedLayer->commitChanges() )
       throw QgsProcessingException( QObject::tr( "Unable to add gap features" ) );
-    project->removeMapLayer( fixedLayer.get() );
+    context.project()->removeMapLayer( fixedLayer.get() );
   }
 
   progression = 0;
@@ -308,7 +303,7 @@ bool QgsFixGeometryGapAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryGapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

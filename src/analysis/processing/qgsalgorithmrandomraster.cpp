@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrandomraster.h"
+
+#include <limits>
+#include <random>
+
 #include "qgsrasterfilewriter.h"
 #include "qgsstringutils.h"
-#include "random"
-#include "limits"
 
 ///@cond PRIVATE
 

@@ -16,11 +16,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
+#include <memory>
+#include <testtransformer.h>
 
 #include "qgscircularstring.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinesegment.h"
@@ -28,10 +28,11 @@
 #include "qgsmultipoint.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-#include "qgscoordinatetransform.h"
+#include "qgstest.h"
 #include "testgeometryutils.h"
-#include "testtransformer.h"
 
+#include <QObject>
+#include <QString>
 
 class TestQgsLineString : public QObject
 {
@@ -759,7 +760,7 @@ void TestQgsLineString::appendWithZM()
   auto toAppend = std::make_unique<QgsLineString>();
 
   //check dimensionality is inherited from append line if initially empty
-  toAppend.reset( new QgsLineString() );
+  toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 ) );
   ls.append( toAppend.get() );
 
@@ -780,7 +781,7 @@ void TestQgsLineString::appendWithZM()
   QVERIFY( !ls.is3D() );
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
 
-  toAppend.reset( new QgsLineString() );
+  toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 ) );
   ls.append( toAppend.get() );
 
@@ -798,7 +799,7 @@ void TestQgsLineString::appendWithZM()
   QVERIFY( ls.isMeasure() );
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineStringZM );
 
-  toAppend.reset( new QgsLineString() );
+  toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 31, 32 ) << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
   ls.append( toAppend.get() );
 
@@ -810,7 +811,7 @@ void TestQgsLineString::appendWithZM()
 
   //25d append
   ls.clear();
-  toAppend.reset( new QgsLineString() );
+  toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point25D, 31, 32, 33 ) << QgsPoint( Qgis::WkbType::Point25D, 41, 42, 43 ) );
   ls.append( toAppend.get() );
 
@@ -858,7 +859,7 @@ void TestQgsLineString::append()
   QCOMPARE( ls.pointN( 2 ), toAppend->pointN( 2 ) );
 
   //add more points
-  toAppend.reset( new QgsLineString() );
+  toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 31, 32 ) << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
   ls.append( toAppend.get() );
 
@@ -874,14 +875,14 @@ void TestQgsLineString::append()
   //append another line the closes the original geometry.
   //Make sure there are not duplicit points except start and end point
   ls.clear();
-  toAppend.reset( new QgsLineString() );
+  toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 5, 5 ) << QgsPoint( 10, 1 ) );
   ls.append( toAppend.get() );
 
   QCOMPARE( ls.numPoints(), 3 );
   QCOMPARE( ls.vertexCount(), 3 );
 
-  toAppend.reset( new QgsLineString() );
+  toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 10, 1 ) << QgsPoint( 1, 1 ) );
   ls.append( toAppend.get() );
 

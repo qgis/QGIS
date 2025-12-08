@@ -18,8 +18,9 @@
 
 #define SIP_NO_FILE
 
-#include <QStackedWidget>
 #include "qgis_gui.h"
+
+#include <QStackedWidget>
 
 class QSize;
 
@@ -73,7 +74,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
     QSize minimumSizeHint() const override;
 
   private:
-    SizeMode mSizeMode;
+    SizeMode mSizeMode = SizeMode::ConsiderAllPages; //#spellok
 };
 
 #endif // QGSSTACKEDWIDGET_H

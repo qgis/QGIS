@@ -15,15 +15,17 @@
 
 #include "qgsrasteranalysisutils.h"
 
-#include "qgsfeedback.h"
-#include "qgsrasterblock.h"
-#include "qgsrasteriterator.h"
-#include "qgsgeos.h"
-#include "qgsprocessingparameters.h"
+#include <cmath>
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
-#include <cmath>
+
+#include "qgsfeedback.h"
+#include "qgsgeos.h"
+#include "qgsprocessingparameters.h"
+#include "qgsrasterblock.h"
+#include "qgsrasteriterator.h"
+
 ///@cond PRIVATE
 
 void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY, int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent )
@@ -57,11 +59,10 @@ void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, co
 
 void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, const QgsPointXY & )> &addValue, bool skipNodata )
 {
-  auto polyEngine = std::make_unique<QgsGeos>( poly.constGet() );
-  if ( !polyEngine )
-  {
+  if ( !poly.constGet() )
     return;
-  }
+
+  auto polyEngine = std::make_unique<QgsGeos>( poly.constGet() );
   polyEngine->prepareGeometry();
 
   QgsRasterIterator iter( rasterInterface );

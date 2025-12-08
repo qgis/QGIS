@@ -16,7 +16,6 @@
 
 
 
-
 class QgsOwsConnection : QObject
 {
 %Docstring(signature="appended")

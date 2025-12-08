@@ -18,12 +18,12 @@
 #ifndef QGSINTERPOLATOR_H
 #define QGSINTERPOLATOR_H
 
-#include <QVector>
-#include <QList>
-
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgscoordinatetransformcontext.h"
+
+#include <QList>
+#include <QVector>
 
 class QgsFeatureSource;
 class QgsGeometry;
@@ -40,6 +40,7 @@ class QgsFeedback;
  */
 struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 {
+
     /**
    * Constructor for QgsInterpolatorVertexData with the specified
    * \a x, \a y, and \a z coordinate.
@@ -134,6 +135,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     QList<LayerData> layerData() const SIP_SKIP { return mLayerData; }
 
   protected:
+
     /**
      * Caches the vertex and value data from the provider. All the vertex data
      * will be held in virtual memory.

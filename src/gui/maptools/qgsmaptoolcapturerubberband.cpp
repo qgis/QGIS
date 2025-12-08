@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapturerubberband.h"
-#include "qgsgeometryrubberband.h"
 
+#include "qgsgeometryrubberband.h"
 
 ///@cond PRIVATE
 

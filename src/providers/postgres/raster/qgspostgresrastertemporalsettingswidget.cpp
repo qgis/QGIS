@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgspostgresrastertemporalsettingswidget.h"
-#include "moc_qgspostgresrastertemporalsettingswidget.cpp"
+
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
+
+#include "moc_qgspostgresrastertemporalsettingswidget.cpp"
 
 QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -18,10 +18,10 @@
 #ifndef QGSLAYERCAPABILITIESMODEL_H
 #define QGSLAYERCAPABILITIESMODEL_H
 
+#include "qgis_app.h"
+
 #include <QObject>
 #include <QSortFilterProxyModel>
-
-#include "qgis_app.h"
 
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;

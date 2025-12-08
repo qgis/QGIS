@@ -14,24 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsprojectstorageregistry.h"
-#include "qgsprojectstorage.h"
-#include "qgsprojectviewsettings.h"
-#include "qgsreferencedgeometry.h"
 #include "qgslandingpageutils.h"
-#include "qgsserverprojectutils.h"
-#include "qgsconfigcache.h"
-#include "qgsmessagelog.h"
-#include "qgslayertree.h"
-#include "qgsvectorlayer.h"
-#include "nlohmann/json.hpp"
-#include "qgscoordinatetransform.h"
 
 #include <mutex>
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
+#include "qgsconfigcache.h"
+#include "qgscoordinatetransform.h"
+#include "qgslayertree.h"
+#include "qgsmessagelog.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
+
 #include <QCryptographicHash>
-#include <QFileSystemWatcher>
 #include <QDomDocument>
+#include <QFileSystemWatcher>
 
 const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { QStringLiteral( "/(?<projectHash>[a-f0-9]{32})" ) };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;

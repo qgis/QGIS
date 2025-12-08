@@ -26,6 +26,7 @@ connection.
 #include "qgsdatabaseschemaselectiondialog.h"
 %End
   public:
+
     explicit QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDatabaseSchemaSelectionDialog, for the specified

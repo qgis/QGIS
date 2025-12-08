@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifcollection.h"
 #include "moc_qgsoapifcollection.cpp"
 #include "qgsoapifutils.h"
-#include "qgsoapifprovider.h"
 
 #include <set>
 
@@ -77,6 +77,15 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
     if ( link.length > 0 )
       mdLink.size = QString::number( link.length );
     mLayerMetadata.addLink( mdLink );
+
+    if ( link.rel == QLatin1String( "items" ) )
+    {
+      if ( link.type == QLatin1String( "application/geo+json" ) || link.type == QLatin1String( "application/flatgeobuf" ) || link.type == QLatin1String( "application/fg+json" ) )
+      {
+        mFeatureFormats << link.type;
+        mMapFeatureFormatToUrl[link.type] = link.href;
+      }
+    }
   }
 
   if ( j.contains( "title" ) )
@@ -109,7 +118,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
       if ( spatial.is_object() && spatial.contains( "bbox" ) )
       {
         QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-          QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
+          OAPIF_PROVIDER_DEFAULT_CRS
         ) );
         if ( spatial.contains( "crs" ) )
         {
@@ -191,7 +200,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
           mBbox.set( values[0], values[1], values[2], values[3] );
           QgsLayerMetadata::SpatialExtent spatialExtent;
           spatialExtent.extentCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-            QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
+            OAPIF_PROVIDER_DEFAULT_CRS
           );
           mLayerMetadata.setCrs( spatialExtent.extentCrs );
           metadataExtent.setSpatialExtents( QList<QgsLayerMetadata::SpatialExtent>() << spatialExtent );
@@ -358,7 +367,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
   if ( mCrsList.isEmpty() )
   {
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-      QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
+      OAPIF_PROVIDER_DEFAULT_CRS
     );
     mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs.authid() ) );
     mCrsList.append( crs.authid() );
@@ -471,6 +480,13 @@ void QgsOapifCollectionsRequest::processReply()
               // use the one from the collection set.
               collection.mLayerMetadata.setLicenses( licenses );
             }
+
+            // Create a merged map of feature formats
+            for ( const QString &format : collection.mFeatureFormats )
+            {
+              mFeatureFormats << format;
+            }
+
             mCollections.emplace_back( collection );
           }
         }

@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgsalgorithmjoinbylocationsummary.h"
-#include "qgsprocessing.h"
-#include "qgsgeometryengine.h"
-#include "qgsvectorlayer.h"
+
+#include "qgsalgorithmjoinbylocation.h"
 #include "qgsapplication.h"
+#include "qgsdatetimestatisticalsummary.h"
 #include "qgsfeature.h"
 #include "qgsfeaturesource.h"
-#include "qgsalgorithmjoinbylocation.h"
-#include "qgsdatetimestatisticalsummary.h"
+#include "qgsgeometryengine.h"
+#include "qgsprocessing.h"
 #include "qgsstringstatisticalsummary.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

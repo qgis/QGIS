@@ -18,6 +18,7 @@
 #ifndef QGSWMTSDIMENSIONS_H
 #define QGSWMTSDIMENSIONS_H
 #include "ui_qgswmtsdimensionsbase.h"
+
 #include "qgsguiutils.h"
 #include "qgswmsprovider.h"
 

@@ -16,14 +16,14 @@
 #ifndef QGSTEXTCHARACTERFORMAT_H
 #define QGSTEXTCHARACTERFORMAT_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 
-#include <QFont>
-#include <QColor>
-#include <QSizeF>
 #include <QBrush>
+#include <QColor>
+#include <QFont>
+#include <QSizeF>
 
 class QTextCharFormat;
 class QgsRenderContext;

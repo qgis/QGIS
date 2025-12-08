@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewitemdelegate.h"
-#include "moc_qgslayertreeviewitemdelegate.cpp"
 
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
@@ -25,6 +24,8 @@
 #include <QMenu>
 #include <QPen>
 #include <QToolTip>
+
+#include "moc_qgslayertreeviewitemdelegate.cpp"
 
 /// @cond PRIVATE
 

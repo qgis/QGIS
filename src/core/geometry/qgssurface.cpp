@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgssurface.h"
+
+#include <memory>
+
+#include "qgsgeos.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
-#include "qgsgeos.h"
-#include <memory>
 
 bool QgsSurface::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {

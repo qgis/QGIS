@@ -19,8 +19,8 @@
 #ifndef QGSMAPOVERVIEWCANVAS_H
 #define QGSMAPOVERVIEWCANVAS_H
 
-#include <QWidget>
 #include <QPixmap>
+#include <QWidget>
 
 class QMouseEvent;
 class QgsMapCanvas;

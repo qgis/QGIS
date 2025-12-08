@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmapitem.h"
-#include "moc_qgslayoutitemmapitem.cpp"
-#include "qgslayoutitemmap.h"
+
 #include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+
 #include <QUuid>
+
+#include "moc_qgslayoutitemmapitem.cpp"
 
 QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutObject( map->layout() )
   , mName( name )
   , mMap( map )
   , mUuid( QUuid::createUuid().toString() )
-  , mEnabled( true )
 {
 
 }

@@ -5,8 +5,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsSingleGeometryCheck.__virtual_methods__ = ['collectErrors']
     QgsSingleGeometryCheck.__abstract_methods__ = ['processGeometry']
+    QgsSingleGeometryCheck.__overridden_methods__ = ['collectErrors']
     QgsSingleGeometryCheck.__group__ = ['vector', 'geometry_checker']
 except (NameError, AttributeError):
     pass

@@ -28,12 +28,14 @@
  */
 
 #include "pointset.h"
-#include "util.h"
+
 #include "geomfunction.h"
-#include "qgsgeos.h"
-#include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
+#include "util.h"
+
 #include <qglobal.h>
 
 using namespace pal;

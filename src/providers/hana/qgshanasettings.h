@@ -18,6 +18,7 @@
 #define QGSHANAPSETTINGS_H
 
 #include "qgsdatasourceuri.h"
+
 #include <QString>
 
 struct QgsHanaIdentifierType
@@ -320,7 +321,7 @@ class QgsHanaSettings
     QString mDsn;
     QString mDriver;
     QString mHost;
-    uint mIdentifierType;
+    uint mIdentifierType = QgsHanaIdentifierType::InstanceNumber;
     QString mIdentifier;
     QString mDatabase;
     bool mMultitenant = false;

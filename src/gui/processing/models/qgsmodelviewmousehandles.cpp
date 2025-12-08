@@ -16,18 +16,22 @@
  ***************************************************************************/
 
 #include "qgsmodelviewmousehandles.h"
-#include "moc_qgsmodelviewmousehandles.cpp"
+
+#include <limits>
+
 #include "qgis.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
+#include "qgsproject.h"
+
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
 #include <QWidget>
-#include <limits>
+
+#include "moc_qgsmodelviewmousehandles.cpp"
 
 ///@cond PRIVATE
 

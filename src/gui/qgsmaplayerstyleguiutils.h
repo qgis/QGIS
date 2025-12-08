@@ -16,8 +16,9 @@
 #ifndef QGSMAPLAYERSTYLEGUIUTILS_H
 #define QGSMAPLAYERSTYLEGUIUTILS_H
 
-#include <QObject>
 #include "qgis_gui.h"
+
+#include <QObject>
 
 #define SIP_NO_FILE
 
@@ -40,6 +41,7 @@ class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * \brief returns a singleton instance of this class
      */

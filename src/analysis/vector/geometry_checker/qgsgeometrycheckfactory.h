@@ -16,16 +16,15 @@
 #ifndef QGSGEOMETRYCHECKFACTORY_H
 #define QGSGEOMETRYCHECKFACTORY_H
 
-#include <QString>
-#include <QMap>
-#include <QVariantMap>
-
-#include "qgsgeometrycheck.h"
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
-
+#include "qgis_sip.h"
+#include "qgsgeometrycheck.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgssinglegeometrycheck.h"
+
+#include <QMap>
+#include <QString>
+#include <QVariantMap>
 
 class QgsGeometryCheck;
 class QgsSingleGeometryCheck;
@@ -43,6 +42,7 @@ class QgsGeometryCheckContext;
 class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
 {
   public:
+
     /**
      * Destructor
      *

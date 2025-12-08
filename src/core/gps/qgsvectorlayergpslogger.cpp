@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsvectorlayergpslogger.h"
-#include "moc_qgsvectorlayergpslogger.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
+
 #include "qgsgpsconnection.h"
 #include "qgslinestring.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+
+#include "moc_qgsvectorlayergpslogger.cpp"
 
 QgsVectorLayerGpsLogger::QgsVectorLayerGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QgsGpsLogger( connection, parent )

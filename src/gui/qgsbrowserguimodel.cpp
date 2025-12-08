@@ -13,13 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserguimodel.h"
-#include "moc_qgsbrowserguimodel.cpp"
-#include "qgslogger.h"
-#include "qgsdataitemguiproviderregistry.h"
-#include "qgsdataitemguiprovider.h"
-#include "qgsgui.h"
-#include "qgsmessagebar.h"
+
 #include "qgsdataitem.h"
+#include "qgsdataitemguiprovider.h"
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsmessagebar.h"
+
+#include "moc_qgsbrowserguimodel.cpp"
 
 QgsBrowserGuiModel::QgsBrowserGuiModel( QObject *parent )
   : QgsBrowserModel( parent )

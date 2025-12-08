@@ -15,22 +15,23 @@
  ***************************************************************************/
 
 #include "qgsabstractgeopdfexporter.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgslogger.h"
-#include "qgsgeometry.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsfileutils.h"
 
+#include <cpl_string.h>
 #include <gdal.h>
-#include "cpl_string.h"
 
-#include <QMutex>
-#include <QMutexLocker>
+#include "qgscoordinatetransformcontext.h"
+#include "qgsfileutils.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsvectorfilewriter.h"
+
 #include <QDomDocument>
 #include <QDomElement>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QTextStream>
 #include <QTimeZone>
 #include <QUuid>
-#include <QTextStream>
 
 bool QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable()
 {
@@ -329,6 +330,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   {
     QDomElement creationDate = doc.createElement( QStringLiteral( "CreationDate" ) );
     QString creationDateString = QStringLiteral( "D:%1" ).arg( details.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
+#if QT_FEATURE_timezone > 0
     if ( details.creationDateTime.timeZone().isValid() )
     {
       int offsetFromUtc = details.creationDateTime.timeZone().offsetFromUtc( details.creationDateTime );
@@ -338,6 +340,9 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
       int offsetMins = ( offsetFromUtc % 3600 ) / 60;
       creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
     }
+#else
+    QgsDebugError( QStringLiteral( "Qt is built without timezone support, skipping timezone for pdf export" ) );
+#endif
     creationDate.appendChild( doc.createTextNode( creationDateString ) );
     metadata.appendChild( creationDate );
   }
@@ -476,6 +481,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
       mapLayerNode->id = destinationGroup.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( destinationGroup, component.mapLayerId );
       mapLayerNode->name = details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId, component.name );
       mapLayerNode->initiallyVisible = details.initialLayerVisibility.value( component.mapLayerId, true );
+      mapLayerNode->mapLayerId = component.mapLayerId;
 
       layerIdToTreeNode.insert( component.mapLayerId, mapLayerNode.get() );
     }

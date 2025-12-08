@@ -13,7 +13,7 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QTemporaryDir, QTemporaryFile
+from qgis.PyQt.QtCore import QTemporaryDir, QTemporaryFile, QByteArray
 from qgis.core import QgsZipUtils
 from qgis.testing import unittest
 
@@ -136,6 +136,48 @@ class TestQgsZip(unittest.TestCase):
 
         files = QgsZipUtils.files(zip)
         self.assertEqual(files, ["multipoint.shp", "lines.shp", "joins.qgs"])
+
+    def test_get_file_from_zip_not_exist(self):
+        success, data = QgsZipUtils.extractFileFromZip("/path/to/nothing", "none.txt")
+
+        self.assertFalse(success)
+        self.assertEqual(data, b"")
+
+    def test_get_file_from_zip_empty_zip_path(self):
+        success, data = QgsZipUtils.extractFileFromZip("", "none.txt")
+
+        self.assertFalse(success)
+        self.assertEqual(data, b"")
+
+    def test_get_file_from_zip_empty_file_path_in_zip(self):
+        zipPath = os.path.join(self.zipDir, "testzip.zip")
+        self.assertTrue(os.path.exists(zipPath))
+
+        success, data = QgsZipUtils.extractFileFromZip(zipPath, "")
+
+        self.assertFalse(success)
+        self.assertEqual(data, b"")
+
+    def test_get_file_from_zip_file_not_exist(self):
+        zipPath = os.path.join(self.zipDir, "testzip.zip")
+        self.assertTrue(os.path.exists(zipPath))
+
+        success, data = QgsZipUtils.extractFileFromZip(zipPath, "move_along.txt")
+
+        self.assertFalse(success)
+        self.assertEqual(data, b"")
+
+    def test_get_file_from_zip_success(self):
+        zipPath = os.path.join(self.zipDir, "testzip.zip")
+        self.assertTrue(os.path.exists(zipPath))
+
+        expectedData = b'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]'
+
+        data = QByteArray()
+        success, data = QgsZipUtils.extractFileFromZip(zipPath, "points.prj")
+
+        self.assertTrue(success)
+        self.assertEqual(data, expectedData)
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdistancewithin.h"
+
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
 

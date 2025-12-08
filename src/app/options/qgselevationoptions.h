@@ -16,6 +16,7 @@
 #define QGSELEVATIONOPTIONS_H
 
 #include "ui_qgselevationoptionswidgetbase.h"
+
 #include "qgsoptionswidgetfactory.h"
 
 /**
@@ -30,6 +31,7 @@ class QgsElevationOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsEl
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsElevationOptionsWidget with the specified \a parent widget.
      */

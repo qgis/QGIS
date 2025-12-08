@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCodeEditorColorSchemeRegistry
 {
 %Docstring(signature="appended")
@@ -26,6 +27,7 @@ created, but rather accessed through
 #include "qgscodeeditorcolorschemeregistry.h"
 %End
   public:
+
     QgsCodeEditorColorSchemeRegistry();
 %Docstring
 Constructor for a color scheme registry.

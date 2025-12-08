@@ -12,34 +12,34 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-#include <QDate>
-#include <QTime>
-#include <QDateTime>
-
+#include <gdal.h>
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
-#include <gdal.h>
 
-#include "qgsfield.h"
-#include "qgsgeometry.h"
-#include "qgsogrutils.h"
 #include "qgsapplication.h"
-#include "qgspoint.h"
-#include "qgsogrproxytextcodec.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfontutils.h"
-#include "qgssymbol.h"
+#include "qgsfield.h"
 #include "qgsfielddomain.h"
-#include "qgsweakrelation.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsfontutils.h"
+#include "qgsgeometry.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsogrproviderutils.h"
+#include "qgsogrproxytextcodec.h"
+#include "qgsogrutils.h"
+#include "qgspoint.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgstest.h"
+#include "qgsweakrelation.h"
+
+#include <QDate>
+#include <QDateTime>
+#include <QObject>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
+#include <QTime>
 
 class TestQgsOgrUtils : public QObject
 {

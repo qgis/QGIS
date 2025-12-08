@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgsmesh3dentity_p.h"
-#include "moc_qgsmesh3dentity_p.cpp"
+
+#include "qgs3drendercontext.h"
+#include "qgsgeotransform.h"
+#include "qgsmesh3dmaterial_p.h"
+#include "qgsmeshlayer.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 
-#include "qgsmeshlayer.h"
-#include "qgs3drendercontext.h"
-#include "qgsmesh3dmaterial_p.h"
-#include "qgsgeotransform.h"
-
+#include "moc_qgsmesh3dentity_p.cpp"
 
 QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DRenderContext &context, const QgsTriangularMesh &triangularMesh, const QgsMesh3DSymbol *symbol )
   : mRenderContext( context )

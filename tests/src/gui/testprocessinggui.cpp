@@ -15,100 +15,101 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-#include <QLabel>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QStackedWidget>
-#include <QToolButton>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QPlainTextEdit>
-#include <QStandardItemModel>
-#include <QSignalSpy>
-
-#include "qgstest.h"
 #include "qgsconfig.h"
-#include "qgsgui.h"
-#include "qgsproject.h"
-#include "qgsprocessingguiregistry.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsprocessingalgorithmconfigurationwidget.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingwidgetwrapperimpl.h"
-#include "qgsprocessingmodelerparameterwidget.h"
-#include "qgsprocessingparameters.h"
-#include "qgsmodelundocommand.h"
-#include "qgsprocessingmaplayercombobox.h"
-#include "qgsnativealgorithms.h"
+
+#include "mesh/qgsmeshdataprovider.h"
+#include "mesh/qgsmeshlayer.h"
+#include "models/qgsprocessingmodelalgorithm.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
-#include "qgsxmlutils.h"
-#include "qgspropertyoverridebutton.h"
-#include "qgsprojectionselectionwidget.h"
-#include "qgsdoublespinbox.h"
-#include "qgsspinbox.h"
-#include "qgsmapcanvas.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsannotationlayer.h"
 #include "qgsauthconfigselect.h"
 #include "qgsauthmanager.h"
-#include "qgsprocessingmatrixparameterdialog.h"
-#include "models/qgsprocessingmodelalgorithm.h"
-#include "qgsfilewidget.h"
+#include "qgscolorbutton.h"
+#include "qgscoordinateoperationwidget.h"
+#include "qgsdatabaseschemacombobox.h"
+#include "qgsdatabasetablecombobox.h"
+#include "qgsdatetimeedit.h"
+#include "qgsdoublespinbox.h"
 #include "qgsexpressionlineedit.h"
+#include "qgsextentwidget.h"
+#include "qgsfieldcombobox.h"
 #include "qgsfieldexpressionwidget.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutmanager.h"
+#include "qgsfilewidget.h"
+#include "qgsgeometrywidget.h"
+#include "qgsgui.h"
 #include "qgslayoutcombobox.h"
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutitemlabel.h"
-#include "qgsscalewidget.h"
-#include "mesh/qgsmeshlayer.h"
-#include "mesh/qgsmeshdataprovider.h"
-#include "qgscolorbutton.h"
-#include "qgsprocessingparameterdefinitionwidget.h"
-#include "qgscoordinateoperationwidget.h"
-#include "qgsmessagebar.h"
-#include "qgsfieldcombobox.h"
+#include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
-#include "qgsdatetimeedit.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderconnectioncombobox.h"
-#include "qgsdatabaseschemacombobox.h"
-#include "qgsdatabasetablecombobox.h"
-#include "qgsprocessingoutputdestinationwidget.h"
-#include "qgssettings.h"
-#include "qgsprocessingfeaturesourceoptionswidget.h"
-#include "qgsextentwidget.h"
-#include "qgsrasterbandcombobox.h"
-#include "qgspointcloudattributecombobox.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgsmeshlayertemporalproperties.h"
+#include "qgsmessagebar.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
-#include "qgsmodelcomponentgraphicitem.h"
-#include "qgsprocessingfieldmapwidgetwrapper.h"
-#include "qgsprocessingparameterfieldmap.h"
-#include "qgsprocessingaggregatewidgetwrapper.h"
-#include "qgsprocessingparameteraggregate.h"
-#include "qgsprocessingparametertininputlayers.h"
-#include "qgsprocessingtininputlayerswidget.h"
-#include "qgsprocessingparameterdxflayers.h"
-#include "qgsprocessingdxflayerswidgetwrapper.h"
-#include "qgsprocessingmeshdatasetwidget.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsprocessingpointcloudexpressionlineedit.h"
+#include "qgsmodelundocommand.h"
+#include "qgsnativealgorithms.h"
 #include "qgspluginlayer.h"
+#include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
-#include "qgsannotationlayer.h"
-#include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingaggregatewidgetwrapper.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
+#include "qgsprocessingdxflayerswidgetwrapper.h"
+#include "qgsprocessingfeaturesourceoptionswidget.h"
+#include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingmaplayercombobox.h"
+#include "qgsprocessingmatrixparameterdialog.h"
+#include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsprocessingmodelerparameterwidget.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingoutputdestinationwidget.h"
+#include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingtininputlayerswidget.h"
+#include "qgsprocessingwidgetwrapper.h"
+#include "qgsprocessingwidgetwrapperimpl.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgspropertyoverridebutton.h"
+#include "qgsproviderconnectioncombobox.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterbandcombobox.h"
 #include "qgsrasterformatsaveoptionswidget.h"
-#include "qgsgeometrywidget.h"
-#include "qgsmemoryproviderutils.h"
+#include "qgsscalewidget.h"
+#include "qgssettings.h"
+#include "qgsspinbox.h"
+#include "qgstest.h"
+#include "qgstiledscenelayer.h"
+#include "qgsxmlutils.h"
 
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QObject>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSignalSpy>
+#include <QStackedWidget>
+#include <QStandardItemModel>
+#include <QToolButton>
 
 class TestParamDefinition : public QgsProcessingParameterDefinition
 {
@@ -6692,6 +6693,9 @@ void TestProcessingGui::mapLayerComboBox()
   QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "Point cloud" ), QStringLiteral( "ept" ) );
   QVERIFY( pointCloud->isValid() );
   QgsProject::instance()->addMapLayer( pointCloud );
+  QgsTiledSceneLayer *tiledScene = new QgsTiledSceneLayer( "tiled_scene_source", QStringLiteral( "tiled scene" ), QStringLiteral( "test_tiled_scene_provider" ) );
+  QVERIFY( tiledScene->isValid() );
+  QgsProject::instance()->addMapLayer( tiledScene );
 
   // map layer param, all types are acceptable
   param = std::make_unique<QgsProcessingParameterMapLayer>( QStringLiteral( "param" ), QString() );
@@ -6710,6 +6714,8 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
   QCOMPARE( combo->currentLayer(), pointCloud );
+  combo->setLayer( tiledScene );
+  QCOMPARE( combo->currentLayer(), tiledScene );
   combo.reset();
   param.reset();
 
@@ -6730,6 +6736,30 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
   QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
+  combo.reset();
+  param.reset();
+
+  // map layer param, only tiled scene layers are acceptable
+  param = std::make_unique<QgsProcessingParameterMapLayer>( QStringLiteral( "param" ), QString(), QVariant(), false, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::TiledScene ) );
+  combo = std::make_unique<QgsProcessingMapLayerComboBox>( param.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QCOMPARE( combo->currentLayer(), tiledScene );
   combo.reset();
   param.reset();
 
@@ -6749,6 +6779,8 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
   QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
@@ -6770,6 +6802,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( pointCloud );
   QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 
@@ -6790,6 +6824,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( pointCloud );
   QCOMPARE( combo->currentLayer(), pointCloud );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 

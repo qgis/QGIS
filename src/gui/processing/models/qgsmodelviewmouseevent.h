@@ -16,9 +16,9 @@
 #ifndef QGSMODELVIEWMOUSEEVENT_H
 #define QGSMODELVIEWMOUSEEVENT_H
 
-#include <QMouseEvent>
-
 #include "qgis_gui.h"
+
+#include <QMouseEvent>
 
 #define SIP_NO_FILE
 
@@ -36,6 +36,7 @@ class QgsModelGraphicsView;
 class GUI_EXPORT QgsModelViewMouseEvent : public QMouseEvent
 {
   public:
+
     /**
      * Constructor for QgsModelViewMouseEvent. Should only be required to be called from the QgsModelGraphicsView.
      * \param view The view in which the event occurred.

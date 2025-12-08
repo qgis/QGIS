@@ -15,8 +15,8 @@
 
 #include "qgstiles.h"
 
-#include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
 

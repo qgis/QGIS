@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscanvasrefreshblocker.h"
+
 #include "qgisapp.h"
 
 QgsCanvasRefreshBlocker::QgsCanvasRefreshBlocker()

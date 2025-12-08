@@ -16,13 +16,13 @@
 #ifndef QGSLAYOUTNEWITEMPROPERTIESDIALOG_H
 #define QGSLAYOUTNEWITEMPROPERTIESDIALOG_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
 #include "ui_qgslayoutnewitemproperties.h"
 
-#include "qgslayoutsize.h"
-#include "qgslayoutpoint.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutpoint.h"
+#include "qgslayoutsize.h"
 
 /**
  * \ingroup gui
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutNewItemPropertiesDialog.
      */

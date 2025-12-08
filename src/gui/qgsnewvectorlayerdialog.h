@@ -18,12 +18,12 @@
 #define qgsnewvectorlayerdialog_H
 
 #include "ui_qgsnewvectorlayerdialogbase.h"
-#include "qgsguiutils.h"
-#include "qgshelp.h"
 
-#include "qgswkbtypes.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgswkbtypes.h"
 
 /**
  * \ingroup gui
@@ -35,6 +35,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVec
     Q_OBJECT
 
   public:
+
     /**
      * Runs the dialog and creates a layer matching the dialog parameters.
      *

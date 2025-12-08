@@ -14,17 +14,17 @@
  ***************************************************************************/
 
 #include "qgspostgresprovidergui.h"
-#include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-#include "qgspgsourceselect.h"
-#include "qgssourceselectprovider.h"
-#include "qgspostgresprovider.h"
-#include "qgspostgresdataitems.h"
-#include "qgsprojectstorageguiprovider.h"
-#include "qgspostgresprojectstoragedialog.h"
-#include "qgspostgresdataitemguiprovider.h"
-#include "raster/qgspostgresrastertemporalsettingswidget.h"
 
+#include "qgsapplication.h"
+#include "qgspgsourceselect.h"
+#include "qgspostgresdataitemguiprovider.h"
+#include "qgspostgresdataitems.h"
+#include "qgspostgresprojectstoragedialog.h"
+#include "qgspostgresprovider.h"
+#include "qgsprojectstorageguiprovider.h"
+#include "qgsproviderguimetadata.h"
+#include "qgssourceselectprovider.h"
+#include "raster/qgspostgresrastertemporalsettingswidget.h"
 
 //! Provider for postgres source select
 class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider //#spellok

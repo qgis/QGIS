@@ -18,13 +18,13 @@
 #ifndef QGSCOLORUTILS_H
 #define QGSCOLORUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
+#include <QColorSpace>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QColorSpace>
 
 class QgsReadWriteContext;
 

@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmesh3dsymbolwidget.h"
-#include "moc_qgsmesh3dsymbolwidget.cpp"
+
 #include "qgs3dtypes.h"
-#include "qgsmeshlayer.h"
-#include "qgstriangularmesh.h"
 #include "qgsmesh3dsymbol.h"
-#include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshdatasetgrouptreeview.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
+#include "qgstriangularmesh.h"
+
+#include "moc_qgsmesh3dsymbolwidget.cpp"
 
 QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent )
   : QWidget( parent )

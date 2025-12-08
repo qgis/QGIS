@@ -16,10 +16,11 @@
 #ifndef QGSDBQUERYLOG_H
 #define QGSDBQUERYLOG_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include <QString>
+#include "qgis_core.h"
+
 #include <QDateTime>
+#include <QString>
 
 /**
  * \ingroup core

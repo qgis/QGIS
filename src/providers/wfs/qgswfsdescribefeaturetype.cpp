@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgswfsdescribefeaturetype.h"
-#include "moc_qgswfsdescribefeaturetype.cpp"
+
 #include <QUrlQuery>
+
+#include "moc_qgswfsdescribefeaturetype.cpp"
 
 QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

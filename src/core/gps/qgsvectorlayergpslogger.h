@@ -16,8 +16,8 @@
 #ifndef QGSVECTORLAYERGPSLOGGER_H
 #define QGSVECTORLAYERGPSLOGGER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsgpslogger.h"
 

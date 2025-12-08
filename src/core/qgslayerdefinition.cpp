@@ -12,31 +12,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QFileInfo>
-#include <QFile>
-#include <QDir>
-#include <QTextStream>
-
 #include "qgslayerdefinition.h"
-#include "qgslogger.h"
-#include "qgsmaplayer.h"
-#include "qgspathresolver.h"
-#include "qgspluginlayer.h"
-#include "qgspluginlayerregistry.h"
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsreadwritecontext.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectortilelayer.h"
-#include "qgstiledscenelayer.h"
+
 #include "qgsapplication.h"
-#include "qgsmaplayerfactory.h"
-#include "qgsmeshlayer.h"
-#include "qgspointcloudlayer.h"
 #include "qgsfileutils.h"
 #include "qgsgrouplayer.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerfactory.h"
+#include "qgsmeshlayer.h"
+#include "qgspathresolver.h"
+#include "qgspluginlayer.h"
+#include "qgspluginlayerregistry.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
+#include "qgstiledscenelayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QTextStream>
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, Qgis::LayerTreeInsertionMethod insertMethod, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
 {

@@ -130,7 +130,7 @@ bool MDAL::DriverH2i::parseJsonFile( const std::string filePath, MetadataH2i &me
       metaDataset.units = ( *it )["units"];
       metaDataset.topology_file = ( *it )["topology_file"];
       metaDataset.isScalar = !( ( *it ).contains( "vector" ) && ( *it )["vector"] );
-      metadata.datasetGroups.push_back( metaDataset );
+      metadata.datasetGroups.emplace_back( std::move( metaDataset ) );
     }
 
     metadata.metadataFilePath = filePath;
@@ -250,7 +250,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverH2i::createMeshFrame( const MDAL::Driver
       }
       if ( MDAL::toInt( face.size() ) > maxVerticesCount )
         maxVerticesCount = MDAL::toInt( face.size() );
-      faces[faceIndex] = face;
+      faces[faceIndex] = std::move( face );
     }
   }
 
@@ -325,7 +325,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverH2i::load( const std::string &meshFile, 
       }
 
       group->setStatistics( MDAL::calculateStatistics( group ) );
-      mesh->datasetGroups.push_back( group );
+      mesh->datasetGroups.emplace_back( std::move( group ) );
     }
   }
   return mesh;
@@ -352,7 +352,7 @@ void MDAL::DriverH2i::parseTime( const MDAL::DriverH2i::MetadataH2i &metadata, M
 }
 
 MDAL::DatasetH2iScalar::DatasetH2iScalar( MDAL::DatasetGroup *grp, std::shared_ptr<std::ifstream> in, size_t datasetIndex )
-  : DatasetH2i( grp, in, datasetIndex )
+  : DatasetH2i( grp, std::move( in ), datasetIndex )
 {}
 
 size_t MDAL::DatasetH2iScalar::scalarData( size_t indexStart, size_t count, double *buffer )
@@ -370,7 +370,7 @@ size_t MDAL::DatasetH2iScalar::scalarData( size_t indexStart, size_t count, doub
 }
 
 MDAL::DatasetH2i::DatasetH2i( MDAL::DatasetGroup *grp, std::shared_ptr<std::ifstream> in, size_t datasetIndex ) : Dataset2D( grp )
-  , mIn( in )
+  , mIn( std::move( in ) )
   , mDatasetIndex( datasetIndex )
 {}
 
@@ -411,7 +411,7 @@ std::streampos MDAL::DatasetH2iScalar::beginingInFile() const
 }
 
 MDAL::DatasetH2iVector::DatasetH2iVector( MDAL::DatasetGroup *grp, std::shared_ptr<std::ifstream> in, size_t datasetIndex )
-  : DatasetH2i( grp, in, datasetIndex )
+  : DatasetH2i( grp, std::move( in ), datasetIndex )
 {}
 
 size_t MDAL::DatasetH2iVector::vectorData( size_t indexStart, size_t count, double *buffer )

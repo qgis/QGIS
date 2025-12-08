@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterdtmslopebasedfilter.h"
-#include "qgsrasterfilewriter.h"
+
 #include <algorithm>
+
+#include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 

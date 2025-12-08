@@ -143,7 +143,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     QFutureWatcher<void> mFutureWatcher;
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
-    bool mActive;
+    bool mActive = false;
     std::vector< LayerRenderJob > mLayerJobs;
     LabelRenderJob mLabelJob;
     bool mRenderSynchronously = false;

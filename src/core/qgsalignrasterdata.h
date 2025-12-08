@@ -34,9 +34,6 @@ class CORE_EXPORT QgsAlignRasterData
       RasterItem( const QString &input, const QString &output )
         : inputFilename( input )
         , outputFilename( output )
-        , resampleMethod( Qgis::GdalResampleAlgorithm::RA_NearestNeighbour )
-        , rescaleValues( false )
-        , srcCellSizeInDestCRS( 0.0 )
       {}
 
       virtual ~RasterItem() = default;
@@ -46,14 +43,14 @@ class CORE_EXPORT QgsAlignRasterData
       //! filename of the newly created aligned raster (will be overwritten if exists already)
       QString outputFilename;
       //! resampling method to be used
-      Qgis::GdalResampleAlgorithm resampleMethod;
+      Qgis::GdalResampleAlgorithm resampleMethod = Qgis::GdalResampleAlgorithm::RA_NearestNeighbour;
       //! rescaling of values according to the change of pixel size
-      bool rescaleValues;
+      bool rescaleValues = false;
 
       // private part
 
       //! used for rescaling of values (if necessary)
-      double srcCellSizeInDestCRS;
+      double srcCellSizeInDestCRS = 0.0;
     };
     typedef QList<QgsAlignRasterData::RasterItem> RasterItemList;
 };

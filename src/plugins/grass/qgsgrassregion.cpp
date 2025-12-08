@@ -14,25 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsgrassregion.h"
-#include "moc_qgsgrassregion.cpp"
-#include "qgsgrass.h"
 
+#include "qgis.h"
 #include "qgisinterface.h"
+#include "qgsexception.h"
+#include "qgsgrass.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptool.h"
-#include "qgsexception.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaptool.h"
 
 #include <QButtonGroup>
 #include <QColorDialog>
+#include <QDoubleValidator>
 #include <QMessageBox>
 #include <QRubberBand>
 #include <QSettings>
-#include <QDoubleValidator>
 
+#include "moc_qgsgrassregion.cpp"
 
 //! Map tool which uses rubber band for changing grass region
 QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas *canvas )
@@ -174,9 +174,8 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubber
   rubberBand->show();
 }
 
-QgsRectangle QgsGrassRegionEdit::getRegion()
+QgsRectangle QgsGrassRegionEdit::getRegion() const
 {
-  //return QgsRectangle( mStartPoint, mEndPoint );
   return mSrcRectangle;
 }
 
@@ -188,7 +187,6 @@ void QgsGrassRegionEdit::setSrcRegion( const QgsRectangle &rect )
 QgsGrassRegion::QgsGrassRegion( QgisInterface *iface, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassRegionBase()
-  , mUpdatingGui( false )
 {
   QgsDebugMsgLevel( "QgsGrassRegion()", 3 );
   QgsGrass::initRegion( &mWindow );

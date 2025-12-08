@@ -14,10 +14,12 @@
 ***************************************************************************/
 
 #include "qgspointcloudattributecombobox.h"
-#include "moc_qgspointcloudattributecombobox.cpp"
+
 #include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
+
+#include "moc_qgspointcloudattributecombobox.cpp"
 
 QgsPointCloudAttributeComboBox::QgsPointCloudAttributeComboBox( QWidget *parent )
   : QComboBox( parent )

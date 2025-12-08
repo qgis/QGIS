@@ -19,7 +19,6 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
-
 class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT

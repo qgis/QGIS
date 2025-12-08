@@ -189,7 +189,7 @@ MDAL::DriverGdal::metadata_hash MDAL::DriverGdal::parseMetadata( GDALMajorObject
         std::string key = MDAL::toLower( metadata[0] );
         metadata.erase( metadata.begin() ); // remove key
         std::string value = MDAL::join( metadata, "=" );
-        meta[key] = value;
+        meta[key] = std::move( value );
       }
     }
   }
@@ -235,8 +235,8 @@ void MDAL::DriverGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
       std::vector<GDALRasterBandH> raster_bands( data_count );
 
       raster_bands[data_index] = gdalBand;
-      qMap[time] = raster_bands;
-      mBands[band_name] = qMap;
+      qMap[time] = std::move( raster_bands );
+      mBands[band_name] = std::move( qMap );
     }
     else
     {
@@ -246,8 +246,8 @@ void MDAL::DriverGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
         // Face is there, but new timestep
         // => create just new map entry
         std::vector<GDALRasterBandH> raster_bands( data_count );
-        raster_bands[data_index] = gdalBand;
-        mBands[band_name][time] = raster_bands;
+        raster_bands[data_index] = std::move( gdalBand );
+        mBands[band_name][time] = std::move( raster_bands );
       }
       else
       {
@@ -435,7 +435,7 @@ void MDAL::DriverGdal::addDatasetGroups()
     // TODO use GDALComputeRasterMinMax
     group->setStatistics( MDAL::calculateStatistics( group ) );
     group->setReferenceTime( referenceTime() );
-    mMesh->datasetGroups.push_back( group );
+    mMesh->datasetGroups.emplace_back( std::move( group ) );
   }
 }
 
@@ -498,7 +498,7 @@ std::vector<std::string> MDAL::DriverGdal::parseDatasetNames( const std::string 
   // there are no GDAL subdatasets
   if ( ret.empty() )
   {
-    ret.push_back( gdal_name );
+    ret.emplace_back( std::move( gdal_name ) );
   }
 
   GDALClose( hDataset );
@@ -543,7 +543,7 @@ bool MDAL::DriverGdal::canReadMesh( const std::string &uri )
   {
     return false;
   }
-  catch ( MDAL::Error )
+  catch ( MDAL::Error & )
   {
     return false;
   }
@@ -580,11 +580,11 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
       if ( !firstProjFound && !cfGDALDataset->mProj.empty() )
       {
         firstProjFound = true;
-        gdal_datasets.push_back( cfGDALDataset );
+        gdal_datasets.emplace_back( std::move( cfGDALDataset ) );
       }
       else
       {
-        datasets.push_back( cfGDALDataset );
+        datasets.emplace_back( std::move( cfGDALDataset ) );
       }
     }
 
@@ -623,7 +623,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
     MDAL::Log::error( error, name(), "error occurred while loading " + fileName );
     mMesh.reset();
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
     mMesh.reset();

@@ -20,9 +20,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsrasterrange.h"
+
 #include <QVector>
 
 class QgsRasterInterface;
@@ -40,6 +41,7 @@ class QgsRectangle;
 class ANALYSIS_EXPORT QgsReclassifyUtils
 {
   public:
+
     /**
      * Represents a single class for a reclassification operation.
      */

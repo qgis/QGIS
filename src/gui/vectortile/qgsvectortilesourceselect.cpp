@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgsvectortilesourceselect.h"
-#include "moc_qgsvectortilesourceselect.cpp"
-#include "qgsvectortileconnection.h"
-#include "qgsvectortileconnectiondialog.h"
+
 #include "qgsarcgisvectortileconnectiondialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderutils.h"
+#include "qgsvectortileconnection.h"
+#include "qgsvectortileconnectiondialog.h"
 
+#include <QAction>
 #include <QFileDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QMenu>
-#include <QAction>
+
+#include "moc_qgsvectortilesourceselect.cpp"
 
 ///@cond PRIVATE
 

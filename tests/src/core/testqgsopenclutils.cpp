@@ -14,12 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <chrono>
+
+#include "qgsapplication.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QTemporaryFile>
-#include <qgsapplication.h>
-#include <chrono>
 
 //header for class being tested
 #include <qgsopenclutils.h>

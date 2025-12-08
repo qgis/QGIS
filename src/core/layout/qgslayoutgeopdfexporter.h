@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsabstractgeopdfexporter.h"
 #include "qgslayoutitemmap.h"
+
 #include <QList>
 #include <QTemporaryDir>
 

@@ -17,8 +17,8 @@
 
 #include "qgis_core.h"
 
-#include <QNetworkReply>
 #include <QByteArray>
+#include <QNetworkReply>
 
 /**
  * \brief Encapsulates a network reply within a container which is inexpensive to copy and safe to pass between threads.

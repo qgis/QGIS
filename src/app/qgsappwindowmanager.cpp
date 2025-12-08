@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsappwindowmanager.h"
-#include "qgsstylemanagerdialog.h"
+
+#include "elevation/qgselevationprofilemanagerdialog.h"
 #include "qgisapp.h"
 #include "qgslayoutmanagerdialog.h"
-#include "elevation/qgselevationprofilemanagerdialog.h"
+#include "qgsstylemanagerdialog.h"
 
 #ifdef HAVE_3D
 #include "qgs3dviewsmanagerdialog.h"

@@ -18,8 +18,8 @@
 #ifndef QGSMAPTOOLCHANGELABELPROPERTIES_H
 #define QGSMAPTOOLCHANGELABELPROPERTIES_H
 
-#include "qgsmaptoollabel.h"
 #include "qgis_app.h"
+#include "qgsmaptoollabel.h"
 
 class APP_EXPORT QgsMapToolChangeLabelProperties : public QgsMapToolLabel
 {
@@ -33,6 +33,7 @@ class APP_EXPORT QgsMapToolChangeLabelProperties : public QgsMapToolLabel
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   protected:
+
     /**
      * Applies the label property changes
      * \param changes attribute map of changes

@@ -14,10 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
 
-
-#include <qgsapplication.h>
 //header for class being tested
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"

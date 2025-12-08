@@ -17,6 +17,7 @@
 #define QGSLEGENDRENDERER_H
 
 #include "qgis_core.h"
+
 #include <QPointF>
 
 class QRectF;
@@ -235,10 +236,7 @@ class CORE_EXPORT QgsLegendRenderer
     {
       public:
 
-        ColumnContext()
-          : left( 0 )
-          , right( 0 )
-        {}
+        ColumnContext() {}
 
         //! Left edge of column
         double left = 0;

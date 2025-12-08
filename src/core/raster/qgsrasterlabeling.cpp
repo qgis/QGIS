@@ -15,21 +15,22 @@
  ***************************************************************************/
 
 #include "qgsrasterlabeling.h"
-#include "qgsrasterlayer.h"
-#include "labelposition.h"
+
 #include "feature.h"
-#include "qgstextrenderer.h"
-#include "qgstextlabelfeature.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsstyle.h"
+#include "labelposition.h"
+#include "qgsapplication.h"
+#include "qgsbasicnumericformat.h"
+#include "qgsmessagelog.h"
 #include "qgsnumericformat.h"
 #include "qgsnumericformatregistry.h"
-#include "qgsbasicnumericformat.h"
-#include "qgsapplication.h"
-#include "qgsscaleutils.h"
-#include "qgsmessagelog.h"
-#include "qgsrasterpipe.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterlayerrenderer.h"
+#include "qgsrasterpipe.h"
+#include "qgsscaleutils.h"
+#include "qgsstyle.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
 
 QgsRasterLayerLabelProvider::QgsRasterLayerLabelProvider( QgsRasterLayer *layer )
   : QgsAbstractLabelProvider( layer )
@@ -47,7 +48,7 @@ QgsRasterLayerLabelProvider::~QgsRasterLayerLabelProvider()
 void QgsRasterLayerLabelProvider::addLabel( const QgsPoint &mapPoint, const QString &text, QgsRenderContext &context )
 {
   QgsPoint geom = mapPoint;
-  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( { text }, mFormat );
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( text.split( "\n" ), mFormat );
   QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, mFormat, context );
   const QSizeF size = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
 
@@ -239,7 +240,8 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
 
   iterator.startRasterRead( mBandNumber, subRegionWidth, subRegionHeight, rasterSubRegion, feedback );
 
-  const QgsNumericFormatContext numericContext;
+  QgsNumericFormatContext numericContext;
+  numericContext.setExpressionContext( context.expressionContext() );
   QgsNumericFormat *numericFormat = mNumericFormat.get();
 
   int iterLeft = 0;

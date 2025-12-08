@@ -15,31 +15,32 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsogrproviderutils.h"
-#include "qgsogrprovidermetadata.h"
-#include "qgslogger.h"
+
+#include <cpl_port.h>
+#include <ogr_srs_api.h>
+
 #include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgsvectorfilewriter.h"
 #include "qgsauthmanager.h"
-#include "qgsprovidersublayerdetails.h"
-#include "qgsproviderregistry.h"
-#include "qgsgeopackageproviderconnection.h"
-#include "qgsogrdbconnection.h"
 #include "qgsfileutils.h"
-#include "qgsvariantutils.h"
+#include "qgsgeopackageproviderconnection.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogrdbconnection.h"
+#include "qgsogrprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
 #include "qgssettings.h"
 #include "qgssqlstatement.h"
-
-#include <ogr_srs_api.h>
-#include <cpl_port.h>
+#include "qgsvariantutils.h"
+#include "qgsvectorfilewriter.h"
 
 #include <QFile>
-#include <QFileInfo>
-#include <QTextCodec>
-#include <QStorageInfo>
-#include <QRegularExpression>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QInputDialog>
+#include <QRegularExpression>
+#include <QStorageInfo>
+#include <QTextCodec>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

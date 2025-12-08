@@ -19,15 +19,15 @@
 
 #include <memory>
 
-#include <QCoreApplication>
+#include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QCoreApplication>
+#include <QList>
 #include <QMetaType>
+#include <QSet>
 #include <QStringList>
 #include <QVariant>
-#include <QList>
-#include <QSet>
-
-#include "qgis_core.h"
 
 /**
  * \ingroup core

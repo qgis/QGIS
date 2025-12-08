@@ -16,8 +16,8 @@
 
 #include "qgstest.h"
 
-#include <QSqlError>
 #include <QRandomGenerator>
+#include <QSqlError>
 #include <qtconcurrentrun.h>
 
 //qgis includes...

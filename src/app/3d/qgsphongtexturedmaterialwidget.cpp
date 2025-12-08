@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsphongtexturedmaterialwidget.h"
-#include "moc_qgsphongtexturedmaterialwidget.cpp"
 
-#include "qgsphongtexturedmaterialsettings.h"
 #include "qgis.h"
+#include "qgsphongtexturedmaterialsettings.h"
+
+#include "moc_qgsphongtexturedmaterialwidget.cpp"
 
 QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )

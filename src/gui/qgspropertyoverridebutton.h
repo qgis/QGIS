@@ -17,14 +17,15 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsproperty.h"
+#include "qgspropertycollection.h"
+
 #include <QDialog>
 #include <QFlags>
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
-#include "qgsproperty.h"
-#include "qgspropertycollection.h"
-#include "qgsexpressioncontextgenerator.h"
 
 class QgsVectorLayer;
 class QgsMapCanvas;
@@ -52,6 +53,7 @@ class GUI_EXPORT QgsPropertyOverrideButton : public QToolButton
     Q_PROPERTY( bool active READ isActive WRITE setActive )
 
   public:
+
     /**
      * Constructor for QgsPropertyOverrideButton.
      * \param parent parent widget

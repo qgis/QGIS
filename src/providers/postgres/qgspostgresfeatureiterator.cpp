@@ -12,18 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsgeometry.h"
-#include "qgspostgresconnpool.h"
-#include "qgspostgresexpressioncompiler.h"
 #include "qgspostgresfeatureiterator.h"
-#include "qgspostgresprovider.h"
-#include "qgspostgrestransaction.h"
-#include "qgslogger.h"
+
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
-#include "qgsmessagelog.h"
 #include "qgsexception.h"
+#include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgspostgresconnpool.h"
+#include "qgspostgresexpressioncompiler.h"
+#include "qgspostgresprovider.h"
+#include "qgspostgrestransaction.h"
 #include "qgspostgresutils.h"
 
 #include <QElapsedTimer>

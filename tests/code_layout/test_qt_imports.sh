@@ -74,7 +74,7 @@ pushd "${DIR}" > /dev/null || exit
 
 for i in "${!IMPORTS[@]}"
 do
-  FOUND=$(git grep -n "${IMPORTS[$i]}" -- ':!*external/qt3dextra-headers*' ':!external/o2/examples*' ':!ChangeLog' ':!tests/code_layout/test_qt_imports.sh')
+  FOUND=$(git grep -n "${IMPORTS[$i]}" -- ':!external/o2/examples*' ':!ChangeLog' ':!tests/code_layout/test_qt_imports.sh')
 
   if [[  ${FOUND} ]]; then
     echo "Found source files with a module-wide Qt import: ${IMPORTS[$i]}!"

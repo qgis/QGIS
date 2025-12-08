@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsnullmaterialsettings.h"
-#include "qgsmaterial.h"
-#include <QMap>
 
+#include "qgsmaterial.h"
+
+#include <QMap>
 
 QString QgsNullMaterialSettings::type() const
 {

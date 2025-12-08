@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgs3dsceneexporter.h"
-#include "moc_qgs3dsceneexporter.cpp"
 
 #include <QVector>
-#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QNode>
+
+#include "moc_qgs3dsceneexporter.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
@@ -83,6 +84,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgs3dutils.h"
 #include "qgsimagetexture.h"
 #include "qgstessellatedpolygongeometry.h"
+#include "qgsgeotransform.h"
 
 #include <numeric>
 
@@ -236,7 +238,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
   return false;
 }
 
-void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object )
+void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object ) const
 {
   Qt3DExtras::QPhongMaterial *phongMaterial = findTypedComponent<Qt3DExtras::QPhongMaterial>( entity );
   if ( phongMaterial )
@@ -285,15 +287,15 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
   switch ( generator->type() )
   {
     case QgsTerrainGenerator::Dem:
-      terrainTile = getDemTerrainEntity( terrain, node );
+      terrainTile = getDemTerrainEntity( terrain, node, settings->origin() );
       parseDemTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
     case QgsTerrainGenerator::Flat:
-      terrainTile = getFlatTerrainEntity( terrain, node );
+      terrainTile = getFlatTerrainEntity( terrain, node, settings->origin() );
       parseFlatTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
     case QgsTerrainGenerator::Mesh:
-      terrainTile = getMeshTerrainEntity( terrain, node );
+      terrainTile = getMeshTerrainEntity( terrain, node, settings->origin() );
       parseMeshTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
     // TODO: implement other terrain types
@@ -304,9 +306,9 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
   textureGenerator->setTextureSize( oldResolution );
 }
 
-QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
-  QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
+  QgsFlatTerrainGenerator *generator = qgis::down_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
   flatTerrainLoader->start();
   if ( mExportTextures )
@@ -314,14 +316,21 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity
   // the entity we created will be deallocated once the scene exporter is deallocated
   Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+
+  const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mapOrigin );
+  }
+
   return tileEntity;
 }
 
-QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   // Just create a new tile (we don't need to export exact level of details as in the scene)
   // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
-  QgsDemTerrainGenerator *generator = dynamic_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
+  QgsDemTerrainGenerator *generator = qgis::down_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
   generator->setResolution( mTerrainResolution );
   QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
   loader->start();
@@ -329,17 +338,31 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+
+  const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mapOrigin );
+  }
+
   delete generator;
   return tileEntity;
 }
 
-QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
-  QgsMeshTerrainGenerator *generator = dynamic_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
+  QgsMeshTerrainGenerator *generator = qgis::down_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
   loader->start();
   // TODO: export textures
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+
+  const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mapOrigin );
+  }
+
   return tileEntity;
 }
 
@@ -394,8 +417,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, transform->matrix() );
-  object->setupFaces( indexesBuffer );
+  object->setupTriangle( positionBuffer, indexesBuffer, transform->matrix() );
 
   if ( mExportNormals )
   {
@@ -444,8 +466,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, transform->matrix() );
-  object->setupFaces( indexBuffer );
+  object->setupTriangle( positionBuffer, indexBuffer, transform->matrix() );
 
   Qt3DQAttribute *normalsAttributes = tileGeometry->normalAttribute();
   if ( mExportNormals && normalsAttributes )
@@ -529,8 +550,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
-      object->setupPositionCoordinates( positionData, instanceTransform );
-      object->setupFaces( indexData );
+      object->setupTriangle( positionData, indexData, instanceTransform );
 
       object->setSmoothEdges( mSmoothEdges );
 
@@ -722,8 +742,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   // === Create Qgs3DExportObject
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
-  object->setupPositionCoordinates( positionData, transformMatrix );
-  object->setupFaces( indexData );
+  object->setupTriangle( positionData, indexData, transformMatrix );
 
   Qt3DQAttribute *normalsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultNormalAttributeName(), Qt3DQAttribute::VertexAttribute );
   if ( mExportNormals && normalsAttribute )
@@ -769,12 +788,9 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
       continue;
     }
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-    const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
     Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "line" ) ) );
-    exportObject->setType( Qgs3DExportObject::LineStrip );
-    exportObject->setupPositionCoordinates( positionData, QMatrix4x4() );
-    exportObject->setupLine( indexData );
+    exportObject->setupLine( positionData );
 
     objs.push_back( exportObject );
   }
@@ -806,12 +822,11 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     points << positions;
   }
   Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "points" ) ) );
-  obj->setType( Qgs3DExportObject::Points );
-  obj->setupPositionCoordinates( points, QMatrix4x4() );
+  obj->setupPoint( points );
   return obj;
 }
 
-bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
+bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision ) const
 {
   if ( mObjects.isEmpty() )
   {
@@ -877,12 +892,12 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
 QString Qgs3DSceneExporter::getObjectName( const QString &name )
 {
   QString ret = name;
-  if ( usedObjectNamesCounter.contains( name ) )
+  if ( mUsedObjectNamesCounter.contains( name ) )
   {
-    ret = QStringLiteral( "%1%2" ).arg( name ).arg( usedObjectNamesCounter[name] );
-    usedObjectNamesCounter[name]++;
+    ret = QStringLiteral( "%1%2" ).arg( name ).arg( mUsedObjectNamesCounter[name] );
+    mUsedObjectNamesCounter[name]++;
   }
   else
-    usedObjectNamesCounter[name] = 2;
+    mUsedObjectNamesCounter[name] = 2;
   return ret;
 }

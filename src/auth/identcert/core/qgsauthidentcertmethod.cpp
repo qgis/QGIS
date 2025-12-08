@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsauthidentcertmethod.h"
-#include "moc_qgsauthidentcertmethod.cpp"
 
+#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsauthidentcertmethod.cpp"
+
 #ifdef HAVE_GUI
 #include "qgsauthidentcertedit.h"
 #endif

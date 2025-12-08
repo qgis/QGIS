@@ -14,9 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthpkipathsedit.h"
-#include "moc_qgsauthpkipathsedit.cpp"
 #include "ui_qgsauthpkipathsedit.h"
+#include "qgsauthpkipathsedit.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -24,12 +29,7 @@
 #include <QSslCertificate>
 #include <QSslKey>
 
-#include "qgsapplication.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthmanager.h"
-#include "qgsauthguiutils.h"
-#include "qgslogger.h"
-
+#include "moc_qgsauthpkipathsedit.cpp"
 
 QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

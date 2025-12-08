@@ -16,13 +16,12 @@
 #ifndef QGSDATAITEMPROVIDERREGISTRY_H
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QList>
 #include <QMap>
 #include <QObject>
-
-#include "qgis_sip.h"
-
-#include "qgis_core.h"
 
 class QgsDataItemProvider;
 
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 
     QgsDataItemProviderRegistry();
 
-    ~QgsDataItemProviderRegistry();
+    ~QgsDataItemProviderRegistry() override;
 
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh ) = delete;
     QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;

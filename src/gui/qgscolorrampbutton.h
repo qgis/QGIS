@@ -15,11 +15,12 @@
 #ifndef QGSCOLORRAMPBUTTON_H
 #define QGSCOLORRAMPBUTTON_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
 #include <QToolButton>
-#include <memory>
 
 class QgsPanelWidget;
 class QgsColorRamp;
@@ -45,6 +46,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
+
     /**
      * Construct a new color ramp button.
      * Use \a parent to attach a parent QWidget to the dialog.

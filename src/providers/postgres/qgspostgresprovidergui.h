@@ -16,11 +16,12 @@
 #ifndef QGSPOSTGRESPROVIDERGUI_H
 #define QGSPOSTGRESPROVIDERGUI_H
 
-#include <QList>
-#include <QMainWindow>
 #include <memory>
 
 #include "qgsproviderguimetadata.h"
+
+#include <QList>
+#include <QMainWindow>
 
 class QgsPostgresProviderGuiMetadata : public QgsProviderGuiMetadata
 {

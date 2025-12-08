@@ -18,8 +18,9 @@
 #ifndef QGSGDALGUIUTILS_H
 #define QGSGDALGUIUTILS_H
 
-#include <QString>
 #include "qgis_gui.h"
+
+#include <QString>
 
 class QWidget;
 class QgsGdalOption;
@@ -37,6 +38,7 @@ class QgsGdalOption;
 class GUI_EXPORT QgsGdalGuiUtils
 {
   public:
+
     /**
      * Create database uri from connection parameters
      * \note not available in python bindings

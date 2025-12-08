@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslinesegment.h"
+
 #include "qgsgeometryutils.h"
 
 int QgsLineSegment2D::pointLeftOfLine( const QgsPointXY &point ) const

@@ -19,9 +19,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgslabelingengine.h"
-#include "qgslabelfeature.h"
 #include "qgsdiagramrenderer.h"
+#include "qgslabelfeature.h"
+#include "qgslabelingengine.h"
 
 /**
  * \ingroup core

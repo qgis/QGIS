@@ -14,16 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgstopologicalmesh.h"
+
+#include "poly2tri.h"
+#include "qgis.h"
+#include "qgscircle.h"
+#include "qgsgeometryutils.h"
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
-#include "qgsgeometryutils.h"
-#include "qgscircle.h"
 
-#include <poly2tri.h>
-#include <QSet>
 #include <QQueue>
+#include <QSet>
 
 /*static*/ int QgsTopologicalMesh::vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceIndex )
 {

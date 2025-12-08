@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgsvectorlayercache.h"
-#include "moc_qgsvectorlayercache.cpp"
-#include "qgscacheindex.h"
+
 #include "qgscachedfeatureiterator.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerjoinbuffer.h"
+#include "qgscacheindex.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerjoininfo.h"
 
 #include <QElapsedTimer>
+
+#include "moc_qgsvectorlayercache.cpp"
 
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )

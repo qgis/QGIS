@@ -14,30 +14,32 @@
  ***************************************************************************/
 
 #include "qgssymbolbutton.h"
-#include "moc_qgssymbolbutton.cpp"
-#include "qgspanelwidget.h"
-#include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
-#include "qgscolorwidgets.h"
+
+#include "qgsapplication.h"
+#include "qgscolordialog.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
-#include "qgsguiutils.h"
+#include "qgscolorwidgets.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsgui.h"
-#include "qgscolordialog.h"
 #include "qgsfillsymbol.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgspanelwidget.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsvectorlayer.h"
 
-#include <QMenu>
+#include <QBuffer>
 #include <QClipboard>
 #include <QDrag>
-#include <QBuffer>
+#include <QMenu>
+
+#include "moc_qgssymbolbutton.cpp"
 
 QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -65,17 +67,25 @@ void QgsSymbolButton::updateSizeHint()
   switch ( mType )
   {
     case Qgis::SymbolType::Marker:
-      if ( mSymbol )
+      if ( mFixedSizeConstraints )
       {
-        mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight * 3 ) );
-        setMaximumWidth( mSizeHint.height() * 1.5 );
-        setMinimumWidth( maximumWidth() );
+        if ( mSymbol )
+        {
+          mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight * 3 ) );
+          setMaximumWidth( mSizeHint.height() * 1.5 );
+          setMinimumWidth( maximumWidth() );
+        }
+        else
+        {
+          mSizeHint = QSize( size.width(), fontHeight );
+          setMaximumWidth( 999999 );
+          mSizeHint.setWidth( QToolButton::sizeHint().width() );
+        }
       }
       else
       {
-        mSizeHint = QSize( size.width(), fontHeight );
         setMaximumWidth( 999999 );
-        mSizeHint.setWidth( QToolButton::sizeHint().width() );
+        mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
       }
       break;
 
@@ -821,6 +831,18 @@ void QgsSymbolButton::setShowNull( bool showNull )
 bool QgsSymbolButton::showNull() const
 {
   return mShowNull;
+}
+
+void QgsSymbolButton::setFixedSizeConstraints( bool fixedSizeConstraints )
+{
+  mFixedSizeConstraints = fixedSizeConstraints;
+
+  updateSizeHint();
+}
+
+bool QgsSymbolButton::fixedSizeConstraints() const
+{
+  return mFixedSizeConstraints;
 }
 
 bool QgsSymbolButton::isNull() const

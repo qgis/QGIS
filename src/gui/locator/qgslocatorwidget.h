@@ -19,16 +19,16 @@
 #define QGSLOCATORWIDGET_H
 
 #include "qgis_gui.h"
-#include "qgslocatorfilter.h"
-#include "qgsfloatingwidget.h"
 #include "qgsfilterlineedit.h"
+#include "qgsfloatingwidget.h"
+#include "qgslocatorfilter.h"
 #include "qgssettingstree.h"
 
-#include <QWidget>
-#include <QTreeView>
 #include <QFocusEvent>
 #include <QHeaderView>
 #include <QTimer>
+#include <QTreeView>
+#include <QWidget>
 
 class QgsLocator;
 class QgsLocatorResultsView;
@@ -168,6 +168,7 @@ class GUI_EXPORT QgsLocatorResultsView : public QTreeView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLocatorResultsView.
      */

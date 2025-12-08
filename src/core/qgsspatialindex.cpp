@@ -15,16 +15,17 @@
 
 #include "qgsspatialindex.h"
 
-#include "qgsgeometry.h"
+#include <spatialindex/SpatialIndex.h>
+
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgsrectangle.h"
-#include "qgslogger.h"
 #include "qgsfeaturesource.h"
 #include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsrectangle.h"
 #include "qgsspatialindexutils.h"
 
-#include <spatialindex/SpatialIndex.h>
 #include <QMutex>
 #include <QMutexLocker>
 
@@ -457,16 +458,16 @@ bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
   catch ( Tools::Exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugError( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
+    QgsDebugError( QStringLiteral( "Tools::Exception caught when adding feature to QgsSpatialIndex: %1" ).arg( e.what().c_str() ) );
   }
   catch ( const std::exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugError( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
+    QgsDebugError( QStringLiteral( "std::exception caught when adding feature to QgsSpatialIndex: %1" ).arg( e.what() ) );
   }
   catch ( ... )
   {
-    QgsDebugError( QStringLiteral( "unknown spatial index exception caught" ) );
+    QgsDebugError( QStringLiteral( "unknown spatial index exception caught when adding feature to QgsSpatialIndex" ) );
   }
 
   return false;

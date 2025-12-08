@@ -19,8 +19,8 @@
 #ifndef QGSTILEDSCENEINDEX_H
 #define QGSTILEDSCENEINDEX_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 #include <QCache>
 #include <QMutex>
@@ -159,7 +159,9 @@ class CORE_EXPORT QgsTiledSceneIndex
     ~QgsTiledSceneIndex();
 
     QgsTiledSceneIndex( const QgsTiledSceneIndex &other );
+    SIP_SKIP QgsTiledSceneIndex( QgsTiledSceneIndex &&other );
     QgsTiledSceneIndex &operator=( const QgsTiledSceneIndex &other );
+    QgsTiledSceneIndex &operator=( QgsTiledSceneIndex &&other );
 
     /**
      * Returns TRUE if the index is valid.

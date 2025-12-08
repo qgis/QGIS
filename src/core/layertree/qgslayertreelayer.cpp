@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgslayertreelayer.h"
-#include "moc_qgslayertreelayer.cpp"
 
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
+
+#include "moc_qgslayertreelayer.cpp"
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
   : QgsLayerTreeNode( NodeLayer, true )

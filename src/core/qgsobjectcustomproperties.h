@@ -18,9 +18,10 @@
 #ifndef QGSOBJECTCUSTOMPROPERTIES_H
 #define QGSOBJECTCUSTOMPROPERTIES_H
 
+#include "qgis_core.h"
+
 #include <QMap>
 #include <QVariant>
-#include "qgis_core.h"
 
 class QDomDocument;
 class QDomNode;

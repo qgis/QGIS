@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsvectorsimplifymethod.h"
+
+#include "qgis.h"
+
 #include "moc_qgsvectorsimplifymethod.cpp"
 
 QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()

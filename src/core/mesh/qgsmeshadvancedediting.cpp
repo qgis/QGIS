@@ -15,13 +15,12 @@
  ***************************************************************************/
 #include "qgsmeshadvancedediting.h"
 
-#include "qgis.h"
-#include "qgsmesheditor.h"
 #include "poly2tri.h"
-
-#include "qgsmeshlayer.h"
+#include "qgis.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"

@@ -17,7 +17,6 @@
 #define QGSCAMERAPOSE_H
 
 #include "qgis_3d.h"
-
 #include "qgsvector3d.h"
 
 #ifndef SIP_RUN

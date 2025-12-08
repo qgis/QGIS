@@ -43,11 +43,11 @@ Construct a point light with default values
 
     QgsVector3D position() const;
 %Docstring
-Returns position of the light (in 3D world coordinates)
+Returns position of the light (in 3D map coordinates)
 %End
     void setPosition( const QgsVector3D &pos );
 %Docstring
-Sets position of the light (in 3D world coordinates)
+Sets position of the light (in 3D map coordinates)
 %End
 
     QColor color() const;

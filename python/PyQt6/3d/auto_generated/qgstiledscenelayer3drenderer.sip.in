@@ -10,7 +10,6 @@
 
 
 
-
 class QgsTiledSceneLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
 %Docstring(signature="appended")
@@ -105,9 +104,13 @@ scene.
 
     virtual QString type() const;
     virtual QgsAbstract3DRenderer *clone() const /Factory/;
+
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
     virtual void resolveReferences( const QgsProject &project );
+
 
   private:
     QgsTiledSceneLayer3DRenderer( const QgsTiledSceneLayer3DRenderer & );

@@ -15,8 +15,9 @@
  ***************************************************************************/
 
 #include "qgspagesizeregistry.h"
-#include "qgslayoutmeasurementconverter.h"
+
 #include "qgis.h"
+#include "qgslayoutmeasurementconverter.h"
 
 //
 // QgsPageSizeRegistry

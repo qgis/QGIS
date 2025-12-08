@@ -19,20 +19,20 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
-#include "qgstextshadowsettings.h"
-#include "qgstextbackgroundsettings.h"
-#include "qgsmapunitscale.h"
 #include "qgis.h"
-#include "qgspainteffect.h"
-#include "qgssymbollayerreference.h"
-#include "qgsstringutils.h"
-#include "qgsmarkersymbol.h"
+#include "qgis_core.h"
 #include "qgsfillsymbol.h"
+#include "qgsmapunitscale.h"
+#include "qgsmarkersymbol.h"
+#include "qgspainteffect.h"
 #include "qgspropertycollection.h"
+#include "qgsstringutils.h"
+#include "qgssymbollayerreference.h"
+#include "qgstextbackgroundsettings.h"
+#include "qgstextshadowsettings.h"
 
-#include <QSharedData>
 #include <QPainter>
+#include <QSharedData>
 
 /// @cond
 

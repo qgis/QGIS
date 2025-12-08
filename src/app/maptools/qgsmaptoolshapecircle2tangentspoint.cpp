@@ -15,22 +15,25 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle2tangentspoint.h"
-#include "moc_qgsmaptoolshapecircle2tangentspoint.cpp"
-#include "qgsgeometryrubberband.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgssnappingutils.h"
-#include "qgsmapcanvas.h"
-#include "qgspoint.h"
-#include "qgisapp.h"
-#include "qgslinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgsdoublespinbox.h"
-#include "qgsgeometryutils.h"
+
 #include <memory>
-#include "qgsmapmouseevent.h"
-#include "qgsmessagebar.h"
-#include "qgsmaptoolcapture.h"
+
+#include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgsgeometryrubberband.h"
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolcapture.h"
+#include "qgsmessagebar.h"
+#include "qgsmultipolygon.h"
+#include "qgspoint.h"
+#include "qgssnappingutils.h"
+
+#include "moc_qgsmaptoolshapecircle2tangentspoint.cpp"
 
 const QString QgsMapToolShapeCircle2TangentsPointMetadata::TOOL_ID = QStringLiteral( "circle-from-2-tangents-1-point" );
 

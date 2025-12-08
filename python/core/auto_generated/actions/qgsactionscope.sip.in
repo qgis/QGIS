@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsActionScope
 {
 %Docstring(signature="appended")

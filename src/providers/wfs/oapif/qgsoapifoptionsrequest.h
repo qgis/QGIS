@@ -16,10 +16,10 @@
 #ifndef QGSOAPIFOPTIONSREQUEST_H
 #define QGSOAPIFOPTIONSREQUEST_H
 
-#include <QObject>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+
+#include <QObject>
 
 //! Manages the Options request
 class QgsOapifOptionsRequest : public QgsBaseNetworkRequest

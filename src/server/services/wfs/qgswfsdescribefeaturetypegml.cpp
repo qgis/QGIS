@@ -19,13 +19,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswfsdescribefeaturetypegml.h"
+
+#include "qgsproject.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 #include "qgswfsdescribefeaturetype.h"
 #include "qgswfsparameters.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+#include "qgswfsutils.h"
 
 using namespace QgsWfs;
 
@@ -112,7 +113,7 @@ QDomDocument QgsWfsDescribeFeatureTypeGml::createDescribeFeatureTypeDocument( Qg
       continue;
     }
 
-    const QString name = layerTypeName( layer );
+    const QString name = layer->serverProperties()->wfsTypeName();
 
     if ( !typeNameList.isEmpty() && !typeNameList.contains( name ) )
     {
@@ -150,7 +151,7 @@ void QgsWfsDescribeFeatureTypeGml::setSchemaLayer( QDomElement &parentElement, Q
     return;
   }
 
-  const QString typeName = layerTypeName( layer );
+  const QString typeName = layer->serverProperties()->wfsTypeName();
 
   //xsd:element
   QDomElement elementElem = doc.createElement( QStringLiteral( "element" ) /*xsd:element*/ );

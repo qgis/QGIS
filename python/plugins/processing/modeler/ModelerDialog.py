@@ -388,7 +388,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                     self.tr("Algorithm is Invalid"),
                     QCoreApplication.translate(
                         "ModelerDialog",
-                        "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
+                        '<div style="color:palette(window-text);"><p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul></div>',
                     ).format(alg.description(), "</li><li>".join(errors)),
                     level=Qgis.MessageLevel.Warning,
                 )

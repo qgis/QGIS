@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgsdatetimestatisticalsummary.h"
+
+#include <limits>
+
 #include "qgsvariantutils.h"
-#include <QString>
+
 #include <QDateTime>
-#include <QStringList>
 #include <QObject>
+#include <QString>
+#include <QStringList>
 #include <QVariant>
 #include <QVariantList>
-#include <limits>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthplanetarycomputeredit.h"
-#include "moc_qgsauthplanetarycomputeredit.cpp"
 #include "ui_qgsauthplanetarycomputeredit.h"
+#include "qgsauthplanetarycomputeredit.h"
 
+#include "moc_qgsauthplanetarycomputeredit.cpp"
 
 const QString QgsAuthPlanetaryComputerEdit::REQUEST_URL_TEMPLATE = QStringLiteral( "https://login.microsoftonline.com/%1/oauth2/v2.0/authorize" );
 const QString QgsAuthPlanetaryComputerEdit::TOKEN_URL_TEMPLATE = QStringLiteral( "https://login.microsoftonline.com/%1/oauth2/v2.0/token" );
@@ -85,7 +85,7 @@ QgsStringMap QgsAuthPlanetaryComputerEdit::configMap() const
                            "\"password\": null,"
                            "\"persistToken\": false,"
                            "\"queryPairs\": {},"
-                           "\"redirectHost\": \"127.0.0.1\","
+                           "\"redirectHost\": \"localhost\","
                            "\"redirectPort\": 7070,"
                            "\"redirectUrl\": null,"
                            "\"refreshTokenUrl\": null,"
@@ -157,12 +157,8 @@ void QgsAuthPlanetaryComputerEdit::updateServerType( int indx )
   lblTenantId->setVisible( isPro );
   leTenantId->setVisible( isPro );
 
-  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( QStringLiteral( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>" ) );
-  const QString proHelp = tr(
-    "Use this server type for <a href=\"https://learn.microsoft.com/en-us/azure/planetary-computer/get-started-planetary-computer\">Planetary Computer Pro</a> instances.<br/>"
-    "The Directory (tenant) and Application (client) IDs can be found in your organization's Microsoft Entra ID main and application page respectively.<br/>"
-    "This authentication method expects to receive an OAuth2 token using the redirect url http://127.0.0.1:7070/"
-  );
+  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( QLatin1String( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>" ) );
+  const QString proHelp = QStringLiteral( "%1<br/>%2: <a href=\"%3\">%3</a>" ).arg( tr( "Contact your Microsoft Entra admin for App Registration details." ), tr( "Setup guide" ), QStringLiteral( "http://aka.ms/qgis" ) );
 
   lblHelp->setText( QStringLiteral( "<html><head/><body><p><span style=\" font-style:italic;\">%1</span></p></body></html>" ).arg( isPro ? proHelp : openHelp ) );
 

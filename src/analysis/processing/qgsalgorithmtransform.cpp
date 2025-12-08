@@ -29,6 +29,11 @@ void QgsTransformAlgorithm::initParameters( const QVariantMap & )
   convertCurvesParam->setHelp( QObject::tr( "If checked, curved geometries will be converted to straight segments. Otherwise, they will be kept as curves. This can fix distortion issues." ) );
   addParameter( convertCurvesParam.release() );
 
+  // Transform Z
+  auto transformZParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "TRANSFORM_Z" ), QObject::tr( "Also transform Z coordinates" ), false, true );
+  transformZParam->setHelp( QObject::tr( "If checked, the z coordinates will also be transformed. This requires that the z coordinates in the geometries represent height relative to the vertical datum of the source CRS (generally ellipsoidal heights) and are expressed in its vertical units (generally meters). If unchecked, then z coordinates will not be changed by the transform." ) );
+  addParameter( transformZParam.release() );
+
   // Optional coordinate operation
   auto crsOpParam = std::make_unique<QgsProcessingParameterCoordinateOperation>( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ), QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "TARGET_CRS" ), QVariant(), QVariant(), true );
   crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -98,6 +103,7 @@ bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mDestCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
   mTransformContext = context.transformContext();
   mConvertCurveToSegments = parameterAsBoolean( parameters, QStringLiteral( "CONVERT_CURVED_GEOMETRIES" ), context );
+  mTransformZ = parameterAsBoolean( parameters, QStringLiteral( "TRANSFORM_Z" ), context );
   mCoordOp = parameterAsString( parameters, QStringLiteral( "OPERATION" ), context );
   return true;
 }
@@ -126,7 +132,7 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
     }
     try
     {
-      if ( g.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
+      if ( g.transform( mTransform, Qgis::TransformDirection::Forward, mTransformZ ) == Qgis::GeometryOperationResult::Success )
       {
         feature.setGeometry( g );
       }

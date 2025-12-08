@@ -33,8 +33,9 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
 #include <cmath>
+
+#include "qgis_core.h"
 #include "qgsgeos.h"
 
 namespace pal

@@ -16,12 +16,14 @@
 #ifndef QGSPRESETCOLORRAMPDIALOG_H
 #define QGSPRESETCOLORRAMPDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgscolorrampimpl.h"
 #include "ui_qgspresetcolorrampwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorrampimpl.h"
+#include "qgspanelwidget.h"
+
+#include <QDialog>
 
 class QDialogButtonBox;
 
@@ -36,6 +38,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
     Q_PROPERTY( QgsPresetSchemeColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsPresetColorRampWidget.
      * \param ramp initial ramp to show in dialog
@@ -85,6 +88,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
     Q_PROPERTY( QgsPresetSchemeColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsPresetColorRampDialog.
      * \param ramp initial ramp to show in dialog

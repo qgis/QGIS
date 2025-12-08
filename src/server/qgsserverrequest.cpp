@@ -18,10 +18,12 @@
  ***************************************************************************/
 
 #include "qgsserverrequest.h"
-#include "moc_qgsserverrequest.cpp"
+
 #include "qgsstringutils.h"
+
 #include <QUrlQuery>
 
+#include "moc_qgsserverrequest.cpp"
 
 QgsServerRequest::QgsServerRequest( const QString &url, Method method, const Headers &headers )
   : QgsServerRequest( QUrl( url ), method, headers )

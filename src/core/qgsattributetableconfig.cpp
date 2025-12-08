@@ -14,7 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributetableconfig.h"
+
 #include "qgsfields.h"
+
 #include <QStringList>
 
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const

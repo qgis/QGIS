@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsbearingutils.h"
-#include "moc_qgsbearingutils.cpp"
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgspointxy.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsexception.h"
+#include "qgspointxy.h"
+
+#include "moc_qgsbearingutils.cpp"
 
 double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext  &transformContext, const QgsPointXY &point )
 {

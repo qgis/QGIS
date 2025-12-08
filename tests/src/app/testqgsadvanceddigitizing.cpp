@@ -14,18 +14,15 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
-#include "qgstest.h"
-
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgsmaptooladdfeature.h"
 #include "qgssettingsregistrycore.h"
-
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
-
 
 class TestQgsAdvancedDigitizing : public QObject
 {

@@ -18,8 +18,8 @@
 #ifndef QGSMAPRENDERERJOBPROXY_H
 #define QGSMAPRENDERERJOBPROXY_H
 
-#include "qgsmapsettings.h"
 #include "qgsmaprendererjob.h"
+#include "qgsmapsettings.h"
 
 class QgsFeatureFilterProvider;
 
@@ -34,6 +34,7 @@ namespace QgsWms
   class QgsMapRendererJobProxy
   {
     public:
+
       /**
        * Constructor for QgsMapRendererJobProxy. Does not take ownership of
        * \a featureFilterProvider.

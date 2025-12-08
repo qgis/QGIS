@@ -32,8 +32,8 @@
 
 #include "qgsrelation.h"
 
-#include <QSharedData>
 #include <QPointer>
+#include <QSharedData>
 
 class QgsRelationPrivate : public QSharedData
 {

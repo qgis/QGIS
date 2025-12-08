@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPERECTANGLEEXTENT_H
 #define QGSMAPTOOLSHAPERECTANGLEEXTENT_H
 
-#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeRectangleExtentMetadata : public QgsMapToolShapeMetadata

@@ -14,22 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthidentitieseditor.h"
-#include "moc_qgsauthidentitieseditor.cpp"
 #include "ui_qgsauthidentitieseditor.h"
+#include "qgsauthidentitieseditor.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertificateinfo.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthimportidentitydialog.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
 
 #include <QMenu>
 #include <QMessageBox>
 
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsauthcertificateinfo.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthimportidentitydialog.h"
-#include "qgsauthmanager.h"
-#include "qgsauthguiutils.h"
-#include "qgslogger.h"
-#include "qgsvariantutils.h"
+#include "moc_qgsauthidentitieseditor.cpp"
 
 QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   : QWidget( parent )

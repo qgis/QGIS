@@ -14,26 +14,28 @@
  ***************************************************************************/
 
 #include "qgsmaptoolfeatureaction.h"
-#include "moc_qgsmaptoolfeatureaction.cpp"
 
-#include "qgsfeatureiterator.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
+#include "qgisapp.h"
 #include "qgsactionmanager.h"
 #include "qgsexception.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgisapp.h"
-#include "qgsgui.h"
-#include "qgsstatusbar.h"
-#include "qgsmapmouseevent.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayeraction.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptopixel.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
+#include "qgsstatusbar.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 #include <QStatusBar>
+
+#include "moc_qgsmaptoolfeatureaction.cpp"
 
 QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -170,6 +172,35 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
   QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
   if ( defaultAction.isValid() )
   {
+    switch ( defaultAction.type() )
+    {
+      case Qgis::AttributeActionType::GenericPython:
+      case Qgis::AttributeActionType::Mac:
+      case Qgis::AttributeActionType::Windows:
+      case Qgis::AttributeActionType::Unix:
+      {
+        const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+        if ( !allowed )
+        {
+          QgisApp::instance()->messageBar()->pushMessage(
+            tr( "Security warning" ),
+            tr( "The action contains an embedded script which has been denied execution." ),
+            Qgis::MessageLevel::Warning
+          );
+          return;
+        }
+        break;
+      }
+
+      case Qgis::AttributeActionType::Generic:
+      case Qgis::AttributeActionType::OpenUrl:
+      case Qgis::AttributeActionType::SubmitUrlEncoded:
+      case Qgis::AttributeActionType::SubmitUrlMultipart:
+      {
+        break;
+      }
+    }
+
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()

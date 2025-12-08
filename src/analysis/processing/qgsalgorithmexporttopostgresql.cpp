@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexporttopostgresql.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE

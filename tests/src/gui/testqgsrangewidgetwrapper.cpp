@@ -15,23 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
-#include "qgsrangewidgetwrapper.h"
-#include "qgsrangeconfigdlg.h"
-#include "qgsdoublespinbox.h"
-#include "qgsspinbox.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
+#include "qgsdoublespinbox.h"
 #include "qgsfilterlineedit.h"
+#include "qgslogger.h"
+#include "qgsrangeconfigdlg.h"
+#include "qgsrangewidgetwrapper.h"
+#include "qgsspinbox.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QLineEdit>
 #include <QObject>
 #include <QtTest/QSignalSpy>
-
-#include <memory>
 
 #define SPECIAL_TEXT_WHEN_EMPTY QString( QChar( 0x2063 ) )
 
@@ -52,6 +51,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_setDoubleRange();
     void test_setDoubleSmallerRange();
     void test_setDoubleLimits();
+    void test_doubleExplicitPrecision();
     void test_nulls();
     void test_negativeIntegers(); // see GH issue #32149
     void test_focus();
@@ -155,16 +155,17 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   widget1->setFeature( vl->getFeature( 1 ) );
   widget2->setFeature( vl->getFeature( 1 ) );
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
-  // Default is 0 !!! for double, really ?
+  // Field precision is 0, which from the QgsField::precision docs indicates "not applicable" to this field.
+  // That is correct, as memory layers do not support field precision for real
   QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
-  QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
   QCOMPARE( editor->decimals(), 9 );
-  QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
+  // for double fields without explicit precision, we should default to a reasonable, non-zero value (currently hardcoded to 4)
+  QCOMPARE( editor2->decimals(), 4 );
   QCOMPARE( editor->valueFromText( feat.attribute( 1 ).toString() ), 123.123456789 );
   QCOMPARE( feat.attribute( 1 ).toString(), QStringLiteral( "123.123456789" ) );
   QCOMPARE( editor2->valueFromText( feat.attribute( 1 ).toString() ), 123.123456789 );
   QCOMPARE( editor->value(), 123.123456789 );
-  QCOMPARE( editor2->value(), 123.0 );
+  QCOMPARE( editor2->value(), 123.1235 );
   QCOMPARE( editor->minimum(), std::numeric_limits<double>::lowest() );
   QCOMPARE( editor2->minimum(), std::numeric_limits<double>::lowest() );
   QCOMPARE( editor->maximum(), std::numeric_limits<double>::max() );
@@ -178,7 +179,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
   QCOMPARE( editor->value(), -123.123456789 );
-  QCOMPARE( editor2->value(), -123.0 );
+  QCOMPARE( editor2->value(), -123.1235 );
 }
 
 void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
@@ -205,10 +206,12 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   widget2->setFeature( vl->getFeature( 1 ) );
 
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
-  // Default is 0 !!! for double, really ?
+  // Field precision is 0, which from the QgsField::precision docs indicates "not applicable" to this field.
+  // That is correct, as memory layers do not support field precision for real
   QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
   QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
-  QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
+  // for double fields without explicit precision, we should default to a reasonable, non-zero value (currently hardcoded to 4)
+  QCOMPARE( editor2->decimals(), 4 );
   // value was changed to the maximum (not NULL) accepted value
   QCOMPARE( editor->value(), 100.0 );
   // value was changed to the maximum (not NULL) accepted value
@@ -216,7 +219,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   // minimum was lowered by the precision (10e-9)
   QCOMPARE( editor->minimum(), -100.000000001 );
   // minimum was lowered by step (1)
-  QCOMPARE( editor2->minimum(), ( double ) -101 );
+  QCOMPARE( editor2->minimum(), ( double ) -100.0001 );
   QCOMPARE( editor->maximum(), ( double ) 100 );
   QCOMPARE( editor2->maximum(), ( double ) 100 );
 
@@ -263,12 +266,14 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   widget2->setFeature( vl->getFeature( 1 ) );
 
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
-  // Default is 0 !!! for double, really ?
+  // Field precision is 0, which from the QgsField::precision docs indicates "not applicable" to this field.
+  // That is correct, as memory layers do not support field precision for real
   QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
   QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
-  QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
+  // for double fields without explicit precision, we should default to a reasonable, non-zero value (currently hardcoded to 4)
+  QCOMPARE( editor2->decimals(), 4 );
   QCOMPARE( editor->value(), 123.123456789 );
-  QCOMPARE( editor2->value(), 123.0 );
+  QCOMPARE( editor2->value(), 123.1235 );
 
   // NULL, NULL
   widget1->setFeature( vl->getFeature( 2 ) );
@@ -281,7 +286,60 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   widget2->setFeature( vl->getFeature( 3 ) );
   // value was changed to the minimum
   QCOMPARE( editor->value(), -123.123456789 );
-  QCOMPARE( editor2->value(), -123.0 );
+  QCOMPARE( editor2->value(), -123.1235 );
+}
+
+void TestQgsRangeWidgetWrapper::test_doubleExplicitPrecision()
+{
+  // Same test but check double numeric limits
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "Min" ), std::numeric_limits<double>::lowest() );
+  cfg.insert( QStringLiteral( "Max" ), std::numeric_limits<double>::max() );
+  cfg.insert( QStringLiteral( "Step" ), 1 );
+  // explicitly set precision for field
+  cfg.insert( QStringLiteral( "Precision" ), 3 );
+  widget1->setConfig( cfg );
+  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QVERIFY( editor );
+  widget1->initWidget( editor );
+
+  widget2->setConfig( cfg );
+  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QVERIFY( editor2 );
+  widget2->initWidget( editor2 );
+
+  QCOMPARE( editor->minimum(), std::numeric_limits<double>::lowest() );
+  QCOMPARE( editor2->minimum(), std::numeric_limits<double>::lowest() );
+  QCOMPARE( editor->maximum(), std::numeric_limits<double>::max() );
+  QCOMPARE( editor2->maximum(), std::numeric_limits<double>::max() );
+
+  const QgsFeature feat( vl->getFeature( 1 ) );
+  QVERIFY( feat.isValid() );
+  QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
+  widget1->setFeature( vl->getFeature( 1 ) );
+  widget2->setFeature( vl->getFeature( 1 ) );
+
+  QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
+  // Field precision is 0, which from the QgsField::precision docs indicates "not applicable" to this field.
+  // That is correct, as memory layers do not support field precision for real
+  QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
+  QCOMPARE( editor->decimals(), 3 );
+  QCOMPARE( editor2->decimals(), 3 );
+  QCOMPARE( editor->value(), 123.123 );
+  QCOMPARE( editor2->value(), 123.123 );
+
+  // NULL, NULL
+  widget1->setFeature( vl->getFeature( 2 ) );
+  widget2->setFeature( vl->getFeature( 2 ) );
+  QCOMPARE( editor->value(), editor->minimum() );
+  QCOMPARE( editor2->value(), editor2->minimum() );
+
+  // negative, negative
+  widget1->setFeature( vl->getFeature( 3 ) );
+  widget2->setFeature( vl->getFeature( 3 ) );
+  // value was changed to the minimum
+  QCOMPARE( editor->value(), -123.123 );
+  QCOMPARE( editor2->value(), -123.123 );
 }
 
 void TestQgsRangeWidgetWrapper::test_nulls()

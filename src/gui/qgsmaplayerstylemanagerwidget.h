@@ -15,12 +15,12 @@
 #ifndef QGSMAPLAYERSTYLEMANAGERWIDGET_H
 #define QGSMAPLAYERSTYLEMANAGERWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
+#include "qgsmaplayerconfigwidget.h"
+
 #include <QListView>
 #include <QStandardItemModel>
-
-#include "qgsmaplayerconfigwidget.h"
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Style manager widget to manage the layers styles.
      * \param layer The layer for the widget

@@ -15,11 +15,12 @@
 #ifndef QGSCOLORSWATCHGRID_H
 #define QGSCOLORSWATCHGRID_H
 
-#include "qgscolorscheme.h"
-#include <QWidget>
-#include <QWidgetAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscolorscheme.h"
+
+#include <QWidget>
+#include <QWidgetAction>
 
 /**
  * \ingroup gui
@@ -118,11 +119,11 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     QgsNamedColorList mColors;
     QColor mBaseColor;
 
-    bool mDrawBoxDepressed;
-    int mCurrentHoverBox;
+    bool mDrawBoxDepressed = false;
+    int mCurrentHoverBox = -1;
 
-    bool mFocused;
-    int mCurrentFocusBox;
+    bool mFocused = false;
+    int mCurrentFocusBox = 0;
 
     int mWidth;
     //! Label rect height
@@ -141,7 +142,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     //! Horizontal/vertical gap between swatches
     int mSwatchSpacing = 0;
 
-    bool mPressedOnWidget;
+    bool mPressedOnWidget = false;
 
     /**
      * Calculate height of widget based on number of colors
@@ -264,8 +265,8 @@ class GUI_EXPORT QgsColorSwatchGridAction : public QWidgetAction
     QgsColorSwatchGrid *mColorSwatchGrid = nullptr;
 
     //used to suppress recursion with hover events
-    bool mSuppressRecurse;
-    bool mDismissOnColorSelection;
+    bool mSuppressRecurse = false;
+    bool mDismissOnColorSelection = true;
 
   private slots:
 

@@ -16,15 +16,18 @@
  ***************************************************************************/
 
 #include "qgssourcecache.h"
-#include "moc_qgssourcecache.cpp"
-#include "qgsabstractcontentcache_p.h"
+
+#include <memory>
 
 #include "qgis.h"
+#include "qgsabstractcontentcache_p.h"
 #include "qgslogger.h"
 
-#include <QFile>
 #include <QBuffer>
+#include <QFile>
 #include <QTemporaryDir>
+
+#include "moc_qgssourcecache.cpp"
 
 ///@cond PRIVATE
 
@@ -58,7 +61,7 @@ void QgsSourceCacheEntry::dump() const
 QgsSourceCache::QgsSourceCache( QObject *parent )
   : QgsAbstractContentCache< QgsSourceCacheEntry >( parent, QObject::tr( "Source" ) )
 {
-  temporaryDir.reset( new QTemporaryDir() );
+  temporaryDir = std::make_unique<QTemporaryDir>( );
 
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsSourceCache::remoteSourceFetched );
 }
@@ -108,7 +111,11 @@ QString QgsSourceCache::fetchSource( const QString &path, bool &isBroken, bool b
         filePath = temporaryDir->filePath( QString::number( ++id ) );
 
       QFile file( filePath );
-      file.open( QIODevice::WriteOnly );
+      if ( !file.open( QIODevice::WriteOnly ) )
+      {
+        QgsDebugError( QStringLiteral( "Can't open file %1" ).arg( filePath ) );
+        return QString();
+      }
       file.write( ba );
       file.close();
     }

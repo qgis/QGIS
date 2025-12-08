@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayoutItemPolyline: QgsLayoutNodesItem
 {
 %Docstring(signature="appended")

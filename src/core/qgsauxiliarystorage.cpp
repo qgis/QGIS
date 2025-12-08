@@ -16,17 +16,20 @@
  ***************************************************************************/
 
 #include "qgsauxiliarystorage.h"
-#include "moc_qgsauxiliarystorage.cpp"
-#include "qgslogger.h"
-#include "qgssqliteutils.h"
-#include "qgsproject.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsdiagramrenderer.h"
-#include "qgsmemoryproviderutils.h"
-#include "qgssymbollayer.h"
 
 #include <sqlite3.h>
+
+#include "qgsdiagramrenderer.h"
+#include "qgslogger.h"
+#include "qgsmemoryproviderutils.h"
+#include "qgsproject.h"
+#include "qgssqliteutils.h"
+#include "qgssymbollayer.h"
+#include "qgsvectorlayerlabeling.h"
+
 #include <QFile>
+
+#include "moc_qgsauxiliarystorage.cpp"
 
 #define AS_JOINFIELD QStringLiteral( "ASPK" )
 #define AS_EXTENSION QStringLiteral( "qgd" )
@@ -912,7 +915,11 @@ QString QgsAuxiliaryStorage::filenameForProject( const QgsProject &project )
 void QgsAuxiliaryStorage::initTmpFileName()
 {
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  if ( !tmpFile.open() )
+  {
+    QgsDebugError( QStringLiteral( "Can't open temporary file" ) );
+    return;
+  }
   tmpFile.close();
   mTmpFileName = tmpFile.fileName();
 }

@@ -18,13 +18,12 @@
 
 
 #include "qgis_core.h"
+#include "qgsabstractproviderconnection.h"
+#include "qgshttpheaders.h"
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
 #include <QStringList>
-
-#include "qgsabstractproviderconnection.h"
-#include "qgshttpheaders.h"
 
 class QgsSettingsEntryString;
 class QgsSettingsEntryVariantMap;

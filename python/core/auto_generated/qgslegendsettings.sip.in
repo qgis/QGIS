@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLegendSettings
 {
 %Docstring(signature="appended")

@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgshiddenwidgetwrapper.h"
-#include "moc_qgshiddenwidgetwrapper.cpp"
 
 #include <QWidget>
+
+#include "moc_qgshiddenwidgetwrapper.cpp"
 
 QgsHiddenWidgetWrapper::QgsHiddenWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

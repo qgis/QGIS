@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnumericformatguiregistry.h"
+
 #include "qgis.h"
 #include "qgsnumericformatwidget.h"
 
@@ -23,7 +24,7 @@
 class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsBasicNumericFormatWidget( format );
     }
@@ -32,7 +33,7 @@ class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatC
 class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsBearingNumericFormatWidget( format );
     }
@@ -41,7 +42,7 @@ class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericForma
 class QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsGeographicCoordinateNumericFormatWidget( format );
     }
@@ -50,7 +51,7 @@ class QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory : public Qg
 class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsCurrencyNumericFormatWidget( format );
     }
@@ -59,7 +60,7 @@ class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericForm
 class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsPercentageNumericFormatWidget( format );
     }
@@ -68,7 +69,7 @@ class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFo
 class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsScientificNumericFormatWidget( format );
     }
@@ -77,7 +78,7 @@ class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFo
 class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsFractionNumericFormatWidget( format );
     }
@@ -86,7 +87,7 @@ class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericForm
 class QgsExpressionBasedNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsExpressionBasedNumericFormatWidget( format );
     }
@@ -127,8 +128,9 @@ QgsNumericFormatWidget *QgsNumericFormatGuiRegistry::formatConfigurationWidget( 
   if ( !format )
     return nullptr;
 
-  if ( !mFormatConfigurationWidgetFactories.contains( format->id() ) )
+  auto it = mFormatConfigurationWidgetFactories.constFind( format->id() );
+  if ( it == mFormatConfigurationWidgetFactories.constEnd() )
     return nullptr;
 
-  return mFormatConfigurationWidgetFactories.value( format->id() )->create( format );
+  return it.value()->create( format );
 }

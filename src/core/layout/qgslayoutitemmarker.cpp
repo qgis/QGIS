@@ -15,16 +15,18 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmarker.h"
-#include "moc_qgslayoutitemmarker.cpp"
+
 #include "qgslayout.h"
-#include "qgslayoututils.h"
-#include "qgssymbollayerutils.h"
-#include "qgslayoutrendercontext.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
+
+#include "moc_qgslayoutitemmarker.cpp"
 
 QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
   : QgsLayoutItem( layout )

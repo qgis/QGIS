@@ -15,15 +15,14 @@
 #ifndef QGSRENDERERRASTERPROPERTIESDIALOG_H
 #define QGSRENDERERRASTERPROPERTIESDIALOG_H
 
-#include <QObject>
-#include <QDialog>
-
 #include "ui_qgsrendererrasterpropswidgetbase.h"
 
+#include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsresamplingutils.h"
-#include "qgis_gui.h"
 
+#include <QDialog>
+#include <QObject>
 
 class QgsRasterLayer;
 class QgsMapCanvas;
@@ -39,6 +38,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     Q_OBJECT
 
   public:
+
     /**
      * A widget to hold the renderer properties for a raster layer.
      * \param layer The raster layer to style

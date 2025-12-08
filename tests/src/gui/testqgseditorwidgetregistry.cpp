@@ -12,13 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
-#include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetautoconf.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsgui.h"
+#include "qgstest.h"
 
 class TestQgsEditorWidgetRegistry : public QObject
 {

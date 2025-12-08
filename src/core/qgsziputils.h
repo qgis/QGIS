@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include <QStringList>
 
 /**
@@ -88,6 +89,13 @@ class CORE_EXPORT QgsZipUtils
      * \since QGIS 3.30
      */
     static const QStringList files( const QString &zip );
+
+    /**
+     * Extracts a file from a zip archive, returns TRUE on success.
+     *
+     * \since QGIS 4.0
+     */
+    static bool extractFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut SIP_OUT );
 
 };
 

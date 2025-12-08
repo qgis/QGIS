@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgs3ddebugwidget.h"
+
 #include "qgis.h"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapscene.h"
+#include "qgscameracontroller.h"
 
 #include "moc_qgs3ddebugwidget.cpp"
-#include "qgs3ddebugwidget.h"
-#include "qgs3dmapcanvas.h"
-#include "qgscameracontroller.h"
-#include "qgs3dmapscene.h"
 
 Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )

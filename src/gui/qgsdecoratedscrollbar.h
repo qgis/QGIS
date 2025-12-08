@@ -21,9 +21,9 @@
 
 #include <QColor>
 #include <QHash>
+#include <QMap>
 #include <QPointer>
 #include <QWidget>
-#include <QMap>
 
 class QScrollBar;
 class QAbstractScrollArea;
@@ -39,6 +39,7 @@ class QgsScrollBarHighlightOverlay;
 class GUI_EXPORT QgsScrollBarHighlight
 {
   public:
+
     /**
     * Priority, which dictates how overlapping highlights are rendered
     */

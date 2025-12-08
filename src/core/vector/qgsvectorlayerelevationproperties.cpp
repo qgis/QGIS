@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerelevationproperties.h"
-#include "moc_qgsvectorlayerelevationproperties.cpp"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsmarkersymbollayer.h"
+
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorlayerelevationproperties.cpp"
 
 QgsVectorLayerElevationProperties::QgsVectorLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

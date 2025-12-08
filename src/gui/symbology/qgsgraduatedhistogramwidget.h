@@ -17,9 +17,9 @@
 #ifndef QGSGRADUATEDHISTOGRAMWIDGET_H
 #define QGSGRADUATEDHISTOGRAMWIDGET_H
 
-#include "qgshistogramwidget.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgshistogramwidget.h"
 
 class QwtPlotPicker;
 class QgsGraduatedHistogramEventFilter;
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     Q_OBJECT
 
   public:
+
     /**
      * QgsGraduatedHistogramWidget constructor
      * \param parent parent widget

@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsstacdownloadassetsdialog.h"
-#include "moc_qgsstacdownloadassetsdialog.cpp"
-#include "qgsgui.h"
-#include "qgsnetworkcontentfetchertask.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsmessagebar.h"
-#include "qgsapplication.h"
 
-#include <QTreeWidget>
-#include <QPushButton>
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsmessagebar.h"
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
 #include <QAction>
-#include <QMenu>
 #include <QClipboard>
+#include <QMenu>
+#include <QPushButton>
+#include <QTreeWidget>
+
+#include "moc_qgsstacdownloadassetsdialog.cpp"
 
 ///@cond PRIVATE
 
@@ -150,23 +152,32 @@ void QgsStacDownloadAssetsDialog::setStacItem( QgsStacItem *stacItem )
   const QMap<QString, QgsStacAsset> assets = stacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
-    QTreeWidgetItem *item = new QTreeWidgetItem();
-    item->setText( 0, it.key() );
-    item->setToolTip( 0, it.key() );
-    item->setCheckState( 0, Qt::Checked );
-    item->setText( 1, it->title() );
-    item->setToolTip( 1, it->title() );
-    item->setText( 2, it->description() );
-    item->setToolTip( 2, it->description() );
-    item->setText( 3, it->roles().join( "," ) );
-    item->setToolTip( 3, it->roles().join( "," ) );
-    item->setText( 4, it->mediaType() );
-    item->setToolTip( 4, it->mediaType() );
-    item->setText( 5, it->href() );
-    item->setToolTip( 5, it->href() );
-
-    mTreeWidget->addTopLevelItem( item );
+    if ( it.value().isDownloadable() )
+    {
+      addStacAsset( it.key(), &it.value() );
+    }
   }
+}
+
+void QgsStacDownloadAssetsDialog::addStacAsset( const QString &assetId, const QgsStacAsset *stacAsset )
+{
+  QTreeWidgetItem *item = new QTreeWidgetItem();
+
+  item->setText( 0, assetId );
+  item->setToolTip( 0, assetId );
+  item->setCheckState( 0, Qt::Checked );
+  item->setText( 1, stacAsset->title() );
+  item->setToolTip( 1, stacAsset->title() );
+  item->setText( 2, stacAsset->description() );
+  item->setToolTip( 2, stacAsset->description() );
+  item->setText( 3, stacAsset->roles().join( "," ) );
+  item->setToolTip( 3, stacAsset->roles().join( "," ) );
+  item->setText( 4, stacAsset->mediaType() );
+  item->setToolTip( 4, stacAsset->mediaType() );
+  item->setText( 5, stacAsset->href() );
+  item->setToolTip( 5, stacAsset->href() );
+
+  mTreeWidget->addTopLevelItem( item );
 }
 
 QString QgsStacDownloadAssetsDialog::selectedFolder()

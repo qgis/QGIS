@@ -16,11 +16,10 @@
 #ifndef QGSFIELDPROXYMODEL_H
 #define QGSFIELDPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
-
 #include "qgis_core.h"
-
 #include "qgis_sip.h"
+
+#include <QSortFilterProxyModel>
 
 class QgsFieldModel;
 

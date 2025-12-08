@@ -14,23 +14,25 @@
  ***************************************************************************/
 
 #include "qgstracer.h"
-#include "moc_qgstracer.cpp"
 
+#include <memory>
+#include <vector>
 
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 #include <queue>
-#include <vector>
+
+#include "moc_qgstracer.cpp"
 
 typedef std::pair<int, double> DijkstraQueueItem; // first = vertex index, second = distance
 
@@ -497,7 +499,7 @@ bool QgsTracer::initGraph()
     if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
     {
       renderer.reset( vl->renderer()->clone() );
-      ctx.reset( new QgsRenderContext( *mRenderContext.get() ) );
+      ctx = std::make_unique<QgsRenderContext>( *mRenderContext.get() );
       ctx->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
 
       // setup scale for scale dependent visibility (rule based)
@@ -654,7 +656,7 @@ void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, cons
 
 void QgsTracer::setRenderContext( const QgsRenderContext *renderContext )
 {
-  mRenderContext.reset( new QgsRenderContext( *renderContext ) );
+  mRenderContext = std::make_unique<QgsRenderContext>( *renderContext );
   invalidateGraph();
 }
 

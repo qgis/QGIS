@@ -39,9 +39,15 @@ class GUI_EXPORT QgsAttributeFormInterface
 
     virtual void featureChanged();
 
-    QgsAttributeForm *form();
+    /**
+     * Returns the attribute form.
+     */
+    QgsAttributeForm *form() const;
 
-    const QgsFeature &feature();
+    /**
+     * Returns the current feature for the attribute form.
+     */
+    const QgsFeature &feature() const;
 
   private:
     QgsAttributeForm *mForm = nullptr;

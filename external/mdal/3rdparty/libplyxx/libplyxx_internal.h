@@ -378,7 +378,7 @@ namespace libply
     std::string name;
     ElementSize size;
     std::vector<PropertyDefinition> properties;
-    std::size_t startLine;
+    std::size_t startLine = 0;
   };
 
   class FileParser
@@ -405,7 +405,7 @@ namespace libply
 
     private:
       std::string m_filename;
-      std::streamsize m_dataOffset;
+      std::streamsize m_dataOffset = 0;
       textio::LineReader m_lineReader;
       textio::Tokenizer m_lineTokenizer;
       textio::Tokenizer::TokenList m_tokens;

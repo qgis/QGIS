@@ -17,13 +17,12 @@
 #ifndef QGSAUTHIDENTCERTMETHOD_H
 #define QGSAUTHIDENTCERTMETHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthIdentCertMethod : public QgsAuthMethod
 {

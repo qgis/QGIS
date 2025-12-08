@@ -14,10 +14,8 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-
 #include "qgspdalprovider.h"
-
+#include "qgsproviderguimetadata.h"
 
 class QgsPdalProviderGuiMetadata : public QgsProviderGuiMetadata
 {

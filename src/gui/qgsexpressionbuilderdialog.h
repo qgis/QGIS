@@ -16,11 +16,12 @@
 #ifndef QGSEXPRESSIONBUILDERDIALOG_H
 #define QGSEXPRESSIONBUILDERDIALOG_H
 
-#include <QDialog>
 #include "ui_qgsexpressionbuilderdialogbase.h"
-#include "qgshelp.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
+#include "qgshelp.h"
+
+#include <QDialog>
 
 /**
  * \ingroup gui
@@ -99,6 +100,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     void allowEvalErrorsChanged();
 
   protected:
+
     /**
      * Is called when the dialog get accepted or rejected
      * Used to save geometry

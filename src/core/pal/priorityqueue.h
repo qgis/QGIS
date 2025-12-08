@@ -91,7 +91,7 @@ namespace pal
       int getId( int key ) const;
     private:
 
-      int size;
+      int size = 0;
       int maxsize;
       int maxId;
       std::unique_ptr<int[]> heap;

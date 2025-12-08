@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscolorschemeregistry.h"
-#include "qgscolorscheme.h"
-#include "qgis.h"
-#include <QObject>
 #include <memory>
+
+#include "qgis.h"
+#include "qgscolorscheme.h"
+#include "qgscolorschemeregistry.h"
 #include "qgstest.h"
+
+#include <QObject>
 
 //dummy color scheme for testing
 class DummyColorScheme : public QgsColorScheme

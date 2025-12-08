@@ -12,8 +12,6 @@
 
 
 
-
-
 class QgsVectorTileUtils
 {
 %Docstring(signature="appended")

@@ -13,7 +13,10 @@
     "examples": [{
       "expression": "week('2012-05-12')",
       "returns": "19"
-    }]
+    },{
+      "expression": "week(now())",
+      "returns": "the current week of the year"
+     }]
   }, {
     "variant": "Interval variant",
     "variant_description": "Calculates the length in weeks of an interval.",

@@ -19,8 +19,8 @@
 #define QGSEPTDECODER_H
 
 
-#include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 
 #include <QString>
 

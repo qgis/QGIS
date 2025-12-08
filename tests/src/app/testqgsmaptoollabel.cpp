@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QMouseEvent>
-
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfontutils.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoollabel.h"
-#include "qgsfontutils.h"
-#include "qgsvectorlayerlabelprovider.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerlabelprovider.h"
+
+#include <QMouseEvent>
+#include <QObject>
+#include <QString>
 
 class TestQgsMapToolLabel : public QObject
 {

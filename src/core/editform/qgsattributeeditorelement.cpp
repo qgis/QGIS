@@ -16,9 +16,9 @@
 
 #include "qgsattributeeditorelement.h"
 
+#include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
-#include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorhtmlelement.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorrelation.h"

@@ -14,14 +14,16 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultipolygon.h"
+
+#include <nlohmann/json.hpp>
+
+#include "qgscurvepolygon.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgscurvepolygon.h"
 #include "qgsmultilinestring.h"
+#include "qgspolygon.h"
 
 #include <QJsonObject>
-#include <nlohmann/json.hpp>
 
 QgsMultiPolygon::QgsMultiPolygon()
 {

@@ -18,10 +18,10 @@
 #include "qgslogger.h"
 
 #include <QApplication>
-#include <QtDebug>
-#include <QFile>
 #include <QElapsedTimer>
+#include <QFile>
 #include <QThread>
+#include <QtDebug>
 
 #ifndef CMAKE_SOURCE_DIR
 #error CMAKE_SOURCE_DIR undefined

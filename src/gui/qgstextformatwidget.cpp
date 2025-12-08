@@ -13,42 +13,44 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgstextformatwidget.h"
-#include "moc_qgstextformatwidget.cpp"
-#include "qgsmapcanvas.h"
+
+#include "qgsauxiliarystorage.h"
 #include "qgscharacterselectordialog.h"
-#include "qgslogger.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
 #include "qgsfontutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgssvgcache.h"
-#include "qgssvgselectorwidget.h"
-#include "qgssubstitutionlistwidget.h"
-#include "qgspallabeling.h" // for enum values
-#include "qgspathresolver.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmeshlayer.h"
+#include "qgsnewauxiliarylayerdialog.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsstylesavedialog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsgui.h"
-#include "qgsmaplayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsauxiliarystorage.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgshelp.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsiconutils.h"
-#include "qgssymbollayerreference.h"
-#include "qgsconfig.h"
+#include "qgspallabeling.h"
+#include "qgspathresolver.h"
+#include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsprojectviewsettings.h"
+#include "qgssettings.h"
+#include "qgsstylesavedialog.h"
+#include "qgssubstitutionlistwidget.h"
+#include "qgssvgcache.h"
+#include "qgssvgselectorwidget.h"
+#include "qgssymbollayerreference.h"
+#include "qgssymbollayerutils.h"
 #include "qgstabpositionwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
+
+#include "moc_qgstextformatwidget.cpp"
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )
@@ -719,7 +721,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
 
 void QgsTextFormatWidget::setPropertyOverrideButtonsVisible( bool visible )
 {
-  const auto buttons = findChildren<QgsPropertyOverrideButton *>();
+  const QList<QgsPropertyOverrideButton *> buttons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
 #if defined( HAS_KDE_QT5_FONT_STRETCH_FIX ) || ( QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 ) )

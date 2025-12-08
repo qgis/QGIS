@@ -15,12 +15,12 @@
 #ifndef QGSLABELINGENGINERULEIMPL_H
 #define QGSLABELINGENGINERULEIMPL_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgslabelingenginerule.h"
-#include "qgsvectorlayerref.h"
 #include "qgsmapunitscale.h"
+#include "qgsvectorlayerref.h"
 
 class QgsSpatialIndex;
 

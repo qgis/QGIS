@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLabelRemoveDuplicatesSettingsWidget : QgsLabelSettingsWidgetBase
 {
 %Docstring(signature="appended")
@@ -20,6 +21,7 @@ A widget for customising label duplicate removal settings.
 #include "qgslabelremoveduplicatesettingswidget.h"
 %End
   public:
+
     QgsLabelRemoveDuplicatesSettingsWidget( QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsLabelRemoveDuplicatesSettingsWidget.

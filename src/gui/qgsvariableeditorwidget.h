@@ -16,12 +16,14 @@
 #ifndef QGSVARIABLEEDITORWIDGET_H
 #define QGSVARIABLEEDITORWIDGET_H
 
-#include "qgis_sip.h"
-#include <QWidget>
-#include <QTreeWidget>
-#include <QItemDelegate>
-#include "qgis_gui.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QItemDelegate>
+#include <QTreeWidget>
+#include <QWidget>
 
 class QTableWidget;
 class QgsExpressionContextScope;
@@ -46,6 +48,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     Q_PROPERTY( QString settingGroup READ settingGroup WRITE setSettingGroup )
 
   public:
+
     /**
      * Constructor for QgsVariableEditorWidget.
      * \param parent parent widget

@@ -14,16 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsopenclutils.h"
-#include "moc_qgsopenclutils.cpp"
-#include "qgssettings.h"
-#include "qgsmessagelog.h"
+
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgssettings.h"
 
-#include <QLibrary>
-
-#include <QTextStream>
-#include <QFile>
 #include <QDebug>
+#include <QFile>
+#include <QLibrary>
+#include <QTextStream>
+
+#include "moc_qgsopenclutils.cpp"
 
 #ifdef Q_OS_WIN
 #if defined(UNICODE) && !defined(_UNICODE)

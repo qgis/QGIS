@@ -14,32 +14,36 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsqueryresultwidget.h"
-#include "moc_qgsqueryresultwidget.cpp"
+
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsexpressionutils.h"
-#include "qgscodeeditorsql.h"
-#include "qgsmessagelog.h"
-#include "qgsquerybuilder.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgsgui.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgshistoryentry.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+#include "qgscodeeditorsql.h"
 #include "qgscodeeditorwidget.h"
-#include "qgsfileutils.h"
-#include "qgsstoredquerymanager.h"
-#include "qgsproject.h"
-#include "qgsnewnamedialog.h"
-#include "qgshistorywidget.h"
 #include "qgsdbqueryhistoryprovider.h"
+#include "qgsexpressionutils.h"
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgshistoryentry.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgshistorywidget.h"
+#include "qgsmessagelog.h"
+#include "qgsnewnamedialog.h"
+#include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsquerybuilder.h"
+#include "qgsstoredquerymanager.h"
+#include "qgsvectorlayer.h"
 
 #include <QClipboard>
-#include <QShortcut>
+#include <QDialogButtonBox>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QShortcut>
+
+#include "moc_qgsqueryresultwidget.cpp"
 
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeSqlQueries, QString(), QStringLiteral( "Last used folder for SQL source files" ) );
@@ -702,9 +706,8 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( mActionShowHistory, &QAction::toggled, this, &QgsQueryResultWidget::showHistoryPanel );
 
   connect( mActionClear, &QAction::triggered, this, [this] {
-    mQueryWidget->sqlEditor()->setText( QString() );
-    mActionUndo->setEnabled( false );
-    mActionRedo->setEnabled( false );
+    // Cannot use setText() because it resets the undo/redo buffer.
+    mQueryWidget->sqlEditor()->SendScintilla( QsciScintilla::SCI_SETTEXT, "" );
   } );
 
   connect( mQueryWidget->sqlEditor(), &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
@@ -1218,8 +1221,16 @@ QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnectio
 
   mWidget = new QgsQueryResultWidget( this, connection );
   QVBoxLayout *l = new QVBoxLayout();
-  l->setContentsMargins( 0, 0, 0, 0 );
+  l->setContentsMargins( 6, 6, 6, 6 );
+
+  QDialogButtonBox *mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::close );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#execute-sql" ) );
+  } );
   l->addWidget( mWidget );
+  l->addWidget( mButtonBox );
+
   setLayout( l );
 }
 
@@ -1248,6 +1259,7 @@ QgsQueryResultMainWindow::QgsQueryResultMainWindow( QgsAbstractDatabaseProviderC
 
   mWidget = new QgsQueryResultWidget( nullptr, connection );
   setCentralWidget( mWidget );
+  mWidget->layout()->setContentsMargins( 6, 6, 6, 6 );
 
   connect( mWidget, &QgsQueryResultWidget::requestDialogTitleUpdate, this, &QgsQueryResultMainWindow::updateWindowTitle );
 

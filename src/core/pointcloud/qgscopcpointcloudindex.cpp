@@ -18,32 +18,33 @@
 #include "qgscopcpointcloudindex.h"
 
 #include <fstream>
-#include <QFile>
-#include <QtDebug>
-#include <QQueue>
-#include <QMutexLocker>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <qnamespace.h>
+#include <memory>
 
+#include "lazperf/vlr.hpp"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsbox3d.h"
 #include "qgscachedpointcloudblockrequest.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscopcpointcloudblockrequest.h"
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgspointcloudblockrequest.h"
-#include "qgspointcloudindex.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
-#include "qgsauthmanager.h"
-
-#include "lazperf/vlr.hpp"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
 #include "qgssetrequestinitiator_p.h"
+
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMutexLocker>
+#include <QQueue>
+#include <QtDebug>
+#include <qnamespace.h>
 
 ///@cond PRIVATE
 
@@ -62,7 +63,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &auth
   {
     mAuthCfg = authcfg;
     mAccessType = Qgis::PointCloudAccessType::Remote;
-    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url, authcfg ) ) );
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromUrl( url, authcfg ) );
     // now store the uri as it might have been updated due to redirects
     mUri = url.toString();
   }
@@ -77,7 +78,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &auth
       mIsValid = false;
       return;
     }
-    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromFile( mCopcFile ) );
   }
 
   mIsValid = mLazInfo->isValid() && loadSchema( *mLazInfo.get() ) && loadHierarchy();
@@ -279,6 +280,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
 
   lazperf::evlr_header statsEvlrHeader;
   statsEvlrHeader.user_id = "qgis";
+  statsEvlrHeader.reserved = 0;
   statsEvlrHeader.record_id = 0;
   statsEvlrHeader.description = "Contains calculated statistics";
   QByteArray statsJson = stats.toStatisticsJson();

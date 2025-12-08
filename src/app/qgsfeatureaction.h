@@ -17,15 +17,15 @@
 #ifndef QGSFEATUREACTION_H
 #define QGSFEATUREACTION_H
 
+#include "qgis_app.h"
 #include "qgsfeature.h"
+#include "qgshighlight.h"
 
+#include <QAction>
 #include <QList>
 #include <QPair>
-#include <QAction>
-#include <QUuid>
 #include <QPointer>
-#include "qgis_app.h"
-#include "qgshighlight.h"
+#include <QUuid>
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
@@ -104,7 +104,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     QUuid mActionId;
     int mIdx;
 
-    bool mFeatureSaved;
+    bool mFeatureSaved = false;
 
     bool mForceSuppressFormPopup = false;
 };

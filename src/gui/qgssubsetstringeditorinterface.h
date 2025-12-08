@@ -17,11 +17,12 @@
 #ifndef QGSSUBSETSTRINGEDITORINTERFACE_H
 #define QGSSUBSETSTRINGEDITORINTERFACE_H
 
-#include <QDialog>
-#include <QString>
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsguiutils.h"
+
+#include <QDialog>
+#include <QString>
 
 /**
  * \ingroup gui

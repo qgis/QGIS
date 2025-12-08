@@ -17,13 +17,14 @@
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
-#include "qgsterrainentity.h"
-#include "qgsrectangle.h"
-#include "qgsterraingenerator.h"
 #include "qgsquantizedmeshdataprovider.h"
+#include "qgsrectangle.h"
+#include "qgsterrainentity.h"
+#include "qgsterraingenerator.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiles.h"
+
 #include <QPointer>
 
 #define SIP_NO_FILE
@@ -37,6 +38,7 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new instance of a QgsQuantizedMeshTerrainGenerator object.
      */
@@ -44,19 +46,19 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
 
     QgsQuantizedMeshTerrainGenerator() { mIsValid = false; }
 
-    virtual void setTerrain( QgsTerrainEntity *t ) override;
-    virtual QgsTerrainGenerator *clone() const override SIP_FACTORY;
-    virtual QgsTerrainGenerator::Type type() const override;
-    virtual void setExtent( const QgsRectangle &extent ) override;
-    virtual QgsRectangle rootChunkExtent() const override;
-    virtual float rootChunkError( const Qgs3DMapSettings &map ) const override;
-    virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;
-    virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    void setTerrain( QgsTerrainEntity *t ) override;
+    QgsTerrainGenerator *clone() const override SIP_FACTORY;
+    QgsTerrainGenerator::Type type() const override;
+    void setExtent( const QgsRectangle &extent ) override;
+    QgsRectangle rootChunkExtent() const override;
+    float rootChunkError( const Qgs3DMapSettings &map ) const override;
+    void rootChunkHeightRange( float &hMin, float &hMax ) const override;
+    float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     // Root node has zoom=0, x=0, y=0.
     // It corresponds to a fake zoom=-1 tile for QgsTileMatrix
-    virtual QgsChunkNode *createRootNode() const override;
-    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     /**
      * Set layer to take tiles from

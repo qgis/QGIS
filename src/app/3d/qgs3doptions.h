@@ -16,8 +16,9 @@
 #define QGS3DOPTIONS_H
 
 #include "ui_qgs3doptionsbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 /**
  * \ingroup app
@@ -31,6 +32,7 @@ class Qgs3DOptionsWidget : public QgsOptionsPageWidget, private Ui::Qgs3DOptions
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for Qgs3DOptionsWidget with the specified \a parent widget.
      */

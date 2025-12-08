@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsgradientstopeditor.h"
-#include "moc_qgsgradientstopeditor.cpp"
+
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+
+#include "moc_qgsgradientstopeditor.cpp"
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <QStyleOptionFrameV3>
 #else

@@ -110,6 +110,8 @@ class InterpolationDataWidget(BASE, WIDGET):
 
     def addLayer(self):
         layer = self.cmbLayers.currentLayer()
+        if not layer:
+            return
 
         attribute = ""
         if self.chkUseZCoordinate.isChecked():

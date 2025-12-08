@@ -20,6 +20,7 @@ An attribute table dialog for a vector layer.
 #include "qgsattributedialog.h"
 %End
   public:
+
     QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 %Docstring
 Create an attribute dialog for a given layer and feature
@@ -43,11 +44,17 @@ setHighlight
 :param h: The highlight. Ownership is taken.
 %End
 
-    QgsAttributeForm *attributeForm();
+    QgsAttributeForm *attributeForm() const;
+%Docstring
+Returns the attribute form.
+%End
 
-    const QgsFeature *feature();
+    const QgsFeature *feature() const;
+%Docstring
+Returns the current feature of the attribute form.
+%End
 
-    bool editable();
+    bool editable() const;
 %Docstring
 Is this dialog editable?
 

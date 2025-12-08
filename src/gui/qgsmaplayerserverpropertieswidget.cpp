@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmaplayerserverpropertieswidget.h"
-#include "moc_qgsmaplayerserverpropertieswidget.cpp"
-#include "qgsmaplayerserverproperties.h"
+
 #include "qgsapplication.h"
+#include "qgsmaplayerserverproperties.h"
 #include "qgsmetadataurlitemdelegate.h"
 
 #include <QRegularExpressionValidator>
 #include <QStandardItemModel>
+
+#include "moc_qgsmaplayerserverpropertieswidget.cpp"
 
 QgsMapLayerServerPropertiesWidget::QgsMapLayerServerPropertiesWidget( QWidget *parent )
   : QWidget( parent )

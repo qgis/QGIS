@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeformwidget.h"
-#include "moc_qgsattributeformwidget.cpp"
-#include <QHBoxLayout>
-#include <QStackedWidget>
 
 #include "qgsattributeform.h"
 #include "qgssearchwidgettoolbutton.h"
+
+#include <QHBoxLayout>
+#include <QStackedWidget>
+
+#include "moc_qgsattributeformwidget.cpp"
 
 QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form )
   : QWidget( form )

@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsprojectitem.h"
-#include "moc_qgsprojectitem.cpp"
+
 #include <QDir>
+
+#include "moc_qgsprojectitem.cpp"
 
 QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
                                 const QString &path, const QString &providerKey )

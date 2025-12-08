@@ -20,11 +20,11 @@
 #ifndef QGSREQUESTHANDLER_H
 #define QGSREQUESTHANDLER_H
 
-#include <QMap>
-#include "qgis_sip.h"
-#include <QString>
-
 #include "qgis_server.h"
+#include "qgis_sip.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsServerException;
 class QgsServerRequest;
@@ -153,7 +153,7 @@ class SERVER_EXPORT QgsRequestHandler
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
     QString mService;
-    bool mExceptionRaised;
+    bool mExceptionRaised = false;
 
     QgsServerRequest &mRequest;
     QgsServerResponse &mResponse;

@@ -18,12 +18,13 @@
 #define QGSCREDENTIALDIALOG_H
 
 #include "ui_qgscredentialdialog.h"
-#include "qgsguiutils.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscredentials.h"
+#include "qgsguiutils.h"
 
 #include <QString>
-#include "qgis_sip.h"
-#include "qgis_gui.h"
 
 class QPushButton;
 
@@ -63,6 +64,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 
   private:
+
     /**
      * The ConnectionsIgnoreMode enum represent the modes a connection can be ignored
      */

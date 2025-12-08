@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmconditionalbranch.h"
+
 #include "qgsapplication.h"
 
 ///@cond PRIVATE

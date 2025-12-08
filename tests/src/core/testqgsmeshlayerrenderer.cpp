@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QLabel>
-#include <QStringList>
+
 #include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QSignalSpy>
 #include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QLabel>
+#include <QObject>
+#include <QSignalSpy>
+#include <QString>
+#include <QStringList>
 
 //qgis includes...
 #include "qgsmaplayer.h"

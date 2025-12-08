@@ -12,17 +12,18 @@ Email                : zilolv at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <limits>
 #include <cmath>
-#include <qdebug.h>
 #include <iostream>
+#include <limits>
 
+#include "qgsapplication.h"
+#include "qgsgeometryfactory.h"
 #include "qgsmeshcontours.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
-#include "qgsapplication.h"
-#include "qgsgeometryfactory.h"
+#include "qgstest.h"
+
+#include <qdebug.h>
 
 class TestQgsMeshContours : public QgsTest
 {

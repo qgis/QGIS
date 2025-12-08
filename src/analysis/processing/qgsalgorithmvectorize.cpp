@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmvectorize.h"
+
 #include "qgis.h"
 #include "qgsprocessing.h"
 

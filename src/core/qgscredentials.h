@@ -17,14 +17,14 @@
 #ifndef QGSCREDENTIALS_H
 #define QGSCREDENTIALS_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QMap>
 #include <QMutex>
 #include <QObject>
 #include <QPair>
 #include <QString>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
 
 /**
  * \ingroup core

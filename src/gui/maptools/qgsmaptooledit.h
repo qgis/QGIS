@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLEDIT_H
 #define QGSMAPTOOLEDIT_H
 
-#include "qgswkbtypes.h"
-#include "qgsmaptool.h"
 #include "qgis_gui.h"
+#include "qgsmaptool.h"
+#include "qgswkbtypes.h"
 
 class QgsRubberBand;
 class QgsGeometryRubberBand;

@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgscolorswatchgrid.h"
-#include "moc_qgscolorswatchgrid.cpp"
+
 #include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
 #include "qgscolortooltip_p.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QMenu>
+#include "qgssymbollayerutils.h"
+
 #include <QBuffer>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+
+#include "moc_qgscolorswatchgrid.cpp"
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 
@@ -29,11 +32,6 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   : QWidget( parent )
   , mScheme( scheme )
   , mContext( context )
-  , mDrawBoxDepressed( false )
-  , mCurrentHoverBox( -1 )
-  , mFocused( false )
-  , mCurrentFocusBox( 0 )
-  , mPressedOnWidget( false )
 {
   //need to receive all mouse over events
   setMouseTracking( true );
@@ -359,8 +357,6 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu, const QString &context, QWidget *parent )
   : QWidgetAction( parent )
   , mMenu( menu )
-  , mSuppressRecurse( false )
-  , mDismissOnColorSelection( true )
 {
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 

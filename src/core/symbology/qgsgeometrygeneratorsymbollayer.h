@@ -16,8 +16,8 @@
 #ifndef QGSGEOMETRYGENERATORSYMBOLLAYER_H
 #define QGSGEOMETRYGENERATORSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 class QgsFillSymbol;
@@ -64,6 +64,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     QgsMapUnitScale mapUnitScale() const override;
+    bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const override;
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 
@@ -160,7 +161,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     /**
      * The type of the sub symbol.
      */
-    Qgis::SymbolType mSymbolType;
+    Qgis::SymbolType mSymbolType = Qgis::SymbolType::Marker;
 
     Qgis::RenderUnit mUnits = Qgis::RenderUnit::MapUnits;
 

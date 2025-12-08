@@ -13,6 +13,7 @@ Email                : sherman at mrcc dot com
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
 #include <QPixmap>
 
 #define CPL_SUPRESS_CPLUSPLUS //#spellok

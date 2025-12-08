@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelconfig.h"
+
 #include "qgsmaplayerstore.h"
 
 QgsProcessingModelInitialRunConfig::QgsProcessingModelInitialRunConfig() = default;

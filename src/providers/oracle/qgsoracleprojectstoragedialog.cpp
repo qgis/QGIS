@@ -13,20 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsoracleprojectstoragedialog.h"
-#include "moc_qgsoracleprojectstoragedialog.cpp"
-
-#include "qgsoracleconn.h"
-#include "qgsoracleconnpool.h"
-#include "qgsoracleproviderconnection.h"
-#include "qgsoracleprojectstorage.h"
 
 #include "qgsapplication.h"
+#include "qgsoracleconn.h"
+#include "qgsoracleconnpool.h"
+#include "qgsoracleprojectstorage.h"
+#include "qgsoracleproviderconnection.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsoracleprojectstoragedialog.cpp"
 
 QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )

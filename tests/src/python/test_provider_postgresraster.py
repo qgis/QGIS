@@ -22,7 +22,7 @@ import os
 import time
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QSize
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -40,7 +40,6 @@ from qgis.core import QgsProject
 from qgis.gui import QgsMapCanvas, QgsLayerTreeMapCanvasBridge
 from qgis.testing import start_app, QgisTestCase
 
-from qgis.testing.mocked import get_iface
 from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
@@ -75,10 +74,14 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        cls.iface = get_iface()
         cls.dbconn = "service=qgis_test"
         if "QGIS_PGTEST_DB" in os.environ:
             cls.dbconn = os.environ["QGIS_PGTEST_DB"]
+
+        # Clean all styles
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(cls.dbconn + " sslmode=disable ", {})
+        conn.executeSql("DROP TABLE IF EXISTS layer_styles")
 
         cls._load_test_table("public", "raster_tiled_3035")
         cls._load_test_table("public", "raster_3035_no_constraints")
@@ -170,7 +173,8 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         identify = rl.dataProvider().identify(
             QgsPointXY(4080320, 2430854), QgsRaster.IdentifyFormat.IdentifyFormatValue
         )
-        self.assertEqual(identify.results()[1], -9999)
+
+        self.assertEqual(identify.results()[1], None)
 
         postgis_warning_logs = list(
             filter(
@@ -585,10 +589,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
             decoded = md.decodeUri(uri)
             self.assertEqual(decoded, md.decodeUri(md.encodeUri(decoded)))
 
-        uri = (
-            self.dbconn
-            + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql='
-        )
+        uri = 'service=qgis_test sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql='
         md = QgsProviderRegistry.instance().providerMetadata("postgresraster")
         decoded = md.decodeUri(uri)
         self.assertEqual(
@@ -603,10 +604,30 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
             },
         )
 
+        # with database details
+        decoded = md.decodeUri(
+            "dbname='qgis_db' host=127.0.0.1 port=5432 user='qgis_user' password='qgis_pw' sslmode=disable key='rid' srid=3035  table=\"public\".\"raster_tiled_3035\" sql="
+        )
+        self.assertEqual(
+            decoded,
+            {
+                "dbname": "qgis_db",
+                "host": "127.0.0.1",
+                "key": "rid",
+                "password": "qgis_pw",
+                "port": "5432",
+                "schema": "public",
+                "srid": "3035",
+                "sslmode": 1,
+                "table": "raster_tiled_3035",
+                "username": "qgis_user",
+            },
+        )
+
         _round_trip(uri)
 
         uri = (
-            self.dbconn
+            "service=qgis_test"
             + " sslmode=prefer key='rid' srid=3035 temporalFieldIndex=2 temporalDefaultTime=2020-03-02 "
             + "authcfg=afebeff username='my username' password='my secret password=' "
             + 'enableTime=true table="public"."raster_tiled_3035" (rast) sql="a_field" != 1223223'
@@ -864,7 +885,8 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
     def testSparseRaster(self):
         """Test issue GH #55753"""
         project: QgsProject = QgsProject.instance()
-        canvas: QgsMapCanvas = self.iface.mapCanvas()
+        canvas: QgsMapCanvas = QgsMapCanvas()
+        canvas.resize(QSize(400, 400))
         project.setCrs(QgsCoordinateReferenceSystem("EPSG:3035"))
         canvas.setExtent(QgsRectangle(4080050, 2430625, 4080200, 2430750))
 
@@ -944,11 +966,21 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertTrue(rl.isValid())
 
         dp = rl.dataProvider()
+        self.assertEqual(dp.sourceNoDataValue(1), -9999.0)
 
         r = dp.identify(
             QgsPointXY(4080317.72, 2430635.68), Qgis.RasterIdentifyFormat.Value
         ).results()
-        self.assertEqual(r[1], -9999.0)
+
+        # Nodata value
+        self.assertEqual(r[1], None)
+
+        r = dp.identify(
+            QgsPointXY(4080106.29, 2430678.29), Qgis.RasterIdentifyFormat.Value
+        ).results()
+
+        # Valid value
+        self.assertAlmostEqual(r[1], 184.16825, 4)
 
         # tile request returned no tiles, check nodata
         ext = QgsRectangle.fromCenterAndSize(QgsPointXY(4080317.72, 2430635.68), 1, 1)

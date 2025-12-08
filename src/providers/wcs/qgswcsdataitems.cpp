@@ -13,10 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswcsdataitems.h"
-#include "moc_qgswcsdataitems.cpp"
-#include "qgslogger.h"
+
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
 #include "qgsowsconnection.h"
+
+#include "moc_qgswcsdataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgswcssourceselect.h"

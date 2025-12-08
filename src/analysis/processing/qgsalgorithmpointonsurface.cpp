@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpointonsurface.h"
+
 #include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE

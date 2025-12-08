@@ -85,7 +85,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     explicit QgsOgrConnPoolGroup( const QString &name )
       : QgsConnectionPoolGroup<QgsOgrConn*>( name )
     {
-      initTimer( this );
+      initTimer<QgsOgrConnPoolGroup>( this );
     }
 
     QgsOgrConnPoolGroup( const QgsOgrConnPoolGroup &other ) = delete;
@@ -98,7 +98,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
       return --mRefCount == 0;
     }
 
-  protected slots:
+  public slots:
     void handleConnectionExpired() { onConnectionExpired(); }
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }

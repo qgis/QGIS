@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-
 #include "qgsattributesformmodel.h"
 #include "qgsattributesformproperties.h"
+#include "qgsattributesformview.h"
 #include "qgsattributetypedialog.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 class TestQgsAttributesFormProperties : public QObject

@@ -25,12 +25,12 @@
 #ifndef QGSGRAPH_H
 #define QGSGRAPH_H
 
-#include <QList>
-#include <QVector>
-#include <QVariant>
-
-#include "qgspointxy.h"
 #include "qgis_analysis.h"
+#include "qgspointxy.h"
+
+#include <QList>
+#include <QVariant>
+#include <QVector>
 
 class QgsGraphVertex;
 

@@ -16,10 +16,12 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsembeddedlayerselectdialog.h"
-#include "moc_qgsembeddedlayerselectdialog.cpp"
-#include "qgsmaplayerproxymodel.h"
-#include "qgsmaplayermodel.h"
+
 #include "qgsgui.h"
+#include "qgsmaplayermodel.h"
+#include "qgsmaplayerproxymodel.h"
+
+#include "moc_qgsembeddedlayerselectdialog.cpp"
 
 QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent )
   : QDialog( parent )

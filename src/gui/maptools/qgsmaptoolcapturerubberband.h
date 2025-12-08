@@ -19,7 +19,6 @@
 
 #include "qgsgeometryrubberband.h"
 
-
 class QgsMapToolCaptureRubberBand;
 
 

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCombinedStyleModel: QConcatenateTablesProxyModel
 {
 %Docstring(signature="appended")

@@ -14,27 +14,29 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-#include <QSignalSpy>
+#include <memory>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <qgsapplication.h>
+#include "attributetable/qgsattributetablefiltermodel.h"
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "editorwidgets/qgsrelationreferenceconfigdlg.h"
+#include "editorwidgets/qgsrelationreferencewidget.h"
+#include "editorwidgets/qgsrelationreferencewidgetwrapper.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
 #include "qgseditorwidgetwrapper.h"
-#include <editorwidgets/qgsrelationreferencewidget.h>
-#include <editorwidgets/qgsrelationreferencewidgetwrapper.h>
-#include <editorwidgets/qgsrelationreferenceconfigdlg.h>
-#include <qgsproject.h>
-#include <qgsattributeform.h>
-#include <qgsrelationmanager.h>
-#include <attributetable/qgsattributetablefiltermodel.h>
-#include "qgsfeaturelistcombobox.h"
 #include "qgsfeaturefiltermodel.h"
+#include "qgsfeaturelistcombobox.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooldigitizefeature.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgstest.h"
 #include "qgsvectorlayertools.h"
 #include "qgsvectorlayertoolscontext.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsmaptooldigitizefeature.h"
+
+#include <QSignalSpy>
 
 QStringList getComboBoxItems( const QComboBox *cb )
 {
@@ -112,7 +114,7 @@ void TestQgsRelationReferenceWidget::init()
   QgsProject::instance()->addMapLayer( mLayer2 );
 
   // create relation
-  mRelation.reset( new QgsRelation() );
+  mRelation = std::make_unique<QgsRelation>();
   mRelation->setId( QStringLiteral( "vl1.vl2" ) );
   mRelation->setName( QStringLiteral( "vl1.vl2" ) );
   mRelation->setReferencingLayer( mLayer1->id() );

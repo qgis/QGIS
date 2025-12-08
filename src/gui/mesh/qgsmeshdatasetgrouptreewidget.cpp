@@ -14,10 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmeshdatasetgrouptreewidget.h"
-#include "moc_qgsmeshdatasetgrouptreewidget.cpp"
-
-#include <QFileDialog>
-#include <QMessageBox>
 
 #include "qgsmeshdatasetgrouptreeview.h"
 #include "qgsmeshlayer.h"
@@ -27,6 +23,10 @@
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include "moc_qgsmeshdatasetgrouptreewidget.cpp"
 
 QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
   : QWidget( parent )

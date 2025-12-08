@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexecutespatialitequery.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

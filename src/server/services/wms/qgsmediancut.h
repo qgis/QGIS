@@ -23,8 +23,8 @@
 #ifndef QGSMEDIANCUT_H
 #define QGSMEDIANCUT_H
 
-#include <QVector>
 #include <QImage>
+#include <QVector>
 
 /**
  * \ingroup server

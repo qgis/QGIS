@@ -22,12 +22,12 @@
 #ifndef QGSPROJECTPROPERTY_H
 #define QGSPROJECTPROPERTY_H
 
-#include <QHash>
-#include <QVariant>
-#include <QStringList>
-#include <QCoreApplication>
-
 #include "qgis_core.h"
+
+#include <QCoreApplication>
+#include <QHash>
+#include <QStringList>
+#include <QVariant>
 
 class QDomNode;
 class QDomElement;

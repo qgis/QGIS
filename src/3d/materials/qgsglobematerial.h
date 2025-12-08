@@ -49,6 +49,7 @@ class _3D_EXPORT QgsGlobeMaterial : public QgsMaterial
     Q_PROPERTY( Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged )
 
   public:
+
     /**
      * Constructor for QgsTextureMaterial, with the specified \a parent node.
      */
@@ -57,7 +58,7 @@ class _3D_EXPORT QgsGlobeMaterial : public QgsMaterial
 
     Qt3DRender::QAbstractTexture *texture() const;
 
-  public Q_SLOTS:
+  public slots:
 
     /**
      * Sets the diffuse component of the material.
@@ -65,7 +66,7 @@ class _3D_EXPORT QgsGlobeMaterial : public QgsMaterial
      */
     void setTexture( Qt3DRender::QAbstractTexture *texture );
 
-  Q_SIGNALS:
+  signals:
     void textureChanged( Qt3DRender::QAbstractTexture *texture );
 
   private:

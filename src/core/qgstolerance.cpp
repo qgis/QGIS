@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgstolerance.h"
-#include "moc_qgstolerance.cpp"
-#include "qgsmapsettings.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgspointxy.h"
 
-#include <QPoint>
 #include <cmath>
 
+#include "qgsmapsettings.h"
+#include "qgspointxy.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+
+#include <QPoint>
+
+#include "moc_qgstolerance.cpp"
 
 // return ratio [mu/lu] between map units and layer units
 // this is of course only an approximation

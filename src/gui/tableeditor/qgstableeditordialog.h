@@ -15,9 +15,11 @@
 #ifndef QGSTABLEEDITORDIALOG_H
 #define QGSTABLEEDITORDIALOG_H
 
+#include "ui_qgstableeditorbase.h"
+
 #include "qgis_gui.h"
 #include "qgstablecell.h"
-#include "ui_qgstableeditorbase.h"
+
 #include <QMainWindow>
 #include <QPointer>
 
@@ -45,6 +47,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsTableEditorDialog with the specified \a parent widget.
      */

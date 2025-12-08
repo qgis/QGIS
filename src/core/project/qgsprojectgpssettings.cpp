@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectgpssettings.h"
-#include "moc_qgsprojectgpssettings.cpp"
 
 #include <QDomElement>
+
+#include "moc_qgsprojectgpssettings.cpp"
 
 QgsProjectGpsSettings::QgsProjectGpsSettings( QObject *parent )
   : QObject( parent )

@@ -23,6 +23,7 @@ class QgsCoordinateTransformContext;
 class QgsPointXY;
 
 #include "qgis_core.h"
+
 #include <QObject>
 
 /**

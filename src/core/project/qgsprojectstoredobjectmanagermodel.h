@@ -18,10 +18,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
-#include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include "qgsprojectstoredobjectmanager.h"
+
+#include <QAbstractListModel>
+#include <QObject>
+#include <QSortFilterProxyModel>
 
 /**
  * \ingroup core

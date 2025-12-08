@@ -16,23 +16,20 @@
 #ifndef QGS3DMAPTOOL_H
 #define QGS3DMAPTOOL_H
 
-#include <QObject>
-
 #include "qgis_3d.h"
+
+#include <QObject>
 
 class Qgs3DMapCanvas;
 class QMouseEvent;
 class QKeyEvent;
 class QWheelEvent;
 
-#define SIP_NO_FILE
-
 
 /**
  * \ingroup qgis_3d
  * \brief Base class for map tools operating on 3D map canvas.
- * \note Not available in Python bindings
- * \since QGIS 3.36 (since QGIS 3.4 in QGIS_APP library)
+ * \since QGIS 4.0 (since QGIS 3.36 in QGIS_3D library, since QGIS 3.4 in QGIS_APP library)
  */
 class _3D_EXPORT Qgs3DMapTool : public QObject
 {

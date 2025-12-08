@@ -19,9 +19,10 @@
 #define QGSPAGESIZEREGISTRY_H
 
 #include "qgslayoutsize.h"
-#include <QString>
-#include <QSizeF>
+
 #include <QList>
+#include <QSizeF>
+#include <QString>
 
 /**
  * \ingroup core

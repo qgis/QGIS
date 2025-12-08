@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsshadowrenderingsettingswidget.h"
-#include "moc_qgsshadowrenderingsettingswidget.cpp"
+
+#include "qgis.h"
+#include "qgs3dmapsettings.h"
 
 #include <QCheckBox>
 #include <QLineEdit>
-#include "qgs3dmapsettings.h"
-#include "qgis.h"
+
+#include "moc_qgsshadowrenderingsettingswidget.cpp"
 
 QgsShadowRenderingSettingsWidget::QgsShadowRenderingSettingsWidget( QWidget *parent )
   : QWidget( parent )

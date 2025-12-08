@@ -13,21 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmeasuretool.h"
+
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
-#include "qgsexception.h"
-#include "qgsmeasuredialog.h"
-#include "qgsmeasuretool.h"
-#include "moc_qgsmeasuretool.cpp"
-#include "qgsmessagelog.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgssnapindicator.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmeasuredialog.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgssettings.h"
+#include "qgssnapindicator.h"
 
 #include <QMessageBox>
 
+#include "moc_qgsmeasuretool.cpp"
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   : QgsMapTool( canvas )

@@ -18,6 +18,7 @@
 #define QGSELEVATIONPROFILEPDFEXPORTDIALOG_H
 
 #include "ui_qgselevationprofilepdfexportoptionsdialog.h"
+
 #include "qgslayoutmeasurementconverter.h"
 
 #include <QDialog>

@@ -15,23 +15,26 @@
  ***************************************************************************/
 
 #include "qgslayoutitempolyline.h"
-#include "moc_qgslayoutitempolyline.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgssymbollayerutils.h"
+
+#include <limits>
+
 #include "qgscolorutils.h"
-#include "qgssymbol.h"
 #include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoututils.h"
-#include "qgsreadwritecontext.h"
-#include "qgssvgcache.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgslinesymbol.h"
+#include "qgsreadwritecontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssvgcache.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
-#include <QSvgRenderer>
-#include <limits>
 #include <QGraphicsPathItem>
+#include <QSvgRenderer>
 #include <QVector2D>
+
+#include "moc_qgslayoutitempolyline.cpp"
 
 QgsLayoutItemPolyline::QgsLayoutItemPolyline( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )

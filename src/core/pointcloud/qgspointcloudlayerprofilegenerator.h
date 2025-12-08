@@ -17,21 +17,21 @@
 #ifndef QGSPOINTCLOUDLAYERPROFILEGENERATOR_H
 #define QGSPOINTCLOUDLAYERPROFILEGENERATOR_H
 
+#include <geos_c.h>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
-#include "qgspointcloudattribute.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsgeos.h"
 #include "qgslinesymbol.h"
+#include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 #include "qgsvector3d.h"
-#include "qgsgeos.h"
-
-#include <geos_c.h>
-#include <memory>
 
 class QgsProfileRequest;
 class QgsCurve;

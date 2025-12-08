@@ -19,8 +19,9 @@
 #define QGSMEMORYPROVIDERUTILS_H
 
 #include "qgis_core.h"
-#include "qgswkbtypes.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgswkbtypes.h"
+
 #include <QString>
 #include <QVariant>
 

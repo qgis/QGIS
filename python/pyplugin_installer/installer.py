@@ -904,7 +904,7 @@ class QgsPluginInstaller(QObject):
             dlg = QgsPluginDependenciesDialog(
                 plugin_id, to_install, to_upgrade, not_found
             )
-            if dlg.exec() == QgsPluginDependenciesDialog.Accepted:
+            if dlg.exec() == QDialog.DialogCode.Accepted:
                 actions = dlg.actions()
                 for dependency_plugin_id, action_data in actions.items():
                     try:

@@ -19,13 +19,13 @@
 #define QGSRASTERMINMAXWIDGET_H
 
 #include "ui_qgsrasterminmaxwidgetbase.h"
-#include "qgis.h"
-#include "qgsrectangle.h"
 
+#include "qgis.h"
+#include "qgis_gui.h"
+#include "qgscontrastenhancement.h"
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
-#include "qgscontrastenhancement.h"
-#include "qgis_gui.h"
+#include "qgsrectangle.h"
 
 class QgsMapCanvas;
 class QgsRasterLayer;
@@ -139,11 +139,11 @@ class GUI_EXPORT QgsRasterMinMaxWidget : public QWidget, private Ui::QgsRasterMi
 
     QgsMapCanvas *mCanvas = nullptr;
 
-    bool mLastRectangleValid;
+    bool mLastRectangleValid = false;
     QgsRectangle mLastRectangle;
     QgsRasterMinMaxOrigin mLastMinMaxOrigin;
 
-    bool mBandsChanged;
+    bool mBandsChanged = false;
 };
 
 #endif // QGSRASTERMINMAXWIDGET_H

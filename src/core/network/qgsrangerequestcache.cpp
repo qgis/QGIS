@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsrangerequestcache.h"
+
 #include "qgsnetworkdiskcache.h"
 
-#include <QtDebug>
-#include <QFile>
-#include <QDir>
 #include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QtDebug>
 
 QgsRangeRequestCache::QgsRangeRequestCache()
 {

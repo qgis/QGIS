@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsabstractmetadatabase.h"
+
 #include "qgsmaplayer.h"
+#include "qgstranslationcontext.h"
 
 QString QgsAbstractMetadataBase::identifier() const
 {
@@ -183,7 +185,7 @@ void QgsAbstractMetadataBase::setLanguage( const QString &language )
   mLanguage = language;
 }
 
-bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElement )
+bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )
 {
   QDomNode mnl;
   QDomElement mne;
@@ -211,6 +213,10 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
   // set abstract
   mnl = metadataElement.namedItem( QStringLiteral( "abstract" ) );
   mAbstract = mnl.toElement().text();
+
+  mType = context.projectTranslator()->translate( "metadata", mType );
+  mTitle = context.projectTranslator()->translate( "metadata", mTitle );
+  mAbstract = context.projectTranslator()->translate( "metadata", mAbstract );
 
   // set keywords
   const QDomNodeList keywords = metadataElement.elementsByTagName( QStringLiteral( "keywords" ) );
@@ -315,7 +321,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
   return true;
 }
 
-bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const
+bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   // identifier
   QDomElement identifier = document.createElement( QStringLiteral( "identifier" ) );
@@ -479,6 +485,22 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
   }
 
   return true;
+}
+
+void QgsAbstractMetadataBase::registerTranslations( QgsTranslationContext *translationContext ) const
+{
+  if ( !mTitle.isEmpty() )
+  {
+    translationContext->registerTranslation( QStringLiteral( "metadata" ), mTitle );
+  }
+  if ( !mType.isEmpty() )
+  {
+    translationContext->registerTranslation( QStringLiteral( "metadata" ), mType );
+  }
+  if ( !mAbstract.isEmpty() )
+  {
+    translationContext->registerTranslation( QStringLiteral( "metadata" ), mAbstract );
+  }
 }
 
 void QgsAbstractMetadataBase::combine( const QgsAbstractMetadataBase *other )

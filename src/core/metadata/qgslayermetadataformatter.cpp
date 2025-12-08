@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QStringBuilder>
-#include <QDateTime>
-
 #include "qgslayermetadataformatter.h"
+
 #include "qgslayermetadata.h"
 #include "qgsstringutils.h"
+
+#include <QDateTime>
+#include <QStringBuilder>
 
 QgsLayerMetadataFormatter::QgsLayerMetadataFormatter( const QgsLayerMetadata &metadata )
   : mMetadata( metadata )

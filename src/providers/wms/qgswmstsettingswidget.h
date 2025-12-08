@@ -19,6 +19,7 @@
 #define QGSWMSTSETTINGSWIDGET_H
 
 #include "ui_qgswmstsettingswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 

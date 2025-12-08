@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QObject>
 
 class QgsLayoutDesignerInterface;
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutCustomDropHandler.
      */

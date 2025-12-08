@@ -13,23 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgmlschema.h"
-#include "moc_qgsgmlschema.cpp"
-#include "qgsrectangle.h"
+
+#include <limits>
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgserror.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsrectangle.h"
+
 #include <QBuffer>
 #include <QList>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QProgressDialog>
 #include <QSet>
 #include <QSettings>
 #include <QUrl>
 
-#include <limits>
+#include "moc_qgsgmlschema.cpp"
 
 #ifndef NS_SEPARATOR_DEFINED
 #define NS_SEPARATOR_DEFINED

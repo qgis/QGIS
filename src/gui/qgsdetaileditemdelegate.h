@@ -17,10 +17,11 @@
 #ifndef QGSDETAILEDITEMDELEGATE_H
 #define QGSDETAILEDITEMDELEGATE_H
 
-#include <QAbstractItemDelegate>
-#include "qgis_sip.h"
-#include <QString>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QAbstractItemDelegate>
+#include <QString>
 
 class QCheckBox;
 class QgsDetailedItemWidget;

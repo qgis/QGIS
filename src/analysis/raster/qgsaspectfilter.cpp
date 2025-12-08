@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsaspectfilter.h"
+
 #include <cmath>
 
 QgsAspectFilter::QgsAspectFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
@@ -29,8 +30,8 @@ float QgsAspectFilter::processNineCellWindow(
   float *x13, float *x23, float *x33
 )
 {
-  const float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
-  const float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
+  const float derX = calcFirstDerX( *x11, *x21, *x31, *x12, *x22, *x32, *x13, *x23, *x33 );
+  const float derY = calcFirstDerY( *x11, *x21, *x31, *x12, *x22, *x32, *x13, *x23, *x33 );
 
   if ( derX == mOutputNodataValue || derY == mOutputNodataValue || ( derX == 0.0 && derY == 0.0 ) )
   {

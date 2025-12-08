@@ -28,10 +28,10 @@
 // version without notice, or even be removed.
 //
 
-#include "qgscoordinatetransform.h"
-#include "qgschunkedentity.h"
 #include "qgs3dmapsceneentity.h"
 #include "qgs3drendercontext.h"
+#include "qgschunkedentity.h"
+#include "qgscoordinatetransform.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
 class QgsAABB;

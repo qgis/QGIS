@@ -16,8 +16,8 @@
 #ifndef QGSLAYERNOTESMANAGER_H
 #define QGSLAYERNOTESMANAGER_H
 
-#include <QString>
 #include <QDialog>
+#include <QString>
 
 class QgsMapLayer;
 class QWidget;
@@ -26,6 +26,7 @@ class QgsRichTextEditor;
 class QgsLayerNotesManager
 {
   public:
+
     /**
      * Shows a dialog allowing users to edit the notes for the specified \a layer.
      */

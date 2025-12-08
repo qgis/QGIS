@@ -16,11 +16,11 @@
 #ifndef QGSHIGHLIGHTABLELINEEDIT_H
 #define QGSHIGHLIGHTABLELINEEDIT_H
 
-#include <QWidget>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsfilterlineedit.h"
+
+#include <QWidget>
 
 /**
  * \class QgsHighlightableLineEdit
@@ -35,6 +35,7 @@ class GUI_EXPORT QgsHighlightableLineEdit : public QgsFilterLineEdit
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsHighlightableLineEdit, with the specified \a parent widget.
      */

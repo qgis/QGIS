@@ -34,6 +34,7 @@ Base class to build new relation widgets.
       sipType = 0;
 %End
   public:
+
     QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -265,7 +266,8 @@ Duplicates features
 
 
 
-    void showEvent( QShowEvent * );
+    virtual void showEvent( QShowEvent * );
+
 %Docstring
 Refresh the UI when the widget becomes visible
 %End
@@ -369,6 +371,7 @@ It will only be instantiated by
       sipType = 0;
 %End
   public:
+
     explicit QgsAbstractRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget
@@ -439,6 +442,7 @@ config widgets.
 #include "qgsabstractrelationeditorwidget.h"
 %End
   public:
+
     QgsAbstractRelationEditorWidgetFactory();
 %Docstring
 Creates a new relation widget factory with given ``name``

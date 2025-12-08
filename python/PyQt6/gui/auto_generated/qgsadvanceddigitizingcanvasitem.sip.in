@@ -10,7 +10,6 @@
 
 
 
-
 %ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsadvanceddigitizingcanvasitem.h>

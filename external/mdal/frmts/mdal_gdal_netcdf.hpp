@@ -33,7 +33,7 @@ namespace MDAL
 
       MDAL::DateTime referenceTime() const override;
 
-      RelativeTimestamp::Unit mTimeUnit;
+      RelativeTimestamp::Unit mTimeUnit = RelativeTimestamp::Unit::milliseconds;
       //! Take the first reference time parsed
       DateTime mRefTime;
   };

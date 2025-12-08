@@ -39,6 +39,7 @@ configuration.
       QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
       QGIS_SERVER_IGNORE_BAD_LAYERS,
+      QGIS_SERVER_IGNORE_RENDERING_ERRORS,
       QGIS_SERVER_RETRY_BAD_LAYERS,
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
@@ -48,6 +49,7 @@ configuration.
       QGIS_SERVER_WMS_MAX_WIDTH,
       QGIS_SERVER_API_RESOURCES_DIRECTORY,
       QGIS_SERVER_API_WFS3_MAX_LIMIT,
+      QGIS_SERVER_API_WFS3_ROOT_PATH,
       QGIS_SERVER_TRUST_LAYER_METADATA,
       QGIS_SERVER_FORCE_READONLY_LAYERS,
       QGIS_SERVER_DISABLE_GETPRINT,
@@ -273,6 +275,20 @@ environment variable QGIS_SERVER_API_WFS3_MAX_LIMIT.
 .. versionadded:: 3.10
 %End
 
+    QString apiWfs3RootPath() const;
+%Docstring
+Returns the server-wide root path for OAPIF (WFS3) service API.
+
+The default value is "/wfs3", this value can be changed by setting the
+environment variable QGIS_SERVER_API_WFS3_ROOT_PATH.
+
+.. note::
+
+   The default will be changed to "/ogcapi" for QGIS 4.
+
+.. versionadded:: 3.44.3
+%End
+
     bool ignoreBadLayers() const;
 %Docstring
 Returns ``True`` if the bad layers are ignored and ``False`` when the
@@ -283,6 +299,14 @@ The default value is ``True``, this value can be changed by setting the
 environment variable QGIS_SERVER_IGNORE_BAD_LAYERS.
 
 .. versionadded:: 3.10.5
+%End
+
+    bool ignoreRenderingErrors() const;
+%Docstring
+Returns ``True`` if rendering errors are ignored by the server. Returns
+``False`` if the server throws an error in case of rendering errors.
+
+.. versionadded:: 4.0
 %End
 
     bool retryBadLayers() const;

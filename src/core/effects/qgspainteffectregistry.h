@@ -18,8 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QDomElement>
+
 #include <QDomDocument>
+#include <QDomElement>
 #include <QMap>
 #include <QVariantMap>
 

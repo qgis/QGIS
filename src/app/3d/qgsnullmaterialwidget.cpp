@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsnullmaterialwidget.h"
-#include "moc_qgsnullmaterialwidget.cpp"
 
-#include "qgsnullmaterialsettings.h"
 #include "qgis.h"
+#include "qgsnullmaterialsettings.h"
+
+#include "moc_qgsnullmaterialwidget.cpp"
 
 QgsNullMaterialWidget::QgsNullMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )

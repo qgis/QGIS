@@ -13,16 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
-#include "qgsmessagebar.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaptoolsplitfeatures.h"
-#include "moc_qgsmaptoolsplitfeatures.cpp"
+
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
 
+#include "moc_qgsmaptoolsplitfeatures.cpp"
 
 QgsMapToolSplitFeatures::QgsMapToolSplitFeatures( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )

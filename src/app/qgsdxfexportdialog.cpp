@@ -16,25 +16,26 @@
  ***************************************************************************/
 
 #include "qgsdxfexportdialog.h"
-#include "moc_qgsdxfexportdialog.cpp"
 
-#include "qgsmaplayer.h"
+#include "qgis.h"
+#include "qgisapp.h"
+#include "qgsfieldcombobox.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreegroup.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgshelp.h"
-#include "qgis.h"
-#include "qgsfieldcombobox.h"
-#include "qgisapp.h"
-#include "qgsmapthemecollection.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgsdxfexportdialog.cpp"
 
 const int LAYER_COL = 0;
 const int OUTPUT_LAYER_ATTRIBUTE_COL = 1;

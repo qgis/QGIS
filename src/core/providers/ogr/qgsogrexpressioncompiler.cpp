@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsogrexpressioncompiler.h"
+
 ///@cond PRIVATE
 
 #include "qgsexpressionnodeimpl.h"

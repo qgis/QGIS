@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsconfig.h"
-
 #include "qgssensorwidget.h"
-#include "moc_qgssensorwidget.cpp"
+
 #include "qgsiodevicesensor.h"
+
+#include "moc_qgssensorwidget.cpp"
 
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>

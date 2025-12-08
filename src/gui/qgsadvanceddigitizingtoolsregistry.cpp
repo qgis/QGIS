@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsadvanceddigitizingtoolsregistry.h"
+
 #include "qgsadvanceddigitizingtools.h"
 #include "qgsapplication.h"
 

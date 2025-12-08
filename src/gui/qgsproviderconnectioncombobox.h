@@ -16,10 +16,10 @@
 #ifndef QGSPROVIDERCONNECTIONCOMBOBOX_H
 #define QGSPROVIDERCONNECTIONCOMBOBOX_H
 
-#include <QComboBox>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QComboBox>
 #include <QSortFilterProxyModel>
 
 class QgsProviderConnectionModel;
@@ -52,6 +52,7 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProviderConnectionComboBox, for the specified \a provider.
      *

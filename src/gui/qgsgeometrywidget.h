@@ -18,11 +18,10 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QList>
 #include <QWidget>
-
-#include "qgsreferencedgeometry.h"
 
 class QLineEdit;
 class QToolButton;
@@ -46,6 +45,7 @@ class GUI_EXPORT QgsGeometryWidget : public QWidget
     Q_PROPERTY( QgsReferencedGeometry geometryValue READ geometryValue WRITE setGeometryValue NOTIFY geometryValueChanged )
 
   public:
+
     /**
      * Constructor for QgsGeometryWidget, with the specified \a parent widget.
      */

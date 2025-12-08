@@ -15,23 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
 #include "qgsrastercalcdialog.h"
-#include "moc_qgsrastercalcdialog.cpp"
+
+#include <gdal.h>
+
+#include "qgsgdalutils.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrastercalcnode.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgshelp.h"
-
-#include "gdal.h"
 #include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QFontDatabase>
+
+#include "moc_qgsrastercalcdialog.cpp"
 
 QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

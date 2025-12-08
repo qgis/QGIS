@@ -17,9 +17,10 @@
 #ifndef QGSHANADRIVER_H
 #define QGSHANADRIVER_H
 
-#include <qglobal.h>
+#include <odbc/Forwards.h>
+
 #include <QString>
-#include "odbc/Forwards.h"
+#include <qglobal.h>
 
 class QgsHanaDriver
 {

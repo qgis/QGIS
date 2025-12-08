@@ -18,11 +18,11 @@
 #ifndef QGSSERVERFEATUREID_H
 #define QGSSERVERFEATUREID_H
 
-#include <QString>
-#include <QHash>
-
 #include "qgis_server.h"
 #include "qgsfield.h"
+
+#include <QHash>
+#include <QString>
 
 class QgsVectorDataProvider;
 class QgsFeature;
@@ -36,6 +36,7 @@ class QgsFeatureRequest;
 class SERVER_EXPORT QgsServerFeatureId
 {
   public:
+
     /**
    * Returns the feature id based on primary keys.
    * \param feature the feature

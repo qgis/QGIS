@@ -13,21 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdelimitedtextfeatureiterator.h"
-#include "qgsdelimitedtextprovider.h"
-#include "qgsdelimitedtextfile.h"
 
+#include <memory>
+
+#include "qgsdelimitedtextfile.h"
+#include "qgsdelimitedtextprovider.h"
+#include "qgsexception.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
-#include "qgsexception.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsgeometryengine.h"
 
-#include <QtAlgorithms>
 #include <QTextStream>
 #include <QUrlQuery>
+#include <QtAlgorithms>
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
@@ -632,7 +634,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   }
   url.setQuery( query );
 
-  mFile.reset( new QgsDelimitedTextFile() );
+  mFile = std::make_unique<QgsDelimitedTextFile>();
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()

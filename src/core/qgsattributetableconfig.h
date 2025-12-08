@@ -16,13 +16,13 @@
 #ifndef QGSATTRIBUTETABLECONFIG_H
 #define QGSATTRIBUTETABLECONFIG_H
 
-#include <QString>
-#include <QVector>
-#include <QDomNode>
-#include <QVariant>
-
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QDomNode>
+#include <QString>
+#include <QVariant>
+#include <QVector>
 
 class QgsFields;
 

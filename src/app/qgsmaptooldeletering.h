@@ -16,11 +16,10 @@
 #ifndef QGSMAPTOOLDELETERING_H
 #define QGSMAPTOOLDELETERING_H
 
-#include "qgsmaptooledit.h"
 #include "qgis_app.h"
-#include "qgsgeometry.h"
 #include "qgsfeatureid.h"
-
+#include "qgsgeometry.h"
+#include "qgsmaptooledit.h"
 
 class QgsVertexMarker;
 //! Map tool to delete vertices from line/polygon features
@@ -64,9 +63,9 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     QgsRubberBand *mRubberBand = nullptr;
 
     //The feature, part and ring the mouse was pressed in, to  check we are still in the same ring at release
-    QgsFeatureId mPressedFid;
-    int mPressedPartNum;
-    int mPressedRingNum;
+    QgsFeatureId mPressedFid = 0;
+    int mPressedPartNum = 0;
+    int mPressedRingNum = 0;
 };
 
 #endif

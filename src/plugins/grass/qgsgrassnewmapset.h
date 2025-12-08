@@ -17,6 +17,7 @@
 #define QGSGRASSNEWMAPSET_H
 
 #include "ui_qgsgrassnewmapsetbase.h"
+
 #include "qgscoordinatereferencesystem.h"
 
 class QgsGrassPlugin;
@@ -55,7 +56,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     QgsGrassNewMapset( QgisInterface *iface, QgsGrassPlugin *plugin, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
-    ~QgsGrassNewMapset();
+    ~QgsGrassNewMapset() override;
 
     //! Next page
     int nextId() const override;
@@ -76,13 +77,6 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void mCreateLocationRadioButton_clicked() { locationRadioSwitched(); }
     void mSelectLocationRadioButton_clicked() { locationRadioSwitched(); }
     void locationRadioSwitched();
-
-    //! Existing location selection
-    void mLocationComboBox_textChanged( const QString &txt )
-    {
-      existingLocationChanged( txt );
-    }
-    void existingLocationChanged( const QString & );
 
     //! New location name has changed
     void mLocationLineEdit_returnPressed() { newLocationChanged(); }

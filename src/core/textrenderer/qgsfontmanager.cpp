@@ -14,21 +14,24 @@
  ***************************************************************************/
 
 #include "qgsfontmanager.h"
-#include "moc_qgsfontmanager.cpp"
-#include "qgsreadwritelocker.h"
+
 #include "qgsapplication.h"
-#include "qgsziputils.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgsfileutils.h"
+#include "qgsreadwritelocker.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsfileutils.h"
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
+#include "qgsziputils.h"
+
 #include <QDir>
 #include <QFontDatabase>
-#include <QTemporaryFile>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 #include <QTemporaryDir>
+#include <QTemporaryFile>
+
+#include "moc_qgsfontmanager.cpp"
 
 const QgsSettingsEntryStringList *QgsFontManager::settingsFontFamilyReplacements = new QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettingsTree::sTreeFonts, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
 

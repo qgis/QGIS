@@ -15,31 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmeshlayerproperties.h"
+
 #include <limits>
 #include <typeinfo>
 
 #include "qgsapplication.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmeshlabelingwidget.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerproperties.h"
-#include "moc_qgsmeshlayerproperties.cpp"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshstaticdatasetwidget.h"
+#include "qgsmetadatawidget.h"
 #include "qgsproject.h"
 #include "qgsrenderermeshpropertieswidget.h"
-#include "qgsmeshlayertemporalproperties.h"
 #include "qgssettings.h"
-#include "qgsdatumtransformdialog.h"
-#include "qgsmetadatawidget.h"
-#include "qgsmeshlabelingwidget.h"
-#include "qgsmaplayerlegend.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgsmeshlayerproperties.cpp"
 
 QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "MeshLayerProperties" ), parent, fl )

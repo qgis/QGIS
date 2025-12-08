@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLIDENTIFYFEATURE_H
 #define QGSMAPTOOLIDENTIFYFEATURE_H
 
-#include "qgsmaptoolidentify.h"
 #include "qgis_gui.h"
+#include "qgsmaptoolidentify.h"
 
 /**
  * \ingroup gui
@@ -31,6 +31,7 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
+
     /**
      * \brief QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
      * \param canvas the map canvas

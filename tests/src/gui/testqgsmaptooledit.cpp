@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QCoreApplication>
-
-#include "qgstest.h"
-#include "qgsguiutils.h"
-#include "qgsmaptooledit.h"
 #include "qgsapplication.h"
-#include "qgsmapcanvas.h"
+#include "qgsguiutils.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptooledit.h"
 #include "qgssettingsregistrycore.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+
+#include <QCoreApplication>
 
 class TestQgsMapToolEdit : public QObject
 {

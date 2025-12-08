@@ -16,25 +16,26 @@
  ***************************************************************************/
 
 #include "qgscallout.h"
-#include "qgsrendercontext.h"
-#include "qgssymbol.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsxmlutils.h"
-#include "qgslinestring.h"
-#include "qgsvariantutils.h"
-#include "qgsgeos.h"
-#include "qgsgeometryutils.h"
-#include "qgscircularstring.h"
-#include "qgsshapegenerator.h"
-#include "qgspainting.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
 
 #include <mutex>
+
+#include "qgscircularstring.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgspainting.h"
+#include "qgsrendercontext.h"
+#include "qgsshapegenerator.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+#include "qgsvariantutils.h"
+#include "qgsxmlutils.h"
 
 QgsPropertiesDefinition QgsCallout::sPropertyDefinitions;
 

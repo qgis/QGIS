@@ -16,8 +16,8 @@
 #ifndef QGSCHECKBOXWIDGETFACTORY_H
 #define QGSCHECKBOXWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 SIP_NO_FILE
 
@@ -31,11 +31,12 @@ SIP_NO_FILE
 class GUI_EXPORT QgsCheckboxWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor for QgsCheckboxWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      */
-    explicit QgsCheckboxWidgetFactory( const QString &name );
+    explicit QgsCheckboxWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

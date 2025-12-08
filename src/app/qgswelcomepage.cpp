@@ -14,36 +14,37 @@
  ***************************************************************************/
 
 #include "qgswelcomepage.h"
-#include "moc_qgswelcomepage.cpp"
-#include "qgsproject.h"
+
 #include "qgisapp.h"
-#include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
 #include "qgsfocuskeeper.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
-#include "qgsstringutils.h"
-#include "qgsfileutils.h"
-#include "qgstemplateprojectsmodel.h"
-#include "qgsprojectlistitemdelegate.h"
 #include "qgsnewsfeedmodel.h"
 #include "qgsnewsfeedparser.h"
-
+#include "qgsproject.h"
+#include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgssettings.h"
+#include "qgsstringutils.h"
+#include "qgstemplateprojectsmodel.h"
+#include "qgsversioninfo.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QListView>
 #include <QDesktopServices>
-#include <QTextBrowser>
+#include <QHBoxLayout>
+#include <QListView>
 #include <QMessageBox>
-#include <QSplitter>
 #include <QRegularExpression>
+#include <QSplitter>
+#include <QTextBrowser>
 #include <QUrl>
+#include <QVBoxLayout>
+
+#include "moc_qgswelcomepage.cpp"
 
 #define FEED_URL "https://feed.qgis.org/"
 
@@ -440,7 +441,7 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
 {
   if ( obj == mNewsFeedListView->viewport() && event->type() == QEvent::MouseButtonRelease )
   {
-    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+    QMouseEvent *mouseEvent = qgis::down_cast<QMouseEvent *>( event );
     if ( mouseEvent->button() == Qt::LeftButton )
     {
       const QModelIndex index = mNewsFeedListView->indexAt( mouseEvent->pos() );

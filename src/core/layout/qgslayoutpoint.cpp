@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpoint.h"
+
 #include "qgis.h"
 #include "qgsunittypes.h"
 

@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgsvectorlayer.h"
-#include "qgsexternalresourcewidgetwrapper.h"
 #include "qgsexternalresourcewidget.h"
+#include "qgsexternalresourcewidgetwrapper.h"
 #include "qgsexternalstorage.h"
+#include "qgsexternalstoragefilewidget.h"
 #include "qgsexternalstorageregistry.h"
-#include "qgspixmaplabel.h"
 #include "qgsmediawidget.h"
 #include "qgsmessagebar.h"
-#include "qgsexternalstoragefilewidget.h"
+#include "qgspixmaplabel.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QLineEdit>
-#include <QSignalSpy>
 #include <QMovie>
+#include <QSignalSpy>
 
 #ifdef WITH_QTWEBKIT
 #include <QWebFrame>

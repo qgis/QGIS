@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBarChartPlot : Qgs2DXyPlot
 {
 %Docstring(signature="appended")
@@ -39,19 +40,29 @@ A simple bar chart class.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    QgsFillSymbol *fillSymbol( int index ) const;
+    QgsFillSymbol *fillSymbolAt( int index ) const;
 %Docstring
 Returns the fill symbol for the series with matching ``index``.
 %End
 
-    void setFillSymbol( int index, QgsFillSymbol *symbol /Transfer/ );
+    void setFillSymbolAt( int index, QgsFillSymbol *symbol /Transfer/ );
 %Docstring
 Sets the fill ``symbol`` to use for the series with matching ``index``.
+%End
+
+    int fillSymbolCount() const;
+%Docstring
+Returns the fill symbols list count.
 %End
 
     static QgsBarChartPlot *create() /Factory/;
 %Docstring
 Returns a new bar chart.
+%End
+
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) /TransferBack/;
+%Docstring
+Returns a new data gatherer for a given bar chart ``plot``.
 %End
 
 };

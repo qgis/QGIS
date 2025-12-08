@@ -17,10 +17,11 @@
 #ifndef QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 #define QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 
-#include <QComboBox>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsauthcertutils.h"
-#include "qgis_gui.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui
@@ -31,6 +32,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * Construct a combo box for defining certificate trust policy
      * \param parent Parent widget

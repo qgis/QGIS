@@ -16,11 +16,13 @@
 #ifndef QGSPROCESSINGPARAMETERSWIDGET_H
 #define QGSPROCESSINGPARAMETERSWIDGET_H
 
+#include "ui_qgsprocessingparameterswidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingparameterswidgetbase.h"
-#include <QWidget>
 #include "qgsprocessingwidgetwrapper.h"
+
+#include <QWidget>
 
 class QgsProcessingAlgorithm;
 class QgsProcessingParameterDefinition;
@@ -38,6 +40,7 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingParametersWidget, for the specified \a algorithm.
      */

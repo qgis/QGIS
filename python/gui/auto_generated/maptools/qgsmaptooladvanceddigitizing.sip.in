@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 {
 %Docstring(signature="appended")
@@ -36,6 +37,7 @@ to filter and modify the events in map coordinates
 #include "qgsmaptooladvanceddigitizing.h"
 %End
   public:
+
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
 Creates an advanced digitizing maptool
@@ -135,6 +137,7 @@ The default is that a snap indicator is not used.
 %End
 
   protected:
+
     void setAdvancedDigitizingAllowed( bool allowed );
 %Docstring
 Sets whether functionality of advanced digitizing dock widget is
@@ -171,6 +174,7 @@ The default is that a snap indicator is not used.
 
 
   public:
+
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
 %Docstring
 Override this method when subclassing this class. This will receive

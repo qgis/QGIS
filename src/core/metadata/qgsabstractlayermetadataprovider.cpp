@@ -14,9 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractlayermetadataprovider.h"
+
+#include "qgsfeedback.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsfeedback.h"
 
 QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResults::metadata() const
 {

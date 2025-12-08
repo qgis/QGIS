@@ -12,13 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
+
 #include <QFile>
-#include <QTextStream>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <qgsapplication.h>
+#include <QTextStream>
+
 //header for class being tested
 #include <qgsdistancearea.h>
 #include <qgspoint.h>

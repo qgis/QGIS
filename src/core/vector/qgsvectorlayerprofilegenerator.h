@@ -17,18 +17,18 @@
 #ifndef QGSVECTORLAYERPROFILEGENERATOR_H
 #define QGSVECTORLAYERPROFILEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmarkersymbol.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsfeatureid.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
-#include "qgsfeatureid.h"
-
-#include <memory>
+#include "qgsmarkersymbol.h"
 
 class QgsProfileRequest;
 class QgsCurve;

@@ -45,7 +45,6 @@ import glob
 import os.path
 import configparser
 import warnings
-import codecs
 import time
 import functools
 
@@ -291,7 +290,7 @@ def findPlugins(path):
         cp = configparser.ConfigParser()
 
         try:
-            with codecs.open(metadataFile, "r", "utf8") as f:
+            with open(metadataFile, encoding="utf8") as f:
                 cp.read_file(f)
         except:
             cp = None

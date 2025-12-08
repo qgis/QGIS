@@ -9,6 +9,7 @@
 
 
 
+
 class QgsColorEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")

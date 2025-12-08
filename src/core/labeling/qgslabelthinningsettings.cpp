@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgslabelthinningsettings.h"
-#include "qgspropertycollection.h"
+
 #include "qgsexpressioncontext.h"
 #include "qgspallabeling.h"
-
+#include "qgspropertycollection.h"
 
 void QgsLabelThinningSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {

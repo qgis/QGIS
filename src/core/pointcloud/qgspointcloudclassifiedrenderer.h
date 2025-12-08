@@ -18,11 +18,10 @@
 #ifndef QGSPOINTCLOUDCLASSIFIEDRENDERER_H
 #define QGSPOINTCLOUDCLASSIFIEDRENDERER_H
 
-#include "qgspointcloudrenderer.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscolorrampshader.h"
-
+#include "qgspointcloudrenderer.h"
 
 /**
  * \ingroup core

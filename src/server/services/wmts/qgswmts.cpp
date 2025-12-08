@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
-#include "qgswmtsutils.h"
 #include "qgswmtsgetcapabilities.h"
-#include "qgswmtsgettile.h"
 #include "qgswmtsgetfeatureinfo.h"
+#include "qgswmtsgettile.h"
+#include "qgswmtsutils.h"
 
 #define QSTR_COMPARE( str, lit ) \
   ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
@@ -36,6 +36,7 @@ namespace QgsWmts
   class Service : public QgsService
   {
     public:
+
       /**
        * Constructor for WMTS service.
        * \param serverIface Interface for plugins.

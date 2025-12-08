@@ -16,8 +16,9 @@
 #ifndef QGSSTACKTRACE_H
 #define QGSSTACKTRACE_H
 
-#include <QVector>
 #include "qgsconfig.h"
+
+#include <QVector>
 
 #ifdef WIN32
 #include <windows.h>
@@ -37,6 +38,7 @@
 class QgsStackTrace
 {
   public:
+
     /**
     * Represents a line from a stack trace.
     */

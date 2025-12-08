@@ -22,8 +22,9 @@
 #define SIP_NO_FILE
 
 #include "ui_qgswmsdimensiondialogbase.h"
-#include "qgsmaplayerserverproperties.h"
+
 #include "qgis_gui.h"
+#include "qgsmaplayerserverproperties.h"
 
 class QgsVectorLayer;
 

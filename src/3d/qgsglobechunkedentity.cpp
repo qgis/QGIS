@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsglobechunkedentity.h"
-#include "moc_qgsglobechunkedentity.cpp"
 
 #include <QByteArray>
 #include <QImage>
+
+#include "moc_qgsglobechunkedentity.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
@@ -41,6 +42,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTextureImage>
+#include <memory>
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
@@ -50,7 +52,9 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
 #include "qgsglobematerial.h"
-#include "qgsraycastingutils_p.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgsraycastingutils.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
 
@@ -479,7 +483,7 @@ QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
 
   connectToLayersRepaintRequest();
 
-  mUpdateJobFactory.reset( new QgsGlobeMapUpdateJobFactory( mapSettings ) );
+  mUpdateJobFactory = std::make_unique<QgsGlobeMapUpdateJobFactory>( mapSettings );
 }
 
 QgsGlobeEntity::~QgsGlobeEntity()
@@ -488,16 +492,14 @@ QgsGlobeEntity::~QgsGlobeEntity()
   cancelActiveJobs();
 }
 
-QVector<QgsRayCastingUtils::RayHit> QgsGlobeEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QList<QgsRayCastHit> QgsGlobeEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
-  Q_UNUSED( context );
-
   float minDist = -1;
   QVector3D intersectionPoint;
   const QList<QgsChunkNode *> active = activeNodes();
   for ( QgsChunkNode *node : active )
   {
-    QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
+    const QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
 
     if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
     {
@@ -508,7 +510,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsGlobeEntity::rayIntersection( const QgsRa
       {
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
-        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
+        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, context.maximumDistance(), nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
         if ( success )
         {
           float dist = ( ray.origin() - nodeIntPoint ).length();
@@ -522,12 +524,13 @@ QVector<QgsRayCastingUtils::RayHit> QgsGlobeEntity::rayIntersection( const QgsRa
     }
   }
 
-  QVector<QgsRayCastingUtils::RayHit> result;
-  if ( minDist >= 0 )
-  {
-    result.append( QgsRayCastingUtils::RayHit( minDist, intersectionPoint ) );
-  }
-  return result;
+  if ( minDist < 0 )
+    return {};
+
+  QgsRayCastHit hit;
+  hit.setDistance( minDist );
+  hit.setMapCoordinates( mMapSettings->worldToMapCoordinates( intersectionPoint ) );
+  return { hit };
 }
 
 

@@ -18,8 +18,9 @@
 #ifndef QGSCONNECTIONREGISTRY_H
 #define QGSCONNECTIONREGISTRY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QObject>
 
 class QgsAbstractProviderConnection;

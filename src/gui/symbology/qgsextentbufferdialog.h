@@ -17,13 +17,14 @@
 
 #define SIP_NO_FILE
 
-#include <QDialog>
-#include "qgis_sip.h"
+#include "ui_qgsextentbufferdialogbase.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgssymbol.h"
 #include "qgssymbolwidgetcontext.h"
-#include "ui_qgsextentbufferdialogbase.h"
-#include "qgis_gui.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 
@@ -38,6 +39,7 @@ class GUI_EXPORT QgsExtentBufferWidget : public QgsPanelWidget, public QgsExpres
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsExtentBufferWidget
      */

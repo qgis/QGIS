@@ -17,14 +17,20 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
+set (BUILD_WITH_QT6 TRUE CACHE BOOL "Enable Qt6 support")
+
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
-set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
-set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+set (WITH_AUTH TRUE CACHE BOOL "Determines whether AUTH support should be included")
+set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+set (WITH_EXIV2 TRUE CACHE BOOL "Determines whether exiv2 functionality should be added")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
+set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
@@ -74,6 +80,9 @@ set(QGIS_APP_NAME "qgis" CACHE STRING "The main app name and bundle name")
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
@@ -171,7 +180,7 @@ if (USE_CCACHE AND MSVC)
   # CCache doesn't work yet with precompiled headers (cf https://github.com/ccache/ccache/issues/1383)
   set(USE_PRECOMPILED_HEADERS OFF)
 else()
-  set(USE_PRECOMPILED_HEADERS ON)
+  option(USE_PRECOMPILED_HEADERS "Use precompiled headers" ON)
 endif()
 
 if (IOS)
@@ -244,6 +253,8 @@ if(WITH_CORE)
 	set (HAVE_CRASH_HANDLER FALSE)    # used in qgsconfig.h
       endif()
   endif()
+
+  set (WITH_SFCGAL FALSE CACHE BOOL "Determines whether SFCGAL geometry support should be built")
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
@@ -359,7 +370,6 @@ if(WITH_CORE)
     endif()
   endif(WITH_HANA)
 
-  set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
 
@@ -441,7 +451,16 @@ if(WITH_CORE)
   find_package(GDAL REQUIRED)
   message(STATUS "Found GDAL: ${GDAL_VERSION} ${GDAL_DIR}")
   find_package(EXPAT REQUIRED)
-  find_package(Spatialindex REQUIRED)
+  set (WITH_INTERNAL_SPATIALINDEX FALSE CACHE BOOL "Determines whether spatialindex should be built from internal copy")
+  IF(WITH_INTERNAL_SPATIALINDEX)
+    message(STATUS "Using internal spatialindex")
+    set(SPATIALINDEX_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/spatialindex/include)
+  else()
+    find_package(Spatialindex REQUIRED)
+    if(SPATIALINDEX_VERSION VERSION_GREATER_EQUAL "2.1")
+      message(FATAL_ERROR "Cannot build QGIS using libspatialindex >= 2.1, see https://github.com/libspatialindex/libspatialindex/issues/276")
+    endif()
+  endif()
   find_package(LibZip REQUIRED)
   set (WITH_INTERNAL_NLOHMANN_JSON ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
   find_package(nlohmann_json REQUIRED)
@@ -462,9 +481,35 @@ if(WITH_CORE)
   find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
-  find_package(EXIV2 REQUIRED)
+  if(WITH_EXIV2)
+    set(HAVE_EXIV2 TRUE)
+    find_package(exiv2 REQUIRED)
+  endif()
 
   # optional
+  if (WITH_SFCGAL)
+
+    if(POLICY CMP0167) # avoid deprecation warning from CGAL
+      cmake_policy(SET CMP0167 NEW)
+    endif()
+
+    find_package(SFCGAL) # SFCGAL provider
+    message(STATUS "Found SFCGAL: ${SFCGAL_VERSION} ${SFCGAL_DIR}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\1" SFCGAL_VERSION_MAJOR_INT "${SFCGAL_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\2" SFCGAL_VERSION_MINOR_INT "${SFCGAL_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\3" SFCGAL_VERSION_PATCH_INT "${SFCGAL_VERSION}")
+
+    if(SFCGAL_VERSION VERSION_LESS "2.0")
+      message(FATAL_ERROR "Cannot build QGIS using SFCGAL older than 2.0")
+    endif()
+    if (WITH_SFCGAL)
+      add_definitions(-DWITH_SFCGAL)
+      message(STATUS "SFCGAL support enabled")
+    else()
+      message(STATUS "SFCGAL support DISABLED.")
+    endif()
+  endif()
+
   if (WITH_POSTGRESQL)
     find_package(Postgres) # PostgreSQL provider
   endif()
@@ -487,7 +532,7 @@ if(WITH_CORE)
     set (HAVE_POSTGRESQL TRUE)
   endif()
 
-  set (WITH_QTWEBKIT TRUE CACHE BOOL "Enable QtWebkit support")
+  set (WITH_QTWEBKIT FALSE CACHE BOOL "Enable QtWebkit support")
   if (WITH_QTWEBKIT)
     add_definitions(-DWITH_QTWEBKIT)
     message(STATUS "Qt WebKit support enabled")
@@ -534,15 +579,13 @@ if(WITH_CORE)
   #############################################################
   # search for Qt
 
-  set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (experimental) Qt6 support")
   if (BUILD_WITH_QT6)
     set(QT_VERSION_MAJOR 6)
-    set(QT_MIN_VERSION 6.4.0)
+    set(QT_MIN_VERSION 6.6.0)
     set(QT_VERSION_BASE "Qt6")
     set(QT_VERSION_BASE_LOWER "qt6")
-    set(CMAKE_CXX_STANDARD 17)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
   else()
+    message(WARNING "Qt5 is no longer officially supported -- this build may be broken or buggy!")
     set(QT_VERSION_MAJOR 5)
     set(QT_MIN_VERSION 5.15.2)
     set(QT_VERSION_BASE "Qt5")
@@ -570,15 +613,24 @@ if(WITH_CORE)
 
   set (WITH_PDF4QT FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build for PDF and HTML to QPainter conversion")
   if (WITH_PDF4QT)
+    if(NOT BUILD_WITH_QT6)
+      message(FATAL_ERROR "PDF4Qt requires a Qt 6 build")
+    endif()
     set(HAVE_PDF4QT TRUE)  # used in qgisconfig.h
     message(STATUS "PDF4Qt enabled")
   else()
     message(STATUS "PDF4Qt disabled")
   endif()
 
-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
+  if(WITH_QTPOSITIONING)
+    find_package(${QT_VERSION_BASE} COMPONENTS Positioning REQUIRED)
+  endif()
   if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+    if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
+      find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
+    endif()
   endif()
 
   if (NOT IOS)
@@ -604,7 +656,7 @@ if(WITH_CORE)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
 
-  set (WITH_QTWEBENGINE FALSE CACHE BOOL "Enable QtWebEngine support")
+  set (WITH_QTWEBENGINE TRUE CACHE BOOL "Enable QtWebEngine support")
   if (WITH_QTWEBENGINE)
     if(BUILD_WITH_QT6)
       find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore REQUIRED)
@@ -672,7 +724,9 @@ if(WITH_CORE)
     find_package(Qt5Keychain CONFIG REQUIRED)
   endif()
   # Master password hash and authentication encryption
-  find_package(QCA REQUIRED)
+  if(WITH_AUTH)
+    find_package(QCA REQUIRED)
+  endif()
   # Check for runtime dependency of qca-ossl plugin
   # REQUIRED if unit tests are to be run from build directory
   if(NOT MSVC)
@@ -874,8 +928,8 @@ endif()
 set (AGGRESSIVE_SAFE_MODE FALSE CACHE BOOL "Forces a aggressive safe mode where issues like unsafe thread access will resort in fatal exceptions")
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /std:c++17 /permissive-")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /std:c++17 /permissive-")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /permissive-")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /permissive-")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # Increase our stack size to 8MB to give us a bit more room and avoid stackoverflow crashes
@@ -1178,7 +1232,6 @@ if (WITH_CORE AND WITH_BINDINGS)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 26)
 
   if(BINDINGS_GLOBAL_INSTALL)
     set(QGIS_PYTHON_INSTALL_DIR ${Python_SITEARCH})

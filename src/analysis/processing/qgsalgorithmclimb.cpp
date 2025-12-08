@@ -196,11 +196,11 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
 
   if ( !noGeometry.empty() )
   {
-    feedback->pushInfo( QObject::tr( "The following features do not have geometry: %1" ).arg( noGeometry.join( QStringLiteral( ", " ) ) ) );
+    feedback->pushInfo( QObject::tr( "The following features do not have geometry: %1" ).arg( noGeometry.join( QLatin1String( ", " ) ) ) );
   }
   if ( !noZValue.empty() )
   {
-    feedback->pushInfo( QObject::tr( "The following points do not have Z value: %1" ).arg( noZValue.join( QStringLiteral( ", " ) ) ) );
+    feedback->pushInfo( QObject::tr( "The following points do not have Z value: %1" ).arg( noZValue.join( QLatin1String( ", " ) ) ) );
   }
 
   QVariantMap results;

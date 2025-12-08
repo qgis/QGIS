@@ -17,6 +17,7 @@
 #define QGSTILECACHE_H
 
 #include "qgis_core.h"
+
 #include <QCache>
 #include <QMutex>
 

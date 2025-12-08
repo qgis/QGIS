@@ -16,13 +16,13 @@
 #ifndef QGSGEOMETRYCHECKREGISTRY_H
 #define QGSGEOMETRYCHECKREGISTRY_H
 
-#include <QString>
-#include <QMap>
-#include <QVariant>
-
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsgeometrycheck.h"
+
+#include <QMap>
+#include <QString>
+#include <QVariant>
 
 class QgsGeometryCheckFactory;
 class QgsGeometryCheckContext;
@@ -41,6 +41,7 @@ class QgsGeometryCheckContext;
 class ANALYSIS_EXPORT QgsGeometryCheckRegistry
 {
   public:
+
     /**
      * Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
      * QgsAnalysis::geometryCheckRegistry().

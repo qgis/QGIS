@@ -17,12 +17,12 @@
 #ifndef QGSAUTHPLANETARYCOMPUTEREDIT_H
 #define QGSAUTHPLANETARYCOMPUTEREDIT_H
 
-#include <QWidget>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthplanetarycomputeredit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 
+#include <QWidget>
 
 class QgsAuthPlanetaryComputerEdit : public QgsAuthMethodEdit, private Ui::QgsAuthPlanetaryComputerEdit
 {

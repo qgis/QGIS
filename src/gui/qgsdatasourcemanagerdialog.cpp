@@ -14,28 +14,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QListWidgetItem>
-
-#include "qgsdatasourcemanagerdialog.h"
-#include "moc_qgsdatasourcemanagerdialog.cpp"
 #include "ui_qgsdatasourcemanagerdialog.h"
-#include "qgsbrowserdockwidget.h"
-#include "qgssettings.h"
-#include "qgsproviderregistry.h"
-#include "qgssourceselectprovider.h"
-#include "qgssourceselectproviderregistry.h"
+#include "qgsdatasourcemanagerdialog.h"
+
 #include "qgsabstractdatasourcewidget.h"
-#include "qgsmapcanvas.h"
-#include "qgsmessagelog.h"
-#include "qgsmessagebar.h"
-#include "qgsgui.h"
+#include "qgsbrowserdockwidget.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowserwidget.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgssourceselectprovider.h"
+#include "qgssourceselectproviderregistry.h"
+
+#include <QListWidgetItem>
+
+#include "moc_qgsdatasourcemanagerdialog.cpp"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( tr( "Data Source Manager" ), parent, fl )
   , ui( new Ui::QgsDataSourceManagerDialog )
-  , mPreviousRow( -1 )
   , mMapCanvas( canvas )
   , mBrowserModel( browserModel )
 {

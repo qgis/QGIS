@@ -17,9 +17,11 @@
 #ifndef QGSLAYOUTDESIGNERDIALOG_H
 #define QGSLAYOUTDESIGNERDIALOG_H
 
-#include "ui_qgslayoutdesignerbase.h"
 #include "qgsconfig.h"
+#include "ui_qgslayoutdesignerbase.h"
+
 #include "qgslayoutdesignerinterface.h"
+
 #include <QToolButton>
 
 class QgsLayoutDesignerDialog;

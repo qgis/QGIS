@@ -13,30 +13,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QRegularExpression>
+#include "qgsvectorlayerutils.h"
 
+#include <memory>
+
+#include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsvectordataprovider.h"
+#include "qgsfeedback.h"
+#include "qgspainteffect.h"
+#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
+#include "qgsrenderer.h"
+#include "qgsstyle.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerreference.h"
 #include "qgsthreadingutils.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsunsetattributevalue.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgspallabeling.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayer.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsstyle.h"
-#include "qgsauxiliarystorage.h"
-#include "qgssymbollayerreference.h"
-#include "qgspainteffect.h"
-#include "qgsunsetattributevalue.h"
+
+#include <QRegularExpression>
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -47,7 +50,7 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
   if ( attrNum == -1 )
   {
     // try to use expression
-    expression.reset( new QgsExpression( fieldOrExpression ) );
+    expression = std::make_unique<QgsExpression>( fieldOrExpression );
     context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
 
     if ( expression->hasParserError() || !expression->prepare( &context ) )
@@ -72,11 +75,11 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
   ok = true;
   if ( !selectedOnly )
   {
-    return layer->getFeatures( request );
+    return layer->getFeatures( std::move( request ) );
   }
   else
   {
-    return layer->getSelectedFeatures( request );
+    return layer->getSelectedFeatures( std::move( request ) );
   }
 }
 
@@ -93,7 +96,7 @@ QList<QVariant> QgsVectorLayerUtils::getValues( const QgsVectorLayer *layer, con
     if ( attrNum == -1 )
     {
       // use expression, already validated in the getValuesIterator() function
-      expression.reset( new QgsExpression( fieldOrExpression ) );
+      expression = std::make_unique<QgsExpression>( fieldOrExpression );
       context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
     }
 
@@ -118,6 +121,66 @@ QList<QVariant> QgsVectorLayerUtils::getValues( const QgsVectorLayer *layer, con
     }
   }
   return values;
+}
+
+QList<QVariant> QgsVectorLayerUtils::uniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, int limit, QgsFeedback *feedback )
+{
+  QSet<QVariant> uniqueValues;
+  ok = false;
+
+  const int attrNum = layer->fields().lookupField( fieldOrExpression );
+  if ( attrNum != -1 && !selectedOnly )
+  {
+    // attribute case, not selected only
+    // optimized case: directly call QgsVectorLayer::uniqueValues
+    uniqueValues = layer->uniqueValues( attrNum, limit );
+    // remove null value if necessary
+    uniqueValues.remove( QVariant() );
+    ok = true;
+  }
+  else
+  {
+    // expression or attribute - use an iterator
+    QgsFeatureIterator fit = getValuesIterator( layer, fieldOrExpression, ok, selectedOnly );
+    if ( ok )
+    {
+      std::unique_ptr<QgsExpression> expression;
+      QgsExpressionContext context;
+      if ( attrNum == -1 )
+      {
+        // use expression, already validated in the getValuesIterator() function
+        expression = std::make_unique<QgsExpression>( fieldOrExpression );
+        context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+      }
+      QgsFeature feature;
+      while ( fit.nextFeature( feature ) && ( limit < 0 || uniqueValues.size() < limit ) )
+      {
+        QVariant newValue;
+        if ( expression )
+        {
+          context.setFeature( feature );
+          newValue = expression->evaluate( &context );
+        }
+        else
+        {
+          newValue = feature.attribute( attrNum );
+        }
+
+        if ( !newValue.isNull() )
+        {
+          uniqueValues.insert( newValue );
+        }
+
+        if ( feedback && feedback->isCanceled() )
+        {
+          ok = false;
+          break;
+        }
+      }
+    }
+  }
+
+  return qgis::setToList( uniqueValues );
 }
 
 QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, int *nullCount, QgsFeedback *feedback )
@@ -511,7 +574,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) ) );
+    tempContext = std::make_unique<QgsExpressionContext>( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
     evalContext = tempContext.get();
   }
 
@@ -725,7 +788,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
 
     if ( lyr )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( lyr ) );
+      featureSource = std::make_unique<QgsVectorLayerFeatureSource>( lyr );
     }
   };
 
@@ -1331,4 +1394,106 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
     // no string fields found - just return first field
     return fields.at( 0 ).name();
   }
+}
+
+template <typename T, typename ConverterFunc>
+void populateFieldDataArray( const QVector<QVariant> &values, const QVariant &nullValue, QByteArray &res, ConverterFunc converter )
+{
+  res.resize( values.size() * sizeof( T ) );
+  T *data = reinterpret_cast<T *>( res.data() );
+  for ( const QVariant &val : values )
+  {
+    if ( QgsVariantUtils::isNull( val ) )
+    {
+      *data++ = converter( nullValue );
+    }
+    else
+    {
+      *data++ = converter( val );
+    }
+  }
+}
+
+QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue )
+{
+  const int fieldIndex = fields.lookupField( fieldName );
+  if ( fieldIndex < 0 )
+    return QByteArray();
+
+  QVector< QVariant > values;
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    values.append( f.attribute( fieldIndex ) );
+  }
+
+  const QgsField field = fields.at( fieldIndex );
+  QByteArray res;
+  switch ( field.type( ) )
+  {
+    case QMetaType::Int:
+    {
+      populateFieldDataArray<int>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      break;
+    }
+
+    case QMetaType::UInt:
+    {
+      populateFieldDataArray<unsigned int>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      break;
+    }
+
+    case QMetaType::LongLong:
+    {
+      populateFieldDataArray<long long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      break;
+    }
+
+    case QMetaType::ULongLong:
+    {
+      populateFieldDataArray<unsigned long long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      break;
+    }
+
+    case QMetaType::Double:
+    {
+      populateFieldDataArray<double>( values, nullValue, res, []( const QVariant & v ) { return v.toDouble(); } );
+      break;
+    }
+
+    case QMetaType::Long:
+    {
+      populateFieldDataArray<long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      break;
+    }
+
+    case QMetaType::Short:
+    {
+      populateFieldDataArray<short>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      break;
+    }
+
+    case QMetaType::ULong:
+    {
+      populateFieldDataArray<unsigned long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      break;
+    }
+
+    case QMetaType::UShort:
+    {
+      populateFieldDataArray<unsigned short>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      break;
+    }
+
+    case QMetaType::Float:
+    {
+      populateFieldDataArray<float>( values, nullValue, res, []( const QVariant & v ) { return v.toFloat(); } );
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return res;
 }

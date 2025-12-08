@@ -19,9 +19,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayertreenode.h"
+#include "qgslegendpatchshape.h"
 #include "qgsmaplayerref.h"
 #include "qgsreadwritecontext.h"
-#include "qgslegendpatchshape.h"
 
 class QgsMapLayer;
 

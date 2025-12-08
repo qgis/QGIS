@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QPixmap>
+#include <proj.h>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgstest.h"
 
-#include <proj.h>
+#include <QPixmap>
 
 //header for class being tested
 #include "qgsprojutils.h"

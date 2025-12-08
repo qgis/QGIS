@@ -15,16 +15,16 @@
  ***************************************************************************/
 #include "qgscrashreport.h"
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
-#include <QTextStream>
-#include <QUuid>
-#include <QStandardPaths>
-#include <QSysInfo>
 #include <QFileInfo>
-#include <QCryptographicHash>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QStandardPaths>
+#include <QSysInfo>
+#include <QTextStream>
+#include <QUuid>
 
 QgsCrashReport::QgsCrashReport()
   : mPythonFault( PythonFault() )

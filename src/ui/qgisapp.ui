@@ -160,12 +160,10 @@
      <addaction name="mActionTemporalController"/>
      <addaction name="mActionElevationController"/>
     </widget>
-    <widget class="QMenu" name="menuElevation_Profiles">
+    <widget class="QMenu" name="mMenuElevationProfiles">
      <property name="title">
       <string>Elevation Profiles</string>
      </property>
-     <addaction name="mActionElevationProfile"/>
-     <addaction name="mActionManageElevationProfiles"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="m3DMapViewsMenu"/>
@@ -178,7 +176,7 @@
     <addaction name="mActionIdentify"/>
     <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
-    <addaction name="menuElevation_Profiles"/>
+    <addaction name="mMenuElevationProfiles"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
@@ -394,6 +392,7 @@
      <addaction name="mActionDeletePart"/>
      <addaction name="mActionReshapeFeatures"/>
      <addaction name="mActionOffsetCurve"/>
+     <addaction name="mActionChamferFillet"/>
      <addaction name="mActionSplitFeatures"/>
      <addaction name="mActionSplitParts"/>
      <addaction name="mActionMergeFeatures"/>
@@ -540,6 +539,7 @@
    <addaction name="mActionDeletePart"/>
    <addaction name="mActionReshapeFeatures"/>
    <addaction name="mActionOffsetCurve"/>
+   <addaction name="mActionChamferFillet"/>
    <addaction name="mActionReverseLine"/>
    <addaction name="mActionTrimExtendFeature"/>
    <addaction name="mActionSplitFeatures"/>
@@ -2258,6 +2258,27 @@ Click to select a geometry to offset.
 2nd click to specify offset distance.
 Ctrl+2nd click to offset a copy of the selected geometry.
 Ctrl+click with snapping to select another layer's geometry to copy and offset.
+</string>
+   </property>
+  </action>
+  <action name="mActionChamferFillet">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionChamferFillet.svg</normaloff>:/images/themes/default/mActionChamferFillet.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Chamfer / Fillet</string>
+   </property>
+   <property name="toolTip">
+    <string>Chamfer / Fillet
+Creates a chamfer or fillet of a geometry:
+Click to select a geometry to operate.
+2nd click to specify the chamfer distance or fillet radius.
+Ctrl+2nd click to create a copy of the selected geometry.
+Ctrl+click with snapping to select another layer's geometry to copy and operate.
 </string>
    </property>
   </action>

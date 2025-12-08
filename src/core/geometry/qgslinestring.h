@@ -19,13 +19,13 @@
 #define QGSLINESTRING_H
 
 
-#include <QPolygonF>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgscurve.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometryutils_base.h"
+
+#include <QPolygonF>
 
 class QgsLineSegment2D;
 class QgsBox3D;
@@ -1056,6 +1056,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
+    double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
 

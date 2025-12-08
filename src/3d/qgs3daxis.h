@@ -17,18 +17,17 @@
 #define QGS3DAXIS_H
 
 #include "qgis_3d.h"
+#include "qgs3daxissettings.h"
 #include "qgs3dmapcanvas.h"
-
 #include "qgscoordinatereferencesystem.h"
+
+#include <QVector3D>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QScreenRayCaster>
-#include <QVector3D>
-
 #include <QtWidgets/QMenu>
-#include "qgs3daxissettings.h"
 
 #define SIP_NO_FILE
 
@@ -52,6 +51,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Default Qgs3DAxis constructor.
      *

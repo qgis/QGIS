@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsfiledownloaderdialog.h"
-#include "moc_qgsfiledownloaderdialog.cpp"
+
 #include "qgsfiledownloader.h"
 #include "qgsfileutils.h"
+
 #include <QMessageBox>
+
+#include "moc_qgsfiledownloaderdialog.cpp"
 
 QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg )
   : mOutputFileName( outputFileName ), mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )

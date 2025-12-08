@@ -15,14 +15,15 @@
 #ifndef QGSRENDERERMESHPROPERTIESWIDGET_H
 #define QGSRENDERERMESHPROPERTIESWIDGET_H
 
-#include <QObject>
-#include <QDialog>
-
 #include "ui_qgsrenderermeshpropswidgetbase.h"
 
-#include "qgsmaplayerconfigwidget.h"
-#include "qgis_gui.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgsmaplayerconfigwidget.h"
+
+#include <QDialog>
+#include <QObject>
 
 SIP_NO_FILE
 
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     Q_OBJECT
 
   public:
+
     /**
      * A widget to hold the renderer properties for a mesh layer.
      * \param layer The mesh layer to style

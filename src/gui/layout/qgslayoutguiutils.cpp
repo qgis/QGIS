@@ -14,40 +14,43 @@
  ***************************************************************************/
 
 #include "qgslayoutguiutils.h"
+
+#include "qgsfontutils.h"
 #include "qgsgui.h"
+#include "qgslayoutattributetablewidget.h"
+#include "qgslayoutchartwidget.h"
+#include "qgslayoutelevationprofilewidget.h"
+#include "qgslayoutframe.h"
+#include "qgslayouthtmlwidget.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemchart.h"
+#include "qgslayoutitemelevationprofile.h"
 #include "qgslayoutitemguiregistry.h"
-#include "qgslayoutitemregistry.h"
-#include "qgslayoutviewrubberband.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutmapwidget.h"
-#include "qgslayoutshapewidget.h"
-#include "qgslayoutmarkerwidget.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmanualtable.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitemmarker.h"
+#include "qgslayoutitempicture.h"
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
-#include "qgslayoutitemmarker.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutlabelwidget.h"
+#include "qgslayoutlegendwidget.h"
+#include "qgslayoutmanualtablewidget.h"
+#include "qgslayoutmapwidget.h"
+#include "qgslayoutmarkerwidget.h"
+#include "qgslayoutpicturewidget.h"
 #include "qgslayoutpolygonwidget.h"
 #include "qgslayoutpolylinewidget.h"
-#include "qgslayoutpicturewidget.h"
-#include "qgslayoutitempicture.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemelevationprofile.h"
-#include "qgslayoutlabelwidget.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutlegendwidget.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayouthtmlwidget.h"
 #include "qgslayoutscalebarwidget.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgslayoutattributetablewidget.h"
-#include "qgslayoutitemmanualtable.h"
-#include "qgslayoutmanualtablewidget.h"
-#include "qgslayoutelevationprofilewidget.h"
+#include "qgslayoutshapewidget.h"
+#include "qgslayoutviewrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgsplot.h"
-#include "qgsfontutils.h"
 
 /**
  * Attempts to find the best guess at a map item to link \a referenceItem to,
@@ -159,7 +162,6 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   // picture item
 
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPicture, QObject::tr( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutPictureWidget( qobject_cast<QgsLayoutItemPicture *>( item ) ); }, createRubberBand ) );
-
 
   // label item
 
@@ -579,4 +581,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     return profileItem.release();
   } );
   registry->addLayoutItemGuiMetadata( elevationProfileItemMetadata.release() );
+
+  // chart item
+
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutChart, QObject::tr( "Chart" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddChart.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutChartWidget( qobject_cast<QgsLayoutItemChart *>( item ) ); }, createRubberBand ) );
 }

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgpsinformation.h"
+
 #include "info.h"
 #include "qgspointxy.h"
 

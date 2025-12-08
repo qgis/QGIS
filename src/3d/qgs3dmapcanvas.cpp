@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <Qt3DCore/QAspectEngine>
+
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DCore/QCoreAspect>
 #endif
@@ -34,6 +35,8 @@
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsrubberband3d.h"
+#include "qgs3dutils.h"
+#include "qgsraycastcontext.h"
 
 #include "moc_qgs3dmapcanvas.cpp"
 
@@ -47,8 +50,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   , m_defaultCamera( new Qt3DRender::QCamera )
   , m_inputSettings( new Qt3DInput::QInputSettings )
   , m_root( new Qt3DCore::QEntity )
-  , m_userRoot( nullptr )
-  , m_initialized( false )
 {
   setSurfaceType( QSurface::OpenGLSurface );
 
@@ -185,6 +186,67 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 QgsCameraController *Qgs3DMapCanvas::cameraController()
 {
   return mScene ? mScene->cameraController() : nullptr;
+}
+
+QgsRayCastResult Qgs3DMapCanvas::castRay( const QPoint &screenPoint, QgsRayCastContext context )
+{
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, size(), camera() );
+  if ( context.maximumDistance() < 0 )
+    context.setMaximumDistance( camera()->farPlane() );
+  const QgsRayCastResult res = Qgs3DUtils::castRay( mScene, ray, context );
+  return res;
+}
+
+void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double width, bool setSideView )
+{
+  if ( !mScene )
+    return;
+
+  const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
+  const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
+  const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
+    startVec,
+    endVec,
+    width,
+    mMapSettings->origin()
+  );
+
+  if ( setSideView )
+  {
+    // calculate the middle of the front side defined by clipping planes
+    QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+    linePerpVec = -linePerpVec.normalized().perpVector();
+    const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+    const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
+    const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
+
+    const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
+      frontStartPoint,
+      frontEndPoint,
+      mScene->elevationRange( true ),
+      mScene->cameraController()->camera()->fieldOfView(),
+      mMapSettings->origin()
+    );
+
+    mScene->cameraController()->setCameraPose( camPose );
+  }
+
+  mScene->enableClipping( clippingPlanes );
+  emit crossSectionEnabledChanged( true );
+}
+
+void Qgs3DMapCanvas::disableCrossSection()
+{
+  if ( !mScene )
+    return;
+
+  mScene->disableClipping();
+  emit crossSectionEnabledChanged( false );
+}
+
+bool Qgs3DMapCanvas::crossSectionEnabled() const
+{
+  return mScene ? !mScene->clipPlaneEquations().isEmpty() : false;
 }
 
 void Qgs3DMapCanvas::resetView()

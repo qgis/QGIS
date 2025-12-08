@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsSettingsTreeWidget : QWidget, QgsOptionsDialogHighlightWidget
 {
 %Docstring(signature="appended")

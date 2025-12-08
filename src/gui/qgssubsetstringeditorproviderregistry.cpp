@@ -14,12 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssubsetstringeditorprovider.h"
 #include "qgssubsetstringeditorproviderregistry.h"
-#include "qgsproviderguiregistry.h"
-#include "qgsquerybuilder.h"
 
 #include <memory>
+
+#include "qgsproviderguiregistry.h"
+#include "qgsquerybuilder.h"
+#include "qgssubsetstringeditorprovider.h"
 
 QgsSubsetStringEditorProviderRegistry::QgsSubsetStringEditorProviderRegistry() = default;
 

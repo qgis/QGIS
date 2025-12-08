@@ -14,11 +14,13 @@
 ***************************************************************************/
 
 #include "qgsfieldcombobox.h"
-#include "moc_qgsfieldcombobox.cpp"
+
+#include "qgsfieldmodel.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
-#include "qgsfieldmodel.h"
+
+#include "moc_qgsfieldcombobox.cpp"
 
 QgsFieldComboBox::QgsFieldComboBox( QWidget *parent )
   : QComboBox( parent )

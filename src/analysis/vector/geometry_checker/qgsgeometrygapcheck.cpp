@@ -13,19 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrygapcheck.h"
+
+#include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeaturepool.h"
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
-#include "qgsgeometrygapcheck.h"
-#include "moc_qgsgeometrygapcheck.cpp"
-#include "qgsfeaturepool.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsfeedback.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgspolygon.h"
-#include "qgscurve.h"
+
+#include "moc_qgsgeometrygapcheck.cpp"
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
@@ -52,7 +54,7 @@ void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const
   }
 }
 
-void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
@@ -70,6 +72,11 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
 
     while ( iterator.nextFeature( feature ) )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        return QgsGeometryCheck::Result::Canceled;
+      }
+
       const QgsGeometry geom = feature.geometry();
       const QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20 );
       allowedGaps.append( gg );
@@ -85,22 +92,26 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   }
 
   QVector<QgsGeometry> geomList;
+  QMap<QString, QSet<QVariant>> uniqueIds;
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    geomList.append( layerFeature.geometry() );
-
     if ( feedback && feedback->isCanceled() )
     {
-      geomList.clear();
-      break;
+      return QgsGeometryCheck::Result::Canceled;
     }
-  }
 
-  if ( geomList.isEmpty() )
-  {
-    return;
+    if ( context()->uniqueIdFieldIndex != -1 )
+    {
+      QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
+      if ( result != QgsGeometryCheck::Result::Success )
+      {
+        return result;
+      }
+    }
+
+    geomList.append( layerFeature.geometry() );
   }
 
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( nullptr, mContext->tolerance ) );
@@ -111,7 +122,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   if ( !unionGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
-    return;
+    return QgsGeometryCheck::Result::GeometryOverlayError;
   }
 
   // Get envelope of union
@@ -121,7 +132,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   if ( !envelope )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
-    return;
+    return QgsGeometryCheck::Result::GeometryOverlayError;
   }
 
   // Buffer envelope
@@ -137,13 +148,18 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   if ( !diffGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
-    return;
+    return QgsGeometryCheck::Result::GeometryOverlayError;
   }
 
   // For each gap polygon which does not lie on the boundary, get neighboring polygons and add error
   QgsGeometryPartIterator parts = diffGeom->parts();
   while ( parts.hasNext() )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     const QgsAbstractGeometry *gapGeom = parts.next();
     // Skip the gap between features and boundingbox
     const double spacing = context()->tolerance;
@@ -167,6 +183,11 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     gapGeomEngine->prepareGeometry();
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        return QgsGeometryCheck::Result::Canceled;
+      }
+
       const QgsGeometry geom = layerFeature.geometry();
       if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance )
       {
@@ -190,6 +211,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     const QgsRectangle gapBbox = gapGeom->boundingBox();
     errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom->clone() ), neighboringIds, area, gapBbox, gapAreaBBox ) );
   }
+  return QgsGeometryCheck::Result::Success;
 }
 
 void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
@@ -255,8 +277,7 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
       case CreateNewFeature:
       {
         QgsGeometryGapCheckError *gapCheckError = static_cast<QgsGeometryGapCheckError *>( error );
-        QgsProject *project = QgsProject::instance();
-        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( gapCheckError->neighbors().keys().first() ) );
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( context()->project()->mapLayer( gapCheckError->neighbors().keys().first() ) );
         if ( layer )
         {
           const QgsGeometry geometry = error->geometry();
@@ -312,6 +333,10 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   for ( const QString &layerId : layerIds )
   {
     QgsFeaturePool *featurePool = featurePools.value( layerId );
+    if ( !featurePool )
+    {
+      return false;
+    }
     std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
     const QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
     errLayerGeom->transform( ct, Qgis::TransformDirection::Reverse );

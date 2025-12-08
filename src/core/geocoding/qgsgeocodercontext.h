@@ -17,9 +17,8 @@
 #define QGSGEOCODERCONTEXT_H
 
 #include "qgis_core.h"
-
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsgeometry.h"
 
 /**

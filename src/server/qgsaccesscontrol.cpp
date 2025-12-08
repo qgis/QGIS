@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgsaccesscontrol.h"
+
 #include "qgsfeaturerequest.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
-
 
 void QgsAccessControl::resolveFilterFeatures( const QList<QgsMapLayer *> &layers )
 {

@@ -19,12 +19,11 @@
 #define QGSPROCESSINGUTILS_H
 
 #include "qgis_core.h"
-
-#include "qgsrasterlayer.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsprocessing.h"
 #include "qgsproxyfeaturesink.h"
+#include "qgsrasterlayer.h"
 #include "qgsremappingproxyfeaturesink.h"
 
 class QgsMeshLayer;

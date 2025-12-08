@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsguiutils.h"
+#include "qgstest.h"
 
 class TestQgsGui : public QObject
 {

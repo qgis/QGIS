@@ -17,9 +17,9 @@
 #ifndef TRIDECORATOR_H
 #define TRIDECORATOR_H
 
-#include "qgstriangulation.h"
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgstriangulation.h"
 
 #define SIP_NO_FILE
 

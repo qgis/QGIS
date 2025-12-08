@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsquadrilateral.h"
+
 #include "qgsgeometryutils.h"
 
 QgsQuadrilateral::QgsQuadrilateral() = default;

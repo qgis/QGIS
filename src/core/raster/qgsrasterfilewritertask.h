@@ -19,10 +19,10 @@
 #define QGSRASTERFILEWRITERTASK_H
 
 #include "qgis_core.h"
-#include "qgstaskmanager.h"
-#include "qgsrasterfilewriter.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsrasterfilewriter.h"
 #include "qgsrasterinterface.h"
+#include "qgstaskmanager.h"
 
 class QgsRasterPipe;
 

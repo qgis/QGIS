@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutDesignerInterface : QObject
 {
 %Docstring(signature="appended")
@@ -417,6 +418,7 @@ designer.
 #include "qgslayoutdesignerinterface.h"
 %End
       public:
+
         QgsLayoutExporter::ExportResult result;
 
         QMap<QString, QgsLabelingResults *> labelingResults;

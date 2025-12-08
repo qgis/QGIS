@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewembeddedindicator.h"
-#include "moc_qgslayertreeviewembeddedindicator.cpp"
+
+#include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgsapplication.h"
+
+#include "moc_qgslayertreeviewembeddedindicator.cpp"
 
 QgsLayerTreeViewEmbeddedIndicatorProvider::QgsLayerTreeViewEmbeddedIndicatorProvider( QgsLayerTreeView *view )
   : QObject( view )

@@ -12,14 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgis.h"
+#include "qgsstatisticalsummary.h"
 #include "qgstest.h"
+
 #include <QObject>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
-
-#include "qgsstatisticalsummary.h"
-#include "qgis.h"
 
 class TestQgsStatisticSummary : public QObject
 {

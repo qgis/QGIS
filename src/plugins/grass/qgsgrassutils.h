@@ -17,6 +17,7 @@
 #define QGSGRASSUTILS_H
 
 #include <QObject>
+
 class QDialog;
 class QLineEdit;
 class QLabel;

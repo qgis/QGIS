@@ -16,14 +16,15 @@
 #ifndef QGSPROVIDERSUBLAYERSDIALOG_H
 #define QGSPROVIDERSUBLAYERSDIALOG_H
 
-#include <QDialog>
-#include <QCheckBox>
-#include <QPointer>
+#include "ui_qgsprovidersublayersdialogbase.h"
 
 #include "qgis_gui.h"
-#include "ui_qgsprovidersublayersdialogbase.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsprovidersublayermodel.h"
+
+#include <QCheckBox>
+#include <QDialog>
+#include <QPointer>
 
 class QgsProviderSublayerModel;
 class QgsProviderSublayerProxyModel;
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsProviderSublayerDialogModel : public QgsProviderSublayerMode
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      */
@@ -69,6 +71,7 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor.
      */

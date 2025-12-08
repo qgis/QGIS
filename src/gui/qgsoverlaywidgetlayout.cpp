@@ -14,9 +14,12 @@
  ***************************************************************************/
 
 #include "qgsoverlaywidgetlayout.h"
-#include "moc_qgsoverlaywidgetlayout.cpp"
+
 #include "qgis.h"
+
 #include <QWidget>
+
+#include "moc_qgsoverlaywidgetlayout.cpp"
 
 QgsOverlayWidgetLayout::QgsOverlayWidgetLayout( QWidget *parent )
   : QLayout( parent )

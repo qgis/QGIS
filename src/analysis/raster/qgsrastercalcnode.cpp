@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrastercalcnode.h"
+
 #include "qgsrasterblock.h"
 #include "qgsrastermatrix.h"
 

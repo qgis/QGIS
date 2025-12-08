@@ -17,14 +17,14 @@
 #ifndef QGSRECENTCOORDINATEREFERENCESYSTEMSMODEL_H
 #define QGSRECENTCOORDINATEREFERENCESYSTEMSMODEL_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscoordinatereferencesystemmodel.h"
 
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QIcon>
+#include <QSortFilterProxyModel>
 
 class QgsCoordinateReferenceSystem;
 
@@ -94,6 +94,7 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel : public QSortFil
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given \a parent object.
      */

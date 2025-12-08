@@ -15,13 +15,14 @@
 
 #include <math.h>
 
-#include "qgstest.h"
-#include <QObject>
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
-#include "qgspolygon.h"
 #include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsGeometryUtils : public QObject
 {

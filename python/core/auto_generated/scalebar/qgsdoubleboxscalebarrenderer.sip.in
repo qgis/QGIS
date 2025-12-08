@@ -8,6 +8,7 @@
 
 
 
+
 class QgsDoubleBoxScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring(signature="appended")

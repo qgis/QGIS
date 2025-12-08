@@ -13,14 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
-#include "moc_qgsmaptooladvanceddigitizing.cpp"
-#include "qgsmapcanvas.h"
+
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometryoptions.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgssnaptogridcanvasitem.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptooladvanceddigitizing.cpp"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )

@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgscolorschemeregistry.h"
-#include "qgscolorscheme.h"
+
+#include <random>
+
 #include "qgsapplication.h"
+#include "qgscolorscheme.h"
+
 #include <QDir>
 #include <QFileInfoList>
 #include <QMutex>
-#include <random>
 
 QgsColorSchemeRegistry::~QgsColorSchemeRegistry()
 {

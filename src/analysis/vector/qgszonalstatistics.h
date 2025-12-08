@@ -18,16 +18,16 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include <QString>
-#include <QMap>
-
-#include <limits>
 #include <cfloat>
+#include <limits>
 
 #include "qgis_analysis.h"
-#include "qgsfeedback.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeedback.h"
 #include "qgsfields.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsGeometry;
 class QgsVectorLayer;
@@ -46,6 +46,7 @@ class QgsFeatureSource;
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
+
     /**
      * Convenience constructor for QgsZonalStatistics, using an input raster layer.
      *

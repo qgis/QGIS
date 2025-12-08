@@ -18,8 +18,8 @@
 #define QGSRELATIONAGGREGATESEARCHWIDGETWRAPPER_H
 
 #include "qgis_gui.h"
-#include "qgssearchwidgetwrapper.h"
 #include "qgsattributeform.h"
+#include "qgssearchwidgetwrapper.h"
 
 class QgsRelationWidgetWrapper;
 
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */

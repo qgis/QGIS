@@ -19,14 +19,15 @@
 #define QGSAUXILIARYSTORAGE_H
 
 #include "qgis_core.h"
+#include "qgscallout.h"
 #include "qgsdatasourceuri.h"
-#include "qgspallabeling.h"
 #include "qgsdiagramrenderer.h"
-#include "qgsvectorlayerjoininfo.h"
+#include "qgspallabeling.h"
 #include "qgsproperty.h"
 #include "qgssqliteutils.h"
 #include "qgsvectorlayer.h"
-#include "qgscallout.h"
+#include "qgsvectorlayerjoininfo.h"
+
 #include <QString>
 
 class QgsProject;

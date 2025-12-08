@@ -16,13 +16,14 @@
 #ifndef QGSDATABASETABLEMODEL_H
 #define QGSDATABASETABLEMODEL_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include "qgsabstractdatabaseproviderconnection.h"
 #include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+
+#include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 
 /**
  * \ingroup core

@@ -18,9 +18,10 @@
 #ifndef QGSTININTERPOLATOR_H
 #define QGSTININTERPOLATOR_H
 
-#include "qgsinterpolator.h"
-#include <QString>
 #include "qgis_analysis.h"
+#include "qgsinterpolator.h"
+
+#include <QString>
 
 class QgsFeatureSink;
 class QgsTriangulation;
@@ -74,7 +75,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
   private:
     QgsTriangulation *mTriangulation = nullptr;
     TriangleInterpolator *mTriangleInterpolator = nullptr;
-    bool mIsInitialized;
+    bool mIsInitialized = false;
     QgsFeedback *mFeedback = nullptr;
 
     //! Feature sink for triangulation

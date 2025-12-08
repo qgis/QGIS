@@ -17,8 +17,8 @@
 
 #include <memory>
 
-#include "qgsexpressioncontext.h"
 #include "qgis_gui.h"
+#include "qgsexpressioncontext.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;

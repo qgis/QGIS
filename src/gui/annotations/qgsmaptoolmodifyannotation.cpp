@@ -15,23 +15,26 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmodifyannotation.h"
-#include "moc_qgsmaptoolmodifyannotation.cpp"
-#include "qgsrubberband.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmapcanvas.h"
-#include "qgsrendereditemresults.h"
-#include "qgsrendereditemdetails.h"
+
+#include "RTree.h"
+#include "qgsannotationitem.h"
+#include "qgsannotationitemeditoperation.h"
+#include "qgsannotationitemnode.h"
 #include "qgsannotationlayer.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsrenderedannotationitemdetails.h"
-#include "qgsannotationitem.h"
-#include "qgsannotationitemnode.h"
-#include "qgsannotationitemeditoperation.h"
+#include "qgsrendereditemdetails.h"
+#include "qgsrendereditemresults.h"
+#include "qgsrubberband.h"
 #include "qgssnapindicator.h"
-#include "RTree.h"
+
+#include <QScreen>
 #include <QTransform>
 #include <QWindow>
-#include <QScreen>
+
+#include "moc_qgsmaptoolmodifyannotation.cpp"
 
 ///@cond PRIVATE
 class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>

@@ -18,14 +18,14 @@
  ***************************************************************************/
 
 #include "qgsserverapiutils.h"
-#include "qgsrectangle.h"
-#include "qgsvectorlayer.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgsserverprojectutils.h"
 #include "qgsmessagelog.h"
-
-
-#include "nlohmann/json.hpp"
+#include "qgsrectangle.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -62,6 +62,9 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 
 QList<QgsMapLayerServerProperties::WmsDimensionInfo> QgsServerApiUtils::temporalDimensions( const QgsVectorLayer *layer )
 {
+  if ( !layer )
+    return {};
+
   const QgsMapLayerServerProperties *serverProperties = layer->serverProperties();
   QList<QgsMapLayerServerProperties::WmsDimensionInfo> dimensions { serverProperties->wmsDimensions() };
   // Filter only date and time

@@ -16,11 +16,12 @@
 #ifndef QGSDBIMPORTVECTORLAYERDIALOG_H
 #define QGSDBIMPORTVECTORLAYERDIALOG_H
 
-#include "qgis_gui.h"
-#include "qgis.h"
-#include "qgsmimedatautils.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "ui_qgsdbimportvectorlayerdialog.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsmimedatautils.h"
 
 class QgsAbstractDatabaseProviderConnection;
 class QgsVectorLayerExporterTask;
@@ -43,6 +44,7 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDbImportVectorLayerDialog.
      *

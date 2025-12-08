@@ -14,13 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadatalocatorfilter.h"
-#include "moc_qgslayermetadatalocatorfilter.cpp"
-#include "qgslayermetadataproviderregistry.h"
-#include "qgsfeedback.h"
-#include "qgsapplication.h"
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsfeedback.h"
 #include "qgsiconutils.h"
+#include "qgslayermetadataproviderregistry.h"
+
 #include <QIcon>
+
+#include "moc_qgslayermetadatalocatorfilter.cpp"
 
 QgsLayerMetadataLocatorFilter::QgsLayerMetadataLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

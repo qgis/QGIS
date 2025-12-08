@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolselect.h"
-#include "moc_qgslayoutviewtoolselect.cpp"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslayoutview.h"
+
+#include <memory>
+
 #include "qgslayout.h"
+#include "qgslayoutitemgroup.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutmousehandles.h"
-#include "qgslayoutitemgroup.h"
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
 
+#include "moc_qgslayoutviewtoolselect.cpp"
 
 const double QgsLayoutViewToolSelect::sSearchToleranceInMillimeters = 2.0;
 
@@ -31,7 +34,7 @@ QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
 {
   setCursor( Qt::ArrowCursor );
 
-  mRubberBand.reset( new QgsLayoutViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsLayoutViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 224, 178, 76, 63 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
 }

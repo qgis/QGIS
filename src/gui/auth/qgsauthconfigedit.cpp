@@ -15,18 +15,19 @@
  ***************************************************************************/
 
 #include "qgsauthconfigedit.h"
-#include "moc_qgsauthconfigedit.cpp"
 
-#include <QPushButton>
-
-#include "qgsauthmethodmetadata.h"
+#include "qgsapplication.h"
 #include "qgsauthconfig.h"
 #include "qgsauthconfigidedit.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmethodedit.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
+#include "qgsauthmethodmetadata.h"
 #include "qgsgui.h"
+#include "qgslogger.h"
+
+#include <QPushButton>
+
+#include "moc_qgsauthconfigedit.cpp"
 
 QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, const QString &dataprovider )
   : QDialog( parent )
@@ -73,13 +74,6 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
     connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { validateAuth(); } );
 
     connect( authCfgEdit, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
-
-    // needed (if only combobox is ever changed)?
-    // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
-    //          cmbAuthMethods, SLOT( setCurrentIndex( int ) ) );
-
-    // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
-    //          this, SLOT( validateAuth() ) );
 
     if ( cmbAuthMethods->count() > 0 )
     {

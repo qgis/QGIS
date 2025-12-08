@@ -13,21 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsgeometry.h"
-#include "qgsproject.h"
-#include "qgssnappingutils.h"
-#include "qgssnappingconfig.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsgeometry.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgsproject.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
 #include "qgssymbol.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
+#include <QString>
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {

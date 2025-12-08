@@ -13,30 +13,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsgrassmodule.h"
-#include "moc_qgsgrassmodule.cpp"
-#include "qgsgrassmapcalc.h"
-#include "qgsgrassplugin.h"
-#include "qgsgrassselect.h"
-#include "qgsgrasstools.h"
-#include "qgsgrassutils.h"
-#include "qgsgrass.h"
 #include "qgsconfig.h"
+#include "qgsgrassmodule.h"
+
+#include <typeinfo>
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-
+#include "qgsgrass.h"
+#include "qgsgrassmapcalc.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassselect.h"
+#include "qgsgrasstools.h"
+#include "qgsgrassutils.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 
-#include <typeinfo>
 #include <QDomDocument>
 #include <QMessageBox>
-#include <QSvgRenderer>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QSvgRenderer>
+
+#include "moc_qgsgrassmodule.cpp"
 
 extern "C"
 {
@@ -89,7 +90,6 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface, bool direct, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassModuleBase()
-  , mSuccess( false )
   , mDirect( direct )
 {
   QgsDebugMsgLevel( "called", 4 );

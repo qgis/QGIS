@@ -17,10 +17,10 @@
 #ifndef QGSFIELDDOMAINSITEM_H
 #define QGSFIELDDOMAINSITEM_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgsdataitem.h"
+#include "qgis_sip.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsdataitem.h"
 
 /**
  * \ingroup core
@@ -111,10 +111,17 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
      */
     const QgsFieldDomain *fieldDomain();
 
+    /**
+     * Returns the connection URI.
+     *
+     * \since QGIS 4.0
+     */
+    QString connectionUri() const;
+
   private:
 
     std::unique_ptr< QgsFieldDomain > mDomain;
-
+    QString mConnectionUri;
 };
 
 #endif // QGSFIELDDOMAINSITEM_H

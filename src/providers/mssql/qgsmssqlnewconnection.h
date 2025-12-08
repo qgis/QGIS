@@ -17,10 +17,11 @@
 #ifndef QGSMSSQLNEWCONNECTION_H
 #define QGSMSSQLNEWCONNECTION_H
 #include "ui_qgsmssqlnewconnectionbase.h"
+
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include <QAbstractListModel>
 
+#include <QAbstractListModel>
 #include <QSqlDatabase>
 
 class QgsMssqlDatabase;

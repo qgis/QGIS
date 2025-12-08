@@ -3177,15 +3177,6 @@ class PyQgsOGRProvider(QgisTestCase):
                     "geomColName": "geom",
                 },
                 {
-                    "name": "data_licenses",
-                    "description": "",
-                    "uri": f"{TEST_DATA_DIR}/provider/spatialite.db|layername=data_licenses",
-                    "providerKey": "ogr",
-                    "wkbType": 100,
-                    "driverName": "SQLite",
-                    "geomColName": "",
-                },
-                {
                     "name": "some view",
                     "description": "",
                     "uri": f"{TEST_DATA_DIR}/provider/spatialite.db|layername=some view",

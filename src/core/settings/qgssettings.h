@@ -17,13 +17,13 @@
 #ifndef QGSSETTINGS_H
 #define QGSSETTINGS_H
 
-#include <QSettings>
-#include <QMetaEnum>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslogger.h"
 #include "qgssettingstreenode.h"
+
+#include <QMetaEnum>
+#include <QSettings>
 
 class QgsSettingsProxy;
 

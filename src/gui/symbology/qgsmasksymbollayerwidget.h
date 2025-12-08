@@ -16,9 +16,10 @@
 #define QGSMASKSYMBOLLAYERWIDGET_H
 
 #include "ui_qgsmasksymbollayerwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssymbollayerwidget.h"
-#include "qgis_gui.h"
 
 class QgsMaskMarkerSymbolLayer;
 class QgsSymbolLayerSelectionWidget;
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsMaskMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param layer the layer where this symbol layer is applied

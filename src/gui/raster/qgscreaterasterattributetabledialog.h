@@ -16,9 +16,11 @@
 #ifndef QGSCREATERASTERATTRIBUTETABLEDIALOG_H
 #define QGSCREATERASTERATTRIBUTETABLEDIALOG_H
 
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgscreaterasterattributetabledialogbase.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
 #include <QDialog>
 
 #define SIP_NO_FILE
@@ -40,6 +42,7 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new QgsCreateRasterAttributeTableDialog.
      * \param rasterLayer the raster layer, must be suitable for creating a new raster attribute table

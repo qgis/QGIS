@@ -15,29 +15,33 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslogger.h"
 #include "qgsvectorlayersaveasdialog.h"
-#include "moc_qgsvectorlayersaveasdialog.cpp"
-#include "qgsvectordataprovider.h"
+
+#include <gdal.h>
+#include <limits>
+
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatums.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
-#include "qgssettings.h"
-#include "qgsmapcanvas.h"
 #include "qgsgui.h"
-#include "qgsmaplayerutils.h"
 #include "qgshelp.h"
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QTextCodec>
-#include <QSpinBox>
-#include <QRegularExpression>
-#include <limits>
-#include "gdal.h"
-#include "qgsdatums.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayerutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgssettings.h"
+#include "qgsvectordataprovider.h"
+
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QSpinBox>
+#include <QTextCodec>
+
+#include "moc_qgsvectorlayersaveasdialog.cpp"
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -974,7 +978,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         case QgsVectorFileWriter::Hidden:
         {
           QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          if ( !opt->mValue.isEmpty() )
+          if ( opt && !opt->mValue.isEmpty() )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
@@ -1005,7 +1009,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
-          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
+          QgsVectorFileWriter::IntOption *opt = qgis::down_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mLayerOptionsGroupBox->findChild<QSpinBox *>( it.key() );
           if ( opt && sb && sb->value() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
@@ -1014,7 +1018,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Set:
         {
-          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
+          QgsVectorFileWriter::SetOption *opt = qgis::down_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mLayerOptionsGroupBox->findChild<QComboBox *>( it.key() );
           if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
@@ -1023,7 +1027,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::String:
         {
-          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
+          QgsVectorFileWriter::StringOption *opt = qgis::down_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mLayerOptionsGroupBox->findChild<QLineEdit *>( it.key() );
           if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
@@ -1032,7 +1036,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
+          QgsVectorFileWriter::HiddenOption *opt = qgis::down_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
           if ( !opt->mValue.isEmpty() )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;

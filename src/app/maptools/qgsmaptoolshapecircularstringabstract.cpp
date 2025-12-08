@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircularstringabstract.h"
-#include "moc_qgsmaptoolshapecircularstringabstract.cpp"
+
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
@@ -25,9 +25,10 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include "moc_qgsmaptoolshapecircularstringabstract.cpp"
+
 QgsMapToolShapeCircularStringAbstract::QgsMapToolShapeCircularStringAbstract( const QString &id, QgsMapToolCapture *parentTool )
   : QgsMapToolShapeAbstract( id, parentTool )
-  , mShowCenterPointRubberBand( false )
 {}
 
 QgsMapToolShapeCircularStringAbstract::~QgsMapToolShapeCircularStringAbstract()

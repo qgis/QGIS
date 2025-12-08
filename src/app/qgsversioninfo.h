@@ -16,8 +16,8 @@
 #ifndef QGSVERSIONINFO_H
 #define QGSVERSIONINFO_H
 
-#include <QObject>
 #include <QNetworkReply>
+#include <QObject>
 
 class QgsVersionInfo : public QObject
 {

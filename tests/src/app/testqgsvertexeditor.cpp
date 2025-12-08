@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
@@ -20,7 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "vertextool/qgslockedfeature.h"
 #include "vertextool/qgsvertexeditor.h"
-#include <memory>
+
 #include <qnamespace.h>
 
 /**

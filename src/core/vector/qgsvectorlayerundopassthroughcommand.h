@@ -16,9 +16,8 @@
 #ifndef QGSVECTORLAYERUNDOPASSTHROUGHCOMMAND_H
 #define QGSVECTORLAYERUNDOPASSTHROUGHCOMMAND_H
 
-#include "qgsvectorlayerundocommand.h"
-
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerundocommand.h"
 
 class QgsTransaction;
 
@@ -202,7 +201,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttribute: public Qg
     const int mFieldIndex;
     const QVariant mNewValue;
     QVariant mOldValue;
-    bool mFirstChange;
+    bool mFirstChange = true;
 };
 
 /**

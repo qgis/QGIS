@@ -612,7 +612,7 @@ void QgsGrass::setMapset( const QgsGrassObject &grassObject )
   setMapset( grassObject.gisdbase(), grassObject.location(), grassObject.mapset() );
 }
 
-bool QgsGrass::isMapsetInSearchPath( const QString &mapset )
+bool QgsGrass::isMapsetInSearchPath( const QString &mapset ) const
 {
   return mMapsetSearchPath.contains( mapset );
 }

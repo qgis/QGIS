@@ -14,25 +14,27 @@
  ***************************************************************************/
 
 #include "qgsmaplayerlegend.h"
-#include "moc_qgsmaplayerlegend.cpp"
+
+#include "qgscolorramplegendnode.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsiconutils.h"
 #include "qgsimagecache.h"
-#include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsmeshlayer.h"
 #include "qgspluginlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgspointcloudlayer.h"
-#include "qgsdiagramrenderer.h"
-#include "qgssymbollayerutils.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgscolorramplegendnode.h"
-#include "qgsvectorlayerlabeling.h"
+#include "qgsrenderer.h"
 #include "qgsrulebasedlabeling.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include "moc_qgsmaplayerlegend.cpp"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -42,17 +44,17 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mFlags = Qgis::MapLayerLegendFlags();
-  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "0" ) ).toInt() );
+  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "0" ) ).toInt() == 1 );
 }
 
 QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
-
   if ( mFlags.testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
-    elem.setAttribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "1" ) );
-
-  return elem.attributes().isEmpty() ? QDomElement() : elem;
+  {
+    elem.setAttribute( QStringLiteral( "excludeByDefault" ),  QStringLiteral( "1" ) );
+  }
+  return elem;
 }
 
 QgsMapLayerLegend *QgsMapLayerLegend::defaultVectorLegend( QgsVectorLayer *vl )
@@ -263,7 +265,7 @@ QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSetti
 
   QgsColorRampLegendNodeSettings settings;
   settings.readXml( elem, rwContext );
-  return new QgsColorRampLegendNodeSettings( settings );
+  return new QgsColorRampLegendNodeSettings( std::move( settings ) );
 }
 
 void QgsMapLayerLegendUtils::setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode )

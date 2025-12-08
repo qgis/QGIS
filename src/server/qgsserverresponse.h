@@ -21,11 +21,11 @@
 
 #include "qgis_server.h"
 #include "qgis_sip.h"
-#include "qgsserverexception.h"
 #include "qgsfeedback.h"
+#include "qgsserverexception.h"
 
-#include <QString>
 #include <QIODevice>
+#include <QString>
 
 class QgsServerException;
 

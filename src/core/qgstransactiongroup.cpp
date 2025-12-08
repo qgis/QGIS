@@ -14,15 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstransactiongroup.h"
-#include "moc_qgstransactiongroup.cpp"
 
-#include "qgstransaction.h"
-#include "qgsvectorlayer.h"
 #include "qgsdatasourceuri.h"
-#include "qgsvectordataprovider.h"
 #include "qgslogger.h"
+#include "qgstransaction.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QTimer>
+
+#include "moc_qgstransactiongroup.cpp"
 
 QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
   : QObject( parent )

@@ -569,7 +569,6 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
      */
     QgsExpressionNodeColumnRef( const QString &name )
       : mName( name )
-      , mIndex( -1 )
     {}
 
 #ifdef SIP_RUN
@@ -600,7 +599,7 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 
   private:
     QString mName;
-    int mIndex;
+    int mIndex = -1;
 };
 
 /**

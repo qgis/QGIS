@@ -16,12 +16,12 @@
 #ifndef QGSIMAGETEXTURE_H
 #define QGSIMAGETEXTURE_H
 
+#include "qgis_3d.h"
+
 #include <QImage>
 #include <QPainter>
 #include <Qt3DCore/QNode>
 #include <Qt3DRender/QPaintedTextureImage>
-
-#include "qgis_3d.h"
 
 #define SIP_NO_FILE
 

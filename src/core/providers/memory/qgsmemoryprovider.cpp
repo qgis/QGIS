@@ -14,22 +14,23 @@
  ***************************************************************************/
 
 #include "qgsmemoryprovider.h"
-#include "moc_qgsmemoryprovider.cpp"
-#include "qgsmemoryfeatureiterator.h"
 
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmemoryfeatureiterator.h"
 #include "qgsspatialindex.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsvariantutils.h"
-#include "qgsapplication.h"
 
+#include <QIcon>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QRegularExpression>
-#include <QIcon>
+
+#include "moc_qgsmemoryprovider.cpp"
 
 ///@cond PRIVATE
 

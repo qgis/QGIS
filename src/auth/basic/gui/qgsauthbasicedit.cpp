@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthbasicedit.h"
-#include "moc_qgsauthbasicedit.cpp"
 #include "ui_qgsauthbasicedit.h"
+#include "qgsauthbasicedit.h"
 
+#include "moc_qgsauthbasicedit.cpp"
 
 QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

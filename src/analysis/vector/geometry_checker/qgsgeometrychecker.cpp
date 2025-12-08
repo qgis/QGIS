@@ -14,21 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtConcurrentMap>
-#include <QFutureWatcher>
-#include <QMutex>
-#include <QTimer>
-#include <QTextStream>
-
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
-#include "moc_qgsgeometrychecker.cpp"
-#include "qgsgeometrycheck.h"
+
 #include "qgsfeaturepool.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheckerror.h"
 
+#include <QFutureWatcher>
+#include <QMutex>
+#include <QTextStream>
+#include <QTimer>
+#include <QtConcurrentMap>
+
+#include "moc_qgsgeometrychecker.cpp"
 
 QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context, const QMap<QString, QgsFeaturePool *> &featurePools )
   : mChecks( checks )

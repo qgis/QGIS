@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaterialregistry.h"
+
 #include "qgsabstractmaterialsettings.h"
 
 QgsMaterialRegistry::QgsMaterialRegistry()

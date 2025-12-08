@@ -17,11 +17,13 @@
 
 
 #include "qgshillshaderendererwidget.h"
-#include "moc_qgshillshaderendererwidget.cpp"
-#include "qgsrasterlayer.h"
+
 #include "qgsbilinearrasterresampler.h"
 #include "qgshillshaderenderer.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+
+#include "moc_qgshillshaderendererwidget.cpp"
 
 QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )

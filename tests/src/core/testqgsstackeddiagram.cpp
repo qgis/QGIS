@@ -12,19 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include "diagram/qgspiediagram.h"
-#include "diagram/qgstextdiagram.h"
-#include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgspiediagram.h"
+#include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
+#include "diagram/qgstextdiagram.h"
+#include "qgsapplication.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsproject.h"
 #include "qgsmarkersymbol.h"
+#include "qgsproject.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
 

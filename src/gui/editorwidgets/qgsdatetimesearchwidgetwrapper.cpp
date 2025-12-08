@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgsdatetimesearchwidgetwrapper.h"
-#include "moc_qgsdatetimesearchwidgetwrapper.cpp"
 
-#include "qgsfields.h"
-#include "qgsdatetimeeditfactory.h"
-#include "qgsvectorlayer.h"
 #include "qgsdatetimeedit.h"
-#include "qcalendarwidget.h"
 #include "qgsdatetimeeditconfig.h"
+#include "qgsdatetimeeditfactory.h"
 #include "qgsdatetimefieldformatter.h"
+#include "qgsfields.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
+#include <qcalendarwidget.h>
+
+#include "moc_qgsdatetimesearchwidgetwrapper.cpp"
 
 QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

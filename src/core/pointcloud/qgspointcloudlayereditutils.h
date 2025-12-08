@@ -16,10 +16,10 @@
 #ifndef QGSPOINTCLOUDLAYEREDITUTILS_H
 #define QGSPOINTCLOUDLAYEREDITUTILS_H
 
+#include <optional>
+
 #include "qgis_core.h"
 #include "qgspointcloudindex.h"
-
-#include <optional>
 
 #include <QByteArray>
 

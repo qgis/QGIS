@@ -29,6 +29,7 @@ it will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 #include "qgsdatasourceselectdialog.h"
 %End
   public:
+
     QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectWidget, optionally filtering by layer
@@ -152,6 +153,7 @@ it will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 #include "qgsdatasourceselectdialog.h"
 %End
   public:
+
     QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectDialog, optionally filtering by layer

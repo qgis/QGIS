@@ -18,11 +18,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
-#include "qgswmsrequest.h"
 #include "qgswmsgetprint.h"
+
 #include "qgswmsrenderer.h"
+#include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
+#include "qgswmsutils.h"
 
 namespace QgsWms
 {

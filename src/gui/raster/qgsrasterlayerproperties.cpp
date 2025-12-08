@@ -15,61 +15,64 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterlayerproperties.h"
+
 #include <limits>
 #include <typeinfo>
 
-#include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgscreaterasterattributetabledialog.h"
-#include "qgslogger.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsdoublevalidator.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfinder.h"
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgshillshaderendererwidget.h"
+#include "qgshuesaturationfilter.h"
 #include "qgsloadrasterattributetabledialog.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaptip.h"
 #include "qgsmaptoolemitpoint.h"
-#include "qgsmetadatawidget.h"
 #include "qgsmetadataurlitemdelegate.h"
+#include "qgsmetadatawidget.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
-#include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgsprovidersourcewidget.h"
 #include "qgsproject.h"
+#include "qgsprojectutils.h"
+#include "qgsprovidersourcewidget.h"
+#include "qgsprovidersourcewidgetproviderregistry.h"
+#include "qgsrasterattributetablewidget.h"
 #include "qgsrastercontourrendererwidget.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterhistogramwidget.h"
-#include "qgsrastertransparencywidget.h"
+#include "qgsrasterlabelingwidget.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterlayerproperties.h"
-#include "moc_qgsrasterlayerproperties.cpp"
+#include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererregistry.h"
+#include "qgsrastersinglecolorrendererwidget.h"
 #include "qgsrastertransparency.h"
+#include "qgsrastertransparencywidget.h"
+#include "qgssettings.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
-#include "qgsrastersinglecolorrendererwidget.h"
-#include "qgshuesaturationfilter.h"
-#include "qgshillshaderendererwidget.h"
-#include "qgssettings.h"
-#include "qgsdatumtransformdialog.h"
-#include "qgsmaplayerlegend.h"
-#include "qgsfileutils.h"
-#include "qgswebview.h"
 #include "qgsvectorlayer.h"
-#include "qgsdoublevalidator.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsprojectutils.h"
-#include "qgsrasterattributetablewidget.h"
-#include "qgsrasterlayertemporalpropertieswidget.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmaptip.h"
 #include "qgswebframe.h"
-#include "qgsexpressionfinder.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsrasterlabelingwidget.h"
+#include "qgswebview.h"
+
+#include "moc_qgsrasterlayerproperties.cpp"
+
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
@@ -100,14 +103,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "RasterLayerProperties" ), parent, fl )
   // Constant that signals property not used.
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
-  , mDefaultStandardDeviation( 0 )
-  , mDefaultRedBand( 0 )
-  , mDefaultGreenBand( 0 )
-  , mDefaultBlueBand( 0 )
   , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
-  , mGradientHeight( 0.0 )
-  , mGradientWidth( 0.0 )
-  , mMetadataFilled( false )
 {
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
@@ -206,7 +202,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     return;
   }
 
-  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
   mEnableMapTips->setChecked( mRasterLayer->mapTipsEnabled() );
 
   updateRasterAttributeTableOptionsPage();
@@ -1168,7 +1163,7 @@ void QgsRasterLayerProperties::initializeDataDefinedButton( QgsPropertyOverrideB
 
 void QgsRasterLayerProperties::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );
@@ -1386,6 +1381,7 @@ void QgsRasterLayerProperties::initMapTipPreview()
   // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
   // Create the WebView
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
+  mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
 #if WITH_QTWEBKIT
   mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself

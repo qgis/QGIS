@@ -14,18 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslayoutatlaswidget.h"
+
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgsmessagebar.h"
+#include "qgsprintlayout.h"
+
 #include <QComboBox>
 #include <QImageWriter>
 
-#include "qgslayoutatlaswidget.h"
 #include "moc_qgslayoutatlaswidget.cpp"
-#include "qgsprintlayout.h"
-#include "qgslayoutatlas.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgslayoutundostack.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmessagebar.h"
-#include "qgslayoutreportcontext.h"
 
 QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout )
   : QWidget( parent )

@@ -18,10 +18,11 @@
 #define QGSNEWMEMORYLAYERDIALOG_H
 
 #include "ui_qgsnewmemorylayerdialogbase.h"
-#include "qgsguiutils.h"
-#include "qgswkbtypes.h"
-#include "qgshelp.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgswkbtypes.h"
 
 class QgsFields;
 class QgsVectorLayer;
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog : public QDialog, private Ui::QgsNewMem
     Q_OBJECT
 
   public:
+
     /**
      * Runs the dialog and creates a new memory layer
      * \param parent parent widget

@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayer3drendererwidget.h"
-#include "moc_qgspointcloudlayer3drendererwidget.cpp"
 
-#include "qgspointcloud3dsymbolwidget.h"
-#include "qgspointcloudlayer3drenderer.h"
-
-#include "qgspointcloudlayer.h"
 #include "qgspointcloud3dsymbol.h"
+#include "qgspointcloud3dsymbolwidget.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
+
+#include "moc_qgspointcloudlayer3drendererwidget.cpp"
 
 QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

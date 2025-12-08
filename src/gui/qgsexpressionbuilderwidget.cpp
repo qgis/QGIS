@@ -14,43 +14,44 @@
  ***************************************************************************/
 
 
-#include <QFile>
-#include <QTextStream>
-#include <QDir>
-#include <QComboBox>
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
-#include <QMessageBox>
-#include <QVersionNumber>
-#include <QDateTime>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QFileDialog>
-#include <QMenu>
-
 #include "qgsexpressionbuilderwidget.h"
-#include "moc_qgsexpressionbuilderwidget.cpp"
-#include "qgslogger.h"
+
+#include "qgsapplication.h"
+#include "qgscodeeditorwidget.h"
 #include "qgsexpression.h"
+#include "qgsexpressionaddfunctionfiledialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsapplication.h"
-#include "qgspythonrunner.h"
-#include "qgsgeometry.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsrelation.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
 #include "qgsexpressionstoredialog.h"
 #include "qgsexpressiontreeview.h"
-#include "qgscodeeditorwidget.h"
-#include "qgsexpressionaddfunctionfiledialog.h"
+#include "qgsfeature.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgspythonrunner.h"
+#include "qgsrelation.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
+#include <QComboBox>
+#include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QFileDialog>
+#include <QGraphicsOpacityEffect>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPropertyAnimation>
+#include <QTextStream>
+#include <QVersionNumber>
+
+#include "moc_qgsexpressionbuilderwidget.cpp"
 
 bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
 {
@@ -548,11 +549,7 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
 {
   if ( lastitem )
   {
-    if ( lastitem->data( Qt::UserRole ) == QLatin1String( "project" ) )
-    {
-      saveProjectFunctionsEntry();
-    }
-    else
+    if ( lastitem->data( Qt::UserRole ) != QLatin1String( "project" ) )
     {
       QString filename = lastitem->text();
       saveFunctionFile( filename );
@@ -561,12 +558,34 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
 
   if ( item->data( Qt::UserRole ) == QLatin1String( "project" ) )
   {
+    // Avoid making the project dirty when just loading functions
+    txtPython->blockSignals( true );
     loadCodeFromProjectFunctions();
+    txtPython->blockSignals( false );
+
+    btnRun->setText( tr( "Load or update functions" ) );
+    btnRun->setToolTip( tr( "Loads or updates functions from current script file in QGIS.\n"
+                            "\n"
+                            "Note the functions will only be stored when saving the project." ) );
   }
   else
   {
     QString path = mFunctionsPath + QDir::separator() + item->text();
     loadCodeFromFile( path );
+    if ( mAutoSave )
+    {
+      btnRun->setText( tr( "Load or update functions" ) );
+      btnRun->setToolTip( tr( "Loads or updates functions from current script file in QGIS.\n"
+                              "\n"
+                              "Saved scripts are auto loaded on QGIS startup." ) );
+    }
+    else
+    {
+      btnRun->setText( tr( "Save and Load Functions" ) );
+      btnRun->setToolTip( tr( "Saves current script file and loads or updates its functions in QGIS.\n"
+                              "\n"
+                              "Saved scripts are auto loaded on QGIS startup." ) );
+    }
   }
 }
 
@@ -1049,8 +1068,19 @@ void QgsExpressionBuilderWidget::loadAllUsedValues()
 
 void QgsExpressionBuilderWidget::txtPython_textChanged()
 {
-  lblAutoSave->setText( tr( "Saving…" ) );
-  if ( mAutoSave )
+  if ( tabWidget->currentIndex() != 1 )
+    return;
+
+  QListWidgetItem *item = cmbFileNames->currentItem();
+  if ( !item )
+    return;
+
+  if ( item->data( Qt::UserRole ) == QLatin1String( "project" ) )
+  {
+    saveProjectFunctionsEntry(); // Makes project dirty
+    displayTemporaryLabel( tr( "Project changed" ) );
+  }
+  else if ( mAutoSave )
   {
     autosave();
   }
@@ -1066,17 +1096,17 @@ void QgsExpressionBuilderWidget::autosave()
   if ( !item )
     return;
 
-  if ( item->data( Qt::UserRole ) == QLatin1String( "project" ) )
-  {
-    saveProjectFunctionsEntry();
-  }
-  else
+  if ( item->data( Qt::UserRole ) != QLatin1String( "project" ) )
   {
     QString file = item->text();
     saveFunctionFile( file );
+    displayTemporaryLabel( tr( "Function file saved" ) );
   }
+}
 
-  lblAutoSave->setText( QStringLiteral( "Saved" ) );
+void QgsExpressionBuilderWidget::displayTemporaryLabel( const QString &text )
+{
+  lblAutoSave->setText( text );
   QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect();
   lblAutoSave->setGraphicsEffect( effect );
   QPropertyAnimation *anim = new QPropertyAnimation( effect, "opacity" );

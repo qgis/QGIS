@@ -18,8 +18,8 @@
 #ifndef QGSMAPLAYERFACTORY_H
 #define QGSMAPLAYERFACTORY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgscoordinatetransformcontext.h"
 
 #include <QString>

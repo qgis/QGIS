@@ -9,7 +9,6 @@
 
 
 
-
 class QgsPolyhedralSurface: QgsSurface
 {
 %Docstring(signature="appended")

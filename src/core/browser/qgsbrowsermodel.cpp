@@ -12,29 +12,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QDir>
-#include <QApplication>
-#include <QStyle>
-#include <QtConcurrentMap>
-#include <QUrl>
-#include <QStorageInfo>
-#include <QFuture>
-#include <QFutureWatcher>
+#include "qgsbrowsermodel.h"
 
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
-#include "qgsmimedatautils.h"
+#include "qgsdirectoryitem.h"
+#include "qgsfavoritesitem.h"
+#include "qgslayeritem.h"
+#include "qgslayermetadata.h"
 #include "qgslogger.h"
-#include "qgsbrowsermodel.h"
-#include "moc_qgsbrowsermodel.cpp"
+#include "qgsmimedatautils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgsdirectoryitem.h"
-#include "qgslayeritem.h"
-#include "qgsfavoritesitem.h"
-#include "qgslayermetadata.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QStorageInfo>
+#include <QStyle>
+#include <QUrl>
+#include <QtConcurrentMap>
+
+#include "moc_qgsbrowsermodel.cpp"
 
 #define PROJECT_HOME_PREFIX "project:"
 #define HOME_PREFIX "home:"

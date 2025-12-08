@@ -18,9 +18,9 @@
 #ifndef QGSOGRTRANSACTION_H
 #define QGSOGRTRANSACTION_H
 
-#include "qgstransaction.h"
-#include "qgsogrprovider.h"
 #include "qgis_sip.h"
+#include "qgsogrprovider.h"
+#include "qgstransaction.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

@@ -15,7 +15,6 @@
 
 
 #include "qgssettingseditorwidgetwrapper.h"
-#include "moc_qgssettingseditorwidgetwrapper.cpp"
 
 #include "qgslogger.h"
 #include "qgssettingsentry.h"
@@ -23,6 +22,7 @@
 #include <QDialog>
 #include <QWidget>
 
+#include "moc_qgssettingseditorwidgetwrapper.cpp"
 
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetWrapper::fromWidget( const QWidget *widget )
 {

@@ -19,14 +19,14 @@
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 
-#include <QVariant>
+#include <QColor>
+#include <QDateTime>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QHash>
 #include <QString>
 #include <QStringList>
-#include <QDomElement>
-#include <QDomDocument>
-#include <QColor>
-#include <QDateTime>
+#include <QVariant>
 
 class QgsPropertyTransformer;
 class QgsPropertyPrivate;

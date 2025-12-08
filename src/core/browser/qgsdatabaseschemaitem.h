@@ -17,8 +17,8 @@
 #ifndef QGSDATABASESCHEMAITEM_H
 #define QGSDATABASESCHEMAITEM_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 
 /**

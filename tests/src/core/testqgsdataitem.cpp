@@ -15,9 +15,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QSignalSpy>
 #include <QString>
 #include <QStringList>
-#include <QSignalSpy>
 
 //qgis includes...
 #include "qgsdataitem.h"

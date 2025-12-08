@@ -18,10 +18,10 @@
 #ifndef QGSHISTOGRAM_H
 #define QGSHISTOGRAM_H
 
-#include <QList>
-
 #include "qgis_core.h"
 #include "qgsfeedback.h"
+
+#include <QList>
 
 class QgsVectorLayer;
 

@@ -15,13 +15,12 @@
 #ifndef QGSVECTORLAYERJOININFO_H
 #define QGSVECTORLAYERJOININFO_H
 
+#include "qgsfeature.h"
+#include "qgsvectorlayerref.h"
+
 #include <QHash>
 #include <QString>
 #include <QStringList>
-
-#include "qgsfeature.h"
-
-#include "qgsvectorlayerref.h"
 
 /**
  * \ingroup core

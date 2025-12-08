@@ -15,21 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdiagramwidget.h"
+
 #include "diagram/qgshistogramdiagram.h"
 #include "diagram/qgspiediagram.h"
-#include "diagram/qgstextdiagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
-
-#include "qgsdiagramwidget.h"
-#include "moc_qgsdiagramwidget.cpp"
-#include "qgsvectorlayer.h"
+#include "diagram/qgstextdiagram.h"
 #include "qgsapplication.h"
+#include "qgsdiagramproperties.h"
 #include "qgsguiutils.h"
 #include "qgslabelengineconfigdialog.h"
-#include "qgsdiagramproperties.h"
 #include "qgsstackeddiagramproperties.h"
+#include "qgsvectorlayer.h"
 
+#include "moc_qgsdiagramwidget.cpp"
 
 QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -132,9 +132,6 @@ void QgsDiagramWidget::syncToOwnLayer()
         // Play safe and set to histogram by default if the diagram name is unknown
         mDiagramTypeComboBox->setCurrentIndex( ModeHistogram );
       }
-
-      // Delegate to single diagram's syncToLayer
-      static_cast<QgsDiagramProperties *>( mWidget )->syncToLayer();
     }
   }
   else // No Diagram

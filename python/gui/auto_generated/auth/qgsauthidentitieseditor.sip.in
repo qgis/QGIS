@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAuthIdentitiesEditor : QWidget
 {
 %Docstring(signature="appended")
@@ -20,6 +21,7 @@ Widget for viewing and editing authentication identities database.
 #include "qgsauthidentitieseditor.h"
 %End
   public:
+
     explicit QgsAuthIdentitiesEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Widget for editing authentication configurations directly in database

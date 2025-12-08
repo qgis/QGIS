@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionbasednumericformat.h"
+
 #include "qgis.h"
 
 QgsExpressionBasedNumericFormat::QgsExpressionBasedNumericFormat()

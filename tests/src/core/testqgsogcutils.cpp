@@ -14,8 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include <memory>
+
+#include "qgstest.h"
 
 //qgis includes...
 #include "qgsgeometry.h"
@@ -105,6 +106,13 @@ void TestQgsOgcUtils::testGeometryFromGML()
   QVERIFY( !geomBox.isNull() );
   QVERIFY( geomBox.wkbType() == Qgis::WkbType::Polygon );
 
+  // Test point GML2 with EPSG:4326
+  // X/Y coordinates are not inverted
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Point srsName=\"EPSG:4326\"><gml:coordinates>4,45</gml:coordinates></gml:Point>" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POINT (4 45)" ) ) ) );
+
 
   // Test GML3
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<Point><pos>123 456</pos></Point>" ) );
@@ -133,6 +141,21 @@ void TestQgsOgcUtils::testGeometryFromGML()
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::LineStringZ );
   QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" ) ) ) );
+
+  // Test point GML3 with urn:ogc:def:crs:EPSG::4326
+  // X/Y coordinates are inverted
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos>45 4</gml:pos></gml:Point>" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POINT (4 45)" ) ) ) );
+
+
+  // Test point GML3 with urn:ogc:def:crs:EPSG::3857
+  // X/Y coordinates are not inverted
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::3857\"><gml:pos>32 2</gml:pos></gml:Point>" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POINT (32 2)" ) ) ) );
 }
 
 void TestQgsOgcUtils::testGeometryFromGMLWithZ_data()

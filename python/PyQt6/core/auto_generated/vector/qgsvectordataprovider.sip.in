@@ -9,6 +9,7 @@
 
 
 
+
 typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 
@@ -157,6 +158,7 @@ Returns the fields associated with this data provider.
     virtual QString sourceName() const;
 
     virtual QString dataComment() const;
+
 %Docstring
 Returns a short comment for the data that this provider is providing
 access to (e.g. the comment for postgres table).
@@ -626,14 +628,6 @@ Discover the available relations with the given layers.
 :param layers: the other layers.
 
 :return: the list of N-1 relations from this provider.
-%End
-
-    virtual QVariantMap metadata() const;
-%Docstring
-Gets metadata, dependent on the provider type, that will be display in
-the metadata tab of the layer properties.
-
-:return: The provider metadata
 %End
 
     virtual QString translateMetadataKey( const QString &mdKey ) const;

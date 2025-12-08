@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationstandarddeviation.h"
-#include "qgsgraduatedsymbolrenderer.h"
+
 #include "qgsapplication.h"
+#include "qgsgraduatedsymbolrenderer.h"
+
+#include <QObject>
 
 const QString QgsClassificationStandardDeviation::METHOD_ID = QStringLiteral( "StdDev" );
 

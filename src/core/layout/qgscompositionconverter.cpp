@@ -14,51 +14,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-#include <QUuid>
-
 #include "qgscompositionconverter.h"
-#include "qgsreadwritecontext.h"
-#include "qgslayertree.h"
-#include "qgslayoutmodel.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutobject.h"
-#include "qgsfontutils.h"
-#include "qgspainting.h"
-#include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbollayer.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgslinesymbol.h"
+
 #include "qgsfillsymbol.h"
-#include "qgsmaplayerstyle.h"
-#include "qgslayoutrendercontext.h"
-#include "qgsunittypes.h"
-
-#include "qgsprintlayout.h"
+#include "qgsfontutils.h"
+#include "qgslayertree.h"
 #include "qgslayoutatlas.h"
-
-#include "qgslayoutundostack.h"
-#include "qgslayoutpagecollection.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutguidecollection.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemhtml.h"
 #include "qgslayoutitemlabel.h"
-#include "qgslayoutitemshape.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayouttable.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgslayouttablecolumn.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutmultiframe.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutguidecollection.h"
 #include "qgslayoutnortharrowhandler.h"
+#include "qgslayoutobject.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayouttable.h"
+#include "qgslayouttablecolumn.h"
+#include "qgslayoutundostack.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmaplayerstyle.h"
+#include "qgspainting.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgsproperty.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
+#include <QUuid>
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
 
@@ -1326,10 +1325,10 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
 
   if ( !layerTreeElem.isNull() )
   {
-    QgsLayerTree *tree( QgsLayerTree::readXml( layerTreeElem, context ) );
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( project )
       tree->resolveReferences( project, true );
-    layoutItem->setCustomLayerTree( tree );
+    layoutItem->setCustomLayerTree( tree.release() );
   }
   else
   {

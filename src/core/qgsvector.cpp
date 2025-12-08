@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsvector.h"
+
 #include "qgis.h"
 #include "qgsexception.h"
 

@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsrasterlayer.h"
+#include "qgsrastershader.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
-
-#include <qgsapplication.h>
-#include <qgsrasterlayer.h>
-#include "qgssinglebandpseudocolorrendererwidget.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastershader.h"
 
 /**
  * \ingroup UnitTests

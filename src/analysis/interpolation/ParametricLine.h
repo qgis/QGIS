@@ -17,10 +17,11 @@
 #ifndef PARAMETRICLINE_H
 #define PARAMETRICLINE_H
 
-#include "qgspoint.h"
-#include <QVector>
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
+#include "qgspoint.h"
+
+#include <QVector>
 
 class Vector3D;
 

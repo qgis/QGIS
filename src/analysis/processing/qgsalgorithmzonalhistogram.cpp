@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmzonalhistogram.h"
-#include "qgsrasteranalysisutils.h"
+
 #include "qgslogger.h"
+#include "qgsrasteranalysisutils.h"
 
 ///@cond PRIVATE
 

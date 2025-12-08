@@ -16,9 +16,9 @@
 #ifndef QGSLABELPLACEMENTSETTINGS_H
 #define QGSLABELPLACEMENTSETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 class QgsPropertyCollection;
 class QgsExpressionContext;

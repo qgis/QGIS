@@ -17,14 +17,15 @@
 #ifndef QGSATTRIBUTETABLEDIALOG_H_
 #define QGSATTRIBUTETABLEDIALOG_H_
 
-#include <QDialog>
-#include <QModelIndex>
-#include <QItemSelectionModel>
+#include "ui_qgsattributetabledialog.h"
 
 #include <ctime>
 
 #include "qgis_app.h"
-#include "ui_qgsattributetabledialog.h"
+
+#include <QDialog>
+#include <QItemSelectionModel>
+#include <QModelIndex>
 
 class QPushButton;
 class QLineEdit;
@@ -41,6 +42,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param layer layer pointer

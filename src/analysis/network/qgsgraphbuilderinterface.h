@@ -16,12 +16,12 @@
 #ifndef QGSGRAPHBUILDERINTERFACE_H
 #define QGSGRAPHBUILDERINTERFACE_H
 
-#include <QVector>
-#include <QVariant>
-
+#include "qgis_analysis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdistancearea.h"
-#include "qgis_analysis.h"
+
+#include <QVariant>
+#include <QVector>
 
 class QgsPoint;
 
@@ -52,6 +52,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
 #endif
 
   public:
+
     /**
      * Default constructor
      * \param crs Coordinate reference system for new graph vertex

@@ -18,13 +18,14 @@
 #ifndef QGSIMAGEOPERATION_H
 #define QGSIMAGEOPERATION_H
 
-#include <QImage>
-#include "qgis_sip.h"
-#include <QColor>
+#include <cmath>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfeedback.h"
-#include <cmath>
+
+#include <QColor>
+#include <QImage>
 
 class QgsColorRamp;
 class QgsFeedback;
@@ -346,7 +347,7 @@ class CORE_EXPORT QgsImageOperation
           , mColorizeStrength( colorizeStrength )
         {  }
 
-        void operator()( QRgb &rgb, int x, int y );
+        void operator()( QRgb &rgb, int x, int y ) const;
 
       private:
         double mSaturation; // [0, 2], 1 = no change
@@ -365,7 +366,7 @@ class CORE_EXPORT QgsImageOperation
           : mFactor( factor )
         { }
 
-        void operator()( QRgb &rgb, int x, int y );
+        void operator()( QRgb &rgb, int x, int y ) const;
 
       private:
         double mFactor;

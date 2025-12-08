@@ -18,11 +18,12 @@
 #ifndef QGSCURVEPOLYGON_H
 #define QGSCURVEPOLYGON_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssurface.h"
 #include "qgscurve.h"
-#include <memory>
+#include "qgssurface.h"
 
 class QgsPolygon;
 

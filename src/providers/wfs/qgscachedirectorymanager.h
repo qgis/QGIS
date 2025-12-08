@@ -16,9 +16,9 @@
 #ifndef QGSCACHEDIRECTORYMANAGER_H
 #define QGSCACHEDIRECTORYMANAGER_H
 
+#include <QMutex>
 #include <QString>
 #include <QThread>
-#include <QMutex>
 
 #if not defined( Q_OS_ANDROID )
 #include <QSharedMemory>

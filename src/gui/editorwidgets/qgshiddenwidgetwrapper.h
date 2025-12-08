@@ -16,8 +16,8 @@
 #ifndef QGSHIDDENWIDGETWRAPPER_H
 #define QGSHIDDENWIDGETWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
 
 SIP_NO_FILE
 
@@ -31,6 +31,7 @@ class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsHiddenWidgetWrapper.
      *

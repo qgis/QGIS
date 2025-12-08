@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmlinedensity.h"
+
 #include "qgscircle.h"
 #include "qgsgeometryengine.h"
 #include "qgsrasterfilewriter.h"

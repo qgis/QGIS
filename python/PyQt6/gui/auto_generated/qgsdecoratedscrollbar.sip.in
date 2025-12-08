@@ -24,6 +24,7 @@ Encapsulates the details of a highlight in a scrollbar, used alongside
 #include "qgsdecoratedscrollbar.h"
 %End
   public:
+
     enum class Priority /BaseType=IntEnum/
     {
       Invalid,

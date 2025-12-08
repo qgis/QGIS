@@ -20,14 +20,13 @@
 
 #define SIP_NO_FILE
 
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
+#include "qgis_core.h"
 
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-
-#include "qgis_core.h"
+#include <QThread>
+#include <QTimer>
 
 class QgsTileDownloadManager;
 class QgsRangeRequestCache;
@@ -48,7 +47,7 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
 {
     Q_OBJECT
   public:
-    ~QgsTileDownloadManagerReply();
+    ~QgsTileDownloadManagerReply() override;
 
     //! Returns whether the reply has already finished (with success/failure)
     bool hasFinished() const { return mHasFinished; }

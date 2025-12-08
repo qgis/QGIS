@@ -41,7 +41,7 @@ class CORE_EXPORT QgsAbstractPointCloud3DRenderer : public QgsAbstract3DRenderer
 {
   public:
 
-    virtual ~QgsAbstractPointCloud3DRenderer() = default;
+    ~QgsAbstractPointCloud3DRenderer() override = default;
 
     /**
      * Updates the 3D renderer's symbol to match that of a given QgsPointCloudRenderer

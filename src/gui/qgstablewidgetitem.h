@@ -16,8 +16,9 @@
 #ifndef QGSTABLEWIDGETITEM_H
 #define QGSTABLEWIDGETITEM_H
 
-#include <QTableWidget>
 #include "qgis_gui.h"
+
+#include <QTableWidget>
 
 /**
  * \ingroup gui

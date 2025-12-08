@@ -18,11 +18,11 @@
 #define QGSRASTERHISTOGRAMWIDGET_H
 
 #include "ui_qgsrasterhistogramwidgetbase.h"
-#include "qgis_sip.h"
-#include "qgis.h"
 
-#include "qgsmaplayerconfigwidget.h"
+#include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmaplayerconfigwidget.h"
 
 class QgsRasterLayer;
 class QgsRasterRendererWidget;
@@ -42,6 +42,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRasterHistogramWidget, for the specified raster \a layer.
      */

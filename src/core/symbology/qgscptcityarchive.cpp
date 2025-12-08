@@ -15,26 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssettings.h"
+#include "qgsconfig.h"
 #include "qgscptcityarchive.h"
-#include "moc_qgscptcityarchive.cpp"
+
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsconfig.h"
 #include "qgsmimedatautils.h"
-#include "qgsapplication.h"
+#include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 
 #include <QApplication>
 #include <QDateTime>
 #include <QDir>
-#include <QFileInfo>
-#include <QVector>
-#include <QStyle>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QFileInfo>
 #include <QRegularExpression>
+#include <QStyle>
+#include <QVector>
+
+#include "moc_qgscptcityarchive.cpp"
 
 typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
 typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;
@@ -517,10 +519,8 @@ QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCit
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
   : mType( type )
   , mParent( parent )
-  , mPopulated( false )
   , mName( name )
   , mPath( path )
-  , mValid( true )
 {
 }
 
@@ -834,7 +834,6 @@ QIcon QgsCptCityColorRampItem::icon( QSize size )
 QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem *parent,
     const QString &name, const QString &path )
   : QgsCptCityDataItem( Collection, parent, name, path )
-  , mPopulatedRamps( false )
 {
 }
 

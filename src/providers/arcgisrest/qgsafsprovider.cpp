@@ -16,25 +16,28 @@
  ***************************************************************************/
 
 #include "qgsafsprovider.h"
-#include "moc_qgsafsprovider.cpp"
-#include "qgsarcgisrestutils.h"
-#include "qgsarcgisrestquery.h"
+
+#include <memory>
+
 #include "qgsafsfeatureiterator.h"
-#include "qgsdatasourceuri.h"
-#include "qgsarcgisrestdataitems.h"
-#include "qgslogger.h"
-#include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
-#include "qgsruntimeprofiler.h"
+#include "qgsarcgisrestdataitems.h"
+#include "qgsarcgisrestquery.h"
+#include "qgsarcgisrestutils.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 #include "qgsreadwritelocker.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsvariantutils.h"
 
+#include "moc_qgsafsprovider.cpp"
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
-  mSharedData.reset( new QgsAfsSharedData( QgsDataSourceUri( uri ) ) );
+  mSharedData = std::make_shared<QgsAfsSharedData>( QgsDataSourceUri( uri ) );
   mSharedData->mGeometryType = Qgis::WkbType::Unknown;
 
   const QString authcfg = mSharedData->mDataSource.authConfigId();
@@ -657,7 +660,7 @@ QString QgsAfsProvider::defaultValueClause( int fieldId ) const
 
 bool QgsAfsProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint, const QVariant &value ) const
 {
-  return fieldIndex == mSharedData->mObjectIdFieldIdx && value.toString() == QLatin1String( "Autogenerate" );
+  return fieldIndex == mSharedData->mObjectIdFieldIdx && ( QgsVariantUtils::isUnsetAttributeValue( value ) || value.toString() == QLatin1String( "Autogenerate" ) );
 }
 
 QString QgsAfsProvider::subsetString() const

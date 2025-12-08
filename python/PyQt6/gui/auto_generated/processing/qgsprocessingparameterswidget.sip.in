@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsProcessingParametersWidget : QgsPanelWidget, QgsProcessingParametersGenerator
 {
 %Docstring(signature="appended")
@@ -27,6 +29,7 @@ an algorithm.
 #include "qgsprocessingparameterswidget.h"
 %End
   public:
+
     QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingParametersWidget, for the specified

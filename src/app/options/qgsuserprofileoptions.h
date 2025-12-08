@@ -16,8 +16,9 @@
 #define QGSUSERPROFILEOPTIONS_H
 
 #include "ui_qgsuserprofileoptionswidgetbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgis_app.h"
+#include "qgsoptionswidgetfactory.h"
 
 /**
  * \ingroup app

@@ -20,9 +20,8 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgssettingseditorwidgetwrapperimpl.h"
 #include "qgslogger.h"
-
+#include "qgssettingseditorwidgetwrapperimpl.h"
 #include "qgssettingsentryenumflag.h"
 
 #include <QComboBox>
@@ -53,7 +52,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent ); }
 
-    virtual QString id() const override
+    QString id() const override
     {
       return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() );
     }
@@ -160,7 +159,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       } );
     }
 
-    virtual QString id() const override
+    QString id() const override
     {
       return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
     }

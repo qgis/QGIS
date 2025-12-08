@@ -23,7 +23,6 @@ email                : wonder.sk at gmail dot com
 
 #include <QDir>
 
-
 static bool _executeSqliteStatement( sqlite3 *db, const QString &sql )
 {
   sqlite3_stmt *stmt = nullptr;

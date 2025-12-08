@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmslope.h"
+
 #include "qgsrasterfilewriter.h"
 #include "qgsslopefilter.h"
 

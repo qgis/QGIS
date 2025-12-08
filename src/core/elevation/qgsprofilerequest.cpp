@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofilerequest.h"
+
 #include "qgscurve.h"
 #include "qgsterrainprovider.h"
 
@@ -40,6 +41,9 @@ QgsProfileRequest::QgsProfileRequest( const QgsProfileRequest &other )
 
 QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other )
 {
+  if ( &other == this )
+    return *this;
+
   mCurve.reset( other.mCurve ? other.mCurve->clone() : nullptr );
   mCrs = other.mCrs;
   mTransformContext = other.mTransformContext;

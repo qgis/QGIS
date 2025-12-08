@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgsplotrubberband.h"
-#include "moc_qgsplotrubberband.cpp"
+
+#include <cmath>
+
 #include "qgsplotcanvas.h"
 
-#include <QGraphicsScene>
 #include <QGraphicsRectItem>
-#include <cmath>
+#include <QGraphicsScene>
+
+#include "moc_qgsplotrubberband.cpp"
 
 QgsPlotRubberBand::QgsPlotRubberBand( QgsPlotCanvas *canvas )
   : mCanvas( canvas )

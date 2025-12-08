@@ -43,6 +43,7 @@
 class GUI_EXPORT QgsHelp
 {
   public:
+
     /**
      * Opens help topic for the given help key using default system
      * web browser. If help topic not found, builtin error page shown.
@@ -58,6 +59,7 @@ class GUI_EXPORT QgsHelp
     static QUrl helpUrl( const QString &key );
 
   private:
+
     /**
      * Check if given URL accessible by issuing HTTP HEAD request.
      * Returns TRUE if URL accessible, FALSE otherwise.

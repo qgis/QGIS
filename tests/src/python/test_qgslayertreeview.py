@@ -639,6 +639,78 @@ class TestQgsLayerTreeView(QgisTestCase):
             self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked()
         )
 
+    def testRemoveGroupPromoteChildren(self):
+        """Test remove group, promote children action"""
+
+        root = self.project.layerTreeRoot().clone()
+        self.assertEqual([c.name() for c in root], ["layer1", "layer2", "layer3"])
+
+        group = root.addGroup("group 1")
+        layer4 = QgsVectorLayer("Point?field=fldtxt:string", "layer4", "memory")
+        layer5 = QgsVectorLayer("Point?field=fldtxt:string", "layer5", "memory")
+        group.addLayer(layer4)
+        group.addLayer(layer5)
+        self.assertEqual(
+            [c.name() for c in root], ["layer1", "layer2", "layer3", "group 1"]
+        )
+
+        group2 = root.addGroup("group 2")
+        layer6 = QgsVectorLayer("Point?field=fldtxt:string", "layer6", "memory")
+        layer7 = QgsVectorLayer("Point?field=fldtxt:string", "layer7", "memory")
+        group2.addLayer(layer6)
+        group2.addLayer(layer7)
+
+        group3 = group2.addGroup("group 3")
+        layer8 = QgsVectorLayer("Point?field=fldtxt:string", "layer8", "memory")
+        group3.addLayer(layer8)
+
+        model = QgsLayerTreeModel(root)
+
+        view = QgsLayerTreeView()
+        view.setModel(model)
+
+        actions = QgsLayerTreeViewDefaultActions(view)
+
+        remove_group_promote_children_action = actions.actionRemoveGroupPromoteLayers(
+            view
+        )
+
+        self.assertEqual([c.name() for c in group2], ["layer6", "layer7", "group 3"])
+
+        view.setCurrentNode(group3)
+        remove_group_promote_children_action.trigger()
+
+        self.assertEqual([c.name() for c in group2], ["layer6", "layer7", "layer8"])
+
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "group 1", "group 2"],
+        )
+        self.assertEqual([c.name() for c in group], ["layer4", "layer5"])
+
+        view.setCurrentNode(group)
+        remove_group_promote_children_action.trigger()
+
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "layer4", "layer5", "group 2"],
+        )
+
+        # no crash
+        view.setCurrentNode(None)
+        remove_group_promote_children_action.trigger()
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "layer4", "layer5", "group 2"],
+        )
+
+        view.setCurrentNode(root)
+        remove_group_promote_children_action.trigger()
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "layer4", "layer5", "group 2"],
+        )
+
     def testProxyModel(self):
         """Test proxy model filtering and private layers"""
 

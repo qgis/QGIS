@@ -8,6 +8,7 @@
 
 
 
+
 class QgsMultiEditToolButton : QToolButton
 {
 %Docstring(signature="appended")

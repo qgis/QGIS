@@ -15,11 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudindex.h"
+
+#include "qgsbox3d.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
+#include "qgspointcloudeditingindex.h"
+#include "qgspointcloudstatistics.h"
+#include "qgstiledownloadmanager.h"
+
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -28,24 +35,17 @@
 #include <qglobal.h>
 #include <qstringliteral.h>
 
-#include "qgsbox3d.h"
-#include "qgstiledownloadmanager.h"
-#include "qgspointcloudstatistics.h"
-#include "qgslogger.h"
-#include "qgspointcloudeditingindex.h"
-
-QgsPointCloudNodeId::QgsPointCloudNodeId():
-  mD( -1 ),
-  mX( 0 ),
-  mY( 0 ),
-  mZ( 0 )
+QgsPointCloudNodeId::QgsPointCloudNodeId()
+  : mX( 0 )
+  , mY( 0 )
+  , mZ( 0 )
 {}
 
-QgsPointCloudNodeId::QgsPointCloudNodeId( int _d, int _x, int _y, int _z ):
-  mD( _d ),
-  mX( _x ),
-  mY( _y ),
-  mZ( _z )
+QgsPointCloudNodeId::QgsPointCloudNodeId( int _d, int _x, int _y, int _z )
+  : mD( _d )
+  , mX( _x )
+  , mY( _y )
+  , mZ( _z )
 {}
 
 QgsPointCloudNodeId QgsPointCloudNodeId::parentNode() const

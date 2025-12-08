@@ -13,28 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptooloffsetcurve.h"
+
+#include "qgisapp.h"
+#include "qgsavoidintersectionsoperation.h"
+#include "qgsdoublespinbox.h"
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnapindicator.h"
+#include "qgssnappingutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+
 #include <QGraphicsProxyWidget>
 #include <QGridLayout>
 #include <QLabel>
 
-#include "qgsavoidintersectionsoperation.h"
-#include "qgsdoublespinbox.h"
-#include "qgsfeatureiterator.h"
-#include "qgsmaptooloffsetcurve.h"
 #include "moc_qgsmaptooloffsetcurve.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsrubberband.h"
-#include "qgssnappingutils.h"
-#include "qgsvectorlayer.h"
-#include "qgssnapindicator.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgssettingsentryimpl.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
-#include "qgslogger.h"
-#include "qgsvectorlayerutils.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

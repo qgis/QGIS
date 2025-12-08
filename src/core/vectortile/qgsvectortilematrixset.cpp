@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsvectortilematrixset.h"
-#include "qgstiles.h"
+
 #include "qgsarcgisrestutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgstiles.h"
 
 QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator( int minimumZoom, int maximumZoom )
 {

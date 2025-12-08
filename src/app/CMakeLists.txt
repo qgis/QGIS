@@ -27,6 +27,7 @@ set(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscustomization.cpp
   qgsdatumtransformtablewidget.cpp
+  qgscontributorsmapcanvas.cpp
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
@@ -79,6 +80,7 @@ set(QGIS_APP_SRCS
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolchamferfillet.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptooldeletering.cpp
@@ -168,11 +170,6 @@ set(QGIS_APP_SRCS
   browser/qgsinbuiltdataitemproviders.cpp
 
   devtools/qgsappdevtoolutils.cpp
-  devtools/qgsdevtoolsmodelnode.cpp
-  devtools/networklogger/qgsnetworklogger.cpp
-  devtools/networklogger/qgsnetworkloggernode.cpp
-  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
-  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
   devtools/documentation/qgsdocumentationpanelwidget.cpp
@@ -358,6 +355,7 @@ if (WITH_3D)
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
+    3d/qgsannotationlayer3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -465,9 +463,6 @@ endif()
 #############
 if (ANDROID)
   add_library(qgis ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
-
-  # require c++17
-  target_compile_features(qgis PRIVATE cxx_std_17)
 else()
   add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
@@ -475,8 +470,6 @@ else()
     qt_disable_unicode_defines(qgis)
   endif()
 
-  # require c++17
-  target_compile_features(qgis PRIVATE cxx_std_17)
   target_compile_definitions(qgis PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 endif()
 
@@ -500,9 +493,6 @@ if(QGISPOSTFIX)
   )
 endif()
 
-# require c++17
-target_compile_features(qgis_app PRIVATE cxx_std_17)
-
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
 if (POSTGRES_FOUND)
@@ -515,7 +505,6 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
-  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/georeferencer
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
@@ -647,9 +636,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   target_link_libraries(qgis ${EXECINFO_LIBRARY})
 endif()
 
+target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
-  target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 endif()
 
 if(MSVC)

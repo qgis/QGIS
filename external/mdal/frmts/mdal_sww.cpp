@@ -49,7 +49,7 @@ bool MDAL::DriverSWW::canReadMesh( const std::string &uri )
   {
     return false;
   }
-  catch ( MDAL::Error )
+  catch ( MDAL::Error & )
   {
     return false;
   }
@@ -109,7 +109,7 @@ void MDAL::DriverSWW::addBedElevation( const NetCDFFile &ncFile,
         times,
         "Bed Elevation",
         "elevation" );
-    mesh->datasetGroups.push_back( grp );
+    mesh->datasetGroups.emplace_back( std::move( grp ) );
   }
   else
   {
@@ -218,12 +218,11 @@ void MDAL::DriverSWW::readDatasetGroups(
                 ncFile,
                 mesh,
                 times,
-                groupName,
+                std::move( groupName ),
                 xName,
                 yName );
-        parsedVariableNames.insert( xName );
-        parsedVariableNames.insert( yName );
-
+        parsedVariableNames.insert( std::move( xName ) );
+        parsedVariableNames.insert( std::move( yName ) );
       }
       else
       {
@@ -232,12 +231,12 @@ void MDAL::DriverSWW::readDatasetGroups(
                 ncFile,
                 mesh,
                 times,
-                groupName,
+                std::move( groupName ),
                 name );
         parsedVariableNames.insert( name );
       }
       if ( grp )
-        mesh->datasetGroups.push_back( grp );
+        mesh->datasetGroups.emplace_back( std::move( grp ) );
     }
   }
 }
@@ -468,7 +467,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
     MDAL::Log::error( err, "Error while loading file " + resultsFile );
     return std::unique_ptr< MDAL::Mesh >();
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
     return std::unique_ptr< MDAL::Mesh >();

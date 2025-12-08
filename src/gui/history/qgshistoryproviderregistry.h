@@ -16,18 +16,17 @@
 #ifndef QGSHISTORYPROVIDERREGISTRY_H
 #define QGSHISTORYPROVIDERREGISTRY_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+#include "qgssqliteutils.h"
 
-#include <QObject>
-#include <QMap>
-#include <QString>
 #include <QDateTime>
+#include <QMap>
+#include <QObject>
+#include <QString>
 #include <QVariant>
 #include <QVector>
-
-#include "qgssqliteutils.h"
 
 class QgsAbstractHistoryProvider;
 class QgsHistoryEntry;
@@ -46,6 +45,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new empty history provider registry.
      *
@@ -99,6 +99,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     class HistoryEntryOptions
     {
       public:
+
         /**
          * Constructor for HistoryEntryOptions.
          */
@@ -211,6 +212,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
+
     /**
      * Creates an on-disk history database.
      */

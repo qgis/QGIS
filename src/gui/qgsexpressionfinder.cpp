@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                         *
  *                                                                               *
  *********************************************************************************/
-#include <QRegularExpression>
-#include <QPlainTextEdit>
-#include <QTextEdit>
-
-#include "qgscodeeditor.h"
 #include "qgsexpressionfinder.h"
 
+#include "qgscodeeditor.h"
+
+#include <QPlainTextEdit>
+#include <QRegularExpression>
+#include <QTextEdit>
 
 static const QString EXPRESSION_PATTERN = QStringLiteral( "\\[%\\s*(.*?)\\s*%\\]" );
 

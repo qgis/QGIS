@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgspointrotationitem.h"
-#include <QPainter>
-#include <QLocale>
+
 #include <cmath>
+
 #include "qgsguiutils.h"
+
+#include <QLocale>
+#include <QPainter>
 
 QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   : QgsMapCanvasItem( canvas )

@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgshistorywidget.h"
-#include "moc_qgshistorywidget.cpp"
+
 #include "qgsgui.h"
 #include "qgshistoryentrymodel.h"
 #include "qgshistoryentrynode.h"
-#include "qgssettings.h"
 #include "qgsnative.h"
+#include "qgssettings.h"
 
+#include <QDesktopServices>
+#include <QFileInfo>
+#include <QMenu>
 #include <QTextBrowser>
 #include <QtGlobal>
-#include <QMenu>
-#include <QFileInfo>
-#include <QDesktopServices>
+
+#include "moc_qgshistorywidget.cpp"
 
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsPanelWidget( parent )

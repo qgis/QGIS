@@ -17,12 +17,12 @@
 #ifndef QGSAUTHIDENTCERTEDIT_H
 #define QGSAUTHIDENTCERTEDIT_H
 
-#include <QWidget>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthidentcertedit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 
+#include <QWidget>
 
 class QgsAuthIdentCertEdit : public QgsAuthMethodEdit, private Ui::QgsAuthIdentCertEdit
 {

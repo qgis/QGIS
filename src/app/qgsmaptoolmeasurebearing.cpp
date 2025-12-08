@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmeasurebearing.h"
-#include "moc_qgsmaptoolmeasurebearing.cpp"
+
+#include <cmath>
+
 #include "qgsdisplayangle.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssettings.h"
 #include "qgssnapindicator.h"
-#include "qgsmapmouseevent.h"
 
-#include <cmath>
+#include "moc_qgsmaptoolmeasurebearing.cpp"
 
 QgsMapToolMeasureBearing::QgsMapToolMeasureBearing( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

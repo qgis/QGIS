@@ -18,10 +18,10 @@
 #ifndef QGSVIRTUALPOINTCLOUDPROVIDER_H
 #define QGSVIRTUALPOINTCLOUDPROVIDER_H
 
+#include <memory>
+
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-
-#include <memory>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~QgsVirtualPointCloudProvider();
+    ~QgsVirtualPointCloudProvider() override;
 
     Qgis::DataProviderFlags flags() const override;
     QgsPointCloudDataProvider::Capabilities capabilities() const override;

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorramp.h"
+
 #include "qgscolorrampimpl.h"
 
 QgsColorRamp::~QgsColorRamp() = default;

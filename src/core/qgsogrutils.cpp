@@ -14,31 +14,32 @@
  ***************************************************************************/
 
 #include "qgsogrutils.h"
+
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsgeometry.h"
-#include "qgsfields.h"
-#include "qgslinestring.h"
-#include "qgsmultipoint.h"
-#include "qgsmultilinestring.h"
-#include "qgslinesymbollayer.h"
-#include "qgspolygon.h"
-#include "qgsmultipolygon.h"
-#include "qgsmapinfosymbolconverter.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfontutils.h"
-#include "qgsmessagelog.h"
-#include "qgssymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
 #include "qgsfielddomain.h"
+#include "qgsfields.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsfontmanager.h"
-#include "qgsvariantutils.h"
-#include "qgsogrproviderutils.h"
+#include "qgsfontutils.h"
+#include "qgsgeometry.h"
 #include "qgsjsonutils.h"
+#include "qgslinestring.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgsmapinfosymbolconverter.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmessagelog.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsogrproviderutils.h"
+#include "qgspolygon.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
 #include "qgsweakrelation.h"
@@ -572,7 +573,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     {
       case QMetaType::Type::QString:
       {
-        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+        if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
         {
           if ( encoding )
             value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
@@ -641,7 +642,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
       case QMetaType::Type::QStringList:
       {
-        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+        if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
         {
           QStringList list;
           char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -668,7 +669,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         {
           case QMetaType::Type::QString:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QStringList list;
               char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -691,7 +692,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
           case QMetaType::Type::Int:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QVariantList list;
               int count = 0;
@@ -711,7 +712,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
           case QMetaType::Type::Double:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QVariantList list;
               int count = 0;
@@ -731,7 +732,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
           case QMetaType::Type::LongLong:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QVariantList list;
               int count = 0;

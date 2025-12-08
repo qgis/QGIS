@@ -16,11 +16,12 @@
 #ifndef QGSPROCESSINGALGORITHMDIALOGBASE_H
 #define QGSPROCESSINGALGORITHMDIALOGBASE_H
 
-#include "qgis.h"
-#include "qgis_gui.h"
 #include "ui_qgsprocessingalgorithmdialogbase.h"
 #include "ui_qgsprocessingalgorithmprogressdialogbase.h"
 #include "ui_qgsprocessingcontextoptionsbase.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingwidgetwrapper.h"
@@ -49,6 +50,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
@@ -88,6 +90,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     Q_OBJECT
 
   public:
+
     /**
      * Log format options.
      * \since QGIS 3.2
@@ -509,6 +512,7 @@ class QgsProcessingAlgorithmProgressDialog : public QDialog, private Ui::QgsProc
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingAlgorithmProgressDialog.
      */
@@ -545,6 +549,7 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingContextOptionsWidget, with the specified \a parent widget.
      */

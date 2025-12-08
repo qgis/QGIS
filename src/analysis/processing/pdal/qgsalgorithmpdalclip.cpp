@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalclip.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 #include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE
@@ -30,7 +30,7 @@ QString QgsPdalClipAlgorithm::name() const
 
 QString QgsPdalClipAlgorithm::displayName() const
 {
-  return QObject::tr( "Clip" );
+  return QObject::tr( "Clip point cloud" );
 }
 
 QString QgsPdalClipAlgorithm::group() const
@@ -51,6 +51,11 @@ QStringList QgsPdalClipAlgorithm::tags() const
 QString QgsPdalClipAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm clips point cloud with clipping polygons, the resulting point cloud contains points that are inside these polygons." );
+}
+
+QString QgsPdalClipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a point cloud layer with points intersecting clipping polygons." );
 }
 
 QgsPdalClipAlgorithm *QgsPdalClipAlgorithm::createInstance() const

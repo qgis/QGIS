@@ -17,8 +17,9 @@
  ***************************************************************************/
 
 #include "qgslightsource.h"
-#include "qgspointlightsettings.h"
+
 #include "qgsdirectionallightsettings.h"
+#include "qgspointlightsettings.h"
 
 QgsLightSource::~QgsLightSource() = default;
 

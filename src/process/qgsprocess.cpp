@@ -15,19 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscommandlineutils.h"
 #include "qgsprocess.h"
-#include "moc_qgsprocess.cpp"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingalgorithm.h"
+
+#include "qgscommandlineutils.h"
 #include "qgsnativealgorithms.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingregistry.h"
+
+#include "moc_qgsprocess.cpp"
+
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"
 #endif
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5 )
 #include "qgspdalalgorithms.h"
-#endif
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
 #endif
 #include "qgssettings.h"
 #include "qgsapplication.h"
@@ -263,12 +265,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
-
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
-#endif
-#endif
 
 #ifdef WITH_BINDINGS
   if ( !( mFlags & Flag::SkipPython ) )
@@ -1320,6 +1317,12 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
 
   PJ_INFO info = proj_info();
   json.insert( QStringLiteral( "proj_version" ), info.release );
+
+#ifdef WITH_SFCGAL
+  json.insert( QStringLiteral( "sfcgal_version" ), sfcgal_version() );
+#else
+  json.insert( QStringLiteral( "sfcgal_version" ), "no support" );
+#endif
 }
 
 void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, const QgsProcessingAlgorithm *algorithm )

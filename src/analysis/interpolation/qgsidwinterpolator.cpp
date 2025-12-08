@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsidwinterpolator.h"
-#include "qgis.h"
-#include "qgsgeometryutils_base.h"
+
 #include <cmath>
 #include <limits>
+
+#include "qgis.h"
+#include "qgsgeometryutils_base.h"
 
 QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData> &layerData )
   : QgsInterpolator( layerData )

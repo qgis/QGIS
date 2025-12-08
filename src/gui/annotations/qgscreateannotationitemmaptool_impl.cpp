@@ -14,32 +14,34 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool_impl.h"
-#include "moc_qgscreateannotationitemmaptool_impl.cpp"
-#include "qgsmapmouseevent.h"
-#include "qgsannotationpointtextitem.h"
-#include "qgsannotationmarkeritem.h"
-#include "qgsannotationlineitem.h"
-#include "qgsannotationpolygonitem.h"
-#include "qgsannotationlinetextitem.h"
-#include "qgsannotationrectangletextitem.h"
-#include "qgsannotationpictureitem.h"
-#include "qgsannotationlayer.h"
-#include "qgsstyle.h"
-#include "qgsmapcanvas.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
+
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationlineitem.h"
+#include "qgsannotationlinetextitem.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationpictureitem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationpolygonitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsapplication.h"
-#include "qgsrecentstylehandler.h"
 #include "qgscurvepolygon.h"
+#include "qgsfillsymbol.h"
+#include "qgsimagecache.h"
+#include "qgslinesymbol.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmarkersymbol.h"
+#include "qgsrecentstylehandler.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsstyle.h"
 #include "qgssvgcache.h"
-#include "qgsimagecache.h"
 
 #include <QFileDialog>
 #include <QImageReader>
+
+#include "moc_qgscreateannotationitemmaptool_impl.cpp"
 
 ///@cond PRIVATE
 
@@ -184,7 +186,7 @@ void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
   std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    auto createdItem = std::make_unique<QgsAnnotationLineItem>( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    auto createdItem = std::make_unique<QgsAnnotationLineItem>( qgis::down_cast<QgsCurve *>( geometry.release() ) );
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
     if ( !lineSymbol )
@@ -217,7 +219,7 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
     auto newPolygon = std::make_unique<QgsCurvePolygon>();
-    newPolygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    newPolygon->setExteriorRing( qgis::down_cast<QgsCurve *>( geometry.release() ) );
     auto createdItem = std::make_unique<QgsAnnotationPolygonItem>( newPolygon.release() );
 
     std::unique_ptr<QgsFillSymbol> fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsFillSymbol>( QStringLiteral( "polygon_annotation_item" ) );
@@ -501,7 +503,7 @@ void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
   std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    auto createdItem = std::make_unique<QgsAnnotationLineTextItem>( tr( "Text" ), qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    auto createdItem = std::make_unique<QgsAnnotationLineTextItem>( tr( "Text" ), qgis::down_cast<QgsCurve *>( geometry.release() ) );
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
     if ( !lineSymbol )

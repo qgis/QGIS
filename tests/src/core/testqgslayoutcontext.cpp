@@ -15,17 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
+#include "qgsexpressionutils.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgslayout.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
-#include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometry.h"
 #include "qgsproject.h"
-#include "qgslayout.h"
-#include "qgsexpressionutils.h"
-#include <QObject>
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
 #include <QtTest/QSignalSpy>
 
 class TestQgsLayoutContext : public QgsTest

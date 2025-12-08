@@ -17,10 +17,11 @@
 #ifndef QGSMENUHEADER_H
 #define QGSMENUHEADER_H
 
-#include <QWidget>
-#include <QWidgetAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
+#include <QWidgetAction>
 
 /**
  * \ingroup gui
@@ -33,6 +34,7 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMenuHeader, showing the specified \a text.
      */
@@ -62,6 +64,7 @@ class GUI_EXPORT QgsMenuHeaderWidgetAction : public QWidgetAction
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMenuHeaderWidgetAction, showing the specified \a text.
      */

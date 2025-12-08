@@ -13,20 +13,23 @@
  ***************************************************************************/
 
 #include "qgsauthoauth2method.h"
-#include "moc_qgsauthoauth2method.cpp"
 
 #include "o0globals.h"
 #include "o0requestparameter.h"
-
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgso2.h"
 #include "qgsauthoauth2config.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgso2.h"
+#include "qgsproject.h"
+#include "qgsprovidermetadata.h"
 #include "qgsreadwritelocker.h"
+
+#include "moc_qgsauthoauth2method.cpp"
+
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif
@@ -140,6 +143,22 @@ QgsAuthOAuth2Method::QgsAuthOAuth2Method()
       QgsDebugError( QStringLiteral( "FAILED to create cache dir: %1" ).arg( cachedirpath ) );
     }
   }
+
+  // Fires every 15 minutes
+  connect( &mCacheHousekeepingTimer, &QTimer::timeout, this, &QgsAuthOAuth2Method::cleanupCache );
+#ifdef QGISDEBUG
+  // A hidden setting can be used to adjust the interval for testing purposes
+  const int interval = QgsSettings().value( QStringLiteral( "oauth2/cacheHousekeepingInterval" ), 15 * 60 * 1000, QgsSettings::Section::Auth ).toInt();
+#else
+  constexpr int interval = 15 * 60 * 1000;
+#endif
+  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [this]( const QStringList & ) {
+    mCacheHousekeepingTimer.stop();
+    cleanupCache();
+    mCacheHousekeepingTimer.start();
+  } );
+  mCacheHousekeepingTimer.setInterval( static_cast<std::chrono::milliseconds>( interval ) );
+  mCacheHousekeepingTimer.start();
 }
 
 QgsAuthOAuth2Method::~QgsAuthOAuth2Method()
@@ -209,7 +228,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     bool expired = false;
     if ( o2->expires() > 0 ) // QStringLiteral("").toInt() result for tokens with no expiration
     {
-      const int cursecs = static_cast<int>( QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000 );
+      const int cursecs = static_cast<int>( QDateTime::currentMSecsSinceEpoch() / 1000 );
       const int lExpirationDelay = o2->expirationDelay();
       // try refresh with expired or two minutes to go (or a fraction of the initial expiration delay if it is short)
       const int refreshThreshold = lExpirationDelay > 0 ? std::min( 120, std::max( 2, lExpirationDelay / 10 ) ) : 120;
@@ -235,7 +254,9 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
 
         // refresh result should set o2 to (un)linked
         if ( o2->linked() )
+        {
           o2->computeExpirationDelay();
+        }
       }
     }
   }
@@ -251,7 +272,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     connect( o2, &QgsO2::linkingSucceeded, this, &QgsAuthOAuth2Method::onLinkingSucceeded, Qt::UniqueConnection );
     connect( o2, &QgsO2::getAuthCode, this, &QgsAuthOAuth2Method::onAuthCode, Qt::UniqueConnection );
     connect( this, &QgsAuthOAuth2Method::setAuthCode, o2, &QgsO2::onSetAuthCode, Qt::UniqueConnection );
-    //qRegisterMetaType<QNetworkReply::NetworkError>( QStringLiteral( "QNetworkReply::NetworkError" )) // for Qt::QueuedConnection, if needed;
     connect( o2, &QgsO2::refreshFinished, this, &QgsAuthOAuth2Method::onRefreshFinished, Qt::UniqueConnection );
 
 
@@ -392,10 +412,7 @@ bool QgsAuthOAuth2Method::updateNetworkReply( QNetworkReply *reply, const QStrin
   }
   reply->setProperty( "authcfg", authcfg );
 
-  // converting this to new-style Qt5 connection causes odd linking error with static o2 library
-  connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onNetworkError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
-  //connect( reply, static_cast<void ( QNetworkReply::* )( QNetworkReply::NetworkError )>( &QNetworkReply::error ),
-  //         this, &QgsAuthOAuth2Method::onNetworkError, Qt::QueuedConnection );
+  connect( reply, &QNetworkReply::errorOccurred, this, &QgsAuthOAuth2Method::onNetworkError, Qt::QueuedConnection );
 
 #ifdef QGISDEBUG
   const QString msg = QStringLiteral( "Updated reply with token refresh connection for authcfg: %1" ).arg( authcfg );
@@ -542,18 +559,18 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
   }
 }
 
+static QString networkErrorToString( QNetworkReply::NetworkError code )
+{
+  const int index = QNetworkReply::staticMetaObject.indexOfEnumerator( "NetworkError" );
+  const QMetaEnum metaEnum = QNetworkReply::staticMetaObject.enumerator( index );
+  return QString::fromLatin1( metaEnum.valueToKey( code ) );
+}
+
 void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
-  if ( !reply )
-  {
-    const QString msg = tr( "Token refresh finished but no reply object accessible" );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
-    return;
-  }
   if ( err != QNetworkReply::NoError )
   {
-    QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( reply->errorString() ), AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( networkErrorToString( err ) ), AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
   }
 }
 
@@ -714,6 +731,8 @@ void QgsAuthOAuth2Method::putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle
   QgsReadWriteLocker locker( mO2CacheLock, QgsReadWriteLocker::Write );
   QgsDebugMsgLevel( QStringLiteral( "Putting oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
   mOAuth2ConfigCache.insert( authcfg, bundle );
+  // Restart the timer so that we have a full interval before the next cleanup
+  mCacheHousekeepingTimer.start();
 }
 
 void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
@@ -726,6 +745,52 @@ void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
     it.value()->deleteLater();
     mOAuth2ConfigCache.erase( it );
     QgsDebugMsgLevel( QStringLiteral( "Removed oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
+  }
+}
+
+void QgsAuthOAuth2Method::cleanupCache()
+{
+  if ( mOAuth2ConfigCache.isEmpty() )
+  {
+    return;
+  }
+
+  QSet<QString> authcfgInUse;
+  const QMap<QString, QgsMapLayer *> allMapLayers = QgsProject::instance()->mapLayers();
+  for ( auto it = allMapLayers.constBegin(); it != allMapLayers.constEnd(); ++it )
+  {
+    QgsMapLayer *mapLayer = it.value();
+    const QVariantMap uriParts { mapLayer->providerMetadata()->decodeUri( mapLayer->source() ) };
+    const QString authCfg { uriParts.value( QStringLiteral( "authcfg" ), QString() ).toString() };
+    if ( !authCfg.isEmpty() )
+    {
+      authcfgInUse.insert( authCfg );
+    }
+  }
+
+  QgsReadWriteLocker locker( mO2CacheLock, QgsReadWriteLocker::Read );
+  const QStringList authKeys { mOAuth2ConfigCache.keys() };
+  for ( const QString &cachedAuth : std::as_const( authKeys ) )
+  {
+    if ( !authcfgInUse.contains( cachedAuth ) )
+    {
+      auto it = mOAuth2ConfigCache.find( cachedAuth );
+      if ( it != mOAuth2ConfigCache.end() )
+      {
+        // The timer may live in another thread: enqueue a call to stop it
+        if ( QThread::currentThread() == it.value()->thread() )
+        {
+          it.value()->stopRefreshTimer();
+        }
+        else
+        {
+          // Suppress warning: Potential leak of memory pointed to by 'callable' [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
+          QMetaObject::invokeMethod( it.value(), &QgsO2::stopRefreshTimer, Qt::QueuedConnection );
+#endif
+        }
+      }
+    }
   }
 }
 

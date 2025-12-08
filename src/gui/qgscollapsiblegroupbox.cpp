@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgscollapsiblegroupbox.h"
-#include "moc_qgscollapsiblegroupbox.cpp"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
 
-#include <QToolButton>
 #include <QMouseEvent>
 #include <QPushButton>
-#include <QStyleOptionGroupBox>
 #include <QScrollArea>
+#include <QStyleOptionGroupBox>
+#include <QToolButton>
+
+#include "moc_qgscollapsiblegroupbox.cpp"
 
 const QString COLLAPSE_HIDE_BORDER_FIX = QStringLiteral( " QgsCollapsibleGroupBoxBasic { border: none; }" );
 
@@ -453,7 +455,9 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
     for ( QObject *child : constChildren )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
-      if ( w && w != mCollapseButton )
+      // ignore already hidden widgets, so they won't become visible on expand
+      // see https://github.com/qgis/QGIS/issues/55443
+      if ( w && w != mCollapseButton && !w->isHidden() )
       {
         w->setProperty( hideKey, true );
         w->hide();

@@ -60,8 +60,7 @@ size_t MDAL::XmdfDataset::vectorData( size_t indexStart, size_t count, double *b
 {
   assert( !group()->isScalar() ); //checked in C API interface
   std::vector<hsize_t> offsets = {timeIndex(), indexStart, 0};
-  std::vector<hsize_t> counts = {1, count, 2};
-  std::vector<float> values = dsValues().readArray( offsets, counts );
+  std::vector<float> values = dsValues().readArray( offsets, {1, count, 2} );
   const float *input = values.data();
   for ( size_t j = 0; j < count; ++j )
   {
@@ -188,7 +187,7 @@ void MDAL::DriverXmdf::load( const std::string &datFile,  MDAL::Mesh *mesh )
       std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( rootGroup, name, vertexCount, faceCount );
       if ( ds && ds->datasets.size() > 0 )
       {
-        groups.push_back( ds );
+        groups.emplace_back( std::move( ds ) );
       }
     }
   }
@@ -214,7 +213,7 @@ void MDAL::DriverXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups,
        MDAL::contains( gDataNames, "Maxs" ) )
   {
     std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( rootGroup, rootGroup.name() + nameSuffix, vertexCount, faceCount );
-    groups.push_back( ds );
+    groups.emplace_back( std::move( ds ) );
   }
 
   for ( const std::string &groupName : rootGroup.groups() )
@@ -223,7 +222,7 @@ void MDAL::DriverXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups,
     std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( g, groupName + nameSuffix, vertexCount, faceCount );
     if ( ds && ds->datasets.size() > 0 )
     {
-      groups.push_back( ds );
+      groups.emplace_back( std::move( ds ) );
     }
   }
 }

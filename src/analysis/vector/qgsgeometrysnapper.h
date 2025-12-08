@@ -17,17 +17,18 @@
 #ifndef QGS_GEOMETRY_SNAPPER_H
 #define QGS_GEOMETRY_SNAPPER_H
 
-#include "qgsspatialindex.h"
+#include <geos_c.h>
+
+#include "qgis_analysis.h"
 #include "qgsabstractgeometry.h"
-#include "qgspoint.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
-#include "qgis_analysis.h"
+#include "qgspoint.h"
+#include "qgsspatialindex.h"
 
-#include <QMutex>
 #include <QFuture>
+#include <QMutex>
 #include <QStringList>
-#include <geos_c.h>
 
 class QgsVectorLayer;
 
@@ -141,6 +142,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 class ANALYSIS_EXPORT QgsInternalGeometrySnapper
 {
   public:
+
     /**
      * Constructor for QgsInternalGeometrySnapper. The \a snapTolerance and \a mode parameters dictate
      * how geometries will be snapped by the snapper.

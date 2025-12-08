@@ -22,6 +22,7 @@ All annotation item widgets should inherit from this base class.
 #include "qgsannotationitemwidget.h"
 %End
   public:
+
     QgsAnnotationItemBaseWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsAnnotationItemBaseWidget.
@@ -115,6 +116,7 @@ the user.
 %End
 
   protected:
+
     virtual bool setNewItem( QgsAnnotationItem *item );
 %Docstring
 Attempts to update the widget to show the properties for the specified

@@ -14,18 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerutils.h"
-#include "qgsgeometry.h"
-#include "qgsgeometryutils.h"
+
 #include "qgsfeaturepool.h"
-#include "qgspolygon.h"
-#include "qgsgeos.h"
+#include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycollection.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgspolygon.h"
 #include "qgssurface.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeedback.h"
 
 #include <qmath.h>
 
@@ -225,7 +226,6 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
   , mExtent( extent )
   , mGeometryTypes( geometryTypes )
   , mContext( context )
-  , mUseMapCrs( true )
 {
   for ( const QString &layerId : layerIds )
   {

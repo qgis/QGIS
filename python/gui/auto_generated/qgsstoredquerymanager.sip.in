@@ -81,6 +81,7 @@ Contains details about a stored query.
 #include "qgsstoredquerymanager.h"
 %End
       public:
+
         QString name;
 
         QString definition;

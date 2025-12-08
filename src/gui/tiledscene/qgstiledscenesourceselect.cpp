@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgstiledscenesourceselect.h"
-#include "moc_qgstiledscenesourceselect.cpp"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderutils.h"
-#include "qgsmanageconnectionsdialog.h"
+#include "qgstiledsceneconnection.h"
 #include "qgstiledsceneconnectiondialog.h"
-#include "qgshelp.h"
 
 #include <QMenu>
 #include <QMessageBox>
+
+#include "moc_qgstiledscenesourceselect.cpp"
 
 ///@cond PRIVATE
 

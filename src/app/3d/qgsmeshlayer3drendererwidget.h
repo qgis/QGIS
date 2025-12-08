@@ -19,8 +19,8 @@
 #include <memory>
 
 #include "qgsmaplayerconfigwidget.h"
-#include "qgsmeshlayer3drenderer.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmeshlayer3drenderer.h"
 
 class QCheckBox;
 

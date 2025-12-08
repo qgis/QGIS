@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsgcpcanvasitem.h"
-#include "qgsmapcanvas.h"
-#include "qgsgeorefdatapoint.h"
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgssettings.h"
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgeorefdatapoint.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgsrendercontext.h"
+#include "qgssettings.h"
 
 QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource )
   : QgsMapCanvasItem( mapCanvas )

@@ -18,9 +18,10 @@
 #ifndef QGSPOINTCLOUDRGBRENDERERWIDGET_H
 #define QGSPOINTCLOUDRGBRENDERERWIDGET_H
 
-#include "qgspointcloudrendererwidget.h"
 #include "ui_qgspointcloudrgbrendererwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgspointcloudrendererwidget.h"
 
 class QgsContrastEnhancement;
 class QgsPointCloudLayer;

@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
-#include "qgslocatorfilter.h"
-#include "qgslocator.h"
-#include "qgsprintlayout.h"
 #include "qgslayoutmanager.h"
+#include "qgslocator.h"
+#include "qgslocatorfilter.h"
+#include "qgsprintlayout.h"
+#include "qgstest.h"
+
 //#include "qgsactionlocatorfilter.h"
 #include "qgsactivelayerfeatureslocatorfilter.h"
 #include "qgsalllayersfeatureslocatorfilter.h"

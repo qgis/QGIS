@@ -286,11 +286,11 @@ bool MDAL::MeshDynamicDriver::populateDatasetGroups()
         return false;
       dataset->setTime( RelativeTimestamp( time, RelativeTimestamp::hours ) );
 
-      group->datasets.push_back( dataset );
+      group->datasets.emplace_back( std::move( dataset ) );
     }
 
     group->setStatistics( MDAL::calculateStatistics( group ) );
-    datasetGroups.push_back( group );
+    datasetGroups.emplace_back( std::move( group ) );
   }
   return true;
 }

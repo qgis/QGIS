@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgsstylesavedialog.h"
-#include "moc_qgsstylesavedialog.cpp"
 
 #include "qgis.h"
-#include "qgsstyle.h"
-#include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgsstyle.h"
 
-#include <QLineEdit>
 #include <QCheckBox>
+#include <QLineEdit>
+
+#include "moc_qgsstylesavedialog.cpp"
 
 QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity type )
   : QDialog( parent )

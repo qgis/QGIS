@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmapunitscale.h"
+
 #include "qgsrendercontext.h"
 
 bool QgsMapUnitScale::isNull() const

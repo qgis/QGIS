@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsaddattrdialog.h"
-#include "moc_qgsaddattrdialog.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgslogger.h"
+
 #include "qgsfields.h"
+#include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+
+#include "moc_qgsaddattrdialog.cpp"
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

@@ -13,12 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
-
-#include <memory>
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
@@ -27,8 +25,8 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsprojectviewsettings.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-
 
 class QgsSingleColorPointCloud3DSymbol;
 class TestQgs3DMapScene : public QgsTest

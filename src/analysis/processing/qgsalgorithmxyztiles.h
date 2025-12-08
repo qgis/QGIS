@@ -21,10 +21,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
-
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmbtiles.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -51,8 +50,6 @@ struct Tile
 struct MetaTile
 {
     MetaTile()
-      : rows( 0 )
-      , cols( 0 )
     {}
 
     void addTile( const int row, const int col, Tile tileToAdd )
@@ -76,8 +73,8 @@ struct MetaTile
     }
 
     QMap<QPair<int, int>, Tile> tiles;
-    int rows;
-    int cols;
+    int rows = 0;
+    int cols = 0;
 };
 QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize = 4 );
 

@@ -22,6 +22,15 @@
 #ifndef QGSWFSTRANSACTION_1_0_0_H
 #define QGSWFSTRANSACTION_1_0_0_H
 
+#include "qgsfeaturerequest.h"
+#include "qgsserverrequest.h"
+
+#include <QDomNodeList>
+#include <QString>
+#include <QStringList>
+
+class QgsServerInterface;
+class QgsServerResponse;
 
 namespace QgsWfs
 {

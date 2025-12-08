@@ -16,11 +16,12 @@
 #ifndef QGSSTACKEDBARDIAGRAM_H
 #define QGSSTACKEDBARDIAGRAM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsdiagram.h"
-#include <QPen>
+
 #include <QBrush>
+#include <QPen>
 
 class QgsFeature;
 class QPainter;

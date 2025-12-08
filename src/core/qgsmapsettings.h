@@ -18,25 +18,25 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontext.h"
+#include "qgsgeometry.h"
+#include "qgslabelingenginesettings.h"
+#include "qgsmapclippingregion.h"
+#include "qgsmaplayer.h"
+#include "qgsmaptopixel.h"
+#include "qgsmaskrendersettings.h"
+#include "qgsrectangle.h"
+#include "qgsscalecalculator.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsvectorsimplifymethod.h"
+
 #include <QColor>
 #include <QImage>
 #include <QPointer>
 #include <QSize>
 #include <QStringList>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgslabelingenginesettings.h"
-#include "qgsmaptopixel.h"
-#include "qgsrectangle.h"
-#include "qgsscalecalculator.h"
-#include "qgsexpressioncontext.h"
-#include "qgsmaplayer.h"
-#include "qgsgeometry.h"
-#include "qgstemporalrangeobject.h"
-#include "qgsmapclippingregion.h"
-#include "qgsvectorsimplifymethod.h"
-#include "qgselevationshadingrenderer.h"
-#include "qgsmaskrendersettings.h"
 
 class QPainter;
 
@@ -957,6 +957,9 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     //! list of layers to be rendered (stored as weak pointers)
     QgsWeakMapLayerPointerList mLayers;
+    QStringList mLayerIds;
+    bool mHasGroupLayers = false;
+
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
     QVariantMap mCustomRenderingFlags;

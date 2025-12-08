@@ -24,6 +24,7 @@ shapes, for use within :py:class:`QgsPlotCanvas` widgets.
 #include "qgsplotrubberband.h"
 %End
   public:
+
     QgsPlotRubberBand( QgsPlotCanvas *canvas = 0 );
 %Docstring
 Constructor for QgsPlotRubberBand.
@@ -91,6 +92,7 @@ Sets the ``pen`` used for drawing the rubber band.
 %End
 
   protected:
+
     QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );
 %Docstring
 Calculates an updated bounding box rectangle from a original ``start``
@@ -115,6 +117,7 @@ widgets.
 #include "qgsplotrubberband.h"
 %End
   public:
+
     QgsPlotRectangularRubberBand( QgsPlotCanvas *canvas = 0 );
 %Docstring
 Constructor for QgsPlotRectangularRubberBand.

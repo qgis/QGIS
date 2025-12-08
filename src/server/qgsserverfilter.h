@@ -20,9 +20,10 @@
 #ifndef QGSSERVERFILTER_H
 #define QGSSERVERFILTER_H
 
-#include <QMultiMap>
 #include "qgis_server.h"
 #include "qgis_sip.h"
+
+#include <QMultiMap>
 
 SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
@@ -38,6 +39,7 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServerFilter
 {
   public:
+
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors

@@ -14,29 +14,31 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvirtuallayersqlitemodule.h"
+
+#include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <cstdint>
+#include <memory>
+#include <sqlite3.h>
 #include <stdexcept>
-
-#include <QCoreApplication>
-#include <QBuffer>
+#include <spatialite.h>
 
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgsinterval.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
-#include "qgsinterval.h"
-#include <sqlite3.h>
-#include <spatialite.h>
-#include <cstdio>
-#include "qgsvirtuallayersqlitemodule.h"
-#include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"
-#include "qgsfeatureiterator.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvirtuallayerblob.h"
+
+#include <QBuffer>
+#include <QCoreApplication>
 
 /**
  * Create metadata tables if needed
@@ -260,11 +262,11 @@ struct VTableCursor
     // specific members
     QgsFeature mCurrentFeature;
     QgsFeatureIterator mIterator;
-    bool mEof;
+    bool mEof = true;
 
     explicit VTableCursor( VTable *vtab )
       : mVtab( vtab )
-      , mEof( true )
+
     {}
 
     void filter( const QgsFeatureRequest &request )
@@ -347,6 +349,12 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
     returnStrError( err );
     return SQLITE_ERROR;
   }
+  if ( argc > 6 )
+  {
+    const QString err( QStringLiteral( "Too many arguments, expected <= 6, got %1" ).arg( argc ) );
+    returnStrError( err );
+    return SQLITE_ERROR;
+  }
 
   std::unique_ptr<VTable> newVtab;
 
@@ -372,9 +380,9 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
       }
       return SQLITE_ERROR;
     }
-    newVtab.reset( new VTable( sql, qobject_cast<QgsVectorLayer *>( l ) ) );
+    newVtab = std::make_unique<VTable>( sql, qobject_cast<QgsVectorLayer *>( l ) );
   }
-  else if ( argc == 5 || argc == 6 )
+  else
   {
     // CREATE VIRTUAL TABLE vtab USING QgsVLayer(provider,source[,encoding])
     // vtab = argv[2]
@@ -400,7 +408,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
     }
     try
     {
-      newVtab.reset( new VTable( sql, provider, source, QString::fromUtf8( argv[2] ), encoding ) );
+      newVtab = std::make_unique<VTable>( sql, provider, source, QString::fromUtf8( argv[2] ), encoding );
     }
     catch ( std::runtime_error &e )
     {

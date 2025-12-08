@@ -15,10 +15,11 @@
 #ifndef QGSVECTORFIELDSYMBOLLAYERWIDGET_H
 #define QGSVECTORFIELDSYMBOLLAYERWIDGET_H
 
-#include "qgssymbollayerwidget.h"
-#include "qgis_sip.h"
 #include "ui_widget_vectorfield.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgssymbollayerwidget.h"
 
 class QgsVectorFieldSymbolLayer;
 
@@ -31,6 +32,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget : public QgsSymbolLayerWidget, 
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsVectorFieldSymbolLayerWidget.
      * \param vl associated vector layer

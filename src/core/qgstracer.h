@@ -18,16 +18,17 @@
 
 class QgsVectorLayer;
 
-#include "qgis_core.h"
-#include <QSet>
-#include <QVector>
 #include <memory>
 
-#include "qgsfeatureid.h"
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
-#include "qgsrectangle.h"
+#include "qgsfeatureid.h"
 #include "qgsgeometry.h"
+#include "qgsrectangle.h"
+
+#include <QSet>
+#include <QVector>
 
 struct QgsTracerGraph;
 class QgsFeatureRenderer;

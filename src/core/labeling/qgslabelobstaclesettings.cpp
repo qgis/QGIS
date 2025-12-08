@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgslabelobstaclesettings.h"
-#include "qgspropertycollection.h"
+
 #include "qgsexpressioncontext.h"
 #include "qgspallabeling.h"
+#include "qgspropertycollection.h"
 #include "qgsvariantutils.h"
 
 void QgsLabelObstacleSettings::setObstacleGeometry( const QgsGeometry &obstacleGeom )

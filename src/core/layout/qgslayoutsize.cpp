@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutsize.h"
+
 #include "qgis.h"
 #include "qgsunittypes.h"
+
 #include <QStringList>
 
 QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgis::LayoutUnit units )

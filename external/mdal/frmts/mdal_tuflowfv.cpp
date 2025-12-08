@@ -70,13 +70,13 @@ MDAL::TuflowFVDataset2D::TuflowFVDataset2D(
       fillValY,
       ncidX,
       ncidY,
-      classificationX,
-      classificationY,
+      std::move( classificationX ),
+      std::move( classificationY ),
       timeLocation,
       timesteps,
       values,
       ts,
-      ncFile
+      std::move( ncFile )
     )
   , mNcidActive( ncidActive )
 {
@@ -391,7 +391,7 @@ void MDAL::DriverTuflowFV::populateFaces( MDAL::Faces &faces )
       assert( val < vertexCount );
       idxs.push_back( val );
     }
-    faces[i] = idxs;
+    faces[i] = std::move( idxs );
   }
 }
 
@@ -509,7 +509,7 @@ void MDAL::DriverTuflowFV::parseNetCDFVariableMetadata( int varid,
     }
     else
     {
-      name = long_name;
+      name = std::move( long_name );
     }
   }
 }

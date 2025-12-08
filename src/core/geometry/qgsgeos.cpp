@@ -14,21 +14,24 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeos.h"
+
+#include <cstdio>
+#include <limits>
+#include <memory>
+
 #include "qgsabstractgeometry.h"
 #include "qgsgeometrycollection.h"
+#include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
+#include "qgsgeometryutils_base.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
-#include "qgslogger.h"
 #include "qgspolygon.h"
-#include "qgsgeometryeditutils.h"
 #include "qgspolyhedralsurface.h"
-#include "qgsgeometryutils_base.h"
-#include <limits>
-#include <cstdio>
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
@@ -1186,7 +1189,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
   }
   else if ( type == GEOS_LINESTRING )
   {
-    multiCurve.reset( new QgsMultiCurve() );
+    multiCurve = std::make_unique<QgsMultiCurve>( );
     multiCurve->addGeometry( mGeometry->clone() );
   }
   else
@@ -1208,17 +1211,20 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
 
     if ( qgsgeometry_cast<QgsMultiPoint *>( splitGeom.get() ) )
     {
-      splitPoints.reset( qgsgeometry_cast<QgsMultiPoint *>( splitGeom.release() ) );
+      splitPoints.reset( qgis::down_cast<QgsMultiPoint *>( splitGeom.release() ) );
     }
     else if ( qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
     {
       splitPoints = std::make_unique< QgsMultiPoint >();
       if ( qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
       {
-        splitPoints->addGeometry( qgsgeometry_cast<QgsPoint *>( splitGeom.release() ) );
+        splitPoints->addGeometry( qgis::down_cast<QgsPoint *>( splitGeom.release() ) );
       }
     }
   }
+
+  if ( !splitPoints )
+    return nullptr;
 
   QgsMultiCurve lines;
 
@@ -2718,38 +2724,29 @@ geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, do
   {
     geos::unique_ptr exteriorRingGeos( GEOSGeom_createLinearRing_r( context, createCoordinateSequence( exteriorRing, precision, true ) ) );
 
-    int nHoles = 0;
-    int nInteriorRings = polygon->numInteriorRings();
-    if ( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings )
-    {
-      for ( int i = 0; i < nInteriorRings; ++i )
-      {
-        const QgsCurve *interiorRing = polygon->interiorRing( i );
-        if ( !interiorRing->isEmpty() )
-        {
-          nHoles++;
-        }
-      }
-    }
-    else
-    {
-      nHoles = nInteriorRings;
-    }
-    GEOSGeometry **holes = nullptr;
-    if ( nHoles > 0 )
-    {
-      holes = new GEOSGeometry*[ nHoles ];
-    }
-
+    const int nInteriorRings = polygon->numInteriorRings();
+    QList< const QgsCurve * > holesToExport;
+    holesToExport.reserve( nInteriorRings );
     for ( int i = 0; i < nInteriorRings; ++i )
     {
       const QgsCurve *interiorRing = polygon->interiorRing( i );
       if ( !( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) || !interiorRing->isEmpty() )
       {
-        holes[i] = GEOSGeom_createLinearRing_r( context, createCoordinateSequence( interiorRing, precision, true ) );
+        holesToExport << interiorRing;
       }
     }
-    geosPolygon.reset( GEOSGeom_createPolygon_r( context, exteriorRingGeos.release(), holes, nHoles ) );
+
+    GEOSGeometry **holes = nullptr;
+    if ( !holesToExport.empty() )
+    {
+      holes = new GEOSGeometry*[ holesToExport.size() ];
+      for ( int i = 0; i < holesToExport.size(); ++i )
+      {
+        holes[i] = GEOSGeom_createLinearRing_r( context, createCoordinateSequence( holesToExport[i], precision, true ) );
+      }
+    }
+
+    geosPolygon.reset( GEOSGeom_createPolygon_r( context, exteriorRingGeos.release(), holes, holesToExport.size() ) );
     delete[] holes;
   }
   CATCH_GEOS( nullptr )

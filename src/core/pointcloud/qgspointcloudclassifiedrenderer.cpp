@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgspointcloudclassifiedrenderer.h"
-#include "qgspointcloudblock.h"
-#include "qgsstyle.h"
+
 #include "qgscolorramp.h"
 #include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgspointcloudblock.h"
 #include "qgspointclouddataprovider.h"
+#include "qgsstyle.h"
 
 QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &color, const QString &label, bool render, double pointSize )
   : mValue( value )

@@ -199,6 +199,37 @@ added to individual pixel values from the layer.
 .. versionadded:: 3.38
 %End
 
+    bool accumulatePixels() const;
+%Docstring
+Returns ``True`` if pixels will be accumulated over time (i.e. all
+pixels which occur before or within the map's temporal range should be
+rendered).
+
+.. warning::
+
+   This setting is only effective when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
+   :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues
+
+.. seealso:: :py:func:`setAccumulatePixels`
+
+.. versionadded:: 4.0
+%End
+
+    void setAccumulatePixels( bool accumulate );
+%Docstring
+Sets whether pixels will be accumulated over time (i.e. all pixels which
+occur before or within the map's temporal range should be rendered).
+
+.. warning::
+
+   This setting is only effective when :py:func:`~QgsRasterLayerTemporalProperties.mode` is
+   :py:class:`Qgis`.RasterTemporalMode.RepresentsTemporalValues
+
+.. seealso:: :py:func:`accumulatePixels`
+
+.. versionadded:: 4.0
+%End
+
     const QgsInterval &temporalRepresentationScale() const;
 %Docstring
 Returns the scale, which is an interval factor which should be applied

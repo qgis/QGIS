@@ -16,33 +16,34 @@
  ***************************************************************************/
 
 #include "qgseptpointcloudindex.h"
-#include <QFile>
-#include <QFileInfo>
-#include <QDir>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QTime>
-#include <QtDebug>
-#include <QQueue>
-#include <QNetworkRequest>
 
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscachedpointcloudblockrequest.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgseptdecoder.h"
 #include "qgseptpointcloudblockrequest.h"
 #include "qgslazdecoder.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
+#include "qgspointcloudattribute.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudexpression.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
-#include "qgslogger.h"
-#include "qgspointcloudexpression.h"
-#include "qgssetrequestinitiator_p.h"
 #include "qgspointcloudstatistics.h"
-#include "qgsauthmanager.h"
+#include "qgssetrequestinitiator_p.h"
+
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkRequest>
+#include <QQueue>
+#include <QTime>
+#include <QtDebug>
 
 ///@cond PRIVATE
 

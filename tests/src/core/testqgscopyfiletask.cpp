@@ -13,13 +13,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgscopyfiletask.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
-#include <QTemporaryFile>
 #include <QTemporaryDir>
-
-#include "qgscopyfiletask.h"
+#include <QTemporaryFile>
 
 /**
  * \ingroup UnitTests

@@ -13,14 +13,15 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "qgsgraphanalyzer.h"
+
 #include <limits>
 
-#include <QMap>
-#include <QVector>
-#include <QPair>
-
 #include "qgsgraph.h"
-#include "qgsgraphanalyzer.h"
+
+#include <QMap>
+#include <QPair>
+#include <QVector>
 
 void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int criterionNum, QVector<int> *resultTree, QVector<double> *resultCost )
 {

@@ -86,7 +86,7 @@ class CSW202Search(SearchBase):
         self.constraints = []
 
         log_message(f"Connecting to CSW: {self.url}", Qgis.MessageLevel.Info)
-        self.conn = CatalogueServiceWeb(
+        self.conn = CatalogueServiceWeb(  # spellok
             self.url,  # spellok
             timeout=self.timeout,
             username=self.username,
@@ -240,9 +240,9 @@ class OARecSearch(SearchBase):
         for rec in self.response["features"]:
             rec1 = {
                 "identifier": rec["id"],
-                "type": rec["properties"]["type"],
+                "type": rec["properties"].get("type"),
                 "bbox": None,
-                "title": rec["properties"]["title"],
+                "title": rec["properties"].get("title"),
                 "links": rec.get("links", []),
             }
             try:

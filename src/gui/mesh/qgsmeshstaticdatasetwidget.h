@@ -15,11 +15,12 @@
 #ifndef QGSMESHSTATICDATASETWIDGET_H
 #define QGSMESHSTATICDATASETWIDGET_H
 
-#include <QAbstractListModel>
+#include "ui_qgsmeshstaticdatasetwidgetbase.h"
 
 #include "qgis_gui.h"
-#include "ui_qgsmeshstaticdatasetwidgetbase.h"
 #include "qgsmeshdataset.h"
+
+#include <QAbstractListModel>
 
 SIP_NO_FILE
 
@@ -91,7 +92,7 @@ class GUI_EXPORT QgsMeshStaticDatasetWidget : public QWidget, private Ui::QgsMes
     QgsMeshDatasetListModel *mDatasetScalarModel = nullptr;
     QgsMeshDatasetListModel *mDatasetVectorModel = nullptr;
 
-    QgsMeshLayer *mLayer;
+    QgsMeshLayer *mLayer = nullptr;
 };
 
 #endif // QGSMESHSTATICDATASETWIDGET_H

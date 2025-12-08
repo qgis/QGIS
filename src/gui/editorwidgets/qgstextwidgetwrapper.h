@@ -16,8 +16,9 @@
 #ifndef QGSTEXTWIDGETWRAPPER_H
 #define QGSTEXTWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgswidgetwrapper.h"
+
 #include <QLabel>
 
 /**
@@ -30,6 +31,7 @@ class GUI_EXPORT QgsTextWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Create a text widget wrapper
      *

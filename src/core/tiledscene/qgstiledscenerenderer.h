@@ -18,10 +18,9 @@
 #ifndef QGSTILEDSCENERENDERER_H
 #define QGSTILEDSCENERENDERER_H
 
-#include "qgsrendercontext.h"
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrendercontext.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;

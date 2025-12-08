@@ -14,11 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
 #include "qgsgeometrysimplifier.h"
-#include "qgsrectangle.h"
+
+#include <limits>
+
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
+#include "qgsrectangle.h"
 
 bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol )
 {

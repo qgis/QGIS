@@ -16,9 +16,10 @@
 #ifndef QGSCODEEDITORR_H
 #define QGSCODEEDITORR_H
 
-#include "qgscodeeditor.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscodeeditor.h"
+
 #include <Qsci/qscilexer.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )

@@ -20,10 +20,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssurface.h"
-#include "qgspolygon.h"
 #include "qgsmultipolygon.h"
-
+#include "qgspolygon.h"
+#include "qgssurface.h"
 
 /**
  * \ingroup core

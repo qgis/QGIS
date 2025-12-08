@@ -19,8 +19,9 @@
 #define QGSLAYOUTITEMGROUPUNDOCOMMAND_H
 
 #include "qgis_core.h"
-#include <QUndoCommand>
 #include "qgslayoutitem.h"
+
+#include <QUndoCommand>
 
 #define SIP_NO_FILE
 ///@cond PRIVATE

@@ -18,9 +18,8 @@
 #define QGSORACLETABLEMODEL_H
 
 #include "qgis.h"
-#include "qgsoracleconn.h"
 #include "qgsabstractdbtablemodel.h"
-
+#include "qgsoracleconn.h"
 
 class QIcon;
 

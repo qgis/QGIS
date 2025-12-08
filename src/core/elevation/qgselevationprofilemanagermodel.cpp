@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgselevationprofilemanagermodel.h"
-#include "moc_qgselevationprofilemanagermodel.cpp"
-#include "qgsproject.h"
-#include "qgselevationprofilemanager.h"
+
 #include "qgselevationprofile.h"
+#include "qgselevationprofilemanager.h"
+#include "qgsproject.h"
+
+#include "moc_qgselevationprofilemanagermodel.cpp"
 
 //
 // QgsElevationProfileManagerModel

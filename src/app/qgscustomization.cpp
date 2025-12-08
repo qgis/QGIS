@@ -15,18 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscustomization.h"
-#include "moc_qgscustomization.cpp"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsstatusbar.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsstatusbar.h"
 
 #include <QAction>
-#include <QWidgetAction>
 #include <QDir>
 #include <QDockWidget>
 #include <QDomDocument>
@@ -35,13 +34,16 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QMessageBox>
-#include <QPushButton>
 #include <QKeySequence>
-#include <QToolButton>
-#include <QStatusBar>
+#include <QMessageBox>
 #include <QMetaObject>
+#include <QPushButton>
 #include <QSettings>
+#include <QStatusBar>
+#include <QToolButton>
+#include <QWidgetAction>
+
+#include "moc_qgscustomization.cpp"
 
 bool isInternalWidget( const QString &name )
 {

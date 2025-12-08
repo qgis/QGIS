@@ -13,35 +13,38 @@ email                : jpalmer at linz dot govt dot nz
 *                                                                         *
 ***************************************************************************/
 
-#include <limits>
-
 #include "qgsmaptoolselectutils.h"
-#include "moc_qgsmaptoolselectutils.cpp"
-#include "qgsfeatureiterator.h"
+
+#include <limits>
+#include <memory>
+
+#include "qgis.h"
 #include "qgisapp.h"
-#include "qgsmessagebar.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvasutils.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsrubberband.h"
-#include "qgsexception.h"
-#include "qgslogger.h"
-#include "qgis.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmessagelog.h"
-#include "qgsmapcanvasutils.h"
 #include "qgsselectioncontext.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsvectortilelayer.h"
 
-#include <QMouseEvent>
-#include <QApplication>
 #include <QAction>
+#include <QApplication>
+#include <QMouseEvent>
 #include <QtConcurrent>
+
+#include "moc_qgsmaptoolselectutils.cpp"
 
 QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas )
 {
@@ -542,7 +545,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
 
   mJobData = std::make_shared<DataForSearchingJob>();
   mJobData->isCanceled = false;
-  mJobData->source.reset( new QgsVectorLayerFeatureSource( mVectorLayer ) );
+  mJobData->source = std::make_unique<QgsVectorLayerFeatureSource>( mVectorLayer );
   mJobData->selectGeometry = mSelectGeometry;
   mJobData->context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   mJobData->filterString = canvasFilter;

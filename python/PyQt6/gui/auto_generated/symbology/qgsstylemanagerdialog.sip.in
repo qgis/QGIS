@@ -11,6 +11,7 @@
 
 
 
+
 class QgsStyleManagerDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -274,6 +275,7 @@ Remove all tags from selected symbols
 %End
 
   protected:
+
  void populateTypes() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 Populate combo box with known style items (symbols, color ramps).

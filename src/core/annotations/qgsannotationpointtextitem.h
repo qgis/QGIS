@@ -18,12 +18,11 @@
 #ifndef QGSANNOTATIONPOINTTEXTITEM_H
 #define QGSANNOTATIONPOINTTEXTITEM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
 #include "qgstextformat.h"
-
 
 /**
  * \ingroup core

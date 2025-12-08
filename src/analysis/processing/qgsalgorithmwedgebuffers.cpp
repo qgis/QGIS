@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmwedgebuffers.h"
+
 #include "qgsmultipoint.h"
 #include "qgsmultisurface.h"
 

@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgsproxystyle.h"
-#include "moc_qgsproxystyle.cpp"
-#include "qgsimageoperation.h"
+
 #include "qgis.h"
-#include <QStyleFactory>
-#include <QStyle>
-#include <QStyleOption>
+#include "qgsimageoperation.h"
+
 #include <QApplication>
+#include <QStyle>
+#include <QStyleFactory>
+#include <QStyleOption>
 #include <QWindow>
+
+#include "moc_qgsproxystyle.cpp"
 
 QgsProxyStyle::QgsProxyStyle( QWidget *parent )
   : QProxyStyle( nullptr ) // no base style yet - it transfers ownership, so we need a NEW QStyle object for the base style

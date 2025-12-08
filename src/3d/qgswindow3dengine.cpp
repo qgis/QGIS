@@ -14,18 +14,17 @@
  ***************************************************************************/
 
 #include "qgswindow3dengine.h"
-#include "moc_qgswindow3dengine.cpp"
 
+#include "qgs3dmapcanvas.h"
+#include "qgsabstractrenderview.h"
+#include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
+#include "qgsshadowrenderview.h"
 
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 
-#include "qgsabstractrenderview.h"
-#include "qgs3dmapcanvas.h"
-
-#include "qgsshadowrenderview.h"
-#include "qgsforwardrenderview.h"
+#include "moc_qgswindow3dengine.cpp"
 
 QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   : QgsAbstract3DEngine( parent )

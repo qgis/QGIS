@@ -20,9 +20,9 @@
 
 #include "qgis_3d.h"
 
-#include <Qt3DRender/QMaterial>
 #include <QList>
 #include <QVector4D>
+#include <Qt3DRender/QMaterial>
 
 namespace Qt3DRender
 {
@@ -39,6 +39,7 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsMaterial, with the specified \a parent node.
      */

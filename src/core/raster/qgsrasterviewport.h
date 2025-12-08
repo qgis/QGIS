@@ -17,9 +17,9 @@
 #ifndef QGSRASTERVIEWPORT_H
 #define QGSRASTERVIEWPORT_H
 
-#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 
 /**

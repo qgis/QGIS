@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgstreewidgetitem.h"
-#include "moc_qgstreewidgetitem.cpp"
-#include "qgsvariantutils.h"
+
 #include "qgis.h"
+#include "qgsvariantutils.h"
+
+#include "moc_qgstreewidgetitem.cpp"
 
 QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget *parent, int type )
   : QTreeWidgetItem( parent, type )

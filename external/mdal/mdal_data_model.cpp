@@ -215,7 +215,7 @@ std::string MDAL::DatasetGroup::uri() const
 
 void MDAL::DatasetGroup::replaceUri( std::string uri )
 {
-  mUri = uri;
+  mUri = std::move( uri );
 }
 
 MDAL::Statistics MDAL::DatasetGroup::statistics() const

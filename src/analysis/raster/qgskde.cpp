@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgskde.h"
-#include "qgsfeaturesource.h"
+
 #include "qgsfeatureiterator.h"
+#include "qgsfeaturesource.h"
 #include "qgsgeometry.h"
 
 #define NO_DATA -9999
@@ -24,16 +25,12 @@ QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEs
   : mSource( parameters.source )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
-  , mRadiusField( -1 )
-  , mWeightField( -1 )
   , mRadius( parameters.radius )
   , mPixelSize( parameters.pixelSize )
   , mShape( parameters.shape )
   , mDecay( parameters.decayRatio )
   , mOutputValues( parameters.outputValues )
-  , mBufferSize( -1 )
   , mDatasetH( nullptr )
-  , mRasterBandH( nullptr )
 {
   if ( !parameters.radiusField.isEmpty() )
     mRadiusField = mSource->fields().lookupField( parameters.radiusField );

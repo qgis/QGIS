@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="24"
+   viewBox="0 0 24 24"
+   width="24"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="mActionChamferFillet.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     id="namedview10"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="19.666667"
+     inkscape:cx="7.2711864"
+     inkscape:cy="8.1101695"
+     inkscape:window-width="1920"
+     inkscape:window-height="1163"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8" />
+  <path
+     style="display:inline;fill:#8cbe8c;fill-opacity:1;stroke:#c4a000;stroke-opacity:1"
+     d="M 0,20.599179 H 20.360832 V 3.7905191 L 0,3.7591371"
+     id="path905"
+     sodipodi:nodetypes="cccc" />
+  <path
+     style="display:inline;fill:#d5bc4c;fill-opacity:1;stroke:#555753;stroke-dasharray:1, 1;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 0,3.7591371 7.256687,3.8733453 20.329052,12 v 0 c 0,0 0.252252,8.599181 -8.951535,8.59918 L 0,20.599179"
+     id="path1471"
+     sodipodi:nodetypes="ccccsc" />
+</svg>

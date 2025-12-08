@@ -14,30 +14,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditor.h"
-#include "moc_qgscodeeditor.cpp"
-#include "qgssettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgui.h"
+
+#include "qgsapplication.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorhistorydialog.h"
-#include "qgsstringutils.h"
 #include "qgsfontutils.h"
+#include "qgsgui.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsshortcutsmanager.h"
+#include "qgsstringutils.h"
+#include "qgssymbollayerutils.h"
 
-#include <QLabel>
-#include <QWidget>
-#include <QFont>
-#include <QFontDatabase>
+#include <QClipboard>
 #include <QDebug>
 #include <QFocusEvent>
-#include <Qsci/qscistyle.h>
+#include <QFont>
+#include <QFontDatabase>
+#include <QLabel>
 #include <QMenu>
-#include <QClipboard>
-#include <QScrollBar>
 #include <QMessageBox>
-#include "Qsci/qscilexer.h"
+#include <QScrollBar>
+#include <QWidget>
+#include <Qsci/qscilexer.h>
+#include <Qsci/qscistyle.h>
+
+#include "moc_qgscodeeditor.cpp"
 
 ///@cond PRIVATE
 const QgsSettingsEntryBool *QgsCodeEditor::settingContextHelpHover = new QgsSettingsEntryBool( QStringLiteral( "context-help-hover" ), sTreeCodeEditor, false, QStringLiteral( "Whether the context help should works on hovered words" ) );
@@ -252,25 +255,30 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     }
   }
 
-  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
-  const bool altModifier = event->modifiers() & Qt::AltModifier;
-
-  // Ctrl+Alt+F: reformat code
+  // check for reformat code sequence
   const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
-  if ( !isReadOnly() && canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  if ( !isReadOnly() && canReformat )
   {
-    event->accept();
-    reformatCode();
-    return;
+    const QKeySequence reformatCodeSequence = QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeReformat );
+    if ( !reformatCodeSequence.isEmpty() && reformatCodeSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      reformatCode();
+      return;
+    }
   }
 
-  // Toggle comment when user presses  Ctrl+:
+  // Check for toggle comment sequence
   const bool canToggle = languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment;
-  if ( !isReadOnly() && canToggle && ctrlModifier && event->key() == Qt::Key_Colon )
+  if ( !isReadOnly() && canToggle )
   {
-    event->accept();
-    toggleComment();
-    return;
+    const QKeySequence toggleCommentCodeSequence = QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeToggleComment );
+    if ( !toggleCommentCodeSequence.isEmpty() && toggleCommentCodeSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      toggleComment();
+      return;
+    }
   }
 
   QsciScintilla::keyPressEvent( event );
@@ -299,7 +307,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
       {
         QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
-        reformatAction->setShortcut( QStringLiteral( "Ctrl+Alt+F" ) );
+        reformatAction->setShortcut( QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeReformat ) );
         reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
         reformatAction->setEnabled( !isReadOnly() );
         connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
@@ -317,7 +325,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
       {
         QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
-        toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
+        toggleCommentAction->setShortcut( QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeToggleComment ) );
         toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ), palette().color( QPalette::ColorRole::WindowText ) ) );
         toggleCommentAction->setEnabled( !isReadOnly() );
         connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
@@ -1020,7 +1028,10 @@ void QgsCodeEditor::clearPersistentHistory()
   if ( !mHistoryFilePath.isEmpty() && QFile::exists( mHistoryFilePath ) )
   {
     QFile file( mHistoryFilePath );
-    file.open( QFile::WriteOnly | QFile::Truncate );
+    if ( !file.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
+      QgsDebugError( QStringLiteral( "Could not truncate %1" ).arg( mHistoryFilePath ) );
+    }
   }
 
   emit persistentHistoryCleared();

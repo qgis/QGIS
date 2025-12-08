@@ -15,27 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsexpressioncontextutils.h"
+#include "qgslayertree.h"
 #include "qgslayout.h"
-#include "qgstest.h"
-#include "qgsproject.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutexporter.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmanualtable.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempolyline.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitempolyline.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutframe.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutatlas.h"
-#include "qgsreadwritecontext.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayertree.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgsrasterlayer.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgslayoutrendercontext.h"
-#include "qgslayoutexporter.h"
+#include "qgslayoutundostack.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
+#include "qgstest.h"
+
 #include <QSignalSpy>
 
 class TestQgsLayout : public QgsTest
@@ -66,6 +68,7 @@ class TestQgsLayout : public QgsTest
 #ifdef WITH_QTWEBKIT
     void shouldExportPage();
 #endif
+    void expressionContextPageVariables();
     void pageIsEmpty();
     void clear();
     void georeference();
@@ -738,6 +741,114 @@ void TestQgsLayout::shouldExportPage()
   QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
 }
 #endif
+
+void TestQgsLayout::expressionContextPageVariables()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  QgsLayoutItemLabel *labelItem = new QgsLayoutItemLabel( &l );
+  labelItem->attemptSetSceneRect( QRectF( 0, 640, 100, 100 ) );
+
+  QgsLayoutItemManualTable *manualTableItem = new QgsLayoutItemManualTable( &l );
+  //frame on page 1
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, manualTableItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 100 ) );
+  //frame on page 2
+  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, manualTableItem );
+  frame2->attemptSetSceneRect( QRectF( 0, 320, 100, 100 ) );
+  frame2->setHidePageIfEmpty( true );
+  manualTableItem->addFrame( frame1 );
+  manualTableItem->addFrame( frame2 );
+
+  QgsTableContents contents;
+  for ( int i = 0; i < 10; i++ )
+  {
+    contents << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Iterator value" ) ) << QgsTableCell( i ) );
+  }
+  manualTableItem->setTableContents( contents );
+
+  QgsExpressionContext context;
+
+  l.renderContext().mIsPreviewRender = true;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 3 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 3 );
+  l.renderContext().mIsPreviewRender = false;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 2 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 2 );
+  context = frame2->createExpressionContext();
+  //insure that the layout_page variable for items on skipped pages return -1
+  QCOMPARE( context.variable( "layout_page" ).toInt(), -1 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 2 );
+
+  for ( int i = 0; i < 10; i++ )
+  {
+    contents << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Iterator value" ) ) << QgsTableCell( i ) );
+  }
+  manualTableItem->setTableContents( contents );
+
+  l.renderContext().mIsPreviewRender = true;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 3 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 3 );
+  l.renderContext().mIsPreviewRender = false;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 3 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 3 );
+
+  // get rid of frames
+  l.removeItem( frame1 );
+  l.removeItem( frame2 );
+  l.removeMultiFrame( manualTableItem );
+  delete manualTableItem;
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+
+  l.renderContext().mIsPreviewRender = true;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 3 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 3 );
+  l.renderContext().mIsPreviewRender = false;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 3 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 3 );
+
+  // explicitly set exclude from exports
+  l.pageCollection()->page( 0 )->setExcludeFromExports( true );
+
+  l.renderContext().mIsPreviewRender = true;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 3 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 3 );
+  l.renderContext().mIsPreviewRender = false;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 2 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 2 );
+
+  l.pageCollection()->page( 1 )->setExcludeFromExports( false );
+  l.pageCollection()->page( 0 )->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
+  l.pageCollection()->page( 1 )->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, QgsProperty::fromValue( true ) );
+  l.refresh();
+
+  l.renderContext().mIsPreviewRender = true;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 3 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 3 );
+  l.renderContext().mIsPreviewRender = false;
+  context = labelItem->createExpressionContext();
+  QCOMPARE( context.variable( "layout_page" ).toInt(), 1 );
+  QCOMPARE( context.variable( "layout_numpages" ).toInt(), 1 );
+}
 
 void TestQgsLayout::pageIsEmpty()
 {

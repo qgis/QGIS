@@ -18,8 +18,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 

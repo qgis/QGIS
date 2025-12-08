@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsauthpkcs12method.h"
-#include "moc_qgsauthpkcs12method.cpp"
 
+#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsauthpkcs12method.cpp"
+
 #ifdef HAVE_GUI
 #include "qgsauthpkcs12edit.h"
 #endif

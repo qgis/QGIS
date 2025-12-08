@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgseditorconfigwidget.h"
-#include "moc_qgseditorconfigwidget.cpp"
-#include "qgspropertyoverridebutton.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgspropertyoverridebutton.h"
+
+#include "moc_qgseditorconfigwidget.cpp"
 
 QgsEditorConfigWidget::QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QWidget( parent )
@@ -52,7 +54,7 @@ void QgsEditorConfigWidget::initializeDataDefinedButton( QgsPropertyOverrideButt
 
 void QgsEditorConfigWidget::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );

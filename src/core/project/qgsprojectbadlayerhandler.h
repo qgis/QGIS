@@ -16,9 +16,9 @@
 #ifndef QGSPROJECTBADLAYERHANDLER_H
 #define QGSPROJECTBADLAYERHANDLER_H
 
-#include <QDomNode>
-
 #include "qgis_core.h"
+
+#include <QDomNode>
 
 /**
  * \ingroup core

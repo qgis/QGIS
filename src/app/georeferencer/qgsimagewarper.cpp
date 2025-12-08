@@ -13,23 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-#include <cstdio>
+#include "qgsimagewarper.h"
 
+#include <cmath>
 #include <cpl_conv.h>
 #include <cpl_string.h>
+#include <cstdio>
 #include <gdal.h>
 #include <gdalwarper.h>
 #include <ogr_spatialref.h>
 
-#include <QFile>
-
-#include "qgsimagewarper.h"
-#include "moc_qgsimagewarper.cpp"
+#include "qgsfeedback.h"
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 #include "qgsogrutils.h"
-#include "qgsfeedback.h"
+
+#include <QFile>
+
+#include "moc_qgsimagewarper.cpp"
 
 QgsImageWarper::QgsImageWarper()
 {

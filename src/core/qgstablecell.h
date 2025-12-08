@@ -15,12 +15,14 @@
 #ifndef QGSTABLECELL_H
 #define QGSTABLECELL_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgstextformat.h"
-#include <QVariant>
+
 #include <QColor>
-#include <memory>
+#include <QVariant>
 
 class QgsNumericFormat;
 class QgsReadWriteContext;

@@ -16,27 +16,27 @@
 
 #include "qgsaction.h"
 
-#include <QDesktopServices>
-#include <QFileInfo>
-#include <QUrl>
-#include <QUrlQuery>
-#include <QDir>
-#include <QTemporaryDir>
-#include <QNetworkRequest>
-#include <QJsonDocument>
-#include <QHttpMultiPart>
-#include <QMimeDatabase>
-#include <QApplication>
-
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
-#include "qgsexpressioncontext.h"
-#include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsmessagelog.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QHttpMultiPart>
+#include <QJsonDocument>
+#include <QMimeDatabase>
+#include <QNetworkRequest>
+#include <QTemporaryDir>
+#include <QUrl>
+#include <QUrlQuery>
 
 bool QgsAction::runable() const
 {
@@ -247,10 +247,16 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
         tempDir.path();
         const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
         QFile tempFile{ tempFilePath };
-        tempFile.open( QIODevice::WriteOnly );
-        tempFile.write( replyData );
-        tempFile.close();
-        QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+        if ( tempFile.open( QIODevice::WriteOnly ) )
+        {
+          tempFile.write( replyData );
+          tempFile.close();
+          QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Could not open temporary file for writing" ), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+        }
       }
       else
       {

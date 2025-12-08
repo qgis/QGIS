@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelchildalgorithm.h"
+
 #include "qgsapplication.h"
-#include "qgsprocessingregistry.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingregistry.h"
 
 ///@cond NOT_STABLE
 
@@ -42,6 +43,9 @@ QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsPro
 
 QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( const QgsProcessingModelChildAlgorithm &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsProcessingModelComponent::operator =( other );
   mId = other.mId;
   mConfiguration = other.mConfiguration;

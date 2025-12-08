@@ -16,9 +16,9 @@
 #ifndef QGSMAPCLIPPINGUTILS_H
 #define QGSMAPCLIPPINGUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 #include <QList>
 #include <QPainterPath>

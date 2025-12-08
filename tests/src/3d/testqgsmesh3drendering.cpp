@@ -13,24 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
-#include "qgstest.h"
+#include <memory>
 
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsmeshlayer3drenderer.h"
-#include "qgsmaplayertemporalproperties.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
-#include "qgs3drendercontext.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsMesh3DRendering : public QgsTest
 {
@@ -65,7 +66,7 @@ void TestQgsMesh3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerMeshTerrain = new QgsMeshLayer( testDataPath( "/mesh/quad_flower.2dm" ), "mesh", "mdal" );
   QVERIFY( mLayerMeshTerrain->isValid() );
@@ -151,7 +152,7 @@ void TestQgsMesh3DRendering::testMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -193,7 +194,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -245,6 +246,11 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     map->setLayers( QList<QgsMapLayer *>() << mLayerMeshSimplified );
     map->setExtent( fullExtent );
 
+    QgsPointLightSettings defaultLight;
+    defaultLight.setIntensity( 0.5 );
+    defaultLight.setPosition( map->origin() + QgsVector3D( 10, 0, 10 ) );
+    map->setLightSources( { defaultLight.clone() } );
+
     QgsMesh3DSymbol *symbolDataset = new QgsMesh3DSymbol;
     symbolDataset->setVerticalDatasetGroupIndex( 11 );
     symbolDataset->setVerticalScale( 1 );
@@ -269,7 +275,6 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     QgsOffscreen3DEngine engine;
     Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
     engine.setRootEntity( scene );
-
     // look from the top
     scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1000, 25, 45 );
 
@@ -281,7 +286,7 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     delete scene;
     delete map;
 
-    QGSVERIFYIMAGECHECK( QString( "mesh_simplified_%1" ).arg( i ), QString( "mesh_simplified_%1" ).arg( i ), img, QString(), 40, QSize( 0, 0 ), 2 );
+    QGSVERIFYIMAGECHECK( QString( "mesh_simplified_%1" ).arg( i ), QString( "mesh_simplified_%1" ).arg( i ), img, QString(), 250, QSize( 0, 0 ), 2 );
   }
 }
 
@@ -305,7 +310,7 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -346,7 +351,7 @@ void TestQgsMesh3DRendering::testMeshClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;

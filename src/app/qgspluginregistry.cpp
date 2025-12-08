@@ -16,24 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspluginregistry.h"
+
+#include "qgis.h"
+#include "qgisapp.h"
+#include "qgisinterface.h"
+#include "qgisplugin.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
+#include "qgsmessagelog.h"
+#include "qgspluginmetadata.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettings.h"
+
 #include <QDir>
 #include <QFileInfo>
 #include <QLibrary>
 #include <QMessageBox>
-
-#include "qgssettings.h"
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgisinterface.h"
-#include "qgspluginregistry.h"
-#include "qgspluginmetadata.h"
-#include "qgisplugin.h"
-#include "qgisapp.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsmessagebar.h"
-#include "qgsmessagebaritem.h"
-#include "qgsruntimeprofiler.h"
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"

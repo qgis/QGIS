@@ -16,12 +16,14 @@
 #ifndef QGSLAYERMETADATASEARCHWIDGET_H
 #define QGSLAYERMETADATASEARCHWIDGET_H
 
-#include "qgis_gui.h"
-#include <QWidget>
 #include "ui_qgslayermetadatasearchwidget.h"
-#include "qgsfeedback.h"
-#include "qgsabstractlayermetadataprovider.h"
+
+#include "qgis_gui.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsabstractlayermetadataprovider.h"
+#include "qgsfeedback.h"
+
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsLayerMetadataResultsProxyModel;
@@ -38,6 +40,7 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new QgsLayerMetadataSearchWidget.
      */

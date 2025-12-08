@@ -18,6 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgsgui.h"
+
 #include <QProxyStyle>
 
 /**
@@ -32,6 +33,7 @@ class GUI_EXPORT QgsProxyStyle : public QProxyStyle
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProxyStyle. Ownership is transferred to the \a parent widget.
      *

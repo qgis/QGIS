@@ -11,6 +11,7 @@
 
 
 
+
 class QgsCodeEditorPython : QgsCodeEditor
 {
 %Docstring(signature="appended")
@@ -118,6 +119,7 @@ Toggle comment for the selected text.
     virtual void initializeLexer();
 
     virtual void keyPressEvent( QKeyEvent *event );
+
     virtual QString reformatCodeString( const QString &string );
 
     virtual void populateContextMenu( QMenu *menu );

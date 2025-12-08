@@ -16,6 +16,7 @@
 #define QGSRASTERRENDERINGOPTIONS_H
 
 #include "ui_qgsrasterrenderingoptionsbase.h"
+
 #include "qgsoptionswidgetfactory.h"
 
 class QgsRasterRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsRasterRenderingOptionsWidgetBase

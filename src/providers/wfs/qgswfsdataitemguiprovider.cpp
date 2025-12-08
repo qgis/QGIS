@@ -14,20 +14,20 @@
  ***************************************************************************/
 
 #include "qgswfsdataitemguiprovider.h"
-#include "moc_qgswfsdataitemguiprovider.cpp"
 
 #include "qgsapplication.h"
+#include "qgsdataitemguiproviderutils.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgswfsnewconnection.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgssettingsentryenumflag.h"
+#include "qgswfsnewconnection.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "moc_qgswfsdataitemguiprovider.cpp"
 
 void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {

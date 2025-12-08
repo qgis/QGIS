@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgswmsdimensiondialog.h"
-#include "moc_qgswmsdimensiondialog.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsfieldcombobox.h"
 
-#include <QStandardItemModel>
+#include "qgsfieldcombobox.h"
+#include "qgsvectorlayer.h"
+
 #include <QPushButton>
+#include <QStandardItemModel>
+
+#include "moc_qgswmsdimensiondialog.cpp"
 
 QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList alreadyDefinedDimensions, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

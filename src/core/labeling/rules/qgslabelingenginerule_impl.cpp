@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgslabelingenginerule_impl.h"
-#include "qgsunittypes.h"
-#include "qgssymbollayerutils.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsthreadingutils.h"
-#include "qgsspatialindex.h"
-#include "qgsgeos.h"
-#include "labelposition.h"
+
 #include "feature.h"
+#include "labelposition.h"
+#include "qgsgeos.h"
+#include "qgsspatialindex.h"
+#include "qgssymbollayerutils.h"
+#include "qgsthreadingutils.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
 #include "qgsmessagelog.h"
 #endif

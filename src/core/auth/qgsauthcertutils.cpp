@@ -16,16 +16,16 @@
 
 #include "qgsauthcertutils.h"
 
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
+
 #include <QColor>
 #include <QDir>
 #include <QFile>
 #include <QObject>
 #include <QSslCertificate>
 #include <QUuid>
-
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
 
 #ifdef Q_OS_MAC
 #include <string.h>

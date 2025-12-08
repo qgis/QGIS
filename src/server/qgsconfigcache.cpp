@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsconfigcache.h"
-#include "moc_qgsconfigcache.cpp"
+
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
-#include "qgsstorebadlayerinfo.h"
 #include "qgsserverprojectutils.h"
+#include "qgsstorebadlayerinfo.h"
 #include "qgsvectorlayer.h"
 
 #include <QFile>
+
+#include "moc_qgsconfigcache.cpp"
 
 QgsConfigCache *QgsConfigCache::sInstance = nullptr;
 

@@ -16,22 +16,20 @@
  ***************************************************************************/
 
 #include "qgspointcloudstatscalculator.h"
-#include "moc_qgspointcloudstatscalculator.cpp"
-
-#include "qgspointcloudstatistics.h"
-
-#include "qgspointcloudindex.h"
-#include "qgsmessagelog.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloudrequest.h"
-
-#include "qgspointcloudrenderer.h"
 
 #include "qgsfeedback.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudstatistics.h"
 
 #include <QQueue>
 #include <QtConcurrent/QtConcurrentMap>
+
+#include "moc_qgspointcloudstatscalculator.cpp"
 
 struct StatsProcessor
 {
@@ -39,7 +37,7 @@ struct StatsProcessor
     static QMutex sStatsProcessorFeedbackMutex;
 
     StatsProcessor( QgsPointCloudIndex index, QgsPointCloudRequest request, QgsFeedback *feedback, double progressValue )
-      : mIndex( index ), mRequest( request ), mFeedback( feedback ), mProgressValue( progressValue )
+      : mIndex( std::move( index ) ), mRequest( request ), mFeedback( feedback ), mProgressValue( progressValue )
     {
     }
 
@@ -199,7 +197,7 @@ struct StatsProcessor
 QMutex StatsProcessor::sStatsProcessorFeedbackMutex;
 
 QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex index )
-  : mIndex( index )
+  : mIndex( std::move( index ) )
 {
 
 }

@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsspatialindexutils.h"
-#include "qgsrectangle.h"
+
 #include <spatialindex/SpatialIndex.h>
+
+#include "qgsrectangle.h"
 
 SpatialIndex::Region QgsSpatialIndexUtils::rectangleToRegion( const QgsRectangle &rectangle )
 {

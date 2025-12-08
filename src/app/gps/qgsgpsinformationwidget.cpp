@@ -15,20 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgpsinformationwidget.h"
-#include "moc_qgsgpsinformationwidget.cpp"
 
 #include "qgisapp.h"
 #include "qgsappgpsconnection.h"
+#include "qgsappgpsdigitizing.h"
+#include "qgsappgpssettingsmenu.h"
+#include "qgscoordinateutils.h"
+#include "qgsgpsconnection.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
-#include "qgsmapcanvas.h"
-#include "qgsgpsconnection.h"
-#include "qgscoordinateutils.h"
-#include "qgsappgpssettingsmenu.h"
-#include "qgsappgpsdigitizing.h"
+
+#include "moc_qgsgpsinformationwidget.cpp"
 
 // QWT Charting widget
 

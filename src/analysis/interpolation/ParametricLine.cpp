@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "ParametricLine.h"
+
 #include "qgslogger.h"
 
 void ParametricLine::add( ParametricLine *pl )

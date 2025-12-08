@@ -17,8 +17,8 @@
 #define QGSSTACDATAITEMS_H
 
 #include "qgis_core.h"
-#include "qgsdataitemprovider.h"
 #include "qgsconnectionsitem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 
@@ -29,6 +29,29 @@ class QgsStacCollection;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
+
+
+/**
+ * \brief Item for STAC Asset within a collection or item.
+ * \since QGIS 4.0
+*/
+class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+    QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset );
+
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
+    bool equal( const QgsDataItem *other ) override;
+    QVariant sortKey() const override { return QStringLiteral( "4 %1" ).arg( mName ); }
+    void updateToolTip();
+    const QgsStacAsset *stacAsset() const { return mStacAsset; }
+
+  private:
+    const QgsStacAsset *mStacAsset;
+    const QString mName;
+};
 
 /**
  * \brief Item to display that there are additional STAC items which are not loaded.

@@ -17,8 +17,9 @@
 #ifndef QGSAUTHGUIUTILS_H
 #define QGSAUTHGUIUTILS_H
 
-#include <QColor>
 #include "qgis_gui.h"
+
+#include <QColor>
 
 class QTreeWidgetItem;
 class QWidget;

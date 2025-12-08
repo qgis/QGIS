@@ -16,10 +16,11 @@
 #ifndef QGSCOLORWIDGETS_H
 #define QGSCOLORWIDGETS_H
 
-#include <QWidgetAction>
-#include <QWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
+#include <QWidgetAction>
 
 class QColor;
 class QLineEdit;
@@ -346,9 +347,9 @@ class GUI_EXPORT QgsColorWidgetAction : public QWidgetAction
     QgsColorWidget *mColorWidget = nullptr;
 
     //used to suppress recursion with hover events
-    bool mSuppressRecurse;
+    bool mSuppressRecurse = false;
 
-    bool mDismissOnColorSelection;
+    bool mDismissOnColorSelection = true;
 
   private slots:
 

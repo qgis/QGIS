@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsfavoritesitem.h"
-#include "moc_qgsfavoritesitem.cpp"
-#include "qgssettings.h"
-#include "qgslogger.h"
+
 #include "qgsapplication.h"
-#include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+
+#include "moc_qgsfavoritesitem.cpp"
 
 //
 // QgsFavoritesItem

@@ -14,21 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgsauthconfig.h"
+#include "qgsauthmanager.h"
+#include "qgsauthmethodmetadata.h"
+#include "qgssettings.h"
 #include "qgstest.h"
-#include <QtTest/QSignalSpy>
-#include <QObject>
+
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
-
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
-#include "qgsauthmethodmetadata.h"
-#include "qgsauthconfig.h"
-#include "qgssettings.h"
+#include <QtTest/QSignalSpy>
 
 /**
  * \ingroup UnitTests

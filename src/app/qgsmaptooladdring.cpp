@@ -15,17 +15,18 @@
 
 
 #include "qgsmaptooladdring.h"
-#include "moc_qgsmaptooladdring.cpp"
+
+#include "qgisapp.h"
+#include "qgscurvepolygon.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
-#include "qgscurvepolygon.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditutils.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
 
+#include "moc_qgsmaptooladdring.cpp"
 
 QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )

@@ -13,21 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <cpl_conv.h>
+
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsproject.h"
 #include "qgsmapcanvas.h"
-#include "qgsunittypes.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectutils.h"
-#include "qgsmapmouseevent.h"
-
-#include "cpl_conv.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgstest.h"
+#include "qgsunittypes.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsMapToolSelect : public QObject
 {

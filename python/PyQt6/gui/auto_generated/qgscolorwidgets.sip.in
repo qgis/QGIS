@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorWidget : QWidget
 {
 %Docstring(signature="appended")

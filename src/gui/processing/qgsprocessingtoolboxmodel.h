@@ -19,9 +19,10 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingparametertype.h"
+
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QPointer>
+#include <QSortFilterProxyModel>
 
 class QgsVectorLayer;
 class QgsProcessingRegistry;
@@ -200,6 +201,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingToolboxModelProviderNode, linked to the
      * specified \a provider.
@@ -239,6 +241,7 @@ class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolbo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingToolboxModelGroupNode.
      *
@@ -276,6 +279,7 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
      * with the specified \a algorithm.
@@ -305,6 +309,7 @@ class GUI_EXPORT QgsProcessingToolboxModelParameterNode : public QgsProcessingTo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingToolboxModelParameterNode, associated
      * with the specified \a paramType.
@@ -436,13 +441,13 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      *
      * \see isParameter()
      * \see providerForIndex()
-     * \since QGIS 3.44  
+     * \since QGIS 3.44
      */
     const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns TRUE if \a index corresponds to a parameter.
-     * 
+     *
      * \see parameterTypeForIndex()
      * \since QGIS 3.44
      */

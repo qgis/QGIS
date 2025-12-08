@@ -18,10 +18,11 @@
 #ifndef QGSDIAL_H
 #define QGSDIAL_H
 
-#include <QDial>
-#include <QVariant>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDial>
+#include <QVariant>
 
 class QPaintEvent;
 
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsDial : public QDial
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDial
      * \param parent parent object

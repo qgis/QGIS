@@ -14,14 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmtsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswmtsgetcapabilities.h"
 
-#include "qgsproject.h"
-#include "qgsexception.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsproject.h"
+#include "qgsserverprojectutils.h"
+#include "qgswmtsutils.h"
 
 namespace QgsWmts
 {

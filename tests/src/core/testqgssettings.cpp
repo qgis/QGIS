@@ -12,13 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-
-
-#include "qgssettings.h"
 #include "qgsmaplayerproxymodel.h"
+#include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QObject>
 
 /**
  * \ingroup UnitTests

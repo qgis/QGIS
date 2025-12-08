@@ -16,21 +16,21 @@
 #ifndef QGSEXPRESSION_H
 #define QGSEXPRESSION_H
 
-#include "qgis_core.h"
-#include <QMetaType>
-#include <QStringList>
-#include <QVariant>
-#include <QList>
-#include <QDomDocument>
-#include <QCoreApplication>
-#include <QSet>
-#include <QRecursiveMutex>
-
 #include <functional>
 
 #include "qgis.h"
-#include "qgsinterval.h"
+#include "qgis_core.h"
 #include "qgsexpressionnode.h"
+#include "qgsinterval.h"
+
+#include <QCoreApplication>
+#include <QDomDocument>
+#include <QList>
+#include <QMetaType>
+#include <QRecursiveMutex>
+#include <QSet>
+#include <QStringList>
+#include <QVariant>
 
 class QgsFeature;
 class QgsGeometry;

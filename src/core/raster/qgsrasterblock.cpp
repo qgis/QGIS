@@ -15,16 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterblock.h"
+
 #include <limits>
+
+#include "qgsgdalutils.h"
+#include "qgslogger.h"
+#include "qgsrectangle.h"
 
 #include <QByteArray>
 #include <QColor>
 #include <QLocale>
-
-#include "qgslogger.h"
-#include "qgsrasterblock.h"
-#include "qgsrectangle.h"
-#include "qgsgdalutils.h"
 
 #define GDAL_MINMAXELT_NS qgis_gdal
 #include "gdal_minmax_element.hpp"

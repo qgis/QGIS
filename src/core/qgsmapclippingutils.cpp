@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmapclippingutils.h"
-#include "qgsgeometry.h"
-#include "qgsrendercontext.h"
-#include "qgsmapclippingregion.h"
-#include "qgslogger.h"
+
 #include <algorithm>
+
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmapclippingregion.h"
+#include "qgsrendercontext.h"
+
 #include <QPointer>
 
 QList<QgsMapClippingRegion> QgsMapClippingUtils::collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer )

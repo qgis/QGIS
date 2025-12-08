@@ -17,7 +17,6 @@
 
 #include "qgsproxyfeaturesink.h"
 
-
 QgsProxyFeatureSink::QgsProxyFeatureSink( QgsFeatureSink *sink )
   : mSink( sink )
 {}

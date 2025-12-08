@@ -15,23 +15,26 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewbadlayerindicator.h"
-#include "moc_qgslayertreeviewbadlayerindicator.cpp"
-#include "qgslayertree.h"
-#include "qgslayertreeview.h"
-#include "qgslayertreeutils.h"
-#include "qgslayertreemodel.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgisapp.h"
-#include "qgsbrowsermodel.h"
-#include "qgsbrowsertreeview.h"
-#include "qgsbrowserproxymodel.h"
-#include "qgsmessageviewer.h"
 
 #include <functional>
+
+#include "qgisapp.h"
+#include "qgsbrowsermodel.h"
+#include "qgsbrowserproxymodel.h"
+#include "qgsbrowsertreeview.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreeutils.h"
+#include "qgslayertreeview.h"
+#include "qgsmessageviewer.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+
 #include <QDialog>
-#include <QVBoxLayout>
 #include <QDialogButtonBox>
+#include <QVBoxLayout>
+
+#include "moc_qgslayertreeviewbadlayerindicator.cpp"
 
 QgsLayerTreeViewBadLayerIndicatorProvider::QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

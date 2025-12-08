@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstriangulation.h"
+
 #include "qgsfields.h"
 
 QgsFields QgsTriangulation::triangulationFields()

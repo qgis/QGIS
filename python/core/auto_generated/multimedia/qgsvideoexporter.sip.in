@@ -1,0 +1,156 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/multimedia/qgsvideoexporter.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVideoExporter : QObject
+{
+%Docstring(signature="appended")
+Handles exports of sequential image files to video formats.
+
+Video export functionality is not available on all systems. The
+:py:func:`~isAvailable` function can be used to test whether video
+export is available on the current system.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvideoexporter.h"
+%End
+  public:
+
+    static bool isAvailable();
+%Docstring
+Returns ``True`` if the video export functionality is available on the
+current system.
+%End
+
+    QgsVideoExporter( const QString &filename, QSize size, double framesPerSecond );
+%Docstring
+Constructor for QgsVideoExporter.
+
+:param filename: destination video file name
+:param size: output video frame size
+:param framesPerSecond: output video frames per second
+%End
+    ~QgsVideoExporter();
+
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Sets an optional ``feedback`` object, for progress reports and
+cancellation support.
+
+The object must exist for the lifetime of the export, ownership is not
+transferred.
+
+.. seealso:: :py:func:`feedback`
+%End
+
+    QgsFeedback *feedback();
+%Docstring
+Returns the optional feedback object.
+
+.. seealso:: :py:func:`setFeedback`
+%End
+
+    double framesPerSecond() const;
+%Docstring
+Returns the output video frames per second.
+
+.. seealso:: :py:func:`frameDuration`
+%End
+
+    qint64 frameDuration() const;
+%Docstring
+Returns the duration of each frame, in micro-seconds.
+
+.. seealso:: :py:func:`framesPerSecond`
+%End
+
+    QSize size() const;
+%Docstring
+Returns the output video frame size.
+%End
+
+    void setInputFiles( const QStringList &files );
+%Docstring
+Sets the list of input image ``files``.
+
+The list must be an ordered list of existing image file paths, which
+will form the output video frames.
+
+.. seealso:: :py:func:`setInputFilesByPattern`
+
+.. seealso:: :py:func:`inputFiles`
+%End
+
+    void setInputFilesByPattern( const QString &directory, const QString &pattern );
+%Docstring
+Sets the input image files by searching a ``directory`` for files
+matching a ``pattern``.
+
+E.g. setting ``pattern`` to "*.png" will find all PNG files in the
+``directory`` and use them as input frames.
+
+The frames will be sorted alphabetically by filename.
+
+.. seealso:: :py:func:`setInputFiles`
+
+.. seealso:: :py:func:`inputFiles`
+%End
+
+    QStringList inputFiles() const;
+%Docstring
+Returns the list of input image ``files``.
+
+.. seealso:: :py:func:`setInputFiles`
+%End
+
+
+
+    QString errorString() const;
+%Docstring
+Returns the string describing the last error received while writing the
+video.
+
+.. seealso:: :py:func:`error`
+%End
+
+  public slots:
+
+    void writeVideo() throw( QgsNotSupportedException );
+%Docstring
+Starts the video export operation.
+
+The :py:func:`~QgsVideoExporter.finished` signal will be emitted when
+the operation is complete.
+
+:raises QgsNotSupportedException: if writing video is not supported on
+                                  the current system.
+%End
+
+  signals:
+
+    void finished();
+%Docstring
+Emitted when the video export finishes.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/multimedia/qgsvideoexporter.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -17,6 +17,7 @@
 #define QGSPAINTEFFECTPROPERTIESWIDGET_H
 
 #include "ui_qgseffectpropertieswidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
@@ -33,6 +34,7 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
     Q_OBJECT
 
   public:
+
     /**
      * QgsPaintEffectPropertiesWidget constructor
      * \param effect QgsPaintEffect to modify in the widget

@@ -26,10 +26,12 @@
 **
 ****************************************************************************/
 #include "dynamictreemodel.h"
+
+#include <QtCore/QDebug>
 #include <QtCore/QHash>
 #include <QtCore/QList>
 #include <QtCore/QTimer>
-#include <QtCore/QDebug>
+
 DynamicTreeModel::DynamicTreeModel( QObject *parent )
   : QAbstractItemModel( parent ), nextId( 1 )
 {

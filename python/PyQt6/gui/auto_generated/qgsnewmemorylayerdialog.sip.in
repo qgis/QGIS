@@ -9,6 +9,7 @@
 
 
 
+
 class QgsNewMemoryLayerDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -19,6 +20,7 @@ A dialog for configuring the properties of a new memory (scratch) layer.
 #include "qgsnewmemorylayerdialog.h"
 %End
   public:
+
     static QgsVectorLayer *runAndCreateLayer( QWidget *parent = 0, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 %Docstring
 Runs the dialog and creates a new memory layer

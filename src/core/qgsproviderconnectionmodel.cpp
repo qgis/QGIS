@@ -13,10 +13,13 @@
 *                                                                         *
 ***************************************************************************/
 #include "qgsproviderconnectionmodel.h"
-#include "moc_qgsproviderconnectionmodel.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 #include <QIcon>
+
+#include "moc_qgsproviderconnectionmodel.cpp"
 
 QgsProviderConnectionModel::QgsProviderConnectionModel( const QString &provider, QObject *parent )
   : QAbstractItemModel( parent )

@@ -14,27 +14,28 @@
  ***************************************************************************/
 
 #include "qgsskyboxentity.h"
-#include "moc_qgsskyboxentity.cpp"
-
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QFilterKey>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QDepthTest>
-#include <Qt3DRender/QSeamlessCubemap>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QTextureImage>
-#include <QUrl>
 
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsproject.h"
+
+#include <QUrl>
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QFilterKey>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QSeamlessCubemap>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTextureImage>
+
+#include "moc_qgsskyboxentity.cpp"
 
 QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   : Qt3DCore::QEntity( parent )

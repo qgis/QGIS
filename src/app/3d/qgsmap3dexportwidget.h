@@ -32,7 +32,7 @@ class QgsMap3DExportWidget : public QWidget
 
   public:
     explicit QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExportSettings *exportSettings, QWidget *parent = nullptr );
-    ~QgsMap3DExportWidget();
+    ~QgsMap3DExportWidget() override;
 
     void loadSettings();
     bool exportScene();

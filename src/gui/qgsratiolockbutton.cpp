@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsratiolockbutton.h"
-#include "moc_qgsratiolockbutton.cpp"
+
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
-#include "qgis.h"
 
 #include <QApplication>
+#include <QDoubleSpinBox>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
 #include <QWidget>
-#include <QDoubleSpinBox>
+
+#include "moc_qgsratiolockbutton.cpp"
 
 QgsRatioLockButton::QgsRatioLockButton( QWidget *parent )
   : QToolButton( parent )

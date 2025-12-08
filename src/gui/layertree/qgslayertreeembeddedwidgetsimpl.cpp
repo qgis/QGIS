@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
-#include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
+
+#include "qgsmaplayer.h"
 
 #include <QFontMetrics>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
 #include <QTimer>
-#include "qgsmaplayer.h"
+
+#include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
 
 ///@cond PRIVATE
 

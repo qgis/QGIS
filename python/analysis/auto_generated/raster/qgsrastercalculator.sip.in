@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsRasterCalculatorEntry
 {
 %Docstring(signature="appended")
@@ -21,6 +23,7 @@ calculation.
 #include "qgsrastercalculator.h"
 %End
   public:
+
     static QVector<QgsRasterCalculatorEntry> rasterEntries();
 %Docstring
 Creates a list of raster entries from the current project.

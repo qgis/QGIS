@@ -286,6 +286,9 @@ QgsSymbolLayer.SkipMultiples.__doc__ = "Skip multiples of \n.. versionadded:: 3.
 QgsSymbolLayer.ShowMarker = QgsSymbolLayer.Property.ShowMarker
 QgsSymbolLayer.ShowMarker.is_monkey_patched = True
 QgsSymbolLayer.ShowMarker.__doc__ = "Show markers \n.. versionadded:: 3.40"
+QgsSymbolLayer.BlankSegments = QgsSymbolLayer.Property.BlankSegments
+QgsSymbolLayer.BlankSegments.is_monkey_patched = True
+QgsSymbolLayer.BlankSegments.__doc__ = "String list of distance to define blank segments along line for templated line symbol layers. \n.. versionadded:: 4.0"
 QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
 * ``Size``: Symbol size
@@ -606,6 +609,10 @@ QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
   .. versionadded:: 3.40
 
+* ``BlankSegments``: String list of distance to define blank segments along line for templated line symbol layers.
+
+  .. versionadded:: 4.0
+
 
 """
 # --
@@ -621,7 +628,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsSymbolLayer.__virtual_methods__ = ['flags', 'color', 'setColor', 'setStrokeColor', 'strokeColor', 'setFillColor', 'fillColor', 'startFeatureRender', 'stopFeatureRender', 'toSld', 'ogrFeatureStyle', 'subSymbol', 'setSubSymbol', 'isCompatibleWithSymbol', 'canCauseArtifactsBetweenAdjacentTiles', 'estimateMaxBleed', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'setDataDefinedProperty', 'writeDxf', 'dxfWidth', 'dxfSize', 'dxfOffset', 'dxfColor', 'dxfAngle', 'dxfCustomDashPattern', 'dxfPenStyle', 'dxfBrushColor', 'dxfBrushStyle', 'prepareExpressions', 'hasDataDefinedProperties', 'masks', 'prepareMasks']
+    QgsSymbolLayer.__virtual_methods__ = ['flags', 'color', 'setColor', 'setStrokeColor', 'strokeColor', 'setFillColor', 'fillColor', 'startFeatureRender', 'stopFeatureRender', 'toSld', 'ogrFeatureStyle', 'subSymbol', 'setSubSymbol', 'isCompatibleWithSymbol', 'rendersIdenticallyTo', 'canCauseArtifactsBetweenAdjacentTiles', 'estimateMaxBleed', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'setDataDefinedProperty', 'writeDxf', 'dxfWidth', 'dxfSize', 'dxfOffset', 'dxfColor', 'dxfAngle', 'dxfCustomDashPattern', 'dxfPenStyle', 'dxfBrushColor', 'dxfBrushStyle', 'prepareExpressions', 'hasDataDefinedProperties', 'masks', 'prepareMasks']
     QgsSymbolLayer.__abstract_methods__ = ['layerType', 'startRender', 'stopRender', 'clone', 'properties', 'drawPreviewIcon']
     QgsSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):

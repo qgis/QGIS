@@ -18,13 +18,14 @@
 
 #define SIP_NO_FILE
 
-#include <QNetworkRequest>
-#include <QString>
-#include <QPointer>
+#include <cpl_http.h>
+#include <gdal.h>
 
 #include "qgis_core.h"
-#include "cpl_http.h"
-#include "gdal.h"
+
+#include <QNetworkRequest>
+#include <QPointer>
+#include <QString>
 
 class QgsFeedback;
 

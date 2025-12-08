@@ -16,11 +16,11 @@
 #ifndef QGSSETTINGSEDITORREGISTRY_H
 #define QGSSETTINGSEDITORREGISTRY_H
 
-#include <QObject>
-#include <QMap>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QMap>
+#include <QObject>
 
 class QWidget;
 class QgsSettingsEntryBase;

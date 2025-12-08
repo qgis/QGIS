@@ -23,8 +23,8 @@
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsrasterprojector.h"
 #include "qgsrasteranalysisutils.h"
+#include "qgsrasterprojector.h"
 
 ///@cond PRIVATE
 

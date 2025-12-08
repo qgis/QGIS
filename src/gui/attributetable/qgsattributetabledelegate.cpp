@@ -13,26 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QItemDelegate>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QPainter>
-#include <QToolButton>
-
 #include "qgsattributetabledelegate.h"
-#include "moc_qgsattributetabledelegate.cpp"
+
+#include "qgsactionmanager.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetableview.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureselectionmodel.h"
-#include "qgsvectordataprovider.h"
-#include "qgsactionmanager.h"
 #include "qgsgui.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsrendercontext.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerjoininfo.h"
+
+#include <QComboBox>
+#include <QItemDelegate>
+#include <QLineEdit>
+#include <QPainter>
+#include <QToolButton>
+
+#include "moc_qgsattributetabledelegate.cpp"
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {

@@ -16,12 +16,12 @@
 #ifndef QGSOPTIONSDIALOGHIGHLIGHTWIDGET_H
 #define QGSOPTIONSDIALOGHIGHLIGHTWIDGET_H
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QObject>
 #include <QPointer>
 #include <QWidget>
-
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 
 class QgsOptionsDialogHighlightWidget;
 
@@ -64,6 +64,7 @@ class QgsOptionsDialogHighlightWidgetEventFilter : public QObject
 class GUI_EXPORT QgsOptionsDialogHighlightWidget
 {
   public:
+
     /**
      * create a highlight widget implementation for the proper widget type.
      * For instance a QgsOptionsDialogHighlightButton for button.
@@ -91,6 +92,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget
     QWidget *widget() { return mWidget; }
 
   protected:
+
     /**
      * Search for the \a text in the widget and return TRUE if it was found
      */

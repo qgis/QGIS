@@ -18,23 +18,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgswmsgetlegendgraphics.h"
+
 #include "qgslayertree.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgslegendrenderer.h"
+#include "qgsmapsettings.h"
+#include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturecounter.h"
-#include "qgslayertreefiltersettings.h"
-
-#include "qgswmsutils.h"
+#include "qgswmsrenderer.h"
 #include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
-#include "qgswmsgetlegendgraphics.h"
-#include "qgswmsrenderer.h"
-#include "qgsserverprojectutils.h"
-#include "qgsmapsettings.h"
+#include "qgswmsutils.h"
 
 #include <QImage>
-#include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 namespace QgsWms
 {
@@ -360,7 +360,7 @@ namespace QgsWms
   {
     if ( !projectRoot )
     {
-      return 0;
+      return nullptr;
     }
 
     auto tree = std::make_unique<QgsLayerTree>();

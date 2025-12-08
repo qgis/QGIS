@@ -31,6 +31,7 @@ line edit is finished (focus lost, enter key pressed).
 #include "qgsfieldexpressionwidget.h"
 %End
   public:
+
     explicit QgsFieldExpressionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsFieldExpressionWidget creates a widget with a combo box to display
@@ -51,7 +52,7 @@ Appends a scope to the current expression context.
 .. versionadded:: 3.2
 %End
 
-    const QString expressionDialogTitle();
+    QString expressionDialogTitle() const;
 %Docstring
 Returns the title used for the expression dialog
 %End

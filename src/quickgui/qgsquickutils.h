@@ -16,12 +16,11 @@
 #ifndef QGSQUICKUTILS_H
 #define QGSQUICKUTILS_H
 
+#include "qgis_quick.h"
+#include "qgspoint.h"
+
 #include <QObject>
 #include <qglobal.h>
-
-#include "qgis_quick.h"
-
-#include "qgspoint.h"
 
 /**
  * \ingroup quick

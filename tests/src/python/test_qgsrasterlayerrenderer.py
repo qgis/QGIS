@@ -702,7 +702,7 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
         map_settings.setIsTemporal(True)
         map_settings.setTemporalRange(
             QgsDateTimeRange(
-                QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)),
+                QDateTime(QDate(2024, 1, 3), QTime(0, 0, 0)),
                 QDateTime(QDate(2024, 1, 5), QTime(23, 59, 59)),
             )
         )
@@ -710,6 +710,15 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
             self.render_map_settings_check(
                 "Temporal range filter on map settings on represents temporal values mode",
                 "represents_temporal_values_filter",
+                map_settings,
+            )
+        )
+
+        raster_layer.temporalProperties().setAccumulatePixels(True)
+        self.assertTrue(
+            self.render_map_settings_check(
+                "Temporal range filter on map settings on represents temporal values mode",
+                "represents_temporal_values_filter_accumulate_pixels",
                 map_settings,
             )
         )

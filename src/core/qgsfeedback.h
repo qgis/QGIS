@@ -16,10 +16,10 @@
 #ifndef QGSFEEDBACK_H
 #define QGSFEEDBACK_H
 
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QObject>
 
 /**
  * \ingroup core

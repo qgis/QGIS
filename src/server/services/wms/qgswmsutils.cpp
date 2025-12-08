@@ -19,14 +19,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QRegularExpression>
-
-#include "qgsmodule.h"
 #include "qgswmsutils.h"
+
 #include "qgsmediancut.h"
+#include "qgsmodule.h"
+#include "qgsproject.h"
 #include "qgsserverprojectutils.h"
 #include "qgswmsserviceexception.h"
-#include "qgsproject.h"
+
+#include <QRegularExpression>
 
 namespace QgsWms
 {

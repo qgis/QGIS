@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsstylealgorithms.h"
+
 #include "qgsstyle.h"
 
 ///@cond PRIVATE
@@ -133,7 +134,10 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
     sourceStyle.createMemoryDatabase();
     if ( !sourceStyle.importXml( source ) )
     {
-      feedback->reportError( QObject::tr( "Could not read %1" ).arg( source ) );
+      if ( feedback )
+      {
+        feedback->reportError( QObject::tr( "Could not read %1" ).arg( source ) );
+      }
       i++;
       continue;
     }

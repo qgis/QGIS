@@ -14,19 +14,22 @@
  ***************************************************************************/
 
 #include "qgsrasterelevationpropertieswidget.h"
-#include "moc_qgsrasterelevationpropertieswidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsrasterrendererregistry.h"
 #include "qgsrasterrenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include <QMenu>
+#include "qgsrasterrendererregistry.h"
+
 #include <QAction>
+#include <QMenu>
+
+#include "moc_qgsrasterelevationpropertieswidget.cpp"
 
 QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

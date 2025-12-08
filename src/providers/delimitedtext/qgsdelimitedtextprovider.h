@@ -18,15 +18,14 @@
 #ifndef QGSDELIMITEDTEXTPROVIDER_H
 #define QGSDELIMITEDTEXTPROVIDER_H
 
-#include <QStringList>
-#include <QRegularExpression>
-
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdelimitedtextfile.h"
 #include "qgsfields.h"
-
 #include "qgsprovidermetadata.h"
+#include "qgsvectordataprovider.h"
+
+#include <QRegularExpression>
+#include <QStringList>
 
 class QgsFeature;
 class QgsField;

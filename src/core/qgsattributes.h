@@ -20,20 +20,17 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
-#include <QMap>
-#include <QString>
-#include <QVariant>
-#include <QList>
-#include <QVector>
-#include <QSet>
-#include <QExplicitlySharedDataPointer>
-
-
 #include "qgsfields.h"
 #include "qgsunsetattributevalue.h"
 #include "qgsvariantutils.h"
 
+#include <QExplicitlySharedDataPointer>
+#include <QList>
+#include <QMap>
+#include <QSet>
+#include <QString>
+#include <QVariant>
+#include <QVector>
 
 class QgsRectangle;
 class QgsFeature;

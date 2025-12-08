@@ -11,6 +11,7 @@
 
 
 
+
 class QgsGridFileWriter
 {
 %Docstring(signature="appended")
@@ -22,6 +23,7 @@ file.
 #include "qgsgridfilewriter.h"
 %End
   public:
+
     QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
 %Docstring
 Constructor for QgsGridFileWriter, for the specified ``interpolator``.

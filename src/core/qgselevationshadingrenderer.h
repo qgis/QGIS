@@ -16,9 +16,9 @@
 #ifndef QGSELEVATIONSHADINGRENDERER_H
 #define QGSELEVATIONSHADINGRENDERER_H
 
+#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgselevationmap.h"
-#include "qgis.h"
 
 class QImage;
 class QgsElevationMap;

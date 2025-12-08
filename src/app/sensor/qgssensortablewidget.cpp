@@ -14,21 +14,21 @@
  ***************************************************************************/
 
 #include "qgssensortablewidget.h"
-#include "moc_qgssensortablewidget.cpp"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgsiodevicesensor.h"
+#include "qgsproject.h"
 #include "qgssensorguiregistry.h"
 #include "qgssensormanager.h"
 #include "qgssensormodel.h"
 #include "qgssensorwidget.h"
-#include "qgsproject.h"
 
 #include <QDialogButtonBox>
 #include <QTableWidget>
 
+#include "moc_qgssensortablewidget.cpp"
 
 QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWidget *parent )
   : QgsPanelWidget( parent )

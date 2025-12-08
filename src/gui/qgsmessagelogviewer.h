@@ -18,13 +18,14 @@
 #define QGSMESSAGELOGVIEWER_H
 
 #include "ui_qgsmessagelogviewer.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 #include "qgsmessagelog.h"
 
 #include <QMenu>
 #include <QString>
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 
 class QStatusBar;
 class QCloseEvent;
@@ -37,6 +38,7 @@ class GUI_EXPORT QgsMessageLogViewer : public QDialog, private Ui::QgsMessageLog
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new message log viewer. The viewer will automatically connect to the system's
      * QgsApplication::messageLog() instance.

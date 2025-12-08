@@ -48,6 +48,12 @@ Returns ``True`` if the specified ``layer`` is a child layer from any
 .. versionadded:: 3.24
 %End
 
+    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project );
+%Docstring
+Returns the current trust status of the specified ``project``.
+
+.. versionadded:: 4.0
+%End
 
 };
 

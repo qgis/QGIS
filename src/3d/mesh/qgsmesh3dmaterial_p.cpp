@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgsmesh3dmaterial_p.h"
-#include "moc_qgsmesh3dmaterial_p.cpp"
-
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QTexture>
 
 #include <QUrl>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTexture>
+
+#include "moc_qgsmesh3dmaterial_p.cpp"
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QBuffer>
 #else

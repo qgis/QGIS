@@ -16,13 +16,13 @@
 #ifndef QGSNULLPAINTERDEVICE_H
 #define QGSNULLPAINTERDEVICE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
 #include <QPaintDevice>
 #include <QPaintEngine>
-#include <memory>
-
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

@@ -19,8 +19,9 @@
 
 #include "ui_qgsauthconfigidedit.h"
 
-#include <QWidget>
 #include "qgis_gui.h"
+
+#include <QWidget>
 
 #define SIP_NO_FILE
 
@@ -35,6 +36,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     Q_OBJECT
 
   public:
+
     /**
      * Widget to unlock and edit an authentication configuration ID
      * \param parent Parent widget
@@ -44,10 +46,10 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     explicit QgsAuthConfigIdEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), bool allowEmpty = true );
 
     //! The authentication configuration ID, if valid, otherwise an empty QString
-    QString const configId();
+    QString configId();
 
     //! Whether to allow no ID to be set
-    bool allowEmptyId() { return mAllowEmpty; }
+    bool allowEmptyId() const { return mAllowEmpty; }
 
     //! Validate the widget state and ID
     bool validate();

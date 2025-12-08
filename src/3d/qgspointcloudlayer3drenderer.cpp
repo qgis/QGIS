@@ -15,16 +15,17 @@
 
 #include "qgspointcloudlayer3drenderer.h"
 
-#include "qgs3dutils.h"
-#include "qgspointcloudlayerchunkloader_p.h"
+#include <memory>
 
+#include "qgs3dsymbolregistry.h"
+#include "qgs3dutils.h"
+#include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerchunkloader_p.h"
+#include "qgspointcloudlayerelevationproperties.h"
 #include "qgsvirtualpointcloudentity_p.h"
 #include "qgsxmlutils.h"
-#include "qgs3dsymbolregistry.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayerelevationproperties.h"
 
 QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( context )
@@ -162,11 +163,11 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( Qgs3DMapSettings 
   Qt3DCore::QEntity *entity = nullptr;
   if ( pcl->index() )
   {
-    entity = new QgsPointCloudLayerChunkedEntity( map, pcl, pcl->index(), coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsPointCloudLayerChunkedEntity( map, pcl, pcl->index(), coordinateTransform, mSymbol->clone(), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
   }
   else if ( !pcl->dataProvider()->subIndexes().isEmpty() )
   {
-    entity = new QgsVirtualPointCloudEntity( map, pcl, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsVirtualPointCloudEntity( map, pcl, coordinateTransform, mSymbol->clone(), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
   }
   return entity;
 }
@@ -210,13 +211,13 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mZoomOutBehavior = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "zoom-out-behavior" ) ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
 
   if ( symbolType == QLatin1String( "single-color" ) )
-    mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsSingleColorPointCloud3DSymbol>();
   else if ( symbolType == QLatin1String( "color-ramp" ) )
-    mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsColorRampPointCloud3DSymbol>();
   else if ( symbolType == QLatin1String( "rgb" ) )
-    mSymbol.reset( new QgsRgbPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsRgbPointCloud3DSymbol>();
   else if ( symbolType == QLatin1String( "classification" ) )
-    mSymbol.reset( new QgsClassificationPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsClassificationPointCloud3DSymbol>();
   else
     mSymbol.reset();
 

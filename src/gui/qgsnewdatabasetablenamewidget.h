@@ -24,8 +24,8 @@
 #include "qgsbrowserproxymodel.h"
 #include "qgspanelwidget.h"
 
-#include <QWidget>
 #include <QDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -45,6 +45,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a new QgsNewDatabaseTableNameWidget
      *
@@ -186,6 +187,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a new QgsNewDatabaseTableNameDialog
      *

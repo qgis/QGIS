@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolselectionhandler.h"
-#include "moc_qgsmaptoolselectionhandler.cpp"
+
+#include "qgisapp.h"
+#include "qgsdoublespinbox.h"
+#include "qgsidentifymenu.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsrubberband.h"
+#include "qgssnapindicator.h"
 
 #include <QBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 
-#include "qgisapp.h"
-#include "qgsdoublespinbox.h"
-#include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
-#include "qgsrubberband.h"
-#include "qgssnapindicator.h"
-#include "qgsidentifymenu.h"
+#include "moc_qgsmaptoolselectionhandler.cpp"
 
 /// @cond private
 

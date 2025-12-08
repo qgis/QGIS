@@ -17,10 +17,11 @@
 #define QGSLABELREMOVEDUPLICATESSETTINGSWIDGET_H
 
 #include "ui_qgslabelremoveduplicatesettingswidgetbase.h"
-#include "qgslabelsettingswidgetbase.h"
-#include "qgspallabeling.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgslabelsettingswidgetbase.h"
+#include "qgspallabeling.h"
 
 /**
  * \ingroup gui
@@ -33,6 +34,7 @@ class GUI_EXPORT QgsLabelRemoveDuplicatesSettingsWidget : public QgsLabelSetting
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelRemoveDuplicatesSettingsWidget.
      * \param parent parent widget

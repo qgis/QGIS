@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgsprocessinghistorywidget.h"
-#include "moc_qgsprocessinghistorywidget.cpp"
-#include "qgshistorywidget.h"
-#include "qgsgui.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgshelp.h"
-#include "qgsfileutils.h"
-#include "qgshistoryentry.h"
 
-#include <QVBoxLayout>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QTextStream>
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgshistoryentry.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgshistorywidget.h"
+
 #include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QPushButton>
+#include <QTextStream>
+#include <QVBoxLayout>
+
+#include "moc_qgsprocessinghistorywidget.cpp"
 
 QgsProcessingHistoryWidget::QgsProcessingHistoryWidget( QWidget *parent )
   : QgsPanelWidget( parent )

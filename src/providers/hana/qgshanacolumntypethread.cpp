@@ -15,12 +15,14 @@
  *
  ***************************************************************************/
 #include "qgshanacolumntypethread.h"
-#include "moc_qgshanacolumntypethread.cpp"
+
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
+
+#include "moc_qgshanacolumntypethread.cpp"
 
 QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QString &connName, const QgsDataSourceUri &uri, bool allowGeometrylessTables, bool userTablesOnly )
   : mConnectionName( connName )

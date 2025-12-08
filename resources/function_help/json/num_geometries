@@ -8,6 +8,9 @@
     "description": "geometry collection or multi-part geometry"
   }],
   "examples": [{
+    "expression": "num_geometries(@geometry)",
+    "returns": "number of geometries or number of parts of the current feature's geometry"
+  },{
     "expression": "num_geometries(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'))",
     "returns": "4"
   },{

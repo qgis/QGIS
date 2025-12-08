@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 {
 %Docstring(signature="appended")

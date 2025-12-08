@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmeshrenderermeshsettingswidget.h"
-#include "moc_qgsmeshrenderermeshsettingswidget.cpp"
-#include <QtGlobal>
 
 #include "qgis.h"
-#include "qgsmeshlayer.h"
 #include "qgscolorbutton.h"
 #include "qgsdoublespinbox.h"
+#include "qgsmeshlayer.h"
+
+#include <QtGlobal>
+
+#include "moc_qgsmeshrenderermeshsettingswidget.cpp"
 
 QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *parent )
   : QWidget( parent )

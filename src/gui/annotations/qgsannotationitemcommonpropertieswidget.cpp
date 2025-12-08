@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsannotationitemcommonpropertieswidget.h"
-#include "moc_qgsannotationitemcommonpropertieswidget.cpp"
+
 #include "qgsannotationitem.h"
-#include "qgscalloutpanelwidget.h"
 #include "qgsapplication.h"
+#include "qgscalloutpanelwidget.h"
 #include "qgscalloutsregistry.h"
+
+#include "moc_qgsannotationitemcommonpropertieswidget.cpp"
 
 QgsAnnotationItemCommonPropertiesWidget::QgsAnnotationItemCommonPropertiesWidget( QWidget *parent )
   : QWidget( parent )

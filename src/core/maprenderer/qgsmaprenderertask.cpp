@@ -15,27 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaprenderertask.h"
+
+#include <cpl_conv.h>
+#include <gdal.h>
+#include <memory>
+
+#include "qgsabstractgeopdfexporter.h"
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
-#include "qgsmaprenderertask.h"
-#include "moc_qgsmaprenderertask.cpp"
+#include "qgsfeaturerequest.h"
+#include "qgslogger.h"
+#include "qgsmaprendererstagedrenderjob.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsogrutils.h"
-#include "qgslogger.h"
-#include "qgsabstractgeopdfexporter.h"
-#include "qgsmaprendererstagedrenderjob.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
 
 #include <QFile>
 #include <QImageWriter>
+#include <QPdfWriter>
 #include <QTextStream>
 #include <QTimeZone>
-#include <QPdfWriter>
 
-#include "gdal.h"
-#include "cpl_conv.h"
+#include "moc_qgsmaprenderertask.cpp"
 
 ///@cond PRIVATE
 
@@ -333,6 +336,7 @@ bool QgsMapRendererTask::run()
           {
             QString creationDateString;
             const QDateTime creationDateTime = mGeospatialPdfExportDetails.creationDateTime;
+#if QT_FEATURE_timezone > 0
             if ( creationDateTime.isValid() )
             {
               creationDateString = QStringLiteral( "D:%1" ).arg( mGeospatialPdfExportDetails.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
@@ -346,6 +350,9 @@ bool QgsMapRendererTask::run()
                 creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
               }
             }
+#else
+            QgsDebugError( QStringLiteral( "Qt is built without timezone support, skipping timezone for pdf export" ) );
+#endif
             GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
             GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeospatialPdfExportDetails.author.toUtf8().constData(), nullptr );
@@ -459,7 +466,7 @@ void QgsMapRendererTask::prepare()
       mMapLayerOrder << layer->id();
     }
 
-    mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
+    mJob = std::make_unique<QgsMapRendererStagedRenderJob>( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
     mJob->start();
     return;
   }
@@ -468,7 +475,7 @@ void QgsMapRendererTask::prepare()
 
   if ( mFileFormat == QLatin1String( "PDF" ) )
   {
-    mPdfWriter.reset( new QPdfWriter( mFileName ) );
+    mPdfWriter = std::make_unique<QPdfWriter>( mFileName );
     mPdfWriter->setPageOrientation( QPageLayout::Orientation::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
     const QSizeF outputSize = mMapSettings.outputSize();
@@ -479,7 +486,7 @@ void QgsMapRendererTask::prepare()
 
     if ( !mForceRaster )
     {
-      mTempPainter.reset( new QPainter( mPdfWriter.get() ) );
+      mTempPainter = std::make_unique<QPainter>( mPdfWriter.get() );
       mDestPainter = mTempPainter.get();
     }
   }
@@ -499,7 +506,7 @@ void QgsMapRendererTask::prepare()
     mImage.setDotsPerMeterX( 1000 * mMapSettings.outputDpi() / 25.4 );
     mImage.setDotsPerMeterY( 1000 * mMapSettings.outputDpi() / 25.4 );
 
-    mTempPainter.reset( new QPainter( &mImage ) );
+    mTempPainter = std::make_unique<QPainter>( &mImage );
     mDestPainter = mTempPainter.get();
   }
 
@@ -509,6 +516,6 @@ void QgsMapRendererTask::prepare()
     return;
   }
 
-  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
+  mJob = std::make_unique<QgsMapRendererCustomPainterJob>( mMapSettings, mDestPainter );
   static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
 }

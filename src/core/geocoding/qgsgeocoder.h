@@ -17,9 +17,9 @@
 #define QGSGEOCODER_H
 
 #include "qgis_core.h"
+#include "qgsfields.h"
 #include "qgsgeocoderresult.h"
 #include "qgsgeometry.h"
-#include "qgsfields.h"
 
 class QgsFeature;
 class QgsGeocoderContext;

@@ -1,7 +1,7 @@
 # The following has been generated automatically from src/3d/symbols/qgspointcloud3dsymbol.h
 try:
-    QgsPointCloud3DSymbol.__abstract_methods__ = ['symbolType', 'byteStride']
-    QgsPointCloud3DSymbol.__overridden_methods__ = ['type', 'copyBaseSettings']
+    QgsPointCloud3DSymbol.__abstract_methods__ = ['clone', 'symbolType', 'byteStride']
+    QgsPointCloud3DSymbol.__overridden_methods__ = ['type', 'clone', 'copyBaseSettings']
     QgsPointCloud3DSymbol.__group__ = ['symbols']
 except (NameError, AttributeError):
     pass

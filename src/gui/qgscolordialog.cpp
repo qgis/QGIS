@@ -15,18 +15,20 @@
  ***************************************************************************/
 
 #include "qgscolordialog.h"
-#include "moc_qgscolordialog.cpp"
-#include "qgssettings.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
-#include <QPushButton>
-#include <QMenu>
-#include <QToolButton>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <QInputDialog>
+#include <QPushButton>
+#include <QToolButton>
+
+#include "moc_qgscolordialog.cpp"
 
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )

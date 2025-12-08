@@ -18,9 +18,9 @@
 #ifndef QGS_GEOMETRY_GAP_CHECK_H
 #define QGS_GEOMETRY_GAP_CHECK_H
 
+#include "qgsfeatureid.h"
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
-#include "qgsfeatureid.h"
 
 /**
  * \ingroup analysis
@@ -31,6 +31,7 @@
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
+
     /**
      * Create a new gap check error produced by \a check on the layer \a layerId.
      * The \a geometry of the gap needs to be in map coordinates.
@@ -107,7 +108,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) override;
 
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
 

@@ -16,9 +16,10 @@
 #ifndef QGSPROCESSINGMATRIXPARAMETERDIALOG_H
 #define QGSPROCESSINGMATRIXPARAMETERDIALOG_H
 
+#include "ui_qgsprocessingmatrixparameterdialogbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingmatrixparameterdialogbase.h"
 #include "qgsprocessingparameters.h"
 
 #define SIP_NO_FILE
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMatrixParameterDialog.
      */

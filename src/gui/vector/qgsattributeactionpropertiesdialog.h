@@ -20,10 +20,10 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsattributeactionpropertiesdialogbase.h"
-#include "qgsexpressioncontextgenerator.h"
 
-#include "qgshelp.h"
 #include "qgis_gui.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsAttributeActionPropertiesDialog : public QDialog, private Ui
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributeActionPropertiesDialog.
      */

@@ -1,19 +1,24 @@
-﻿//    Copyright (C) 2019-2021 Jakub Melka
+﻿// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #ifndef PDFRENDERER_H
 #define PDFRENDERER_H
@@ -28,13 +33,9 @@
 #include <QMutex>
 #include <QSemaphore>
 #include <QImageWriter>
-#include <QSurfaceFormat>
 #include <QImage>
 
 class QPainter;
-class QOpenGLContext;
-class QOffscreenSurface;
-class QOpenGLFramebufferObject;
 
 namespace pdf
 {
@@ -45,30 +46,6 @@ class PDFCMSManager;
 class PDFPrecompiledPage;
 class PDFAnnotationManager;
 class PDFOptionalContentActivity;
-
-class PDF4QTLIBCORESHARED_EXPORT PDFRendererInfo
-{
-public:
-    PDFRendererInfo() = delete;
-
-    struct Info
-    {
-        QString vendor;
-        QString renderer;
-        QString version;
-        int majorOpenGLVersion = 0;
-        int minorOpenGLVersion = 0;
-    };
-
-    static const Info& getHardwareAccelerationSupportedInfo();
-    static bool isHardwareAccelerationSupported();
-
-    static constexpr int REQUIRED_OPENGL_MAJOR_VERSION = 3;
-    static constexpr int REQUIRED_OPENGL_MINOR_VERSION = 2;
-
-private:
-    static PDFCachedItem<Info> s_info;
-};
 
 /// Renders the PDF page on the painter, or onto an image.
 class PDF4QTLIBCORESHARED_EXPORT PDFRenderer
@@ -165,9 +142,7 @@ private:
     PDFMeshQualitySettings m_meshQualitySettings;
 };
 
-/// Renders PDF pages to bitmap images (QImage). It can use OpenGL for painting,
-/// if it is enabled, if this is the case, offscreen rendering to framebuffer
-/// is used.
+/// Renders PDF pages to bitmap images (QImage).
 /// \note Construct this object only in main GUI thread
 class PDF4QTLIBCORESHARED_EXPORT PDFRasterizer : public QObject
 {
@@ -180,22 +155,9 @@ public:
     explicit PDFRasterizer(QObject* parent);
     virtual ~PDFRasterizer() override;
 
-    /// Resets the renderer. This function must be called from main GUI thread,
-    /// it cannot be called from deferred threads, because it can create hidden
-    /// window (offscreen surface). If hardware renderer is required, and
-    /// none is available, then software renderer is used.
-    /// \param useOpenGL Use OpenGL for rendering (ignored if not available)
-    /// \param surfaceFormat Surface format to render
-    void reset(bool useOpenGL, const QSurfaceFormat& surfaceFormat);
-
-    enum Feature
-    {
-        UseOpenGL               = 0x0001,   ///< Use OpenGL for rendering
-        ValidOpenGL             = 0x0002,   ///< OpenGL is initialized and valid
-        FailedOpenGL            = 0x0004,   ///< OpenGL creation has failed
-    };
-
-    Q_DECLARE_FLAGS(Features, Feature)
+    /// Resets the renderer.
+    /// \param rendererEngine Renderer engine type
+    void reset(RendererEngine rendererEngine);
 
     /// Renders page to the image of given size. If some error occurs, then
     /// empty image is returned. Warning: this function can modify this object,
@@ -207,6 +169,7 @@ public:
     /// \param size Size of the target image
     /// \param features Renderer features
     /// \param annotationManager Annotation manager (can be nullptr)
+    /// \param cms Color management system
     /// \param extraRotation Extra page rotation
     QImage render(PDFInteger pageIndex,
                   const PDFPage* page,
@@ -214,21 +177,11 @@ public:
                   QSize size,
                   PDFRenderer::Features features,
                   const PDFAnnotationManager* annotationManager,
+                  const PDFCMS* cms,
                   PageRotation extraRotation);
 
 private:
-#ifdef PDF4QT_ENABLE_OPENGL
-    void initializeOpenGL();
-    void releaseOpenGL();
-#endif
-
-    Features m_features;
-#ifdef PDF4QT_ENABLE_OPENGL
-    QSurfaceFormat m_surfaceFormat;
-    QOffscreenSurface* m_surface;
-    QOpenGLContext* m_context;
-    QOpenGLFramebufferObject* m_fbo;
-#endif
+    RendererEngine m_rendererEngine;
 };
 
 /// Simple structure for storing rendered page images
@@ -267,8 +220,7 @@ public:
     /// \param features Renderer features
     /// \param meshQualitySettings Mesh quality settings
     /// \param rasterizerCount Number of rasterizers
-    /// \param useOpenGL Use OpenGL for rendering?
-    /// \param surfaceFormat Surface format
+    /// \param rendererEngine Renderer engine
     /// \param parent Parent object
     explicit PDFRasterizerPool(const PDFDocument* document,
                                PDFFontCache* fontCache,
@@ -277,8 +229,7 @@ public:
                                PDFRenderer::Features features,
                                const PDFMeshQualitySettings& meshQualitySettings,
                                int rasterizerCount,
-                               bool useOpenGL,
-                               const QSurfaceFormat& surfaceFormat,
+                               RendererEngine rendererEngine,
                                QObject* parent);
 
     /// Acquire rasterizer. This function is thread safe.

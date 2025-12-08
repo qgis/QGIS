@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgscoloreffect.h"
+
+#include <algorithm>
+
 #include "qgscolorutils.h"
 #include "qgsimageoperation.h"
 #include "qgsrendercontext.h"
-
-#include <algorithm>
 
 QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 {

@@ -14,20 +14,20 @@
  ***************************************************************************/
 #include <cmath>
 
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterchecker.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
+
+#include <QApplication>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
 #include <QTemporaryFile>
-
-#include <qgsdatasourceuri.h>
-#include <qgsrasterlayer.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasterchecker.h>
-#include <qgsproviderregistry.h>
-#include <qgsapplication.h>
-#include "qgsprovidermetadata.h"
 
 #define TINY_VALUE std::numeric_limits<double>::epsilon() * 20
 
@@ -111,10 +111,10 @@ void TestQgsWcsProvider::read()
   identifiers << QStringLiteral( "band3_float32_noct_epsg4326" );
 
   // How to reasonably log multiple fails within this loop?
-  QTemporaryFile *tmpFile = new QTemporaryFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
-  tmpFile->open();
-  const QString tmpFilePath = tmpFile->fileName();
-  delete tmpFile; // removes the file
+  QTemporaryFile tmpFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
+  QVERIFY( tmpFile.open() );
+  const QString tmpFilePath = tmpFile.fileName();
+  tmpFile.close(); // removes the file
   for ( const QString &version : versions )
   {
     for ( const QString &identifier : identifiers )

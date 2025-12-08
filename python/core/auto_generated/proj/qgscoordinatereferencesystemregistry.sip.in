@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCoordinateReferenceSystemRegistry : QObject
 {
 %Docstring(signature="appended")

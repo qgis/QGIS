@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsuniquevaluewidgetwrapper.h"
-#include "moc_qgsuniquevaluewidgetwrapper.cpp"
 
-#include "qgsvectorlayer.h"
-#include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
+#include "qgsvectorlayer.h"
 
 #include <QCompleter>
 #include <QSettings>
+
+#include "moc_qgsuniquevaluewidgetwrapper.cpp"
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

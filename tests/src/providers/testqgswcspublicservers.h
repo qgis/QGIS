@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+
 #include <QApplication>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-
-#include <qgsapplication.h>
-#include <qgsdatasourceuri.h>
-#include <qgsproviderregistry.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasterlayer.h>
 
 /**
  * This class tries to get samples of coverages from public WCS servers,
@@ -102,6 +102,6 @@ class TestQgsWcsPublicServers : public QObject
 
     QList<TestQgsWcsPublicServers::Server> mServers;
 
-    int mTimeout;
-    int mOrigTimeout;
+    int mTimeout = 300000;
+    int mOrigTimeout = 20000;
 };

@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgslayertree.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+
 #include <QCommandLineParser>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlError>
-
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgslayertree.h"
-#include "qgsmessagelog.h"
-#include "qgslogger.h"
 
 int main( int argc, char *argv[] )
 {

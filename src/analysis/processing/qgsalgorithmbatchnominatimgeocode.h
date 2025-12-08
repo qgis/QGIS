@@ -20,11 +20,11 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
-#include "qgsprocessingalgorithm.h"
+#include "qgis_sip.h"
 #include "qgsalgorithmbatchgeocode.h"
 #include "qgsnominatimgeocoder.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -34,6 +34,7 @@
 class QgsBatchNominatimGeocodeAlgorithm : public QgsBatchGeocodeAlgorithm
 {
   public:
+
     /**
      * Constructor for QgsBatchNominatimGeocodeAlgorithm.
      */

@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthesritokenedit.h"
-#include "moc_qgsauthesritokenedit.cpp"
 #include "ui_qgsauthesritokenedit.h"
+#include "qgsauthesritokenedit.h"
 
+#include "moc_qgsauthesritokenedit.cpp"
 
 QgsAuthEsriTokenEdit::QgsAuthEsriTokenEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

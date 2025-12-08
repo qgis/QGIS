@@ -16,9 +16,10 @@
 #ifndef QGSDATETIMEEDIT_H
 #define QGSDATETIMEEDIT_H
 
-#include <QDateTimeEdit>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QDateTimeEdit>
 
 /**
  * \ingroup gui
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
+
     /**
      * Constructor for QgsDateTimeEdit.
      * The current date and time is used by default.
@@ -232,6 +234,7 @@ class GUI_EXPORT QgsTimeEdit : public QgsDateTimeEdit
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTimeEdit.
      * The current time is used by default.
@@ -276,6 +279,7 @@ class GUI_EXPORT QgsDateEdit : public QgsDateTimeEdit
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDateEdit.
      * The current time is used by default.

@@ -18,22 +18,21 @@
 #ifndef QGSORACLECONN_H
 #define QGSORACLECONN_H
 
-#include <QString>
-#include <QStringList>
-#include <QVector>
-#include <QMap>
-#include <QSet>
-#include <QThread>
-#include <QVariant>
-#include <QDateTime>
-
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
 
+#include <QDateTime>
+#include <QMap>
+#include <QRecursiveMutex>
+#include <QSet>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QRecursiveMutex>
+#include <QString>
+#include <QStringList>
+#include <QThread>
+#include <QVariant>
+#include <QVector>
 
 class QgsField;
 
@@ -269,12 +268,12 @@ class QgsOracleConn : public QObject
     bool execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     //! reference count
-    int mRef;
+    int mRef = 1;
 
     QString mCurrentUser;
 
     //! has spatial
-    int mHasSpatial;
+    int mHasSpatial = -1;
 
     QSqlDatabase mDatabase;
     QSqlQuery mQuery;

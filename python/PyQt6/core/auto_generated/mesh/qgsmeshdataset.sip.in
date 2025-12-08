@@ -275,6 +275,8 @@ Constructs an invalid block
 %End
     ~QgsMesh3DDataBlock();
 
+    QgsMesh3DDataBlock( const QgsMesh3DDataBlock &other );
+
     QgsMesh3DDataBlock( int count, bool isVector );
 %Docstring
 Constructs a new block for count faces

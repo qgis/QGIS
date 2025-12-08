@@ -58,6 +58,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool mConvertCurveToSegments = false;
     QString mCoordOp;
     bool mWarnedAboutFallbackTransform = false;
+    bool mTransformZ = false;
 };
 
 

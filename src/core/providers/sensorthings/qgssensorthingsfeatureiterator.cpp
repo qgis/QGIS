@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssensorthingsfeatureiterator.h"
+
 #include "geometry/qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgsfeedback.h"

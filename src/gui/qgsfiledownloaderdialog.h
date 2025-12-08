@@ -16,8 +16,9 @@
 #ifndef QGSFILEDOWNLOADERDIALOG_H
 #define QGSFILEDOWNLOADERDIALOG_H
 
-#include <QProgressDialog>
 #include "qgis_gui.h"
+
+#include <QProgressDialog>
 
 class QgsFileDownloader;
 
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsFileDownloaderDialog : public QProgressDialog
 {
     Q_OBJECT
   public:
+
     /**
      * QgsFileDownloader
      * \param url the download url

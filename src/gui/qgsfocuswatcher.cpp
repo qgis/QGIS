@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsfocuswatcher.h"
-#include "moc_qgsfocuswatcher.cpp"
+
 #include <QEvent>
+
+#include "moc_qgsfocuswatcher.cpp"
 
 QgsFocusWatcher::QgsFocusWatcher( QObject *parent )
   : QObject( parent )

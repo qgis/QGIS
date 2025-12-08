@@ -15,21 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgs3d.h"
+#include "qgsgoochmaterialsettings.h"
 #include "qgsmaterial.h"
 #include "qgsmaterialregistry.h"
 #include "qgsphongmaterialsettings.h"
-#include "qgsgoochmaterialsettings.h"
 #include "qgssimplelinematerialsettings.h"
+#include "qgstest.h"
 
 #include <QObject>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
-
-#include "qgstest.h"
-#include "qgs3d.h"
-
 
 class TestQgs3dMaterial : public QgsTest
 {

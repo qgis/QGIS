@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsserverfeatureid.h"
+
+#include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsvectordataprovider.h"
-#include "qgsexpression.h"
 
 QString QgsServerFeatureId::getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes )
 {

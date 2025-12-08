@@ -15,13 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsdelattrdialog.h"
-#include "moc_qgsdelattrdialog.cpp"
+
+#include "qgsapplication.h"
 #include "qgsfields.h"
+#include "qgsgui.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsgui.h"
+
+#include "moc_qgsdelattrdialog.cpp"
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
 {

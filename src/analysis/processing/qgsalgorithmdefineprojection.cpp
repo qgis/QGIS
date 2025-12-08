@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdefineprojection.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsproviderregistry.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

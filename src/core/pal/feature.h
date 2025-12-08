@@ -33,14 +33,16 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
+#include <cmath>
+#include <fstream>
+#include <iostream>
+
+#include "labelposition.h"
 #include "pointset.h"
-#include "labelposition.h" // for LabelPosition enum
+#include "qgis_core.h"
 #include "qgslabelfeature.h"
 #include "qgstextrendererutils.h"
-#include <iostream>
-#include <fstream>
-#include <cmath>
+
 #include <QString>
 
 namespace pal
@@ -218,7 +220,7 @@ namespace pal
        */
       std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
           QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints,
-          QgsTextRendererUtils::CurvedTextFlags flags );
+          Qgis::CurvedTextFlags flags );
 
       /**
        * Generate curved candidates for line features.

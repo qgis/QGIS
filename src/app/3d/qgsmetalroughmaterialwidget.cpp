@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterialwidget.h"
-#include "moc_qgsmetalroughmaterialwidget.cpp"
 
-#include "qgsmetalroughmaterialsettings.h"
 #include "qgis.h"
+#include "qgsmetalroughmaterialsettings.h"
+
+#include "moc_qgsmetalroughmaterialwidget.cpp"
 
 QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool )
   : QgsMaterialSettingsWidget( parent )

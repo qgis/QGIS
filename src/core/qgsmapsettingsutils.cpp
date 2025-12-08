@@ -15,12 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+
+#include "qgsabstractgeopdfexporter.h"
+#include "qgsmapsettings.h"
 #include "qgspallabeling.h"
 #include "qgstextformat.h"
 #include "qgsvectorlayer.h"
-#include "qgsabstractgeopdfexporter.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include <QString>

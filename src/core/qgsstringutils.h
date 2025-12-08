@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
-#include <QString>
-#include <QRegularExpression>
-#include <QList>
 #include <QDomDocument>
+#include <QList>
+#include <QRegularExpression>
+#include <QString>
 
 #ifndef QGSSTRINGUTILS_H
 #define QGSSTRINGUTILS_H

@@ -16,8 +16,8 @@
 #ifndef QGSRESIDUALPLOTITEM_H
 #define QGSRESIDUALPLOTITEM_H
 
-#include "qgslayoutitem.h"
 #include "qgsgcplist.h"
+#include "qgslayoutitem.h"
 #include "qgsrectangle.h"
 
 /**
@@ -54,7 +54,7 @@ class QgsResidualPlotItem : public QgsLayoutItem
 
     QgsRectangle mExtent;
     //! True if the scale bar units should be converted to map units. This can be done for transformation where the scaling in all directions is the same (helmert)
-    bool mConvertScaleToMapUnits;
+    bool mConvertScaleToMapUnits = false;
 
     //! Calculates maximal possible mm to pixel ratio such that the residual arrow is still inside the frame
     double maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM );

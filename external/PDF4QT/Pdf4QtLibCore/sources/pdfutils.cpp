@@ -1,22 +1,28 @@
-//    Copyright (C) 2019-2022 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfutils.h"
 #include "pdfexception.h"
+#include "pdfblpainter.h"
 
 #include <QtGlobal>
 #include <QtMath>
@@ -45,10 +51,14 @@
 #pragma clang diagnostic ignored "-Wregister"
 #endif
 
+
+//#pragma warning(push)
+//#pragma warning(disable:5033)
 #ifndef CMS_NO_REGISTER_KEYWORD
 #define CMS_NO_REGISTER_KEYWORD
 #endif
 #include <lcms2.h>
+//#pragma warning(pop)
 
 #ifdef PDF4QT_COMPILER_CLANG
 #pragma clang diagnostic pop
@@ -311,6 +321,18 @@ std::vector<PDFDependentLibraryInfo> PDFDependentLibraryInfo::getLibraryInfo()
     zlibInfo.version = ZLIB_VERSION;
     zlibInfo.url = tr("https://zlib.net/");
     result.emplace_back(qMove(zlibInfo));
+
+    // blend2d
+    const uint32_t blend2dVersion = PDFBLPaintDevice::getVersion();
+    const int blend2dMajor = (blend2dVersion >> 16) & 0xFF;
+    const int blend2dMinor = (blend2dVersion >> 8) & 0xFF;
+    const int blend2dPatch = (blend2dVersion) & 0xFF;
+    PDFDependentLibraryInfo blend2dInfo;
+    blend2dInfo.library = tr("Blend2D");
+    blend2dInfo.license = tr("zlib specific");
+    blend2dInfo.version = QString("%1.%2.%3").arg(blend2dMajor).arg(blend2dMinor).arg(blend2dPatch);
+    blend2dInfo.url = tr("https://blend2d.com/");
+    result.emplace_back(qMove(blend2dInfo));
 
     return result;
 }
@@ -578,7 +600,7 @@ QColor PDFColorScale::map(PDFReal value) const
         fractionValue = 1.0;
     }
 
-    Q_ASSERT(index + 1 < static_cast< int >(m_colorScales.size()));
+    Q_ASSERT(index + 1 < static_cast<int>(m_colorScales.size()));
 
     const QColor& leftValue = m_colorScales[index];
     const QColor& rightValue = m_colorScales[index + 1];

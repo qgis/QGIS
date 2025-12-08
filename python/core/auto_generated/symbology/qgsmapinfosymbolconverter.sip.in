@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapInfoSymbolConversionContext
 {
 %Docstring(signature="appended")

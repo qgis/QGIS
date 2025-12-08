@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgslayoutattributetablewidget.h"
-#include "moc_qgslayoutattributetablewidget.cpp"
-#include "qgslayoutatlas.h"
-#include "qgslayout.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutattributeselectiondialog.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgslayouttablecolumn.h"
-#include "qgslayoutitemmap.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsexpressionbuilderdialog.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
+#include "qgslayout.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutattributeselectiondialog.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemwidget.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayouttablebackgroundcolorsdialog.h"
+#include "qgslayouttablecolumn.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayoutattributetablewidget.cpp"
 
 QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame )
   : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemAttributeTable *>( frame->multiFrame() ) : nullptr )

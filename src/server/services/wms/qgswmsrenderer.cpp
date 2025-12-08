@@ -17,23 +17,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsjsonutils.h"
 #include "qgswmsrenderer.h"
-#include "qgsfilterrestorer.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
+#include "qgsaccesscontrol.h"
+#include "qgsannotation.h"
+#include "qgsannotationmanager.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorelement.h"
+#include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorrelation.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdimensionfilter.h"
+#include "qgsdxfexport.h"
 #include "qgsexception.h"
-#include "qgsfields.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfeaturestore.h"
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
-#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgsfilterrestorer.h"
 #include "qgsgeometry.h"
+#include "qgsjsonutils.h"
 #include "qgslayertree.h"
-#include "qgslayoututils.h"
 #include "qgslayertreemodel.h"
+#include "qgslayoututils.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaprendererjobproxy.h"
 #include "qgsmaprenderertask.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
+#include "qgsmessagelog.h"
+#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
@@ -41,48 +64,28 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgstriangularmesh.h"
+#include "qgsrenderer.h"
 #include "qgsscalecalculator.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgsserverapiutils.h"
+#include "qgsserverexception.h"
+#include "qgsserverfeatureid.h"
+#include "qgsserverprojectutils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectortilelayer.h"
-#include "qgsmessagelog.h"
-#include "qgsrenderer.h"
-#include "qgsfeature.h"
-#include "qgsaccesscontrol.h"
-#include "qgsfeaturerequest.h"
-#include "qgsmaprendererjobproxy.h"
-#include "qgswmsserviceexception.h"
-#include "qgsserverprojectutils.h"
-#include "qgsserverfeatureid.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgswkbtypes.h"
-#include "qgsannotationmanager.h"
-#include "qgsannotation.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgspallabeling.h"
+#include "qgsvectortilelayer.h"
+#include "qgswkbtypes.h"
 #include "qgswmsrestorer.h"
-#include "qgsdxfexport.h"
-#include "qgssymbollayerutils.h"
-#include "qgsserverexception.h"
-#include "qgsserverapiutils.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfeaturestore.h"
-#include "qgsattributeeditorcontainer.h"
-#include "qgsattributeeditorelement.h"
-#include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorrelation.h"
-#include "qgsdimensionfilter.h"
+#include "qgswmsserviceexception.h"
 
+#include <QDir>
 #include <QImage>
 #include <QPainter>
 #include <QStringList>
 #include <QTemporaryFile>
-#include <QDir>
 #include <QUrl>
 #include <QXmlStreamReader>
-#include <nlohmann/json.hpp>
 
 //for printing
 #include "qgslayoutatlas.h"
@@ -123,7 +126,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -210,7 +213,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -228,7 +231,7 @@ namespace QgsWms
     // configure painter
     const qreal dpmm = mContext.dotsPerMm();
     std::unique_ptr<QPainter> painter;
-    painter.reset( new QPainter( image.get() ) );
+    painter = std::make_unique<QPainter>( image.get() );
     painter->setRenderHint( QPainter::Antialiasing, true );
     painter->scale( dpmm, dpmm );
 
@@ -251,7 +254,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -271,7 +274,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -364,7 +367,7 @@ namespace QgsWms
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QgsMapSettings mapSettings;
@@ -393,7 +396,7 @@ namespace QgsWms
   {
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // GetPrint request needs a template parameter
     const QString templateName = mWmsParameters.composerTemplate();
@@ -1063,7 +1066,7 @@ namespace QgsWms
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -1299,7 +1302,7 @@ namespace QgsWms
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // The CRS parameter is considered as mandatory in configureMapSettings
     // but in the case of filter parameter, CRS parameter has not to be mandatory
@@ -1578,17 +1581,17 @@ namespace QgsWms
 
     if ( i != -1 && j != -1 )
     {
-      infoPoint.reset( new QgsPointXY() );
+      infoPoint = std::make_unique<QgsPointXY>();
       infoPointToMapCoordinates( i, j, infoPoint.get(), mapSettings );
     }
     else if ( filtersDefined )
     {
-      featuresRect.reset( new QgsRectangle() );
+      featuresRect = std::make_unique<QgsRectangle>();
     }
 
     if ( filterGeomDefined )
     {
-      filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) ) );
+      filterGeom = std::make_unique<QgsGeometry>( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) );
     }
 
     QDomDocument result;
@@ -1842,7 +1845,7 @@ namespace QgsWms
     std::unique_ptr<QgsGeometry> layerFilterGeom;
     if ( filterGeom )
     {
-      layerFilterGeom.reset( new QgsGeometry( *filterGeom ) );
+      layerFilterGeom = std::make_unique<QgsGeometry>( *filterGeom );
       layerFilterGeom->transform( QgsCoordinateTransform( mapSettings.destinationCrs(), layer->crs(), fReq.transformContext() ) );
     }
 
@@ -3636,7 +3639,9 @@ namespace QgsWms
     renderJob.render( mapSettings, image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
-    if ( !renderJob.errors().isEmpty() )
+    logRenderingErrors( renderJob.errors() );
+
+    if ( !renderJob.errors().isEmpty() && !mContext.settings().ignoreRenderingErrors() )
     {
       const QgsMapRendererJob::Error e = renderJob.errors().at( 0 );
 
@@ -4094,16 +4099,43 @@ namespace QgsWms
     return scaledImage;
   }
 
+  void QgsRenderer::logRenderingErrors( const QgsMapRendererJob::Errors &errors ) const
+  {
+    QgsMapRendererJob::Errors::const_iterator it = errors.constBegin();
+    for ( ; it != errors.constEnd(); ++it )
+    {
+      QString msg = QString( "Rendering error: %1" ).arg( it->message );
+      if ( !it->layerID.isEmpty() )
+      {
+        msg += QString( " in layer %1" ).arg( it->layerID );
+      }
+      QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Critical );
+    }
+  }
+
   void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const
   {
     if ( !layout )
     {
       return;
     }
+
     QList<QgsLayoutItemMap *> mapList;
     layout->layoutItems( mapList );
 
+    //log rendering errors even if they are ignored
     QList<QgsLayoutItemMap *>::const_iterator mapIt = mapList.constBegin();
+    for ( ; mapIt != mapList.constEnd(); ++mapIt )
+    {
+      logRenderingErrors( ( *mapIt )->renderingErrors() );
+    }
+
+    if ( mContext.settings().ignoreRenderingErrors() )
+    {
+      return;
+    }
+
+    mapIt = mapList.constBegin();
     for ( ; mapIt != mapList.constEnd(); ++mapIt )
     {
       if ( !( *mapIt )->renderingErrors().isEmpty() )

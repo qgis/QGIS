@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgstextcharacterformat.h"
-#include "qgsrendercontext.h"
+
 #include "qgsfontutils.h"
+#include "qgsrendercontext.h"
 
 #include <QTextCharFormat>
 

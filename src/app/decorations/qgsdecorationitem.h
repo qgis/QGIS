@@ -18,11 +18,11 @@
 #ifndef QGSDECORATIONITEM_H
 #define QGSDECORATIONITEM_H
 
-#include <QObject>
-
+#include "qgis_app.h"
 #include "qgsmapdecoration.h"
 #include "qgsunittypes.h"
-#include "qgis_app.h"
+
+#include <QObject>
 
 class QPainter;
 

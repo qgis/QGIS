@@ -19,10 +19,11 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsarcgisservicesourceselectbase.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
+
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsbrowserproxymodel.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrectangle.h"
 
 #include <QItemDelegate>
 

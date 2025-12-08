@@ -18,11 +18,12 @@
 #include "qgspointcloudstatistics.h"
 
 #include <limits>
-#include <QJsonObject>
-#include <QJsonDocument>
 
-#include "qgspointcloudattribute.h"
 #include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
+
+#include <QJsonDocument>
+#include <QJsonObject>
 
 // QgsPointCloudAttributeStatistics
 

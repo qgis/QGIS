@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewdefaultactions.h"
-#include "moc_qgslayertreeviewdefaultactions.cpp"
-#include "qgsguiutils.h"
+
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
@@ -26,7 +26,9 @@
 
 #include <QAction>
 
-QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view )
+#include "moc_qgslayertreeviewdefaultactions.cpp"
+
+QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view )
   : QObject( view )
   , mView( view )
 {
@@ -43,6 +45,13 @@ QAction *QgsLayerTreeViewDefaultActions::actionRemoveGroupOrLayer( QObject *pare
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::removeGroupOrLayer );
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionRemoveGroupPromoteLayers( QObject *parent )
+{
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Group" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::removeGroupPromoteLayers );
   return a;
 }
 
@@ -259,6 +268,33 @@ void QgsLayerTreeViewDefaultActions::removeGroupOrLayer()
     // could be more efficient if working directly with ranges instead of individual nodes
     qobject_cast<QgsLayerTreeGroup *>( node->parent() )->removeChildNode( node );
   }
+}
+
+void QgsLayerTreeViewDefaultActions::removeGroupPromoteLayers()
+{
+  QgsLayerTreeGroup *group = mView->currentGroupNode();
+
+  // can't remove the root group!
+  if ( !group || group == mView->layerTreeModel()->rootGroup() )
+    return;
+
+  QgsLayerTreeGroup *newParentGroup = qobject_cast<QgsLayerTreeGroup *>( group->parent() );
+  if ( !newParentGroup )
+    return;
+
+  const int existingNodePosition = newParentGroup->children().indexOf( group );
+
+  const QList< QgsLayerTreeNode * > childrenToPromote = group->children();
+  if ( !childrenToPromote.isEmpty() )
+  {
+    for ( auto it = childrenToPromote.rbegin(); it != childrenToPromote.rend(); ++it )
+    {
+      newParentGroup->insertChildNode( existingNodePosition, ( *it )->clone() );
+      group->removeChildNode( *it );
+    }
+  }
+
+  newParentGroup->removeChildNode( group );
 }
 
 void QgsLayerTreeViewDefaultActions::renameGroupOrLayer()

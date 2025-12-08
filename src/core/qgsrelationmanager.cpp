@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsrelationmanager.h"
-#include "moc_qgsrelationmanager.cpp"
 
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsrelationmanager.cpp"
 
 QgsRelationManager::QgsRelationManager( QgsProject *project )
   : QObject( project )

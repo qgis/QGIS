@@ -17,13 +17,13 @@
 #ifndef QGSSYMBOLLAYERWIDGET_H
 #define QGSSYMBOLLAYERWIDGET_H
 
-#include "qgspropertyoverridebutton.h"
 #include "qgis_sip.h"
-#include "qgssymbolwidgetcontext.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssymbollayer.h"
+#include "qgssymbolwidgetcontext.h"
 
-#include <QWidget>
 #include <QStandardItemModel>
+#include <QWidget>
 
 class QgsVectorLayer;
 class QgsMarkerSymbol;
@@ -39,6 +39,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSymbolLayerWidget.
      * \param vl associated vector layer
@@ -71,6 +72,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
   protected:
+
     /**
      * Registers a data defined override button. Handles setting up connections
      * for the button and initializing the button to show the correct descriptions
@@ -125,6 +127,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSimpleLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -188,6 +191,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSimpleMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -250,6 +254,7 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSimpleFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -300,6 +305,7 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFilledMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -353,6 +359,7 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGradientFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -409,6 +416,7 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsShapeburstFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -447,95 +455,59 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 
 ///////////
 
-#include "ui_widget_markerline.h"
+#include "ui_widget_templatedline.h"
 
-class QgsMarkerLineSymbolLayer;
+class QgsTemplatedLineSymbolLayerBase;
 
 /**
  * \ingroup gui
- * \class QgsMarkerLineSymbolLayerWidget
- * \brief A widget for controlling the properties of a QgsMarkerLineSymbolLayer.
+ * \class QgsTemplatedLineSymbolLayerWidget
+ * \brief A widget for controlling the properties of a templated line symbol layer (hash or markers).
+ * \since QGIS 4.0
  */
-class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetMarkerLine
+class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetTemplatedLine
 {
     Q_OBJECT
 
   public:
+
     /**
-     * Constructor for QgsMarkerLineSymbolLayerWidget.
+     * Templated symbol type
+     */
+    enum class TemplatedSymbolType
+    {
+      Hash,  //!< Hash symbol type
+      Marker //!< Marker symbol type
+    };
+
+    /**
+     * Constructor for QgsTemplatedLineSymbolLayerWidget.
+     * \param symbolType templated symbol type
      * \param vl associated vector layer
      * \param parent parent widget
      */
-    QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsTemplatedLineSymbolLayerWidget( TemplatedSymbolType symbolType, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /**
-     * Creates a new QgsMarkerLineSymbolLayerWidget.
-     * \param vl associated vector layer
-     */
-    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsMarkerLineSymbolLayerWidget( vl ); }
-
-    // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
 
+    /**
+     * Set templated line interval
+     * \param val interval value
+     */
     void setInterval( double val );
+
+    /**
+     * Set offset along line
+     * \param val offset along line value
+     */
     void setOffsetAlongLine( double val );
-
-  protected:
-    QgsMarkerLineSymbolLayer *mLayer = nullptr;
-
-  private slots:
-    void setRotate();
-    void setOffset();
-    void setPlacement();
-    void mIntervalUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mOffsetAlongLineUnitWidget_changed();
-    void averageAngleUnitChanged();
-    void setAverageAngle( double val );
-};
-
-
-#include "ui_widget_hashline.h"
-
-class QgsHashedLineSymbolLayer;
-
-/**
- * \ingroup gui
- * \class QgsHashedLineSymbolLayerWidget
- * \brief A widget for controlling the properties of a QgsHashedLineSymbolLayer.
- * \since QGIS 3.8
- */
-class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructor for QgsHashedLineSymbolLayerWidget.
-     * \param vl associated vector layer
-     * \param parent parent widget
-     */
-    QgsHashedLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-
-    /**
-     * Creates a new QgsHashedLineSymbolLayerWidget.
-     * \param vl associated vector layer
-     */
-    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsHashedLineSymbolLayerWidget( vl ); }
-
-    // from base class
-    void setSymbolLayer( QgsSymbolLayer *layer ) override;
-    QgsSymbolLayer *symbolLayer() override;
-    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   private slots:
 
-    void setInterval( double val );
-    void setOffsetAlongLine( double val );
     void setHashLength( double val );
     void setHashAngle( double val );
 
@@ -550,7 +522,59 @@ class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void setAverageAngle( double val );
 
   private:
-    QgsHashedLineSymbolLayer *mLayer = nullptr;
+    QgsTemplatedLineSymbolLayerBase *mLayer = nullptr;
+    TemplatedSymbolType mSymbolType = TemplatedSymbolType::Hash;
+};
+
+/**
+ * \ingroup gui
+ * \class QgsMarkerLineSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsMarkerLineSymbolLayer.
+ */
+class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsTemplatedLineSymbolLayerWidget
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsMarkerLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsMarkerLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsMarkerLineSymbolLayerWidget( vl ); }
+};
+
+/**
+ * \ingroup gui
+ * \class QgsHashedLineSymbolLayerWidget
+ * \brief A widget for controlling the properties of a QgsHashedLineSymbolLayer.
+ * \since QGIS 3.8
+ */
+class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsTemplatedLineSymbolLayerWidget
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsHashedLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsHashedLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsHashedLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsHashedLineSymbolLayerWidget( vl ); }
 };
 
 ///////////
@@ -569,6 +593,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSvgMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -653,6 +678,7 @@ class GUI_EXPORT QgsRasterMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRasterMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -707,6 +733,7 @@ class GUI_EXPORT QgsAnimatedMarkerSymbolLayerWidget : public QgsSymbolLayerWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAnimatedMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -763,6 +790,7 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRasterFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -813,6 +841,7 @@ class GUI_EXPORT QgsRasterLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRasterLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -856,6 +885,7 @@ class GUI_EXPORT QgsLineburstSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLineburstSymbolLayerWidget.
      * \param vl associated vector layer
@@ -895,6 +925,7 @@ class GUI_EXPORT QgsFilledLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFilledLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -934,6 +965,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSVGFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -992,6 +1024,7 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidg
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLinePatternFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1035,6 +1068,7 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget : public QgsSymbolLayerWid
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPointPatternFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1088,6 +1122,7 @@ class GUI_EXPORT QgsRandomMarkerFillSymbolLayerWidget : public QgsSymbolLayerWid
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRandomMarkerFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1133,6 +1168,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFontMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1225,6 +1261,7 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCentroidFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1270,6 +1307,7 @@ class GUI_EXPORT QgsLinearReferencingSymbolLayerWidget : public QgsSymbolLayerWi
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLinearReferencingSymbolLayerWidget.
      */
@@ -1311,6 +1349,7 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeometryGeneratorSymbolLayerWidget.
      * \param vl associated vector layer

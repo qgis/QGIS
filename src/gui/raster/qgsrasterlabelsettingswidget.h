@@ -37,6 +37,7 @@ class GUI_EXPORT QgsRasterLabelSettingsWidget : public QgsLabelingGui
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsRasterLabelSettingsWidget, for configuring a raster \a layer labeling.
      */

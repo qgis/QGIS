@@ -16,9 +16,9 @@
 #ifndef QGSDIRECTIONALLIGHTSETTINGS_H
 #define QGSDIRECTIONALLIGHTSETTINGS_H
 #include "qgis_3d.h"
-
-#include "qgsvector3d.h"
 #include "qgslightsource.h"
+#include "qgsvector3d.h"
+
 #include <QColor>
 
 class QDomDocument;

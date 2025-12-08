@@ -15,11 +15,14 @@
  ***************************************************************************/
 
 #include "qgsfields.h"
-#include "moc_qgsfields.cpp"
-#include "qgsfields_p.h"
+
 #include "qgsapplication.h"
+#include "qgsfields_p.h"
 #include "qgsvariantutils.h"
+
 #include <QIcon>
+
+#include "moc_qgsfields.cpp"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

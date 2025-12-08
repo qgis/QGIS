@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsspatialindexkdbush.h"
+
 #include "qgsfeatureiterator.h"
-#include "qgsfeedback.h"
 #include "qgsfeaturesource.h"
+#include "qgsfeedback.h"
 #include "qgsspatialindexkdbush_p.h"
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback )

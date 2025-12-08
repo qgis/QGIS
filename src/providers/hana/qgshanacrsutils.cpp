@@ -15,9 +15,10 @@
  *
  ***************************************************************************/
 #include "qgshanacrsutils.h"
-#include "qgshanaexception.h"
 
 #include <proj.h>
+
+#include "qgshanaexception.h"
 #include "qgsprojutils.h"
 
 double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs )

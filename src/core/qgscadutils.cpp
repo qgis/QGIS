@@ -14,15 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QQueue>
-
 #include "qgscadutils.h"
 
+#include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeometryutils.h"
 #include "qgslogger.h"
 #include "qgssnappingutils.h"
-#include "qgsgeometryutils.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
+
+#include <QQueue>
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance

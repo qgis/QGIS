@@ -10,6 +10,7 @@
 
 
 
+
 class QgsStackedBarDiagram: QgsDiagram /NoDefaultCtors/
 {
 %Docstring(signature="appended")

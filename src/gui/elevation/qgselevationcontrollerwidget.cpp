@@ -16,22 +16,24 @@
  ***************************************************************************/
 
 #include "qgselevationcontrollerwidget.h"
-#include "moc_qgselevationcontrollerwidget.cpp"
-#include "qgsrangeslider.h"
-#include "qgsrange.h"
-#include "qgsproject.h"
-#include "qgsprojectelevationproperties.h"
+
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
+#include "qgsproject.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsrange.h"
+#include "qgsrangeslider.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QToolButton>
 #include <QEvent>
-#include <QMouseEvent>
-#include <QMenu>
-#include <QPainterPath>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainterPath>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgselevationcontrollerwidget.cpp"
 
 QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   : QWidget( parent )

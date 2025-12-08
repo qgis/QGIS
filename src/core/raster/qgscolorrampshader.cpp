@@ -22,16 +22,18 @@ originally part of the larger QgsRasterLayer class
 // Set to 0.0 to support displaying small values (https://github.com/qgis/QGIS/issues/20706)
 #define DOUBLE_DIFF_THRESHOLD 0.0 // 0.0000001
 
-#include "qgslogger.h"
-#include "qgis.h"
-#include "qgscolorrampimpl.h"
 #include "qgscolorrampshader.h"
-#include "qgsrasterinterface.h"
-#include "qgssymbollayerutils.h"
-#include "qgsreadwritecontext.h"
-#include "qgscolorramplegendnodesettings.h"
 
 #include <cmath>
+
+#include "qgis.h"
+#include "qgscolorrampimpl.h"
+#include "qgscolorramplegendnodesettings.h"
+#include "qgslogger.h"
+#include "qgsrasterinterface.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayerutils.h"
+
 QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue, QgsColorRamp *colorRamp, Qgis::ShaderInterpolationMethod type, Qgis::ShaderClassificationMethod classificationMode )
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
@@ -63,6 +65,9 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
 
 QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsRasterShaderFunction::operator=( other );
   if ( auto *lSourceColorRamp = other.sourceColorRamp() )
     mSourceColorRamp.reset( lSourceColorRamp->clone() );

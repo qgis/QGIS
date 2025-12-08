@@ -20,38 +20,38 @@ email                : sbr00pwb@users.sourceforge.net
  ***************************************************************************/
 
 #include "qgsdecorationscalebar.h"
-#include "moc_qgsdecorationscalebar.cpp"
-
-#include "qgsdecorationscalebardialog.h"
 
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgscolorutils.h"
+#include "qgsdecorationscalebardialog.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsfontutils.h"
+#include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgsunittypes.h"
 #include "qgssettings.h"
-#include "qgscolorutils.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgssingleboxscalebarrenderer.h"
 #include "qgsticksscalebarrenderer.h"
+#include "qgsunittypes.h"
 
-#include <QPainter>
 #include <QAction>
+#include <QColor>
+#include <QFile>
+#include <QFont>
+#include <QFontMetrics>
+#include <QLocale>
+#include <QMenu>
+#include <QPainter>
 #include <QPen>
 #include <QPolygon>
 #include <QString>
-#include <QFontMetrics>
-#include <QFont>
-#include <QColor>
-#include <QMenu>
-#include <QFile>
-#include <QLocale>
+
+#include "moc_qgsdecorationscalebar.cpp"
 
 //non qt includes
 #include <cmath>

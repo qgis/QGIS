@@ -19,16 +19,16 @@
 
 #include "qgis.h"
 #include "qgsabstractprofilesource.h"
-#include "qgstextformat.h"
+#include "qgscurve.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsfontutils.h"
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsplot.h"
 #include "qgsprofilerequest.h"
 #include "qgsterrainprovider.h"
-#include "qgscurve.h"
-#include "qgsfontutils.h"
+#include "qgstextformat.h"
 
 ///@cond PRIVATE
 

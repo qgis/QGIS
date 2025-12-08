@@ -19,10 +19,11 @@
 #define QGSPOINTCLUSTERRENDERERWIDGET_H
 
 #include "ui_qgspointclusterrendererwidgetbase.h"
-#include "qgis_sip.h"
-#include "qgsrendererwidget.h"
-#include "qgsexpressioncontextgenerator.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsrendererwidget.h"
 
 class QgsPointClusterRenderer;
 
@@ -37,6 +38,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget : public QgsRendererWidget, priva
     Q_OBJECT
 
   public:
+
     /**
      * Returns a new QgsPointClusterRendererWidget.
      * \param layer associated vector layer

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspropertycollection.h"
+
 #include "qgsproperty.h"
 #include "qgsxmlutils.h"
 
@@ -134,6 +135,9 @@ QgsPropertyCollection::QgsPropertyCollection( const QgsPropertyCollection &other
 
 QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollection &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsAbstractPropertyCollection::operator=( other );
   mProperties = other.mProperties;
   mProperties.detach();
@@ -402,6 +406,9 @@ QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollect
 
 QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsPropertyCollectionStack &other )
 {
+  if ( &other == this )
+    return *this;
+
   setName( other.name() );
   clear();
 

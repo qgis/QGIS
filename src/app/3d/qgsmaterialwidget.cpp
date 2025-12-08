@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmaterialwidget.h"
-#include "moc_qgsmaterialwidget.cpp"
+
 #include "qgs3d.h"
-#include "qgsmaterialregistry.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsmaterialregistry.h"
 #include "qgsmaterialsettingswidget.h"
-#include "qgsreadwritecontext.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgsreadwritecontext.h"
+
+#include "moc_qgsmaterialwidget.cpp"
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QWidget( parent )
   , mCurrentSettings( std::make_unique<QgsPhongMaterialSettings>() )
-  , mTechnique( QgsMaterialSettingsRenderingTechnique::Triangles )
 {
   setupUi( this );
 

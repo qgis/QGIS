@@ -15,22 +15,23 @@
 #ifndef QGSATTRIBUTEEDITORMODEL_H
 #define QGSATTRIBUTEEDITORMODEL_H
 
+#include "qgis_gui.h"
+#include "qgsconditionalstyle.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
+#include "qgsfeaturemodel.h"
 
-#include <QSortFilterProxyModel>
-#include <QVariant>
 #include <QItemSelectionModel>
 #include <QPointer>
-
-#include "qgsfeaturemodel.h"
-#include "qgsfeature.h" // QgsFeatureId
-#include "qgsexpressioncontext.h"
-#include "qgsconditionalstyle.h"
-#include "qgis_gui.h"
+#include <QSortFilterProxyModel>
+#include <QVariant>
 
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
+
+#define QGSFEATURELISTMODEL_CACHE_INDEX 1
 
 /**
  * \ingroup gui

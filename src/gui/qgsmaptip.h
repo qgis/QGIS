@@ -23,11 +23,12 @@ class QgsPointXY;
 class QgsVectorLayer;
 class QgsWebView;
 
-#include <QWidget>
-#include <QUrl>
-#include <QTimer>
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeature.h"
+
+#include <QTimer>
+#include <QUrl>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -52,6 +53,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Default constructor
      */

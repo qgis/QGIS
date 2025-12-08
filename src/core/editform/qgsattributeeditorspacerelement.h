@@ -16,8 +16,8 @@
 #ifndef QGSATTRIBUTEEDITORSPACERELEMENT_H
 #define QGSATTRIBUTEEDITORSPACERELEMENT_H
 
-#include "qgsattributeeditorelement.h"
 #include "qgis_core.h"
+#include "qgsattributeeditorelement.h"
 
 /**
  * \ingroup core

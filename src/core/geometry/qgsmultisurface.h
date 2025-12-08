@@ -20,7 +20,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
-
 class QgsSurface;
 
 /**

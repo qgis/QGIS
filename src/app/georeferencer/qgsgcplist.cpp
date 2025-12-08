@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointxy.h"
-#include "qgsgeorefdatapoint.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsproject.h"
-#include "qgsgeoreftransform.h"
-
 #include "qgsgcplist.h"
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgeorefdatapoint.h"
+#include "qgsgeoreftransform.h"
+#include "qgspointxy.h"
+#include "qgsproject.h"
+
 #include <QDir>
 #include <QTextStream>
 

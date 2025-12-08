@@ -16,14 +16,14 @@
 #ifndef QGSLAYERTREEREGISTRYBRIDGE_H
 #define QGSLAYERTREEREGISTRYBRIDGE_H
 
-#include <QObject>
-#include <QStringList>
-#include <QPointer>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgslayertreegroup.h"
+
+#include <QObject>
+#include <QPointer>
+#include <QStringList>
 
 class QgsLayerTreeNode;
 class QgsMapLayer;
@@ -123,9 +123,9 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     QgsLayerTreeGroup *mRoot = nullptr;
     QgsProject *mProject = nullptr;
     QStringList mLayerIdsForRemoval;
-    bool mRegistryRemovingLayers;
-    bool mEnabled;
-    bool mNewLayersVisible;
+    bool mRegistryRemovingLayers = false;
+    bool mEnabled = true;
+    bool mNewLayersVisible = true;
 
     QPointer< QgsLayerTreeGroup > mInsertionPointGroup;
     int mInsertionPointPosition = 0;

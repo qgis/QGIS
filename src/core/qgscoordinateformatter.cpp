@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgscoordinateformatter.h"
+
 #include "qgis.h"
 
-#include <QObject> // for tr()
 #include <QLocale>
+#include <QObject>
 
 QString QgsCoordinateFormatter::formatX( double x, QgsCoordinateFormatter::Format format, int precision, FormatFlags flags )
 {

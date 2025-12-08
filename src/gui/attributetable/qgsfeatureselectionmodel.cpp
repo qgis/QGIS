@@ -12,19 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfeatureselectionmodel.h"
+
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
 #include "qgsifeatureselectionmanager.h"
-#include "qgsfeatureselectionmodel.h"
-#include "moc_qgsfeatureselectionmodel.cpp"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfeatureselectionmodel.cpp"
 
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionManager, QObject *parent )
   : QItemSelectionModel( model, parent )
   , mFeatureModel( featureModel )
-  , mSyncEnabled( true )
-  , mClearAndSelectBuffer( false )
 {
   setFeatureSelectionManager( featureSelectionManager );
 }

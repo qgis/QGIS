@@ -17,9 +17,7 @@
 #define QGSVECTORTILERENDERER_H
 
 #include "qgis_core.h"
-
 #include "qgsfeature.h"
-
 #include "qgstiles.h"
 
 class QgsRenderContext;

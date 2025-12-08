@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgsconfig.h"
-
 #include "qgssensorguiregistry.h"
-#include "moc_qgssensorguiregistry.cpp"
+
 #include "qgssensorwidget.h"
+
+#include "moc_qgssensorguiregistry.cpp"
 
 QgsSensorGuiRegistry::QgsSensorGuiRegistry( QObject *parent )
   : QObject( parent )
@@ -69,10 +70,11 @@ bool QgsSensorGuiRegistry::addSensorGuiMetadata( QgsSensorAbstractGuiMetadata *m
 
 QgsAbstractSensor *QgsSensorGuiRegistry::createSensor( const QString &type, QObject *parent ) const
 {
-  if ( !mMetadata.contains( type ) )
+  auto it = mMetadata.constFind( type );
+  if ( it == mMetadata.constEnd() )
     return nullptr;
 
-  std::unique_ptr<QgsAbstractSensor> sensor( mMetadata.value( type )->createSensor( parent ) );
+  std::unique_ptr<QgsAbstractSensor> sensor( it.value()->createSensor( parent ) );
   if ( sensor )
     return sensor.release();
 
@@ -81,10 +83,14 @@ QgsAbstractSensor *QgsSensorGuiRegistry::createSensor( const QString &type, QObj
 
 QgsAbstractSensorWidget *QgsSensorGuiRegistry::createSensorWidget( QgsAbstractSensor *sensor ) const
 {
-  if ( !sensor || !mMetadata.contains( sensor->type() ) )
+  if ( !sensor )
     return nullptr;
 
-  return mMetadata[sensor->type()]->createSensorWidget( sensor );
+  auto it = mMetadata.constFind( sensor->type() );
+  if ( it == mMetadata.constEnd() )
+    return nullptr;
+
+  return it.value()->createSensorWidget( sensor );
 }
 
 QMap<QString, QString> QgsSensorGuiRegistry::sensorTypes() const

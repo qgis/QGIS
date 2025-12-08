@@ -14,26 +14,28 @@
  ***************************************************************************/
 
 #include "qgsappgpsdigitizing.h"
-#include "moc_qgsappgpsdigitizing.cpp"
-#include "qgsrubberband.h"
-#include "qgslinesymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgui.h"
+
 #include "qgisapp.h"
-#include "qgsmessagebar.h"
-#include "qgsmapcanvas.h"
+#include "qgsappgpsconnection.h"
+#include "qgsapplication.h"
+#include "qgsattributedialog.h"
+#include "qgsattributeform.h"
 #include "qgsfeatureaction.h"
 #include "qgsgpsconnection.h"
-#include "qgsappgpsconnection.h"
-#include "qgsprojectgpssettings.h"
-#include "qgsapplication.h"
-#include "qgsattributeform.h"
-#include "qgsattributedialog.h"
+#include "qgsgui.h"
 #include "qgshighlight.h"
+#include "qgslinesymbol.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsprojectgpssettings.h"
+#include "qgsrubberband.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgssymbollayerutils.h"
 
 #include <QTimeZone>
+
+#include "moc_qgsappgpsdigitizing.cpp"
 
 const QgsSettingsEntryString *QgsAppGpsDigitizing::settingTrackLineSymbol = new QgsSettingsEntryString( QStringLiteral( "track-line-symbol" ), QgsSettingsTree::sTreeGps, QStringLiteral( "<symbol alpha=\"1\" name=\"gps-track-symbol\" force_rhr=\"0\" clip_to_extent=\"1\" type=\"line\"><layer enabled=\"1\" pass=\"0\" locked=\"0\" class=\"SimpleLine\"><Option type=\"Map\"><Option name=\"line_color\" type=\"QString\" value=\"219,30,42,255\"/><Option name=\"line_style\" type=\"QString\" value=\"solid\"/><Option name=\"line_width\" type=\"QString\" value=\"0.4\"/></Option></layer></symbol>" ), QStringLiteral( "Line symbol to use for GPS track line" ), Qgis::SettingsOptions(), 0 );
 

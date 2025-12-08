@@ -16,9 +16,8 @@
 #ifndef QGSVECTORLAYERSELECTIONMANAGER_H
 #define QGSVECTORLAYERSELECTIONMANAGER_H
 
-#include "qgsifeatureselectionmanager.h"
 #include "qgis_gui.h"
-
+#include "qgsifeatureselectionmanager.h"
 
 SIP_NO_FILE
 

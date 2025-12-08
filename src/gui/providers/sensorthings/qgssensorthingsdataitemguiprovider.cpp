@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgssensorthingsdataitemguiprovider.h"
-#include "moc_qgssensorthingsdataitemguiprovider.cpp"
 
 #include "qgsapplication.h"
-#include "qgssensorthingsdataitems.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectiondialog.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsdataitemguiproviderutils.h"
+#include "qgssensorthingsdataitems.h"
 
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
+
+#include "moc_qgssensorthingsdataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 

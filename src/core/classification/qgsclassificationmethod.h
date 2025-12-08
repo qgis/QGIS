@@ -16,11 +16,11 @@
 #ifndef QGSCLASSIFICATIONMETHOD_H
 #define QGSCLASSIFICATIONMETHOD_H
 
-#include <QIcon>
-
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsprocessingparameters.h"
+
+#include <QIcon>
 
 class QgsVectorLayer;
 class QgsRendererRange;

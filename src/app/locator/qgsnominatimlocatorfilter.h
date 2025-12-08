@@ -21,7 +21,6 @@
 #include "qgis_app.h"
 #include "qgsgeocoderlocatorfilter.h"
 
-
 class APP_EXPORT QgsNominatimLocatorFilter : public QgsGeocoderLocatorFilter
 {
     Q_OBJECT

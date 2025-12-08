@@ -16,27 +16,30 @@
  ***************************************************************************/
 
 #include "qgslayoutitemelevationprofile.h"
-#include "moc_qgslayoutitemelevationprofile.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgslinesymbol.h"
-#include "qgsplot.h"
-#include "qgslayout.h"
-#include "qgsmessagelog.h"
-#include "qgsmaplayerlistutils_p.h"
+
+#include <memory>
+
 #include "qgscurve.h"
-#include "qgsprofilerequest.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgsprofilerenderer.h"
-#include "qgslayoututils.h"
-#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmessagelog.h"
+#include "qgsplot.h"
+#include "qgsprofilerenderer.h"
+#include "qgsprofilerequest.h"
 #include "qgsprofilesourceregistry.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgssymbollayerutils.h"
+#include "qgsterrainprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QTimer>
-#include <memory>
+
+#include "moc_qgslayoutitemelevationprofile.cpp"
 
 #define CACHE_SIZE_LIMIT 5000
 
@@ -99,6 +102,11 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
 
   //default to no background
   setBackgroundEnabled( false );
+
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsLayoutItemElevationProfile::setSourcesPrivate );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, this, &QgsLayoutItemElevationProfile::setSourcesPrivate );
+
+  setSourcesPrivate(); // Initialize with registered sources
 }
 
 QgsLayoutItemElevationProfile::~QgsLayoutItemElevationProfile()
@@ -491,6 +499,42 @@ void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layer
   invalidateCache();
 }
 
+QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
+{
+  if ( mSources.isEmpty() && !mLayers.isEmpty() )
+  {
+    // Legacy: If we have layers, extract their sources and return them.
+    // We don't set mSources here, because we want the previous check to
+    // continue failing if only layers are set.
+    // TODO: Remove in QGIS 5.0.
+    QList< QgsAbstractProfileSource * > sources;
+    const QList<QgsMapLayer *> layersToGenerate = layers();
+    sources.reserve( layersToGenerate.size() );
+
+    for ( QgsMapLayer *layer : layersToGenerate )
+    {
+      if ( QgsAbstractProfileSource *source = layer->profileSource() )
+        sources << source;
+    }
+
+    // More legacy: elevation profile layers are in opposite direction
+    // to what the layer tree requires, and are in the same direction as
+    // the renderer expects, but since we reverse sources() (i.e., layers)
+    // before passing them to the renderer, then we need to reverse here first.
+    std::reverse( sources.begin(), sources.end() );
+
+    return sources;
+  }
+
+  return mSources;
+}
+
+void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSource *> &sources )
+{
+  mSources = sources;
+  invalidateCache();
+}
+
 void QgsLayoutItemElevationProfile::setProfileCurve( QgsCurve *curve )
 {
   mCurve.reset( curve );
@@ -681,15 +725,10 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QList< QgsAbstractProfileSource * > sources;
-        sources << QgsApplication::profileSourceRegistry()->profileSources();
-        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-        {
-          if ( QgsAbstractProfileSource *source = layer->profileSource() )
-            sources.append( source );
-        }
+        QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+        std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-        QgsProfilePlotRenderer renderer( sources, profileRequest() );
+        QgsProfilePlotRenderer renderer( sourcesToRender, profileRequest() );
         std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
         renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
@@ -737,15 +776,10 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QList< QgsAbstractProfileSource * > sources;
-        sources << QgsApplication::profileSourceRegistry()->profileSources();
-        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-        {
-          if ( QgsAbstractProfileSource *source = layer->profileSource() )
-            sources.append( source );
-        }
+        QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+        std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-        QgsProfilePlotRenderer renderer( sources, profileRequest() );
+        QgsProfilePlotRenderer renderer( sourcesToRender, profileRequest() );
         std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
         renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
@@ -849,6 +883,29 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
     layoutProfileElem.appendChild( layersElement );
   }
 
+  {
+    QDomElement sourcesElement = doc.createElement( QStringLiteral( "profileSources" ) );
+    for ( QgsAbstractProfileSource *source : mSources )
+    {
+      if ( source )
+      {
+        if ( QgsApplication::profileSourceRegistry()->findSourceById( source->profileSourceId() ) )
+        {
+          QDomElement sourceElement = doc.createElement( QStringLiteral( "profileCustomSource" ) );
+          sourceElement.setAttribute( QStringLiteral( "id" ), source->profileSourceId() );
+          sourcesElement.appendChild( sourceElement );
+        }
+        else if ( auto layer = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( source ) ) )
+        {
+          QDomElement sourceElement = doc.createElement( QStringLiteral( "profileLayerSource" ) );
+          layer.writeXml( sourceElement, rwContext );
+          sourcesElement.appendChild( sourceElement );
+        }
+      }
+    }
+    layoutProfileElem.appendChild( sourcesElement );
+  }
+
   if ( mSubsectionsSymbol )
   {
     QDomElement subsectionsElement = doc.createElement( QStringLiteral( "subsections" ) );
@@ -909,6 +966,35 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
       mLayers.append( ref );
 
       layerElement = layerElement.nextSiblingElement( QStringLiteral( "layer" ) );
+    }
+  }
+
+  {
+    mSources.clear();
+    const QDomElement sourcesElement = itemElem.firstChildElement( QStringLiteral( "profileSources" ) );
+    QDomElement sourceElement = sourcesElement.firstChildElement();
+    while ( !sourceElement.isNull() )
+    {
+      if ( sourceElement.tagName() == QLatin1String( "profileCustomSource" ) )
+      {
+        const QString sourceId = sourceElement.attribute( QStringLiteral( "id" ) );
+        if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
+        {
+          mSources.append( profileSource );
+        }
+      }
+      else if ( sourceElement.tagName() == QLatin1String( "profileLayerSource" ) )
+      {
+        QgsMapLayerRef ref;
+        ref.readXml( sourceElement, context );
+        ref.resolveWeakly( mLayout->project() );
+        if ( ref.get() )
+        {
+          mSources.append( ref.get()->profileSource() );
+        }
+      }
+
+      sourceElement = sourceElement.nextSiblingElement();
     }
   }
 
@@ -978,7 +1064,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   if ( w <= 0 || h <= 0 )
     return;
 
-  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
+  mCacheRenderingImage = std::make_unique<QImage>( w, h, QImage::Format_ARGB32 );
 
   // set DPI of the image
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
@@ -993,17 +1079,12 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   }
 
   mCacheInvalidated = false;
-  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+  mPainter = std::make_unique<QPainter>( mCacheRenderingImage.get() );
 
-  QList< QgsAbstractProfileSource * > sources;
-  sources << QgsApplication::profileSourceRegistry()->profileSources();
-  for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-  {
-    if ( QgsAbstractProfileSource *source = layer->profileSource() )
-      sources.append( source );
-  }
+  QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+  std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sources, profileRequest() );
+  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sourcesToRender, profileRequest() );
   std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
   mRenderJob->setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
   connect( mRenderJob.get(), &QgsProfilePlotRenderer::generationFinished, this, &QgsLayoutItemElevationProfile::profileGenerationFinished );
@@ -1116,4 +1197,9 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
 void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol )
 {
   mSubsectionsSymbol.reset( symbol );
+}
+
+void QgsLayoutItemElevationProfile::setSourcesPrivate()
+{
+  mSources = QgsApplication::profileSourceRegistry()->profileSources();
 }

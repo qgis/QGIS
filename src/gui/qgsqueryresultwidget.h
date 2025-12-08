@@ -16,21 +16,22 @@
 #ifndef QGSQUERYRESULTWIDGET_H
 #define QGSQUERYRESULTWIDGET_H
 
+#include "ui_qgsqueryresultpanelwidgetbase.h"
+#include "ui_qgsqueryresultwidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgsqueryresultwidgetbase.h"
-#include "ui_qgsqueryresultpanelwidgetbase.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsqueryresultmodel.h"
 #include "qgsfeedback.h"
+#include "qgsqueryresultmodel.h"
 #include "qgssettingstree.h"
 
-#include <QWidget>
-#include <QThread>
-#include <QtConcurrent>
-#include <QStyledItemDelegate>
 #include <QDialog>
 #include <QMainWindow>
+#include <QStyledItemDelegate>
+#include <QThread>
+#include <QWidget>
+#include <QtConcurrent>
 
 class QgsCodeEditorWidget;
 class QgsCodeEditorSQL;
@@ -137,7 +138,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
      */
     QgsQueryResultWidget( QWidget *parent = nullptr, QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER = nullptr );
 
-    virtual ~QgsQueryResultWidget();
+    ~QgsQueryResultWidget() override;
 
     /**
      * Initializes the widget from \a options.
@@ -182,7 +183,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
     /**
      * Triggered when the threaded API fetcher has new \a tokens to add.
      *
-     * \deprecated QGIS 3.44, has no effect
+     * \deprecated QGIS 3.44. Has no effect.
      */
     Q_DECL_DEPRECATED void tokensReady( const QStringList &tokens ) SIP_DEPRECATED;
 
@@ -263,6 +264,7 @@ class GUI_EXPORT QgsQueryResultPanelWidget : public QgsPanelWidget, private Ui::
     Q_OBJECT
 
   public:
+
     /**
      * Creates a QgsQueryResultPanelWidget with the given \a connection, ownership is transferred to the widget.
      */
@@ -431,6 +433,7 @@ class GUI_EXPORT QgsQueryResultDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsQueryResultDialog.
      *
@@ -465,6 +468,7 @@ class GUI_EXPORT QgsQueryResultMainWindow : public QMainWindow
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsQueryResultMainWindow.
      *

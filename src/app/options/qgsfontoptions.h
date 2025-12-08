@@ -16,8 +16,9 @@
 #define QGSFONTOPTIONS_H
 
 #include "ui_qgsfontoptionswidgetbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 /**
  * \ingroup app
@@ -31,6 +32,7 @@ class QgsFontOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsFontOpt
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFontOptionsWidget with the specified \a parent widget.
      */

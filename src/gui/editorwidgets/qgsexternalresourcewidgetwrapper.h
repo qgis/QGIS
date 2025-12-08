@@ -21,9 +21,9 @@ class QgsExternalResourceWidget;
 class QLabel;
 class QLineEdit;
 
-#include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
 #include "qgsattributeform.h"
+#include "qgseditorwidgetwrapper.h"
 
 SIP_NO_FILE
 
@@ -41,6 +41,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsExternalResourceWidgetWrapper.
      *

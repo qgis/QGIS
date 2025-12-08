@@ -29,9 +29,9 @@
 // version without notice, or even be removed.
 //
 
-#include "qgscoordinatereferencesystem.h"
-
 #include <proj.h>
+
+#include "qgscoordinatereferencesystem.h"
 #include "qgsprojutils.h"
 #include "qgsreadwritelocker.h"
 

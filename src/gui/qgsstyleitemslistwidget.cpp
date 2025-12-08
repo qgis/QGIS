@@ -15,15 +15,18 @@
 
 
 #include "qgsstyleitemslistwidget.h"
-#include "moc_qgsstyleitemslistwidget.cpp"
-#include "qgsstylemanagerdialog.h"
-#include "qgspanelwidget.h"
-#include "qgssettings.h"
+
 #include "qgsgui.h"
-#include "qgswindowmanagerinterface.h"
+#include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgssettings.h"
+#include "qgsstylemanagerdialog.h"
+#include "qgswindowmanagerinterface.h"
+
 #include <QScrollBar>
+
+#include "moc_qgsstyleitemslistwidget.cpp"
 
 //
 // QgsReadOnlyStyleModel
@@ -251,6 +254,12 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 
   mSymbolTreeView->setSelectionModel( viewSymbols->selectionModel() );
   connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsStyleItemsListWidget::onSelectionChanged );
+  connect( viewSymbols, &QListView::activated, this, [this]( const QModelIndex &index ) {
+    onSelectionChanged( index, QModelIndex() );
+  } );
+  connect( mSymbolTreeView, &QTreeView::activated, this, [this]( const QModelIndex &index ) {
+    onSelectionChanged( index, QModelIndex() );
+  } );
 
   populateGroups();
   connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleItemsListWidget::groupsCombo_currentIndexChanged );
@@ -556,9 +565,12 @@ void QgsStyleItemsListWidget::openStyleManager()
   }
 }
 
-void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index )
+void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index, const QModelIndex &previous )
 {
   if ( !mModel )
+    return;
+
+  if ( index.row() == previous.row() )
     return;
 
   const QString symbolName = mModel->data( mModel->index( index.row(), QgsStyleModel::Name ) ).toString();

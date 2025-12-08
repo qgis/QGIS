@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgscalloutpanelwidget.h"
-#include "moc_qgscalloutpanelwidget.cpp"
+
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
 #include "qgscalloutwidget.h"
 #include "qgsgui.h"
+
+#include "moc_qgscalloutpanelwidget.cpp"
 
 QgsCalloutPanelWidget::QgsCalloutPanelWidget( QWidget *parent, QgsMapLayer *layer )
   : QgsPanelWidget( parent )

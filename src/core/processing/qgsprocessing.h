@@ -18,10 +18,11 @@
 #ifndef QGSPROCESSING_H
 #define QGSPROCESSING_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+
 #include <QString>
 
 //
@@ -98,6 +99,8 @@ class CORE_EXPORT QgsProcessing
           return QStringLiteral( "TypeAnnotation" );
         case Qgis::ProcessingSourceType::VectorTile:
           return QStringLiteral( "TypeVectorTile" );
+        case Qgis::ProcessingSourceType::TiledScene:
+          return QStringLiteral( "TiledScene" );
       }
       return QString();
     }

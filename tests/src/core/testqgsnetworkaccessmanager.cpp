@@ -15,16 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnetworkaccessmanager.h"
-#include "qgsapplication.h"
 #include "qgis.h"
-#include <QObject>
+#include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgstest.h"
+
+#include <QAuthenticator>
+#include <QHttpMultiPart>
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
-#include <QAuthenticator>
+#include <QObject>
 #include <QThread>
-#include <QHttpMultiPart>
 
 class BackgroundRequest : public QThread
 {
@@ -1131,7 +1132,7 @@ class FunctionThread : public QThread
     Q_OBJECT
   public:
     FunctionThread( const std::function<bool()> &f )
-      : m_f( f ), m_result( false ) {}
+      : m_f( f ) {}
     bool getResult() const
     {
       return m_result;
@@ -1139,9 +1140,9 @@ class FunctionThread : public QThread
 
   private:
     std::function<bool()> m_f;
-    bool m_result;
+    bool m_result = false;
 
-    void run()
+    void run() override
     {
       m_result = m_f();
     }

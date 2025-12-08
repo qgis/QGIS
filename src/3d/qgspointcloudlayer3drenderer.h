@@ -18,11 +18,11 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-
 #include "qgs3drendererregistry.h"
 #include "qgsabstractpointcloud3drenderer.h"
-#include "qgsmaplayerref.h"
 #include "qgsfeedback.h"
+#include "qgsmaplayerref.h"
+
 #include <QObject>
 
 class QgsPointCloudLayer;
@@ -41,6 +41,7 @@ class QgsPointCloudLayer;
 class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
+
     /**
      * Constructor for QgsPointCloud3DRenderContext.
      *

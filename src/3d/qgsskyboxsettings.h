@@ -16,11 +16,11 @@
 #ifndef QGSSKYBOXSETTINGS_H
 #define QGSSKYBOXSETTINGS_H
 
-#include <QString>
-#include <QMap>
-
 #include "qgis_3d.h"
 #include "qgsskyboxentity.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsReadWriteContext;
 class QDomElement;

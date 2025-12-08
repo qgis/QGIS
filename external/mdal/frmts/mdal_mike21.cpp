@@ -61,7 +61,7 @@ MDAL::MeshMike21::MeshMike21( size_t faceVerticesMaximumCount,
   : MemoryMesh( DRIVER_NAME,
                 faceVerticesMaximumCount,
                 uri )
-  , mVertexIDtoIndex( vertexIDtoIndex )
+  , mVertexIDtoIndex( std::move( vertexIDtoIndex ) )
 {
 }
 
@@ -90,6 +90,11 @@ size_t MDAL::MeshMike21::maximumVertexId() const
   }
 }
 
+// Suppress coverity fun_call_w_exception warning, as it believes a std::regex_error
+// may be raised here, but we know for certain that the regex members have valid
+// regular expressions and will not raise
+
+// coverity[fun_call_w_exception:FALSE]
 MDAL::DriverMike21::DriverMike21( ):
   Driver( DRIVER_NAME,
           "Mike21 Mesh File",
@@ -334,7 +339,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverMike21::load( const std::string &meshFil
     new MeshMike21(
       maxVerticesPerFace,
       mMeshFile,
-      vertexIDtoIndex
+      std::move( vertexIDtoIndex )
     )
   );
   mesh->setFaces( std::move( faces ) );

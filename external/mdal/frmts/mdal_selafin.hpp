@@ -148,15 +148,15 @@ namespace MDAL
       std::vector<RelativeTimestamp> mTimeSteps;
       std::vector<std::string> mVariableNames;
       // Mesh
-      size_t mVerticesCount;
-      size_t mFacesCount;
-      size_t mVerticesPerFace;
+      size_t mVerticesCount = 0;
+      size_t mFacesCount = 0;
+      size_t mVerticesPerFace = 0;
       std::streampos mXStreamPosition;
       std::streampos mYStreamPosition;
       std::streampos mConnectivityStreamPosition;
       std::streampos mIPOBOStreamPosition;
-      double mXOrigin;
-      double mYOrigin;
+      double mXOrigin = 0;
+      double mYOrigin = 0;
 
       std::string mFileName;
       bool mStreamInFloatPrecision = true;

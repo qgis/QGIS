@@ -19,9 +19,9 @@
 #include <memory>
 
 #include "qgsmaplayerconfigwidget.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudlayer3drenderer.h"
 
 class QCheckBox;
 

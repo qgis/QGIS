@@ -16,10 +16,10 @@
 #ifndef QGSVECTORLAYERTOOLSCONTEXT_H
 #define QGSVECTORLAYERTOOLSCONTEXT_H
 
-#include "qgsexpressioncontext.h"
-#include "qgis_core.h"
-
 #include <memory>
+
+#include "qgis_core.h"
+#include "qgsexpressioncontext.h"
 
 /**
  * \ingroup core

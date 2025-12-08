@@ -108,6 +108,29 @@ class HdfDataType
     HdfDataType( hid_t type, bool isNativeType = true );
     ~HdfDataType();
 
+    HdfDataType( const HdfDataType &other ) = default;
+    HdfDataType &operator=( const HdfDataType &other ) = default;
+
+    // Move constructor
+    HdfDataType( HdfDataType &&other ) noexcept
+      : d( std::move( other.d ) )
+      , mNativeId( other.mNativeId )
+    {
+      other.mNativeId = -1;
+    }
+
+    // Move assignment operator
+    HdfDataType &operator=( HdfDataType &&other ) noexcept
+    {
+      if ( this != &other )
+      {
+        d = std::move( other.d );
+        mNativeId = other.mNativeId;
+        other.mNativeId = -1;
+      }
+      return *this;
+    }
+
     // Creates new string type with size, use HDF_MAX_NAME for maximum length
     static HdfDataType createString( int size = HDF_MAX_NAME );
     bool isValid() const;
@@ -195,6 +218,26 @@ class HdfDataspace
     //! dataspace of the dataset
     HdfDataspace( hid_t dataset = -1 );
     ~HdfDataspace( );
+
+    HdfDataspace( const HdfDataspace & ) = default;
+    HdfDataspace &operator=( const HdfDataspace & ) = default;
+
+    // Move constructor
+    HdfDataspace( HdfDataspace &&other ) noexcept
+      : d( std::move( other.d ) )
+    {
+    }
+
+    // Move assignment operator
+    HdfDataspace &operator=( HdfDataspace &&other ) noexcept
+    {
+      if ( this != &other )
+      {
+        d = std::move( other.d );
+      }
+      return *this;
+    }
+
     //! select from 1D array
     void selectHyperslab( hsize_t start, hsize_t count );
     //! select from N-D array
@@ -216,6 +259,29 @@ class HdfDataset
     //! creates invalid dataset
     HdfDataset() = default;
     ~HdfDataset();
+    HdfDataset( const HdfDataset & ) = default;
+    HdfDataset &operator=( const HdfDataset & ) = default;
+
+    // Move constructor
+    HdfDataset( HdfDataset &&other ) noexcept
+      : mFile( std::move( other.mFile ) )
+      , d( std::move( other.d ) )
+      , mType( std::move( other.mType ) )
+    {
+    }
+
+    // Move assignment operator
+    HdfDataset &operator=( HdfDataset &&other ) noexcept
+    {
+      if ( this != &other )
+      {
+        mFile = std::move( other.mFile );
+        d = std::move( other.d );
+        mType = std::move( other.mType );
+      }
+      return *this;
+    }
+
     bool isValid() const;
     hid_t id() const;
 
@@ -238,10 +304,10 @@ class HdfDataset
     //! for each dimension specified by offset and count
     //! size of offsets and counts must be same as rank (number of dims) of dataset
     //! the results array is 1D
-    std::vector<uchar> readArrayUint8( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
-    std::vector<float> readArray( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
-    std::vector<double> readArrayDouble( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
-    std::vector<int> readArrayInt( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
+    std::vector<uchar> readArrayUint8( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const;
+    std::vector<float> readArray( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const;
+    std::vector<double> readArrayDouble( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const;
+    std::vector<int> readArrayInt( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const;
 
     inline bool hasAttribute( const std::string &attr_name ) const;
     inline HdfAttribute attribute( const std::string &attr_name ) const;
@@ -260,8 +326,8 @@ class HdfDataset
     }
 
     template <typename T> std::vector<T> readArray( hid_t mem_type_id,
-        const std::vector<hsize_t> offsets,
-        const std::vector<hsize_t> counts ) const
+        const std::vector<hsize_t> &offsets,
+        const std::vector<hsize_t> &counts ) const
     {
       HdfDataspace dataspace( d->id );
       dataspace.selectHyperslab( offsets, counts );

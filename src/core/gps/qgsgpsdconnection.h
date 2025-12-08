@@ -35,7 +35,7 @@ class CORE_EXPORT QgsGpsdConnection: public QgsNmeaConnection
 
   private slots:
     void connected();
-    void error( QAbstractSocket::SocketError );
+    void errorOccurred( QAbstractSocket::SocketError );
 
   private:
     QString mDevice;

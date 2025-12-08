@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgspointcloudrequest.h"
+
+#include "qgis.h"
 #include "qgspointcloudattribute.h"
 
 QgsPointCloudRequest::QgsPointCloudRequest() = default;

@@ -16,13 +16,14 @@
 #ifndef QGSDATABASESCHEMAMODEL_H
 #define QGSDATABASESCHEMAMODEL_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QStringList>
 #include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
+#include <QStringList>
 
 class QgsProviderMetadata;
 class QgsAbstractDatabaseProviderConnection;

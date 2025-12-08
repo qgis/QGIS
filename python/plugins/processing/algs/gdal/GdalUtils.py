@@ -19,13 +19,12 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from typing import Dict, List, Optional
+from typing import Optional
 import os
-import subprocess
 import platform
 import re
-import warnings
 from dataclasses import dataclass
+import math
 
 import psycopg2
 
@@ -46,9 +45,22 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsMapLayer,
     QgsProcessingContext,
+    QgsRectangle,
+    QgsPointXY,
+    QgsDistanceArea,
+    QgsRasterLayer,
+    QgsWmsUtils,
+    QgsProcessingRasterLayerDefinition,
 )
 
-from qgis.PyQt.QtCore import QCoreApplication, QProcess
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QFile,
+    QIODevice,
+    QProcess,
+    QTextStream,
+)
+from qgis.PyQt.QtXml import QDomDocument
 
 
 @dataclass
@@ -359,9 +371,16 @@ class GdalUtils:
         return GdalUtils.gdal_connection_details_from_layer(layer)
 
     @staticmethod
-    def gdal_connection_details_from_layer(layer: QgsMapLayer) -> GdalConnectionDetails:
+    def gdal_connection_details_from_layer(
+        layer: QgsMapLayer,
+        parameter_name: Optional[str] = "",
+        parameters: Optional[dict] = {},
+        context: Optional[QgsProcessingContext] = None,
+        extent: Optional[QgsRectangle] = None,
+    ) -> GdalConnectionDetails:
         """
         Builds GDAL connection details from a QGIS map layer
+        and related settings
         """
         provider = layer.providerType()
         if provider == "spatialite":
@@ -510,6 +529,52 @@ class GdalUtils:
             return GdalConnectionDetails(
                 connection_string=gdal_source, format='"PostGISRaster"'
             )
+        elif provider.lower() == "wms":
+            if parameter_name and parameters and context and extent:
+                # Create an XML description file for the WMS
+                parameter_value = parameters[parameter_name]
+                scale, dpi = 0, 0
+                if layer.providerType() == "wms" and isinstance(
+                    parameter_value, QgsProcessingRasterLayerDefinition
+                ):
+                    scale = parameter_value.referenceScale
+                    dpi = parameter_value.dpi
+
+                if scale > 0:
+                    distanceArea = None
+                    if layer.crs().isGeographic():
+                        distanceArea = QgsDistanceArea()
+                        distanceArea.setSourceCrs(
+                            layer.crs(), context.transformContext()
+                        )
+                        distanceArea.setEllipsoid(layer.crs().ellipsoidAcronym())
+
+                    width, height = GdalUtils._wms_dimensions_for_scale(
+                        extent, layer.crs(), scale, dpi, distanceArea
+                    )
+                    wms_description_file_path = QgsProcessingUtils.generateTempFilename(
+                        "wms_description_file.xml", context
+                    )
+                    res_xml_wms, xml_wms_error = (
+                        GdalUtils.gdal_wms_xml_description_file(
+                            layer,
+                            extent,
+                            width,
+                            height,
+                            wms_description_file_path,
+                        )
+                    )
+                    if res_xml_wms:
+                        return GdalConnectionDetails(
+                            connection_string=wms_description_file_path
+                        )
+                    else:
+                        message = "Cannot create XML description file for WMS layer. Details: {}".format(
+                            xml_wms_error
+                        )
+                        QgsMessageLog.logMessage(
+                            message, "Processing", Qgis.MessageLevel.Warning
+                        )
 
         ogrstr = str(layer.source()).split("|")[0]
         path, ext = os.path.splitext(ogrstr)
@@ -609,3 +674,131 @@ class GdalUtils:
         if context == "":
             context = cls.__name__
         return QCoreApplication.translate(context, string)
+
+    @staticmethod
+    def gdal_wms_xml_description_file(
+        layer: QgsRasterLayer,
+        extent: QgsRectangle,
+        width: int,
+        height: int,
+        out_path: str,
+    ) -> tuple[bool, str]:
+        """
+        Creates an XML description file to access a WMS via GDAL.
+
+        :param layer: WMS layer.
+        :param extent: Extent to be requested.
+        :param width: Width of the image to be requested.
+        :param height: Height of the image to be requested.
+        :param out_path: Path where the XML file was created.
+        :return: True if the file was created, or False if it was not.
+                 An additional returned value provides callers with more details on an eventual write error.
+        """
+        # Prepare data
+        uri = layer.publicSource()
+        version = QgsWmsUtils.wmsVersion(layer)
+        source = QgsProviderRegistry.instance().decodeUri("wms", uri)
+        base_url = source.get("url", "")
+        crs_obj = layer.crs()
+        crs_string = GdalUtils.gdal_crs_string(crs_obj)
+        image_format = source.get("format", "")
+        service = {"SERVICE": "WMS"}
+        sublayers = source["layers"] if "layers" in source and source["layers"] else []
+        if isinstance(sublayers, str):
+            sublayers = [sublayers]  # If only one layer, it is given as string
+        styles = source["styles"] if "styles" in source and source["styles"] else []
+        if isinstance(styles, str):
+            styles = [styles]  # If only one style, it is given as string
+
+        # Set up XML doc
+        def add_text_element(doc, base_element, element_name, element_text):
+            element = doc.createElement(element_name)
+            text_node = doc.createTextNode(element_text)
+            element.appendChild(text_node)
+            return base_element.appendChild(element)
+
+        doc = QDomDocument()
+        root = doc.createElement("GDAL_WMS")
+        doc.appendChild(root)
+        service = doc.createElement("Service")
+        service.setAttribute("name", "WMS")
+
+        add_text_element(doc, service, "Version", version)
+        add_text_element(doc, service, "ServerUrl", base_url)
+        add_text_element(doc, service, "Layers", ",".join(sublayers))
+
+        if styles:
+            add_text_element(doc, service, "Styles", ",".join(styles))
+
+        add_text_element(doc, service, "ImageFormat", image_format)
+
+        if version == "1.3.0" or version == "1.3":
+            add_text_element(doc, service, "CRS", crs_string)
+            if crs_obj.hasAxisInverted():
+                add_text_element(doc, service, "BBoxOrder", "yxYX")
+        else:
+            add_text_element(doc, service, "SRS", crs_string)
+
+        root.appendChild(service)
+
+        data = doc.createElement("DataWindow")
+        add_text_element(doc, data, "UpperLeftX", str(extent.xMinimum()))
+        add_text_element(doc, data, "UpperLeftY", str(extent.yMaximum()))
+        add_text_element(doc, data, "LowerRightX", str(extent.xMaximum()))
+        add_text_element(doc, data, "LowerRightY", str(extent.yMinimum()))
+        add_text_element(doc, data, "SizeX", str(width))
+        add_text_element(doc, data, "SizeY", str(height))
+
+        root.appendChild(data)
+
+        xml_file = QFile(out_path)
+        res = False
+        error_msg = ""
+        if xml_file.open(QIODevice.OpenModeFlag.WriteOnly):
+            file_stream = QTextStream(xml_file)
+            doc.save(file_stream, 2)
+            res = True
+        else:
+            error_msg = xml_file.errorString()
+
+        return res, error_msg
+
+    @staticmethod
+    def _wms_dimensions_for_scale(
+        bbox: QgsRectangle,
+        crs: QgsCoordinateReferenceSystem,
+        scale: int,
+        dpi: float = 96.0,
+        distanceArea: Optional[QgsDistanceArea] = None,
+    ) -> tuple[int, int]:
+        """
+        Returns a tuple with WIDTH and HEIGHT in pixels that would match
+        a bounding box (in a given crs) for a particular map scale and DPI.
+
+        An optional QgsDistanceArea object can be used to get ellipsoidal
+        distances on GCSs, based on which dimensions will be calculated.
+        """
+        if bbox.isNull() or bbox.isEmpty():
+            return -1, -1
+
+        meters_per_inch = 0.0254
+
+        if crs.isGeographic() and distanceArea:
+            # Use ellipsoidal distances to get the projected extent
+            x, X, y, Y = (
+                bbox.xMinimum(),
+                bbox.xMaximum(),
+                bbox.yMinimum(),
+                bbox.yMaximum(),
+            )
+            bbox_width = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(X, Y))
+            bbox_height = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(x, y))
+            bbox_ratio = bbox.height() / bbox.width()
+        else:
+            bbox_width = bbox.xMaximum() - bbox.xMinimum()
+            bbox_height = bbox.yMaximum() - bbox.yMinimum()
+            bbox_ratio = bbox_height / bbox_width
+
+        width = bbox_width * dpi / (scale * meters_per_inch)
+
+        return math.ceil(width), math.ceil(width * bbox_ratio)

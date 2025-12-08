@@ -17,16 +17,15 @@
 #ifndef QGSHANARESULTSET_H
 #define QGSHANARESULTSET_H
 
-#include "qgsgeometry.h"
-
 #include <memory>
+#include <odbc/Forwards.h>
+#include <odbc/ResultSet.h>
+#include <odbc/ResultSetMetaDataUnicode.h>
+
+#include "qgsgeometry.h"
 
 #include <QString>
 #include <QVariant>
-
-#include "odbc/Forwards.h"
-#include "odbc/ResultSet.h"
-#include "odbc/ResultSetMetaDataUnicode.h"
 
 class QgsHanaResultSet;
 typedef std::unique_ptr<QgsHanaResultSet> QgsHanaResultSetRef;

@@ -27,6 +27,7 @@ Example
 
           def geocodeString(self, string, context, feedback):
              # calculate and return results...
+             pass
 
        my_geocoder = MyGeocoder()
 
@@ -57,6 +58,7 @@ Example
 #include "qgsalgorithmbatchgeocode.h"
 %End
   public:
+
     QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocoder );
 %Docstring
 Constructor for QgsBatchGeocodeAlgorithm.

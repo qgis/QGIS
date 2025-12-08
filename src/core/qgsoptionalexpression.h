@@ -16,11 +16,9 @@
 #ifndef QGSOPTIONALEXPRESSION_H
 #define QGSOPTIONALEXPRESSION_H
 
-#include "qgsoptional.h"
-#include "qgsexpression.h"
-
 #include "qgis_core.h"
-
+#include "qgsexpression.h"
+#include "qgsoptional.h"
 
 /**
  * \ingroup core

@@ -21,12 +21,11 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
-
+#include "qgsapplication.h"
 #include "qgsgraph.h"
 #include "qgsgraphbuilder.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerdirector.h"
-#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -44,6 +43,7 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
+
     /**
      * Adds common algorithm parameters.
      */

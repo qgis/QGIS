@@ -18,15 +18,17 @@
 #ifndef QGSRASTERCALCULATOR_H
 #define QGSRASTERCALCULATOR_H
 
-#include "qgsrectangle.h"
+#include <gdal.h>
+
+#include "qgis_analysis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
-#include <QString>
-#include <QVector>
-#include "gdal.h"
-#include "qgis_analysis.h"
 #include "qgsogrutils.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrectangle.h"
+
+#include <QString>
+#include <QVector>
 
 class QgsRasterLayer;
 class QgsFeedback;
@@ -39,6 +41,7 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
   public:
+
     /**
      * Creates a list of raster entries from the current project.
      *

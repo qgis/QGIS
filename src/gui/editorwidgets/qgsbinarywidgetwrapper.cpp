@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgsbinarywidgetwrapper.h"
-#include "moc_qgsbinarywidgetwrapper.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
+
+#include "qgsapplication.h"
 #include "qgsfileutils.h"
 #include "qgsfocuskeeper.h"
-#include "qgssettings.h"
 #include "qgsmessagebar.h"
-#include "qgsapplication.h"
-#include <QHBoxLayout>
-#include <QFileDialog>
-#include <QLabel>
-#include <QToolButton>
+#include "qgssettings.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QAction>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QToolButton>
 #include <QUrl>
+
+#include "moc_qgsbinarywidgetwrapper.cpp"
 
 QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -153,12 +156,18 @@ void QgsBinaryWidgetWrapper::saveContent()
   s.setValue( QStringLiteral( "/UI/lastBinaryDir" ), fi.absolutePath() );
 
   QFile fileOut( file );
-  fileOut.open( QIODevice::WriteOnly );
-  fileOut.write( mValue );
-  fileOut.close();
+  if ( fileOut.open( QIODevice::WriteOnly ) )
+  {
+    fileOut.write( mValue );
+    fileOut.close();
 
-  if ( mMessageBar )
-    mMessageBar->pushSuccess( QString(), tr( "Saved content to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
+    if ( mMessageBar )
+      mMessageBar->pushSuccess( QString(), tr( "Saved content to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
+  }
+  else if ( mMessageBar )
+  {
+    mMessageBar->pushMessage( QString(), tr( "Error opening %1 for write" ).arg( QDir::toNativeSeparators( file ) ), Qgis::MessageLevel::Critical );
+  }
 }
 
 void QgsBinaryWidgetWrapper::setContent()

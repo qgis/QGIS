@@ -18,29 +18,30 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataprovider.h"
+#include "qgserror.h"
+#include "qgslayermetadata.h"
+#include "qgslogger.h"
+#include "qgsmaplayerdependency.h"
+#include "qgsmaplayerselectionproperties.h"
+#include "qgsmaplayerserverproperties.h"
+#include "qgsobjectcustomproperties.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
+
 #include <QDateTime>
 #include <QDomNode>
+#include <QIcon>
 #include <QImage>
 #include <QObject>
 #include <QPainter>
+#include <QSet>
 #include <QUndoStack>
 #include <QVariant>
-#include <QIcon>
-#include <QSet>
-
-#include "qgis_sip.h"
-#include "qgserror.h"
-#include "qgsobjectcustomproperties.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmaplayerdependency.h"
-#include "qgslayermetadata.h"
-#include "qgsmaplayerserverproperties.h"
-#include "qgsreadwritecontext.h"
-#include "qgsdataprovider.h"
-#include "qgis.h"
-#include "qgslogger.h"
 
 class QgsAbstract3DRenderer;
 class QgsAbstractProfileSource;
@@ -53,7 +54,8 @@ class QgsProviderMetadata;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
-class QgsMapLayerSelectionProperties;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 class QgsSldExportContext;
 
 class QDomDocument;
@@ -90,6 +92,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( bool mapTipsEnabled READ mapTipsEnabled WRITE setMapTipsEnabled NOTIFY mapTipsEnabledChanged )
+    Q_PROPERTY( QgsMapLayerSelectionProperties *selectionProperties READ selectionProperties )
+    Q_PROPERTY( QgsMapLayer::LayerFlags flags READ flags WRITE setFlags NOTIFY flagsChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -1783,6 +1787,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.10
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    /**
+     * Accepts the specified object \a visitor, causing it to visit all relevant objects associated
+     * with the layer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
 
     /**
      * Returns the layer's selection properties. This may be NULLPTR, depending on the layer type.

@@ -16,19 +16,21 @@
 #ifndef QGSLAYOUTEXPORTER_H
 #define QGSLAYOUTEXPORTER_H
 
-#include "qgis_core.h"
 #include "qgsconfig.h"
-#include "qgsmargins.h"
+
+#include <functional>
+
+#include "qgis_core.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
-#include "qgslayoutitem.h"
+#include "qgsmargins.h"
 
 #include <QPdfWriter>
 #include <QPointer>
-#include <QSize>
 #include <QRectF>
+#include <QSize>
 #include <QVector>
-#include <functional>
 
 #if defined( HAVE_QTPRINTER )
 #include <QPrinter>

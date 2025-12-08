@@ -35,14 +35,15 @@
 
 #include <cfloat>
 #include <cmath>
-#include <QLinkedList>
 #include <geos_c.h>
 #include <memory>
 #include <vector>
 
 #include "qgis_core.h"
-#include "qgsrectangle.h"
 #include "qgsgeos.h"
+#include "qgsrectangle.h"
+
+#include <QLinkedList>
 
 namespace pal
 {

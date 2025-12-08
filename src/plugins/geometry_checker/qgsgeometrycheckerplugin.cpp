@@ -15,10 +15,13 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerplugin.h"
-#include "moc_qgsgeometrycheckerplugin.cpp"
+
 #include "qgisinterface.h"
 #include "qgsgeometrycheckerdialog.h"
+
 #include <QMenu>
+
+#include "moc_qgsgeometrycheckerplugin.cpp"
 
 QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface *iface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )

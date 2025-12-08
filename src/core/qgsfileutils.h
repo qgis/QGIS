@@ -18,9 +18,10 @@
 #ifndef QGSFILEUTILS_H
 #define QGSFILEUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QString>
 
 /**

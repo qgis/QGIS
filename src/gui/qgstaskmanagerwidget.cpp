@@ -16,17 +16,20 @@
  ***************************************************************************/
 
 #include "qgstaskmanagerwidget.h"
-#include "moc_qgstaskmanagerwidget.cpp"
-#include "qgstaskmanager.h"
+
 #include "qgsapplication.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QTreeView>
-#include <QLayout>
-#include <QToolBar>
-#include <QProgressBar>
+#include "qgstaskmanager.h"
+
 #include <QAction>
 #include <QHeaderView>
+#include <QLayout>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QProgressBar>
+#include <QToolBar>
+#include <QTreeView>
+
+#include "moc_qgstaskmanagerwidget.cpp"
 
 //
 // QgsTaskManagerWidget

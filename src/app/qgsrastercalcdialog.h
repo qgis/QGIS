@@ -19,8 +19,9 @@
 #define QGSRASTERCALCDIALOG_H
 
 #include "ui_qgsrastercalcdialogbase.h"
-#include "qgsrastercalculator.h"
+
 #include "qgis_app.h"
+#include "qgsrastercalculator.h"
 
 class QgsMapCanvas;
 
@@ -29,6 +30,7 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for raster calculator dialog
      * \param rasterLayer main raster layer, will be used for default extent and projection

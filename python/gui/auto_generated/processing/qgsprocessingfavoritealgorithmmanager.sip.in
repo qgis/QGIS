@@ -33,6 +33,7 @@ The favorite algorithms are saved and restored via
 #include "qgsprocessingfavoritealgorithmmanager.h"
 %End
   public:
+
     QgsProcessingFavoriteAlgorithmManager( QObject *parent = 0 );
 %Docstring
 Constructor for QgsProcessingFavoriteAlgorithmManager, with the
@@ -68,7 +69,7 @@ emitted.
 Clears list of favorite Processing algorithms
 %End
 
-    bool isFavorite( const QString &id );
+    bool isFavorite( const QString &id ) const;
 %Docstring
 Returns ``True`` if the algorithm with matching ``id`` is in a favorite
 list.

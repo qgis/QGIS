@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgsgloweffect.h"
-#include "qgssymbollayerutils.h"
+
+#include <memory>
+
+#include "qgscolorrampimpl.h"
 #include "qgscolorutils.h"
 #include "qgsimageoperation.h"
-#include "qgscolorrampimpl.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()
@@ -69,7 +72,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     //create a temporary ramp
     QColor transparentColor = mColor;
     transparentColor.setAlpha( 0 );
-    tempRamp.reset( new QgsGradientColorRamp( mColor, transparentColor ) );
+    tempRamp = std::make_unique<QgsGradientColorRamp>( mColor, transparentColor );
     ramp = tempRamp.get();
   }
 

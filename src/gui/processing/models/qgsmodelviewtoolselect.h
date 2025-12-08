@@ -17,12 +17,13 @@
 #ifndef QGSMODELVIEWTOOLSELECT_H
 #define QGSMODELVIEWTOOLSELECT_H
 
-#include "qgis_sip.h"
+#include <memory>
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmodelviewrubberband.h"
 #include "qgsmodelviewtool.h"
 #include "qgsmodelviewtoollink.h"
-#include "qgsmodelviewrubberband.h"
-#include <memory>
 
 class QgsModelViewMouseHandles;
 class QGraphicsItem;
@@ -39,6 +40,7 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewToolSelect.
      */

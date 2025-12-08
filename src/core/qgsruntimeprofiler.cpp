@@ -13,12 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsruntimeprofiler.h"
-#include "moc_qgsruntimeprofiler.cpp"
-#include "qgslogger.h"
+
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
+
 #include <QSet>
 #include <QThreadStorage>
+
+#include "moc_qgsruntimeprofiler.cpp"
 
 QgsRuntimeProfiler *QgsRuntimeProfiler::sMainProfiler = nullptr;
 

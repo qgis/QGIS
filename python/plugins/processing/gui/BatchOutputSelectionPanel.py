@@ -230,7 +230,7 @@ class BatchOutputSelectionPanel(QWidget):
     def onTemporaryOutputChanged(self) -> None:
         if self.actionTemporaryOutput.isChecked():
             self.text.addAction(
-                self.actionTemporaryOutputIcon, QLineEdit.LeadingPosition
+                self.actionTemporaryOutputIcon, QLineEdit.ActionPosition.LeadingPosition
             )
         else:
             self.text.removeAction(self.actionTemporaryOutputIcon)

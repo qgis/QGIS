@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutserializableobject.h"
-#include "qgsreadwritecontext.h"
+
 #include "qgslayout.h"
 #include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 
 ///@cond PRIVATE
 class QgsLayoutSerializableObjectUndoCommand: public QgsAbstractLayoutUndoCommand

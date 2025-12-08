@@ -16,16 +16,16 @@
  ***************************************************************************/
 
 #include "qgscoordinatetransform_p.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgsreadwritelocker.h"
-#include "qgsmessagelog.h"
 
-#include "qgsprojutils.h"
 #include <proj.h>
 #include <proj_experimental.h>
-
 #include <sqlite3.h>
+
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsprojutils.h"
+#include "qgsreadwritelocker.h"
 
 #include <QStringList>
 
