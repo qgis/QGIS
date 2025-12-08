@@ -14448,11 +14448,6 @@ QgsPythonRunner.setArgv: src/core/qgspythonrunner.h#L55
 QgsPythonRunner.setArgvCommand: src/core/qgspythonrunner.h#L79
 QgsPythonRunner.setInstance: src/core/qgspythonrunner.h#L62
 QgsPythonRunner: src/core/qgspythonrunner.h#L32
-QgsQtLocationConnection.broadcastConnectionAvailable: src/core/gps/qgsqtlocationconnection.h#L44
-QgsQtLocationConnection.parseData: src/core/gps/qgsqtlocationconnection.h#L47
-QgsQtLocationConnection.satellitesInUseUpdated: src/core/gps/qgsqtlocationconnection.h#L65
-QgsQtLocationConnection.satellitesInViewUpdated: src/core/gps/qgsqtlocationconnection.h#L59
-QgsQtLocationConnection: src/core/gps/qgsqtlocationconnection.h#L36
 QgsQuadrilateral.QgsQuadrilateral: src/core/geometry/qgsquadrilateral.h#L63
 QgsQuadrilateral.__repr__: src/core/geometry/qgsquadrilateral.h#L214
 QgsQuadrilateral.area: src/core/geometry/qgsquadrilateral.h#L207
