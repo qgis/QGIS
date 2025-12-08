@@ -396,8 +396,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       const QgsAbstractGeometry *geom = geometry.constGet();
 
       QgsVertexId vertexId;
-      geometry.vertexIdFromVertexNr( snap.vertexIndex(), vertexId );
-      if ( vertexId.isValid() )
+      if ( geometry.vertexIdFromVertexNr( snap.vertexIndex(), vertexId ) && vertexId.isValid() )
       {
         QgsVertexId previousVertexId;
         QgsVertexId nextVertexId;
