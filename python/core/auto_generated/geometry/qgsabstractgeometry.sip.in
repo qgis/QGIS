@@ -568,6 +568,22 @@ Returns the planar, 2-dimensional area of the geometry.
 .. seealso:: :py:func:`length`
 
 .. seealso:: :py:func:`perimeter`
+
+.. seealso:: :py:func:`area`
+%End
+
+    virtual double area3D() const;
+%Docstring
+Returns the 3-dimensional surface area of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics.
+
+.. seealso:: :py:func:`area`
+
+.. versionadded:: 4.0
 %End
 
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;

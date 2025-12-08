@@ -219,6 +219,30 @@ class TestQgsPolygon(QgisTestCase):
             "Polygon ((0 42, 0 100, 42 100, 100 42, 0 42))",
         )
 
+    def test_area_3d(self):
+        exterior_ring = QgsLineString(
+            [
+                QgsPoint(0, 0, 0),
+                QgsPoint(1, 1, 1.5),
+                QgsPoint(5, 5, 3),
+                QgsPoint(0, 0, 0),
+            ]
+        )
+        polygon = QgsPolygon(exterior_ring)
+        self.assertAlmostEqual(polygon.area3D(), 3.18198, 5)
+
+        interior_ring = QgsLineString(
+            [
+                QgsPoint(2, 2, 1),
+                QgsPoint(2, 3, 1.1),
+                QgsPoint(3, 3, 1.3),
+                QgsPoint(3, 2, 1.2),
+                QgsPoint(2, 2, 1),
+            ]
+        )
+        polygon.addInteriorRing(interior_ring)
+        self.assertAlmostEqual(polygon.area3D(), 3.11127, 5)
+
 
 if __name__ == "__main__":
     unittest.main()

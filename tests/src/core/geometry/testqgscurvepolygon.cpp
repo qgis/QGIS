@@ -66,6 +66,7 @@ class TestQgsCurvePolygon : public QObject
     void testExport();
     void testExportOfCompoundCurveRing();
     void testCast();
+    void testArea3D();
     void removeInteriorRings_github_issue_49578();
 };
 
@@ -86,6 +87,7 @@ void TestQgsCurvePolygon::testConstructor()
   QCOMPARE( poly.dimension(), 2 );
   QVERIFY( !poly.hasCurvedSegments() );
   QCOMPARE( poly.area(), 0.0 );
+  QCOMPARE( poly.area3D(), 0.0 );
   QCOMPARE( poly.perimeter(), 0.0 );
   QVERIFY( !poly.exteriorRing() );
   QVERIFY( !poly.interiorRing( 0 ) );
@@ -133,6 +135,7 @@ void TestQgsCurvePolygon::testConstructor()
   QCOMPARE( poly.dimension(), 2 );
   QVERIFY( poly.hasCurvedSegments() );
   QGSCOMPARENEAR( poly.area(), 157.08, 0.01 );
+  QCOMPARE( poly.area3D(), 0.0 );
   QGSCOMPARENEAR( poly.perimeter(), 44.4288, 0.01 );
   QVERIFY( poly.exteriorRing() );
   QVERIFY( !poly.interiorRing( 0 ) );
@@ -580,6 +583,7 @@ void TestQgsCurvePolygon::testAreaPerimeterWithInteriorRing()
   poly.addInteriorRing( ring );
 
   QGSCOMPARENEAR( poly.area(), 117.8104, 0.01 );
+  QCOMPARE( poly.area3D(), 0.0 );
   QGSCOMPARENEAR( poly.perimeter(), 66.6432, 0.01 );
 }
 
@@ -1703,6 +1707,22 @@ void TestQgsCurvePolygon::testCast()
   QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   QVERIFY( !pCast2.fromWkt( QStringLiteral( "CurvePolygonZ((111111))" ) ) );
+}
+
+void TestQgsCurvePolygon::testArea3D()
+{
+  QgsCurvePolygon poly;
+
+  std::unique_ptr<QgsCircularString> ext = std::make_unique<QgsCircularString>();
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 10, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 10, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 0, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ) );
+  poly.setExteriorRing( ext->clone() );
+  QGSCOMPARENEAR( poly.area3D(), 100.995, 1e-3 );
+
+  // with an interior ring - area3D is smaller
+  std::unique_ptr<QgsCircularString> ring = std::make_unique<QgsCircularString>();
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 9, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 9, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 9, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) );
+  poly.addInteriorRing( ring->clone() );
+  QGSCOMPARENEAR( poly.area3D(), 36.0414, 1e-4 );
 }
 
 void TestQgsCurvePolygon::removeInteriorRings_github_issue_49578() // https://github.com/qgis/QGIS/issues/49578

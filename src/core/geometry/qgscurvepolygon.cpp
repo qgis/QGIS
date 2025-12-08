@@ -492,6 +492,70 @@ double QgsCurvePolygon::area() const
   return totalArea;
 }
 
+double QgsCurvePolygon::area3D() const
+{
+  double result = 0.0;
+
+  if ( !mExteriorRing )
+  {
+    return result;
+  }
+
+  QgsPoint ptA;
+  QgsPoint ptB;
+  QgsPoint ptC;
+
+  if ( !hasPlane3D( ptA, ptB, ptC ) )
+  {
+    return result;
+  }
+
+  // Build an orthonormal reference frame (ux, uy, uz) from three 3D points
+  QgsVector3D ux( ptC.x() - ptB.x(), ptC.y() - ptB.y(), ptC.z() - ptB.z() );
+  QgsVector3D uz = QgsVector3D::crossProduct( ux, QgsVector3D( ptA.x() - ptB.x(), ptA.y() - ptB.y(), ptA.z() - ptB.z() ) );
+  ux = ux / std::sqrt( ux.lengthSquared() );
+  uz = uz / std::sqrt( uz.lengthSquared() );
+  const QgsVector3D uy = QgsVector3D::crossProduct( uz, ux );
+
+  /*
+   * compute the area for each ring in the local basis
+   */
+  const int numRings = static_cast<int>( mInteriorRings.size() + 1 );
+  for ( int ringIndex = 0; ringIndex < numRings; ++ringIndex )
+  {
+    const QgsLineString *ring = static_cast< const QgsLineString * >( ringIndex == 0 ? mExteriorRing.get() : mInteriorRings.at( ringIndex - 1 ) );
+    if ( ring->isRing() )
+    {
+      QVector<QgsPointXY> projectedPoints;
+      projectedPoints.reserve( ring->numPoints() - 1 );
+      for ( int j = 0; j < ring->numPoints() - 1; j++ )
+      {
+        const QgsPoint point = ring->pointN( j );
+        const QgsVector3D vecB( point.x() - ptB.x(), point.y() - ptB.y(), point.z() - ptB.z() );
+        projectedPoints.push_back( QgsPointXY( QgsVector3D::dotProduct( vecB, ux ), QgsVector3D::dotProduct( vecB, uy ) ) );
+      }
+
+      QgsLineString projectedLine( projectedPoints );
+      projectedLine.close();
+
+      double ringArea = 0.0;
+      projectedLine.sumUpArea( ringArea );
+      if ( ringIndex == 0 )
+      {
+        // exterior ring
+        result += std::abs( ringArea );
+      }
+      else
+      {
+        // interior ring
+        result -= std::abs( ringArea );
+      }
+    }
+  }
+
+  return result;
+}
+
 double QgsCurvePolygon::perimeter() const
 {
   if ( !mExteriorRing )
@@ -1477,4 +1541,39 @@ int QgsCurvePolygon::compareToSameClass( const QgsAbstractGeometry *other ) cons
   }
 
   return 0;
+}
+
+bool QgsCurvePolygon::hasPlane3D( QgsPoint &ptA, QgsPoint &ptB, QgsPoint &ptC, double epsilon ) const
+{
+  if ( !mExteriorRing || !exteriorRing()->is3D() )
+  {
+    return false;
+  }
+
+  /*
+   * look for 3 non collinear points on the exterior ring
+   */
+  unsigned int n = 0;
+  QgsPointSequence exteriorPts;
+  mExteriorRing->points( exteriorPts );
+  for ( const QgsPoint &point : exteriorPts )
+  {
+    if ( n == 0 )
+    {
+      ptA = point;
+      n++;
+    }
+    else if ( n == 1 && point != ptA )
+    {
+      ptB = point;
+      n++;
+    }
+    else if ( n == 2 && !QgsGeometryUtils::pointsAreCollinear( ptA, ptB, point, epsilon ) )
+    {
+      ptC = point;
+      return true;
+    }
+  }
+
+  return false;
 }

@@ -18,6 +18,7 @@
 #ifndef QGSCURVEPOLYGON_H
 #define QGSCURVEPOLYGON_H
 
+#include <limits>
 #include <memory>
 
 #include "qgis_core.h"
@@ -141,6 +142,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     //surface interface
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
@@ -469,6 +471,13 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+
+    /**
+     * Test if a 3D plane can be extracted from the CurvePolygon.
+     *
+     * \since QGIS 4.0
+     */
+    bool hasPlane3D( QgsPoint &ptA, QgsPoint &ptB, QgsPoint &ptC, double epsilon = std::numeric_limits<double>::epsilon() ) const;
 
   protected:
 
