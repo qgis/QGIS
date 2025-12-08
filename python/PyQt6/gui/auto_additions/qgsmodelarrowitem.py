@@ -3,7 +3,7 @@ QgsModelArrowItem.Circle = QgsModelArrowItem.Marker.Circle
 QgsModelArrowItem.ArrowHead = QgsModelArrowItem.Marker.ArrowHead
 QgsModelArrowItem.NoMarker = QgsModelArrowItem.Marker.NoMarker
 try:
-    QgsModelArrowItem.__attribute_docs__ = {'pathUpdated': 'Emitted when the path is updated.\n'}
+    QgsModelArrowItem.__attribute_docs__ = {'pathUpdated': 'Emitted when the path is updated.\n\n.. versionadded:: 4.0\n'}
     QgsModelArrowItem.__overridden_methods__ = ['paint']
     QgsModelArrowItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):

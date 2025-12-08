@@ -80,6 +80,8 @@ Sets the pen ``style`` to use for rendering the arrow line.
     void pathUpdated();
 %Docstring
 Emitted when the path is updated.
+
+.. versionadded:: 4.0
 %End
 
   public slots:

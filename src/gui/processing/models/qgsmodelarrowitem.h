@@ -87,6 +87,7 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     /**
      * Emitted when the path is updated.
      *
+     * \since QGIS 4.0
      */
     void pathUpdated();
 

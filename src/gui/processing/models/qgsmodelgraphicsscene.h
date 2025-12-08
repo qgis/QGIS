@@ -289,7 +289,6 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     Flags mFlags = Flags();
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
-    QgsProcessingContext *mContext = nullptr;
 
     QMap<QString, QgsModelComponentGraphicItem *> mParameterItems;
     QMap<QString, QgsModelChildAlgorithmGraphicItem *> mChildAlgorithmItems;

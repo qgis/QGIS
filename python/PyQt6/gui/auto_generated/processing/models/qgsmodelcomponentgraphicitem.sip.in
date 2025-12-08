@@ -433,6 +433,8 @@ model execution through the dialog.
 %Docstring
 Returns the ``results`` for this child algorithm for the last model
 execution through the dialog.
+
+.. versionadded:: 4.0
 %End
 
   signals:
