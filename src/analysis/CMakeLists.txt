@@ -623,7 +623,7 @@ if(HAVE_GSL)
 endif()
 
 if(HAVE_OPENCL)
-    target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
+    target_link_libraries(qgis_analysis OpenCL::OpenCL)
 endif()
 
 if (WITH_DRACO)

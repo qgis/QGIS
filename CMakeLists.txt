@@ -95,11 +95,6 @@ if (USE_OPENCL)
     find_package(OpenCL)
     if(${OpenCL_FOUND})
         set(HAVE_OPENCL TRUE)
-        # Fixup for standard FindOpenCL module not assigning proper framework headers directory
-        if (APPLE AND "${OpenCL_INCLUDE_DIR}" MATCHES "OpenCL\\.framework/?$")
-            set(OpenCL_INCLUDE_DIR "${OpenCL_INCLUDE_DIR}/Headers" CACHE PATH "" FORCE)
-            set(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIR})
-        endif()
         find_package(OpenCLhpp)
         if(NOT OPENCL_HPP_FOUND)
             # Use internal headers copied from OpenCL-CLHPP project
