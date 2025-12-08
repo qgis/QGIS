@@ -475,7 +475,9 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
         }
         else
         {
-          if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
+          if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes &&
+               // Pyramid creation is done by the driver itself
+               mOutputFormat != QLatin1String( "COG" ) )
           {
             if ( !buildPyramids( mOutputUrl, destProvider.get() ) )
             {
@@ -1044,6 +1046,21 @@ QgsRasterDataProvider *QgsRasterFileWriter::createPartProvider( const QgsRectang
   return destProvider;
 }
 
+void QgsRasterFileWriter::setOutputFormat( const QString &format )
+{
+  mOutputFormat = format;
+  if ( !mBuildPyramidsFlagSet && format == QLatin1String( "COG" ) )
+  {
+    setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption::Yes );
+  }
+}
+
+void QgsRasterFileWriter::setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption flag )
+{
+  mBuildPyramidsFlag = flag;
+  mBuildPyramidsFlagSet = true;
+}
+
 QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem &crs,
     double *geoTransform, int nBands, Qgis::DataType type,
     const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList )
@@ -1061,8 +1078,40 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
     if ( mBuildPyramidsFlag == -4 && mOutputProviderKey == "gdal" && mOutputFormat.compare( "gtiff"_L1, Qt::CaseInsensitive ) == 0 )
       mCreationOptions << "COPY_SRC_OVERVIEWS=YES";
 #endif
+    QStringList creationOptions( mCreationOptions );
+    if ( mOutputFormat == QLatin1String( "COG" ) )
+    {
+      if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::No )
+        creationOptions << QStringLiteral( "OVERVIEWS=NO" );
+      else
+      {
+        creationOptions << QStringLiteral( "OVERVIEW_RESAMPLING=" ) + mPyramidsResampling;
+        for ( const QString &opt : std::as_const( mPyramidsConfigOptions ) )
+        {
+          const std::string optStr( opt.toStdString() );
+          char *key = nullptr;
+          const char *value = CPLParseNameValue( optStr.c_str(), &key );
+          if ( key && value )
+          {
+            if ( EQUAL( key, "JPEG_QUALITY_OVERVIEW" ) )
+            {
+              creationOptions << QStringLiteral( "OVERVIEW_QUALITY=" ) + value;
+            }
+            else if ( EQUAL( key, "COMPRESS_OVERVIEW" ) )
+            {
+              creationOptions << QStringLiteral( "OVERVIEW_COMPRESS=" ) + value;
+            }
+            else if ( EQUAL( key, "PREDICTOR_OVERVIEW" ) )
+            {
+              creationOptions << QStringLiteral( "OVERVIEW_PREDICTOR=" ) + value;
+            }
+          }
+          CPLFree( key );
+        }
+      }
+    }
 
-    QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, mCreationOptions );
+    QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, creationOptions );
 
     if ( !destProvider )
     {
