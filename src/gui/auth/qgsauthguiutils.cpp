@@ -77,7 +77,7 @@ bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar )
 
 void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authenticationConfigIds, QgsMessageBar *msgbar )
 {
-  const QString password = QInputDialog::getText( msgbar, QObject::tr( "Export Authentication Configurations" ), QObject::tr( "Enter a password encrypt the configuration file:" ), QLineEdit::Password );
+  const QString password = QInputDialog::getText( msgbar, QObject::tr( "Export Authentication Configurations" ), QObject::tr( "Enter a password to encrypt the configuration file:" ), QLineEdit::Password );
   if ( password.isEmpty() )
   {
     if ( QMessageBox::warning( msgbar, QObject::tr( "Export Authentication Configurations" ), QObject::tr( "Exporting authentication configurations with a blank password will result in a plain text file which may contain sensitive information. Are you sure you want to do this?" ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
@@ -100,7 +100,7 @@ void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authentic
 
 void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
 {
-  const QString filename = QFileDialog::getOpenFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(), QObject::tr( "XML files (*.xml *.XML)" ) );
+  const QString filename = QFileDialog::getOpenFileName( msgbar, QObject::tr( "Import Authentication Configurations" ), QDir::homePath(), QObject::tr( "XML files (*.xml *.XML)" ) );
   if ( filename.isEmpty() )
     return;
 
