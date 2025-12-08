@@ -133,6 +133,7 @@ void TestQgsLineString::constructorEmpty()
   QCOMPARE( ls.dimension(), 1 );
   QVERIFY( !ls.hasCurvedSegments() );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 }
 
@@ -461,6 +462,7 @@ void TestQgsLineString::addVertex()
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
   QVERIFY( !ls.hasCurvedSegments() );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   //adding first vertex should set linestring z/m type
@@ -514,6 +516,7 @@ void TestQgsLineString::addVertex()
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString ); //should still be 2d
   QVERIFY( !ls.is3D() );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   ls = QgsLineString();
@@ -962,6 +965,7 @@ void TestQgsLineString::close()
   QVERIFY( !ls.isClosed() );
   QCOMPARE( ls.numPoints(), 4 );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   ls.close();
@@ -973,6 +977,7 @@ void TestQgsLineString::close()
   QCOMPARE( ls.partCount(), 1 );
   QCOMPARE( ls.pointN( 4 ), QgsPoint( 1, 2 ) );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   //try closing already closed line, should be no change

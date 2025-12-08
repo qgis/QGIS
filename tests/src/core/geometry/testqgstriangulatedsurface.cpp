@@ -39,6 +39,7 @@ class TestQgsTriangulatedSurface : public QObject
     void testRemovePatch();
     void testPatches();
     void testAreaPerimeter();
+    void testArea3D();
     void testInsertVertex();
     void testMoveVertex();
     void testDeleteVertex();
@@ -76,6 +77,7 @@ void TestQgsTriangulatedSurface::testConstructor()
   QCOMPARE( surface.dimension(), 2 );
   QVERIFY( !surface.hasCurvedSegments() );
   QCOMPARE( surface.area(), 0.0 );
+  QCOMPARE( surface.area3D(), 0.0 );
   QCOMPARE( surface.perimeter(), 0.0 );
   QVERIFY( !surface.patchN( 0 ) );
 }
@@ -360,8 +362,24 @@ void TestQgsTriangulatedSurface::testAreaPerimeter()
   QgsTriangle *triangle = new QgsTriangle( QgsPoint( 1, 1 ), QgsPoint( 1, 6 ), QgsPoint( 6, 6 ) );
   surface.addPatch( triangle );
 
-  QGSCOMPARENEAR( surface.area(), 12.5, 0.01 ); // area is not implemented
+  QGSCOMPARENEAR( surface.area(), 12.5, 0.01 );
+  QGSCOMPARENEAR( surface.area3D(), 12.5, 0.01 );
   QGSCOMPARENEAR( surface.perimeter(), 17.07, 0.01 );
+}
+
+void TestQgsTriangulatedSurface::testArea3D()
+{
+  QgsTriangulatedSurface surface;
+  surface.fromWkt(
+    u"TIN Z ("
+    "((0 0 0, 10 0 0, 5 5 2, 0 0 0)),"
+    "((10 0 0, 10 10 1, 5 5 2, 10 0 0)),"
+    "((10 10 1, 0 10 0, 5 5 2, 10 10 1)),"
+    "((0 10 0, 0 0 0, 5 5 2, 0 10 0))"_s
+  );
+
+  QCOMPARE( surface.numPatches(), 4 );
+  QGSCOMPARENEAR( surface.area3D(), 106.29209, 1e-5 );
 }
 
 void TestQgsTriangulatedSurface::testInsertVertex()
