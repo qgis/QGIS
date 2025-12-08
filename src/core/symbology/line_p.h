@@ -18,19 +18,24 @@
 
 #define SIP_NO_FILE
 
-#include <QPointF>
+#include "qgsgeometryutils_base.h"
 
 /////////
 
 ///@cond PRIVATE
 
+
+/**
+*   \brief Helper private class to compute line operation (angle, length, difference from a given interval).
+*   Used in line symbol layer classes
+ */
 class Line
 {
   public:
     Line( QPointF p1, QPointF p2 )
       : mVertical( false )
       , mIncreasing( false )
-      , mT( 0.0 )
+      , mTangent( 0.0 )
       , mLength( 0.0 )
     {
       if ( p1 == p2 )
@@ -46,20 +51,17 @@ class Line
       else
       {
         mVertical = false;
-        mT = ( p2.y() - p1.y() ) / ( p2.x() - p1.x() );
+        mTangent = ( p2.y() - p1.y() ) / ( p2.x() - p1.x() );
         mIncreasing = ( p2.x() > p1.x() );
       }
 
-      // length
-      double x = ( p2.x() - p1.x() );
-      double y = ( p2.y() - p1.y() );
-      mLength = std::sqrt( x * x + y * y );
+      mLength = QgsGeometryUtilsBase::distance2D( p1, p2 );
     }
 
     // return angle in radians
     double angle()
     {
-      double a = ( mVertical ? M_PI_2 : std::atan( mT ) );
+      double a = ( mVertical ? M_PI_2 : std::atan( mTangent ) );
 
       if ( !mIncreasing )
         a += M_PI;
@@ -72,7 +74,7 @@ class Line
       if ( mVertical )
         return ( mIncreasing ? QPointF( 0, interval ) : QPointF( 0, -interval ) );
 
-      double alpha = std::atan( mT );
+      double alpha = std::atan( mTangent );
       double dx = std::cos( alpha ) * interval;
       double dy = std::sin( alpha ) * interval;
       return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );
@@ -83,7 +85,7 @@ class Line
   protected:
     bool mVertical;
     bool mIncreasing;
-    double mT;
+    double mTangent;
     double mLength;
 };
 
