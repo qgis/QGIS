@@ -533,25 +533,38 @@ QString QgsGdalProvider::htmlMetadata() const
   // warped VRT one, which might lack it.
   GDALDatasetH dsForMetadata = mGdalBaseDataset;
 
+  const QString startOfLine = QStringLiteral( "<tr><td class=\"highlight\">" );
+  const QString endOfLine = QStringLiteral( "</td></tr>\n" );
+  const QString fieldSeparator = QStringLiteral( "</td><td>" );
+
   // GDAL Driver description
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + mDriverName + QStringLiteral( "</td></tr>\n" );
+  myMetadata += startOfLine + tr( "GDAL Driver Description" ) + fieldSeparator + mDriverName + endOfLine;
 
   // GDAL Driver Metadata
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( hDriver, GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += startOfLine + tr( "GDAL Driver Metadata" ) + fieldSeparator + QString( GDALGetMetadataItem( hDriver, GDAL_DMD_LONGNAME, nullptr ) ) + endOfLine;
+
+  if ( mDriverName == QLatin1String( "GTiff" ) )
+  {
+    const char *layout = GDALGetMetadataItem( dsForMetadata, "LAYOUT", "IMAGE_STRUCTURE" );
+    if ( layout && EQUAL( layout, "COG" ) )
+    {
+      myMetadata += startOfLine + tr( "Data layout" ) + fieldSeparator + tr( "Cloud Optimized GeoTIFF (COG)" ) + endOfLine;
+    }
+  }
 
   // Dataset description
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( dsForMetadata ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += startOfLine + tr( "Dataset Description" ) + fieldSeparator + QString::fromUtf8( GDALGetDescription( dsForMetadata ) ) + endOfLine;
 
   // compression
   QString compression = QString( GDALGetMetadataItem( dsForMetadata, "COMPRESSION", "IMAGE_STRUCTURE" ) );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Compression" ) + QStringLiteral( "</td><td>" ) + compression + QStringLiteral( "</td></tr>\n" );
+  myMetadata += startOfLine + tr( "Compression" ) + fieldSeparator + compression + endOfLine;
 
   // Band details
   for ( int i = 1; i <= GDALGetRasterCount( dsForMetadata ); ++i )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( dsForMetadata, i );
     char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band %1" ).arg( i ) + QStringLiteral( "</td><td>" );
+    myMetadata += startOfLine + tr( "Band %1" ).arg( i ) + fieldSeparator;
     if ( GDALmetadata )
     {
       QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
@@ -570,11 +583,11 @@ QString QgsGdalProvider::htmlMetadata() const
       QObject::tr( "Scale: %1" ).arg( bandScale( i ) ),
       QObject::tr( "Offset: %1" ).arg( bandOffset( i ) ),
     } ) );
-    myMetadata += QLatin1String( "</td></tr>" );
+    myMetadata += endOfLine;
   }
 
   // More information
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "More information" ) + QStringLiteral( "</td><td>\n" );
+  myMetadata += startOfLine + tr( "More information" ) + fieldSeparator;
 
   if ( mMaskBandExposedAsAlpha )
   {
@@ -608,15 +621,15 @@ QString QgsGdalProvider::htmlMetadata() const
   }
 
   // End more information
-  myMetadata += QLatin1String( "</td></tr>\n" );
+  myMetadata += endOfLine;
 
   // Dimensions
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dimensions" ) + QStringLiteral( "</td><td>" );
+  myMetadata += startOfLine + tr( "Dimensions" ) + fieldSeparator;
   myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
                 .arg( GDALGetRasterXSize( mGdalDataset ) )
                 .arg( GDALGetRasterYSize( mGdalDataset ) )
                 .arg( GDALGetRasterCount( mGdalDataset ) );
-  myMetadata += QLatin1String( "</td></tr>\n" );
+  myMetadata += endOfLine;
 
   if ( GDALGetGeoTransform( mGdalDataset, mGeoTransform ) != CE_None )
   {
@@ -627,10 +640,10 @@ QString QgsGdalProvider::htmlMetadata() const
   else
   {
     // Origin ( 'f', 16 for consistency with QgsRectangle::toString used for extent)
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Origin" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[0], 'f', 16 ) + QStringLiteral( "," ) + QString::number( mGeoTransform[3], 'f', 16 ) + QStringLiteral( "</td></tr>\n" );
+    myMetadata += startOfLine + tr( "Origin" ) + fieldSeparator + QString::number( mGeoTransform[0], 'f', 16 ) + QStringLiteral( "," ) + QString::number( mGeoTransform[3], 'f', 16 ) + endOfLine;
 
     // Pixel size
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Pixel Size" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[1], 'g', 19 ) + QStringLiteral( "," ) + QString::number( mGeoTransform[5], 'g', 19 ) + QStringLiteral( "</td></tr>\n" );
+    myMetadata += startOfLine + tr( "Pixel Size" ) + fieldSeparator + QString::number( mGeoTransform[1], 'g', 19 ) + QStringLiteral( "," ) + QString::number( mGeoTransform[5], 'g', 19 ) + endOfLine;
   }
 
   return myMetadata;
