@@ -2365,7 +2365,12 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
                                   0, nullptr,
                                   progressCallback, &myProg ); //this is the arg for the gdal progress callback
 
-    if ( ( feedback && feedback->isCanceled() ) || myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
+    if ( ( feedback && feedback->isCanceled() ) ||
+         myError == CE_Failure ||
+         ( CPLGetLastErrorNo() == CPLE_NotSupported &&
+           // GDAL 3.12.0 wrongly sets a SPARSE_OK option internally
+           // which causes a harmless warning to be emitted
+           !( format == Qgis::RasterPyramidFormat::Erdas && strstr( CPLGetLastErrorMsg(), "SPARSE_OK" ) != nullptr ) ) )
     {
       QgsDebugError( u"Building pyramids failed using resampling method [%1]"_s.arg( method ) );
       //something bad happenend
