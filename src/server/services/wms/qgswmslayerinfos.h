@@ -20,9 +20,11 @@
 #ifndef QGSWMSLAYERINFOS_H
 #define QGSWMSLAYERINFOS_H
 
-#include "qgsrectangle.h"
 #include "qgsmaplayerserverproperties.h"
+#include "qgsrectangle.h"
 
+class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
 class QgsServerInterface;
 class QgsProject;
 
@@ -73,6 +75,7 @@ class QgsWmsLayerInfos
     Qgis::LayerType type;
 
   public:
+
     /**
      * Returns the WMS layers definition to build WMS capabilities
      *

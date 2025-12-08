@@ -18,10 +18,11 @@
 #ifndef QGSPOINTDISTANCERENDERER_H
 #define QGSPOINTDISTANCERENDERER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsrenderer.h"
+#include "qgis_core.h"
 #include "qgsmapunitscale.h"
+#include "qgsrenderer.h"
+
 #include <QFont>
 
 class QgsSpatialIndex;
@@ -236,12 +237,12 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QString mLabelAttributeName;
 
     //! Label attribute index (or -1 if none). This index is not stored, it is requested in the startRender() method.
-    int mLabelIndex;
+    int mLabelIndex = -1;
 
     //! Distance tolerance. Points that are closer together than this distance are considered clustered.
-    double mTolerance;
+    double mTolerance = 3;
     //! Unit for distance tolerance.
-    Qgis::RenderUnit mToleranceUnit;
+    Qgis::RenderUnit mToleranceUnit = Qgis::RenderUnit::Millimeters;
     //! Map unit scale for distance tolerance.
     QgsMapUnitScale mToleranceMapUnitScale;
 
@@ -250,7 +251,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     //! Label text color.
     QColor mLabelColor;
     //! Whether labels should be drawn for points. This is set internally from startRender() depending on scale denominator.
-    bool mDrawLabels;
+    bool mDrawLabels = true;
     //! Maximum scale denominator for label display. A zero value indicates no scale limitation.
     double mMinLabelScale = 0;
 

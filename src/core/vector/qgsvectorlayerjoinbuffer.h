@@ -20,12 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvectorlayerjoininfo.h"
 #include "qgsfeaturesink.h"
+#include "qgsvectorlayerjoininfo.h"
 
 #include <QHash>
 #include <QString>
-
 
 typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 

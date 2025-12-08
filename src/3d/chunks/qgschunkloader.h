@@ -28,8 +28,8 @@
 //
 
 #include "qgis_3d.h"
-#include "qgschunkqueuejob.h"
 #include "qgsbox3d.h"
+#include "qgschunkqueuejob.h"
 
 #define SIP_NO_FILE
 
@@ -64,7 +64,7 @@ class QgsChunkLoaderFactory : public QObject
 {
     Q_OBJECT
   public:
-    virtual ~QgsChunkLoaderFactory() = default;
+    ~QgsChunkLoaderFactory() override = default;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;
@@ -133,8 +133,8 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     //! Initializes the root node setup (bounding box and error) and tree depth
     void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D = QgsBox3D() );
 
-    virtual QgsChunkNode *createRootNode() const override;
-    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
   protected:
     QgsBox3D mRootBox3D;

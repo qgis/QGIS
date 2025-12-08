@@ -20,8 +20,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeaturefilterprovider.h"
 #include "qgis_server.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QHash>
 
@@ -34,6 +34,7 @@
 class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
 {
   public:
+
     /**
      * Creates a new dimension filter object with a list of filters to be applied to
      * vector layers.

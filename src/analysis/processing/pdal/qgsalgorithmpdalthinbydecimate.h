@@ -39,6 +39,7 @@ class QgsPdalThinByDecimateAlgorithm : public QgsPdalAlgorithmBase
     QString groupId() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsPdalThinByDecimateAlgorithm *createInstance() const override SIP_FACTORY;
 
     QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

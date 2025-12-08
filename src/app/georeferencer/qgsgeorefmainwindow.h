@@ -12,16 +12,16 @@
 #define QGSGEOREFMAINWINDOW_H
 
 #include "ui_qgsgeorefpluginguibase.h"
-#include "qgsgeoreftransform.h"
-
-#include "qgsgcplist.h"
-#include "qgsgcppoint.h"
-#include "qgsmapcoordsdialog.h"
-#include "qgsimagewarper.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgssettingstree.h"
 
 #include <memory>
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgcplist.h"
+#include "qgsgcppoint.h"
+#include "qgsgeoreftransform.h"
+#include "qgsimagewarper.h"
+#include "qgsmapcoordsdialog.h"
+#include "qgssettingstree.h"
 
 #include <QPointer>
 

@@ -11,6 +11,7 @@
 
 
 
+
 %MappedType QList<QgsSearchWidgetWrapper::FilterFlag> /TypeHintIn = "Iterable[QgsSearchWidgetWrapper.FilterFlag]",TypeHintOut = "List[QgsSearchWidgetWrapper.FilterFlag]", TypeHintValue = "[]"/
 {
 %TypeHeaderCode
@@ -117,6 +118,7 @@ Shows a search widget on a filter form.
 #include "qgssearchwidgetwrapper.h"
 %End
   public:
+
     enum FilterFlag /BaseType=IntEnum/
     {
       EqualTo,

@@ -16,11 +16,12 @@
 #ifndef QGSLAYOUTVIEWTOOLSELECT_H
 #define QGSLAYOUTVIEWTOOLSELECT_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgslayoutviewtool.h"
-#include "qgslayoutviewrubberband.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgslayoutviewtool.h"
 
 class QgsLayoutMouseHandles;
 
@@ -33,6 +34,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolSelect.
      */

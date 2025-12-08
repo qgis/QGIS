@@ -18,14 +18,14 @@
 #ifndef QGSGENERICPROJECTIONSELECTOR_H
 #define QGSGENERICPROJECTIONSELECTOR_H
 #include "ui_qgsgenericprojectionselectorbase.h"
-#include "qgis_sip.h"
-#include "qgsguiutils.h"
-
-#include <QSet>
-#include <QDialog>
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsguiutils.h"
+
+#include <QDialog>
+#include <QSet>
 
 class QDialogButtonBox;
 
@@ -40,6 +40,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsCrsSelectionWidget, with the specified \a parent widget.
      *
@@ -146,6 +147,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
     void hasValidSelectionChanged( bool isValid );
 
   private:
+
     /**
      * CRS types
      */
@@ -186,6 +188,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProjectionSelectionDialog.
      *

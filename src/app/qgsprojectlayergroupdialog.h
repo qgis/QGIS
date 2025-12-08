@@ -15,11 +15,13 @@
 #ifndef QGSPROJECTLAYERGROUPDIALOG_H
 #define QGSPROJECTLAYERGROUPDIALOG_H
 
-#include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
+
+#include "qgis_app.h"
 #include "qgshelp.h"
 #include "qgslayertreemodel.h"
-#include "qgis_app.h"
+
+#include <QDialog>
 
 class QDomElement;
 
@@ -33,6 +35,7 @@ class QgsEmbeddedLayerTreeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
+
     /**
      * Construct a new tree model with given layer tree (root node must not be NULLPTR).
      * The root node is not transferred by the model.

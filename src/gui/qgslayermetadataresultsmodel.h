@@ -16,12 +16,13 @@
 #ifndef QGSLAYERMETADATARESULTSMODEL_H
 #define QGSLAYERMETADATARESULTSMODEL_H
 
-#include <QAbstractTableModel>
-#include <QObject>
-#include <QThread>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsabstractlayermetadataprovider.h"
+
+#include <QAbstractTableModel>
+#include <QObject>
+#include <QThread>
 
 class QgsFeedback;
 
@@ -72,13 +73,14 @@ class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a QgsLayerMetadataResultsModel from a \a searchContext and
      * an optional \a parent.
      */
     explicit QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent = nullptr );
 
-    ~QgsLayerMetadataResultsModel();
+    ~QgsLayerMetadataResultsModel() override;
 
 
     // QAbstractTableModel interface

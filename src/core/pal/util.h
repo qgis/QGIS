@@ -33,10 +33,11 @@
 #define SIP_NO_FILE
 
 
-#include <QList>
-#include <QLinkedList>
-#include <vector>
 #include <memory>
+#include <vector>
+
+#include <QLinkedList>
+#include <QList>
 
 typedef struct GEOSGeom_t GEOSGeometry;
 

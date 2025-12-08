@@ -1,0 +1,24 @@
+{
+  "name": "extract_degrees",
+  "type": "function",
+  "groups": ["Conversions"],
+  "description": "Extracts the integer number of degrees from a decimal degrees value. The minutes and seconds components are ignored. The extracted degrees values will be truncated towards zero (not rounded).",
+  "arguments": [{
+    "arg": "value",
+    "description": "A decimal degrees value."
+  }],
+  "examples": [{
+    "expression": "extract_degrees(135.334)",
+    "returns": "135"
+  }, {
+    "expression": "extract_degrees(-135.998)",
+    "returns": "135"
+  }, {
+    "expression": "extract_degrees(-135.334)",
+    "returns": "-135"
+  }, {
+    "expression": "extract_degrees(-135.998)",
+    "returns": "-135"
+  }],
+  "tags": ["dms", "degrees", "decimal", "latitude", "longitude", "coordinate"]
+}

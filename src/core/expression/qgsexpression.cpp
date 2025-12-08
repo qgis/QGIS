@@ -14,19 +14,22 @@
  ***************************************************************************/
 
 #include "qgsexpression.h"
+
+#include <memory>
+
+#include "qgscolorrampimpl.h"
+#include "qgsexpression_p.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsfeaturerequest.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontext.h"
-#include "qgsgeometry.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
-#include "qgsexpression_p.h"
-#include "qgsvariantutils.h"
+#include "qgsfeaturerequest.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgsunittypes.h"
-#include "qgscolorrampimpl.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
 
@@ -353,7 +356,7 @@ void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 {
   detach();
   if ( calc )
-    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea( *calc ) );
+    d->mCalc = std::make_shared<QgsDistanceArea>( *calc );
   else
     d->mCalc.reset();
 }
@@ -437,7 +440,7 @@ QgsDistanceArea *QgsExpression::geomCalculator()
   if ( !d->mCalc && d->mDaCrs && d->mDaCrs->isValid() && d->mDaTransformContext )
   {
     // calculator IS required, so initialize it now...
-    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+    d->mCalc = std::make_shared<QgsDistanceArea>( );
     d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? Qgis::geoNone() : d->mDaEllipsoid );
     d->mCalc->setSourceCrs( *d->mDaCrs.get(), *d->mDaTransformContext.get() );
   }
@@ -1066,7 +1069,11 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   else if ( value.userType() == qMetaTypeId< QTimeZone>() )
   {
     const QTimeZone tz = value.value<QTimeZone>();
+#if QT_FEATURE_timezone > 0
     return startToken + tr( "time zone: %1" ).arg( tz.isValid() ? tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) : tr( "invalid" ) ) + endToken;
+#else
+    QgsDebugError( QStringLiteral( "Qt is built without Qt timezone support, timezone preview not available" ) );
+#endif
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {

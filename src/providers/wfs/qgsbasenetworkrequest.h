@@ -17,13 +17,13 @@
 
 #include <functional>
 
-#include <QObject>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QAuthenticator>
-
 #include "qgsauthorizationsettings.h"
+
+#include <QAuthenticator>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QObject>
+#include <QUrl>
 
 //! Abstract base class for a WFS request.
 class QgsBaseNetworkRequest : public QObject
@@ -130,6 +130,9 @@ class QgsBaseNetworkRequest : public QObject
     //! Whether to log error messages
     bool mLogErrors = true;
 
+    //! Whether this is simulated HTTP mode (for unit tests)
+    bool mIsSimulatedMode = false;
+
     //! Whether in simulated HTTP mode, the response read in the file has HTTP headers
     bool mFakeResponseHasHeaders = false;
 
@@ -137,6 +140,7 @@ class QgsBaseNetworkRequest : public QObject
     bool mFakeURLIncludesContentType = false;
 
   protected:
+
     /**
      * Returns (translated) error message, composed with a
      * (possibly translated, but sometimes coming from server) reason
@@ -158,6 +162,12 @@ class QgsBaseNetworkRequest : public QObject
     bool sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
 
     bool issueRequest( QNetworkRequest &request, const QByteArray &verb, const QByteArray *data, bool synchronous );
+
+    // For unit tests in simulated HTTP mode, when the mFakeResponseHasHeaders
+    // has been set by the derived class, this method will read HTTP response
+    // headers contained at the top of the response file and set them into
+    // mResponseHeaders, while stripping them from mResponse.
+    void extractResponseHeadersForUnitTests();
 };
 
 

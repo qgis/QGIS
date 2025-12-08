@@ -16,11 +16,13 @@
 #ifndef QGSPROCESSINGMULTIPLESELECTIONDIALOG_H
 #define QGSPROCESSINGMULTIPLESELECTIONDIALOG_H
 
+#include "ui_qgsprocessingmultipleselectiondialogbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingmultipleselectiondialogbase.h"
-#include "qgsprocessingparameters.h"
 #include "qgsmimedatautils.h"
+#include "qgsprocessingparameters.h"
+
 #include <QDialog>
 
 class QStandardItemModel;
@@ -42,6 +44,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMultipleSelectionPanelWidget.
      *
@@ -108,6 +111,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     void selectionChanged();
 
   protected:
+
     /**
      * Adds a new option to the widget.
      */
@@ -159,6 +163,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMultipleSelectionPanelWidget.
      *
@@ -224,6 +229,7 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMultipleInputPanelWidget.
      */
@@ -255,6 +261,7 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     void dropEvent( QDropEvent *event ) override;
 
   private:
+
     /**
      * Returns a map layer, compatible with the filters set for the combo box, from
      * the specified mime \a data (if possible!).
@@ -277,6 +284,7 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMultipleInputDialog.
      *

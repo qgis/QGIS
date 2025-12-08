@@ -18,8 +18,8 @@
 
 #include "ui_qgsjsoneditconfigdlg.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsJsonEditConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsJsonEditWidget.
      *

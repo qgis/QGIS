@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsstoredexpressionmanager.h"
-#include "moc_qgsstoredexpressionmanager.cpp"
+
 #include "qgis.h"
 
-
 #include <QDomElement>
+
+#include "moc_qgsstoredexpressionmanager.cpp"
 
 QString QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag )
 {

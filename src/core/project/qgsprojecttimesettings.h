@@ -17,9 +17,10 @@
 #ifndef QGSPROJECTTIMESETTINGS_H
 #define QGSPROJECTTIMESETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsrange.h"
-#include "qgis.h"
+
 #include <QObject>
 
 class QDomElement;

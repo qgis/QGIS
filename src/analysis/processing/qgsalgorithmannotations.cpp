@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmannotations.h"
+
 #include "qgsannotationlayer.h"
 
 ///@cond PRIVATE

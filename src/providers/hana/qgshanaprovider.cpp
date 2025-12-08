@@ -14,6 +14,12 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanaprovider.h"
+
+#include <odbc/PreparedStatement.h>
+#include <odbc/ResultSet.h>
+#include <odbc/ResultSetMetaDataUnicode.h>
+
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
@@ -23,27 +29,23 @@
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgshanaconnectionpool.h"
+#include "qgshanacrsutils.h"
+#include "qgshanadataitems.h"
 #include "qgshanadatatypes.h"
-#include "qgshanaexception.h"
 #include "qgshanadriver.h"
+#include "qgshanaexception.h"
 #include "qgshanafeatureiterator.h"
 #include "qgshanaprimarykeys.h"
-#include "qgshanaprovider.h"
-#include "moc_qgshanaprovider.cpp"
 #include "qgshanaproviderconnection.h"
 #include "qgshanaresultset.h"
-#include "qgshanacrsutils.h"
 #include "qgshanautils.h"
-#include "qgshanadataitems.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsthreadingutils.h"
 
 #include <QtGlobal>
 
-#include "odbc/PreparedStatement.h"
-#include "odbc/ResultSet.h"
-#include "odbc/ResultSetMetaDataUnicode.h"
+#include "moc_qgshanaprovider.cpp"
 
 using namespace NS_ODBC;
 using namespace std;

@@ -18,8 +18,8 @@
 #ifndef QGS_WFS3_HANDLERS_H
 #define QGS_WFS3_HANDLERS_H
 
-#include "qgsserverogcapihandler.h"
 #include "qgsfields.h"
+#include "qgsserverogcapihandler.h"
 
 class QgsFeatureRequest;
 class QgsServerOgcApi;
@@ -33,6 +33,7 @@ class QgsFeature;
 class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
 {
   public:
+
     /**
      * Checks if the layer is published in WFS (and perform additional checks for access
      * control if plugins are enabled)

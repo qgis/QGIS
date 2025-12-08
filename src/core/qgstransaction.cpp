@@ -15,15 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstransaction.h"
-#include "moc_qgstransaction.cpp"
-#include "qgslogger.h"
+
 #include "qgsdatasourceuri.h"
+#include "qgsexpression.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpression.h"
-#include "qgsmessagelog.h"
+
 #include <QUuid>
+
+#include "moc_qgstransaction.cpp"
 
 QgsTransaction *QgsTransaction::create( const QString &connString, const QString &providerKey )
 {
@@ -57,8 +60,6 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
 
 QgsTransaction::QgsTransaction( const QString &connString )
   : mConnString( connString )
-  , mTransactionActive( false )
-  , mLastSavePointIsDirty( true )
 {
 }
 

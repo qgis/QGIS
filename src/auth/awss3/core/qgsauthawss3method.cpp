@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsauthawss3method.h"
-#include "moc_qgsauthawss3method.cpp"
 
-#include <QUrlQuery>
-#include <QDateTime>
-#include <QCryptographicHash>
-#include <QMessageAuthenticationCode>
-
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include <QCryptographicHash>
+#include <QDateTime>
+#include <QMessageAuthenticationCode>
+#include <QUrlQuery>
+
+#include "moc_qgsauthawss3method.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsauthawss3edit.h"

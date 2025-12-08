@@ -17,10 +17,9 @@
 #define QGSLAYOUTITEM3DMAP_H
 
 #include "qgis_3d.h"
-
+#include "qgscamerapose.h"
 #include "qgslayoutitem.h"
 #include "qgstemporalrangeobject.h"
-#include "qgscamerapose.h"
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
@@ -63,6 +62,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
 #endif
 
   public:
+
     /**
      * Constructor for QgsLayoutItem3DMap, with the specified parent \a layout.
      *
@@ -70,7 +70,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
      */
     QgsLayoutItem3DMap( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutItem3DMap();
+    ~QgsLayoutItem3DMap() override;
 
     /**
      * Returns a new 3D map item for the specified \a layout.
@@ -79,7 +79,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
      */
     static QgsLayoutItem3DMap *create( QgsLayout *layout ) SIP_FACTORY;
 
-    virtual int type() const override;
+    int type() const override;
     QIcon icon() const override;
 
     //! Configures camera view

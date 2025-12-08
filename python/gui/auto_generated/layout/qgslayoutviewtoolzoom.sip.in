@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutViewToolZoom : QgsLayoutViewTool
 {
 %Docstring(signature="appended")
@@ -18,6 +19,7 @@ Layout view tool for zooming into and out of the layout.
 #include "qgslayoutviewtoolzoom.h"
 %End
   public:
+
     QgsLayoutViewToolZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolZoom.

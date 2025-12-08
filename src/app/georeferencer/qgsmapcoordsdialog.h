@@ -12,18 +12,18 @@
 #ifndef MAPCOORDSDIALOG_H
 #define MAPCOORDSDIALOG_H
 
-#include <QDialog>
+#include "ui_qgsmapcoordsdialogbase.h"
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptoolemitpoint.h"
+#include "qgspointlocator.h"
+#include "qgspointxy.h"
+#include "qgsprojectionselectionwidget.h"
 #include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
-#include "qgspointxy.h"
-#include "qgsmapcanvas.h"
-#include "qgspointlocator.h"
-#include "qgsprojectionselectionwidget.h"
-#include "qgscoordinatereferencesystem.h"
 
-#include "ui_qgsmapcoordsdialogbase.h"
+#include <QDialog>
 
 class QgsGeorefDataPoint;
 
@@ -59,6 +59,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMapCoordsDialog.
      * \param qgisCanvas

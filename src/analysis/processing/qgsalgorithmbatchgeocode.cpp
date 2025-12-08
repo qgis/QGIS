@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmbatchgeocode.h"
+
 #include "qgsgeocoder.h"
-#include "qgsgeocoderresult.h"
 #include "qgsgeocodercontext.h"
+#include "qgsgeocoderresult.h"
 #include "qgsvectorlayer.h"
 
 QgsBatchGeocodeAlgorithm::QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocoder )

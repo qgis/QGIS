@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptoolsplitparts.h"
 #include "qgsgeometryutils.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolsplitparts.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolSplitParts : public QObject
@@ -109,20 +109,20 @@ void TestQgsMapToolSplitParts::testSplitMultiLineString()
     Qt::LeftButton
   ) );
   mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 4, -1 ),
     Qt::LeftButton
-  ) );
+  );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 4, -1 ),
     Qt::RightButton
-  ) );
+  );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
 

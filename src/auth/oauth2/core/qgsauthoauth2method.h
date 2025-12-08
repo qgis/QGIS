@@ -16,19 +16,20 @@
 #ifndef QGSAUTHOAUTH2METHOD_H
 #define QGSAUTHOAUTH2METHOD_H
 
-#include <QObject>
-#include <QDialog>
-#include <QEventLoop>
-#include <QTimer>
-#include <QMutex>
-#include <QReadWriteLock>
-#include <QThread>
-
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QDialog>
+#include <QEventLoop>
+#include <QMutex>
+#include <QObject>
+#include <QReadWriteLock>
+#include <QThread>
+#include <QTimer>
+
 class QgsO2;
 class QgsAuthOAuth2Config;
+class QgsMapLayer;
 
 /**
  * A long-running thread on which all QgsO2 objects run.
@@ -49,6 +50,7 @@ class QgsOAuth2Factory : public QThread
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsO2 object, ensuring that it is correctly created on the
      * QgsOAuth2Factory thread instance.
@@ -141,6 +143,9 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     QWidget *editWidget( QWidget *parent ) const override;
 #endif
 
+    //! Triggered periodically to stop O2 refresh timers when no layers are using the authcfg
+    void cleanupCache();
+
   signals:
 
     //! Emitted when authcode was manually set by the user
@@ -160,6 +165,9 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     // TODO: This mutex does not appear to be protecting anything which is thread-unsafe?
     QRecursiveMutex mNetworkRequestMutex;
+
+    // Timer to periodically stop the refresh timers of unused cached OAuth2 configurations
+    QTimer mCacheHousekeepingTimer;
 };
 
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdxfpaintengine.h"
+
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
 #include "qgslogger.h"

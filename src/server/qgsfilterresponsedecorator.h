@@ -22,9 +22,9 @@
 #define SIP_NO_FILE
 
 
-#include "qgsserverresponse.h"
-#include "qgsserverfilter.h"
 #include "qgsserverexception.h"
+#include "qgsserverfilter.h"
+#include "qgsserverresponse.h"
 
 /**
  * \ingroup server
@@ -34,6 +34,7 @@
 class QgsFilterResponseDecorator : public QgsServerResponse
 {
   public:
+
     /**
      * Constructor for QgsFilterResponseDecorator.
      * \param filters Map of filters to apply before terminating the response

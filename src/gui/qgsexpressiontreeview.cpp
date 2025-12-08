@@ -13,20 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsexpressiontreeview.h"
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsiconutils.h"
+#include "qgsrelationmanager.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
 #include <QMenu>
 #include <QMessageBox>
 #include <QVersionNumber>
 
-#include "qgsexpressiontreeview.h"
 #include "moc_qgsexpressiontreeview.cpp"
-#include "qgis.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgssettings.h"
-#include "qgsrelationmanager.h"
-#include "qgsapplication.h"
-#include "qgsiconutils.h"
-
 
 //! Returns a HTML formatted string for use as a \a relation item help.
 QString formatRelationHelp( const QgsRelation &relation )

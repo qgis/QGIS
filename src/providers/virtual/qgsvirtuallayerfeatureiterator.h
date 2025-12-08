@@ -18,12 +18,13 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUALLAYER_FEATURE_ITERATOR_H
 
 
-#include "qgsvirtuallayerprovider.h"
+#include <memory>
+
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryengine.h"
-#include "qgscoordinatetransform.h"
+#include "qgsvirtuallayerprovider.h"
 
-#include <memory>
 #include <QPointer>
 
 class QgsVirtualLayerFeatureSource final : public QgsAbstractFeatureSource

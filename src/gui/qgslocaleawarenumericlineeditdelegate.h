@@ -16,9 +16,9 @@
 #ifndef QGSLOCALEAWARENUMERICLINEEDITDELEGATE_H
 #define QGSLOCALEAWARENUMERICLINEEDITDELEGATE_H
 
-#include <QStyledItemDelegate>
-
 #include "qgis.h"
+
+#include <QStyledItemDelegate>
 
 #define SIP_NO_FILE
 
@@ -38,6 +38,7 @@ class QgsLocaleAwareNumericLineEditDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     /**
      * QgsLocaleAwareNumericLineEditDelegate
      * \param dataType raster band data type

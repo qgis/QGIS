@@ -12,15 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QPainter>
-
 #include "qgsconditionalstyle.h"
-#include "moc_qgsconditionalstyle.cpp"
+
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmarkersymbollayer.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgssymbollayerutils.h"
+
+#include <QPainter>
+
+#include "moc_qgsconditionalstyle.cpp"
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles( QObject *parent )
   : QObject( parent )

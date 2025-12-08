@@ -15,10 +15,10 @@
 #ifndef QGSFIELDLISTCOMBOBOX_H
 #define QGSFIELDLISTCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeature.h"
+
+#include <QComboBox>
 
 class QgsVectorLayer;
 class QgsFeatureFilterModel;
@@ -47,6 +47,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
 
   public:
+
     /**
      * Create a new QgsFeatureListComboBox, optionally specifying a \a parent.
      */

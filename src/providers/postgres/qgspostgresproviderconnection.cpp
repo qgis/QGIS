@@ -14,19 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresproviderconnection.h"
-#include "qgspostgresconn.h"
-#include "qgspostgresconnpool.h"
-#include "qgspostgresprovidermetadatautils.h"
-#include "qgssettings.h"
-#include "qgspostgresprovider.h"
-#include "qgsexception.h"
-#include "qgsapplication.h"
-#include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
-#include <QRegularExpression>
-#include <QIcon>
 
 #include <chrono>
+
+#include "qgsapplication.h"
+#include "qgsexception.h"
+#include "qgsfeedback.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresconnpool.h"
+#include "qgspostgresprovider.h"
+#include "qgspostgresprovidermetadatautils.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QIcon>
+#include <QRegularExpression>
 
 extern "C"
 {

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmroundness.h"
+
 #include "qgscurvepolygon.h"
 
 ///@cond PRIVATE

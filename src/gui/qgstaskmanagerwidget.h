@@ -17,12 +17,13 @@
 #ifndef QGSTASKMANAGERWIDGET_H
 #define QGSTASKMANAGERWIDGET_H
 
-#include "qgsfloatingwidget.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsfloatingwidget.h"
 #include "qgstaskmanager.h"
+
 #include <QStyledItemDelegate>
 #include <QToolButton>
-#include "qgis_gui.h"
 
 class QgsTaskManager;
 class QgsTask;
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTaskManagerWidget
      * \param manager task manager associated with widget
@@ -76,6 +78,7 @@ class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTaskManagerWidget
      * \param manager task manager associated with widget
@@ -96,6 +99,7 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTaskManagerWidget.
      * \param manager task manager associated with widget
@@ -214,6 +218,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTaskStatusWidget
      * \param parent parent object

@@ -11,7 +11,6 @@
 
 
 
-
 class QgsExpressionItem : QStandardItem
 {
 %Docstring(signature="appended")
@@ -115,6 +114,7 @@ can be used in an expression.
 #include "qgsexpressiontreeview.h"
 %End
   public:
+
     class MenuProvider
 {
 %Docstring(signature="appended")

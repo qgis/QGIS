@@ -14,26 +14,27 @@
  ***************************************************************************/
 
 #include "qgsvariantutils.h"
+
 #include "qgslogger.h"
 #include "qgsunsetattributevalue.h"
 
-#include <QDate>
-#include <QTime>
-#include <QDateTime>
 #include <QBitArray>
-#include <QRect>
-#include <QLine>
-#include <QUuid>
-#include <QImage>
-#include <QPixmap>
+#include <QBitmap>
 #include <QBrush>
 #include <QColor>
-#include <QBitmap>
+#include <QDate>
+#include <QDateTime>
 #include <QIcon>
+#include <QImage>
+#include <QLine>
+#include <QPixmap>
+#include <QQuaternion>
+#include <QRect>
+#include <QTime>
+#include <QUuid>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
-#include <QQuaternion>
 
 QString QgsVariantUtils::typeToDisplayString( QMetaType::Type type, QMetaType::Type subType )
 {

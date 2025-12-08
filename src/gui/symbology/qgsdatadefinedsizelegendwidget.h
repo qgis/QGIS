@@ -16,15 +16,16 @@
 #ifndef QGSDATADEFINEDSIZELEGENDWIDGET_H
 #define QGSDATADEFINEDSIZELEGENDWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-
-#include <memory>
 #include "ui_qgsdatadefinedsizelegendwidget.h"
 
-#include "qgspanelwidget.h"
+#include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsdoublevalidator.h"
+#include "qgspanelwidget.h"
 #include "qgsproperty.h"
+
 #include <QStyledItemDelegate>
 
 class QStandardItemModel;
@@ -47,6 +48,7 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
 {
     Q_OBJECT
   public:
+
     /**
      * Creates the dialog and initializes the content to what is passed in the legend configuration (may be NULLPTR).
      * The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned

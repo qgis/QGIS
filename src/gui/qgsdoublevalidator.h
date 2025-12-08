@@ -21,10 +21,12 @@
 #define QGSDOUBLEVALIDATOR_H
 
 #include <limits>
-#include <QRegularExpressionValidator>
-#include <QLocale>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QLocale>
+#include <QRegularExpressionValidator>
 
 class QRegularExpression;
 
@@ -44,6 +46,7 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDoubleValidator.
      */

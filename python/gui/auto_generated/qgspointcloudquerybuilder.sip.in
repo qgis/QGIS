@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+
+
 class QgsPointCloudQueryBuilder : QgsSubsetStringEditorInterface
 {
 %Docstring(signature="appended")
@@ -25,6 +27,7 @@ expression is valid.
 #include "qgspointcloudquerybuilder.h"
 %End
   public:
+
     QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 This constructor is used when the query builder is called from the layer

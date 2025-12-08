@@ -14,14 +14,14 @@
  ***************************************************************************/
 #include "qgsxmlutils.h"
 
-#include <QDomElement>
-
-#include "qgsrectangle.h"
-#include "qgsproperty.h"
 #include "qgscolorutils.h"
 #include "qgsprocessingparameters.h"
+#include "qgsproperty.h"
+#include "qgsrectangle.h"
 #include "qgsremappingproxyfeaturesink.h"
 #include "qgsunittypes.h"
+
+#include <QDomElement>
 
 Qgis::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
@@ -191,6 +191,18 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "StringList" ) );
       }
+      break;
+    }
+
+    case QMetaType::Type::QRect:
+    {
+      element.setAttribute( QStringLiteral( "type" ), "QRect" );
+
+      const QRect rect = value.toRect();
+      element.setAttribute( QStringLiteral( "x" ), rect.x() );
+      element.setAttribute( QStringLiteral( "y" ), rect.y() );
+      element.setAttribute( QStringLiteral( "width" ), rect.width() );
+      element.setAttribute( QStringLiteral( "height" ), rect.height() );
       break;
     }
 
@@ -382,6 +394,15 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
       list.append( readVariant( elem ).toString() );
     }
     return list;
+  }
+  else if ( type == QLatin1String( "QRect" ) )
+  {
+    const int x = element.attribute( "x" ).toInt();
+    const int y = element.attribute( "y" ).toInt();
+    const int width = element.attribute( "width" ).toInt();
+    const int height = element.attribute( "height" ).toInt();
+
+    return QRect( x, y, width, height );
   }
   else if ( type == QLatin1String( "QgsProperty" ) )
   {

@@ -22,9 +22,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslabelingengine.h"
-#include "qgstextformat.h"
 #include "qgslabelplacementsettings.h"
 #include "qgslabelthinningsettings.h"
+#include "qgstextformat.h"
 
 class QgsRasterLayer;
 class QgsNumericFormat;

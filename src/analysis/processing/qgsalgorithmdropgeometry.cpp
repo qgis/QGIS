@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdropgeometry.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

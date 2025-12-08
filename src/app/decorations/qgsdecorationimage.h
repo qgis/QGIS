@@ -16,11 +16,11 @@
 #ifndef QGSDECORATIONIMAGE_H
 #define QGSDECORATIONIMAGE_H
 
+#include "qgis_app.h"
 #include "qgsdecorationitem.h"
 
-#include <QStringList>
 #include <QColor>
-#include "qgis_app.h"
+#include <QStringList>
 
 class QAction;
 class QToolBar;
@@ -31,6 +31,7 @@ class APP_EXPORT QgsDecorationImage : public QgsDecorationItem
     Q_OBJECT
 
   public:
+
     /**
      * Format of source image
      */

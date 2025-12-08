@@ -16,12 +16,13 @@
 #ifndef QGSDISTANCEAREA_H
 #define QGSDISTANCEAREA_H
 
-#include "qgis_core.h"
-#include <QVector>
-#include <QReadWriteLock>
-#include "qgscoordinatetransform.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgscoordinatetransform.h"
 #include "qgsellipsoidutils.h"
+
+#include <QReadWriteLock>
+#include <QVector>
 
 class QgsGeometry;
 class QgsAbstractGeometry;

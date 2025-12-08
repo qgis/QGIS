@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgssimplelinematerialsettings.h"
+
 #include "qgscolorutils.h"
 #include "qgslinematerial_p.h"
 
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QEffect>
 #include <QMap>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTexture>
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

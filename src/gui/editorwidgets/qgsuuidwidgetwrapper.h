@@ -16,11 +16,11 @@
 #ifndef QGSUUIDWIDGETWRAPPER_H
 #define QGSUUIDWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
-#include <QLineEdit>
 #include <QLabel>
-#include "qgis_gui.h"
+#include <QLineEdit>
 
 SIP_NO_FILE
 
@@ -35,6 +35,7 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsUuidWidgetWrapper.
      *

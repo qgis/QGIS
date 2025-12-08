@@ -16,11 +16,11 @@
 #ifndef QGSLOCKEDFEATURE_H
 #define QGSLOCKEDFEATURE_H
 
-#include <QObject>
-
 #include "qgis_app.h"
-#include "qgsgeometry.h"
 #include "qgsfeatureid.h"
+#include "qgsgeometry.h"
+
+#include <QObject>
 
 class QgsMapCanvas;
 class QgsVectorLayer;
@@ -37,6 +37,7 @@ class APP_EXPORT QgsLockedFeature : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Creates a locked feature
      * \param featureId id of feature which was selected
@@ -145,6 +146,7 @@ class APP_EXPORT QgsLockedFeature : public QObject
     void beforeRollBack();
 
   private:
+
     /**
      * Deletes whole vertex map.
      */

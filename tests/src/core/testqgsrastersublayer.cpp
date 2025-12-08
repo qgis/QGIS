@@ -12,19 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <cpl_conv.h>
+#include <gdal.h>
+
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
+#include <QPainter>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QPainter>
 #include <QTime>
-#include <QDesktopServices>
-
-#include <gdal.h>
-#include "cpl_conv.h"
 
 //qgis includes...
 #include <qgsrasterlayer.h>

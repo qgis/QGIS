@@ -20,13 +20,17 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 set (BUILD_WITH_QT6 TRUE CACHE BOOL "Enable Qt6 support")
 
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
-set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
-set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+set (WITH_AUTH TRUE CACHE BOOL "Determines whether AUTH support should be included")
+set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+set (WITH_EXIV2 TRUE CACHE BOOL "Determines whether exiv2 functionality should be added")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
+set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
@@ -366,7 +370,6 @@ if(WITH_CORE)
     endif()
   endif(WITH_HANA)
 
-  set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
 
@@ -478,7 +481,10 @@ if(WITH_CORE)
   find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
-  find_package(exiv2 REQUIRED)
+  if(WITH_EXIV2)
+    set(HAVE_EXIV2 TRUE)
+    find_package(exiv2 REQUIRED)
+  endif()
 
   # optional
   if (WITH_SFCGAL)
@@ -616,9 +622,15 @@ if(WITH_CORE)
     message(STATUS "PDF4Qt disabled")
   endif()
 
-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
+  if(WITH_QTPOSITIONING)
+    find_package(${QT_VERSION_BASE} COMPONENTS Positioning REQUIRED)
+  endif()
   if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+    if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
+      find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
+    endif()
   endif()
 
   if (NOT IOS)
@@ -712,7 +724,9 @@ if(WITH_CORE)
     find_package(Qt5Keychain CONFIG REQUIRED)
   endif()
   # Master password hash and authentication encryption
-  find_package(QCA REQUIRED)
+  if(WITH_AUTH)
+    find_package(QCA REQUIRED)
+  endif()
   # Check for runtime dependency of qca-ossl plugin
   # REQUIRED if unit tests are to be run from build directory
   if(NOT MSVC)
@@ -914,8 +928,8 @@ endif()
 set (AGGRESSIVE_SAFE_MODE FALSE CACHE BOOL "Forces a aggressive safe mode where issues like unsafe thread access will resort in fatal exceptions")
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /std:c++17 /permissive-")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /std:c++17 /permissive-")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /permissive-")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /permissive-")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # Increase our stack size to 8MB to give us a bit more room and avoid stackoverflow crashes

@@ -18,8 +18,8 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QPen>
 
+#include <QPen>
 
 #define SIP_NO_FILE
 
@@ -33,6 +33,7 @@
 class GUI_EXPORT QgsModelSnapper
 {
   public:
+
     /**
      * Constructor for QgsModelSnapper, attached to the specified \a layout.
      */

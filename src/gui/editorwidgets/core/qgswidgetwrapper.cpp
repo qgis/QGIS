@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgswidgetwrapper.h"
-#include "moc_qgswidgetwrapper.cpp"
+
 #include "qgsvectorlayer.h"
 
 #include <QWidget>
 
+#include "moc_qgswidgetwrapper.cpp"
 
 const QgsPropertiesDefinition &QgsWidgetWrapper::propertyDefinitions()
 {
@@ -40,7 +41,6 @@ QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor, QWidget
   , mWidget( editor )
   , mParent( parent )
   , mLayer( vl )
-  , mInitialized( false )
 {
 }
 

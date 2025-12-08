@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgspainteffectpropertieswidget.h"
-#include "moc_qgspainteffectpropertieswidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgseffectstack.h"
+#include "qgslogger.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffectwidget.h"
 
 #include <QFile>
-#include <QStandardItem>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QStandardItem>
 
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
-#include "qgspainteffectwidget.h"
-#include "qgseffectstack.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
+#include "moc_qgspainteffectpropertieswidget.cpp"
 
 static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f )
 {

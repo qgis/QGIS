@@ -15,14 +15,12 @@
 
 #include "qgsvectorlayerundocommand.h"
 
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsfeature.h"
+#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
-
-#include "qgslogger.h"
-
 
 QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer, QgsFeature &f )
   : QgsVectorLayerUndoCommand( buffer )
@@ -199,7 +197,6 @@ QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribu
   , mFieldIndex( fieldIndex )
   , mOldValue( oldValue )
   , mNewValue( newValue )
-  , mFirstChange( true )
 {
   if ( FID_IS_NEW( mFid ) )
   {

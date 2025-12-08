@@ -19,8 +19,9 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
-#include <QGraphicsObject>
+
 #include <QFont>
+#include <QGraphicsObject>
 #include <QPicture>
 #include <QPointer>
 
@@ -140,6 +141,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 #ifndef SIP_RUN
 
     /**
+     * Returns the color of the link at the specified \a index on the specified \a edge.
+     *
+     * \since QGIS 4.0
+     */
+    virtual QColor linkColor( Qt::Edge edge, int index ) const;
+
+    /**
      * Shows a preview of setting a new \a rect for the item.
      */
     QRectF previewItemRectChange( QRectF rect );
@@ -237,7 +245,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     /**
      * Returns the output socket graphics items at the specified \a index.
-     * 
+     *
      * May return NULLPTR if no corresponding output socket exists.
      * \since QGIS 3.44
      */
@@ -363,6 +371,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void updateButtonPositions();
 
+    /**
+     * The fallback color if the parameter or output does not have a specific color.
+     *
+     * \since QGIS 4.0
+     */
+    SIP_SKIP static constexpr QColor FALLBACK_COLOR = QColor( 128, 128, 128 ); /* mid gray */
+
   private:
     QSizeF itemSize() const;
 
@@ -426,6 +441,8 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
+
+    QColor linkColor( Qt::Edge edge, int index ) const override;
 
   protected:
     QColor fillColor( State state ) const override;

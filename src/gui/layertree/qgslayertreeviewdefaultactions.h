@@ -16,9 +16,10 @@
 #ifndef QGSLAYERTREEVIEWDEFAULTACTIONS_H
 #define QGSLAYERTREEVIEWDEFAULTACTIONS_H
 
-#include <QObject>
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QObject>
 
 class QAction;
 
@@ -38,6 +39,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsLayerTreeViewDefaultActions, creating actions for a \a view.
      *

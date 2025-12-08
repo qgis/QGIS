@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgslistwidgetfactory.h"
-#include "qgslistwidgetwrapper.h"
-#include "qgslistconfigdlg.h"
-#include "qgsfields.h"
-#include "qgsvectorlayer.h"
-#include "qgseditorwidgetregistry.h"
 
-#include <QVariant>
+#include "qgseditorwidgetregistry.h"
+#include "qgsfields.h"
+#include "qgslistconfigdlg.h"
+#include "qgslistwidgetwrapper.h"
+#include "qgsvectorlayer.h"
+
 #include <QSettings>
+#include <QVariant>
 
 QgsListWidgetFactory::QgsListWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )

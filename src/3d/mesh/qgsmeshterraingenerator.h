@@ -20,8 +20,8 @@
 
 #include "qgsmesh3dsymbol.h"
 #include "qgsmeshlayer.h"
-#include "qgstriangularmesh.h"
 #include "qgsterraingenerator.h"
+#include "qgstriangularmesh.h"
 
 #define SIP_NO_FILE
 
@@ -34,6 +34,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new instance of a QgsMeshTerrainGenerator object.
      */

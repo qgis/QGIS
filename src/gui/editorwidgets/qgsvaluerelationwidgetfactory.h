@@ -16,10 +16,10 @@
 #ifndef QGSVALUERELATIONWIDGETFACTORY_H
 #define QGSVALUERELATIONWIDGETFACTORY_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetfactory.h"
 
 #include <QMap>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -32,6 +32,7 @@ SIP_NO_FILE
 class GUI_EXPORT QgsValueRelationWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor for QgsValueRelationWidgetFactory, where \a name is a human-readable
      * name for the factory and \a icon provides a visual representation of this widget type.

@@ -17,14 +17,14 @@
 #ifndef QGSRASTERLAYERPROFILEGENERATOR_H
 #define QGSRASTERLAYERPROFILEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscurve.h"
-
-#include <memory>
 
 class QgsProfileRequest;
 class QgsRasterLayer;

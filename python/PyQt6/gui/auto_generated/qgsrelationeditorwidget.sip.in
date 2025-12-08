@@ -33,6 +33,7 @@ The default relation widget in QGIS.
 #include "qgsrelationeditorwidget.h"
 %End
   public:
+
     enum Button /BaseType=IntEnum/
     {
       NoButton,
@@ -142,6 +143,7 @@ Defines the current configuration
 
   protected:
     virtual void updateUi();
+
     virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
 
     virtual void afterSetRelationFeature();
@@ -166,6 +168,7 @@ Creates a new configuration widget for the relation editor widget.
 #include "qgsrelationeditorwidget.h"
 %End
   public:
+
     explicit QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget

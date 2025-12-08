@@ -20,8 +20,9 @@
 
 #include "qgis_app.h"
 #include "qgsdataitemguiprovider.h"
-#include "qgsweakrelation.h"
 #include "qgsmimedatautils.h"
+#include "qgsweakrelation.h"
+
 #include <QObject>
 
 class QgsDirectoryItem;
@@ -264,6 +265,7 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void openSqlDialogGeneric( const QString &connectionUri, const QString &provider, const QString &query );
 
   private:
+
     /**
      * Move table to target schema.
      *

@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
+#include <QSignalSpy>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QSignalSpy>
 
 //qgis includes...
 #include <qgsmaplayer.h>
@@ -163,7 +164,7 @@ void TestQgsMapLayer::generalHtmlMetadata()
     ds.setParam( QStringLiteral( "type" ), "xyz" );
     ds.setParam( QStringLiteral( "zmax" ), "1" );
     ds.setParam( QStringLiteral( "url" ), "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" );
-    std::unique_ptr<QgsVectorTileLayer> vl( new QgsVectorTileLayer( ds.encodedUri(), QStringLiteral( "testLayer" ) ) );
+    auto vl = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), QStringLiteral( "testLayer" ) );
     QVERIFY( vl->dataProvider() );
     QVERIFY( vl->dataProvider()->isValid() );
     QCOMPARE( ds.param( QStringLiteral( "url" ) ), "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" );
@@ -175,7 +176,7 @@ void TestQgsMapLayer::generalHtmlMetadata()
     ds.setParam( QStringLiteral( "type" ), "mbtiles" );
     ds.setParam( QStringLiteral( "zmax" ), "1" );
     ds.setParam( QStringLiteral( "url" ), QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
-    std::unique_ptr<QgsVectorTileLayer> vl( new QgsVectorTileLayer( ds.encodedUri(), QStringLiteral( "testLayer" ) ) );
+    auto vl = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), QStringLiteral( "testLayer" ) );
     QVERIFY( vl->dataProvider() );
     QVERIFY( vl->dataProvider()->isValid() );
     QCOMPARE( ds.param( QStringLiteral( "url" ) ), QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );

@@ -24,10 +24,10 @@ while QGIS server internal logging is printed to stderr.
  *                                                                         *
  ***************************************************************************/
 
-#include <thread>
-#include <string>
 #include <chrono>
 #include <condition_variable>
+#include <string>
+#include <thread>
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgscommandlineutils.h"
@@ -101,6 +101,7 @@ const QMap<int, QString> knownStatuses {
 class HttpException : public std::exception
 {
   public:
+
     /**
      * Constructs an HttpException with the given \a message
      */
@@ -341,7 +342,7 @@ class TcpServerWorker : public QObject
       }
     }
 
-    ~TcpServerWorker()
+    ~TcpServerWorker() override
     {
       mTcpServer.close();
     }
@@ -420,7 +421,7 @@ class TcpServerThread : public QThread
         emit responseReady( requestContext ); //#spellok
     }
 
-    void run()
+    void run() override
     {
       const TcpServerWorker worker( mIpAddress, mPort );
       if ( !worker.isListening() )
@@ -451,7 +452,7 @@ class QueueMonitorThread : public QThread
     Q_OBJECT
 
   public:
-    void run()
+    void run() override
     {
       while ( mIsRunning )
       {

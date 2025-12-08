@@ -13,30 +13,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsgdalutils.h"
-#include "qgslogger.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmaplayerutils.h"
-#include "qgsrasterlayer.h"
 #include "qgsrasterlayersaveasdialog.h"
-#include "moc_qgsrasterlayersaveasdialog.cpp"
+
+#include <gdal.h>
+
+#include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdatums.h"
+#include "qgsdoublevalidator.h"
+#include "qgsgdalutils.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsmaplayerutils.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterfilewriter.h"
 #include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrastertransparency.h"
 #include "qgssettings.h"
-#include "qgsrasterfilewriter.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include <gdal.h>
-#include "qgsgui.h"
-#include "qgsdoublevalidator.h"
-#include "qgsdatums.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
+
+#include "moc_qgsrasterlayersaveasdialog.cpp"
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -45,7 +48,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   , mCurrentExtent( currentExtent )
   , mLayerCrs( layerCrs )
   , mCurrentCrs( currentCrs )
-  , mResolutionState( OriginalResolution )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );

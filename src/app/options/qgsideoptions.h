@@ -16,6 +16,7 @@
 #define QGSIDEOPTIONS_H
 
 #include "ui_qgsideoptionswidgetbase.h"
+
 #include "qgsoptionswidgetfactory.h"
 
 /**
@@ -28,6 +29,7 @@ class QgsIdeOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsIdeOptio
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsIdeOptionsWidget with the specified \a parent widget.
      */

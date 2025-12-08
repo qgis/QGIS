@@ -19,12 +19,12 @@
 #ifndef QGS_OFFLINE_EDITING_PLUGIN_GUI_H
 #define QGS_OFFLINE_EDITING_PLUGIN_GUI_H
 
-#include <QDialog>
-
 #include "ui_offline_editing_plugin_guibase.h"
 
-#include "qgsofflineediting.h"
 #include "qgslayertreemodel.h"
+#include "qgsofflineediting.h"
+
+#include <QDialog>
 
 class QgsSelectLayerTreeModel : public QgsLayerTreeModel
 {

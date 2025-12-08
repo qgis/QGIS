@@ -16,11 +16,12 @@
 #ifndef QGSMODELVIEWTOOLTEMPORARYKEYZOOM_H
 #define QGSMODELVIEWTOOLTEMPORARYKEYZOOM_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgsmodelviewtoolzoom.h"
-#include "qgsmodelviewrubberband.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmodelviewrubberband.h"
+#include "qgsmodelviewtoolzoom.h"
 
 #define SIP_NO_FILE
 
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsModelViewToolTemporaryKeyZoom : public QgsModelViewToolZoom
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewToolTemporaryKeyZoom.
      */

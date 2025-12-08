@@ -24,8 +24,8 @@
 #include "ui_qgslayoutchartseriesdetailswidgetbase.h"
 
 #include "qgis_gui.h"
-#include "qgspanelwidget.h"
 #include "qgslayoutitemchart.h"
+#include "qgspanelwidget.h"
 
 /**
  * \ingroup gui
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutChartSeriesDetailsWidget
      * \param layer the vector layer associated to the series

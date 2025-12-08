@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelComponentGraphicItem : QGraphicsObject
 {
 %Docstring(signature="appended")
@@ -324,6 +325,7 @@ comment
 Updates the item's button positions, based on the current item rect.
 %End
 
+
 };
 QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
 
@@ -360,6 +362,9 @@ Ownership of ``parameter`` is transferred to the item.
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
     virtual bool canDeleteComponent();
+
+
+    virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
 
   protected:

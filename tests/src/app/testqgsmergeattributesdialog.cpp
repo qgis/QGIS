@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsmergeattributesdialog.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
 
 class TestQgsMergeattributesDialog : public QgsTest
 {

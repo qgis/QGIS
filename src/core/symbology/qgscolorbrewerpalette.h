@@ -16,10 +16,10 @@
 #define QGSCOLORBREWERPALETTE_H
 
 #include "qgis_core.h"
-#include <QList>
-#include <QColor>
-
 #include "qgssymbollayerutils.h"
+
+#include <QColor>
+#include <QList>
 
 /**
  * \ingroup core

@@ -16,8 +16,8 @@
 #ifndef QGSNETWORKSPEEDSTRATEGY_H
 #define QGSNETWORKSPEEDSTRATEGY_H
 
-#include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
+#include "qgsnetworkstrategy.h"
 
 /**
  * \ingroup analysis
@@ -29,6 +29,7 @@
 class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
 {
   public:
+
     /**
      * Default constructor
      */

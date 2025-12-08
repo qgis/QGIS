@@ -16,14 +16,16 @@
 #ifndef QGSSEARCHQUERYBUILDER_H
 #define QGSSEARCHQUERYBUILDER_H
 
+#include "ui_qgsquerybuilderbase.h"
+
 #include <map>
 #include <vector>
-#include <QStandardItemModel>
-#include <QModelIndex>
 
-#include "ui_qgsquerybuilderbase.h"
-#include "qgsguiutils.h"
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+
+#include <QModelIndex>
+#include <QStandardItemModel>
 
 class QgsField;
 class QgsVectorLayer;
@@ -94,6 +96,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void btnSampleValues_clicked();
 
   private:
+
     /**
      * Populate the field list for the selected table
      */

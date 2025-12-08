@@ -18,10 +18,10 @@
 
 
 #include "qgis_core.h"
-#include "qgstopologicalmesh.h"
-#include "qgstriangularmesh.h"
 #include "qgsabstractgeometry.h"
 #include "qgsmeshadvancedediting.h"
+#include "qgstopologicalmesh.h"
+#include "qgstriangularmesh.h"
 
 /**
  * \ingroup core

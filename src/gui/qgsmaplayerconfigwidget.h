@@ -15,13 +15,13 @@
 #ifndef QGSMAPLAYERCONFIGWIDGET_H
 #define QGSMAPLAYERCONFIGWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
+#include "qgslayertreegroup.h"
+#include "qgspanelwidget.h"
+
 #include <QIcon>
 #include <QPointer>
-
-#include "qgspanelwidget.h"
-#include "qgslayertreegroup.h"
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -36,6 +36,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsMapLayerConfigWidgetContext
 {
   public:
+
     /**
      * Returns the item ID of the target annotation, when modifying
      * an annotation from a QgsAnnotationLayer.
@@ -112,6 +113,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
+
     /**
        * \brief A panel widget that can be shown in the map style dock
        * \param layer The layer active in the dock.

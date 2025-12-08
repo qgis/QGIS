@@ -18,9 +18,8 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
-#include "qgshistoryprovider.h"
 #include "qgshistoryentrynode.h"
+#include "qgshistoryprovider.h"
 #include "qgshistorywidget.h"
 
 #define SIP_NO_FILE
@@ -38,6 +37,7 @@ class GUI_EXPORT QgsDatabaseQueryHistoryWidget : public QgsHistoryWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDatabaseQueryHistoryWidget, with the specified \a parent widget.
      *

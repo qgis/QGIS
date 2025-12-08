@@ -10,7 +10,6 @@
 
 
 
-
 class QgsProcessingModelChildDependency
 {
 %Docstring(signature="appended")

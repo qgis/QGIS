@@ -1,5 +1,5 @@
 /***************************************************************************
-    blanksegmentutils_p.h
+    blanksegmentutils.h
     ---------------------
     begin                : 2025/11/05
     copyright            : (C) 2025 by Julien Cabieces
@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSBLANKSEGMENTUTILS_P_H
-#define QGSBLANKSEGMENTUTILS_P_H
+#ifndef QGSBLANKSEGMENTUTILS_H
+#define QGSBLANKSEGMENTUTILS_H
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QPair>
 
 class QgsRenderContext;

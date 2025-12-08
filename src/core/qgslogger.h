@@ -18,14 +18,16 @@
 #ifndef QGSLOGGER_H
 #define QGSLOGGER_H
 
+#include "qgsconfig.h"
+
 #include <iostream>
-#include "qgis_sip.h"
 #include <sstream>
-#include <QString>
-#include <QTime>
 
 #include "qgis_core.h"
-#include "qgsconfig.h"
+#include "qgis_sip.h"
+
+#include <QString>
+#include <QTime>
 
 class QFile;
 

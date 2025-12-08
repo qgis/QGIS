@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRasterBandComboBox : QComboBox
 {
 %Docstring(signature="appended")
@@ -19,6 +20,7 @@ A combobox widget which displays the bands present in a raster layer.
 #include "qgsrasterbandcombobox.h"
 %End
   public:
+
     QgsRasterBandComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterBandComboBox.

@@ -15,14 +15,13 @@
 #ifndef QGSSENSORWIDGET_H
 #define QGSSENSORWIDGET_H
 
+#include "qgsconfig.h"
+#include "ui_widget_serialportsensor.h"
 #include "ui_widget_tcpsocketsensor.h"
 #include "ui_widget_udpsocketsensor.h"
-#include "ui_widget_serialportsensor.h"
 
-#include "qgsconfig.h"
-
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsabstractsensor.h"
 
 #include <QWidget>
@@ -38,6 +37,7 @@ class GUI_EXPORT QgsAbstractSensorWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAbstractSensorWidget.
      * \param parent parent widget
@@ -90,6 +90,7 @@ class GUI_EXPORT QgsTcpSocketSensorWidget : public QgsAbstractSensorWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTcpSocketSensorWidget.
      * \param parent parent widget
@@ -112,6 +113,7 @@ class GUI_EXPORT QgsUdpSocketSensorWidget : public QgsAbstractSensorWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsUdpSocketSensorWidget.
      * \param parent parent widget
@@ -136,6 +138,7 @@ class GUI_EXPORT QgsSerialPortSensorWidget : public QgsAbstractSensorWidget, pri
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSerialPortSensorWidget.
      * \param parent parent widget

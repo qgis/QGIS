@@ -17,9 +17,8 @@
 #define QGSMESH3DSYMBOL_H
 
 #include "qgis_3d.h"
-
-#include "qgsabstract3dsymbol.h"
 #include "qgs3dtypes.h"
+#include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
 
 #include <Qt3DRender/QCullFace>
@@ -38,6 +37,7 @@ class QgsAbstractMaterialSettings;
 class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
 {
   public:
+
     /**
      * How to render the color of the mesh
      *

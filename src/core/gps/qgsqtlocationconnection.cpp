@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsqtlocationconnection.h"
-#include "moc_qgsqtlocationconnection.cpp"
+
 #include "qgslogger.h"
 
 #include <QLocalSocket>
-#include <QTimer>
 #include <QMetaType>
+#include <QTimer>
+
+#include "moc_qgsqtlocationconnection.cpp"
 
 QgsQtLocationConnection::QgsQtLocationConnection()
   : QgsGpsConnection( new QLocalSocket() )

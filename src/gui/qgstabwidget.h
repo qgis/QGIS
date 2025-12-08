@@ -16,11 +16,11 @@
 #ifndef QGSTABWIDGET_H
 #define QGSTABWIDGET_H
 
-#include <QTabWidget>
-#include "qgstabbarproxystyle.h"
-#include "qgsattributeeditorelement.h"
-
 #include "qgis_gui.h"
+#include "qgsattributeeditorelement.h"
+#include "qgstabbarproxystyle.h"
+
+#include <QTabWidget>
 
 /**
  * \ingroup gui
@@ -31,6 +31,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     Q_OBJECT
 
   public:
+
     /**
      * Create a new QgsTabWidget with the optionally provided parent.
      *

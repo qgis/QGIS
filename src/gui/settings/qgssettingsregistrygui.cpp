@@ -15,10 +15,10 @@
 
 #include "qgssettingsregistrygui.h"
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsapplication.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
-#include "qgsabstractdbsourceselect.h"
 
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( QStringLiteral( "respect-screen-dpi" ), QgsSettingsTree::sTreeGui, false );
 

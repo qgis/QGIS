@@ -17,13 +17,13 @@
 #ifndef QGSATTRIBUTETABLEFILTERMODEL_H
 #define QGSATTRIBUTETABLEFILTERMODEL_H
 
-#include <QSortFilterProxyModel>
-#include <QModelIndex>
-#include <QTimer>
-
+#include "qgis_gui.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
-#include "qgis_gui.h"
+
+#include <QModelIndex>
+#include <QSortFilterProxyModel>
+#include <QTimer>
 
 class QgsVectorLayerCache;
 class QgsMapCanvas;
@@ -39,6 +39,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
     Q_OBJECT
 
   public:
+
     /**
      * The filter mode defines how the rows should be filtered.
      */
@@ -289,6 +290,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
     void filterError( const QString &errorMessage );
 
   protected:
+
     /**
      * Returns TRUE if the source row will be accepted
      *

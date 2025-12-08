@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgs3d.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgsmaterial.h"
 #include "qgsmaterialregistry.h"
-#include "qgsabstractmaterialsettings.h"
+#include "qgstest.h"
 
 #include <QObject>
-#include "qgstest.h"
-#include "qgs3d.h"
 
 //dummy material for testing
 class DummyMaterialSettings : public QgsAbstractMaterialSettings

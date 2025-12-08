@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrasterrenderer.h"
-#include "qgsrastertransparency.h"
+
+#include <memory>
 
 #include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsrastertransparency.h"
 #include "qgssldexportcontext.h"
 
 #include <QCoreApplication>
@@ -202,7 +204,7 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
   {
-    mRasterTransparency.reset( new QgsRasterTransparency() );
+    mRasterTransparency = std::make_unique<QgsRasterTransparency>( );
 
     mRasterTransparency->readXml( rasterTransparencyElem );
   }

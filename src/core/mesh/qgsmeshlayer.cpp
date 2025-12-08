@@ -15,40 +15,43 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmeshlayer.h"
+
 #include <cstddef>
 #include <limits>
+#include <memory>
 
-#include <QUuid>
-#include <QUrl>
-
+#include "qgsapplication.h"
 #include "qgscolorrampimpl.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
-#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerlegend.h"
+#include "qgsmesh3daveraging.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgroupstore.h"
-#include "qgsmeshlayer.h"
-#include "moc_qgsmeshlayer.cpp"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayerelevationproperties.h"
+#include "qgsmeshlayerlabeling.h"
+#include "qgsmeshlayerprofilegenerator.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
+#include "qgsmessagelog.h"
 #include "qgspainting.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
-#include "qgsstyle.h"
-#include "qgstriangularmesh.h"
-#include "qgsmesh3daveraging.h"
-#include "qgslayermetadataformatter.h"
-#include "qgsmesheditor.h"
-#include "qgsmessagelog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmeshlayerprofilegenerator.h"
-#include "qgsmeshlayerelevationproperties.h"
-#include "qgsthreadingutils.h"
-#include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsmeshlayerlabeling.h"
+#include "qgsstyle.h"
+#include "qgsthreadingutils.h"
+#include "qgstriangularmesh.h"
+
+#include <QUrl>
+#include <QUuid>
+
+#include "moc_qgsmeshlayer.cpp"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -146,6 +149,13 @@ QgsMeshLayer *QgsMeshLayer::clone() const
     layer->setLabeling( lLabeling->clone() );
   }
   layer->setLabelsEnabled( labelsEnabled() );
+
+  for ( const QString &extraDataset : mExtraDatasetUri )
+  {
+    layer->addDatasets( extraDataset );
+  }
+
+  layer->setRendererSettings( mRendererSettings );
 
   return layer;
 }
@@ -845,7 +855,7 @@ void QgsMeshLayer::fillNativeMesh()
 
   Q_ASSERT( !mNativeMesh );
 
-  mNativeMesh.reset( new QgsMesh() );
+  mNativeMesh = std::make_unique<QgsMesh>( );
 
   if ( !( dataProvider() && dataProvider()->isValid() ) )
     return;
@@ -872,7 +882,7 @@ void QgsMeshLayer::onMeshEdited()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>( );
   emit layerModified();
   triggerRepaint();
   trigger3DUpdate();
@@ -1166,7 +1176,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform, Q
 
   // All dataset group are removed and replace by a unique virtual dataset group that provide vertices elevation value.
   mExtraDatasetUri.clear();
-  mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
+  mDatasetGroupStore = std::make_unique<QgsMeshDatasetGroupStore>( this );
 
   mDatasetGroupStore->addDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
 
@@ -1224,7 +1234,7 @@ bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, 
 
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
-  mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
+  mDatasetGroupStore = std::make_unique<QgsMeshDatasetGroupStore>( this );
   mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );
   resetDatasetGroupTreeItem();
   return true;
@@ -1243,7 +1253,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
   updateTriangularMesh( transform );
-  mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>( );
   trigger3DUpdate();
 
   if ( continueEditing )
@@ -1257,7 +1267,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
     mMeshEditor = nullptr;
     emit editingStopped();
 
-    mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
+    mDatasetGroupStore = std::make_unique<QgsMeshDatasetGroupStore>( this );
     mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );
     resetDatasetGroupTreeItem();
     emit dataChanged();
@@ -1274,7 +1284,7 @@ void QgsMeshLayer::stopFrameEditing( const QgsCoordinateTransform &transform )
 
   mMeshEditor->stopEditing();
   mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
-  mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>( );
 }
 
 bool QgsMeshLayer::reindex( const QgsCoordinateTransform &transform, bool renumber )
@@ -1290,7 +1300,7 @@ bool QgsMeshLayer::reindex( const QgsCoordinateTransform &transform, bool renumb
   mTriangularMeshes.clear();
   mTriangularMeshes.emplace_back( new QgsTriangularMesh );
   mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
-  mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>( );
   mMeshEditor->resetTriangularMesh( mTriangularMeshes.at( 0 ).get() );
 
   return true;
@@ -1686,7 +1696,7 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
 
   // Cache
   if ( !mRendererCache )
-    mRendererCache.reset( new QgsMeshLayerRendererCache() );
+    mRendererCache = std::make_unique<QgsMeshLayerRendererCache>( );
 
   return new QgsMeshLayerRenderer( this, rendererContext );
 }
@@ -2116,7 +2126,7 @@ void QgsMeshLayer::reload()
 
     //reload the mesh structure
     if ( !mNativeMesh )
-      mNativeMesh.reset( new QgsMesh );
+      mNativeMesh = std::make_unique<QgsMesh>( );
 
     dataProvider()->populateMesh( mNativeMesh.get() );
 
@@ -2127,7 +2137,7 @@ void QgsMeshLayer::reload()
     mTriangularMeshes.clear();
 
     //clear the rendererCache
-    mRendererCache.reset( new QgsMeshLayerRendererCache() );
+    mRendererCache = std::make_unique<QgsMeshLayerRendererCache>( );
 
     checkSymbologyConsistency();
 

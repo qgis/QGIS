@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapLayerConfigWidgetFactory
 {
 %Docstring(signature="appended")
@@ -19,6 +20,7 @@ Factory class for creating custom map layer property pages.
 #include "qgsmaplayerconfigwidgetfactory.h"
 %End
   public:
+
     enum class ParentPage
     {
       NoParent,

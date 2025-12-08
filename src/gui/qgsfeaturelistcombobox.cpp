@@ -14,16 +14,17 @@
  ***************************************************************************/
 #include "qgsfeaturelistcombobox.h"
 
-#include "qgsfeaturefiltermodel.h"
 #include "qgsanimatedicon.h"
+#include "qgsapplication.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
-#include "moc_qgsfeaturelistcombobox.cpp"
 
 #include <QCompleter>
-#include <QLineEdit>
 #include <QKeyEvent>
+#include <QLineEdit>
+
+#include "moc_qgsfeaturelistcombobox.cpp"
 
 QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   : QComboBox( parent )

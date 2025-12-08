@@ -16,9 +16,10 @@
 #define QGSBROWSERWIDGET_H
 
 #include "ui_qgsbrowserwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgsmimedatautils.h"
 #include "qgspanelwidget.h"
-#include "qgis_gui.h"
 
 class QgsBrowserGuiModel;
 class QgsDockBrowserTreeView;
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserWidget
       * \param browserModel instance of the (shared) browser model

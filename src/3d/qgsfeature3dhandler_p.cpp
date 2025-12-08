@@ -16,11 +16,10 @@
 
 #include "qgsfeature3dhandler_p.h"
 
-#include "qgsfeaturerequest.h"
-#include "qgsvectorlayer.h"
-
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgsfeaturerequest.h"
+#include "qgsvectorlayer.h"
 
 /// @cond PRIVATE
 

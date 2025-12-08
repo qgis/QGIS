@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsTableWidgetBase : QWidget
 {
 %Docstring(signature="appended")
@@ -21,6 +23,7 @@ call init(QAbstractTableModel*) from their constructor.
 #include "qgstablewidgetbase.h"
 %End
   public:
+
     explicit QgsTableWidgetBase( QWidget *parent );
 %Docstring
 Constructor.
@@ -47,6 +50,7 @@ Sets whether the widget should be shown in a read-only state.
 %End
 
   protected:
+
     void init( QAbstractTableModel *model );
 %Docstring
 Initialize the table with the given model. Must be called once in the

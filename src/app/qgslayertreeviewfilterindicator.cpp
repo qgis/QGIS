@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewfilterindicator.h"
-#include "moc_qgslayertreeviewfilterindicator.cpp"
 
+#include "qgisapp.h"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgspointcloudlayer.h"
-#include "qgisapp.h"
-#include "qgsstringutils.h"
 #include "qgsmessagebar.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsstringutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayertreeviewfilterindicator.cpp"
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

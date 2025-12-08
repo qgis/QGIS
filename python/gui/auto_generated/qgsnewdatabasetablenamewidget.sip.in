@@ -31,6 +31,7 @@ provider, schema and table names can be retrieved with getters.
 #include "qgsnewdatabasetablenamewidget.h"
 %End
   public:
+
     explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = 0, const QStringList &providersFilter = QStringList(), QWidget *parent = 0 );
 %Docstring
 Constructs a new QgsNewDatabaseTableNameWidget
@@ -161,6 +162,7 @@ provider, schema and table names can be retrieved with getters.
 #include "qgsnewdatabasetablenamewidget.h"
 %End
   public:
+
     explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = 0, const QStringList &providersFilter = QStringList(), QWidget *parent = 0 );
 %Docstring
 Constructs a new QgsNewDatabaseTableNameDialog

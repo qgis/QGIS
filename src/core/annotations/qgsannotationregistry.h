@@ -18,13 +18,15 @@
 
 #define SIP_NO_FILE
 
+#include <functional>
+
 #include "qgis_core.h"
 #include "qgsannotation.h"
-#include "qgstextannotation.h"
-#include "qgssvgannotation.h"
 #include "qgshtmlannotation.h"
+#include "qgssvgannotation.h"
+#include "qgstextannotation.h"
+
 #include <QString>
-#include <functional>
 
 ///@cond PRIVATE
 

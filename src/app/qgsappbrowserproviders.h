@@ -17,12 +17,12 @@
 
 #include "qgis_app.h"
 #include "qgsbookmarkmanager.h"
-#include "qgsdataitemprovider.h"
 #include "qgscustomdrophandler.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgsdataitemprovider.h"
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
-#include "qgsdatacollectionitem.h"
 
 /**
  * Custom data item for QLR files.
@@ -190,6 +190,7 @@ class APP_EXPORT QgsProjectRootDataItem : public QgsProjectItem
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProjectRootDataItem, with the specified
      * project \a path.
@@ -205,6 +206,7 @@ class APP_EXPORT QgsProjectLayerTreeGroupItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProjectLayerTreeGroupItem, with the specified group \a name.
      */
@@ -262,6 +264,7 @@ class APP_EXPORT QgsBookmarksItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsBookmarksItem.
      */
@@ -289,6 +292,7 @@ class APP_EXPORT QgsBookmarkManagerItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsBookmarkManagerItem.
      */
@@ -315,6 +319,7 @@ class APP_EXPORT QgsBookmarkGroupItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsBookmarkGroupItem.
      */
@@ -345,6 +350,7 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsBookmarkGroupItem.
      */

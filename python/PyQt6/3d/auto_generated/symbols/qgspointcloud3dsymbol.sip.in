@@ -8,8 +8,6 @@
 
 
 
-
-
 class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 {
 %Docstring(signature="appended")
@@ -27,6 +25,7 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
+
     enum RenderingStyle /BaseType=IntEnum/
     {
       // Do not render anything
@@ -46,6 +45,7 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 
     virtual QString type() const;
     virtual QgsPointCloud3DSymbol *clone() const = 0 /Factory/;
+
 
     virtual QString symbolType() const = 0;
 %Docstring

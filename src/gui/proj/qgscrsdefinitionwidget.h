@@ -16,10 +16,10 @@
 #define QGSCRSDEFINITIONWIDGET_H
 
 #include "ui_qgscrsdefinitionwidgetbase.h"
-#include "qgscoordinatereferencesystem.h"
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsCoordinateReferenceSystem;
 
@@ -32,6 +32,7 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsCrsDefinitionWidget, with the specified \a parent widget.
      */

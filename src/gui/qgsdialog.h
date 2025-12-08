@@ -18,13 +18,13 @@
 #ifndef QGSDIALOG_H
 #define QGSDIALOG_H
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLayout>
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 
 /**
  * \ingroup gui
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDialog.
      */

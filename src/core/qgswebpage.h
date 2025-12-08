@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsmessagelog.h"
+
 #include <QObject>
 
 #ifdef WITH_QTWEBKIT

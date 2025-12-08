@@ -18,9 +18,9 @@
 #ifndef QGS_GEOMETRY_GAP_CHECK_H
 #define QGS_GEOMETRY_GAP_CHECK_H
 
+#include "qgsfeatureid.h"
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
-#include "qgsfeatureid.h"
 
 /**
  * \ingroup analysis
@@ -31,6 +31,7 @@
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
+
     /**
      * Create a new gap check error produced by \a check on the layer \a layerId.
      * The \a geometry of the gap needs to be in map coordinates.

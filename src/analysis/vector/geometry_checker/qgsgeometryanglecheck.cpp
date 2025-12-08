@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryanglecheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometryanglecheck.h"
-#include "qgsgeometryutils.h"
-#include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsgeometryutils.h"
 
 QList<Qgis::GeometryType> QgsGeometryAngleCheck::compatibleGeometryTypes() const
 {

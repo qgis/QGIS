@@ -18,9 +18,9 @@
 #ifndef QGSPLOTTOOLZOOM_H
 #define QGSPLOTTOOLZOOM_H
 
-#include "qgsplottool.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsplottool.h"
 
 class QgsPlotRectangularRubberBand;
 
@@ -36,6 +36,7 @@ class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolZoom, with the associated \a canvas.
      */
@@ -50,6 +51,7 @@ class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
     void deactivate() override;
 
   protected:
+
     /**
      * Applies constraints to the start point of the zoom rubber band.
      *

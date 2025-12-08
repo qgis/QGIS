@@ -18,8 +18,8 @@
 #ifndef QGSIDWINTERPOLATOR_H
 #define QGSIDWINTERPOLATOR_H
 
-#include "qgsinterpolator.h"
 #include "qgis_analysis.h"
+#include "qgsinterpolator.h"
 
 /**
  * \ingroup analysis
@@ -29,6 +29,7 @@
 class ANALYSIS_EXPORT QgsIDWInterpolator : public QgsInterpolator
 {
   public:
+
     /**
      * Constructor for QgsIDWInterpolator, with the specified \a layerData sources.
      */

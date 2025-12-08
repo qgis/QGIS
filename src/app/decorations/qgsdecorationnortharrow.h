@@ -19,11 +19,11 @@
 #ifndef QGSNORTHARROWPLUGIN
 #define QGSNORTHARROWPLUGIN
 
+#include "qgis_app.h"
 #include "qgsdecorationitem.h"
 
-#include <QStringList>
 #include <QColor>
-#include "qgis_app.h"
+#include <QStringList>
 
 class QAction;
 class QToolBar;
@@ -34,6 +34,7 @@ class APP_EXPORT QgsDecorationNorthArrow : public QgsDecorationItem
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDecorationNorthArrow, with the specified \a parent object.
      */

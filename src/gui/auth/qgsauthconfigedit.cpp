@@ -15,18 +15,19 @@
  ***************************************************************************/
 
 #include "qgsauthconfigedit.h"
-#include "moc_qgsauthconfigedit.cpp"
 
-#include <QPushButton>
-
-#include "qgsauthmethodmetadata.h"
+#include "qgsapplication.h"
 #include "qgsauthconfig.h"
 #include "qgsauthconfigidedit.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmethodedit.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
+#include "qgsauthmethodmetadata.h"
 #include "qgsgui.h"
+#include "qgslogger.h"
+
+#include <QPushButton>
+
+#include "moc_qgsauthconfigedit.cpp"
 
 QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, const QString &dataprovider )
   : QDialog( parent )

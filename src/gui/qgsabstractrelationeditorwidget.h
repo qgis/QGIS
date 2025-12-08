@@ -18,13 +18,13 @@
 #ifndef QGSABSTRACTRELATIONEDITORWIDGET_H
 #define QGSABSTRACTRELATIONEDITORWIDGET_H
 
-#include <QWidget>
-#include "qobjectuniqueptr.h"
-
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsrelation.h"
-#include "qgis_sip.h"
-#include "qgis_gui.h"
+#include "qobjectuniqueptr.h"
+
+#include <QWidget>
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
@@ -56,6 +56,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */
@@ -268,7 +269,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     /**
      * Refresh the UI when the widget becomes visible
      */
-    void showEvent( QShowEvent * );
+    void showEvent( QShowEvent * ) override;
 
     /**
      * Updates the title contents to reflect the current state of the widget
@@ -350,6 +351,7 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 
     Q_OBJECT
   public:
+
     /**
      * Create a new configuration widget
      *
@@ -419,6 +421,7 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 class GUI_EXPORT QgsAbstractRelationEditorWidgetFactory
 {
   public:
+
     /**
      * Creates a new relation widget factory with given \a name
      */

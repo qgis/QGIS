@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLayerTreeViewDefaultActions : QObject
 {
 %Docstring(signature="appended")
@@ -24,6 +25,7 @@ tree view.
 #include "qgslayertreeviewdefaultactions.h"
 %End
   public:
+
     QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view );
 %Docstring
 Constructor for QgsLayerTreeViewDefaultActions, creating actions for a

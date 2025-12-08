@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdpart.h"
-#include "moc_qgsmaptooladdpart.cpp"
+
+#include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
 
+#include "moc_qgsmaptooladdpart.cpp"
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   : QgsMapToolCaptureLayerGeometry( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )

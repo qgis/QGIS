@@ -19,8 +19,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-#include <QWidget>
 #include <QStyleOptionSlider>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -33,6 +33,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsRangeSlider, with the specified \a parent widget.
      */

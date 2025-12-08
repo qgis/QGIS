@@ -16,22 +16,24 @@
  ***************************************************************************/
 
 #include "qgsnewmemorylayerdialog.h"
-#include "moc_qgsnewmemorylayerdialog.cpp"
+
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayer.h"
 #include "qgsfield.h"
 #include "qgsfields.h"
-#include "qgsmemoryproviderutils.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
 
-#include <QPushButton>
 #include <QComboBox>
-#include <QUuid>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QUuid>
+
+#include "moc_qgsnewmemorylayerdialog.cpp"
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {

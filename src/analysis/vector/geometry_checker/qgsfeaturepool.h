@@ -17,15 +17,15 @@
 #ifndef QGS_FEATUREPOOL_H
 #define QGS_FEATUREPOOL_H
 
+#include "qgis_analysis.h"
+#include "qgsfeature.h"
+#include "qgsfeaturesink.h"
+#include "qgsspatialindex.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
 #include <QCache>
 #include <QMutex>
 #include <QPointer>
-
-#include "qgis_analysis.h"
-#include "qgsfeature.h"
-#include "qgsspatialindex.h"
-#include "qgsfeaturesink.h"
-#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup analysis
@@ -37,13 +37,14 @@
 class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 {
   public:
+
     /**
      * Creates a new feature pool for \a layer.
      *
      * Must be created on the same thread as \a layer.
      */
     QgsFeaturePool( QgsVectorLayer *layer );
-    virtual ~QgsFeaturePool() = default;
+    ~QgsFeaturePool() override = default;
 
     /**
      * Retrieves the feature with the specified \a id into \a feature.
@@ -155,6 +156,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QString layerName() const;
 
   protected:
+
     /**
      * Inserts a feature into the cache and the spatial index.
      * To be used by implementations of ``addFeature``.

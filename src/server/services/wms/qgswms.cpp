@@ -19,21 +19,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmodule.h"
 #include "qgsdxfwriter.h"
+#include "qgsmodule.h"
 #include "qgspdfwriter.h"
-#include "qgswmsserviceexception.h"
-#include "qgswmsgetcapabilities.h"
-#include "qgswmsgetmap.h"
-#include "qgswmsgetstyles.h"
-#include "qgswmsgetcontext.h"
-#include "qgswmsgetschemaextension.h"
-#include "qgswmsgetprint.h"
-#include "qgswmsgetfeatureinfo.h"
 #include "qgswmsdescribelayer.h"
+#include "qgswmsgetcapabilities.h"
+#include "qgswmsgetcontext.h"
+#include "qgswmsgetfeatureinfo.h"
 #include "qgswmsgetlegendgraphics.h"
+#include "qgswmsgetmap.h"
+#include "qgswmsgetprint.h"
+#include "qgswmsgetschemaextension.h"
+#include "qgswmsgetstyles.h"
 #include "qgswmsparameters.h"
 #include "qgswmsrequest.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsutils.h"
 
 #define QSTR_COMPARE( str, lit ) \
@@ -51,6 +51,7 @@ namespace QgsWms
   class Service : public QgsService
   {
     public:
+
       /**
        * Constructor for WMS service.
        * \param version Version of the WMS service.

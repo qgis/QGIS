@@ -19,12 +19,12 @@
 #ifndef QGSPROCESSINGALGORITHMCONFIGURATIONWIDGET_H
 #define QGSPROCESSINGALGORITHMCONFIGURATIONWIDGET_H
 
-#include <QWidget>
-#include <QVariantMap>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsprocessingwidgetwrapper.h"
+
+#include <QVariantMap>
+#include <QWidget>
 
 class QgsProcessingAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
@@ -42,6 +42,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsProcessingAlgorithmConfigurationWidget
      */

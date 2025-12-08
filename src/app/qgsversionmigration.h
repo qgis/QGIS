@@ -16,9 +16,11 @@
 #ifndef QGSVERSIONMIGRATION_H
 #define QGSVERSIONMIGRATION_H
 
+#include <memory>
+
 #include "qgis_app.h"
 #include "qgserror.h"
-#include <memory>
+
 #include <QSettings>
 
 class QgsSettings;

@@ -21,8 +21,9 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QTreeView>
+
 #include <QSortFilterProxyModel>
+#include <QTreeView>
 
 class QgsLayout;
 class QgsLayoutDesignerInterface;
@@ -74,6 +75,7 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutItemsListView.
      */

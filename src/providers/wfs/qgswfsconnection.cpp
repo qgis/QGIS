@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgswfsconnection.h"
-#include "moc_qgswfsconnection.cpp"
-#include "qgswfsconstants.h"
+
 #include "qgslogger.h"
-#include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgswfsconstants.h"
+
+#include "moc_qgswfsconnection.cpp"
 
 static const QString SERVICE_WFS = QStringLiteral( "WFS" );
 

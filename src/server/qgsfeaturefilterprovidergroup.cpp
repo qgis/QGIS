@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsfeaturefilterprovidergroup.h"
+
 #include "qgsfeaturerequest.h"
 
 void QgsFeatureFilterProviderGroup::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const

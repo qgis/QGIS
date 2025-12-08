@@ -16,11 +16,13 @@
 #ifndef QGSSERVEROGCAPIHANDLER_H
 #define QGSSERVEROGCAPIHANDLER_H
 
-#include <QRegularExpression>
-#include "qgis_server.h"
-#include "qgsserverquerystringparameter.h"
-#include "qgsserverogcapi.h"
 #include <nlohmann/json_fwd.hpp>
+
+#include "qgis_server.h"
+#include "qgsserverogcapi.h"
+#include "qgsserverquerystringparameter.h"
+
+#include <QRegularExpression>
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -376,6 +378,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     json jsonTags() const SIP_SKIP;
 
   protected:
+
     /**
      * Set the content types to \a contentTypes
      */

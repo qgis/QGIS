@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsscreenhelper.h"
-#include "moc_qgsscreenhelper.cpp"
-#include "qgis.h"
-#include <QWidget>
-#include <QEvent>
-#include <QWindow>
-#include <QScreen>
 
+#include "qgis.h"
+
+#include <QEvent>
+#include <QScreen>
+#include <QWidget>
+#include <QWindow>
+
+#include "moc_qgsscreenhelper.cpp"
 
 QgsScreenHelper::QgsScreenHelper( QWidget *parent )
   : QObject( parent )

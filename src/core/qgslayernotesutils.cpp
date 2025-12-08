@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayernotesutils.h"
+
 #include "qgsmaplayer.h"
 
 QString QgsLayerNotesUtils::layerNotes( const QgsMapLayer *layer )

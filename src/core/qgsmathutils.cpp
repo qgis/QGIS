@@ -15,7 +15,9 @@
 
 
 #include "qgsmathutils.h"
+
 #include "qgis.h"
+
 #include "moc_qgsmathutils.cpp"
 
 void QgsMathUtils::doubleToRational( double value, qlonglong &numerator, qlonglong &denominator, double tolerance, int maxIterations )

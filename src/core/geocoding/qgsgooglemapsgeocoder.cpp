@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsgooglemapsgeocoder.h"
+
+#include "qgsblockingnetworkrequest.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgeocodercontext.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsblockingnetworkrequest.h"
 #include "qgsreadwritelocker.h"
-#include "qgscoordinatetransform.h"
-#include <QUrl>
-#include <QUrlQuery>
-#include <QNetworkRequest>
+#include "qgssetrequestinitiator_p.h"
+
+#include <QCryptographicHash>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QUrlQuery>
 
 QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
 

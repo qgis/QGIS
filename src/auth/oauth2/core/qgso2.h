@@ -30,6 +30,7 @@ class QgsO2 : public O2
     Q_OBJECT
 
   public:
+
     /**
      * Construct QgsO2
      * \param authcfg authentication configuration id
@@ -78,6 +79,9 @@ class QgsO2 : public O2
     //! Triggered when auth code was set
     void onSetAuthCode( const QString &code );
 
+    //! Stop the refresh timer (it is safe to call even if the timer is not active)
+    void stopRefreshTimer();
+
   protected slots:
 
     //! Handle verification response.
@@ -108,6 +112,9 @@ class QgsO2 : public O2
 
     bool isLocalHost( const QUrl redirectUrl ) const;
 
+    // Activate a timer to automatically refresh the token
+    void startRefreshTimer();
+
     QString mTokenCacheFile;
     QString mAuthcfg;
     // Follow O2 style for this variable only:
@@ -115,6 +122,7 @@ class QgsO2 : public O2
     QgsAuthOAuth2Config *mOAuth2Config;
     bool mIsLocalHost = false;
     int mExpirationDelay = 0;
+    std::unique_ptr<QTimer> mRefreshTimer;
 
     static QString O2_OAUTH2_STATE;
     friend class QgsOAuth2Factory;

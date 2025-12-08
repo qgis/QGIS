@@ -15,11 +15,11 @@
 
 #include "qgslabelingenginesettings.h"
 
-#include "qgsproject.h"
+#include "qgsapplication.h"
 #include "qgscolorutils.h"
 #include "qgslabelingenginerule.h"
-#include "qgsapplication.h"
 #include "qgslabelingengineruleregistry.h"
+#include "qgsproject.h"
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
 {

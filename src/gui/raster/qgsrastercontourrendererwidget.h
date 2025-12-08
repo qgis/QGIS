@@ -16,10 +16,11 @@
 #ifndef QGSRASTERCONTOURRENDERERWIDGET_H
 #define QGSRASTERCONTOURRENDERERWIDGET_H
 
-#include "qgsrasterrendererwidget.h"
-#include "qgis_sip.h"
 #include "ui_qgsrastercontourrendererwidget.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsrasterrendererwidget.h"
 
 /**
  * \ingroup gui
@@ -30,6 +31,7 @@ class GUI_EXPORT QgsRasterContourRendererWidget : public QgsRasterRendererWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsRasterContourRendererWidget.
      * \param layer associated raster layer

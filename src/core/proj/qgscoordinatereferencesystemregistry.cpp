@@ -16,24 +16,27 @@
  ***************************************************************************/
 
 #include "qgscoordinatereferencesystemregistry.h"
-#include "moc_qgscoordinatereferencesystemregistry.cpp"
-#include "qgscoordinatereferencesystem_p.h"
-#include "qgscoordinatetransform.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgssqliteutils.h"
-#include "qgscelestialbody.h"
-#include "qgsprojutils.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsexception.h"
-#include "qgsprojoperation.h"
-#include "qgssettings.h"
 
-#include <QFileInfo>
-#include <sqlite3.h>
 #include <mutex>
 #include <proj.h>
+#include <sqlite3.h>
+
+#include "qgsapplication.h"
+#include "qgscelestialbody.h"
+#include "qgscoordinatereferencesystem_p.h"
+#include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsprojoperation.h"
+#include "qgsprojutils.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettings.h"
+#include "qgssqliteutils.h"
+
+#include <QFileInfo>
+
+#include "moc_qgscoordinatereferencesystemregistry.cpp"
 
 QgsCoordinateReferenceSystemRegistry::QgsCoordinateReferenceSystemRegistry( QObject *parent )
   : QObject( parent )

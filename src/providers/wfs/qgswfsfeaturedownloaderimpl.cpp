@@ -15,74 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmessagelog.h"
-#include "qgsgeometry.h"
-#include "qgsgml.h"
-#include "qgsgeometrycollection.h"
-#include "qgsmultipoint.h"
-#include "qgsmultilinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgsogcutils.h"
-#include "qgswfsfeatureiterator.h"
-#include "moc_qgswfsfeatureiterator.cpp"
-#include "qgswfsshareddata.h"
-#include "qgswfsutils.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgswfsfeaturedownloaderimpl.h"
 
 #include <algorithm>
+
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgml.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsogcutils.h"
+#include "qgssettings.h"
+#include "qgswfsshareddata.h"
+#include "qgswfsutils.h"
+
 #include <QDir>
 #include <QTimer>
-#include <QUrlQuery>
 #include <QTransform>
+#include <QUrlQuery>
 
-QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
-  : QgsWfsRequest( uri )
-  , mNumberMatched( -1 )
-{
-  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
-}
-
-void QgsWFSFeatureHitsAsyncRequest::launchGet( const QUrl &url )
-{
-  sendGET( url,
-           QString(), // content-type
-           false,     /* synchronous */
-           true,      /* forceRefresh */
-           false /* cache */ );
-}
-
-void QgsWFSFeatureHitsAsyncRequest::launchPost( const QUrl &url, const QByteArray &data )
-{
-  sendPOST( url, QStringLiteral( "application/xml; charset=utf-8" ), data, false, /* synchronous */
-            { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
-}
-
-void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()
-{
-  if ( mErrorCode == NoError )
-  {
-    QByteArray data = response();
-    QgsGmlStreamingParser gmlParser( ( QString() ), ( QString() ), QgsFields() );
-    QString errorMsg;
-    if ( gmlParser.processData( data, true, errorMsg ) )
-    {
-      mNumberMatched = ( gmlParser.numberMatched() >= 0 ) ? gmlParser.numberMatched() : gmlParser.numberReturned();
-    }
-    else
-    {
-      QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
-    }
-  }
-  emit gotHitsResponse();
-}
-
-QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &reason )
-{
-  return tr( "Download of feature count failed: %1" ).arg( reason );
-}
-
-// -------------------------
+#include "moc_qgswfsfeaturedownloaderimpl.cpp"
 
 QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
   : QgsWfsRequest( shared->mURI )

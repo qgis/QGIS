@@ -14,22 +14,21 @@
  ***************************************************************************/
 
 #include "qgsterraintexturegenerator_p.h"
-#include "moc_qgsterraintexturegenerator_p.cpp"
 
+#include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgseventtracing.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettings.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgs3dmapsettings.h"
 
-#include "qgseventtracing.h"
+#include "moc_qgsterraintexturegenerator_p.cpp"
 
 ///@cond PRIVATE
 
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : mMap( map )
-  , mLastJobId( 0 )
   , mTextureSize( QSize( mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->mapTileResolution() ) )
 {
 }

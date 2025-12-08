@@ -18,11 +18,12 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include <QTreeView>
 #include "qgsfeatureid.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessinggui.h"
+
+#include <QTreeView>
 
 class QgsMapLayerComboBox;
 class QToolButton;
@@ -44,6 +45,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */

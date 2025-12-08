@@ -19,7 +19,7 @@ jobs:
       issues: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 200
 
@@ -30,6 +30,9 @@ jobs:
 
       - name: Install pre-commit
         run: pip install pre-commit
+
+      - name: Install deps
+        run: sudo apt-get install -y silversearcher-ag astyle
 
       - name: Run pre-commit
         run: |

@@ -15,10 +15,11 @@
 #ifndef QGSLABELINGENGINERULESWIDGET_H
 #define QGSLABELINGENGINERULESWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgsguiutils.h"
 #include "ui_qgslabelingengineruleswidgetbase.h"
+
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgspanelwidget.h"
 
 #include <QAbstractItemModel>
 #include <QDialog>
@@ -41,6 +42,7 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRulesModel.
      */
@@ -110,6 +112,7 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRulesWidget.
      */
@@ -166,6 +169,7 @@ class GUI_EXPORT QgsLabelingEngineRulesDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRulesDialog.
      * \param parent parent widget

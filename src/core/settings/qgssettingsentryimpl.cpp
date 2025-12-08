@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssettingsentryimpl.h"
+
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgssettingsproxy.h"

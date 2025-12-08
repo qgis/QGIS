@@ -18,8 +18,8 @@
 #ifndef QGSSVGCACHE_H
 #define QGSSVGCACHE_H
 
-#include "qgsabstractcontentcache.h"
 #include "qgis.h"
+#include "qgsabstractcontentcache.h"
 
 #include <QPicture>
 

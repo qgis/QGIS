@@ -12,17 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
-
+#include "qgstest.h"
 #include "testgeometryutils.h"
+
+#include <QObject>
+#include <QString>
 
 class TestQgsMultiPolygon : public QObject
 {

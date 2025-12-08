@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgssettingslocatorfilter.h"
-#include "moc_qgssettingslocatorfilter.cpp"
+
 #include "qgisapp.h"
 
+#include "moc_qgssettingslocatorfilter.cpp"
 
 QgsSettingsLocatorFilter::QgsSettingsLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

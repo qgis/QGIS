@@ -13,15 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdevtoolspanelwidget.h"
-#include "moc_qgsdevtoolspanelwidget.cpp"
+
+#include "devtools/documentation/qgsdocumentationpanelwidget.h"
 #include "qgisapp.h"
-#include "qgsdevtoolwidgetfactory.h"
+#include "qgsapplication.h"
 #include "qgsdevtoolwidget.h"
+#include "qgsdevtoolwidgetfactory.h"
+#include "qgsdockwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgssettingsentryimpl.h"
-#include "qgsapplication.h"
-#include "qgsdockwidget.h"
-#include "devtools/documentation/qgsdocumentationpanelwidget.h"
+
+#include "moc_qgsdevtoolspanelwidget.cpp"
 
 const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab = new QgsSettingsEntryString( QStringLiteral( "last-active-tab" ), QgsDevToolsPanelWidget::sTreeDevTools, QString(), QStringLiteral( "Last visible tab in developer tools panel" ) );
 

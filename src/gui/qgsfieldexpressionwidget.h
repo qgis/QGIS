@@ -16,10 +16,6 @@
 #ifndef QGSFIELDEXPRESSIONWIDGET_H
 #define QGSFIELDEXPRESSIONWIDGET_H
 
-#include <QColor>
-#include <QComboBox>
-#include <QToolButton>
-#include <QWidget>
 #include <memory>
 
 #include "qgis_gui.h"
@@ -28,6 +24,10 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfieldproxymodel.h"
 
+#include <QColor>
+#include <QComboBox>
+#include <QToolButton>
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -55,6 +55,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_PROPERTY( bool buttonVisible READ buttonVisible WRITE setButtonVisible NOTIFY buttonVisibleChanged )
 
   public:
+
     /**
      * \brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */

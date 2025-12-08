@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfillsinkswangliu.h"
+
 #include "qgsrasterfilewriter.h"
+
 #include <queue>
 
 ///@cond PRIVATE

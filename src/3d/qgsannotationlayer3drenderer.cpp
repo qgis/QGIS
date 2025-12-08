@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsannotationlayer3drenderer.h"
+
+#include "qgis.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationlayerchunkloader_p.h"
-#include "qgis.h"
 #include "qgsstyle.h"
 
 //

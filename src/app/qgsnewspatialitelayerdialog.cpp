@@ -19,31 +19,32 @@
 
 
 #include "qgsnewspatialitelayerdialog.h"
-#include "moc_qgsnewspatialitelayerdialog.cpp"
+
+#include <spatialite.h>
 
 #include "qgis.h"
-#include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgisapp.h" // <- for theme icons
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
+#include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
-#include "qgslogger.h"
-#include "qgsgui.h"
-#include "qgsiconutils.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
 
-#include <QPushButton>
+#include <QFileDialog>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QFileDialog>
+#include <QPushButton>
 
-#include <spatialite.h>
+#include "moc_qgsnewspatialitelayerdialog.cpp"
 
 QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::WindowFlags fl, const QgsCoordinateReferenceSystem &defaultCrs )
   : QDialog( parent, fl )

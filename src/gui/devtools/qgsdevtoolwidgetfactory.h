@@ -18,8 +18,9 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QString>
+
 #include <QIcon>
+#include <QString>
 
 class QgsDevToolWidget;
 class QWidget;
@@ -33,6 +34,7 @@ class QWidget;
 class GUI_EXPORT QgsDevToolWidgetFactory
 {
   public:
+
     /**
      * Constructor for a QgsDevToolWidgetFactory with the specified \a title and \a icon.
      */

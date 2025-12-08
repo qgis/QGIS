@@ -18,8 +18,8 @@
 #ifndef QGSFEATUREFILTERPROVIDERGROUP_H
 #define QGSFEATUREFILTERPROVIDERGROUP_H
 
-#include "qgsfeaturefilterprovider.h"
 #include "qgis_server.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QList>
 
@@ -27,7 +27,7 @@
  * \ingroup server
  * \class QgsFeatureFilterProviderGroup
  * \brief A filter filter provider grouping several filter providers.
- * \deprecated QGIS 3.4. Use QgsGroupedFeatureFilterProvider
+ * \deprecated QGIS 3.4. Use QgsGroupedFeatureFilterProvider.
  */
 class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvider
 {

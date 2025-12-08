@@ -18,16 +18,19 @@
 #ifndef QGSPROCESSINGPARAMETERS_H
 #define QGSPROCESSINGPARAMETERS_H
 
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgsprocessing.h"
-#include "qgsproperty.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsprocessingutils.h"
-#include "qgsfilefiltergenerator.h"
-#include "qgsremappingproxyfeaturesink.h"
-#include <QMap>
 #include <limits>
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfilefiltergenerator.h"
+#include "qgsprocessing.h"
+#include "qgsprocessingutils.h"
+#include "qgsproperty.h"
+#include "qgsremappingproxyfeaturesink.h"
+
+#include <QColor>
+#include <QMap>
 
 class QgsProcessingContext;
 class QgsProcessingAlgorithm;
@@ -553,6 +556,23 @@ class CORE_EXPORT QgsProcessingParameterDefinition
                                       bool optional = false, const QString &help = QString() );
 
     virtual ~QgsProcessingParameterDefinition() = default;
+
+    /**
+     * Returns the color to use for the parameter in model designer windows.
+     *
+     * The default implementation retrieves the color from the parameter type, see QgsProcessingParameterType::modelColor().
+     *
+     * \since QGIS 4.0
+     */
+    virtual QColor modelColor() const;
+
+    /**
+     * Returns a user-friendly string representation of the provided parameter \a value.
+     *
+     * The returned string is to be used for display purposes only, and should be translated as required.
+     * \since QGIS 4.0
+     */
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
     /**
      * Creates a clone of the parameter definition.
@@ -1906,6 +1926,8 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     QgsProcessingParameterCrs( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                bool optional = false );
 
+    QString userFriendlyString( const QVariant &value ) const override;
+
     /**
      * Returns the type name for the parameter class.
      */
@@ -2054,7 +2076,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
      */
     void setAllowMultipart( bool allowMultipart ) { mAllowMultipart = allowMultipart; }
 
-
+    QString userFriendlyString( const QVariant &value ) const override;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -2185,6 +2207,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "matrix" ); }
+
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
@@ -2356,6 +2379,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "number" ); }
+
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
@@ -2453,6 +2477,8 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "distance" ); } // cppcheck-suppress duplInheritedMember
+
+    QString userFriendlyString( const QVariant &value ) const override;
 
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
@@ -2573,6 +2599,7 @@ class CORE_EXPORT QgsProcessingParameterArea : public QgsProcessingParameterNumb
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
   private:
 
@@ -2656,6 +2683,7 @@ class CORE_EXPORT QgsProcessingParameterVolume : public QgsProcessingParameterNu
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
   private:
 
@@ -2712,6 +2740,7 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
   private:
 
@@ -2778,6 +2807,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "range" ); }
+
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
@@ -2888,6 +2918,8 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
                                 const QVariant &defaultValue = QVariant(),
                                 bool optional = false,
                                 bool usesStaticStrings = false );
+
+    QString userFriendlyString( const QVariant &value ) const override;
 
     /**
      * Returns the type name for the parameter class.
@@ -4090,6 +4122,7 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "color" ); }
+
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -4373,6 +4406,7 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
     /**
      * Creates a new parameter using the definition from a script code.

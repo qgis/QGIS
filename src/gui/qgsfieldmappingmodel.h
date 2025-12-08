@@ -16,16 +16,15 @@
 #ifndef QGSFIELDMAPPINGMODEL_H
 #define QGSFIELDMAPPINGMODEL_H
 
-#include <QAbstractTableModel>
-#include <QStyledItemDelegate>
-
-#include "qgsfields.h"
+#include "qgis_gui.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsfieldconstraints.h"
+#include "qgsfields.h"
 #include "qgsproperty.h"
 #include "qgsvectordataprovider.h"
-#include "qgis_gui.h"
 
+#include <QAbstractTableModel>
+#include <QStyledItemDelegate>
 
 /**
  * \ingroup gui
@@ -44,6 +43,7 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */

@@ -14,24 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckfixdialog.h"
+
+#include "qgisinterface.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheckerresulttab.h"
+#include "qgsgeometrycheckerror.h"
+#include "qgsmapcanvas.h"
+#include "qgssettings.h"
+
 #include <QButtonGroup>
 #include <QDialogButtonBox>
+#include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QGridLayout>
 
-#include "qgsgeometrycheckfixdialog.h"
 #include "moc_qgsgeometrycheckfixdialog.cpp"
-#include "qgsgeometrycheckerresulttab.h"
-#include "qgisinterface.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsgeometrycheckerror.h"
-#include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
 
 QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker, const QList<QgsGeometryCheckError *> &errors, QWidget *parent )
   : QDialog( parent )

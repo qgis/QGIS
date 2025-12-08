@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmultibandcolorrendererwidget.h"
-#include "moc_qgsmultibandcolorrendererwidget.cpp"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterminmaxwidget.h"
+
 #include "qgsdoublevalidator.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterminmaxwidget.h"
+
+#include "moc_qgsmultibandcolorrendererwidget.cpp"
 
 QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
   connect( mRedMinLineEdit, &QLineEdit::textChanged, this, &QgsMultiBandColorRendererWidget::mRedMinLineEdit_textChanged );

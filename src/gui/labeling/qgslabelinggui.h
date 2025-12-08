@@ -18,10 +18,10 @@
 #ifndef QGSLABELINGGUI_H
 #define QGSLABELINGGUI_H
 
-#include "qgspallabeling.h"
-#include "qgstextformatwidget.h"
-#include "qgspropertyoverridebutton.h"
 #include "qgis_gui.h"
+#include "qgspallabeling.h"
+#include "qgspropertyoverridebutton.h"
+#include "qgstextformatwidget.h"
 
 class QDialogButtonBox;
 
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingGui, for configuring a vector \a layer labeling.
      */
@@ -83,6 +84,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void saveFormat() override;
 
   protected:
+
     /**
      * Constructor for QgsLabelingGui, for subclasses.
      *

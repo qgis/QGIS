@@ -13,22 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmodelgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
-#include "moc_qgsmodelgraphicsscene.cpp"
-#include "qgsprocessingmodelchildparametersource.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsmodelcomponentgraphicitem.h"
-#include "qgsmodelarrowitem.h"
-#include "qgsprocessingmodelgroupbox.h"
+
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include "qgsmessageviewer.h"
 #include "qgsmessagelog.h"
+#include "qgsmessageviewer.h"
+#include "qgsmodelarrowitem.h"
+#include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicitem.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgsvectorlayer.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsTextItem>
 #include <QPushButton>
+
+#include "moc_qgsmodelgraphicsscene.cpp"
 
 ///@cond NOT_STABLE
 

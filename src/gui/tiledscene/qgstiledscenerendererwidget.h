@@ -15,12 +15,13 @@
 #ifndef QGSTILEDSCENERENDERERWIDGET_H
 #define QGSTILEDSCENERENDERERWIDGET_H
 
-#include <QWidget>
-#include <QMenu>
-#include <QStackedWidget>
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
+
+#include <QMenu>
+#include <QStackedWidget>
+#include <QWidget>
 
 class QgsTiledSceneLayer;
 class QgsStyle;
@@ -37,6 +38,7 @@ class GUI_EXPORT QgsTiledSceneRendererWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsTiledSceneRendererWidget, associated with the
      * specified \a layer and \a style database.

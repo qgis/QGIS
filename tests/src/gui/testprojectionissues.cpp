@@ -17,12 +17,13 @@
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include <QObject>
 #include "qgstest.h"
+
+#include <QObject>
 
 class TestProjectionIssues : public QObject
 {

@@ -15,8 +15,8 @@
 #ifndef QGSGPSTOOLSINTERFACE_H
 #define QGSGPSTOOLSINTERFACE_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsGpsConnection;
 class QgsLineSymbol;

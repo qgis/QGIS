@@ -15,10 +15,13 @@
 
 
 #include "qgsmodelviewrubberband.h"
-#include "moc_qgsmodelviewrubberband.cpp"
-#include "qgsmodelgraphicsview.h"
+
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+
 #include <QGraphicsRectItem>
+
+#include "moc_qgsmodelviewrubberband.cpp"
 
 QgsModelViewRubberBand::QgsModelViewRubberBand( QgsModelGraphicsView *view )
   : mView( view )

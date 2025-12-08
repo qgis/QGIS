@@ -17,30 +17,31 @@
  ***************************************************************************/
 
 #include "qgsmssqlsourceselect.h"
-#include "moc_qgsmssqlsourceselect.cpp"
 
-#include "qgslogger.h"
-#include "qgsmssqlgeomcolumntypethread.h"
-#include "qgsmssqlnewconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsquerybuilder.h"
-#include "qgsvectorlayer.h"
-#include "qgssettings.h"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlgeomcolumntypethread.h"
+#include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
+#include "qgsproject.h"
+#include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTextStream>
-#include <QHeaderView>
-#include <QStringList>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QStringList>
+#include <QTextStream>
+
+#include "moc_qgsmssqlsourceselect.cpp"
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const

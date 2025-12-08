@@ -19,8 +19,8 @@
 #ifndef QGSTILEDSCENEINDEX_H
 #define QGSTILEDSCENEINDEX_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 #include <QCache>
 #include <QMutex>

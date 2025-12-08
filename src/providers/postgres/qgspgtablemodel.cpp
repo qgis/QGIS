@@ -16,14 +16,18 @@
  ***************************************************************************/
 
 #include "qgspgtablemodel.h"
-#include "moc_qgspgtablemodel.cpp"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsiconutils.h"
-#include <QRegularExpression>
+
 #include <climits>
+
+#include "qgsapplication.h"
+#include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
+#include <QRegularExpression>
+
+#include "moc_qgspgtablemodel.cpp"
 
 QgsPgTableModel::QgsPgTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

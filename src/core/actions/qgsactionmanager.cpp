@@ -23,24 +23,26 @@
  ***************************************************************************/
 
 #include "qgsactionmanager.h"
-#include "moc_qgsactionmanager.cpp"
+
+#include "qgsaction.h"
+#include "qgsdataprovider.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgslogger.h"
-#include "qgsexpression.h"
-#include "qgsdataprovider.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsaction.h"
 
-#include <QList>
-#include <QStringList>
-#include <QDomElement>
-#include <QSettings>
 #include <QDesktopServices>
-#include <QUrl>
+#include <QDomElement>
 #include <QFileInfo>
+#include <QList>
 #include <QRegularExpression>
+#include <QSettings>
+#include <QStringList>
+#include <QUrl>
+
+#include "moc_qgsactionmanager.cpp"
 
 QgsActionManager::QgsActionManager( QgsVectorLayer *layer )
   : mLayer( layer )

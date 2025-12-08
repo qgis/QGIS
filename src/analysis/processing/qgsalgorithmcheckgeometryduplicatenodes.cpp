@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcheckgeometryduplicatenodes.h"
+
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsgeometryduplicatenodescheck.h"
 #include "qgspoint.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

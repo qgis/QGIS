@@ -17,10 +17,10 @@
 #ifndef QGSAUTHMETHODEDIT_H
 #define QGSAUTHMETHODEDIT_H
 
-#include <QWidget>
-
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -56,6 +56,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
     virtual void clearConfig() = 0;
 
   protected:
+
     /**
      * Construct widget to edit an authentication method configuration
      * \note Non-public since this is an abstract base class

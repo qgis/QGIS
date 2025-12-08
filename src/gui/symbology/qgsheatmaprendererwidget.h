@@ -16,9 +16,10 @@
 #define QGSHEATMAPRENDERERWIDGET_H
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QMenu;
 class QgsHeatmapRenderer;
@@ -33,6 +34,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     Q_OBJECT
 
   public:
+
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied

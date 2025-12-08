@@ -13,31 +13,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QGraphicsProxyWidget>
-#include <QGridLayout>
-#include <QLabel>
-#include <QDateTime>
+#include "qgsmaptoolchamferfillet.h"
 
+#include "qgisapp.h"
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsdoublespinbox.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmaptoolchamferfillet.h"
-#include "moc_qgsmaptoolchamferfillet.cpp"
+#include "qgsgeometryutils.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
-#include "qgssnappingutils.h"
-#include "qgsvectorlayer.h"
-#include "qgssnapindicator.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
-#include "qgslogger.h"
-#include "qgsgeometryutils.h"
-#include "qgsvector.h"
-
-#include "qgssettingstree.h"
-#include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgssnapindicator.h"
+#include "qgssnappingutils.h"
+#include "qgsvector.h"
+#include "qgsvectorlayer.h"
+
+#include <QDateTime>
+#include <QGraphicsProxyWidget>
+#include <QGridLayout>
+#include <QLabel>
+
+#include "moc_qgsmaptoolchamferfillet.cpp"
 
 const QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType> *QgsMapToolChamferFillet::settingsOperation = new QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType>( QStringLiteral( "chamferfillet-operation" ), QgsSettingsTree::sTreeDigitizing, QgsGeometry::ChamferFilletOperationType::Chamfer );
 const QgsSettingsEntryInteger *QgsMapToolChamferFillet::settingsFilletSegment = new QgsSettingsEntryInteger( QStringLiteral( "chamferfillet-fillet-segment" ), QgsSettingsTree::sTreeDigitizing, 8, QStringLiteral( "For fillet operation, number of segment used to create the arc." ), Qgis::SettingsOption(), 1, 64 );

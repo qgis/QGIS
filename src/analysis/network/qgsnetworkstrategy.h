@@ -16,10 +16,10 @@
 #ifndef QGSNETWORKSTRATERGY_H
 #define QGSNETWORKSTRATERGY_H
 
-#include <QVariant>
-
-#include "qgsfeature.h"
 #include "qgis_analysis.h"
+#include "qgsfeature.h"
+
+#include <QVariant>
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode

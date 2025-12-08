@@ -16,14 +16,15 @@
 #ifndef QGSAUTHCONFIGURATIONSTORAGEREGISTRY_H
 #define QGSAUTHCONFIGURATIONSTORAGEREGISTRY_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-#include <QObject>
 #include <QMap>
 #include <QMutex>
-#include <memory>
+#include <QObject>
 
 class QgsAuthConfigurationStorage;
 
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
      */
     QgsAuthConfigurationStorageRegistry();
 
-    virtual ~QgsAuthConfigurationStorageRegistry();
+    ~QgsAuthConfigurationStorageRegistry() override;
 
     /**
      * Add an authentication configuration storage to the registry.

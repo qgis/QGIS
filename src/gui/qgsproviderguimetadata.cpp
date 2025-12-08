@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsproviderguimetadata.h"
+
 #include "qgsdataitemguiprovider.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgssourceselectprovider.h"

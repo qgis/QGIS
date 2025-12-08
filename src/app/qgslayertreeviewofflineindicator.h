@@ -16,10 +16,11 @@
 #ifndef QGSLAYERTREEVIEWOFFLINEINDICATOR_H
 #define QGSLAYERTREEVIEWOFFLINEINDICATOR_H
 
+#include <memory>
+
 #include "qgslayertreeviewindicatorprovider.h"
 
 #include <QSet>
-#include <memory>
 
 class QgsLayerTreeNode;
 class QgsLayerTreeView;

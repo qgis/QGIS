@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include "qgspluginsortfilterproxymodel.h"
-#include "moc_qgspluginsortfilterproxymodel.cpp"
 
+#include "moc_qgspluginsortfilterproxymodel.cpp"
 
 QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

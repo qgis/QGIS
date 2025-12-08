@@ -18,10 +18,10 @@
 #ifndef QGSPROCESSINGMODELPARAMETER_H
 #define QGSPROCESSINGMODELPARAMETER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessingmodelcomponent.h"
+#include "qgis_core.h"
 #include "qgsprocessingmodelcomment.h"
+#include "qgsprocessingmodelcomponent.h"
 
 ///@cond NOT_STABLE
 

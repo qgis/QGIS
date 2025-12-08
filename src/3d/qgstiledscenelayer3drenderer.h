@@ -18,7 +18,6 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsmaplayerref.h"
@@ -103,12 +102,12 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setShowBoundingBoxes( bool showBoundingBoxes );
 
-    virtual QString type() const override { return "tiledscene"; }
-    virtual QgsAbstract3DRenderer *clone() const override SIP_FACTORY;
-    virtual Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
-    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
-    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-    virtual void resolveReferences( const QgsProject &project ) override;
+    QString type() const override { return "tiledscene"; }
+    QgsAbstract3DRenderer *clone() const override SIP_FACTORY;
+    Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    void resolveReferences( const QgsProject &project ) override;
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from

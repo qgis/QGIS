@@ -16,14 +16,14 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
-#include <QRect>
-#include <QPoint>
-#include <QList>
-#include <QFutureWatcher>
-
-#include "qgsvectorlayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
+
+#include <QFutureWatcher>
+#include <QList>
+#include <QPoint>
+#include <QRect>
 
 class QMouseEvent;
 class QgsMapCanvas;
@@ -121,6 +121,7 @@ namespace QgsMapToolSelectUtils
   {
       Q_OBJECT
     public:
+
       /**
       * Constructor
       * \param canvas The map canvas where where are the selected features
@@ -131,7 +132,7 @@ namespace QgsMapToolSelectUtils
       */
       QgsMapToolSelectMenuActions( QgsMapCanvas *canvas, QgsVectorLayer *vectorLayer, Qgis::SelectBehavior behavior, const QgsGeometry &selectionGeometry, QObject *parent = nullptr );
 
-      ~QgsMapToolSelectMenuActions();
+      ~QgsMapToolSelectMenuActions() override;
 
       /**
       * Populates the \a menu with "All Feature" action and a empty menu that could contain later the "One Feature" actions

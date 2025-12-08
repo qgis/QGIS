@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsvectorlayertemporalpropertieswidget.h"
-#include "moc_qgsvectorlayertemporalpropertieswidget.cpp"
+
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgsstringutils.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
-#include "qgsstringutils.h"
-#include "qgsexpressioncontextutils.h"
+
+#include "moc_qgsvectorlayertemporalpropertieswidget.cpp"
 
 QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )

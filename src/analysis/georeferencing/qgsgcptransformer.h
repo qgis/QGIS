@@ -16,11 +16,13 @@
 #ifndef QGSGCPTRANSFORMER_H
 #define QGSGCPTRANSFORMER_H
 
-#include <QObject>
 #include <gdal_alg.h>
+
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgspointxy.h"
+
+#include <QObject>
 
 /**
  * \ingroup analysis
@@ -36,6 +38,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
     Q_GADGET
 
   public:
+
     /**
      * Available transformation methods.
      */

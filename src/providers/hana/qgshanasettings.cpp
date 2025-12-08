@@ -14,8 +14,9 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
-#include "qgis.h"
 #include "qgshanasettings.h"
+
+#include "qgis.h"
 #include "qgssettings.h"
 
 bool QgsHanaIdentifierType::isValid( uint i ) noexcept

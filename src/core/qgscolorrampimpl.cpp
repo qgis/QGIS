@@ -14,18 +14,18 @@
 ***************************************************************************/
 
 #include "qgscolorrampimpl.h"
-#include "qgscolorbrewerpalette.h"
-#include "qgscptcityarchive.h"
-
-#include "qgscolorutils.h"
-#include "qgslogger.h"
 
 #include <algorithm>
 #include <random>
 
-#include <QTime>
+#include "qgscolorbrewerpalette.h"
+#include "qgscolorutils.h"
+#include "qgscptcityarchive.h"
+#include "qgslogger.h"
+
 #include <QDir>
 #include <QFileInfo>
+#include <QTime>
 
 //////////////
 

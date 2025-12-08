@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgsrasterpyramidsoptionswidget.h"
-#include "moc_qgsrasterpyramidsoptionswidget.cpp"
-#include "qgsrasterdataprovider.h"
+
 #include "qgslogger.h"
+#include "qgsrasterdataprovider.h"
 #include "qgssettings.h"
 
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QTextEdit>
-#include <QMouseEvent>
-#include <QMenu>
 #include <QCheckBox>
-#include <QRegularExpressionValidator>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
 #include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QTextEdit>
+
+#include "moc_qgsrasterpyramidsoptionswidget.cpp"
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent, const QString &provider )
   : QWidget( parent )

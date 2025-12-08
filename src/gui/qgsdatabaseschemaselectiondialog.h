@@ -16,11 +16,11 @@
 #ifndef QGSDATABASESCHEMASELECTIONDIALOG_H
 #define QGSDATABASESCHEMASELECTIONDIALOG_H
 
-#include <QDialog>
-#include <QDialogButtonBox>
-
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdatabaseschemacombobox.h"
+
+#include <QDialog>
+#include <QDialogButtonBox>
 
 /**
  * \ingroup gui
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsDatabaseSchemaSelectionDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDatabaseSchemaSelectionDialog, for the specified \a connection.
      *

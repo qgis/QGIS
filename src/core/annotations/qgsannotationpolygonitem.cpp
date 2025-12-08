@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsannotationpolygonitem.h"
+
+#include "qgsannotationitemeditoperation.h"
+#include "qgsannotationitemnode.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsfillsymbol.h"
+#include "qgspolygon.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgscurvepolygon.h"
-#include "qgscurve.h"
-#include "qgspolygon.h"
-#include "qgsfillsymbol.h"
-#include "qgsannotationitemnode.h"
-#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()

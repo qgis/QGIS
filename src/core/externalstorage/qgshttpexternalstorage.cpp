@@ -13,19 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshttpexternalstorage_p.h"
-
-#include "qgsnetworkcontentfetcherregistry.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
 #include "qgsapplication.h"
+#include "qgsblockingnetworkrequest.h"
 #include "qgsfeedback.h"
+#include "qgshttpexternalstorage_p.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetcherregistry.h"
+#include "qgssetrequestinitiator_p.h"
 
-#include <QFile>
-#include <QPointer>
-#include <QFileInfo>
 #include <QCryptographicHash>
+#include <QFile>
+#include <QFileInfo>
+#include <QPointer>
 
 ///@cond PRIVATE
 

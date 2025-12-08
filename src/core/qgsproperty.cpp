@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgsproperty.h"
-#include "qgsproperty_p.h"
 
 #include "qgsexpression.h"
 #include "qgsfeature.h"
+#include "qgsproperty_p.h"
 #include "qgssymbollayerutils.h"
 
 #include <QRegularExpression>

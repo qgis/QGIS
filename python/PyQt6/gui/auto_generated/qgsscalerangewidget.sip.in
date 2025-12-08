@@ -9,6 +9,7 @@
 
 
 
+
 class QgsScaleRangeWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -20,6 +21,7 @@ maximum scale.
 #include "qgsscalerangewidget.h"
 %End
   public:
+
     explicit QgsScaleRangeWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScaleRangeWidget.

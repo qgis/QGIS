@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QList>
 #include <QMap>
 
@@ -55,6 +56,7 @@ class GUI_EXPORT QgsNumericFormatConfigurationWidgetFactory
 class GUI_EXPORT QgsNumericFormatGuiRegistry
 {
   public:
+
     /**
      * Constructor. Should never be called manually, is already
      * created by QgsGui.

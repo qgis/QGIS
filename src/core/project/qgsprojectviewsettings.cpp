@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsprojectviewsettings.h"
-#include "moc_qgsprojectviewsettings.cpp"
-#include "qgis.h"
-#include "qgsproject.h"
-#include "qgsmaplayerutils.h"
-#include "qgscoordinatetransform.h"
-#include <QDomElement>
-#include "qgsmessagelog.h"
 
+#include "qgis.h"
+#include "qgscoordinatetransform.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+
+#include <QDomElement>
+
+#include "moc_qgsprojectviewsettings.cpp"
 
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
-  , mRestoreProjectExtentOnProjectLoad( false )
 {
 
 }

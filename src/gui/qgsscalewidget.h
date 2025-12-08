@@ -16,13 +16,12 @@
 #ifndef QGSSCALEWIDGET_H
 #define QGSSCALEWIDGET_H
 
-#include <QWidget>
-#include <QToolButton>
-
-
-#include "qgsscalecombobox.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsscalecombobox.h"
+
+#include <QToolButton>
+#include <QWidget>
 
 class QgsMapCanvas;
 
@@ -39,6 +38,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     Q_PROPERTY( bool minScale READ minScale WRITE setMinScale )
 
   public:
+
     /**
      * \brief QgsScaleWidget creates a combobox which lets the user select map scale from predefined list
      * and highlights nearest to current scale value

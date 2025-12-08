@@ -18,8 +18,8 @@
 
 #include "qgis_app.h"
 #include "qgscamerapose.h"
-#include "qobjectuniqueptr.h"
 #include "qgsrectangle.h"
+#include "qobjectuniqueptr.h"
 
 #include <QComboBox>
 #include <QMenu>

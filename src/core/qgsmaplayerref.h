@@ -18,13 +18,14 @@
 
 #define SIP_NO_FILE
 
-#include <QPointer>
-#include <QDomElement>
-
-#include "qgsmaplayer.h"
-#include "qgsdataprovider.h"
-#include "qgsproject.h"
 #include <utility>
+
+#include "qgsdataprovider.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+
+#include <QDomElement>
+#include <QPointer>
 
 /**
  * Internal structure to keep weak pointer to QgsMapLayer or layerId

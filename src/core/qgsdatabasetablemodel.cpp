@@ -13,12 +13,15 @@
 *                                                                         *
 ***************************************************************************/
 #include "qgsdatabasetablemodel.h"
-#include "moc_qgsdatabasetablemodel.cpp"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsiconutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 #include <QIcon>
+
+#include "moc_qgsdatabasetablemodel.cpp"
 
 QgsDatabaseTableModel::QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema, QObject *parent )
   : QAbstractItemModel( parent )

@@ -15,13 +15,13 @@
 #ifndef QGSATTRIBUTEFORMWIDGET_H
 #define QGSATTRIBUTEFORMWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"
 
-#include <QWidget>
 #include <QVariant>
+#include <QWidget>
 
 class QgsAttributeForm;
 class QStackedWidget;
@@ -146,6 +146,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
     void setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible );
 
   protected:
+
     /**
      * Returns a pointer to the EDIT page widget.
      * \note this method is in place for unit testing only, and is not considered

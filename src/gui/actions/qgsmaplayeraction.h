@@ -16,15 +16,15 @@
 #ifndef QGSMAPLAYERACTION_H
 #define QGSMAPLAYERACTION_H
 
-#include <QObject>
-#include "qgis_sip.h"
-#include <QList>
-#include <QMap>
-#include <QAction>
-#include <QPointer>
-
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QAction>
+#include <QList>
+#include <QMap>
+#include <QObject>
+#include <QPointer>
 
 class QgsFeature;
 class QgsMapLayer;
@@ -45,6 +45,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     Q_OBJECT
 
   public:
+
     /**
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.

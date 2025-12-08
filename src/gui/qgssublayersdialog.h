@@ -16,12 +16,14 @@
 #ifndef QGSSUBLAYERSDIALOG_H
 #define QGSSUBLAYERSDIALOG_H
 
-#include <QDialog>
-#include <QCheckBox>
 #include "ui_qgssublayersdialogbase.h"
-#include "qgis_sip.h"
-#include "qgis_gui.h"
+
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QCheckBox>
+#include <QDialog>
 
 /**
  * \ingroup gui
@@ -33,6 +35,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 {
     Q_OBJECT
   public:
+
     /**
      * Prompt behavior of the QgsSublayersDialog
      * \deprecated QGIS 3.40. Use Qgis::SublayerPromptMode instead.
@@ -155,6 +158,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     void mBtnDeselectAll_pressed();
 
   protected:
+
     /**
      * Provider type name
      */

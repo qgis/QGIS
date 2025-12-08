@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+
 #include <QGraphicsScene>
 
 class QgsProcessingModelAlgorithm;
@@ -123,14 +124,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     /**
      * Returns the graphic item corresponding to the specified child algorithm
-     * 
+     *
      * \since QGIS 3.44
      */
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 
     /**
      * Returns the QgsModelComponentGraphicItem corresponding to the specified child algorithm
-     * 
+     *
      * \since QGIS 3.44
      */
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
@@ -179,7 +180,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     /**
      * Requests a complete rebuild of a model by emitting the according signal
-     * 
+     *
      * \since QGIS 3.44
      */
     void requestRebuildRequired();
@@ -188,7 +189,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Updates the scene rect based on the bounds of the model.
 
      * The bounding rectangle of the model is calculated off all components of the model, with an additional margin arounds items.
-     *  
+     *
      * \since QGIS 4.0
      */
     void updateBounds();

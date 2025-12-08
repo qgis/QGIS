@@ -18,10 +18,11 @@
 #ifndef QGSSTOREBADLAYERINFO_H
 #define QGSSTOREBADLAYERINFO_H
 
-#include "qgsprojectbadlayerhandler.h"
 #include "qgis_server.h"
-#include <QStringList>
+#include "qgsprojectbadlayerhandler.h"
+
 #include <QMap>
+#include <QStringList>
 
 /**
  * \ingroup server
@@ -31,6 +32,7 @@
 class SERVER_EXPORT QgsStoreBadLayerInfo : public QgsProjectBadLayerHandler
 {
   public:
+
     /**
      * Default constructor
      */
@@ -40,7 +42,7 @@ class SERVER_EXPORT QgsStoreBadLayerInfo : public QgsProjectBadLayerHandler
      * \brief handleBadLayers
      * \param layers layer nodes
      */
-    void handleBadLayers( const QList<QDomNode> &layers );
+    void handleBadLayers( const QList<QDomNode> &layers ) override;
 
     /**
      * \brief badLayers

@@ -16,14 +16,13 @@ email                : matthias@opengis.ch
 #ifndef QGSSINGLEGEOMETRYCHECK_H
 #define QGSSINGLEGEOMETRYCHECK_H
 
-#include <QList>
-#include <QCoreApplication>
-
+#include "qgis_analysis.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
 
-#include "qgis_analysis.h"
+#include <QCoreApplication>
+#include <QList>
 
 class QgsFeature;
 class QgsSingleGeometryCheck;
@@ -39,6 +38,7 @@ class QgsSingleGeometryCheck;
 class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 {
   public:
+
     /**
      * Creates a new single geometry check error.
      */
@@ -114,6 +114,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 {
   public:
+
     /**
      * Creates a new error for a QgsSingleGeometryCheck.
      */
@@ -148,6 +149,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
 {
   public:
+
     /**
      * Creates a new single geometry check.
      */
@@ -155,7 +157,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
       : QgsGeometryCheck( context, configuration )
     {}
 
-    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const FINAL;
+    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const final;
 
     /**
      * Check the \a geometry for errors. It may make use of \a configuration options.
@@ -168,6 +170,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
     virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const = 0;
 
   private:
+
     /**
      * Converts a QgsSingleGeometryCheckError to a QgsGeometryCheckErrorSingle.
      *

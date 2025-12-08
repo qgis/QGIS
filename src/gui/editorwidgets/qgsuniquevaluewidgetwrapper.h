@@ -16,11 +16,11 @@
 #ifndef QGSUNIQUEVALUEWIDGETWRAPPER_H
 #define QGSUNIQUEVALUEWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
 #include <QLineEdit>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -39,6 +39,7 @@ class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsUniqueValuesWidgetWrapper.
      *

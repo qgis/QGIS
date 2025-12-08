@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmovelabel.h"
-#include "moc_qgsmaptoolmovelabel.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
+
 #include "qgisapp.h"
-#include "qgsmessagebar.h"
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgscallout.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgsrubberband.h"
 #include "qgsstatusbar.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include "moc_qgsmaptoolmovelabel.cpp"
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

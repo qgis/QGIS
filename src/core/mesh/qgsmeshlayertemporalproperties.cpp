@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsmeshlayertemporalproperties.h"
-#include "moc_qgsmeshlayertemporalproperties.cpp"
+
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
+
+#include "moc_qgsmeshlayertemporalproperties.cpp"
 
 QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled ):
   QgsMapLayerTemporalProperties( parent, enabled )

@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgsarcgisvectortileservicedataprovider.h"
-#include "moc_qgsarcgisvectortileservicedataprovider.cpp"
-#include "qgsthreadingutils.h"
+
 #include "qgsapplication.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsvectortileutils.h"
 #include "qgsarcgisrestutils.h"
-#include "qgslogger.h"
+#include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
+#include "qgslogger.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgsthreadingutils.h"
+#include "qgsvectortileutils.h"
 
 #include <QIcon>
-#include <QUrl>
-#include <QUrlQuery>
-#include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonParseError>
+#include <QUrl>
+#include <QUrlQuery>
+
+#include "moc_qgsarcgisvectortileservicedataprovider.cpp"
 
 ///@cond PRIVATE
 

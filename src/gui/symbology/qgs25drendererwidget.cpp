@@ -14,11 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drendererwidget.h"
-#include "moc_qgs25drendererwidget.cpp"
+
 #include "qgs25drenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgs25drendererwidget.cpp"
 
 Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )

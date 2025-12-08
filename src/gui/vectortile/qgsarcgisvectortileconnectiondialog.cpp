@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsarcgisvectortileconnectiondialog.h"
-#include "moc_qgsarcgisvectortileconnectiondialog.cpp"
-#include "qgsvectortileconnection.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsvectortileconnection.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsarcgisvectortileconnectiondialog.cpp"
 
 ///@cond PRIVATE
 

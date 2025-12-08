@@ -17,9 +17,11 @@
 #define QGS3DUTILS_H
 #define SIP_NO_FILE
 
+#include <memory>
+
+#include "qgs3danimationsettings.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
-#include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 #include "qgsray3d.h"
@@ -27,9 +29,6 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
-
-#include <memory>
-
 
 class QgsCameraPose;
 class QgsLineString;
@@ -59,6 +58,7 @@ class QgsRayCastContext;
 class _3D_EXPORT Qgs3DUtils
 {
   public:
+
     /**
      * Captures image of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.

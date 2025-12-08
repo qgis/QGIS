@@ -18,8 +18,8 @@
 #ifndef QGSTEMPORALCONTROLLERDOCKWIDGET_H
 #define QGSTEMPORALCONTROLLERDOCKWIDGET_H
 
-#include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qgsdockwidget.h"
 
 class QgsTemporalControllerWidget;
 class QgsTemporalController;
@@ -35,6 +35,7 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsTemporalControllerDockWidget, with the specified \a parent widget.
       */

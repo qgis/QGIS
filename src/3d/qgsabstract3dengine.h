@@ -18,8 +18,8 @@
 
 #include "qgis_3d.h"
 
-#include <QObject>
 #include <QElapsedTimer>
+#include <QObject>
 
 #define SIP_NO_FILE
 
@@ -61,6 +61,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsAbstract3DEngine with the specified \a parent object.
      */

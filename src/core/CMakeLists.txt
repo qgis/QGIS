@@ -20,6 +20,7 @@ endif()
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
 
+  ${CMAKE_SOURCE_DIR}/external/nanoarrow/src/nanoarrow.c
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -84,9 +85,10 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsinformation.cpp
   gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
-  gps/qgsqtlocationconnection.cpp
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
+
+  multimedia/qgsvideoexporter.cpp
 
   plot/qgsbarchartplot.cpp
   plot/qgslinechartplot.cpp
@@ -97,6 +99,7 @@ set(QGIS_CORE_SRCS
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
+  symbology/qgsblanksegmentutils.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscombinedstylemodel.cpp
@@ -210,20 +213,6 @@ set(QGIS_CORE_SRCS
   numericformats/qgsnumericformatregistry.cpp
   numericformats/qgspercentagenumericformat.cpp
   numericformats/qgsscientificnumericformat.cpp
-
-  auth/qgsauthcertutils.cpp
-  auth/qgsauthconfig.cpp
-  auth/qgsauthcrypto.cpp
-  auth/qgsauthconfigurationstorage.cpp
-  auth/qgsauthconfigurationstorageregistry.cpp
-  auth/qgsauthmanager.cpp
-  auth/qgsauthmethod.cpp
-  auth/qgsauthmethodmetadata.cpp
-  auth/qgsauthmethodregistry.cpp
-  auth/qgsauthorizationsettings.cpp
-
-  auth/qgsauthconfigurationstoragesqlite.cpp
-  auth/qgsauthconfigurationstoragedb.cpp
 
   annotations/qgsannotation.cpp
   annotations/qgsannotationitem.cpp
@@ -435,6 +424,7 @@ set(QGIS_CORE_SRCS
   qgsapplication.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
+  qgsarrowiterator.cpp
   qgspostgresstringutils.cpp
   qgsattributes.cpp
   qgsattributetableconfig.cpp
@@ -1045,8 +1035,14 @@ set(QGIS_CORE_SRCS
 
   qgsuserprofile.cpp
   qgsuserprofilemanager.cpp
-
 )
+
+if(WITH_QTPOSITIONING)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    gps/qgsqtlocationconnection.cpp)
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    gps/qgsqtlocationconnection.h)
+endif()
 
 if (WITH_INTERNAL_POLY2TRI)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -1130,6 +1126,7 @@ set(QGIS_CORE_HDRS
   qgsanimatedicon.h
   qgsapplication.h
   qgsarchive.h
+  qgsarrowiterator.h
   qgsattributes.h
   qgsattributetableconfig.h
   qgsauxiliarystorage.h
@@ -1404,20 +1401,6 @@ set(QGIS_CORE_HDRS
   annotations/qgssvgannotation.h
   annotations/qgstextannotation.h
 
-  auth/qgsauthcertutils.h
-  auth/qgsauthconfig.h
-  auth/qgsauthcrypto.h
-  auth/qgsauthconfigurationstorage.h
-  auth/qgsauthconfigurationstorageregistry.h
-  auth/qgsauthmanager.h
-  auth/qgsauthmethod.h
-  auth/qgsauthmethodmetadata.h
-  auth/qgsauthmethodregistry.h
-  auth/qgsauthorizationsettings.h
-
-  auth/qgsauthconfigurationstoragesqlite.h
-  auth/qgsauthconfigurationstoragedb.h
-
   browser/qgsbrowsermodel.h
   browser/qgsbrowserproxymodel.h
   browser/qgsconnectionsitem.h
@@ -1574,7 +1557,6 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsinformation.h
   gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
-  gps/qgsqtlocationconnection.h
   gps/qgsgpsconnectionregistry.h
   gps/qgssatelliteinformation.h
   gps/qgsvectorlayergpslogger.h
@@ -1727,6 +1709,8 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshlayerlabeling.h
   mesh/qgsmeshlayerlabelprovider.h
   mesh/qgsmeshutils.h
+
+  multimedia/qgsvideoexporter.h
 
   painting/qgsgeometrypaintdevice.h
   painting/qgsmaskpaintdevice.h
@@ -2019,7 +2003,8 @@ set(QGIS_CORE_HDRS
 
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
-  symbology/qgsblanksegmentutils.cpp
+
+  symbology/qgsblanksegmentutils.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgscombinedstylemodel.h
@@ -2176,6 +2161,40 @@ set(QGIS_CORE_HDRS
   vectortile/qgsxyzvectortiledataprovider.h
 )
 
+if(WITH_AUTH)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    auth/qgsauthcertutils.cpp
+    auth/qgsauthconfig.cpp
+    auth/qgsauthcrypto.cpp
+    auth/qgsauthconfigurationstorage.cpp
+    auth/qgsauthconfigurationstorageregistry.cpp
+    auth/qgsauthmanager.cpp
+    auth/qgsauthmethod.cpp
+    auth/qgsauthmethodmetadata.cpp
+    auth/qgsauthmethodregistry.cpp
+    auth/qgsauthorizationsettings.cpp
+
+    auth/qgsauthconfigurationstoragesqlite.cpp
+    auth/qgsauthconfigurationstoragedb.cpp
+  )
+
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    auth/qgsauthcertutils.h
+    auth/qgsauthconfig.h
+    auth/qgsauthcrypto.h
+    auth/qgsauthconfigurationstorage.h
+    auth/qgsauthconfigurationstorageregistry.h
+    auth/qgsauthmanager.h
+    auth/qgsauthmethod.h
+    auth/qgsauthmethodmetadata.h
+    auth/qgsauthmethodregistry.h
+    auth/qgsauthorizationsettings.h
+
+    auth/qgsauthconfigurationstoragesqlite.h
+    auth/qgsauthconfigurationstoragedb.h
+  )
+endif()
+
 set(QGIS_CORE_PRIVATE_HDRS
   qgsexpressionsorter_p.h
   qgsfeature_p.h
@@ -2202,8 +2221,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   proj/qgscoordinatereferencesystem_legacy_p.h
 
   providers/ogr/qgscplerrorhandler_p.h
-
-  symbology/qgsblanksegmentutils_p.h
 
   textrenderer/qgstextrenderer_p.h
 )
@@ -2523,10 +2540,14 @@ endif()
 target_include_directories(qgis_core SYSTEM PUBLIC
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
-  ${QCA_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
 )
+if(WITH_AUTH)
+  target_include_directories(qgis_core SYSTEM PUBLIC
+    ${QCA_INCLUDE_DIR}
+  )
+endif()
 
 target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -2557,6 +2578,7 @@ target_include_directories(qgis_core PUBLIC
   maprenderer
   mesh
   metadata
+  multimedia
   network
   numericformats
   painting
@@ -2591,6 +2613,7 @@ target_include_directories(qgis_core PUBLIC
   web
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
+  ${CMAKE_SOURCE_DIR}/external/nanoarrow/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
@@ -2612,6 +2635,8 @@ if (WITH_COPC)
     ${CMAKE_SOURCE_DIR}/src/core/providers/copc
     ${CMAKE_SOURCE_DIR}/src/core/providers/vpc)
 endif()
+
+find_package(${QT_VERSION_BASE} COMPONENTS Multimedia REQUIRED)
 
 GENERATE_EXPORT_HEADER(
   qgis_core
@@ -2670,9 +2695,8 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
-  ${QT_VERSION_BASE}::Positioning
+  ${QT_VERSION_BASE}::Multimedia
   ${OPTIONAL_QTWEBKIT}
-  ${QCA_LIBRARY}
   GEOS::geos_c
   GDAL::GDAL
   EXPAT::EXPAT
@@ -2680,10 +2704,27 @@ target_link_libraries(qgis_core
   ${LIBZIP_LIBRARY}
   $<TARGET_NAME_IF_EXISTS:protobuf::libprotobuf-lite>
   ${ZLIB_LIBRARIES}
-  exiv2lib
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
+
+if(WITH_QTPOSITIONING)
+  target_link_libraries(qgis_core
+    ${QT_VERSION_BASE}::Positioning
+  )
+endif()
+
+if(WITH_EXIV2)
+  target_link_libraries(qgis_core
+    exiv2lib
+  )
+endif()
+
+if(WITH_AUTH)
+  target_link_libraries(qgis_core
+    ${QCA_LIBRARY}
+  )
+endif()
 
 if(NOT WITH_INTERNAL_SPATIALINDEX)
   target_link_libraries(qgis_core ${SPATIALINDEX_LIBRARY})

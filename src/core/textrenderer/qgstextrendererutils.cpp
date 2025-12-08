@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometryutils_base.h"
 #include "qgstextrendererutils.h"
+
+#include "qgsgeometryutils_base.h"
 #include "qgsvectorlayer.h"
 
 QgsTextBackgroundSettings::ShapeType QgsTextRendererUtils::decodeShapeType( const QString &string )

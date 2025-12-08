@@ -14,20 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthtrustedcasdialog.h"
-#include "moc_qgsauthtrustedcasdialog.cpp"
 #include "ui_qgsauthtrustedcasdialog.h"
+#include "qgsauthtrustedcasdialog.h"
 
-#include <QPushButton>
-
-#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsvariantutils.h"
+
+#include <QPushButton>
+
+#include "moc_qgsauthtrustedcasdialog.cpp"
 
 QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent, const QList<QSslCertificate> &trustedCAs )
   : QDialog( parent )

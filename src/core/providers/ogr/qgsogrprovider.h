@@ -18,8 +18,8 @@ email                : sherman at mrcc.com
 #ifndef QGSOGRPROVIDER_H
 #define QGSOGRPROVIDER_H
 
-#include "qgsvectordataprovider.h"
 #include "qgsogrproviderutils.h"
+#include "qgsvectordataprovider.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>

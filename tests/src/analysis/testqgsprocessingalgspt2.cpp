@@ -14,33 +14,34 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "limits"
+#include <limits>
+#include <memory>
 
-#include "qgstest.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsprocessingcontext.h"
-#include "qgsnativealgorithms.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasteranalysisutils.cpp"
-#include "qgsprintlayout.h"
-#include "qgslayertree.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutitemmap.h"
-#include "qgspallabeling.h"
-#include "qgsfontutils.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsmeshlayer.h"
 #include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
-#include "qgstextformat.h"
-#include "qgsreferencedgeometry.h"
 #include "qgsdxfexport.h"
-#include "qgssinglesymbolrenderer.h"
+#include "qgsfontutils.h"
+#include "qgslayertree.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
 #include "qgslinesymbol.h"
+#include "qgsmeshlayer.h"
+#include "qgsnativealgorithms.h"
+#include "qgspallabeling.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingregistry.h"
+#include "qgsreferencedgeometry.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgstest.h"
+#include "qgstextformat.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
+#include <qgsrasteranalysisutils.cpp>
 
 class TestQgsProcessingAlgsPt2 : public QgsTest
 {
@@ -54,6 +55,7 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     }
 
   private:
+
     /**
      * Helper function to get a feature based algorithm.
      */
@@ -2347,7 +2349,7 @@ void TestQgsProcessingAlgsPt2::defineProjection()
   QFile::copy( dataDir + "/points.dbf", tmpPath.filePath( QStringLiteral( "points.dbf" ) ) );
   QFile::copy( dataDir + "/points.qpj", tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
 
-  layer.reset( new QgsVectorLayer( tmpPath.filePath( QStringLiteral( "points.shp" ) ), QStringLiteral( "input" ), QStringLiteral( "ogr" ) ) );
+  layer = std::make_unique<QgsVectorLayer>( tmpPath.filePath( QStringLiteral( "points.shp" ) ), QStringLiteral( "input" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QVERIFY( !layer->crs().isValid() );
 

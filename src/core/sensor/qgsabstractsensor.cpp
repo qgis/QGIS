@@ -15,9 +15,10 @@
  ***************************************************************************/
 
 #include "qgsabstractsensor.h"
-#include "moc_qgsabstractsensor.cpp"
 
 #include <QUuid>
+
+#include "moc_qgsabstractsensor.cpp"
 
 QgsAbstractSensor::QgsAbstractSensor( QObject *parent )
   : QObject( parent )

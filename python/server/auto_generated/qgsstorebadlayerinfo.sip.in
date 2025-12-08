@@ -9,6 +9,7 @@
 
 
 
+
 class QgsStoreBadLayerInfo : QgsProjectBadLayerHandler
 {
 %Docstring(signature="appended")
@@ -21,12 +22,14 @@ Stores layer IDs for bad (broken) layers.
 #include "qgsstorebadlayerinfo.h"
 %End
   public:
+
     QgsStoreBadLayerInfo();
 %Docstring
 Default constructor
 %End
 
-    void handleBadLayers( const QList<QDomNode> &layers );
+    virtual void handleBadLayers( const QList<QDomNode> &layers );
+
 %Docstring
 handleBadLayers
 

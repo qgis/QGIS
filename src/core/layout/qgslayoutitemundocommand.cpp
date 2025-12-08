@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgslayoutitemundocommand.h"
-#include "qgslayoutitem.h"
-#include "qgsreadwritecontext.h"
+
 #include "qgslayout.h"
-#include "qgsproject.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutundostack.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 
 ///@cond PRIVATE
 QgsLayoutItemUndoCommand::QgsLayoutItemUndoCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )

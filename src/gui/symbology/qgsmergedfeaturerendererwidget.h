@@ -16,9 +16,10 @@
 #define QGSMERGEDFEATURERENDERERWIDGET_H
 
 #include "ui_qgsmergedfeaturerendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QMenu;
 class QgsMergedFeatureRenderer;
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsMergedFeatureRendererWidget : public QgsRendererWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied

@@ -17,9 +17,9 @@
 #define QGSPREVIEWQUAD_H
 
 #include <Qt3DCore/QEntity>
+#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
-#include <Qt3DRender/QEffect>
 
 #define SIP_NO_FILE
 
@@ -60,6 +60,7 @@ class QgsPreviewQuad : public Qt3DCore::QEntity
     Q_OBJECT
 
   public:
+
     /**
      * \brief Construct an object that displays a texture for debugging purposes (example: depth buffer)
      * \param texture The texture to be rendered

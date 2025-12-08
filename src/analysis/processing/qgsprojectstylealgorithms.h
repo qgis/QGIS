@@ -20,8 +20,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
@@ -37,6 +37,7 @@
 class ANALYSIS_EXPORT QgsSaveToStyleVisitor : public QgsStyleEntityVisitorInterface
 {
   public:
+
     /**
      * Constructor for QgsSaveToStyleVisitor, saving encountered objects to the specified
      * \a style database (which must already be initialized). The \a objects list

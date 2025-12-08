@@ -19,13 +19,13 @@
 #define QGSSERVERLOGGER_H
 
 
+#include "qgis_server.h"
 #include "qgsmessagelog.h"
 
 #include <QFile>
 #include <QObject>
 #include <QString>
 #include <QTextStream>
-#include "qgis_server.h"
 
 /**
  * \ingroup server
@@ -35,6 +35,7 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
 {
     Q_OBJECT
   public:
+
     /**
      * Gets the singleton instance
      */

@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmapthemecollection.h"
 #include "qgsrulebasedrenderer.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 class TestQgsMapThemeCollection : public QObject

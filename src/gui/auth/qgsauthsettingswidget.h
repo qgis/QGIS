@@ -16,10 +16,10 @@
 #ifndef QGSAUTHSETTINGSWIDGET_H
 #define QGSAUTHSETTINGSWIDGET_H
 
+#include "ui_qgsauthsettingswidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
-#include "ui_qgsauthsettingswidget.h"
 
 #include <QWidget>
 
@@ -37,6 +37,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     Q_OBJECT
 
   public:
+
     /**
      * \brief The WarningType enum is used to determine the text
      * of the message shown to the user about the destination of

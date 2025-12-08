@@ -17,9 +17,11 @@
 
 #define SIP_NO_FILE
 
+#include "ui_qgsnetworkloggerpanelbase.h"
+
 #include "qgis_gui.h"
 #include "qgsdevtoolwidget.h"
-#include "ui_qgsnetworkloggerpanelbase.h"
+
 #include <QTreeView>
 
 class QgsNetworkLogger;
@@ -36,6 +38,7 @@ class GUI_EXPORT QgsNetworkLoggerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsNetworkLoggerTreeView, attached to the specified \a logger.
      */
@@ -88,6 +91,7 @@ class GUI_EXPORT QgsNetworkLoggerPanelWidget : public QgsDevToolWidget, private 
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNetworkLoggerPanelWidget, linked with the specified \a logger.
      */

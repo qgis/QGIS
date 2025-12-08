@@ -16,9 +16,10 @@
 #ifndef QGSPROCESSINGHELPEDITORWIDGET_H
 #define QGSPROCESSINGHELPEDITORWIDGET_H
 
+#include "ui_qgsprocessinghelpeditorwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessinghelpeditorwidgetbase.h"
 
 #include <QDialog>
 
@@ -40,6 +41,7 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProcessingHelpEditorWidget, with the specified \a parent widget.
      */
@@ -93,6 +95,7 @@ class GUI_EXPORT QgsProcessingHelpEditorDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingHelpEditorDialog, with the specified \a parent and \a flags.
      */

@@ -18,12 +18,13 @@
 #ifndef QGSSINGLEBANDCOLORRENDERERWIDGET_H
 #define QGSSINGLEBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterrendererwidget.h"
+#include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
-#include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
-#include "qgis_gui.h"
+#include "qgsrasterrendererwidget.h"
 
 class QgsRasterMinMaxWidget;
 
@@ -96,7 +97,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget : public QgsRasterRender
     double lineEditValue( const QLineEdit *lineEdit ) const;
 
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
-    int mMinMaxOrigin;
+    int mMinMaxOrigin = 0;
 
     void minMaxModified();
 

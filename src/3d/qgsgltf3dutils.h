@@ -30,7 +30,6 @@
 #define SIP_NO_FILE
 
 #include "qgis_3d.h"
-
 #include "qgsmatrix4x4.h"
 
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
