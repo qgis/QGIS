@@ -119,7 +119,7 @@ class QWT_EXPORT QwtGraphic : public QwtNullPaintDevice
     QwtGraphic();
     QwtGraphic( const QwtGraphic& );
 
-    virtual ~QwtGraphic();
+    ~QwtGraphic() override;
 
     QwtGraphic& operator=( const QwtGraphic& );
 

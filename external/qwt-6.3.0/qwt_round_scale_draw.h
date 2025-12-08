@@ -32,7 +32,7 @@ class QWT_EXPORT QwtRoundScaleDraw : public QwtAbstractScaleDraw
 {
   public:
     QwtRoundScaleDraw();
-    virtual ~QwtRoundScaleDraw();
+    ~QwtRoundScaleDraw() override;
 
     void setRadius( double radius );
     double radius() const;

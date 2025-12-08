@@ -36,7 +36,7 @@ class QWT_EXPORT QwtPlotSpectroCurve
     explicit QwtPlotSpectroCurve( const QString& title = QString() );
     explicit QwtPlotSpectroCurve( const QwtText& title );
 
-    virtual ~QwtPlotSpectroCurve();
+    ~QwtPlotSpectroCurve() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

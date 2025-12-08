@@ -61,7 +61,7 @@ class QWT_EXPORT QwtPlotLegendItem : public QwtPlotItem
     };
 
     explicit QwtPlotLegendItem();
-    virtual ~QwtPlotLegendItem();
+    ~QwtPlotLegendItem() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

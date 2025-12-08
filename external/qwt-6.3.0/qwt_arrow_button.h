@@ -24,7 +24,7 @@ class QWT_EXPORT QwtArrowButton : public QPushButton
 {
   public:
     explicit QwtArrowButton ( int num, Qt::ArrowType, QWidget* parent = NULL );
-    virtual ~QwtArrowButton();
+    ~QwtArrowButton() override;
 
     Qt::ArrowType arrowType() const;
     int num() const;
