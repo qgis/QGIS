@@ -752,6 +752,17 @@ bool QgsGeometryUtilsBase::pointsAreCollinear( double x1, double y1, double x2, 
   return qgsDoubleNear( x1 * ( y2 - y3 ) + x2 * ( y3 - y1 ) + x3 * ( y1 - y2 ), 0, epsilon );
 };
 
+bool QgsGeometryUtilsBase::points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon )
+{
+  // crossproduct
+  const double cx = ( y2 - y1 ) * ( z3 - z1 ) - ( z2 - z1 ) * ( y3 - y1 );
+  const double cy = ( z2 - z1 ) * ( x3 - x1 ) - ( x2 - x1 ) * ( z3 - z1 );
+  const double cz = ( x2 - x1 ) * ( y3 - y1 ) - ( y2 - y1 ) * ( x3 - x1 );
+
+  // The magnitude of the cross product must be close to 0
+  return qgsDoubleNear( cx * cx + cy * cy + cz * cz, 0.0, epsilon * epsilon );
+}
+
 double QgsGeometryUtilsBase::azimuth( double x1, double y1, double x2, double y2 )
 {
   const double dx = x2 - x1;

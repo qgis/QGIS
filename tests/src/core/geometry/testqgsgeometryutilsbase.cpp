@@ -403,6 +403,7 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase()
 
 void TestQgsGeometryUtilsBase::testPointsAreCollinear()
 {
+  // 2D version
   QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 0, 10, 10, 10, 20, 10, 0.00001 ) );
   QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 10, 0, 10, 20, 10, 0.00001 ) );
   QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 10, 0, 10, 0.00001 ) );
@@ -413,6 +414,16 @@ void TestQgsGeometryUtilsBase::testPointsAreCollinear()
   QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 0, 10, 20, 10, 10, 0.00001 ) );
   QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 20, 10, 0, 10, 10, 0.00001 ) );
   QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 15, 20, 10, 10, 10, 20, 0.00001 ) );
+
+  // 3D version
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 1, 1, 1, 2, 2, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 1, 1, 1, 0, 0, 0, 2, 2, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 2, 2, 2, 0, 0, 0, 1, 1, 1, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 0, 0, 1, 0, 0, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 1, 0, 0, 0, 0, 0, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 2, 0, 0, 0, 0, 0, 1, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 1, 0, 0, 0, 0, 0, 0, 1, 1, 0.00001 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtilsBase )
