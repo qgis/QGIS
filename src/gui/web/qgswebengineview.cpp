@@ -43,7 +43,19 @@ QgsWebEngineView::QgsWebEngineView( QWidget *parent )
   mView->installEventFilter( this );
 }
 
-QgsWebEngineView::~QgsWebEngineView() = default;
+QgsWebEngineView::~QgsWebEngineView()
+{
+  // Clean up debug view if it exists
+  if ( mDebugView )
+  {
+    if ( QDialog *debugDialog = qobject_cast<QDialog *>( mDebugView->parent() ) )
+    {
+      debugDialog->close();
+      debugDialog->deleteLater();
+    }
+    mDebugView.reset();
+  }
+}
 
 void QgsWebEngineView::setUrl( const QUrl &url )
 {
@@ -103,8 +115,8 @@ void QgsWebEngineView::openDebugView()
 
     // Clean up debug view when dialog is closed
     connect( debugDialog, &QDialog::destroyed, this, [this]() {
-      mDebugView.reset();
-    } );
+      if ( mDebugView )
+        mDebugView.reset(); }, Qt::DirectConnection );
   }
 
   // Connect the debug view to the main view's page
