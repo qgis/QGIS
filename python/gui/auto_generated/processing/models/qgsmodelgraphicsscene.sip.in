@@ -164,7 +164,7 @@ update.
 Clears any selected items and sets ``item`` as the current selection.
 %End
 
-    void setLastRunResult( const QgsProcessingModelResult &result );
+    void setLastRunResult( const QgsProcessingModelResult &result, QgsProcessingContext &context );
 %Docstring
 Sets the ``result`` of the last run of the model through the designer
 window.

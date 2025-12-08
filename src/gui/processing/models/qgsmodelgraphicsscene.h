@@ -175,7 +175,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Sets the \a result of the last run of the model through the designer window.
      */
-    void setLastRunResult( const QgsProcessingModelResult &result );
+    void setLastRunResult( const QgsProcessingModelResult &result, QgsProcessingContext &context );
 
     /**
      * Returns the message bar associated with the scene.
@@ -302,7 +302,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QList<LinkSource> linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
 
     void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
-    void addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId, QgsProcessingContext &context );
+    void addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId );
 
     Flags mFlags = Flags();
 
@@ -314,6 +314,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap<QString, QMap<QString, QgsModelComponentGraphicItem *>> mOutputItems;
     QMap<QString, QgsModelComponentGraphicItem *> mGroupBoxItems;
     QgsProcessingModelResult mLastResult;
+    QMap<QString, long long> mLastResultCount;
 
     static constexpr int SCENE_COMPONENT_MARGIN = 50;
 

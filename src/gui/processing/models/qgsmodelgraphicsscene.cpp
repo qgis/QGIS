@@ -232,21 +232,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             }
             addItem( arrow );
 
-            // Only show the number of feature on vector data
-            if ( !( parameter->type() == QgsProcessingParameterFeatureSource::typeName()
-                    || parameter->type() == QgsProcessingParameterVectorLayer::typeName()
-                    || parameter->type() == QgsProcessingParameterVectorDestination::typeName()
-                    || parameter->type() == QgsProcessingParameterFeatureSink::typeName()
-                 ) )
-            {
-              continue;
-            }
 
             QgsModelChildAlgorithmGraphicItem *childAlgItem = mChildAlgorithmItems.value( it.value().childId() );
-            QgsProcessingModelChildAlgorithmResult res = childAlgItem->results();
-            QString layerId = res.inputs().value( parameter->name() ).toString();
+            QString layerId = childAlgItem->results().inputs().value( parameter->name() ).toString();
 
-            addFeatureCountItemForArrow( arrow, layerId, context );
+            addFeatureCountItemForArrow( arrow, layerId );
           }
         }
         if ( parameter->isDestination() )
@@ -336,9 +326,9 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       addItem( arrow );
 
       QgsModelChildAlgorithmGraphicItem *childItem = mChildAlgorithmItems.value( it.value().childId() );
-
       auto layerId = childItem->results().outputs().value( outputIt.value().childOutputName() );
-      addFeatureCountItemForArrow( arrow, layerId.toString(), context );
+
+      addFeatureCountItemForArrow( arrow, layerId.toString() );
 
 
       addCommentItemForComponent( model, outputIt.value(), item );
@@ -436,7 +426,7 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
   emit selectedItemChanged( item );
 }
 
-void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &result )
+void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &result, QgsProcessingContext &context )
 {
   mLastResult = result;
   qDebug() << "setLastRunResult called in QgsModelGraphicsScene";
@@ -447,6 +437,35 @@ void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &re
     if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
     {
       item->setResults( it.value() );
+    }
+  }
+
+  mLastResultCount.clear();
+  // Match inputs and outputs to corresponding layer and get feature counts if possible
+  for ( auto it = childResults.constBegin(); it != childResults.constEnd(); ++it )
+  {
+    QVariantMap inputs = childResults.value( it.key() ).inputs();
+    for ( auto inputIt = inputs.constBegin(); inputIt != inputs.constEnd(); inputIt++ )
+    {
+      if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( inputs.value( inputIt.key() ).toString(), context ) )
+      {
+        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer ) )
+        {
+          mLastResultCount.insert( inputs.value( inputIt.key() ).toString(), vl->featureCount() );
+        }
+      }
+    }
+
+    QVariantMap outputs = childResults.value( it.key() ).outputs();
+    for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); outputIt++ )
+    {
+      if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( outputs.value( outputIt.key() ).toString(), context ) )
+      {
+        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer ) )
+        {
+          mLastResultCount.insert( outputs.value( outputIt.key() ).toString(), vl->featureCount() );
+        }
+      }
     }
   }
 
@@ -564,24 +583,17 @@ void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgori
 }
 
 
-void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId, QgsProcessingContext &context )
+void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId )
 {
   if ( mFlags & FlagHideFeatureCount )
     return;
 
-  QString numberFeatureText = QStringLiteral( "[lorem:%1]" ).arg( layerId );
-  if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( layerId, context ) )
+  if ( mLastResultCount.contains( layerId ) )
   {
-    // QgsDebugMsgLevel( QStringLiteral( "Loading previous result for %1: %2" ).arg( outputParam->name(), output.toString() ), 2 );
-
-    // std::unique_ptr<QgsMapLayer> layer( resultLayer->clone() );
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer );
-
-    numberFeatureText = QStringLiteral( "[%1]" ).arg( vl->featureCount() );
+    QString numberFeatureText = QStringLiteral( "[%1]" ).arg( mLastResultCount.value( layerId ) );
+    QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
+    addItem( featureCount );
   }
-
-  QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
-  addItem( featureCount );
 }
 
 
