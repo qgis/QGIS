@@ -378,7 +378,8 @@ class CORE_EXPORT QgsRasterFileWriter
         Qgis::DataType destDataType,
         const QList<bool> &destHasNoDataValueList,
         const QList<double> &destNoDataValueList,
-        QgsRasterDataProvider *destProvider,
+        // This method can nullify the passed destProvider
+        std::unique_ptr<QgsRasterDataProvider> &destProvider,
         QgsRasterBlockFeedback *feedback = nullptr );
 
     Qgis::RasterFileWriterResult writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,

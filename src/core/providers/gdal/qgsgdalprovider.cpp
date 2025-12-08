@@ -92,7 +92,7 @@ const int MAX_CACHE_SIZE = 50;
 
 struct QgsGdalProgress
 {
-  QgsRasterBlockFeedback *feedback = nullptr;
+  QgsFeedback *feedback = nullptr;
 };
 //
 // global callback function
@@ -105,7 +105,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
   QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
 
-  if ( QgsRasterBlockFeedback *feedback = prog->feedback )
+  if ( QgsFeedback *feedback = prog->feedback )
   {
     feedback->setProgress( dfComplete * 100 );
 
@@ -461,6 +461,30 @@ QgsGdalProvider::~QgsGdalProvider()
   }
 }
 
+
+bool QgsGdalProvider::hasReportsDuringClose() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,13,0)
+  if ( !mValid )
+    return false;
+  return GDALDatasetGetCloseReportsProgress( mGdalDataset );
+#else
+  return false;
+#endif
+}
+
+bool QgsGdalProvider::closeWithProgress( [[maybe_unused]] QgsFeedback *feedback )
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,13,0)
+  if ( !mValid )
+    return false;
+  QgsGdalProgress progress;
+  progress.feedback = feedback;
+  return GDALDatasetRunCloseWithoutDestroyingEx( mGdalDataset, progressCallback, &progress ) == CE_None;
+#else
+  return false;
+#endif
+}
 
 void QgsGdalProvider::closeDataset()
 {
@@ -4046,6 +4070,11 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
   if ( !driver )
   {
     QgsError error( "Cannot load GDAL driver " + format, u"GDAL provider"_s );
+    return new QgsGdalProvider( uri, error );
+  }
+  if ( !GDALGetMetadataItem( driver, GDAL_DCAP_CREATE, nullptr ) )
+  {
+    QgsError error( "GDAL driver " + format + " does not implement the Create interface", QStringLiteral( "GDAL provider" ) );
     return new QgsGdalProvider( uri, error );
   }
 
