@@ -3776,8 +3776,6 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
       }
 
       operand = std::make_unique<QgsExpressionNodeLiteral>( value );
-      if ( !operand )
-        continue;
     }
 
     // use the concat operator to merge the ogc:Literal children
