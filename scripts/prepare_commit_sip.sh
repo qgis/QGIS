@@ -32,20 +32,9 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-if ! type -p colordiff >/dev/null; then
-  colordiff()
-  {
-    cat "$@"
-  }
-fi
-
 REV=$(git log -n1 --pretty=%H)
 
-FILES_CHANGED=0
-
 # verify SIP files
-SIPIFYDIFF=sipify.$REV.diff
-true > "$SIPIFYDIFF"
 
 for root_dir in python python/PyQt6; do
 
@@ -69,7 +58,7 @@ for root_dir in python python/PyQt6; do
         cp $root_dir/"$sip_file" "$m"
         "${TOPLEVEL}"/scripts/sipify.py $IS_QT6 -sip_output $m -python_output $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
         # only replace sip files if they have changed
-        if ! diff -u $root_dir/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
+        if ! cmp -s $root_dir/"$sip_file" "$m"; then
           echo "$root_dir/$sip_file is not up to date"
           cp "$m" $root_dir/"$sip_file"
         fi
@@ -78,17 +67,5 @@ for root_dir in python python/PyQt6; do
     fi
   done
 done
-if [[ -s "$SIPIFYDIFF" ]]; then
-  if tty -s; then
-    # review astyle changes
-    colordiff <"$SIPIFYDIFF" | less -r
-    rm "$SIPIFYDIFF"
-  else
-    echo "Files changed (see $ASTYLEDIFF)"
-  fi
-  FILES_CHANGED=1
-else
-  rm "$SIPIFYDIFF"
-fi
 
 exit $FILES_CHANGED
