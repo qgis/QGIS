@@ -110,7 +110,6 @@ Raise, unminimize and activate this window.
     QAction *actionRun();
     QgsMessageBar *messageBar();
     QGraphicsView *view();
-    QgsProcessingContext &context();
 
     void setDirty( bool dirty );
 

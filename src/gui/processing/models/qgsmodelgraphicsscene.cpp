@@ -50,17 +50,6 @@ void QgsModelGraphicsScene::setModel( QgsProcessingModelAlgorithm *model )
   mModel = model;
 }
 
-QgsProcessingContext *QgsModelGraphicsScene::context()
-{
-  return mContext;
-}
-
-void QgsModelGraphicsScene::setContext( QgsProcessingContext *processingContext )
-{
-  mContext = processingContext;
-}
-
-
 void QgsModelGraphicsScene::setFlag( QgsModelGraphicsScene::Flag flag, bool on )
 {
   if ( on )
@@ -429,7 +418,6 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
 void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &result, QgsProcessingContext &context )
 {
   mLastResult = result;
-  qDebug() << "setLastRunResult called in QgsModelGraphicsScene";
 
   const auto childResults = mLastResult.childResults();
   for ( auto it = childResults.constBegin(); it != childResults.constEnd(); ++it )

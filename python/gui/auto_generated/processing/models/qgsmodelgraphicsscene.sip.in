@@ -57,25 +57,6 @@ object.
 
     void setModel( QgsProcessingModelAlgorithm *model );
 
-    QgsProcessingContext *context();
-%Docstring
-Returns processing context
-
-Will be set to the context of the model designer dialog
-
-.. versionadded:: 4.0
-%End
-
-
-    void setContext( QgsProcessingContext *processingContext );
-%Docstring
-Set the context
-
-Will be set to the context of the model designer dialog
-
-.. versionadded:: 4.0
-%End
-
     void setFlags( QgsModelGraphicsScene::Flags flags );
 %Docstring
 Sets the combination of ``flags`` controlling how the scene is rendered

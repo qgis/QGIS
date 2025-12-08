@@ -51,7 +51,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     {
       GroupBox = 0,         //!< A logical group box
       ArrowLink = 1,        //!< An arrow linking model items
-      ArrowDecoration = 2,  //!< An arrow linking model items
+      ArrowDecoration = 2,  //!< An arrow decoration (used for display feature count at the moment)
       ModelComponent = 10,  //!< Model components (e.g. algorithms, inputs and outputs)
       MouseHandles = 99,    //!< Mouse handles
       RubberBand = 100,     //!< Rubber band item
@@ -76,25 +76,6 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsProcessingModelAlgorithm *model();
 
     void setModel( QgsProcessingModelAlgorithm *model );
-
-    /**
-     * Returns processing context
-     * 
-     * Will be set to the context of the model designer dialog
-     * 
-     * \since QGIS 4.0 
-     */
-    QgsProcessingContext *context();
-
-
-    /**
-     * Set the context 
-     * 
-     * Will be set to the context of the model designer dialog
-     * 
-     * \since QGIS 4.0 
-     */
-    void setContext( QgsProcessingContext *processingContext );
 
     /**
      * Sets the combination of \a flags controlling how the scene is rendered and behaves.

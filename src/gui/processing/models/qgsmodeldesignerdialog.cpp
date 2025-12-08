@@ -488,7 +488,6 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
-  qDebug() << "setModelScene";
   mScene->setLastRunResult( mLastResult, mLayerStore );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
@@ -593,8 +592,6 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
   mLastResult.mergeWith( result );
   if ( mScene )
     mScene->setLastRunResult( mLastResult, mLayerStore );
-  else
-    qDebug() << "mScene is null in setLastRunResult";
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
