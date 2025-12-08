@@ -14,7 +14,7 @@
    <string notr="true">Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="margin" stdset="0">
     <number>6</number>
    </property>
    <item>
@@ -30,7 +30,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::StandardButton::Close|QDialogButtonBox::StandardButton::Help</set>
      </property>
     </widget>
    </item>

@@ -23,6 +23,7 @@
 #include "qgsauthmethodedit.h"
 #include "qgsauthmethodmetadata.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 
 #include <QPushButton>
@@ -67,6 +68,9 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAuthConfigEdit::saveConfig );
     connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsAuthConfigEdit::resetConfig );
+    connect( buttonBox, &QDialogButtonBox::helpRequested,  this, [] {
+      QgsHelp::openHelp( QStringLiteral( "auth_system/auth_overview.html#authentication-configurations" ) );
+    } );
 
     populateAuthMethods();
 
