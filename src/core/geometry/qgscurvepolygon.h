@@ -18,6 +18,7 @@
 #ifndef QGSCURVEPOLYGON_H
 #define QGSCURVEPOLYGON_H
 
+#include <limits>
 #include <memory>
 
 #include "qgis_core.h"
@@ -141,6 +142,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     //surface interface
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;

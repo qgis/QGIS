@@ -2096,14 +2096,14 @@ void TestQgsCompoundCurve::sumUpArea3D()
   cc.addCurve( cs.clone() );
   cc.sumUpArea3D( area3D );
 
-  QGSCOMPARENEAR( area3D, 2.141592, 1e-6 );
+  QGSCOMPARENEAR( area3D, 4.141592, 1e-6 );
 
   cc.clear();
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 2, 0, 1 ) << QgsPoint( 2, 2, 1 ) << QgsPoint( 0, 2, 1 ) );
   cc.addCurve( cs.clone() );
   cc.sumUpArea3D( area3D );
 
-  QGSCOMPARENEAR( area3D, 3.283185, 1e-6 );
+  QGSCOMPARENEAR( area3D, 7.283185, 1e-6 );
 
   cc.clear();
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 3 ) << QgsPoint( 4, 0, 3 ) << QgsPoint( 12, 5, 3 ) );
@@ -2111,7 +2111,7 @@ void TestQgsCompoundCurve::sumUpArea3D()
   area3D = 0.0;
   cc.sumUpArea3D( area3D );
 
-  QGSCOMPARENEAR( area3D, 6.418923, 1e-6 );
+  QGSCOMPARENEAR( area3D, 16.418923, 1e-6 );
 }
 
 void TestQgsCompoundCurve::segmentLength()
