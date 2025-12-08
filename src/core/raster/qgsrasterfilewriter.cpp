@@ -23,6 +23,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgdalutils.h"
+#include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
@@ -33,7 +34,6 @@
 #include "qgsreadwritelocker.h"
 
 #include <QCoreApplication>
-#include <QMessageBox>
 #include <QProgressDialog>
 #include <QRegularExpression>
 #include <QTextStream>
@@ -467,14 +467,20 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
           writeVRT( vrtFilePath );
           if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
           {
-            buildPyramids( vrtFilePath );
+            if ( !buildPyramids( vrtFilePath ) )
+            {
+              return Qgis::RasterFileWriterResult::WriteError;
+            }
           }
         }
         else
         {
           if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
           {
-            buildPyramids( mOutputUrl, destProvider.get() );
+            if ( !buildPyramids( mOutputUrl, destProvider.get() ) )
+            {
+              return Qgis::RasterFileWriterResult::WriteError;
+            }
           }
         }
 
@@ -767,14 +773,16 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
     writeVRT( vrtFilePath );
     if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
     {
-      buildPyramids( vrtFilePath );
+      if ( !buildPyramids( vrtFilePath ) )
+        return Qgis::RasterFileWriterResult::WriteError;
     }
   }
   else
   {
     if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
     {
-      buildPyramids( mOutputUrl );
+      if ( !buildPyramids( mOutputUrl ) )
+        return Qgis::RasterFileWriterResult::WriteError;
     }
   }
   return ( feedback && feedback->isCanceled() ) ? Qgis::RasterFileWriterResult::Canceled : Qgis::RasterFileWriterResult::Success;
@@ -827,7 +835,7 @@ void QgsRasterFileWriter::addToVRT( const QString &filename, int band, int xSize
   bandElem.appendChild( simpleSourceElem );
 }
 
-void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn )
+bool QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn )
 {
   QgsDebugMsgLevel( "filename = " + filename, 4 );
   // open new dataProvider so we can build pyramids with it
@@ -839,7 +847,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
     if ( !destProvider || !destProvider->isValid() )
     {
       delete destProvider;
-      return;
+      return false;
     }
   }
 
@@ -863,33 +871,33 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
   // TODO put this in provider or elsewhere
   if ( !res.isNull() )
   {
-    QString title, message;
+    QString message;
     if ( res == "ERROR_WRITE_ACCESS"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Write access denied. Adjust the file permissions and try again." );
     }
     else if ( res == "ERROR_WRITE_FORMAT"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "The file was not writable. Some formats do not "
                              "support pyramid overviews. Consult the GDAL documentation if in doubt." );
     }
     else if ( res == "FAILED_NOT_SUPPORTED"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
     else if ( res == "ERROR_VIRTUAL"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
-    QMessageBox::warning( nullptr, title, message );
+
+    QgsMessageLog::logMessage( message, QObject::tr( "Building Pyramids" ) );
+
     QgsDebugMsgLevel( res + " - " + message, 4 );
   }
   if ( !destProviderIn )
     delete destProvider;
+
+  return res.isNull();
 }
 
 #if 0
