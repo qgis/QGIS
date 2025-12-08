@@ -398,6 +398,14 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon );
 
     /**
+     * Given the points (\a x1, \a y1, \a z1), (\a x2, \a y2, \a z2) and (\a x3, \a y3, \a z3)
+     * returns TRUE if these points can be considered collinear with a specified tolerance \a epsilon.
+     *
+     * \since QGIS 4.0
+     */
+    static bool points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon );
+
+    /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
      * and segment (\a bX, \a bY) (\a dX, \a dY).
      * The bisector segment of AB-CD is (point, projection of point by \a angle)
