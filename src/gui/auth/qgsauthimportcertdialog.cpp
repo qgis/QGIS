@@ -20,6 +20,7 @@
 #include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgshelp.h"
 #include "qgssettings.h"
 
 #include <QDir>
@@ -51,7 +52,9 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImport
 
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-
+    connect( buttonBox, &QDialogButtonBox::helpRequested,  this, [] {
+      QgsHelp::openHelp( QStringLiteral( "auth_system/auth_workflows.html#authentication-authorities" ) );
+    } );
     connect( teCertText, &QPlainTextEdit::textChanged, this, &QgsAuthImportCertDialog::validateCertificates );
 
     connect( radioImportFile, &QAbstractButton::toggled, this, &QgsAuthImportCertDialog::updateGui );
