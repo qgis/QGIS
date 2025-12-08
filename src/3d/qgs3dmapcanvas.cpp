@@ -448,7 +448,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
       const QgsSettings settings;
       const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
       band->setColor( color );
-      band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
+      band->setMarkerShape( Qgis::MarkerShape::Square );
       if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
       {
         band->setWidth( pcRenderer->symbol()->pointSize() + 1 );

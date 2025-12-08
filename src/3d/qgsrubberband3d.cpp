@@ -24,6 +24,7 @@
 #include "qgslinestring.h"
 #include "qgslinevertexdata_p.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsmessagelog.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspolygon.h"
@@ -90,7 +91,7 @@ void QgsRubberBand3D::setupMarker()
   mMarkerGeometryRenderer->setGeometry( mMarkerGeometry );
   mMarkerGeometryRenderer->setVertexCount( mMarkerGeometry->count() );
 
-  setMarkerType( mMarkerType );
+  setMarkerShape( mMarkerType );
   mMarkerEntity->addComponent( mMarkerGeometryRenderer );
 
   mMarkerTransform = new QgsGeoTransform;
@@ -268,6 +269,14 @@ void QgsRubberBand3D::setOutlineColor( const QColor color )
 
 void QgsRubberBand3D::setMarkerType( const MarkerType marker )
 {
+  if ( marker == QgsRubberBand3D::Square )
+    setMarkerShape( Qgis::MarkerShape::Square );
+  else
+    setMarkerShape( Qgis::MarkerShape::Circle );
+}
+
+void QgsRubberBand3D::setMarkerShape( const Qgis::MarkerShape marker )
+{
   mMarkerType = marker;
 
   const bool lineOrPolygon = mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon;
@@ -279,22 +288,30 @@ void QgsRubberBand3D::setMarkerType( const MarkerType marker )
     { QStringLiteral( "outline_color" ), mOutlineColor.value() ? mOutlineColor.name() : mColor.name() },
     { QStringLiteral( "outline_style" ), QgsSymbolLayerUtils::encodePenStyle( mMarkerOutlineStyle ) },
     { QStringLiteral( "outline_width" ), QString::number( lineOrPolygon ? 0.5 : 1 ) },
-    { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
+    { QStringLiteral( "name" ), QgsSimpleMarkerSymbolLayerBase::encodeShape( mMarkerType ) }
   };
 
   mMarkerSymbol = QgsMarkerSymbol::createSimple( props );
   updateMarkerMaterial();
 }
 
-QgsRubberBand3D::MarkerType QgsRubberBand3D::markerType() const
+Qgis::MarkerShape QgsRubberBand3D::markerShape() const
 {
   return mMarkerType;
+}
+
+QgsRubberBand3D::MarkerType QgsRubberBand3D::markerType() const
+{
+  if ( mMarkerType == Qgis::MarkerShape::Square )
+    return QgsRubberBand3D::Square;
+
+  return QgsRubberBand3D::Circle;
 }
 
 void QgsRubberBand3D::setMarkerOutlineStyle( const Qt::PenStyle style )
 {
   mMarkerOutlineStyle = style;
-  setMarkerType( markerType() );
+  setMarkerShape( markerShape() );
 }
 
 Qt::PenStyle QgsRubberBand3D::markerOutlineStyle() const
