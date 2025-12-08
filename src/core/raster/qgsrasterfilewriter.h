@@ -401,7 +401,7 @@ class CORE_EXPORT QgsRasterFileWriter
     bool writeVRT( const QString &file );
     //add file entry to vrt
     void addToVRT( const QString &filename, int band, int xSize, int ySize, int xOffset, int yOffset );
-    void buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn = nullptr );
+    bool buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn = nullptr );
 
     //! Create provider and datasource for a part image (vrt mode)
     QgsRasterDataProvider *createPartProvider( const QgsRectangle &extent, int nCols, int iterCols, int iterRows,
