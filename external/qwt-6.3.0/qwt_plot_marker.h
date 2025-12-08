@@ -69,7 +69,7 @@ class QWT_EXPORT QwtPlotMarker : public QwtPlotItem
     explicit QwtPlotMarker( const QString& title );
     explicit QwtPlotMarker( const QwtText& title );
 
-    virtual ~QwtPlotMarker();
+    ~QwtPlotMarker() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

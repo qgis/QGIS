@@ -152,7 +152,7 @@ class QWT_EXPORT QwtLinearScaleEngine : public QwtScaleEngine
 {
   public:
     explicit QwtLinearScaleEngine( uint base = 10 );
-    virtual ~QwtLinearScaleEngine();
+    ~QwtLinearScaleEngine() override;
 
     virtual void autoScale( int maxNumSteps,
         double& x1, double& x2, double& stepSize ) const QWT_OVERRIDE;
@@ -192,7 +192,7 @@ class QWT_EXPORT QwtLogScaleEngine : public QwtScaleEngine
 {
   public:
     explicit QwtLogScaleEngine( uint base = 10 );
-    virtual ~QwtLogScaleEngine();
+    ~QwtLogScaleEngine() override;
 
     virtual void autoScale( int maxNumSteps,
         double& x1, double& x2, double& stepSize ) const QWT_OVERRIDE;

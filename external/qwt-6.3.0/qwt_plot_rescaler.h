@@ -83,7 +83,7 @@ class QWT_EXPORT QwtPlotRescaler : public QObject
         QwtAxisId referenceAxis = QwtAxis::XBottom,
         RescalePolicy = Expanding );
 
-    virtual ~QwtPlotRescaler();
+    ~QwtPlotRescaler() override;
 
     void setEnabled( bool );
     bool isEnabled() const;
