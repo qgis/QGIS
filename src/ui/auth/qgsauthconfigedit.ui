@@ -98,7 +98,7 @@
     </widget>
    </item>
    <item row="6" column="0" colspan="2">
-    <widget class="QStackedWidget" name="stkwAuthMethods">
+    <widget class="QgsStackedWidget" name="stkwAuthMethods">
      <property name="currentIndex">
       <number>-1</number>
      </property>
@@ -118,6 +118,12 @@
    <class>QgsAuthConfigIdEdit</class>
    <extends>QWidget</extends>
    <header>qgsauthconfigidedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

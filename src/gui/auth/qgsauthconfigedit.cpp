@@ -83,6 +83,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
     {
       cmbAuthMethods->setCurrentIndex( 0 );
       stkwAuthMethods->setCurrentIndex( 0 );
+      stkwAuthMethods->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
     }
 
     loadConfig();

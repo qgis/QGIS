@@ -100,6 +100,7 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
 
     cmbIdentityTypes->setCurrentIndex( 0 );
     stkwBundleType->setCurrentIndex( 0 );
+    stkwBundleType->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
   }
   // else switch stacked widget, and populate/connect according to that type and widget
 }
