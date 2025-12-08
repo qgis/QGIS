@@ -123,7 +123,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see outputFormat()
      */
-    void setOutputFormat( const QString &format ) { mOutputFormat = format; }
+    void setOutputFormat( const QString &format );
 
     /**
      * Returns the output format.
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see buildPyramidsFlag()
      */
-    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f ) { mBuildPyramidsFlag = f; }
+    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f );
 
     /**
      * Returns the list of pyramids which will be created for the output file.
@@ -444,6 +444,7 @@ class CORE_EXPORT QgsRasterFileWriter
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling = QStringLiteral( "AVERAGE" );
+    bool mBuildPyramidsFlagSet = false;
     Qgis::RasterBuildPyramidOption mBuildPyramidsFlag = Qgis::RasterBuildPyramidOption::No;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     QStringList mPyramidsConfigOptions;
