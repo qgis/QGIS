@@ -55,6 +55,11 @@ provides developer tools for inspecting and debugging the web content
 loaded in this view.
 %End
 
+    void reload();
+%Docstring
+Reloads the current page in the web engine view.
+%End
+
   protected:
     virtual void dragEnterEvent( QDragEnterEvent *event );
 %Docstring

@@ -70,6 +70,14 @@ void QgsWebEngineView::setContextMenuPolicy( Qt::ContextMenuPolicy policy )
   }
 }
 
+void QgsWebEngineView::reload()
+{
+  if ( mView )
+  {
+    mView->reload();
+  }
+}
+
 void QgsWebEngineView::openDebugView()
 {
   if ( !mView || !mView->page() )

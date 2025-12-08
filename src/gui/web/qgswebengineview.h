@@ -69,6 +69,11 @@ class GUI_EXPORT QgsWebEngineView : public QWidget
    */
     void openDebugView();
 
+    /**
+   * Reloads the current page in the web engine view.
+   */
+    void reload();
+
   protected:
     /**
      * Called for drag enter events.
