@@ -85,7 +85,6 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsinformation.cpp
   gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
-  gps/qgsqtlocationconnection.cpp
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
@@ -1038,6 +1037,13 @@ set(QGIS_CORE_SRCS
   qgsuserprofilemanager.cpp
 )
 
+if(WITH_QTPOSITIONING)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    gps/qgsqtlocationconnection.cpp)
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    gps/qgsqtlocationconnection.h)
+endif()
+
 if (WITH_INTERNAL_POLY2TRI)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
@@ -1551,7 +1557,6 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsinformation.h
   gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
-  gps/qgsqtlocationconnection.h
   gps/qgsgpsconnectionregistry.h
   gps/qgssatelliteinformation.h
   gps/qgsvectorlayergpslogger.h
@@ -2690,7 +2695,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
-  ${QT_VERSION_BASE}::Positioning
   ${QT_VERSION_BASE}::Multimedia
   ${OPTIONAL_QTWEBKIT}
   GEOS::geos_c
@@ -2703,6 +2707,12 @@ target_link_libraries(qgis_core
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
+
+if(WITH_QTPOSITIONING)
+  target_link_libraries(qgis_core
+    ${QT_VERSION_BASE}::Positioning
+  )
+endif()
 
 if(WITH_EXIV2)
   target_link_libraries(qgis_core

@@ -118,6 +118,7 @@ done:
 %Include typedefs.sip
 %Include std.sip
 
+%Include auto_generated/gps/qgsqtlocationconnection.sip
 
 %Include core_auto.sip
 
