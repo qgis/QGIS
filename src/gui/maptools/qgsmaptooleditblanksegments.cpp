@@ -43,11 +43,17 @@ constexpr int TOLERANCE = 20;
 namespace
 {
 
-  class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
+  /**
+   * \brief Symbol layer visitor to look for a symbol layer given its id
+   */
+  class SymbolLayerFinder : public QgsStyleEntityVisitorInterface
   {
     public:
-      //! constructor
-      SymbolLayerVisitor( const QString &symbolLayerId )
+      /**
+       * Contructor
+       * \param symbolLayerId symbol layer id to search
+       */
+      SymbolLayerFinder( const QString &symbolLayerId )
         : mSymbolLayerId( symbolLayerId ) {}
 
       bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
@@ -69,7 +75,7 @@ namespace
           if ( sl->id() == mSymbolLayerId )
           {
             mSymbolLayer = dynamic_cast<const QgsTemplatedLineSymbolLayerBase *>( sl );
-            mSymbolLayerIndex = idx;
+            mSymbolLayerIndex = mSymbolLayer ? idx : -1;
             return false;
           }
 
@@ -95,11 +101,20 @@ namespace
         return true;
       }
 
+      /**
+       * Returns symbol, nullptr if symbol layer hasn't been found
+       */
       const QgsSymbol *symbol() const { return mSymbol; }
-      const QgsTemplatedLineSymbolLayerBase *symbolLayer() const { return mSymbolLayer; }
-      int symbolLayerIndex() const { return mSymbolLayerIndex; }
 
-      bool found() const { return mSymbol && mSymbolLayer; }
+      /**
+       * Returns symbol layer, nullptr if symbol layer hasn't been found
+       */
+      const QgsTemplatedLineSymbolLayerBase *symbolLayer() const { return mSymbolLayer; }
+
+      /**
+       * Returns index position in symbol symbol layer list, -1 if symbol layer hasn't been found
+       */
+      int symbolLayerIndex() const { return mSymbolLayerIndex; }
 
     private:
       const QgsSymbol *mSymbol = nullptr;
@@ -107,6 +122,22 @@ namespace
       int mSymbolLayerIndex = -1;
       const QString &mSymbolLayerId;
   };
+
+  const QPointF &pointAt( const QList<QList<QPolygonF>> &points, int partIndex, int ringIndex, int pointIndex )
+  {
+    if ( partIndex < 0 || partIndex >= points.count() )
+      throw std::invalid_argument( "Blank segments internal error : Invalid part index" );
+
+    const QList<QPolygonF> &rings = points.at( partIndex );
+    if ( ringIndex < 0 || ringIndex >= rings.count() )
+      throw std::invalid_argument( "blank segments internal error : Invalid ring index" );
+
+    const QPolygonF &pts = rings.at( ringIndex );
+    if ( pointIndex < 0 || pointIndex >= pts.count() )
+      throw std::invalid_argument( "blank segments internal error : Invalid point index" );
+
+    return pts.at( pointIndex );
+  }
 
 } //namespace
 ///@endcond
@@ -142,15 +173,15 @@ void QgsMapToolEditBlankSegmentsBase::activate()
   if ( !mSymbol || !mSymbolLayer )
   {
     // search and symbol and symbol layer
-    SymbolLayerVisitor visitor( mSymbolLayerId );
-    mLayer->renderer()->accept( &visitor );
-    if ( visitor.symbol() && visitor.symbolLayer() && visitor.symbolLayerIndex() > -1 )
+    SymbolLayerFinder finder( mSymbolLayerId );
+    mLayer->renderer()->accept( &finder );
+    if ( finder.symbol() && finder.symbolLayer() && finder.symbolLayerIndex() > -1 )
     {
-      mSymbol.reset( visitor.symbol()->clone() );
-      if ( mSymbolLayer = createRenderedPointsSymbolLayer( visitor.symbolLayer() ); mSymbolLayer )
+      mSymbol.reset( finder.symbol()->clone() );
+      if ( mSymbolLayer = createRenderedPointsSymbolLayer( finder.symbolLayer() ); mSymbolLayer )
       {
         // set our on symbol layer to later retrieve rendered points
-        mSymbol->changeSymbolLayer( visitor.symbolLayerIndex(), mSymbolLayer );
+        mSymbol->changeSymbolLayer( finder.symbolLayerIndex(), mSymbolLayer );
       }
       else
       {
@@ -449,23 +480,6 @@ void QgsMapToolEditBlankSegmentsBase::keyPressEvent( QKeyEvent *e )
       }
       break;
   }
-}
-
-
-const QPointF &pointAt( const QList<QList<QPolygonF>> &points, int partIndex, int ringIndex, int pointIndex )
-{
-  if ( partIndex < 0 || partIndex >= points.count() )
-    throw std::invalid_argument( "Blank segments internal error : Invalid part index" );
-
-  const QList<QPolygonF> &rings = points.at( partIndex );
-  if ( ringIndex < 0 || ringIndex >= rings.count() )
-    throw std::invalid_argument( "blank segments internal error : Invalid ring index" );
-
-  const QPolygonF &pts = rings.at( ringIndex );
-  if ( pointIndex < 0 || pointIndex >= pts.count() )
-    throw std::invalid_argument( "blank segments internal error : Invalid point index" );
-
-  return pts.at( pointIndex );
 }
 
 QPair<double, double> QgsMapToolEditBlankSegmentsBase::BlankSegment::getStartEndDistance( Qgis::RenderUnit unit ) const
