@@ -35,7 +35,7 @@ class QWT_EXPORT QwtCompassScaleDraw : public QwtRoundScaleDraw
     explicit QwtCompassScaleDraw();
     explicit QwtCompassScaleDraw( const QMap< double, QString >& map );
 
-    virtual ~QwtCompassScaleDraw();
+    ~QwtCompassScaleDraw() override;
 
     void setLabelMap( const QMap< double, QString >& map );
     QMap< double, QString > labelMap() const;
@@ -64,7 +64,7 @@ class QWT_EXPORT QwtCompass : public QwtDial
 
   public:
     explicit QwtCompass( QWidget* parent = NULL );
-    virtual ~QwtCompass();
+    ~QwtCompass() override;
 
     void setRose( QwtCompassRose* rose );
     const QwtCompassRose* rose() const;

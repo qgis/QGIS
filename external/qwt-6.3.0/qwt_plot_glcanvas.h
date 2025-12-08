@@ -58,7 +58,7 @@ class QWT_EXPORT QwtPlotGLCanvas : public QGLWidget, public QwtPlotAbstractGLCan
   public:
     explicit QwtPlotGLCanvas( QwtPlot* = NULL );
     explicit QwtPlotGLCanvas( const QGLFormat&, QwtPlot* = NULL );
-    virtual ~QwtPlotGLCanvas();
+    ~QwtPlotGLCanvas() override;
 
     Q_INVOKABLE virtual void invalidateBackingStore() QWT_OVERRIDE;
     Q_INVOKABLE QPainterPath borderPath( const QRect& ) const;

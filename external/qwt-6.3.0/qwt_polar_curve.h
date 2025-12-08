@@ -79,7 +79,7 @@ class QWT_EXPORT QwtPolarCurve : public QwtPolarItem
     explicit QwtPolarCurve( const QwtText& title );
     explicit QwtPolarCurve( const QString& title );
 
-    virtual ~QwtPolarCurve();
+    ~QwtPolarCurve() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

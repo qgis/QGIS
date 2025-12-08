@@ -34,7 +34,7 @@ class QWT_EXPORT QwtPlotGrid : public QwtPlotItem
 {
   public:
     explicit QwtPlotGrid();
-    virtual ~QwtPlotGrid();
+    ~QwtPlotGrid() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

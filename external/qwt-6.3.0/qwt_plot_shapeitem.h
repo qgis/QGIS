@@ -73,7 +73,7 @@ class QWT_EXPORT QwtPlotShapeItem : public QwtPlotItem
     explicit QwtPlotShapeItem( const QString& title = QString() );
     explicit QwtPlotShapeItem( const QwtText& title );
 
-    virtual ~QwtPlotShapeItem();
+    ~QwtPlotShapeItem() override;
 
     void setPaintAttribute( PaintAttribute, bool on = true );
     bool testPaintAttribute( PaintAttribute ) const;

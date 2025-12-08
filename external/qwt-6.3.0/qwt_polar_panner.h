@@ -33,7 +33,7 @@ class QWT_EXPORT QwtPolarPanner : public QwtPanner
 
   public:
     explicit QwtPolarPanner( QwtPolarCanvas* );
-    virtual ~QwtPolarPanner();
+    ~QwtPolarPanner() override;
 
     QwtPolarPlot* plot();
     const QwtPolarPlot* plot() const;

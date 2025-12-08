@@ -55,7 +55,7 @@ class QWT_EXPORT QwtScaleDraw : public QwtAbstractScaleDraw
     };
 
     QwtScaleDraw();
-    virtual ~QwtScaleDraw();
+    ~QwtScaleDraw() override;
 
     void getBorderDistHint( const QFont&, int& start, int& end ) const;
     int minLabelDist( const QFont& ) const;

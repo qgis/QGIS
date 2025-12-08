@@ -28,7 +28,7 @@ class QWT_EXPORT QwtPlotSeriesItem : public QwtPlotItem,
     explicit QwtPlotSeriesItem( const QString& title = QString() );
     explicit QwtPlotSeriesItem( const QwtText& title );
 
-    virtual ~QwtPlotSeriesItem();
+    ~QwtPlotSeriesItem() override;
 
     void setOrientation( Qt::Orientation );
     Qt::Orientation orientation() const;

@@ -100,7 +100,7 @@ class QWT_EXPORT QwtPlotIntervalCurve
     explicit QwtPlotIntervalCurve( const QString& title = QString() );
     explicit QwtPlotIntervalCurve( const QwtText& title );
 
-    virtual ~QwtPlotIntervalCurve();
+    ~QwtPlotIntervalCurve() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 
