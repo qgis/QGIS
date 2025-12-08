@@ -17,6 +17,7 @@ import tempfile
 from osgeo import gdal
 from qgis.PyQt.QtCore import QDir, QTemporaryFile
 from qgis.core import (
+    Qgis,
     QgsCoordinateTransformContext,
     QgsContrastEnhancement,
     QgsRaster,
@@ -502,6 +503,10 @@ class TestQgsRasterFileWriter(QgisTestCase):
         provider = source.dataProvider()
         fw = QgsRasterFileWriter(tmpName)
         fw.setOutputFormat("COG")
+        fw.setPyramidsConfigOptions(
+            ["COMPRESS_OVERVIEW=JPEG", "JPEG_QUALITY_OVERVIEW=90"]
+        )
+        assert fw.buildPyramidsFlag() == Qgis.RasterBuildPyramidOption.Yes
 
         pipe = QgsRasterPipe()
         self.assertTrue(pipe.set(provider.clone()))
@@ -549,6 +554,20 @@ class TestQgsRasterFileWriter(QgisTestCase):
             self.assertEqual(ds.RasterXSize, 1025)
             self.assertEqual(ds.RasterYSize, 1024)
             self.assertTrue(ds.GetRasterBand(1).GetOverviewCount() > 0)
+            self.assertEqual(
+                ds.GetRasterBand(1)
+                .GetOverview(0)
+                .GetDataset()
+                .GetMetadataItem("COMPRESSION", "IMAGE_STRUCTURE"),
+                "JPEG",
+            )
+            self.assertEqual(
+                ds.GetRasterBand(1)
+                .GetOverview(0)
+                .GetDataset()
+                .GetMetadataItem("JPEG_QUALITY", "IMAGE_STRUCTURE"),
+                "90",
+            )
 
 
 if __name__ == "__main__":
