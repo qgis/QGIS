@@ -77,7 +77,10 @@ namespace Qt3DRender
 class _3D_EXPORT QgsRubberBand3D
 {
   public:
-    //! Icons
+    /**
+     * \brief Icons enum
+     * \deprecated QGIS 4.0. Use Qgis::MarkerShape instead.
+     */
     enum MarkerType
     {
 
@@ -121,13 +124,29 @@ class _3D_EXPORT QgsRubberBand3D
 
     /**
      * Sets the \a marker type to highlight point geometries and line vertices.
+     * \deprecated QGIS 4.0. Use setMarkerShape(Qgis::MarkerShape) instead.
      */
-    void setMarkerType( MarkerType marker );
+    Q_DECL_DEPRECATED void setMarkerType( MarkerType marker );
+
+    /**
+     * Sets the \a marker type to highlight point geometries and line vertices.
+     *
+     * \since QGIS 4.0
+     */
+    void setMarkerShape( Qgis::MarkerShape marker );
 
     /**
      * Returns the current marker type to highlight point geometries and line vertices.
+     * \deprecated QGIS 4.0. Use markerShape().
      */
-    MarkerType markerType() const;
+    Q_DECL_DEPRECATED MarkerType markerType() const;
+
+    /**
+     * Returns the current marker type to highlight point geometries and line vertices.
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::MarkerShape markerShape() const;
 
     /**
      * Sets the marker outline style
@@ -229,7 +248,7 @@ class _3D_EXPORT QgsRubberBand3D
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Line;
 
     //! point and vertex marker type
-    MarkerType mMarkerType = Circle;
+    Qgis::MarkerShape mMarkerType = Qgis::MarkerShape::Circle;
     float mWidth = 3.f;
     QColor mColor = Qt::red;
     QColor mOutlineColor;
