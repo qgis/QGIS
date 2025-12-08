@@ -93,6 +93,7 @@ class TestQgsGeometryUtils : public QObject
     void transferFirstMValueToPoint();
     void transferFirstZOrMValueToPoint_qgspointsequence();
     void transferFirstZOrMValueToPoint_qgsgeometry();
+    void testPointsAreCollinear();
 };
 
 
@@ -1963,6 +1964,26 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_qgsgeometry()
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
+}
+
+void TestQgsGeometryUtils::testPointsAreCollinear()
+{
+  // 2D version
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10 ), QgsPoint( 10, 10 ), QgsPoint( 20, 10 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3 ), QgsPoint( 2, 7 ), QgsPoint( 2, -5 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3 ), QgsPoint( 4, 3 ), QgsPoint( 7, 2 ), 0.00001 ) );
+
+  // 3D version
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 0 ), QgsPoint( 10, 10, 0 ), QgsPoint( 20, 10, 0 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 2 ), QgsPoint( 10, 10, 2 ), QgsPoint( 20, 10, 2 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2 ), QgsPoint( 2, 2, 3 ), QgsPoint( 2, 2, 5 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2 ), QgsPoint( 2, 2, 3 ), QgsPoint( 2, 3, 5 ), 0.00001 ) );
+
+  // Measure components are ignored
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 3, 3, Qgis::WkbType::PointM ), QgsPoint( 10, 10, 3, 3, Qgis::WkbType::PointM ), QgsPoint( 20, 10, 3, 3, Qgis::WkbType::PointM ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 4, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 7, 2, 2, 2, Qgis::WkbType::PointM ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 0, 2 ), QgsPoint( 10, 10, 0, 17 ), QgsPoint( 20, 10, 0, 43 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2, 2 ), QgsPoint( 2, 2, 3, 2 ), QgsPoint( 2, 3, 5, 2 ), 0.00001 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
