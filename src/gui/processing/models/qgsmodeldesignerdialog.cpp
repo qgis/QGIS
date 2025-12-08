@@ -314,6 +314,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mActionShowComments->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowComments" ), true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
 
+  mActionShowFeatureCount->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowFeatureCount" ), true ).toBool() );
+  connect( mActionShowFeatureCount, &QAction::toggled, this, &QgsModelDesignerDialog::toggleFeatureCount );
+
   mPanTool = new QgsModelViewToolPan( mView );
   mPanTool->setAction( mActionPan );
 
@@ -485,6 +488,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
+  qDebug() << "setModelScene";
   mScene->setLastRunResult( mLastResult );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
@@ -589,6 +593,8 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
   mLastResult.mergeWith( result );
   if ( mScene )
     mScene->setLastRunResult( mLastResult );
+  else
+    qDebug() << "mScene is null in setLastRunResult";
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
@@ -788,6 +794,13 @@ void QgsModelDesignerDialog::exportAsPython()
 void QgsModelDesignerDialog::toggleComments( bool show )
 {
   QgsSettings().setValue( QStringLiteral( "/Processing/Modeler/ShowComments" ), show );
+
+  repaintModel( true );
+}
+
+void QgsModelDesignerDialog::toggleFeatureCount( bool show )
+{
+  QgsSettings().setValue( QStringLiteral( "/Processing/Modeler/ShowFeatureCount" ), show );
 
   repaintModel( true );
 }
@@ -1095,14 +1108,12 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
 
   connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & ) {
     QgsProcessingContext *context = dialog->processingContext();
-
-    setLastRunResult( context->modelResult() );
-
-    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
-
     // take child output layers
     mLayerStore.temporaryLayerStore()->removeAllMapLayers();
     mLayerStore.takeResultsFrom( *context );
+
+    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+    setLastRunResult( context->modelResult() );
   } );
 
   dialog->exec();

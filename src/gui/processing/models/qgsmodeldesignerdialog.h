@@ -139,6 +139,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *actionRun() { return mActionRun; }
     QgsMessageBar *messageBar() { return mMessageBar; }
     QGraphicsView *view() { return mView; }
+    QgsProcessingContext &context() { return mLayerStore; }
+    // const QgsProcessingContext &context() const { return mLayerStore; }
 
     void setDirty( bool dirty );
 
@@ -179,6 +181,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void exportToSvg();
     void exportAsPython();
     void toggleComments( bool show );
+    void toggleFeatureCount( bool show );
     void updateWindowTitle();
     void deleteSelected();
     void populateZoomToMenu();

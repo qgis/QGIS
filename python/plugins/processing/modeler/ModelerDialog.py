@@ -251,7 +251,15 @@ class ModelerDialog(QgsModelDesignerDialog):
         if not showComments:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideComments)
 
-        context = createContext()
+        showFeatureCount = QgsSettings().value(
+            "/Processing/Modeler/ShowFeatureCount", True, bool
+        )
+        if not showFeatureCount:
+            scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideFeatureCount)
+
+        context = createContext()  # Remove and only create at the beginning
+        context.takeResultsFrom(self.context())
+
         self.setModelScene(scene)
         # create items later that setModelScene to setup link to messageBar to the scene
         scene.createItems(self.model(), context)

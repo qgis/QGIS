@@ -197,4 +197,40 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 #endif
 }
 
+
+QgsModelDesignerFeatureCountGraphicItem::QgsModelDesignerFeatureCountGraphicItem( QgsModelArrowItem *link, const QString &text )
+  : QGraphicsTextItem( text )
+  , mLink( link )
+{
+  connect( link, &QgsModelArrowItem::pathUpdated, this, &QgsModelDesignerFeatureCountGraphicItem::setPosition );
+
+  QFont font = this->font();
+  font.setPointSize( FONT_SIZE );
+  setFont( font );
+
+  setZValue( QgsModelGraphicsScene::ZValues::ArrowDecoration );
+  setPosition();
+}
+
+void QgsModelDesignerFeatureCountGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *widget )
+{
+  // First draw a rounded rectangle as background
+  painter->setBrush( QBrush( QColor( 255, 255, 255, 210 ) ) ); // White with some transparency
+  painter->setPen( Qt::PenStyle::NoPen );
+  double radius = 5;
+  painter->drawRoundedRect( boundingRect(), radius, radius );
+
+  // And finally draw the text on top
+  QGraphicsTextItem::paint( painter, itemStyle, widget );
+}
+
+void QgsModelDesignerFeatureCountGraphicItem::setPosition()
+{
+  QPointF middlePos = mLink->path().pointAtPercent( 0.5 );
+  QRectF rect = boundingRect();
+  QPointF offset = rect.center();
+  setPos( middlePos - offset );
+  update();
+}
+
 ///@endcond

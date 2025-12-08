@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmodelgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
 #include "moc_qgsmodelgraphicsscene.cpp"
 #include "qgsprocessingmodelchildparametersource.h"
@@ -24,7 +25,9 @@
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagelog.h"
+#include "qgsvectorlayer.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsTextItem>
 #include <QPushButton>
 
 ///@cond NOT_STABLE
@@ -46,6 +49,17 @@ void QgsModelGraphicsScene::setModel( QgsProcessingModelAlgorithm *model )
 {
   mModel = model;
 }
+
+QgsProcessingContext *QgsModelGraphicsScene::context()
+{
+  return mContext;
+}
+
+void QgsModelGraphicsScene::setContext( QgsProcessingContext *processingContext )
+{
+  mContext = processingContext;
+}
+
 
 void QgsModelGraphicsScene::setFlag( QgsModelGraphicsScene::Flag flag, bool on )
 {
@@ -217,6 +231,22 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
               arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true, QgsModelArrowItem::Marker::NoMarker, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, true, QgsModelArrowItem::Marker::NoMarker );
             }
             addItem( arrow );
+
+            // Only show the number of feature on vector data
+            if ( !( parameter->type() == QgsProcessingParameterFeatureSource::typeName()
+                    || parameter->type() == QgsProcessingParameterVectorLayer::typeName()
+                    || parameter->type() == QgsProcessingParameterVectorDestination::typeName()
+                    || parameter->type() == QgsProcessingParameterFeatureSink::typeName()
+                 ) )
+            {
+              continue;
+            }
+
+            QgsModelChildAlgorithmGraphicItem *childAlgItem = mChildAlgorithmItems.value( it.value().childId() );
+            QgsProcessingModelChildAlgorithmResult res = childAlgItem->results();
+            QString layerId = res.inputs().value( parameter->name() ).toString();
+
+            addFeatureCountItemForArrow( arrow, layerId, context );
           }
         }
         if ( parameter->isDestination() )
@@ -302,7 +332,14 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       item->setPos( pos );
       item->component()->setPosition( pos );
       outputItems.insert( outputIt.key(), item );
-      addItem( new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, QgsModelArrowItem::Marker::Circle, item, QgsModelArrowItem::Marker::Circle ) );
+      QgsModelArrowItem *arrow = new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, QgsModelArrowItem::Marker::Circle, item, QgsModelArrowItem::Marker::Circle );
+      addItem( arrow );
+
+      QgsModelChildAlgorithmGraphicItem *childItem = mChildAlgorithmItems.value( it.value().childId() );
+
+      auto layerId = childItem->results().outputs().value( outputIt.value().childOutputName() );
+      addFeatureCountItemForArrow( arrow, layerId.toString(), context );
+
 
       addCommentItemForComponent( model, outputIt.value(), item );
     }
@@ -402,6 +439,7 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
 void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &result )
 {
   mLastResult = result;
+  qDebug() << "setLastRunResult called in QgsModelGraphicsScene";
 
   const auto childResults = mLastResult.childResults();
   for ( auto it = childResults.constBegin(); it != childResults.constEnd(); ++it )
@@ -411,6 +449,8 @@ void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &re
       item->setResults( it.value() );
     }
   }
+
+  emit requestRebuildRequired();
 }
 
 QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const
@@ -522,6 +562,28 @@ void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgori
   arrow->setPenStyle( Qt::DotLine );
   addItem( arrow.release() );
 }
+
+
+void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId, QgsProcessingContext &context )
+{
+  if ( mFlags & FlagHideFeatureCount )
+    return;
+
+  QString numberFeatureText = QStringLiteral( "[lorem:%1]" ).arg( layerId );
+  if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( layerId, context ) )
+  {
+    // QgsDebugMsgLevel( QStringLiteral( "Loading previous result for %1: %2" ).arg( outputParam->name(), output.toString() ), 2 );
+
+    // std::unique_ptr<QgsMapLayer> layer( resultLayer->clone() );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer );
+
+    numberFeatureText = QStringLiteral( "[%1]" ).arg( vl->featureCount() );
+  }
+
+  QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
+  addItem( featureCount );
+}
+
 
 QgsMessageBar *QgsModelGraphicsScene::messageBar() const
 {

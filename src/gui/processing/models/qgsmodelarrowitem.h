@@ -81,6 +81,14 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      */
     void setPenStyle( Qt::PenStyle style );
 
+  signals:
+
+    /**
+     * Emitted when the path is updated.
+     *
+     */
+    void pathUpdated();
+
   public slots:
 
     /**

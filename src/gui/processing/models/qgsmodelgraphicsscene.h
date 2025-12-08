@@ -31,6 +31,7 @@ class QgsProcessingModelComment;
 class QgsModelChildAlgorithmGraphicItem;
 class QgsProcessingModelGroupBox;
 class QgsMessageBar;
+class QgsModelArrowItem;
 
 ///@cond NOT_STABLE
 
@@ -50,7 +51,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     {
       GroupBox = 0,         //!< A logical group box
       ArrowLink = 1,        //!< An arrow linking model items
-      ModelComponent = 2,   //!< Model components (e.g. algorithms, inputs and outputs)
+      ArrowDecoration = 2,  //!< An arrow linking model items
+      ModelComponent = 10,  //!< Model components (e.g. algorithms, inputs and outputs)
       MouseHandles = 99,    //!< Mouse handles
       RubberBand = 100,     //!< Rubber band item
       ZSnapIndicator = 101, //!< Z-value for snapping indicator
@@ -60,8 +62,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     //! Flags for controlling how the scene is rendered and scene behavior
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagHideControls = 1 << 1, //!< If set, item interactive controls will be hidden
-      FlagHideComments = 1 << 2, //!< If set, comments will be hidden
+      FlagHideControls = 1 << 1,     //!< If set, item interactive controls will be hidden
+      FlagHideComments = 1 << 2,     //!< If set, comments will be hidden
+      FlagHideFeatureCount = 1 << 3, //!< If set, Feature count will be hidden
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -73,6 +76,25 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsProcessingModelAlgorithm *model();
 
     void setModel( QgsProcessingModelAlgorithm *model );
+
+    /**
+     * Returns processing context
+     * 
+     * Will be set to the context of the model designer dialog
+     * 
+     * \since QGIS 4.0 
+     */
+    QgsProcessingContext *context();
+
+
+    /**
+     * Set the context 
+     * 
+     * Will be set to the context of the model designer dialog
+     * 
+     * \since QGIS 4.0 
+     */
+    void setContext( QgsProcessingContext *processingContext );
 
     /**
      * Sets the combination of \a flags controlling how the scene is rendered and behaves.
@@ -280,10 +302,12 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QList<LinkSource> linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
 
     void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
+    void addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId, QgsProcessingContext &context );
 
     Flags mFlags = Flags();
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
+    QgsProcessingContext *mContext = nullptr;
 
     QMap<QString, QgsModelComponentGraphicItem *> mParameterItems;
     QMap<QString, QgsModelChildAlgorithmGraphicItem *> mChildAlgorithmItems;

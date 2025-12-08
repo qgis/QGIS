@@ -17,3 +17,8 @@ try:
     QgsModelDesignerSocketGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
+try:
+    QgsModelDesignerFeatureCountGraphicItem.__overridden_methods__ = ['paint']
+    QgsModelDesignerFeatureCountGraphicItem.__group__ = ['processing', 'models']
+except (NameError, AttributeError):
+    pass

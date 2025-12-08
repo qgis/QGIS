@@ -74,6 +74,13 @@ points on both items.
 Sets the pen ``style`` to use for rendering the arrow line.
 %End
 
+  signals:
+
+    void pathUpdated();
+%Docstring
+Emitted when the path is updated.
+%End
+
   public slots:
 
     void updatePath();

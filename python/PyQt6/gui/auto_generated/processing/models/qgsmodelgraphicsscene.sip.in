@@ -30,6 +30,7 @@ QGraphicsScene subclass representing the model designer.
     {
       GroupBox,
       ArrowLink,
+      ArrowDecoration,
       ModelComponent,
       MouseHandles,
       RubberBand,
@@ -41,6 +42,7 @@ QGraphicsScene subclass representing the model designer.
     {
       FlagHideControls,
       FlagHideComments,
+      FlagHideFeatureCount,
     };
     typedef QFlags<QgsModelGraphicsScene::Flag> Flags;
 
@@ -54,6 +56,25 @@ object.
     QgsProcessingModelAlgorithm *model();
 
     void setModel( QgsProcessingModelAlgorithm *model );
+
+    QgsProcessingContext *context();
+%Docstring
+Returns processing context
+
+Will be set to the context of the model designer dialog
+
+.. versionadded:: 4.0
+%End
+
+
+    void setContext( QgsProcessingContext *processingContext );
+%Docstring
+Set the context
+
+Will be set to the context of the model designer dialog
+
+.. versionadded:: 4.0
+%End
 
     void setFlags( QgsModelGraphicsScene::Flags flags );
 %Docstring
