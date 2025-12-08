@@ -690,6 +690,9 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
     nParts = nPartsX * nPartsY;
   }
 
+  const bool hasReportsDuringClose = !mTiledMode && destProvider && destProvider->hasReportsDuringClose();
+  const double maxProgress = hasReportsDuringClose ? 50.0 : 100.0;
+
   std::unique_ptr< QgsRasterBlock > inputBlock;
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
@@ -700,7 +703,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
 
     if ( feedback && fileIndex < ( nParts - 1 ) )
     {
-      feedback->setProgress( 100.0 * fileIndex / static_cast< double >( nParts ) );
+      feedback->setProgress( maxProgress * fileIndex / static_cast< double >( nParts ) );
       if ( feedback->isCanceled() )
       {
         break;
@@ -762,15 +765,16 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
 
     ++fileIndex;
   }
-  destProvider.reset();
 
   if ( feedback )
   {
-    feedback->setProgress( 100.0 );
+    feedback->setProgress( maxProgress );
   }
 
   if ( mTiledMode )
   {
+    destProvider.reset();
+
     const QString vrtFilePath( mOutputUrl + '/' + vrtFileName() );
     writeVRT( vrtFilePath );
     if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
@@ -781,7 +785,37 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
   }
   else
   {
-    if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
+    // If the provider can report progress during closing (typically when generating COG files),
+    // report it, making feedback report percentage in the [50, 100] range.
+    if ( destProvider && hasReportsDuringClose )
+    {
+      QgsFeedback closingProgress;
+      if ( feedback )
+      {
+        QObject::connect( &closingProgress, &QgsFeedback::progressChanged,
+                          feedback, [feedback]( double progress )
+        {
+          feedback->setProgress( 50.0 + progress * 0.5 );
+        } );
+        QObject::connect( &closingProgress, &QgsFeedback::canceled,
+                          feedback, &QgsFeedback::cancel );
+      }
+
+      if ( !destProvider->closeWithProgress( feedback ? &closingProgress : nullptr ) )
+      {
+        destProvider->remove();
+        destProvider.reset();
+        return ( feedback && feedback->isCanceled() ) ?
+               Qgis::RasterFileWriterResult::Canceled :
+               Qgis::RasterFileWriterResult::WriteError;
+      }
+    }
+
+    destProvider.reset();
+
+    if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes &&
+         // Pyramid creation is done by the driver itself
+         mOutputFormat != QLatin1String( "COG" ) )
     {
       if ( !buildPyramids( mOutputUrl ) )
         return Qgis::RasterFileWriterResult::WriteError;
