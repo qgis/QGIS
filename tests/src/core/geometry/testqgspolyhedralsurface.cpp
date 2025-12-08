@@ -40,6 +40,7 @@ class TestQgsPolyhedralSurface : public QObject
     void testRemovePatch();
     void test3DPatches();
     void testAreaPerimeter();
+    void testArea3D();
     void testInsertVertex();
     void testMoveVertex();
     void testDeleteVertex();
@@ -81,6 +82,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   QCOMPARE( polySurfaceEmpty.dimension(), 2 );
   QVERIFY( !polySurfaceEmpty.hasCurvedSegments() );
   QCOMPARE( polySurfaceEmpty.area(), 0.0 );
+  QCOMPARE( polySurfaceEmpty.area3D(), 0.0 );
   QCOMPARE( polySurfaceEmpty.perimeter(), 0.0 );
   QVERIFY( !polySurfaceEmpty.patchN( 0 ) );
 
@@ -106,6 +108,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   QCOMPARE( polySurface.dimension(), 2 );
   QVERIFY( !polySurface.hasCurvedSegments() );
   QGSCOMPARENEAR( polySurface.area(), 170.5, 0.1 );
+  QGSCOMPARENEAR( polySurface.area3D(), 170.5, 0.1 );
   QGSCOMPARENEAR( polySurface.perimeter(), 107.489255, 1e-6 );
   QVERIFY( polySurface.patchN( 0 ) );
   QCOMPARE( polySurface.numPatches(), multiPolygon->numGeometries() );
@@ -430,8 +433,25 @@ void TestQgsPolyhedralSurface::testAreaPerimeter()
   patch->setExteriorRing( patchExterior );
   polySurface.addPatch( patch );
 
-  QGSCOMPARENEAR( polySurface.area(), 25.0, 0.01 ); // area is not implemented
+  QGSCOMPARENEAR( polySurface.area(), 25.0, 0.01 );
+  QGSCOMPARENEAR( polySurface.area3D(), 25.0, 0.01 );
   QGSCOMPARENEAR( polySurface.perimeter(), 20.0, 0.01 );
+}
+
+void TestQgsPolyhedralSurface::testArea3D()
+{
+  QgsPolyhedralSurface polySurface;
+  polySurface.fromWkt(
+    u"POLYHEDRALSURFACE Z ("
+    "((0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0)),"
+    "((0 0 10, 0 10 10, 10 10 10, 10 0 10, 0 0 10)),"
+    "((0 0 0, 0 10 0, 0 10 10, 0 0 10, 0 0 0)),"
+    "((10 0 0, 10 0 10, 10 10 10, 10 10 0, 10 0 0)),"
+    "((0 0 0, 0 0 10, 10 0 10, 10 0 0, 0 0 0)),"
+    "((0 10 0, 10 10 0, 10 10 10, 0 10 10, 0 10 0)))"_s
+  );
+
+  QCOMPARE( polySurface.area3D(), 600.0 );
 }
 
 void TestQgsPolyhedralSurface::testInsertVertex()

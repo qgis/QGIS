@@ -66,6 +66,7 @@ class TestQgsCurvePolygon : public QObject
     void testExport();
     void testExportOfCompoundCurveRing();
     void testCast();
+    void testArea3D();
     void removeInteriorRings_github_issue_49578();
 };
 
@@ -86,6 +87,7 @@ void TestQgsCurvePolygon::testConstructor()
   QCOMPARE( poly.dimension(), 2 );
   QVERIFY( !poly.hasCurvedSegments() );
   QCOMPARE( poly.area(), 0.0 );
+  QCOMPARE( poly.area3D(), 0.0 );
   QCOMPARE( poly.perimeter(), 0.0 );
   QVERIFY( !poly.exteriorRing() );
   QVERIFY( !poly.interiorRing( 0 ) );
@@ -133,6 +135,7 @@ void TestQgsCurvePolygon::testConstructor()
   QCOMPARE( poly.dimension(), 2 );
   QVERIFY( poly.hasCurvedSegments() );
   QGSCOMPARENEAR( poly.area(), 157.08, 0.01 );
+  QGSCOMPARENEAR( poly.area3D(), 157.07963, 1e-5 );
   QGSCOMPARENEAR( poly.perimeter(), 44.4288, 0.01 );
   QVERIFY( poly.exteriorRing() );
   QVERIFY( !poly.interiorRing( 0 ) );
@@ -580,6 +583,7 @@ void TestQgsCurvePolygon::testAreaPerimeterWithInteriorRing()
   poly.addInteriorRing( ring );
 
   QGSCOMPARENEAR( poly.area(), 117.8104, 0.01 );
+  QGSCOMPARENEAR( poly.area3D(), 117.8097, 1e-4 );
   QGSCOMPARENEAR( poly.perimeter(), 66.6432, 0.01 );
 }
 
@@ -1703,6 +1707,88 @@ void TestQgsCurvePolygon::testCast()
   QVERIFY( QgsSurface::cast( &pCast2 ) );
 
   QVERIFY( !pCast2.fromWkt( u"CurvePolygonZ((111111))"_s ) );
+}
+
+void TestQgsCurvePolygon::testArea3D()
+{
+  QgsCurvePolygon poly;
+
+  auto ext = std::make_unique<QgsCircularString>();
+  QgsPointSequence extPoints;
+  extPoints << QgsPoint( Qgis::WkbType::PointZ, 0.0, 0.0, 10.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 17.0, 0.0, 12.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 20.0, 3.0, 14.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 20.0, 12.0, 16.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 20.0, 15.0, 18.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 17.0, 15.0, 17.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 3.0, 15.0, 15.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 0.0, 15.0, 14.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 0.0, 12.0, 12.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 0.0, 3.0, 11.0 )
+            << QgsPoint( Qgis::WkbType::PointZ, 0.0, 0.0, 10.0 );
+  ext->setPoints( extPoints );
+  poly.setExteriorRing( ext->clone() );
+
+  QGSCOMPARENEAR( poly.area3D(), 342.00583, 1e-5 );
+
+  QgsLineString exteriorRing;
+  exteriorRing.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 3, 0, 0 ) << QgsPoint( 3, 3, 0 ) << QgsPoint( 0, 3, 0 ) );
+  exteriorRing.close();
+
+  // cube 3x3
+  const double cubeArea = 9.0;
+  QgsCurvePolygon cube;
+  cube.setExteriorRing( exteriorRing.clone() );
+  QCOMPARE( cube.area3D(), cubeArea );
+
+  // Cube 3x3 - Y rotation - positive normal
+  exteriorRing.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 0, 0, -3 ) << QgsPoint( 0, 3, -3 ) << QgsPoint( 0, 3, 0 ) );
+  exteriorRing.close();
+  cube.setExteriorRing( exteriorRing.clone() );
+  QCOMPARE( cube.area3D(), cubeArea );
+
+  // Cube 3x3 - Y rotation - invert points: negative normal
+  exteriorRing.setPoints( QgsPointSequence() << QgsPoint( 0, 3, 0 ) << QgsPoint( 0, 3, -3 ) << QgsPoint( 0, 0, -3 ) << QgsPoint( 0, 0, 0 ) );
+  exteriorRing.close();
+  cube.setExteriorRing( exteriorRing.clone() );
+  QCOMPARE( cube.area3D(), cubeArea );
+
+  // U shape
+  const double uArea = 7.0;
+  QgsCurvePolygon uShape;
+  QgsLineString uRing;
+  uRing.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 3 ) << QgsPoint( 1, 3 ) << QgsPoint( 1, 1 ) << QgsPoint( 2, 1 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 3 ) << QgsPoint( 3, 0 ) );
+  uRing.close();
+  uShape.setExteriorRing( uRing.clone() );
+  QCOMPARE( uShape.area(), uArea );
+
+  // 3D X rotation
+  uRing.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 0, 0, 3 ) << QgsPoint( 1, 0, 3 ) << QgsPoint( 1, 0, 1 ) << QgsPoint( 2, 0, 1 ) << QgsPoint( 2, 0, 3 ) << QgsPoint( 3, 0, 3 ) << QgsPoint( 3, 0, 0 ) );
+  uRing.close();
+  uShape.setExteriorRing( uRing.clone() );
+  QCOMPARE( uShape.area3D(), uArea );
+
+  // 3D Y rotation
+  uRing.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 0, 3, 0 ) << QgsPoint( 0, 3, -1 ) << QgsPoint( 0, 1, -1 ) << QgsPoint( 0, 1, -2 ) << QgsPoint( 0, 3, -2 ) << QgsPoint( 0, 3, -3 ) << QgsPoint( 0, 0, -3 ) );
+  uRing.close();
+  uShape.setExteriorRing( uRing.clone() );
+  QCOMPARE( uShape.area3D(), uArea );
+
+  // 3D Z rotation
+  uRing.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( -3, 0, 0 ) << QgsPoint( -3, 1, 0 ) << QgsPoint( -1, 1, 0 ) << QgsPoint( -1, 2, 0 ) << QgsPoint( -3, 2, 0 ) << QgsPoint( -3, 3, 0 ) << QgsPoint( 0, 3, 0 ) );
+  uRing.close();
+  uShape.setExteriorRing( uRing.clone() );
+  QCOMPARE( uShape.area3D(), uArea );
+
+  double interiorRingArea3D = 0.0;
+  double expectedRingArea3D = -1.2;
+  QgsLineString interiorRing;
+  interiorRing.setPoints( QgsPointSequence() << QgsPoint( -0.1, 2.1, 0 ) << QgsPoint( -2.1, 2.1, 0 ) << QgsPoint( -2.1, 2.7, 0 ) << QgsPoint( -0.1, 2.7, 0 ) );
+  interiorRing.close();
+  interiorRing.sumUpArea3D( interiorRingArea3D );
+  QCOMPARE( interiorRingArea3D, expectedRingArea3D );
+  uShape.addInteriorRing( interiorRing.clone() );
+  QCOMPARE( uShape.area3D(), uArea - std::abs( expectedRingArea3D ) );
 }
 
 void TestQgsCurvePolygon::removeInteriorRings_github_issue_49578() // https://github.com/qgis/QGIS/issues/49578

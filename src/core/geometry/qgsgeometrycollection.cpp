@@ -701,6 +701,17 @@ double QgsGeometryCollection::area() const
   return area;
 }
 
+double QgsGeometryCollection::area3D() const
+{
+  double area3D = 0.0;
+  QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
+  for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
+  {
+    area3D += ( *geomIt )->area3D();
+  }
+  return area3D;
+}
+
 double QgsGeometryCollection::perimeter() const
 {
   double perimeter = 0.0;
