@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtransform.h"
-
+#include "qgsexception.h"
+#include <cmath>
 ///@cond PRIVATE
 
 
@@ -118,6 +119,7 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
       mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp, false );
     mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs, mTransformContext );
 
+    // Disable fallbacks to ensure missing grid files trigger errors
     mTransform.disableFallbackOperationHandler( true );
   }
 
@@ -134,6 +136,36 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
     {
       if ( g.transform( mTransform, Qgis::TransformDirection::Forward, mTransformZ ) == Qgis::GeometryOperationResult::Success )
       {
+        // Check if the transformed geometry contains invalid coordinates (inf or NaN)
+        // This can happen when grid shift files are missing or inaccessible
+        if ( !g.isEmpty() )
+        {
+          const QgsAbstractGeometry *abstractGeom = g.constGet();
+          if ( abstractGeom )
+          {
+            bool hasInvalidCoordinates = false;
+            for ( auto vertex = abstractGeom->vertices_begin(); vertex != abstractGeom->vertices_end(); ++vertex )
+            {
+              const QgsPoint &pt = *vertex;
+              if ( !std::isfinite( pt.x() ) || !std::isfinite( pt.y() ) || 
+                   ( abstractGeom->is3D() && !std::isfinite( pt.z() ) ) )
+              {
+                hasInvalidCoordinates = true;
+                break;
+              }
+            }
+            
+            if ( hasInvalidCoordinates )
+            {
+              const QString msg = QObject::tr( "Coordinate transformation failed for feature id %1: "
+                                              "Invalid coordinates (inf or NaN) detected in output geometry. "
+                                              "This is likely due to a missing or inaccessible grid shift file required by the selected transformation operation." )
+                                    .arg( f.id() );
+              throw QgsProcessingException( msg );
+            }
+          }
+        }
+        
         feature.setGeometry( g );
       }
       else
@@ -149,11 +181,16 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
         mWarnedAboutFallbackTransform = true; // only warn once to avoid flooding the log
       }
     }
-    catch ( QgsCsException & )
+    catch ( QgsCsException &ex )
     {
       if ( feedback )
-        feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( f.id() ) );
+      feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( f.id() ) );
       feature.clearGeometry();
+
+      const QString msg = QObject::tr( "Coordinate transformation failed for feature id %1 (likely due to missing or inaccessible grid shift file). Error details: %2" )
+                            .arg( f.id() )
+                            .arg( ex.what() );
+      throw QgsProcessingException( msg );
     }
   }
   return QgsFeatureList() << feature;
