@@ -119,9 +119,16 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
 
     /**
      * Construct a new tree view with given layer tree (root node must not be NULLPTR).
-     * The root node is not transferred by the view.
+     * The root node is not transferred to the view.
      */
     explicit QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent = nullptr );
+
+    /**
+     * Sets a new layer tree root node to use for the view.
+     *
+     * The root node is not transferred to the view.
+     */
+    void setLayerTree( QgsLayerTree *rootNode );
 
     /**
      * Initially populates the tree view using layers from a \a project, as well as sources from the source registry.
