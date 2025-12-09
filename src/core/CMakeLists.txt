@@ -480,6 +480,7 @@ set(QGIS_CORE_SRCS
   qgsfeaturesource.cpp
   qgsfeaturestore.cpp
   qgsfeaturefiltermodel.cpp
+  qgsfeedback.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
   qgsfieldformatter.cpp
