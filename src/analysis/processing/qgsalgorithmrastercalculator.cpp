@@ -180,8 +180,7 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
   const QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
   const QString expression = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   double width = std::round( ( bbox.xMaximum() - bbox.xMinimum() ) / cellSize );
   double height = std::round( ( bbox.yMaximum() - bbox.yMinimum() ) / cellSize );
@@ -321,8 +320,7 @@ QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVarian
 
   const QString expression = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   double width = std::round( ( bbox.xMaximum() - bbox.xMinimum() ) / cellSize );
   double height = std::round( ( bbox.yMaximum() - bbox.yMinimum() ) / cellSize );
