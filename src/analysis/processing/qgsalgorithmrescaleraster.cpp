@@ -179,6 +179,9 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   const int numBlocksY = static_cast<int>( std::ceil( 1.0 * mLayerHeight / blockHeight ) );
   const int numBlocks = numBlocksX * numBlocksY;
 
+  const bool hasReportsDuringClose = provider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -189,7 +192,7 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
     auto outputBlock = std::make_unique<QgsRasterBlock>( destProvider->dataType( 1 ), iterCols, iterRows );
-    feedback->setProgress( 100 * ( ( iterTop / blockHeight * numBlocksX ) + iterLeft / blockWidth ) / numBlocks );
+    feedback->setProgress( maxProgressDuringBlockWriting * ( ( iterTop / blockHeight * numBlocksX ) + iterLeft / blockWidth ) / numBlocks );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -217,6 +220,17 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
     }
   }
   destProvider->setEditable( false );
+
+  if ( hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, outputFile );
