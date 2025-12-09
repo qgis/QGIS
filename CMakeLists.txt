@@ -250,6 +250,7 @@ if(WITH_CORE)
   endif()
 
   set (WITH_SFCGAL FALSE CACHE BOOL "Determines whether SFCGAL geometry support should be built")
+  set (WITH_GEOGRAPHICLIB FALSE CACHE BOOL "Determines whether GeographicLib support should be built")
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
@@ -503,6 +504,17 @@ if(WITH_CORE)
     else()
       message(STATUS "SFCGAL support DISABLED.")
     endif()
+  endif()
+
+  if (WITH_GEOGRAPHICLIB)
+    find_package(GeographicLib REQUIRED)
+    message(STATUS "Found GeographicLib: ${GeographicLib_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\1" GEOGRAPHICLIB_VERSION_MAJOR_INT "${GeographicLib_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\2" GEOGRAPHICLIB_VERSION_MINOR_INT "${GeographicLib_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\3" GEOGRAPHICLIB_VERSION_PATCH_INT "${GeographicLib_VERSION}")
+    add_definitions(-DWITH_GEOGRAPHICLIB)
+  else()
+    message(STATUS "GeographicLib support DISABLED.")
   endif()
 
   if (WITH_POSTGRESQL)

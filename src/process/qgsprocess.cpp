@@ -31,6 +31,9 @@
 #ifdef WITH_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #endif
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
@@ -1322,6 +1325,12 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
   json.insert( QStringLiteral( "sfcgal_version" ), sfcgal_version() );
 #else
   json.insert( QStringLiteral( "sfcgal_version" ), "no support" );
+#endif
+
+#ifdef WITH_GEOGRAPHICLIB
+  json.insert( QStringLiteral( "geographiclib_version" ), QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH ) );
+#else
+  json.insert( QStringLiteral( "geographiclib_version" ), "no support" );
 #endif
 }
 

@@ -192,6 +192,7 @@ RUN  apt-get update \
     libexiv2-dev \
     libexpat1-dev \
     libfcgi-dev \
+    libgeographic-dev \
     libgeos-dev \
     libgsl-dev \
     libpq-dev \
