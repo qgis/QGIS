@@ -76,7 +76,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectionSelectionTreeWidget, with the specified \a parent widget.
      *

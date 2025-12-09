@@ -54,7 +54,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     Q_PROPERTY( QgsTextFormat format READ format )
 
   public:
-
     /**
      * Constructor for QgsTextFormatWidget.
      * \param format initial formatting settings to show in widget
@@ -361,7 +360,6 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextFormatDialog.
      * \param format initial format settings to show in dialog
@@ -413,7 +411,6 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextFormatPanelWidget.
      * \param format initial format settings to show in dialog

@@ -32,7 +32,6 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsCrsDefinitionWidget, with the specified \a parent widget.
      */

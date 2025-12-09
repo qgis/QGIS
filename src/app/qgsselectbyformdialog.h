@@ -37,7 +37,6 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSelectByFormDialog
      * \param layer vector layer to select from

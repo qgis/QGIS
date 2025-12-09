@@ -59,7 +59,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
-
     /**
      * Specifies the behavior when the button is clicked
      */

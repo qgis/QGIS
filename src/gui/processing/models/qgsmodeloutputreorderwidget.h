@@ -42,7 +42,6 @@ class GUI_EXPORT QgsModelOutputReorderWidget : public QWidget, private Ui::QgsMo
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelOutputReorderWidget.
      */
@@ -81,7 +80,6 @@ class GUI_EXPORT QgsModelOutputReorderDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelOutputReorderDialog.
      */

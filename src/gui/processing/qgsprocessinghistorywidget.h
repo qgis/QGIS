@@ -34,7 +34,6 @@ class GUI_EXPORT QgsProcessingHistoryWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProcessingHistoryWidget, with the specified \a parent widget.
      */
@@ -73,7 +72,6 @@ class GUI_EXPORT QgsProcessingHistoryDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProcessingHistoryDialog.
      */

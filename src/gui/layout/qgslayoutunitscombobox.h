@@ -36,7 +36,6 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
     Q_PROPERTY( Qgis::LayoutUnit unit READ unit WRITE setUnit NOTIFY changed )
 
   public:
-
     /**
      * Constructor for QgsLayoutUnitsComboBox.
      */

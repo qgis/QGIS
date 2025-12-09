@@ -33,7 +33,6 @@ class GUI_EXPORT QgsNewAuxiliaryFieldDialog : public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-
     /**
      * Constructor.
      *

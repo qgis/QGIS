@@ -37,7 +37,6 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAlignmentComboBox, with the specified parent widget.
      */

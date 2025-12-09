@@ -25,7 +25,6 @@ including hue wheel supports, color swatches, and a color sampler.
 #include "qgscolordialog.h"
 %End
   public:
-
     QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QColor &color = QColor() );
 %Docstring
 Create a new color picker dialog

@@ -35,7 +35,6 @@ class GUI_EXPORT QgsOpacityWidget : public QWidget
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
-
     /**
      * Constructor for QgsOpacityWidget.
      */

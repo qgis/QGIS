@@ -22,7 +22,6 @@ A dialog for configuring vector layer renderers.
 #include "qgsrendererpropertiesdialog.h"
 %End
   public:
-
     QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRendererPropertiesDialog.
@@ -117,7 +116,6 @@ user.
 
 
   protected:
-
     void connectValueChanged( const QList<QWidget *> &widgets );
 %Docstring
 Connect the value changed event for the set of widgets to widgetChanged

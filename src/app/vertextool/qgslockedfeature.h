@@ -37,7 +37,6 @@ class APP_EXPORT QgsLockedFeature : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a locked feature
      * \param featureId id of feature which was selected
@@ -146,7 +145,6 @@ class APP_EXPORT QgsLockedFeature : public QObject
     void beforeRollBack();
 
   private:
-
     /**
      * Deletes whole vertex map.
      */

@@ -62,7 +62,6 @@ A reusable widget which displays a summary of the results from a
 #include "qgsvaliditycheckresultswidget.h"
 %End
   public:
-
     QgsValidityCheckResultsWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsValidityCheckResultsWidget, with the specified

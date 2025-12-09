@@ -264,7 +264,6 @@ class GUI_EXPORT QgsQueryResultPanelWidget : public QgsPanelWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Creates a QgsQueryResultPanelWidget with the given \a connection, ownership is transferred to the widget.
      */
@@ -433,7 +432,6 @@ class GUI_EXPORT QgsQueryResultDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsQueryResultDialog.
      *
@@ -468,7 +466,6 @@ class GUI_EXPORT QgsQueryResultMainWindow : public QMainWindow
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsQueryResultMainWindow.
      *

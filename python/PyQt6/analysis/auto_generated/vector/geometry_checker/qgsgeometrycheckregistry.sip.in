@@ -31,7 +31,6 @@ but rather accessed through
 #include "qgsgeometrycheckregistry.h"
 %End
   public:
-
     QgsGeometryCheckRegistry();
 %Docstring
 Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is

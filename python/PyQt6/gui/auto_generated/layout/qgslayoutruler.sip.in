@@ -22,7 +22,6 @@ with guides in a layout.
 #include "qgslayoutruler.h"
 %End
   public:
-
     explicit QgsLayoutRuler( QWidget *parent /TransferThis/ = 0, Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
 Constructor for QgsLayoutRuler, with the specified ``parent`` widget and

@@ -36,7 +36,6 @@ class GUI_EXPORT QgsRasterAttributeTableAddRowDialog : public QDialog, private U
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsRasterAttributeTableAddRowDialog
      * \param parent optional parent

@@ -69,7 +69,6 @@ class QgsRasterCalculatorModelerAlgorithm : public QgsRasterCalculatorAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     /**
      * Generates Excel-like names from the number
      * A, B, C, …, Y, Z, AA, AB, AC, …, AZ, BA, BB, BC…

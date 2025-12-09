@@ -38,7 +38,6 @@
 class QgsStackTrace
 {
   public:
-
     /**
     * Represents a line from a stack trace.
     */

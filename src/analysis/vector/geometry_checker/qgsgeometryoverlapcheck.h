@@ -88,7 +88,6 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 {
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryOverlapCheck )
   public:
-
     /**
      * Available resolution methods.
      */

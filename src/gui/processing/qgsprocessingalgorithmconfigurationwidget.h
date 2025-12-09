@@ -42,7 +42,6 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new QgsProcessingAlgorithmConfigurationWidget
      */

@@ -19,7 +19,6 @@ A combo box which displays items of a matching type from a layout.
 #include "qgslayoutitemcombobox.h"
 %End
   public:
-
     explicit QgsLayoutItemComboBox( QWidget *parent /TransferThis/ = 0, QgsLayout *layout = 0 );
 %Docstring
 QgsLayoutItemComboBox creates a combo box to display a list of items in

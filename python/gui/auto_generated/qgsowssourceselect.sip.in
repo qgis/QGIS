@@ -64,7 +64,6 @@ Sets status message to theMessage
 %End
 
   protected:
-
     virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
 %Docstring
 List of image formats (encodings) supported by provider

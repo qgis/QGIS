@@ -19,7 +19,6 @@ QGIS 3D processing algorithm provider.
 #include "qgs3dalgorithms.h"
 %End
   public:
-
     Qgs3DAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for Qgs3DAlgorithms.

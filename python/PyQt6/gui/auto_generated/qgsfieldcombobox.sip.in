@@ -27,7 +27,6 @@ instead.
 #include "qgsfieldcombobox.h"
 %End
   public:
-
     explicit QgsFieldComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsFieldComboBox creates a combo box to display the fields of a layer.

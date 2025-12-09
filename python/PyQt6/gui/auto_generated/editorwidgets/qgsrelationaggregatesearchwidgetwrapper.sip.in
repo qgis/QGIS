@@ -24,7 +24,6 @@ values should be aggregated for searching.
 #include "qgsrelationaggregatesearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *layer, QgsRelationWidgetWrapper *wrapper, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

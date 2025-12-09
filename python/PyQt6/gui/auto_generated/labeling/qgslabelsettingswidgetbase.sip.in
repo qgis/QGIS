@@ -23,7 +23,6 @@ properties, such as label placement settings.
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-
     QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsMapLayer *vl = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetBase.
@@ -119,7 +118,6 @@ A blocking dialog containing a :py:class:`QgsLabelSettingsWidgetBase`.
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-
     QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget /Transfer/, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetDialog.

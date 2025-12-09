@@ -27,7 +27,6 @@ file paths, base64 encoded contents, or remote HTTP urls.
 #include "qgsfilecontentsourcelineedit.h"
 %End
   public:
-
     QgsAbstractFileContentSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractFileContentSourceLineEdit, with the specified
@@ -113,7 +112,6 @@ A line edit widget with toolbutton for setting a raster image path.
 #include "qgsfilecontentsourcelineedit.h"
 %End
   public:
-
     enum Format
     {
       Svg,
@@ -133,7 +131,6 @@ Defines the mode of the source line edit
 %End
 
   protected:
-
     QgsPictureSourceLineEditBase( Format format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for :py:class:`QgsImageSourceLineEdit`, with the specified
@@ -159,7 +156,6 @@ Designed for use with :py:class:`QgsSvgCache`.
 #include "qgsfilecontentsourcelineedit.h"
 %End
   public:
-
     QgsSvgSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSvgSourceLineEdit, with the specified ``parent``
@@ -183,7 +179,6 @@ Designed for use with :py:class:`QgsImageCache`.
 #include "qgsfilecontentsourcelineedit.h"
 %End
   public:
-
     QgsImageSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsImageSourceLineEdit, with the specified ``parent``
@@ -209,7 +204,6 @@ Designed for use with :py:class:`QgsImageCache`.
 #include "qgsfilecontentsourcelineedit.h"
 %End
   public:
-
     QgsAnimatedImageSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAnimatedImageSourceLineEdit, with the specified

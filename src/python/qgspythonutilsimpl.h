@@ -53,7 +53,6 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QString runFileUnsafe( const QString &filename );      // returns error traceback on failure, empty QString on success
     QString setArgvUnsafe( const QStringList &arguments ); // returns error traceback on failure, empty QString on success
   public:
-
     /**
      * Returns the path where QGIS Python related files are located.
      */

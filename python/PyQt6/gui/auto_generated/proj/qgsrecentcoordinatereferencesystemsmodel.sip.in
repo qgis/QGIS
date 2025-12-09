@@ -70,7 +70,6 @@ A sort/filter proxy model for recent coordinate reference systems.
 #include "qgsrecentcoordinatereferencesystemsmodel.h"
 %End
   public:
-
     explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the

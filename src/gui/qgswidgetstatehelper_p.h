@@ -33,7 +33,6 @@ class QgsWidgetStateHelper : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * QgsWidgetStateHelper
      * \param parent Parent object

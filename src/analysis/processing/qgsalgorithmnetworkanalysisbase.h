@@ -43,7 +43,6 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
-
     /**
      * Adds common algorithm parameters.
      */

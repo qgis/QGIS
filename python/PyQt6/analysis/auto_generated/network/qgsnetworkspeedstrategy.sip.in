@@ -20,7 +20,6 @@ Should be used for finding fastest path between two points.
 #include "qgsnetworkspeedstrategy.h"
 %End
   public:
-
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 %Docstring
 Default constructor

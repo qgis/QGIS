@@ -19,7 +19,6 @@ A widget for configuring a :py:class:`QgsHeatmapRenderer`.
 #include "qgsheatmaprendererwidget.h"
 %End
   public:
-
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method

@@ -40,7 +40,6 @@ class GUI_EXPORT QgsPlotRubberBand : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotRubberBand.
      */
@@ -101,7 +100,6 @@ class GUI_EXPORT QgsPlotRubberBand : public QObject
     void setPen( const QPen &pen );
 
   protected:
-
     /**
      * Calculates an updated bounding box rectangle from a original \a start position
      * and new \a position. If \a constrainSquare is TRUE then the bounding box will be
@@ -127,7 +125,6 @@ class GUI_EXPORT QgsPlotRectangularRubberBand : public QgsPlotRubberBand
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotRectangularRubberBand.
      */

@@ -49,7 +49,6 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsMetalRoughMaterial, with the specified \a parent node.
      */

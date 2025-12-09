@@ -63,7 +63,6 @@ class QAction;
 class GUI_EXPORT QgsAbstractMapToolHandler
 {
   public:
-
     /**
      * Context of a QgsAbstractMapToolHandler call.
      *

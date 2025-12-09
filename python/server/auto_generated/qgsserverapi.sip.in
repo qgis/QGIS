@@ -63,7 +63,6 @@ method of the API will be invoked.
 #include "qgsserverapi.h"
 %End
   public:
-
     QgsServerApi( QgsServerInterface *serverIface );
 %Docstring
 Creates a QgsServerApi object

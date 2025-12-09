@@ -39,7 +39,6 @@ class QgsRectangle;
 class SERVER_EXPORT QgsServerProjectUtils
 {
   public:
-
     /**
    * Returns a double greater than \a number to the specified number of \a places.
    *

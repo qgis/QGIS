@@ -21,7 +21,6 @@ Configuration widget for :py:class:`QgsRasterContourRenderer`.
 #include "qgsrastercontourrendererwidget.h"
 %End
   public:
-
     QgsRasterContourRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Constructor for QgsRasterContourRendererWidget.

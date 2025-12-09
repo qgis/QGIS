@@ -58,7 +58,6 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     Q_PROPERTY( QStringList excludedProviders READ excludedProviders WRITE setExcludedProviders )
 
   public:
-
     /**
      * \brief QgsMapLayerComboBox creates a combo box to display the list of layers currently in the project.
      *

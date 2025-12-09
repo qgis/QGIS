@@ -24,7 +24,6 @@ An interface for objects which can create Processing contexts.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     virtual QgsProcessingContext *processingContext() = 0;
 %Docstring
 This method needs to be reimplemented in all classes which implement
@@ -51,7 +50,6 @@ processing algorithms.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     enum class Flag
     {
       SkipDefaultValueParameters,
@@ -251,7 +249,6 @@ they are constructed through the central registry, via calls to
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the
@@ -414,7 +411,6 @@ is changed.
 %End
 
   protected:
-
     virtual QWidget *createWidget() = 0 /Factory/;
 %Docstring
 Creates a new widget which allows customization of the parameter's
@@ -559,7 +555,6 @@ configurable when users add it as an input to their graphical models.
 %End
 
   protected:
-
     virtual QStringList compatibleParameterTypes() const;
 %Docstring
 Returns a list of compatible Processing parameter types for inputs for
@@ -655,7 +650,6 @@ does not provide a graphical widget, yet still implements the
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingHiddenWidgetWrapper, for the specified

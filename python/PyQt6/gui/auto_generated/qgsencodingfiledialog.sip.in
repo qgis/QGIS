@@ -21,7 +21,6 @@ a data provider.
 #include "qgsencodingfiledialog.h"
 %End
   public:
-
     QgsEncodingFileDialog( QWidget *parent /TransferThis/ = 0, const QString &caption = QString(), const QString &directory = QString(), const QString &filter = QString(), const QString &encoding = QString() );
 %Docstring
 Constructor for QgsEncodingFileDialog
@@ -56,7 +55,6 @@ A dialog which presents the user with a choice of file encodings.
 #include "qgsencodingfiledialog.h"
 %End
   public:
-
     QgsEncodingSelectionDialog( QWidget *parent /TransferThis/ = 0, const QString &caption = QString(), const QString &encoding = QString(), Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsEncodingSelectionDialog.

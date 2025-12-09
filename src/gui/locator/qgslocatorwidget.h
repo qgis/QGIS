@@ -168,7 +168,6 @@ class GUI_EXPORT QgsLocatorResultsView : public QTreeView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLocatorResultsView.
      */

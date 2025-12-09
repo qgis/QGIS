@@ -36,7 +36,6 @@ class GUI_EXPORT QgsRasterAttributeTableDialog : public QDialog, private Ui::QRa
     Q_OBJECT
 
   public:
-
     /**
      * Create a new QgsRasterAttributeTableDialog
      */

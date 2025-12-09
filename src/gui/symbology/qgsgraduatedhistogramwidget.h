@@ -37,7 +37,6 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     Q_OBJECT
 
   public:
-
     /**
      * QgsGraduatedHistogramWidget constructor
      * \param parent parent widget

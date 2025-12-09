@@ -21,7 +21,6 @@ highlights nearest to current scale value.
 #include "qgsscalecombobox.h"
 %End
   public:
-
     enum class RatioMode /BaseType=IntEnum/
     {
       ForceUnitNumerator,

@@ -34,7 +34,6 @@ class QgsGpsDeviceOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGp
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGpsDeviceOptionsWidget with the specified \a parent widget.
      */
