@@ -15,9 +15,9 @@
 
 #include "qgsvariantutils.h"
 
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsunsetattributevalue.h"
-#include "qgsapplication.h"
 
 #include <QBitArray>
 #include <QBitmap>
