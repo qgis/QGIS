@@ -194,8 +194,8 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   GDALSetRasterNoDataValue( outputRasterBand, mNoDataValue );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
-  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 #else
   constexpr double maxProgressDuringBlockWriting = 100.0;
 #endif
@@ -395,7 +395,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  if ( closeReportsProgress && feedback )
+  if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
     if ( GDALDatasetRunCloseWithoutDestroyingEx(
@@ -601,8 +601,8 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-    const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
-    const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+    const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+    const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 #else
     constexpr double maxProgressDuringBlockWriting = 100.0;
 #endif
@@ -694,7 +694,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-    if ( closeReportsProgress && feedback )
+    if ( hasReportsDuringClose && feedback )
     {
       QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
       if ( GDALDatasetRunCloseWithoutDestroyingEx(

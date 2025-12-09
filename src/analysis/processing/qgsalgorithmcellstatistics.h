@@ -54,6 +54,7 @@ class QgsCellStatisticsAlgorithmBase : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelX = 0;
     double mRasterUnitsPerPixelY = 0;
     std::unique_ptr<QgsRasterDataProvider> mOutputRasterDataProvider;
+    double mMaxProgressDuringBlockWriting = 100;
 };
 
 class QgsCellStatisticsAlgorithm : public QgsCellStatisticsAlgorithmBase
