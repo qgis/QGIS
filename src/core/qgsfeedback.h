@@ -49,6 +49,8 @@ class CORE_EXPORT QgsFeedback : public QObject
       : QObject( parent )
     {}
 
+    ~QgsFeedback() override;
+
     //! Tells whether the operation has been canceled already
     bool isCanceled() const SIP_HOLDGIL { return mCanceled; }
 
@@ -98,6 +100,20 @@ class CORE_EXPORT QgsFeedback : public QObject
       mProcessedCount = processedCount;
       emit processedCountChanged( processedCount );
     }
+
+    /**
+     * Returns a feedback object whose [0, 100] progression range will
+     * be mapped to \a parentFeedback [\a startPercentage, \a endPercentage].
+     *
+     * Cancellation on the returned feedback causes cancellation of the
+     * parent feedback.
+     *
+     * \a parentFeedback must be kept alive while the returned feedback is used.
+     *
+     * \since QGIS 4.0
+     */
+    static std::unique_ptr<QgsFeedback> createScaledFeedback(
+      QgsFeedback *parentFeedback, double startPercentage, double endPercentage );
 
   public slots:
 
