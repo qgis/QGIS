@@ -438,9 +438,20 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
 
 QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
   : QgsLayerTreeViewBase( parent )
-  , mLayerTree( rootNode )
 {
-  mModel = new QgsElevationProfileLayerTreeModel( rootNode, this );
+  setLayerTree( rootNode );
+}
+
+void QgsElevationProfileLayerTreeView::setLayerTree( QgsLayerTree *rootNode )
+{
+  if ( mModel )
+  {
+    mModel->deleteLater();
+  }
+
+  mLayerTree = rootNode;
+
+  mModel = new QgsElevationProfileLayerTreeModel( mLayerTree, this );
 
   connect( mModel, &QgsElevationProfileLayerTreeModel::addLayers, this, &QgsElevationProfileLayerTreeView::addLayers );
   mProxyModel = new QgsElevationProfileLayerTreeProxyModel( mModel, this );
