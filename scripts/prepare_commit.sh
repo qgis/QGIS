@@ -61,11 +61,17 @@ else
   "${TOPLEVEL}"/tests/code_layout/test_doxygen_layout.sh $MODIFIED
 fi
 
-MODIFIED_SHELLFILES=$(echo "${MODIFIED}" | grep '\.sh$' || true)
+MODIFIED_SHELLFILES=""
+for f in $MODIFIED; do
+  if [[ "$f" == *.sh ]]; then
+    MODIFIED_SHELLFILES="$MODIFIED_SHELLFILES $f"
+  fi
+done
+
 if [ -n "$MODIFIED_SHELLFILES" ]; then
   # Run shell checker if requirements are met
   if command -v shellcheck > /dev/null; then
-    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh "${MODIFIED_SHELLFILES}"
+    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh $MODIFIED_SHELLFILES
   else
     echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
   fi
