@@ -39,6 +39,7 @@ jobs:
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
               git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
               git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+              git checkout pr-head
               MODIFIED_FILES=($(git diff --name-only origin/${{ github.event.pull_request.base.ref }} pr-head))
             elif [ "${{ github.event_name }}" == "push" ]; then
               MODIFIED_FILES=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
