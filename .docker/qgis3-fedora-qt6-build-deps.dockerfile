@@ -20,6 +20,7 @@ RUN dnf -y --refresh install \
     gdal \
     gdal-devel \
     gdal-python-tools \
+    GeographicLib-devel \
     geos-devel \
     gpsbabel \
     grass \

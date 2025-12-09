@@ -515,6 +515,7 @@ set(QGIS_CORE_SRCS
   qgslocalec.cpp
   qgslocalizeddatapathregistry.cpp
   qgslogger.cpp
+  qgsmagneticmodel.cpp
   qgsmapclippingregion.cpp
   qgsmapclippingutils.cpp
   qgsmapdecoration.cpp
@@ -1227,6 +1228,7 @@ set(QGIS_CORE_HDRS
   qgslocalec.h
   qgslocalizeddatapathregistry.h
   qgslogger.h
+  qgsmagneticmodel.h
   qgsmapclippingregion.h
   qgsmapclippingutils.h
   qgsmapdecoration.h
@@ -2672,6 +2674,11 @@ if (WITH_COPC)
     ${CMAKE_SOURCE_DIR}/src/core/providers/vpc)
 endif()
 
+if (WITH_GEOGRAPHICLIB)
+  target_include_directories(qgis_core PUBLIC
+     ${GeographicLib_INCLUDE_DIR})
+endif()
+
 find_package(${QT_VERSION_BASE} COMPONENTS Multimedia REQUIRED)
 
 GENERATE_EXPORT_HEADER(
@@ -2812,6 +2819,12 @@ endif()
 if (WITH_SFCGAL)
   target_link_libraries(qgis_core
     SFCGAL::SFCGAL
+  )
+endif()
+
+if (WITH_GEOGRAPHICLIB)
+  target_link_libraries(qgis_core
+    ${GeographicLib_LIBRARIES}
   )
 endif()
 

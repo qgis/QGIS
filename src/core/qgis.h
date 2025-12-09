@@ -6309,6 +6309,21 @@ class CORE_EXPORT Qgis
     static int sfcgalVersionInt();
 
     /**
+     * Returns TRUE if the QGIS build contains GeographicLib.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasGeographicLib();
+
+    /**
+     * Returns the version of the GeographicLib library if QGIS is built with GeographicLib support.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based without GeographicLib.
+     * \since QGIS 4.0
+     */
+    static int geographicLibVersion();
+
+    /**
      * Returns TRUE if the QGIS build contains QtWebkit.
      *
      * \since QGIS 4.0

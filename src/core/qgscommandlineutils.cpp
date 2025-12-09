@@ -34,6 +34,10 @@
 #include <SFCGAL/version.h>
 #endif
 
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
+
 QString QgsCommandLineUtils::allVersions( )
 {
 
@@ -132,6 +136,23 @@ QString QgsCommandLineUtils::allVersions( )
   }
 #else
   versionString += QLatin1String( "No support for SFCGAL\n" );
+#endif
+
+  // GeographicLib version
+#ifdef WITH_GEOGRAPHICLIB
+  const QString geographicLibVersionCompiled = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR_INT ).arg( GEOGRAPHICLIB_VERSION_MINOR_INT ).arg( GEOGRAPHICLIB_VERSION_PATCH_INT );
+  const QString geographicLibVersionRunning = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH );
+  if ( geographicLibVersionCompiled != geographicLibVersionRunning )
+  {
+    versionString += QStringLiteral( "Compiled against GeographicLib %1\n" ).arg( geographicLibVersionCompiled );
+    versionString += QStringLiteral( "Running against GeographicLib %1\n" ).arg( geographicLibVersionRunning );
+  }
+  else
+  {
+    versionString += QStringLiteral( "GeographicLib version %1\n" ).arg( geographicLibVersionCompiled );
+  }
+#else
+  versionString += QLatin1String( "No support for GeographicLib\n" );
 #endif
 
   // SQLite version

@@ -3589,6 +3589,24 @@ Else throws an exception.
 .. versionadded:: 4.0
 %End
 
+    static bool hasGeographicLib();
+%Docstring
+Returns ``True`` if the QGIS build contains GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
+    static int geographicLibVersion();
+%Docstring
+Returns the version of the GeographicLib library if QGIS is built with
+GeographicLib support.
+
+:raises QgsNotSupportedException: on QGIS builds based without
+                                  GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
     static bool hasQtWebkit();
 %Docstring
 Returns ``True`` if the QGIS build contains QtWebkit.
