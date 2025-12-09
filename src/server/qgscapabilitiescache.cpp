@@ -19,8 +19,8 @@
 #include "moc_qgscapabilitiescache.cpp"
 
 #include <QCoreApplication>
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
 
 #if defined( Q_OS_LINUX )
 #include <sys/vfs.h>
