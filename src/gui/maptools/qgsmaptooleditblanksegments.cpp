@@ -66,7 +66,10 @@ namespace
         return true;
       }
 
-      bool visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier )
+      /**
+       * Visit recursively \a symbol
+       */
+      bool visitSymbol( const QgsSymbol *symbol )
       {
         if ( symbol && !mSymbol )
           mSymbol = symbol;
@@ -83,7 +86,7 @@ namespace
 
           // recurse over sub symbols
           if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
-               subSymbol && !visitSymbol( subSymbol, leafIdentifier ) )
+               subSymbol && !visitSymbol( subSymbol ) )
           {
             return false;
           }
@@ -98,7 +101,7 @@ namespace
         {
           auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
           if ( symbolEntity->symbol() )
-            visitSymbol( symbolEntity->symbol(), leaf.identifier );
+            visitSymbol( symbolEntity->symbol() );
         }
         return true;
       }
@@ -125,6 +128,10 @@ namespace
       const QString &mSymbolLayerId;
   };
 
+  /**
+   * Helper method to access point from \a points for given \a partIndex part, \a ringIndex ring, \a pointIndex
+   * and dealing with error in case of out-of-bounds index
+   */
   const QPointF &pointAt( const QList<QList<QPolygonF>> &points, int partIndex, int ringIndex, int pointIndex )
   {
     if ( partIndex < 0 || partIndex >= points.count() )
@@ -141,33 +148,150 @@ namespace
     return pts.at( pointIndex );
   }
 
+  enum ProjectedPointStatus
+  {
+    OK,            // ok, point is on the segment
+    LINE_EMPTY,    // line is empty, cannot project point
+    NOT_ON_SEGMENT // point is on the line, but not on the segment
+  };
+
+  /**
+ * Returns point projected on segment defined by lineStartPt and lineEndPt
+ * distance is updated with the distance between the point and the returned projected point
+ */
+  QPointF projectedPoint( const QPointF &lineStartPt, const QPointF &lineEndPt, const QPointF &point, double &distance, ProjectedPointStatus &status )
+  {
+    status = ProjectedPointStatus::OK;
+    distance = -1;
+
+    const double Ax = lineStartPt.x();
+    const double Ay = lineStartPt.y();
+    const double Bx = lineEndPt.x();
+    const double By = lineEndPt.y();
+    const double Cx = point.x();
+    const double Cy = point.y();
+
+    const double length = QgsGeometryUtilsBase::distance2D( Ax, Ay, Bx, By );
+    if ( length == 0 )
+    {
+      status = ProjectedPointStatus::LINE_EMPTY;
+      return QPointF();
+    }
+
+    const double r = ( ( Cx - Ax ) * ( Bx - Ax ) + ( Cy - Ay ) * ( By - Ay ) ) / std::pow( length, 2 );
+    if ( r < 0 or r > 1 )
+    {
+      status = ProjectedPointStatus::NOT_ON_SEGMENT;
+    }
+
+    // projected point
+    const double Px = Ax + r * ( Bx - Ax );
+    const double Py = Ay + r * ( By - Ay );
+
+    distance = QgsGeometryUtilsBase::distance2D( Cx, Cy, Px, Py );
+
+    return QPointF( Px, Py );
+  }
+
 } //namespace
 ///@endcond
 
 
+/**
+ * Rubber band used to draw blank segments on edition
+ */
 class QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand : public QgsRubberBand
 {
   public:
+    /**
+     * Constructor. Initialize blank segment rubber band points
+     * \param partIndex geometry part index of the blank segment
+     * \param ringIndex geometry ring index of the blank segment
+     * \param startIndex rendered points index of the blank segment start point
+     * \param endIndex rendered points index of the blank segment end point
+     * \param startPt blank segment start point
+     * \param endPt blank segment end point
+     * \param canvas map canvas
+     * \param points feature rendered points
+     */
     BlankSegmentRubberBand( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt, QgsMapCanvas *canvas, const FeaturePoints &points );
+
+    /**
+     * \param canvas map canvas
+     * \param points feature rendered points
+     */
     BlankSegmentRubberBand( QgsMapCanvas *canvas, const FeaturePoints &points );
 
+    /**
+     * Initialize blank segment rubber band points
+     * \param partIndex geometry part index of the blank segment
+     * \param ringIndex geometry ring index of the blank segment
+     * \param startIndex rendered points index of the blank segment start point
+     * \param endIndex rendered points index of the blank segment end point
+     * \param startPt blank segment start point
+     * \param endPt blank segment end point
+     */
     void setPoints( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt );
+
+    /**
+     * Copy \a blankSegment rubber band information into this one
+     */
     void copyFrom( const BlankSegmentRubberBand &blankSegment );
+
+    /**
+     * Set highligh state according to \a highlighted
+     */
     void setHighlighted( bool highlighted );
 
+    /**
+     * Returns start point
+     */
     const QPointF &getStartPoint() const;
+
+    /**
+     * Returns end point
+     */
     const QPointF &getEndPoint() const;
+
+    /**
+     * Returns start index
+     */
     int getStartIndex() const;
+
+    /**
+     * Returns end index
+     */
     int getEndIndex() const;
+
+    /**
+     * Returns part index
+     */
     int getPartIndex() const;
+
+    /**
+     * Returns ring index
+     */
     int getRingIndex() const;
 
+    /**
+     * Returns start and end distance from the first rendered point expressed in \a unit units.
+     */
     QPair<double, double> getStartEndDistance( Qgis::RenderUnit unit ) const;
 
+    /**
+     * Returns blank segment points count
+     */
     int pointsCount() const;
+
+    /**
+     * Returns blank segments point at \a index
+     */
     const QPointF &pointAt( int index ) const;
 
   private:
+    /**
+     * Update rubber band displayed points according to blank segment points
+     */
     void updatePoints();
 
     int mPartIndex = -1;
@@ -234,49 +358,6 @@ void QgsMapToolEditBlankSegmentsBase::activate()
   }
 
   QgsMapTool::activate();
-}
-
-enum Status
-{
-  OK,            // ok, point is on the segment
-  LINE_EMPTY,    // line is empty, cannot project point
-  NOT_ON_SEGMENT // point is on the line, but not on the segment
-};
-
-// Returns point projected on segment defined by lineStartPt and lineEndPt
-// distance is updated with the distance between the point and the returned projected point
-QPointF projectedPoint( const QPointF &lineStartPt, const QPointF &lineEndPt, const QPointF &point, double &distance, Status &status )
-{
-  status = Status::OK;
-  distance = -1;
-
-  const double Ax = lineStartPt.x();
-  const double Ay = lineStartPt.y();
-  const double Bx = lineEndPt.x();
-  const double By = lineEndPt.y();
-  const double Cx = point.x();
-  const double Cy = point.y();
-
-  const double length = QgsGeometryUtilsBase::distance2D( Ax, Ay, Bx, By );
-  if ( length == 0 )
-  {
-    status = Status::LINE_EMPTY;
-    return QPointF();
-  }
-
-  const double r = ( ( Cx - Ax ) * ( Bx - Ax ) + ( Cy - Ay ) * ( By - Ay ) ) / std::pow( length, 2 );
-  if ( r < 0 or r > 1 )
-  {
-    status = Status::NOT_ON_SEGMENT;
-  }
-
-  // projected point
-  const double Px = Ax + r * ( Bx - Ax );
-  const double Py = Ay + r * ( By - Ay );
-
-  distance = QgsGeometryUtilsBase::distance2D( Cx, Cy, Px, Py );
-
-  return QPointF( Px, Py );
 }
 
 void QgsMapToolEditBlankSegmentsBase::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -557,7 +638,7 @@ int QgsMapToolEditBlankSegmentsBase::getClosestBlankSegmentIndex( const QPointF 
     for ( int iPoint = 1; iPoint < blankSegment->pointsCount(); iPoint++ )
     {
       double d = 0;
-      Status status = Status::OK;
+      ProjectedPointStatus status = ProjectedPointStatus::OK;
 
       try
       {
@@ -571,14 +652,14 @@ int QgsMapToolEditBlankSegmentsBase::getClosestBlankSegmentIndex( const QPointF 
 
       switch ( status )
       {
-        case Status::LINE_EMPTY:
+        case ProjectedPointStatus::LINE_EMPTY:
           continue;
 
-        case Status::NOT_ON_SEGMENT:
+        case ProjectedPointStatus::NOT_ON_SEGMENT:
           d = std::min( ( blankSegment->getStartPoint() - point ).manhattanLength(), ( blankSegment->getEndPoint() - point ).manhattanLength() );
           break;
 
-        case Status::OK:
+        case ProjectedPointStatus::OK:
           break;
       }
 
@@ -608,15 +689,15 @@ QPointF QgsMapToolEditBlankSegmentsBase::getClosestPoint( const QPointF &point, 
       for ( int i = 1; i < points.count(); i++ )
       {
         double d = 0;
-        Status status = Status::OK;
+        ProjectedPointStatus status = ProjectedPointStatus::OK;
         QPointF P = projectedPoint( points.at( i - 1 ), points.at( i ), point, d, status );
         switch ( status )
         {
-          case Status::LINE_EMPTY:
-          case Status::NOT_ON_SEGMENT:
+          case ProjectedPointStatus::LINE_EMPTY:
+          case ProjectedPointStatus::NOT_ON_SEGMENT:
             continue;
 
-          case Status::OK:
+          case ProjectedPointStatus::OK:
             break;
         }
 

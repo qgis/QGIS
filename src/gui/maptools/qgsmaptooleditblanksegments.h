@@ -35,6 +35,18 @@ class QgsSymbolLayer;
  * \ingroup gui
  * \brief Map tool base class to edit blank segments. Digitized blank segments are stored per feature
  * inside a field as a string ( \see QgsBlankSegmentUtils::parseBlankSegments for string format)
+ *
+ * This tool allows to:
+ *
+ * - Click in the neighborhood of the rendered line to start creating a blank segment, click again to
+ *
+ * finish editing the segment.
+ *
+ * - Select a blank segment, press Del key to remove it
+ * - Drag the start/end of an already existing blank segment and move it along the line to
+ *
+ * reduce/enlarge it
+ *
  * \see QgsMapToolEditBlankSegments
  * \since QGIS 4.0
 */
@@ -68,29 +80,75 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     FeaturePoints mPoints;
 
   private:
-    // compute and return current blank segment start and end distance
+    /**
+     * compute and return current blank segment start and end distance
+     */
     QPair<double, double> getStartEndDistance() const;
+
+    /**
+     * Update feature attribute based on current edited blank segments
+     */
     void updateAttribute();
+
+    /**
+     * Load current feature rendered points and feature existing blank segments
+     */
     void loadFeaturePoints();
 
+    /**
+     * Create symbol layer used to retrieve rendered points from symbol layer
+     * The feature will be rendered using this symbol layer so we can retrieve the rendered points in
+     * renderPolyline() methods
+     */
     virtual QgsTemplatedLineSymbolLayerBase *createRenderedPointsSymbolLayer( const QgsTemplatedLineSymbolLayerBase *original ) = 0;
 
+    /**
+     * Returns feature blank segment index closest to \a point, -1 if none could be found (there is
+     * no existing blank segments for instance).
+     * \param distance will be set to the distance between \a point and the returned blank segment
+     */
     int getClosestBlankSegmentIndex( const QPointF &point, double &distance ) const;
+
+    /**
+     * Returns rendered point closest to \a point
+     * \param distance updated with the distance between \a point and the returned rendered point
+     * \param partIndex will be set to the geometry part index of the returned point
+     * \param ringIndex will be set to the geometry ring index of the returned point
+     * \param pointIndex will be set to the rendered points index of the returned point
+     */
     QPointF getClosestPoint( const QPointF &point, double &distance, int &partIndex, int &ringIndex, int &pointIndex ) const;
 
+    /**
+     * Update start and end rubber band (anchor points used to resize the blank segment rubber band)
+     * accoring to current map tool state and selected blank segment
+     */
     void updateStartEndRubberBand();
+
+    /**
+     * Update currently hovered (if any) blank segment according to mouse position \a pos
+     */
     void updateHoveredBlankSegment( const QPoint &pos );
+
+    /**
+     * Set currently edited blank segment
+     */
     void setCurrentBlankSegment( int currentBlankSegmentIndex );
 
+    /**
+     * Rubber band used to draw blank segments on edition
+     */
     class BlankSegmentRubberBand;
 
+    /**
+     * Map tool state
+     */
     enum State
     {
-      SELECT_FEATURE,
-      FEATURE_SELECTED,
-      BLANK_SEGMENT_SELECTED,
-      BLANK_SEGMENT_MODIFICATION_STARTED,
-      BLANK_SEGMENT_CREATION_STARTED
+      SELECT_FEATURE,                     //!< User needs to select a feature
+      FEATURE_SELECTED,                   //!< User has selected a feature
+      BLANK_SEGMENT_SELECTED,             //!< User has selected a blank segment
+      BLANK_SEGMENT_MODIFICATION_STARTED, //!< User has started to drag start/end of an existing blank segment
+      BLANK_SEGMENT_CREATION_STARTED      //!< User has started to create a new blank segment
     };
 
     std::vector<QObjectUniquePtr<BlankSegmentRubberBand>> mBlankSegments;
@@ -111,7 +169,6 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     QObjectUniquePtr<BlankSegmentRubberBand> mEditedBlankSegment;
     QObjectUniquePtr<QgsRubberBand> mStartRubberBand;
     QObjectUniquePtr<QgsRubberBand> mEndRubberBand;
-
 
     friend class TestQgsMapToolEditBlankSegments;
 };
