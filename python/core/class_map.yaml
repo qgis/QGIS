@@ -2374,9 +2374,9 @@ QgsClassificationMethod.symmetryPoint: src/core/classification/qgsclassification
 QgsClassificationMethod.valuesRequired: src/core/classification/qgsclassificationmethod.h#L177
 QgsClassificationMethod.writeXml: src/core/classification/qgsclassificationmethod.h#L169
 QgsClassificationMethod: src/core/classification/qgsclassificationmethod.h#L88
-QgsClassificationMethodRegistry.addMethod: src/core/classification/qgsclassificationmethodregistry.h#L48
-QgsClassificationMethodRegistry.icon: src/core/classification/qgsclassificationmethodregistry.h#L57
-QgsClassificationMethodRegistry: src/core/classification/qgsclassificationmethodregistry.h#L38
+QgsClassificationMethodRegistry.addMethod: src/core/classification/qgsclassificationmethodregistry.h#L50
+QgsClassificationMethodRegistry.icon: src/core/classification/qgsclassificationmethodregistry.h#L59
+QgsClassificationMethodRegistry: src/core/classification/qgsclassificationmethodregistry.h#L40
 QgsClassificationPrettyBreaks.icon: src/core/classification/qgsclassificationprettybreaks.h#L35
 QgsClassificationPrettyBreaks.id: src/core/classification/qgsclassificationprettybreaks.h#L33
 QgsClassificationPrettyBreaks.name: src/core/classification/qgsclassificationprettybreaks.h#L32
