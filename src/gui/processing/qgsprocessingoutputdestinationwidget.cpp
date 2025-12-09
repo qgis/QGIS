@@ -198,6 +198,8 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
   value.createOptions.insert( QStringLiteral( "fileEncoding" ), mEncoding );
   if ( mUseRemapping )
     value.setRemappingDefinition( mRemapDefinition );
+  if ( !mFormat.isEmpty() )
+    value.setFormat( mFormat );
   return value;
 }
 
@@ -429,6 +431,14 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   {
     mUseTemporary = false;
     mUseRemapping = false;
+    if ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName() )
+    {
+      int spacePos = static_cast<int>( lastFilter.indexOf( ' ' ) );
+      if ( spacePos > 0 )
+      {
+        mFormat = lastFilter.left( spacePos );
+      }
+    }
     filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
