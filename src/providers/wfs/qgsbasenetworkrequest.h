@@ -140,7 +140,6 @@ class QgsBaseNetworkRequest : public QObject
     bool mFakeURLIncludesContentType = false;
 
   protected:
-
     /**
      * Returns (translated) error message, composed with a
      * (possibly translated, but sometimes coming from server) reason

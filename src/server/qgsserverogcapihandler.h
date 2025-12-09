@@ -378,7 +378,6 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     json jsonTags() const SIP_SKIP;
 
   protected:
-
     /**
      * Set the content types to \a contentTypes
      */

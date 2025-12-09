@@ -35,7 +35,6 @@ class GUI_EXPORT QgsDial : public QDial
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDial
      * \param parent parent object

@@ -19,7 +19,6 @@ Base class for any widget that can be shown as an inline panel.
 #include "qgspanelwidget.h"
 %End
   public:
-
     QgsPanelWidget( QWidget *parent = 0 );
 %Docstring
 Base class for any widget that can be shown as an inline panel
@@ -200,7 +199,6 @@ caller.
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *event );
 
 %Docstring
@@ -228,7 +226,6 @@ tree changed, e.g dialogs.
 #include "qgspanelwidget.h"
 %End
   public:
-
     QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = 0 );
 %Docstring
 Wrapper widget for existing widgets which can't have the inheritance

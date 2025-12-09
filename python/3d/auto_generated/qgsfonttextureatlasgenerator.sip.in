@@ -146,7 +146,6 @@ characters required for a set of strings.
 #include "qgsfonttextureatlasgenerator.h"
 %End
   public:
-
     static QgsFontTextureAtlas create( const QgsTextFormat &format, const QStringList &strings );
 %Docstring
 Creates the texture atlas for a set of ``strings``, using the specified

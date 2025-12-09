@@ -37,7 +37,6 @@ namespace QgsWms
       Q_GADGET
 
     public:
-
       /**
        * Exception codes as defined in OGC scpecifications for WMS 1.1.1 and
        * WMS 1.3.0. Some custom QGIS codes are defined too.
@@ -189,7 +188,6 @@ namespace QgsWms
   class QgsSecurityException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsSecurityException (HTTP error code 403 with
        * Security code name).
@@ -209,7 +207,6 @@ namespace QgsWms
   class QgsBadRequestException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsBadRequestException (HTTP error code 400).
        * \param code Error code

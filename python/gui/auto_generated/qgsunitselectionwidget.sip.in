@@ -29,7 +29,6 @@ This widget is designed to allow users to edit the properties of a
 #include "qgsunitselectionwidget.h"
 %End
   public:
-
     QgsMapUnitScaleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleWidget.
@@ -97,7 +96,6 @@ This dialog is designed to allow users to edit the properties of a
 #include "qgsunitselectionwidget.h"
 %End
   public:
-
     QgsMapUnitScaleDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleDialog.
@@ -151,7 +149,6 @@ minimum and maximum scaling.
 #include "qgsunitselectionwidget.h"
 %End
   public:
-
     QgsUnitSelectionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsUnitSelectionWidget.

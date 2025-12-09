@@ -34,7 +34,6 @@ class QgsPointXY;
 class ANALYSIS_EXPORT QgsGeometryCheckError
 {
   public:
-
     /**
      * The status of an error.
      */
@@ -200,7 +199,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     virtual QIcon icon() const;
 
   protected:
-
     /**
      * Create a new geometry check error with the parent \a check and for the
      * layer with \a layerId and \a featureId.

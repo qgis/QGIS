@@ -201,7 +201,6 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingToolboxModelProviderNode, linked to the
      * specified \a provider.
@@ -241,7 +240,6 @@ class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolbo
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingToolboxModelGroupNode.
      *
@@ -279,7 +277,6 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
      * with the specified \a algorithm.
@@ -309,7 +306,6 @@ class GUI_EXPORT QgsProcessingToolboxModelParameterNode : public QgsProcessingTo
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingToolboxModelParameterNode, associated
      * with the specified \a paramType.

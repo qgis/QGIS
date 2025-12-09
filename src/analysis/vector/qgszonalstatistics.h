@@ -46,7 +46,6 @@ class QgsFeatureSource;
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
-
     /**
      * Convenience constructor for QgsZonalStatistics, using an input raster layer.
      *

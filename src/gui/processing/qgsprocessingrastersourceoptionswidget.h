@@ -37,7 +37,6 @@ class GUI_EXPORT QgsProcessingRasterSourceOptionsWidget : public QgsPanelWidget,
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProcessingRasterSourceOptionsWidget, with the specified \a parent widget.
      */

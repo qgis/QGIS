@@ -67,7 +67,6 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotCanvas, with the specified \a parent widget.
      */

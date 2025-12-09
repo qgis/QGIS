@@ -59,7 +59,6 @@ class GUI_EXPORT QgsCodeEditorHistoryDialog : public QDialog, private Ui::QgsCod
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodeEditorHistoryDialog.
      * \param editor associated code editor widget

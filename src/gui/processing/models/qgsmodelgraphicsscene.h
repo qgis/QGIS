@@ -246,7 +246,6 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void showChildAlgorithmLog( const QString &childId );
 
   protected:
-
     /**
      * Creates a new graphic item for a model parameter.
      */

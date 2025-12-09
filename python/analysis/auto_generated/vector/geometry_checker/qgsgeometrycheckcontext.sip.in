@@ -24,7 +24,6 @@ Base configuration for geometry checks.
 #include "qgsgeometrycheckcontext.h"
 %End
   public:
-
     QgsGeometryCheckContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext, const QgsProject *mProject = 0, const int uniqueIdFieldIndex = -1 );
 %Docstring
 Creates a new QgsGeometryCheckContext.

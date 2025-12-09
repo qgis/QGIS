@@ -23,7 +23,6 @@ Contains utility functions for using primary keys for feature IDs.
 #include "qgsserverfeatureid.h"
 %End
   public:
-
     static QString getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes );
 %Docstring
 Returns the feature id based on primary keys.

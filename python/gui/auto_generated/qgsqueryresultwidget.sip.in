@@ -163,7 +163,6 @@ connection (an instance of
 #include "qgsqueryresultwidget.h"
 %End
   public:
-
     QgsQueryResultDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsQueryResultDialog.
@@ -201,7 +200,6 @@ connection (an instance of
 #include "qgsqueryresultwidget.h"
 %End
   public:
-
     QgsQueryResultMainWindow( QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0, const QString &identifierName = QString() );
 %Docstring
 Constructor for QgsQueryResultMainWindow.

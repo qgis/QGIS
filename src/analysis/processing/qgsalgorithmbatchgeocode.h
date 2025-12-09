@@ -69,7 +69,6 @@ class QgsGeocoderInterface;
 class ANALYSIS_EXPORT QgsBatchGeocodeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
-
     /**
      * Constructor for QgsBatchGeocodeAlgorithm.
      *

@@ -45,7 +45,6 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty history provider registry.
      *
@@ -99,7 +98,6 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     class HistoryEntryOptions
     {
       public:
-
         /**
          * Constructor for HistoryEntryOptions.
          */
@@ -212,7 +210,6 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
-
     /**
      * Creates an on-disk history database.
      */

@@ -224,7 +224,6 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
     void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
 
   private:
-
     /**
      * Reload the current symbol in the view.
      */
@@ -290,7 +289,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSymbolSelectorDialog.
      *

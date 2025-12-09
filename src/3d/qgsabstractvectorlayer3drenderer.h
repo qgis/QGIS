@@ -36,7 +36,6 @@ class QgsVectorLayer;
 class _3D_EXPORT QgsVectorLayer3DTilingSettings
 {
   public:
-
     /**
      * Returns number of zoom levels. One zoom level means there will be one tile.
      * Every extra zoom level multiplies number of tiles by four. For example, three

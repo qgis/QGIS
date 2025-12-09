@@ -23,7 +23,6 @@ A combobox which displays available layouts from a
 #include "qgslayoutcombobox.h"
 %End
   public:
-
     explicit QgsLayoutComboBox( QWidget *parent /TransferThis/ = 0, QgsLayoutManager *manager = 0 );
 %Docstring
 QgsLayoutComboBox creates a combo box to display a list of items in a

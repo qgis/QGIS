@@ -29,7 +29,6 @@
 class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
 {
   public:
-
     /**
      * Default constructor
      */

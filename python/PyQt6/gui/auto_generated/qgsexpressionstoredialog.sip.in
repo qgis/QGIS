@@ -22,7 +22,6 @@ A generic dialog for editing expression text, label and help text.
 #include "qgsexpressionstoredialog.h"
 %End
   public:
-
     QgsExpressionStoreDialog( const QString &label, const QString &expression, const QString &helpText, const QStringList &existingLabels = QStringList(), QWidget *parent = 0 );
 %Docstring
 Creates a QgsExpressionStoreDialog with given ``label``, ``expression``

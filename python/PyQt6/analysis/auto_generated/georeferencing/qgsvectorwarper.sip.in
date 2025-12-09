@@ -22,7 +22,6 @@ and destination GCPs.
 #include "qgsvectorwarper.h"
 %End
   public:
-
     explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs );
 %Docstring
 Constructor for QgsVectorWarper.
@@ -63,7 +62,6 @@ A task for warping a vector layer in a background thread.
 #include "qgsvectorwarper.h"
 %End
   public:
-
     QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs, QgsVectorLayer *layer, const QString &fileName );
 %Docstring
 Constructor for QgsVectorWarperTask.

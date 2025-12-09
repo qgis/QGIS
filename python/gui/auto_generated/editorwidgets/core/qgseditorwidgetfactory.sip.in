@@ -29,7 +29,6 @@ dialog.
 #include "qgseditorwidgetfactory.h"
 %End
   public:
-
     QgsEditorWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 %Docstring
 Constructor

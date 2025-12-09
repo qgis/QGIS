@@ -23,7 +23,6 @@ Base class for widgets which allow control over the properties of
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsNumericFormatWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsNumericFormatWidget.
@@ -81,7 +80,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBasicNumericFormatWidget, initially showing the
@@ -110,7 +108,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBearingNumericFormatWidget, initially showing the
@@ -138,7 +135,6 @@ A dialog which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsBearingNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBearingNumericFormatDialog, initially showing the
@@ -170,7 +166,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeographicCoordinateNumericFormatWidget, initially
@@ -198,7 +193,6 @@ A dialog which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeographicCoordinateNumericFormatDialog, initially
@@ -230,7 +224,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCurrencyNumericFormatWidget, initially showing the
@@ -260,7 +253,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPercentageNumericFormatWidget, initially showing the
@@ -290,7 +282,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScientificNumericFormatWidget, initially showing the
@@ -319,7 +310,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsFractionNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFractionNumericFormatWidget, initially showing the
@@ -348,7 +338,6 @@ A widget which allows control over the properties of a
 #include "qgsnumericformatwidget.h"
 %End
   public:
-
     QgsExpressionBasedNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsExpressionBasedNumericFormatWidget, initially showing

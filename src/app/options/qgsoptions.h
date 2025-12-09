@@ -45,7 +45,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 {
     Q_OBJECT
   public:
-
     /**
      * Behavior to use when encountering a layer with an unknown CRS
      * \since QGIS 3.10

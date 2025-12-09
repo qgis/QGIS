@@ -33,7 +33,6 @@ class QgsFeature;
 class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
 {
   public:
-
     /**
      * Checks if the layer is published in WFS (and perform additional checks for access
      * control if plugins are enabled)

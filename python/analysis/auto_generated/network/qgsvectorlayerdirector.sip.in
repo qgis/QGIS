@@ -19,7 +19,6 @@ Determines creating a graph from a vector line layer.
 #include "qgsvectorlayerdirector.h"
 %End
   public:
-
     enum Direction
     {
       DirectionForward,

@@ -24,7 +24,6 @@ credentials to an authentication configuration.
 #include "qgsauthsettingswidget.h"
 %End
   public:
-
     enum WarningType
     {
       ProjectFile,

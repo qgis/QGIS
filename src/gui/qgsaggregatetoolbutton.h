@@ -34,7 +34,6 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */

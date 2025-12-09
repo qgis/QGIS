@@ -26,7 +26,6 @@ inherited variables from a :py:class:`QgsExpressionContext`.
 #include "qgsvariableeditorwidget.h"
 %End
   public:
-
     QgsVariableEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsVariableEditorWidget.

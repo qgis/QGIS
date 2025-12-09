@@ -189,7 +189,6 @@ Processing toolbox model node corresponding to a Processing provider.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
 %Docstring
 Constructor for QgsProcessingToolboxModelProviderNode, linked to the
@@ -226,7 +225,6 @@ Processing toolbox model node corresponding to a group of algorithms.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelGroupNode( const QString &id, const QString &name );
 %Docstring
 Constructor for QgsProcessingToolboxModelGroupNode.
@@ -266,7 +264,6 @@ Processing toolbox model node corresponding to an algorithm.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 %Docstring
 Constructor for QgsProcessingToolboxModelAlgorithmNode, associated with
@@ -299,7 +296,6 @@ Processing toolbox model node corresponding to a parameter.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelParameterNode( const QgsProcessingParameterType *paramType );
 %Docstring
 Constructor for QgsProcessingToolboxModelParameterNode, associated with

@@ -31,7 +31,6 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a QgsExpressionStoreDialog with given \a label, \a expression and \a helpText.
      * \a existingLabels is an optional list of existing labels for unique label validation,

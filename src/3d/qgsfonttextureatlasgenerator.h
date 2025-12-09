@@ -185,7 +185,6 @@ class _3D_EXPORT QgsFontTextureAtlas
 class _3D_EXPORT QgsFontTextureAtlasGenerator
 {
   public:
-
     /**
      * Creates the texture atlas for a set of \a strings, using the specified text \a format.
      */

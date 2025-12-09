@@ -37,7 +37,6 @@ class GUI_EXPORT QgsDatabaseQueryHistoryWidget : public QgsHistoryWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDatabaseQueryHistoryWidget, with the specified \a parent widget.
      *

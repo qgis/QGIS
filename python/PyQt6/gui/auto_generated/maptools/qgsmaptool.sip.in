@@ -66,7 +66,6 @@ For example map pan and zoom features are implemented as map tools.
       sipType = nullptr;
 %End
   public:
-
     enum Flag /BaseType=IntEnum/
     {
       Transient,

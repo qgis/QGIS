@@ -118,7 +118,6 @@ Shows a search widget on a filter form.
 #include "qgssearchwidgetwrapper.h"
 %End
   public:
-
     enum FilterFlag /BaseType=IntEnum/
     {
       EqualTo,

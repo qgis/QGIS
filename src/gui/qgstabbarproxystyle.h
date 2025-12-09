@@ -60,7 +60,6 @@ class QgsTabBar : public QTabBar
     Q_OBJECT
 
   public:
-
     /**
      * Create a new QgsTabBar with the optionally provided parent.
      */

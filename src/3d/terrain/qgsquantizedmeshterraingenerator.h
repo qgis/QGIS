@@ -38,7 +38,6 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new instance of a QgsQuantizedMeshTerrainGenerator object.
      */

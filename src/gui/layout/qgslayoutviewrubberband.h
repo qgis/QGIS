@@ -48,7 +48,6 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
 #endif
 
   public:
-
     /**
      * Constructor for QgsLayoutViewRubberBand.
      */
@@ -131,7 +130,6 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
     void sizeChanged( const QString &size );
 
   protected:
-
     /**
      * Calculates an updated bounding box rectangle from a original \a start position
      * and new \a position. If \a constrainSquare is TRUE then the bounding box will be
@@ -157,7 +155,6 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewRectangularRubberBand.
      */
@@ -187,7 +184,6 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewEllipticalRubberBand.
      */
@@ -217,7 +213,6 @@ class GUI_EXPORT QgsLayoutViewTriangleRubberBand : public QgsLayoutViewRubberBan
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewTriangleRubberBand.
      */

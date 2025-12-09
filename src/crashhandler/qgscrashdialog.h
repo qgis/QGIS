@@ -33,7 +33,6 @@ class QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
 {
     Q_OBJECT
   public:
-
     /**
      * A dialog to show a nicer crash dialog to the user.
      */
