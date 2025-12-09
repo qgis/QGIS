@@ -13,25 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptooleditblanksegments.h"
+
+#include <line_p.h>
+
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
-#include "qgsmaptooleditblanksegments.h"
-#include "moc_qgsmaptooleditblanksegments.cpp"
-
-#include "line_p.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgssymbol.h"
-#include "qgsnullpainterdevice.h"
-#include "qgsmapmouseevent.h"
-#include "qgsrubberband.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryimpl.h"
 #include "qgsguiutils.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsnullpainterdevice.h"
+#include "qgsrubberband.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssnappingutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptooleditblanksegments.cpp"
 
 constexpr int TOLERANCE = 20;
 
@@ -142,12 +144,48 @@ namespace
 } //namespace
 ///@endcond
 
+
+class QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand : public QgsRubberBand
+{
+  public:
+    BlankSegmentRubberBand( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt, QgsMapCanvas *canvas, const FeaturePoints &points );
+    BlankSegmentRubberBand( QgsMapCanvas *canvas, const FeaturePoints &points );
+
+    void setPoints( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt );
+    void copyFrom( const BlankSegmentRubberBand &blankSegment );
+    void setHighlighted( bool highlighted );
+
+    const QPointF &getStartPoint() const;
+    const QPointF &getEndPoint() const;
+    int getStartIndex() const;
+    int getEndIndex() const;
+    int getPartIndex() const;
+    int getRingIndex() const;
+
+    QPair<double, double> getStartEndDistance( Qgis::RenderUnit unit ) const;
+
+    int pointsCount() const;
+    const QPointF &pointAt( int index ) const;
+
+  private:
+    void updatePoints();
+
+    int mPartIndex = -1;
+    int mRingIndex = -1;
+    int mStartIndex = -1;
+    int mEndIndex = -1;
+    QPointF mStartPt;
+    QPointF mEndPt;
+    bool mNeedSwap = false;
+    const FeaturePoints &mPoints; //! all feature rendered points
+};
+
 QgsMapToolEditBlankSegmentsBase::QgsMapToolEditBlankSegmentsBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex )
   : QgsMapTool( canvas )
   , mLayer( layer )
   , mSymbolLayerId( symbolLayer->id() )
   , mBlankSegmentsFieldIndex( blankSegmentFieldIndex )
-  , mEditedBlankSegment( new BlankSegment( canvas, mPoints ) )
+  , mEditedBlankSegment( new BlankSegmentRubberBand( canvas, mPoints ) )
   , mStartRubberBand( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) )
   , mEndRubberBand( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) )
 {
@@ -371,7 +409,7 @@ void QgsMapToolEditBlankSegmentsBase::canvasPressEvent( QgsMapMouseEvent *e )
     case State::BLANK_SEGMENT_SELECTED:
     {
       Q_ASSERT( mCurrentBlankSegmentIndex > -1 && mCurrentBlankSegmentIndex < static_cast<int>( mBlankSegments.size() ) );
-      const QObjectUniquePtr<BlankSegment> &currentBlankSegment = mBlankSegments.at( mCurrentBlankSegmentIndex );
+      const QObjectUniquePtr<BlankSegmentRubberBand> &currentBlankSegment = mBlankSegments.at( mCurrentBlankSegmentIndex );
 
       // selected blank segment has changed
       if ( mHoveredBlankSegmentIndex > -1 && mHoveredBlankSegmentIndex != mCurrentBlankSegmentIndex )
@@ -405,14 +443,14 @@ void QgsMapToolEditBlankSegmentsBase::canvasPressEvent( QgsMapMouseEvent *e )
       // this is a new one
       if ( mCurrentBlankSegmentIndex < 0 )
       {
-        mBlankSegments.emplace_back( new BlankSegment( canvas(), mPoints ) );
+        mBlankSegments.emplace_back( new BlankSegmentRubberBand( canvas(), mPoints ) );
         mBlankSegments.back()->copyFrom( *mEditedBlankSegment );
         mState = State::FEATURE_SELECTED;
       }
       // modify an existing one
       else
       {
-        QObjectUniquePtr<BlankSegment> &blankSegment = mBlankSegments.at( mCurrentBlankSegmentIndex );
+        QObjectUniquePtr<BlankSegmentRubberBand> &blankSegment = mBlankSegments.at( mCurrentBlankSegmentIndex );
         blankSegment->copyFrom( *mEditedBlankSegment );
         mState = State::BLANK_SEGMENT_SELECTED;
       }
@@ -482,7 +520,7 @@ void QgsMapToolEditBlankSegmentsBase::keyPressEvent( QKeyEvent *e )
   }
 }
 
-QPair<double, double> QgsMapToolEditBlankSegmentsBase::BlankSegment::getStartEndDistance( Qgis::RenderUnit unit ) const
+QPair<double, double> QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::getStartEndDistance( Qgis::RenderUnit unit ) const
 {
   double startDistance = 0;
   const int startIndex = mNeedSwap ? mEndIndex : mStartIndex;
@@ -515,7 +553,7 @@ int QgsMapToolEditBlankSegmentsBase::getClosestBlankSegmentIndex( const QPointF 
   int iBlankSegment = -1;
   for ( int i = 0; i < static_cast<int>( mBlankSegments.size() ); i++ )
   {
-    const QObjectUniquePtr<BlankSegment> &blankSegment = mBlankSegments.at( i );
+    const QObjectUniquePtr<BlankSegmentRubberBand> &blankSegment = mBlankSegments.at( i );
     for ( int iPoint = 1; iPoint < blankSegment->pointsCount(); iPoint++ )
     {
       double d = 0;
@@ -691,7 +729,7 @@ void QgsMapToolEditBlankSegmentsBase::updateAttribute()
     return;
 
   QList<QList<QgsBlankSegmentUtils::BlankSegments>> blankSegments;
-  for ( const QObjectUniquePtr<BlankSegment> &blankSegment : mBlankSegments )
+  for ( const QObjectUniquePtr<BlankSegmentRubberBand> &blankSegment : mBlankSegments )
   {
     try
     {
@@ -828,13 +866,13 @@ void QgsMapToolEditBlankSegmentsBase::loadFeaturePoints()
         Line l2( points.at( iPoint ), points.at( iPoint - 1 ) );
         QPointF endPt = points.at( iPoint ) + l2.diffForInterval( currentLength - ba.second );
 
-        mBlankSegments.emplace_back( new BlankSegment( iPart, iRing, startIndex, endIndex, startPt, endPt, canvas(), mPoints ) );
+        mBlankSegments.emplace_back( new BlankSegmentRubberBand( iPart, iRing, startIndex, endIndex, startPt, endPt, canvas(), mPoints ) );
       }
     }
   }
 }
 
-QgsMapToolEditBlankSegmentsBase::BlankSegment::BlankSegment( QgsMapCanvas *canvas, const FeaturePoints &points )
+QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::BlankSegmentRubberBand( QgsMapCanvas *canvas, const FeaturePoints &points )
   : QgsRubberBand( canvas )
   , mPoints( points )
 {
@@ -842,13 +880,13 @@ QgsMapToolEditBlankSegmentsBase::BlankSegment::BlankSegment( QgsMapCanvas *canva
   setColor( QgsSettingsRegistryCore::settingsDigitizingLineColor->value() );
 }
 
-QgsMapToolEditBlankSegmentsBase::BlankSegment::BlankSegment( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt, QgsMapCanvas *canvas, const FeaturePoints &points )
-  : BlankSegment( canvas, points )
+QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::BlankSegmentRubberBand( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt, QgsMapCanvas *canvas, const FeaturePoints &points )
+  : BlankSegmentRubberBand( canvas, points )
 {
   setPoints( partIndex, ringIndex, startIndex, endIndex, startPt, endPt );
 }
 
-void QgsMapToolEditBlankSegmentsBase::BlankSegment::setPoints( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt )
+void QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::setPoints( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt )
 {
   mPartIndex = partIndex;
   mRingIndex = ringIndex;
@@ -881,7 +919,7 @@ void QgsMapToolEditBlankSegmentsBase::BlankSegment::setPoints( int partIndex, in
   updatePoints();
 }
 
-void QgsMapToolEditBlankSegmentsBase::BlankSegment::updatePoints()
+void QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::updatePoints()
 {
   const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
 
@@ -902,54 +940,54 @@ void QgsMapToolEditBlankSegmentsBase::BlankSegment::updatePoints()
 }
 
 
-void QgsMapToolEditBlankSegmentsBase::BlankSegment::copyFrom( const BlankSegment &blankSegment )
+void QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::copyFrom( const BlankSegmentRubberBand &blankSegment )
 {
   setPoints( blankSegment.mPartIndex, blankSegment.mRingIndex, blankSegment.getStartIndex(), blankSegment.getEndIndex(), blankSegment.getStartPoint(), blankSegment.getEndPoint() );
 }
 
-void QgsMapToolEditBlankSegmentsBase::BlankSegment::setHighlighted( bool highlighted )
+void QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::setHighlighted( bool highlighted )
 {
   setWidth( QgsGuiUtils::scaleIconSize( highlighted ? 4 : 2 ) );
   update();
 }
 
 
-const QPointF &QgsMapToolEditBlankSegmentsBase::BlankSegment::getStartPoint() const
+const QPointF &QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::getStartPoint() const
 {
   return mStartPt;
 }
 
-const QPointF &QgsMapToolEditBlankSegmentsBase::BlankSegment::getEndPoint() const
+const QPointF &QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::getEndPoint() const
 {
   return mEndPt;
 }
 
-int QgsMapToolEditBlankSegmentsBase::BlankSegment::getStartIndex() const
+int QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::getStartIndex() const
 {
   return mStartIndex;
 }
 
-int QgsMapToolEditBlankSegmentsBase::BlankSegment::getEndIndex() const
+int QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::getEndIndex() const
 {
   return mEndIndex;
 }
 
-int QgsMapToolEditBlankSegmentsBase::BlankSegment::getPartIndex() const
+int QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::getPartIndex() const
 {
   return mPartIndex;
 }
 
-int QgsMapToolEditBlankSegmentsBase::BlankSegment::getRingIndex() const
+int QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::getRingIndex() const
 {
   return mRingIndex;
 }
 
-int QgsMapToolEditBlankSegmentsBase::BlankSegment::pointsCount() const
+int QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::pointsCount() const
 {
   return std::abs( mEndIndex - mStartIndex ) + 2;
 }
 
-const QPointF &QgsMapToolEditBlankSegmentsBase::BlankSegment::pointAt( int index ) const
+const QPointF &QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::pointAt( int index ) const
 {
   return index == 0 ?
                     // first point
