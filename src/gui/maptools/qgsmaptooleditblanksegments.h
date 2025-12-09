@@ -18,13 +18,13 @@
 
 #define SIP_NO_FILE
 
-#include "qgsmaptool.h"
-#include "qgsmapcanvasitem.h"
 #include "qgsfeatureid.h"
-#include "qobjectuniqueptr.h"
 #include "qgslinesymbollayer.h"
-#include "qgssymbol.h"
+#include "qgsmapcanvasitem.h"
+#include "qgsmaptool.h"
 #include "qgsrubberband.h"
+#include "qgssymbol.h"
+#include "qobjectuniqueptr.h"
 
 class QgsMapToolBlankSegmentRubberBand;
 class QgsVectorLayer;
@@ -82,40 +82,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     void updateHoveredBlankSegment( const QPoint &pos );
     void setCurrentBlankSegment( int currentBlankSegmentIndex );
 
-    class BlankSegment : public QgsRubberBand
-    {
-      public:
-        BlankSegment( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt, QgsMapCanvas *canvas, const FeaturePoints &points );
-        BlankSegment( QgsMapCanvas *canvas, const FeaturePoints &points );
-
-        void setPoints( int partIndex, int ringIndex, int startIndex, int endIndex, QPointF startPt, QPointF endPt );
-        void copyFrom( const BlankSegment &blankSegment );
-        void setHighlighted( bool highlighted );
-
-        const QPointF &getStartPoint() const;
-        const QPointF &getEndPoint() const;
-        int getStartIndex() const;
-        int getEndIndex() const;
-        int getPartIndex() const;
-        int getRingIndex() const;
-
-        QPair<double, double> getStartEndDistance( Qgis::RenderUnit unit ) const;
-
-        int pointsCount() const;
-        const QPointF &pointAt( int index ) const;
-
-      private:
-        void updatePoints();
-
-        int mPartIndex = -1;
-        int mRingIndex = -1;
-        int mStartIndex = -1;
-        int mEndIndex = -1;
-        QPointF mStartPt;
-        QPointF mEndPt;
-        bool mNeedSwap = false;
-        const FeaturePoints &mPoints; //! all feature rendered points
-    };
+    class BlankSegmentRubberBand;
 
     enum State
     {
@@ -126,7 +93,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
       BLANK_SEGMENT_CREATION_STARTED
     };
 
-    std::vector<QObjectUniquePtr<BlankSegment>> mBlankSegments;
+    std::vector<QObjectUniquePtr<BlankSegmentRubberBand>> mBlankSegments;
     QgsVectorLayer *mLayer = nullptr;
     std::unique_ptr<QgsSymbol> mSymbol;
     const QString mSymbolLayerId;
@@ -141,7 +108,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
 
     // currently edited blank segment, start point is the fixed point and end point is the currently
     // modified one
-    QObjectUniquePtr<BlankSegment> mEditedBlankSegment;
+    QObjectUniquePtr<BlankSegmentRubberBand> mEditedBlankSegment;
     QObjectUniquePtr<QgsRubberBand> mStartRubberBand;
     QObjectUniquePtr<QgsRubberBand> mEndRubberBand;
 
