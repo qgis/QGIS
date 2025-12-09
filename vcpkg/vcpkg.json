@@ -121,7 +121,9 @@
             "qt3d",
             "qt5compat",
             "qtcharts",
-            "qtdeclarative"
+            "qtdeclarative",
+            "qtpositioning",
+            "qtserialport"
           ]
         },
         "py-pysal",
