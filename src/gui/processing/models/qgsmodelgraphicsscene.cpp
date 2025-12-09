@@ -224,10 +224,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             }
             addItem( arrow );
 
-            QgsModelChildAlgorithmGraphicItem *childAlgItem = mChildAlgorithmItems.value( it.value().childId() );
-            QString layerId = childAlgItem->results().inputs().value( parameter->name() ).toString();
-
-            addFeatureCountItemForArrow( arrow, layerId );
+            if ( QgsModelChildAlgorithmGraphicItem *childAlgItem = mChildAlgorithmItems.value( it.value().childId() ) )
+            {
+              QString layerId = childAlgItem->results().inputs().value( parameter->name() ).toString();
+              addFeatureCountItemForArrow( arrow, layerId );
+            }
           }
         }
         if ( parameter->isDestination() )
@@ -316,11 +317,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       QgsModelArrowItem *arrow = new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, QgsModelArrowItem::Marker::Circle, item, QgsModelArrowItem::Marker::Circle );
       addItem( arrow );
 
-      QgsModelChildAlgorithmGraphicItem *childItem = mChildAlgorithmItems.value( it.value().childId() );
-      QString layerId = childItem->results().outputs().value( outputIt.value().childOutputName() ).toString();
-
-      addFeatureCountItemForArrow( arrow, layerId );
-
+      if ( QgsModelChildAlgorithmGraphicItem *childItem = mChildAlgorithmItems.value( it.value().childId() ) )
+      {
+        QString layerId = childItem->results().outputs().value( outputIt.value().childOutputName() ).toString();
+        addFeatureCountItemForArrow( arrow, layerId );
+      }
 
       addCommentItemForComponent( model, outputIt.value(), item );
     }
