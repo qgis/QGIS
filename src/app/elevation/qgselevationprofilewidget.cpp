@@ -152,7 +152,6 @@ void QgsElevationProfileLayersDialog::filterVisible( bool enabled )
 QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas )
   : QWidget( nullptr )
   , mProfile( profile )
-  , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( mProfile->layerTree(), QgsProject::instance(), this ) )
 {
   setObjectName( QStringLiteral( "ElevationProfile" ) );
 
@@ -160,6 +159,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   connect( mProfile, &QgsElevationProfile::nameChanged, this, [this]( const QString &newName ) {
     mDockableWidgetHelper->setWindowTitle( newName );
   } );
+  connect( mProfile, &QgsElevationProfile::useProjectLayerTreeChanged, this, [this] { setupLayerTreeView( true ); } );
 
   setAttribute( Qt::WA_DeleteOnClose );
   const QgsSettings setting;
@@ -181,7 +181,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   mPanTool = new QgsPlotToolPan( mCanvas );
 
-  mLayerTreeView = new QgsAppElevationProfileLayerTreeView( mProfile->layerTree() );
+  mLayerTreeView = new QgsAppElevationProfileLayerTreeView( mProfile->layerTree() ? mProfile->layerTree() : QgsProject::instance()->layerTreeRoot() );
   connect( mLayerTreeView, &QgsAppElevationProfileLayerTreeView::addLayers, this, &QgsElevationProfileWidget::addLayersInternal );
 
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [this]( const QModelIndex &index ) {
@@ -207,7 +207,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   connect( addLayerAction, &QAction::triggered, this, &QgsElevationProfileWidget::addLayers );
   toolBar->addAction( addLayerAction );
 
-  toolBar->addAction( mLayerTreeView->defaultActions()->actionAddGroup( this ) );
+  mActionAddGroup = mLayerTreeView->defaultActions()->actionAddGroup( this );
+  toolBar->addAction( mActionAddGroup );
 
   QAction *showLayerTree = new QAction( tr( "Show Layer Tree" ), this );
   showLayerTree->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconLayerTree.svg" ) ) );
@@ -376,6 +377,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     mOptionsMenu->addAction( mScaleRatioSettingsAction );
   }
 
+  mSyncLayerTreeAction = new QAction( tr( "Synchronize Layers to Project" ), this );
+  mSyncLayerTreeAction->setCheckable( true );
+  mSyncLayerTreeAction->setChecked( profile->useProjectLayerTree() );
+  connect( mSyncLayerTreeAction, &QAction::toggled, this, &QgsElevationProfileWidget::syncProjectToggled );
+  connect( mProfile, &QgsElevationProfile::useProjectLayerTreeChanged, mSyncLayerTreeAction, &QAction::setChecked );
+  mOptionsMenu->addAction( mSyncLayerTreeAction );
+
   mOptionsMenu->addSeparator();
 
   mToleranceSettingsAction = new QgsElevationProfileToleranceWidgetSettingsAction( mOptionsMenu );
@@ -527,20 +535,18 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   mSetCurveTimer->stop();
   connect( mSetCurveTimer, &QTimer::timeout, this, &QgsElevationProfileWidget::updatePlot );
 
-  // initially populate layer tree with project layers and registered sources
-  mLayerTreeView->populateInitialSources( QgsProject::instance() );
+  setupLayerTreeView( false );
+
   // the layer tree registry bridge we rely on to sync project layers with the layer tree ignores layers added to the project
   // but not the legend -- this ignores eg loading layers from QLR files or pasted layers, which have special logic which directly
   // manipulate the PROJECT's layer tree ONLY, and consequently do not trigger the QgsProject::legendLayersAdded signal which the
   // bridge relies on. So we also need to explicitly listen out for QgsProject::layersAddedWithoutLegend here, to ensure that
   // layers added via QLR or copy/paste are also added to the elevation profile's layer tree
-  connect( QgsProject::instance(), &QgsProject::layersAddedWithoutLegend, mLayerTreeView, [this] { mLayerTreeView->populateMissingLayers( QgsProject::instance() ); } );
-
-  connect( mProfile->layerTree(), &QgsLayerTree::layerOrderChanged, this, [this] {
-    updateCanvasSources();
-  } );
-  connect( mProfile->layerTree(), &QgsLayerTreeGroup::visibilityChanged, this, [this] {
-    updateCanvasSources();
+  connect( QgsProject::instance(), &QgsProject::layersAddedWithoutLegend, mLayerTreeView, [this] {
+    if ( mProfile && !mProfile->useProjectLayerTree() )
+    {
+      mLayerTreeView->populateMissingLayers( QgsProject::instance() );
+    }
   } );
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
@@ -617,8 +623,12 @@ void QgsElevationProfileWidget::applyDefaultSettingsToProfile( QgsElevationProfi
 
   // new elevation profiles should start with same layer tree structure as project, i.e.
   // respecting the initial set of groups
+  copyProjectTree( profile->layerTree() );
+}
 
-  QgsLayerTree *tree = profile->layerTree();
+void QgsElevationProfileWidget::copyProjectTree( QgsLayerTree *destination )
+{
+  destination->clear();
 
   std::function< void( const QgsLayerTreeGroup *sourceGroup, QgsLayerTreeGroup *destinationGroup ) > addGroup;
   addGroup = [&addGroup]( const QgsLayerTreeGroup *sourceGroup, QgsLayerTreeGroup *destinationGroup ) {
@@ -650,7 +660,7 @@ void QgsElevationProfileWidget::applyDefaultSettingsToProfile( QgsElevationProfi
     }
   };
 
-  addGroup( QgsProject::instance()->layerTreeRoot(), tree );
+  addGroup( QgsProject::instance()->layerTreeRoot(), destination );
 }
 
 QgsElevationProfile *QgsElevationProfileWidget::profile()
@@ -708,6 +718,51 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   } );
 }
 
+void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
+{
+  if ( !mProfile )
+    return;
+
+  if ( mLayerTree )
+  {
+    disconnect( mLayerTree, &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+    disconnect( mLayerTree, &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+  }
+
+  if ( mProfile->useProjectLayerTree() )
+  {
+    if ( mLayerTreeBridge )
+    {
+      delete mLayerTreeBridge;
+      mLayerTreeBridge = nullptr;
+    }
+
+    mLayerTree = QgsProject::instance()->layerTreeRoot();
+    mLayerTreeView->setLayerTree( mLayerTree );
+    qobject_cast<QgsElevationProfileLayerTreeModel * >( mLayerTreeView->layerTreeModel() )->setAllowModifications( false );
+
+    mActionAddGroup->setEnabled( false );
+  }
+  else
+  {
+    mLayerTree = mProfile->layerTree();
+    mLayerTreeView->setLayerTree( mLayerTree );
+
+    // when switching from sync to project tree to custom tree, we initially copy the project tree over
+    if ( resetTree )
+    {
+      copyProjectTree( mLayerTree );
+    }
+    qobject_cast<QgsElevationProfileLayerTreeModel * >( mLayerTreeView->layerTreeModel() )->setAllowModifications( true );
+
+    mLayerTreeBridge = new QgsLayerTreeRegistryBridge( mProfile->layerTree(), QgsProject::instance(), this );
+    mActionAddGroup->setEnabled( true );
+  }
+
+  connect( mLayerTree, &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+  connect( mLayerTree, &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+}
+
 void QgsElevationProfileWidget::cancelJobs()
 {
   mCanvas->cancelJobs();
@@ -741,7 +796,7 @@ void QgsElevationProfileWidget::addLayers()
 
 void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &layers )
 {
-  if ( !mProfile )
+  if ( !mProfile || mProfile->useProjectLayerTree() )
     return;
 
   QList<QgsMapLayer *> updatedLayers;
@@ -769,12 +824,12 @@ void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &l
 
 void QgsElevationProfileWidget::updateCanvasSources()
 {
-  if ( !mProfile )
+  if ( !mProfile || !mLayerTree )
     return;
 
   QList<QgsMapLayer *> layers;
   QList<QgsAbstractProfileSource *> sources;
-  const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mProfile->layerTree()->layerAndCustomNodeOrder();
+  const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
 
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
@@ -785,7 +840,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
       if ( !layer->elevationProperties() || !layer->elevationProperties()->hasElevation() )
         continue;
 
-      if ( mProfile->layerTree()->findLayer( layer )->isVisible() )
+      if ( mLayerTree->findLayer( layer )->isVisible() )
       {
         layers << layer;
         sources << layer->profileSource();
@@ -794,7 +849,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      if ( mProfile->layerTree()->findCustomNode( customNode->nodeId() )->isVisible() )
+      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
       {
         if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
         {
@@ -1232,6 +1287,14 @@ void QgsElevationProfileWidget::editSubsectionsSymbology()
   }
 }
 
+void QgsElevationProfileWidget::syncProjectToggled( bool active )
+{
+  if ( !mProfile )
+    return;
+
+  mProfile->setUseProjectLayerTree( active );
+}
+
 void QgsElevationProfileWidget::createOrUpdateRubberBands()
 {
   if ( !mRubberBand )
@@ -1411,6 +1474,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
   if ( !index.isValid() )
     setCurrentIndex( QModelIndex() );
 
+  const bool allowModifications = qobject_cast<QgsElevationProfileLayerTreeModel * >( layerTreeModel() )->allowModifications();
   QMenu *menu = new QMenu();
   if ( QgsMapLayer *layer = layerForIndex( index ) )
   {
@@ -1422,14 +1486,14 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
   }
   else if ( QgsLayerTreeNode *node = index2node( index ) )
   {
-    if ( QgsLayerTree::isGroup( node ) )
+    if ( allowModifications && QgsLayerTree::isGroup( node ) )
     {
       menu->addAction( defaultActions()->actionRenameGroupOrLayer( menu ) );
       menu->addAction( defaultActions()->actionRemoveGroupPromoteLayers( menu ) );
     }
   }
 
-  if ( selectedNodes( true ).count() >= 2 )
+  if ( allowModifications && selectedNodes( true ).count() >= 2 )
     menu->addAction( defaultActions()->actionGroupSelected( menu ) );
 
   if ( !menu->isEmpty() )

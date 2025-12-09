@@ -463,10 +463,7 @@ QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree
 
 void QgsElevationProfileLayerTreeView::setLayerTree( QgsLayerTree *rootNode )
 {
-  if ( mModel )
-  {
-    mModel->deleteLater();
-  }
+  QgsElevationProfileLayerTreeModel *oldModel = mModel;
 
   mLayerTree = rootNode;
 
@@ -477,6 +474,8 @@ void QgsElevationProfileLayerTreeView::setLayerTree( QgsLayerTree *rootNode )
 
   setModel( mProxyModel );
   setLayerTreeModel( mModel );
+
+  delete oldModel;
 }
 
 void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *project )
