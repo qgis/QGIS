@@ -488,8 +488,24 @@ class CORE_EXPORT QgsGeometry
      * celestial body).
      *
      * \see length()
+     * \see area3D()
      */
     double area() const;
+
+    /**
+     * Returns the 3-dimensional surface area of the geometry.
+     *
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics.
+     *
+     * \warning This method assumes the horizontal and vertical coordinates are in the same unit.
+     *
+     * \throws QgsInvalidArgumentException if the area cannot be calculated.
+     * \see area()
+     *
+     * \since QGIS 4.0
+     */
+    double area3D() const SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Returns the planar, 2-dimensional length of geometry.

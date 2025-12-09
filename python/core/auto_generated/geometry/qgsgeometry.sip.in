@@ -450,6 +450,28 @@ Returns the planar, 2-dimensional area of the geometry.
    celestial body).
 
 .. seealso:: :py:func:`length`
+
+.. seealso:: :py:func:`area3D`
+%End
+
+    double area3D() const throw( QgsInvalidArgumentException );
+%Docstring
+Returns the 3-dimensional surface area of the geometry.
+
+.. warning::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics.
+
+.. warning::
+
+   This method assumes the horizontal and vertical coordinates are in the same unit.
+
+:raises QgsInvalidArgumentException: if the area cannot be calculated.
+
+.. seealso:: :py:func:`area`
+
+.. versionadded:: 4.0
 %End
 
     double length() const;
