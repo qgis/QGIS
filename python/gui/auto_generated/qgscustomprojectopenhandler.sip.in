@@ -31,7 +31,6 @@ their :py:func:`~filters` implementation, and then implement
 #include "qgscustomprojectopenhandler.h"
 %End
   public:
-
     virtual bool handleProjectOpen( const QString &file ) = 0;
 %Docstring
 Called when the specified project ``file`` has been opened within QGIS.

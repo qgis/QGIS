@@ -42,7 +42,6 @@ source project can be set via :py:func:`~setProject`.
 #include "qgsmaplayercombobox.h"
 %End
   public:
-
     explicit QgsMapLayerComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsMapLayerComboBox creates a combo box to display the list of layers

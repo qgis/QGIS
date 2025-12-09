@@ -36,7 +36,6 @@ class GUI_EXPORT QgsPercentageWidget : public QWidget
     Q_PROPERTY( double value READ value WRITE setValue NOTIFY valueChanged )
 
   public:
-
     /**
      * Constructor for QgsPercentageWidget.
      */

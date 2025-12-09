@@ -75,7 +75,6 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemsListView.
      */

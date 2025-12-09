@@ -47,7 +47,6 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorDialog with the specified \a parent widget.
      */

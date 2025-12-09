@@ -35,7 +35,6 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsUuidWidgetWrapper.
      *

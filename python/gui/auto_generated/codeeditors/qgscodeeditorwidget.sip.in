@@ -35,7 +35,6 @@ search/replace tools. The caller must create an unparented
 #include "qgscodeeditorwidget.h"
 %End
   public:
-
     QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/, QgsMessageBar *messageBar = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorWidget, wrapping the specified ``editor``

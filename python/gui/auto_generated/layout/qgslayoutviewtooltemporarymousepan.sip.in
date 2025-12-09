@@ -19,7 +19,6 @@ is depressed.
 #include "qgslayoutviewtooltemporarymousepan.h"
 %End
   public:
-
     QgsLayoutViewToolTemporaryMousePan( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolTemporaryMousePan.

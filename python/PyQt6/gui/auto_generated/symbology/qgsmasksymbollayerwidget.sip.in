@@ -22,7 +22,6 @@ Symbol layer widget for the handling of
 #include "qgsmasksymbollayerwidget.h"
 %End
   public:
-
     QgsMaskMarkerSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

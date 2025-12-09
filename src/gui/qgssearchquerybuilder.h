@@ -96,7 +96,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void btnSampleValues_clicked();
 
   private:
-
     /**
      * Populate the field list for the selected table
      */

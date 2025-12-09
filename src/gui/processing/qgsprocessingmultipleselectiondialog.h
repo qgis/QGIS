@@ -44,7 +44,6 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleSelectionPanelWidget.
      *
@@ -111,7 +110,6 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     void selectionChanged();
 
   protected:
-
     /**
      * Adds a new option to the widget.
      */
@@ -163,7 +161,6 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleSelectionPanelWidget.
      *
@@ -229,7 +226,6 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleInputPanelWidget.
      */
@@ -261,7 +257,6 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     void dropEvent( QDropEvent *event ) override;
 
   private:
-
     /**
      * Returns a map layer, compatible with the filters set for the combo box, from
      * the specified mime \a data (if possible!).
@@ -284,7 +279,6 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleInputDialog.
      *

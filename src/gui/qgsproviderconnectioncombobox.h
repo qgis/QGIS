@@ -52,7 +52,6 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProviderConnectionComboBox, for the specified \a provider.
      *

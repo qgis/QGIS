@@ -418,7 +418,6 @@ designer.
 #include "qgslayoutdesignerinterface.h"
 %End
       public:
-
         QgsLayoutExporter::ExportResult result;
 
         QMap<QString, QgsLabelingResults *> labelingResults;

@@ -36,7 +36,6 @@ class QgsAbstractVectorLayerLabeling;
 class QgsLayerRestorer
 {
   public:
-
     /**
      * Constructor for QgsLayerRestorer.
      * \param layers List of layers to restore in their initial states
@@ -75,7 +74,6 @@ namespace QgsWms
   class QgsWmsRestorer
   {
     public:
-
       /**
        * Constructor for QgsWmsRestorer.
        * \param context The rendering context to restore in its initial state

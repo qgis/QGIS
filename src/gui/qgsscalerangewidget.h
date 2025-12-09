@@ -37,7 +37,6 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     Q_PROPERTY( double maximumScale READ maximumScale WRITE setMaximumScale )
 
   public:
-
     /**
      * Constructor for QgsScaleRangeWidget.
      */

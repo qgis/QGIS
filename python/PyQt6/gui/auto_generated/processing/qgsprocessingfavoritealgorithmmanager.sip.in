@@ -33,7 +33,6 @@ The favorite algorithms are saved and restored via
 #include "qgsprocessingfavoritealgorithmmanager.h"
 %End
   public:
-
     QgsProcessingFavoriteAlgorithmManager( QObject *parent = 0 );
 %Docstring
 Constructor for QgsProcessingFavoriteAlgorithmManager, with the

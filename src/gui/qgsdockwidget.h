@@ -33,7 +33,6 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDockWidget.
      * \param parent parent widget

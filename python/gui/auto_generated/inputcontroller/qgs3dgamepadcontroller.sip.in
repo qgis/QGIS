@@ -39,7 +39,6 @@ Represents a gamepad device used for controlling a 3D map.
       sipType = nullptr;
 %End
   public:
-
     QgsGamepad3DMapController( int gamepadDeviceId, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGamepad3DMapController, with the specified

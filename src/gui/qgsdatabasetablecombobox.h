@@ -53,7 +53,6 @@ class GUI_EXPORT QgsDatabaseTableComboBox : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDatabaseTableComboBox, for the specified \a provider and \a connection.
      *

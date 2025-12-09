@@ -33,7 +33,6 @@ namespace QgsWfs
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
-
       /**
        * Constructor for QgsServiceException.
        * \param code Error code name
@@ -64,7 +63,6 @@ namespace QgsWfs
   class QgsSecurityAccessException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsSecurityAccessException (HTTP error code 403 with
        * Security code name).
@@ -84,7 +82,6 @@ namespace QgsWfs
   class QgsRequestNotWellFormedException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsRequestNotWellFormedException (HTTP error code 400
        * with RequestNotWellFormed code name).
@@ -104,7 +101,6 @@ namespace QgsWfs
   class QgsBadRequestException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsBadRequestException (HTTP error code 400).
        * \param code Error code name

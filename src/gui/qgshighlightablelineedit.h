@@ -35,7 +35,6 @@ class GUI_EXPORT QgsHighlightableLineEdit : public QgsFilterLineEdit
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsHighlightableLineEdit, with the specified \a parent widget.
      */

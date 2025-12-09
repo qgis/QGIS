@@ -32,7 +32,6 @@
 class SERVER_EXPORT QgsStoreBadLayerInfo : public QgsProjectBadLayerHandler
 {
   public:
-
     /**
      * Default constructor
      */

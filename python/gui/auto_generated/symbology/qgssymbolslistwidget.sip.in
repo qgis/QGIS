@@ -23,7 +23,6 @@ allows selection of symbols from stored styles.
 #include "qgssymbolslistwidget.h"
 %End
   public:
-
     QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsSymbolsListWidget.

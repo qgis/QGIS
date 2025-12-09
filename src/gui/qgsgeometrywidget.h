@@ -45,7 +45,6 @@ class GUI_EXPORT QgsGeometryWidget : public QWidget
     Q_PROPERTY( QgsReferencedGeometry geometryValue READ geometryValue WRITE setGeometryValue NOTIFY geometryValueChanged )
 
   public:
-
     /**
      * Constructor for QgsGeometryWidget, with the specified \a parent widget.
      */

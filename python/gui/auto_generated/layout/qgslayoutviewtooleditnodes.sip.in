@@ -19,7 +19,6 @@ Layout view tool for editing node based items in the layout.
 #include "qgslayoutviewtooleditnodes.h"
 %End
   public:
-
     QgsLayoutViewToolEditNodes( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolEditNodes.

@@ -80,7 +80,6 @@ class GUI_EXPORT QgsValidityCheckResultsWidget : public QWidget, private Ui::Qgs
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsValidityCheckResultsWidget, with the specified \a parent widget.
      */

@@ -27,7 +27,6 @@ class QgsMesh3DSymbol : QgsAbstract3DSymbol
 #include "qgsmesh3dsymbol.h"
 %End
   public:
-
     enum class RenderingStyle /BaseType=IntEnum/
     {
       SingleColor,

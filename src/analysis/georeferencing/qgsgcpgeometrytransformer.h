@@ -37,7 +37,6 @@ class QgsGeometry;
 class ANALYSIS_EXPORT QgsGcpGeometryTransformer : public QgsAbstractGeometryTransformer
 {
   public:
-
     /**
      * Constructor for QgsGcpGeometryTransformer, which uses the specified \a gcpTransformer to
      * modify geometries.

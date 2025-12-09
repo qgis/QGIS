@@ -39,7 +39,6 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsLayerTreeViewDefaultActions, creating actions for a \a view.
      *

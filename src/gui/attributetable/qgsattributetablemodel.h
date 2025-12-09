@@ -71,7 +71,6 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     // *INDENT-ON*
 
   public:
-
     /**
      * Constructor
      * \param layerCache  A layer cache to use as backend

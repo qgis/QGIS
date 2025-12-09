@@ -38,7 +38,6 @@ class QgsGdalOption;
 class GUI_EXPORT QgsGdalGuiUtils
 {
   public:
-
     /**
      * Create database uri from connection parameters
      * \note not available in python bindings

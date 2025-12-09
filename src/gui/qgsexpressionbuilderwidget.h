@@ -47,7 +47,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 {
     Q_OBJECT
   public:
-
     /**
      * Flag to determine what should be loaded
      * \since QGIS 3.14

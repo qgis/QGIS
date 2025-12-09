@@ -31,7 +31,6 @@ class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsHiddenWidgetWrapper.
      *

@@ -38,7 +38,6 @@ class GUI_EXPORT QgsTableView : public QTableView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTableView.
      */

@@ -45,7 +45,6 @@ class QgsLayoutManagerDialog : public QDialog, private Ui::QgsLayoutManagerBase
     void activate();
 
   private:
-
     /**
      * Returns the default templates (key: template name, value: absolute path to template file)
      * \param fromUser whether to return user templates from [profile folder]/composer_templates

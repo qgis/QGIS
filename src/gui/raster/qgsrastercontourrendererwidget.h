@@ -31,7 +31,6 @@ class GUI_EXPORT QgsRasterContourRendererWidget : public QgsRasterRendererWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsRasterContourRendererWidget.
      * \param layer associated raster layer

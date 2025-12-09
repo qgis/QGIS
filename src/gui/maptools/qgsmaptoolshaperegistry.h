@@ -36,7 +36,6 @@ class GUI_EXPORT QgsMapToolShapeRegistry
 {
     Q_GADGET
   public:
-
     /**
      * Constructor
      */

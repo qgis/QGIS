@@ -102,7 +102,6 @@ class GUI_EXPORT QgsMapTool : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Enumeration of flags that adjust the way the map tool operates
      */

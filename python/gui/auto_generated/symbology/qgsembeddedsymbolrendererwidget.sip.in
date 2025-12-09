@@ -22,7 +22,6 @@ A widget for configuring options for a
 #include "qgsembeddedsymbolrendererwidget.h"
 %End
   public:
-
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method

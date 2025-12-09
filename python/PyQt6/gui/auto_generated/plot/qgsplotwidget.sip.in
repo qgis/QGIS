@@ -20,7 +20,6 @@ Base class for widgets which allow control over the properties of plots.
 #include "qgsplotwidget.h"
 %End
   public:
-
     QgsPlotWidget( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsPlotWidget.
@@ -53,7 +52,6 @@ retrieve an expression context for configuration widgets when required.
 
 
   protected:
-
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key );
 %Docstring
 Initiate a data-defined property button tied to a plot widget.
@@ -82,7 +80,6 @@ Widget class to control the properties of bar chart plots.
 #include "qgsplotwidget.h"
 %End
   public:
-
     QgsBarChartPlotWidget( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsBarChartPlotWidget.
@@ -117,7 +114,6 @@ Widget class to control the properties of line chart plots.
 #include "qgsplotwidget.h"
 %End
   public:
-
     QgsLineChartPlotWidget( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsLineChartPlotWidget.
@@ -151,7 +147,6 @@ Widget class to control the properties of pie chart plots.
 #include "qgsplotwidget.h"
 %End
   public:
-
     QgsPieChartPlotWidget( QWidget *parent = 0 );
 %Docstring
 Constructor for :py:class:`QgsLineChartPlotWidget`.
