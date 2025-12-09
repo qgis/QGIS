@@ -118,9 +118,23 @@ QVariantMap QgsFuzzifyRasterAlgorithmBase::processAlgorithm( const QVariantMap &
   provider->setEditable( true );
   const qgssize layerSize = static_cast<qgssize>( mLayerWidth ) * static_cast<qgssize>( mLayerHeight );
 
+  const bool hasReportsDuringClose = provider->hasReportsDuringClose();
+  mMaxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   fuzzify( provider.get(), feedback );
 
   provider->setEditable( false );
+
+  if ( feedback && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, mMaxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( u"EXTENT"_s, mExtent.toString() );

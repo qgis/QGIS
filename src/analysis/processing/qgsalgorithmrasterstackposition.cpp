@@ -158,6 +158,9 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
   int iterRows = 0;
   QgsRectangle blockExtent;
 
+  const bool hasReportsDuringClose = provider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   std::unique_ptr<QgsRasterBlock> outputBlock;
   while ( iter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
@@ -175,7 +178,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
       }
     }
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( maxProgressDuringBlockWriting * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
@@ -213,6 +216,17 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
     }
   }
   provider->setEditable( false );
+
+  if ( feedback && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( u"EXTENT"_s, mExtent.toString() );
