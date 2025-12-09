@@ -37,7 +37,6 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
-
     /**
      * Adds specific subclass algorithm parameters. The common parameters, such as raster destination, are automatically
      * added by the base class.
@@ -73,6 +72,7 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
 
     Qgis::DataType mDataType = Qgis::DataType::Float32;
     const double mNoDataValue = -9999;
+    double mMaxProgressDuringBlockWriting = 100;
 };
 
 

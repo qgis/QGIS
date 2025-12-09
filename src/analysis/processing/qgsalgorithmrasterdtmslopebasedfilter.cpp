@@ -267,6 +267,10 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
 
   QgsRectangle blockExtent;
 
+  const bool closeGroudReportsProgress = groundDestProvider && groundDestProvider->closeReportsProgress();
+  const bool closeNonGroudReportsProgress = nonGroundDestProvider && nonGroundDestProvider->closeReportsProgress();
+  const double maxProgressDuringBlockWriting = 100.0 / ( 1 + ( closeGroudReportsProgress ? 1 : 0 ) + ( closeNonGroudReportsProgress ? 1 : 0 ) );
+
   std::unique_ptr<QgsRasterBlock> inputBlock;
   int blockIndex = 0;
   while ( iter.readNextRasterPart( 1, iterCols, iterRows, inputBlock, iterLeft, iterTop, &blockExtent, &tileCols, &tileRows, &tileLeft, &tileTop ) )
@@ -280,7 +284,7 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
       outputNonGroundBlock = std::make_unique<QgsRasterBlock>( mDataType, tileCols, tileRows );
 
     double baseProgress = static_cast<double>( blockIndex ) / numBlocks;
-    feedback->setProgress( 100.0 * baseProgress );
+    feedback->setProgress( maxProgressDuringBlockWriting * baseProgress );
     blockIndex++;
     if ( feedback->isCanceled() )
       break;
@@ -295,7 +299,7 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
       if ( feedback->isCanceled() )
         break;
 
-      feedback->setProgress( 100.0 * ( baseProgress + rowProgress ) );
+      feedback->setProgress( maxProgressDuringBlockWriting * ( baseProgress + rowProgress ) );
       rowProgress += rowProgressStep;
 
       for ( int col = tileBoundaryLeft; col < tileBoundaryLeft + tileCols; col++ )
@@ -370,10 +374,39 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
       }
     }
   }
+
+  double lastProgress = maxProgressDuringBlockWriting;
+
   if ( groundDestProvider )
+  {
     groundDestProvider->setEditable( false );
+    if ( feedback && closeGroudReportsProgress )
+    {
+      const double nextProgress = closeNonGroudReportsProgress ? 100.0 * 2 / 3 : 100.0;
+      std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, lastProgress, nextProgress ) );
+      if ( !groundDestProvider->closeWithProgress( scaledFeedback.get() ) )
+      {
+        if ( feedback->isCanceled() )
+          return {};
+        throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+      }
+      lastProgress = nextProgress;
+    }
+  }
   if ( nonGroundDestProvider )
+  {
     nonGroundDestProvider->setEditable( false );
+    if ( feedback && closeNonGroudReportsProgress )
+    {
+      std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, lastProgress, 100.0 ) );
+      if ( !nonGroundDestProvider->closeWithProgress( scaledFeedback.get() ) )
+      {
+        if ( feedback->isCanceled() )
+          return {};
+        throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+      }
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT_GROUND" ), groundOutputFile );

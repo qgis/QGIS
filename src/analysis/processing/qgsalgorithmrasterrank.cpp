@@ -259,7 +259,10 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   rasterIterator.startRasterRead( 1, cols, rows, outputExtent );
   int blockCount = static_cast<int>( rasterIterator.blockCount() );
 
-  const double step = blockCount > 0 ? 100.0 / blockCount : 0;
+  const bool closeReportsProgress = provider->closeReportsProgress();
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+
+  const double step = blockCount > 0 ? maxProgressDuringBlockWriting / blockCount : 0;
   std::vector<double> inputValues;
   inputValues.resize( mLayers.size() );
   for ( int currentBlock = 0; currentBlock < blockCount; currentBlock++ )
@@ -330,6 +333,17 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
       {
         throw QgsProcessingException( QObject::tr( "Could not write output raster block: %1" ).arg( provider->error().summary() ) );
       }
+    }
+  }
+
+  if ( feedback && closeReportsProgress )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
     }
   }
 

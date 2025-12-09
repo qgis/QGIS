@@ -150,6 +150,9 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
   const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
   const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
+  const bool closeReportsProgress = destinationRasterProvider->closeReportsProgress();
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -160,7 +163,7 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, filledRasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( maxProgressDuringBlockWriting * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
 
     if ( feedback && feedback->isCanceled() )
       break;
@@ -190,6 +193,17 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
     }
   }
   destinationRasterProvider->setEditable( false );
+
+  if ( feedback && closeReportsProgress )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !destinationRasterProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
