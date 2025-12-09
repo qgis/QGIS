@@ -310,13 +310,19 @@ QgsModelDesignerFeatureCountGraphicItem::QgsModelDesignerFeatureCountGraphicItem
 
 void QgsModelDesignerFeatureCountGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *widget )
 {
+  const bool isDarkTheme = QApplication::palette().color( QPalette::Window ).lightness() < 128;
+  QPalette::ColorRole bgPalette = isDarkTheme ? QPalette::Dark : QPalette::Light;
+
   // First draw a rounded rectangle as background
-  painter->setBrush( QBrush( QColor( 255, 255, 255, 210 ) ) ); // White with some transparency
+  QColor backgroundColor = QApplication::palette().color( bgPalette );
+  backgroundColor.setAlpha( 220 ); // Add some transparency so we still see the arrow underneath
+  painter->setBrush( QBrush( backgroundColor ) );
   painter->setPen( Qt::PenStyle::NoPen );
   double radius = 5;
   painter->drawRoundedRect( boundingRect(), radius, radius );
 
   // And finally draw the text on top
+  setDefaultTextColor( QApplication::palette().color( QPalette::Text ) );
   QGraphicsTextItem::paint( painter, itemStyle, widget );
 }
 
