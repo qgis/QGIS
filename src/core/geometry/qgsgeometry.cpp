@@ -2258,6 +2258,16 @@ double QgsGeometry::area() const
   return d->geometry->area();
 }
 
+double QgsGeometry::area3D() const
+{
+  if ( !d->geometry )
+  {
+    throw QgsInvalidArgumentException( "Cannot compute 3D area: geometry is null." );
+  }
+
+  return d->geometry->area3D();
+}
+
 double QgsGeometry::length() const
 {
   if ( !d->geometry )
