@@ -134,23 +134,17 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
           const OGRGeometryH hGeom { OGR_F_GetGeomFieldRef( fet.get(), colOgrIndex ) };
           if ( hGeom )
           {
-            // Suppress warning: Potential leak of memory (wkbData is used to construct the QByteArray from raw data below) [clang-analyzer-cplusplus.NewDeleteLeaks]
-#ifndef __clang_analyzer__
             // Get the WKB representation of the geometry
             const int size = OGR_G_WkbSize( hGeom );
-            unsigned char *wkbData = new unsigned char[size];
-            OGR_G_ExportToWkb( hGeom, wkbNDR, wkbData );
-            const QVariant wkbValue( QByteArray::fromRawData( reinterpret_cast<char *>( wkbData ), size ) );
-#else
-            const QVariant wkbValue;
-#endif
+            QByteArray wkbBuffer{ static_cast<qsizetype>( size ), Qt::Initialization::Uninitialized };
+            OGR_G_ExportToWkb( hGeom, wkbNDR, reinterpret_cast<unsigned char *>( wkbBuffer.data() ) );
             if ( columnIndex < 0 || columnIndex >= row.count() )
             {
-              row.push_back( wkbValue );
+              row.push_back( wkbBuffer );
             }
             else
             {
-              row.insert( columnIndex, wkbValue );
+              row.insert( columnIndex,  wkbBuffer );
             }
           }
           else
