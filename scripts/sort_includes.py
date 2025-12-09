@@ -258,8 +258,37 @@ def sort_includes(includes: list[str]):
             output.append(f"#include <{header}>")
         output.append("")
 
+    while output:
+        last_line = output[-1]
+        if not last_line.strip():
+            output.pop()
+        else:
+            break
+
 
 sort_includes(include_lines)
+
+has_more_lines = False
+for l in lines:
+    if l.strip():
+        has_more_lines = True
+        break
+
+if has_more_lines and output[-1].startswith("#include"):
+    # force SINGLE empty line after last include unless in extern block
+    include_empty_line = True
+    while lines:
+        first_line = lines[0]
+        if not first_line.strip():
+            lines.pop(0)
+        elif first_line == "}":
+            include_empty_line = False
+            break
+        else:
+            break
+    if include_empty_line:
+        output.append("")
+
 
 output.extend(lines)
 
