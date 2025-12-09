@@ -2655,8 +2655,7 @@ if (NOT WITH_INTERNAL_POLY2TRI)
 endif()
 
 if(HAVE_OPENCL)
-  target_link_libraries(qgis_core ${OpenCL_LIBRARY})
-  target_include_directories(qgis_core PUBLIC ${OpenCL_INCLUDE_DIRS})
+  target_link_libraries(qgis_core OpenCL::OpenCL)
 endif()
 
 if(WITH_INTERNAL_NLOHMANN_JSON)
