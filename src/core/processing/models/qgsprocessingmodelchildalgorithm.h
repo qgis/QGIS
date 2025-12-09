@@ -116,6 +116,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * \see algorithm()
      * \see setAlgorithmId()
      */
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool reattach() const;
 
     /**

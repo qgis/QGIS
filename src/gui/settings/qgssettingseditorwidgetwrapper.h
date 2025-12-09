@@ -62,12 +62,14 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Sets the widget value from the setting value
      * The wrapper must be configured before calling this medthod
      */
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     virtual bool setWidgetFromSetting() const = 0;
 
     /**
      * Sets the setting value from the widget value
      * The wrapper must be configured before calling this medthod
      */
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     virtual bool setSettingFromWidget() const = 0;
 
     /**
@@ -80,6 +82,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Sets the \a value of the widget
      * The wrapper must be configured before calling this medthod
      */
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     virtual bool setWidgetFromVariant( const QVariant &value ) const = 0;
 
     /**

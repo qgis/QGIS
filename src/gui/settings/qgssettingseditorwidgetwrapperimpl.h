@@ -50,6 +50,7 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
 
     QString id() const override = 0;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetFromSetting() const override
     {
       if ( mSetting )
@@ -59,14 +60,17 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
       return false;
     }
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override = 0;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetFromVariant( const QVariant &value ) const override
     {
       return setWidgetValue( mSetting->convertFromVariant( value ) );
     }
 
     //! Sets the widget value
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     virtual bool setWidgetValue( const U &value ) const = 0;
 
     QVariant variantValueFromWidget() const override
@@ -137,10 +141,12 @@ class GUI_EXPORT QgsSettingsStringLineEditWrapper : public QgsSettingsEditorWidg
 
     QString id() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override;
 
     QString valueFromWidget() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const QString &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
@@ -187,10 +193,12 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
 
     QString id() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override;
 
     QString valueFromWidget() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const QString &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
@@ -223,10 +231,12 @@ class GUI_EXPORT QgsSettingsBoolCheckBoxWrapper : public QgsSettingsEditorWidget
 
     QString id() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override;
 
     bool valueFromWidget() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const bool &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
@@ -254,10 +264,12 @@ class GUI_EXPORT QgsSettingsIntegerSpinBoxWrapper : public QgsSettingsEditorWidg
 
     QString id() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override;
 
     int valueFromWidget() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const int &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
@@ -286,10 +298,12 @@ class GUI_EXPORT QgsSettingsDoubleSpinBoxWrapper : public QgsSettingsEditorWidge
 
     QString id() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override;
 
     double valueFromWidget() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const double &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
@@ -318,10 +332,12 @@ class GUI_EXPORT QgsSettingsColorButtonWrapper : public QgsSettingsEditorWidgetW
 
     QString id() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override;
 
     QColor valueFromWidget() const override;
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const QColor &value ) const override;
 
     void configureEditorPrivateImplementation() override;

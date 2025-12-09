@@ -1873,6 +1873,9 @@ def try_skip_sip_directives():
 
 def try_process_preprocessor_directive():
     # Skip preprocessor directives
+    if re.match(r"^\s*//\s*NOLINTNEXTLINE", CONTEXT.current_line):
+        return True
+
     if re.match(r"^\s*#", CONTEXT.current_line):
         # Skip #if 0 or #if defined(Q_OS_WIN) blocks
         match = re.match(r"^\s*#if (0|defined\(Q_OS_WIN\))", CONTEXT.current_line)

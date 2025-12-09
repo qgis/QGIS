@@ -63,6 +63,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       return this->mSetting->convertToVariant( valueFromWidget() );
     };
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override
     {
       if ( this->mEditor )
@@ -97,6 +98,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       return FLAGS();
     }
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const FLAGS &value ) const override
     {
       if ( this->mEditor )
@@ -179,6 +181,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       return this->mSetting->convertToVariant( valueFromWidget() );
     };
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setSettingFromWidget() const override
     {
       if ( this->mEditor )
@@ -206,6 +209,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       return ENUM();
     }
 
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool setWidgetValue( const ENUM &value ) const override
     {
       if ( this->mEditor )

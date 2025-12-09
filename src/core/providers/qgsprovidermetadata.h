@@ -542,6 +542,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Since QGIS 3.38 the optional \a metadata argument can be used to pass metadata to the provider.
      * \since QGIS 3.16
      */
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString &fileName,
@@ -554,6 +555,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Since QGIS 3.38 the optional \a metadata argument can be used to pass metadata to the provider.
      * \since QGIS 3.22
      */
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString &uri,
