@@ -203,34 +203,6 @@ Returns ``True`` if the parameter is set to the default parameter value.
 
 };
 
-class QgsModelDesignerFeatureCountGraphicItem : QGraphicsTextItem
-{
-%Docstring(signature="appended")
-A text with a background used to display the feature count.
-
-.. warning::
-
-   Not stable API
-
-.. versionadded:: 4.0
-%End
-
-%TypeHeaderCode
-#include "qgsmodelgraphicitem.h"
-%End
-  public:
-    QgsModelDesignerFeatureCountGraphicItem( QgsModelArrowItem *link /TransferThis/, const QString &text );
-
-    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
-
-
-  protected:
-    void setPosition();
-%Docstring
-Sets the position of the text along the path
-%End
-
-};
 
 /************************************************************************
  * This file has been generated automatically from                      *

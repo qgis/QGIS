@@ -233,7 +233,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
  * \warning Not stable API
  * \since QGIS 4.0
  */
-class GUI_EXPORT QgsModelDesignerFeatureCountGraphicItem : public QGraphicsTextItem
+class GUI_EXPORT QgsModelDesignerFeatureCountGraphicItem : public QGraphicsTextItem SIP_SKIP
 {
     Q_OBJECT
   public:

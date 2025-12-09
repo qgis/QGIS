@@ -77,7 +77,7 @@ Sets the pen ``style`` to use for rendering the arrow line.
 
   signals:
 
-    void pathUpdated();
+    void painterPathUpdated();
 %Docstring
 Emitted when the path is updated.
 

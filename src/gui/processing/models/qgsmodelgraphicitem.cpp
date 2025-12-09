@@ -298,7 +298,7 @@ QgsModelDesignerFeatureCountGraphicItem::QgsModelDesignerFeatureCountGraphicItem
   : QGraphicsTextItem( text )
   , mLink( link )
 {
-  connect( link, &QgsModelArrowItem::pathUpdated, this, &QgsModelDesignerFeatureCountGraphicItem::setPosition );
+  connect( link, &QgsModelArrowItem::painterPathUpdated, this, &QgsModelDesignerFeatureCountGraphicItem::setPosition );
 
   QFont font = this->font();
   font.setPointSize( FONT_SIZE );

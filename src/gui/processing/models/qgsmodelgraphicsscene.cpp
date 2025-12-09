@@ -224,7 +224,6 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             }
             addItem( arrow );
 
-
             QgsModelChildAlgorithmGraphicItem *childAlgItem = mChildAlgorithmItems.value( it.value().childId() );
             QString layerId = childAlgItem->results().inputs().value( parameter->name() ).toString();
 
@@ -318,9 +317,9 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       addItem( arrow );
 
       QgsModelChildAlgorithmGraphicItem *childItem = mChildAlgorithmItems.value( it.value().childId() );
-      auto layerId = childItem->results().outputs().value( outputIt.value().childOutputName() );
+      QString layerId = childItem->results().outputs().value( outputIt.value().childOutputName() ).toString();
 
-      addFeatureCountItemForArrow( arrow, layerId.toString() );
+      addFeatureCountItemForArrow( arrow, layerId );
 
 
       addCommentItemForComponent( model, outputIt.value(), item );
@@ -438,7 +437,7 @@ void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &re
     QVariantMap inputs = childResults.value( it.key() ).inputs();
     for ( auto inputIt = inputs.constBegin(); inputIt != inputs.constEnd(); inputIt++ )
     {
-      if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( inputs.value( inputIt.key() ).toString(), context ) )
+      if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( inputs.value( inputIt.key() ).toString(), context, false ) )
       {
         if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer ) )
         {
@@ -450,7 +449,7 @@ void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &re
     QVariantMap outputs = childResults.value( it.key() ).outputs();
     for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); outputIt++ )
     {
-      if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( outputs.value( outputIt.key() ).toString(), context ) )
+      if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( outputs.value( outputIt.key() ).toString(), context, false ) )
       {
         if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer ) )
         {

@@ -89,7 +89,7 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      *
      * \since QGIS 4.0
      */
-    void pathUpdated();
+    void painterPathUpdated();
 
   public slots:
 

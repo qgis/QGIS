@@ -495,6 +495,11 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
 
+  QgsSettings settings;
+  const bool showFeatureCount = settings.value( QStringLiteral( "/Processing/Modeler/ShowFeatureCount" ), true ).toBool();
+  if ( !showFeatureCount )
+    mScene->setFlag( QgsModelGraphicsScene::FlagHideFeatureCount );
+
   mView->setModelScene( mScene );
 
   mSelectTool->resetCache();
