@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    prepare_commit.sh
+#    prepare_commit_shellcheck.sh
 #    ---------------------
 #    Date                 : August 2008
 #    Copyright            : (C) 2008 by Juergen E. Fischer
@@ -20,11 +20,6 @@ PATH=$TOPLEVEL/scripts:$PATH:$PWD/scripts
 
 set -e
 
-if ! type -p astyle.sh >/dev/null; then
-  echo astyle.sh not found
-  exit 1
-fi
-
 # capture files passed by pre-commit
 MODIFIED="$@"
 
@@ -33,23 +28,20 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
+MODIFIED_SHELLFILES=""
 for f in $MODIFIED; do
-  case "$f" in
-  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.mm)
-    ;;
-  *)
-    continue
-    ;;
-  esac
-
-  # Run Python formatters
-  scripts/sort_includes.py "$f"
-  scripts/doxygen_space.py "$f"
-
-  # Run astyle only on src/core, others are handled by clang-format (see .pre-commit-config.yaml)
-  if [[ $f =~ ^src/(core) ]]; then
-    astyle.sh "$f"
+  if [[ "$f" == *.sh ]]; then
+    MODIFIED_SHELLFILES="$MODIFIED_SHELLFILES $f"
   fi
 done
+
+if [ -n "$MODIFIED_SHELLFILES" ]; then
+  # Run shell checker if requirements are met
+  if command -v shellcheck > /dev/null; then
+    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh $MODIFIED_SHELLFILES
+  else
+    echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
+  fi
+fi
 
 exit 0
