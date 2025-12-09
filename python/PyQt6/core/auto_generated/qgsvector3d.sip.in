@@ -82,6 +82,8 @@ Sets vector coordinates
 
     QgsVector3D operator+( const QgsVector3D &other ) const /HoldGIL/;
 
+    QgsVector3D &operator+=( const QgsVector3D &other ) /HoldGIL/;
+
     QgsVector3D operator-( const QgsVector3D &other ) const /HoldGIL/;
 
     const QgsVector3D operator-() const /HoldGIL/;
