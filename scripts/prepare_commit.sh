@@ -53,12 +53,22 @@ else
 fi
 
 # Run doxygen layout test if requirements are met
+
+MODIFIED_DOXYGEN_FILES=""
+for f in $MODIFIED; do
+  case "$f" in
+    *.h|*.cpp)
+      MODIFIED_DOXYGEN_FILES="$MODIFIED_DOXYGEN_FILES $f"
+      ;;
+  esac
+done
+
 if test "$HAS_AG" != "true"; then
   echo "WARNING: the ag(1) executable was not found, doxygen layout checker could not run" >&2
 elif test "$HAS_UNBUFFER" != "true"; then
   echo "WARNING: the unbuffer(1) executable was not found, doxygen layout checker could not run" >&2
 else
-  "${TOPLEVEL}"/tests/code_layout/test_doxygen_layout.sh $MODIFIED
+  "${TOPLEVEL}"/tests/code_layout/test_doxygen_layout.sh $MODIFIED_DOXYGEN_FILES
 fi
 
 MODIFIED_SHELLFILES=""
