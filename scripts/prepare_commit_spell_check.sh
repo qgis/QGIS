@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    prepare_commit.sh
+#    prepare_commit_spell_check.sh
 #    ---------------------
 #    Date                 : August 2008
 #    Copyright            : (C) 2008 by Juergen E. Fischer
@@ -20,11 +20,6 @@ PATH=$TOPLEVEL/scripts:$PATH:$PWD/scripts
 
 set -e
 
-if ! type -p astyle.sh >/dev/null; then
-  echo astyle.sh not found
-  exit 1
-fi
-
 # capture files passed by pre-commit
 MODIFIED="$@"
 
@@ -33,23 +28,23 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-for f in $MODIFIED; do
-  case "$f" in
-  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.mm)
-    ;;
-  *)
-    continue
-    ;;
-  esac
+HAS_AG=false
+if command -v ag > /dev/null; then
+  HAS_AG=true
+fi
 
-  # Run Python formatters
-  scripts/sort_includes.py "$f"
-  scripts/doxygen_space.py "$f"
+HAS_UNBUFFER=false
+if command -v unbuffer > /dev/null; then
+  HAS_UNBUFFER=true
+fi
 
-  # Run astyle only on src/core, others are handled by clang-format (see .pre-commit-config.yaml)
-  if [[ $f =~ ^src/(core) ]]; then
-    astyle.sh "$f"
-  fi
-done
+# Run spell checker if requirements are met
+if test "$HAS_AG" != "true"; then
+  echo "WARNING: the ag(1) executable was not found, spell checker could not run" >&2
+elif test "$HAS_UNBUFFER" != "true"; then
+  echo "WARNING: the unbuffer(1) executable was not found, spell checker could not run" >&2
+else
+  "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
+fi
 
 exit 0
