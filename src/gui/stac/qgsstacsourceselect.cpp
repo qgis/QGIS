@@ -645,5 +645,12 @@ void QgsStacSourceSelect::loadUri( const QgsMimeDataUtils::Uri &uri )
     Q_NOWARN_DEPRECATED_POP
     emit addLayer( Qgis::LayerType::PointCloud, layerUri, uri.name, uri.providerKey );
   }
+  else if ( uri.layerType == QLatin1String( "vector" ) )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit addVectorLayer( layerUri, uri.name, uri.providerKey );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Vector, layerUri, uri.name, uri.providerKey );
+  }
 }
 ///@endcond
