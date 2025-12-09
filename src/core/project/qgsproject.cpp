@@ -4847,6 +4847,10 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
     {
       emit legendLayersAdded( myResultList );
     }
+    else
+    {
+      emit layersAddedWithoutLegend( myResultList );
+    }
   }
 
   if ( mAuxiliaryStorage )
