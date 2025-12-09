@@ -61,7 +61,8 @@ bool QgsStacAsset::isCloudOptimized() const
   return format == QLatin1String( "COG" ) ||
          format == QLatin1String( "COPC" ) ||
          format == QLatin1String( "EPT" ) ||
-         format == QLatin1String( "Zarr" );
+         format == QLatin1String( "Zarr" ) ||
+         format == QLatin1String( "Parquet" );
 }
 
 QString QgsStacAsset::formatName() const
@@ -75,6 +76,8 @@ QString QgsStacAsset::formatName() const
     return QStringLiteral( "EPT" );
   else if ( mMediaType == QLatin1String( "application/vnd+zarr" ) )
     return QStringLiteral( "Zarr" );
+  else if ( mMediaType == QLatin1String( "application/vnd.apache.parquet" ) )
+    return QStringLiteral( "Parquet" );
   return QString();
 }
 
@@ -134,6 +137,26 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
     {
       // Remove the s3:// protocol prefix for compatibility with GDAL's /vsis3
       uri.uri = QStringLiteral( "ZARR:\"/vsis3/%1\"" ).arg( href().mid( 5 ) );
+    }
+    else
+    {
+      uri.uri = href();
+    }
+  }
+  else if ( formatName() == QLatin1String( "Parquet" ) )
+  {
+    uri.layerType = QStringLiteral( "vector" );
+    uri.providerKey = QStringLiteral( "ogr" );
+    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
+         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
+      if ( !authcfg.isEmpty() )
+        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
+    }
+    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
     }
     else
     {
