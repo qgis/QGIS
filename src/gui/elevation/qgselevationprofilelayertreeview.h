@@ -62,6 +62,20 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
+    /**
+     * Sets whether modifications like renaming, reordering nodes are supported.
+     *
+     * \since QGIS 4.0
+     */
+    void setAllowModifications( bool allow );
+
+    /**
+     * Returns TRUE if modifications like renaming, reordering nodes are supported.
+     *
+     * \since QGIS 4.0
+     */
+    bool allowModifications() const { return mAllowModifications; }
+
   signals:
 
     /**
@@ -75,6 +89,8 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
 #ifdef SIP_RUN
     QgsElevationProfileLayerTreeModel( const QgsElevationProfileLayerTreeModel &other );
 #endif
+
+    bool mAllowModifications = true;
 };
 
 /**
