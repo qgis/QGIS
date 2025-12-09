@@ -158,6 +158,10 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
   // sub passes:
   constructSubPostPassForProcessing()->setParent( mRenderCaptureTargetSelector );
   constructDebugTexturePass( mRenderCaptureTargetSelector );
+
+  // rubber bands (they should be always on top)
+  constructRubberBandsPass()->setParent( mRenderCaptureTargetSelector );
+
   constructSubPostPassForRenderCapture()->setParent( mRenderCaptureTargetSelector );
 
   return mRenderCaptureTargetSelector;
@@ -174,7 +178,7 @@ void QgsFrameGraph::constructAmbientOcclusionRenderPass()
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
 {
   mRubberBandsCameraSelector = new Qt3DRender::QCameraSelector;
-  mRubberBandsCameraSelector->setObjectName( "RubberBands Pass CameraSelector" );
+  mRubberBandsCameraSelector->setObjectName( "rubberBandsPass" );
   mRubberBandsCameraSelector->setCamera( mMainCamera );
 
   mRubberBandsLayerFilter = new Qt3DRender::QLayerFilter( mRubberBandsCameraSelector );
@@ -269,11 +273,6 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   // Forward render
   constructForwardRenderPass();
-
-  // rubber bands (they should be always on top)
-  Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
-  rubberBandsPass->setObjectName( "rubberBandsPass" );
-  rubberBandsPass->setParent( mMainViewPort );
 
   // shadow rendering pass
   constructShadowRenderPass();
