@@ -35,7 +35,6 @@ class QgsFeatureSink;
 class ANALYSIS_EXPORT QgsVectorWarper
 {
   public:
-
     /**
      * Constructor for QgsVectorWarper.
      *
@@ -79,7 +78,6 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorWarperTask.
      *

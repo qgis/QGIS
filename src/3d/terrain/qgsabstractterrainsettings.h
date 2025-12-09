@@ -198,7 +198,6 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
     double elevationOffset() const { return mTerrainElevationOffset; }
 
   protected:
-
     /**
      * Writes common properties from the base class into an XML \a element.
      *

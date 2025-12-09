@@ -96,7 +96,6 @@ sure it's completely populated.
 %End
 
   protected:
-
     virtual void done( int r );
 
 %Docstring

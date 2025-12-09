@@ -51,7 +51,6 @@ class Qgs3DWiredMesh : public Qt3DRender::QGeometryRenderer
     Q_OBJECT
 
   public:
-
     /**
      * \brief Default Qgs3DWiredMesh constructor
      */

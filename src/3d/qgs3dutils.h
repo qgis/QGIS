@@ -58,7 +58,6 @@ class QgsRayCastContext;
 class _3D_EXPORT Qgs3DUtils
 {
   public:
-
     /**
      * Captures image of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.

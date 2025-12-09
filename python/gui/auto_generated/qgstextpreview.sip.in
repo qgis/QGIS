@@ -29,7 +29,6 @@ units, the scale and map units must be set by calling
 #include "qgstextpreview.h"
 %End
   public:
-
     QgsTextPreview( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsTextPreview

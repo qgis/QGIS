@@ -22,7 +22,6 @@ widget.
 #include "qgsoverlaywidgetlayout.h"
 %End
   public:
-
     QgsOverlayWidgetLayout( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsOverlayWidgetLayout, with the specified ``parent``

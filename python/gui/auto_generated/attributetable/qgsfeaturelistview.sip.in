@@ -24,7 +24,6 @@ Uses a :py:class:`QgsFeatureListModel` as source model.
 #include "qgsfeaturelistview.h"
 %End
   public:
-
     explicit QgsFeatureListView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates a feature list view

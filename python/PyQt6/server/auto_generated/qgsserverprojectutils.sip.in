@@ -27,7 +27,6 @@ Contains utility functions to retrieve specific entries from a
   public:
 
 
-
     static bool owsServiceCapabilities( const QgsProject &project );
 %Docstring
 Returns if owsService capabilities are enabled.

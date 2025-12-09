@@ -39,7 +39,6 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelViewToolLink.
      */

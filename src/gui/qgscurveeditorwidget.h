@@ -144,7 +144,6 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCurveEditorWidget.
      */

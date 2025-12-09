@@ -26,7 +26,6 @@ foreground and background colors, and numeric formats.
 #include "qgstableeditordialog.h"
 %End
   public:
-
     QgsTableEditorDialog( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsTableEditorDialog with the specified ``parent``

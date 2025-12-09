@@ -98,7 +98,6 @@ that represents the Z value of the mesh vertices.
 #include "qgsmeshtriangulation.h"
 %End
   public:
-
     QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh );
 %Docstring
 Constructor

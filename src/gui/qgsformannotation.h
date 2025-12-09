@@ -34,7 +34,6 @@ class GUI_EXPORT QgsFormAnnotation : public QgsAnnotation
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFormAnnotation.
      */

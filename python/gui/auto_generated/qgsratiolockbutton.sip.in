@@ -22,7 +22,6 @@ ratio state.
 #include "qgsratiolockbutton.h"
 %End
   public:
-
     QgsRatioLockButton( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new ratio lock button. Use ``parent`` to attach a parent

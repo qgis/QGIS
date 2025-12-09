@@ -211,7 +211,6 @@ request URL, a ``defaultValue`` can be specified.
 %End
 
   protected:
-
     void setOriginalUrl( const QUrl &url );
 %Docstring
 Set the request original ``url`` (the request url as seen by the web

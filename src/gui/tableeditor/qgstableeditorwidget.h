@@ -109,7 +109,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorWidget with the specified \a parent widget.
      */

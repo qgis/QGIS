@@ -44,7 +44,6 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
 
   public:
-
     /**
      * Constructor for QgsAbstractFileContentSourceLineEdit, with the specified \a parent widget.
      */
@@ -188,7 +187,6 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
 {
     Q_OBJECT
   public:
-
     /**
      * Format of source image
      */
@@ -211,7 +209,6 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
     void setMode( Format format ) { mFormat = format; }
 
   protected:
-
     /**
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
@@ -252,7 +249,6 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsSvgSourceLineEdit, with the specified \a parent widget.
      */
@@ -276,7 +272,6 @@ class GUI_EXPORT QgsImageSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
@@ -301,7 +296,6 @@ class GUI_EXPORT QgsAnimatedImageSourceLineEdit : public QgsPictureSourceLineEdi
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsAnimatedImageSourceLineEdit, with the specified \a parent widget.
      */

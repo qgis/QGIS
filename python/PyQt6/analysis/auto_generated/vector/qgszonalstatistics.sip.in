@@ -23,7 +23,6 @@ multipolygon layer and appends the results as attributes.
 #include "qgszonalstatistics.h"
 %End
   public:
-
     QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 %Docstring
 Convenience constructor for QgsZonalStatistics, using an input raster

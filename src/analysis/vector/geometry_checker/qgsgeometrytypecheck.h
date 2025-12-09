@@ -27,7 +27,6 @@
 class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckError
 {
   public:
-
     /**
      * Constructor for QgsGeometryTypeCheckError.
      * \param check associated geometry check

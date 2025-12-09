@@ -133,7 +133,6 @@ Reloads the default style for the layer.
 %End
 
   protected:
-
     void initialize();
 %Docstring
 Initialize the dialog. Must be called in the subclass constructor as the

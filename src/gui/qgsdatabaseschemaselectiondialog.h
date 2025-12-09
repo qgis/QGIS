@@ -34,7 +34,6 @@ class GUI_EXPORT QgsDatabaseSchemaSelectionDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDatabaseSchemaSelectionDialog, for the specified \a connection.
      *

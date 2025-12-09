@@ -115,7 +115,6 @@ class GUI_EXPORT QgsProviderGuiRegistry
     SIP_SKIP typedef std::map<QString, QgsProviderGuiMetadata *> GuiProviders;
 
   private:
-
     /**
      * Loads the dynamic plugins on the given path
      * When QGIS is compiled with FORCE_STATIC_LIBS,

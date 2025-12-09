@@ -46,7 +46,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *

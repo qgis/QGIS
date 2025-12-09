@@ -40,7 +40,6 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
-
     /**
      * Constructor for QgsDateTimeEdit.
      * The current date and time is used by default.
@@ -234,7 +233,6 @@ class GUI_EXPORT QgsTimeEdit : public QgsDateTimeEdit
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTimeEdit.
      * The current time is used by default.
@@ -279,7 +277,6 @@ class GUI_EXPORT QgsDateEdit : public QgsDateTimeEdit
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDateEdit.
      * The current time is used by default.

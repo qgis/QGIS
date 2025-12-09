@@ -91,7 +91,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     Q_PROPERTY( Buttons visibleButtons READ visibleButtons WRITE setVisibleButtons )
 
   public:
-
     /**
      * Possible buttons shown in the relation editor
      * \since QGIS 3.18
@@ -281,7 +280,6 @@ class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEdito
     Q_OBJECT
 
   public:
-
     /**
      * Create a new configuration widget
      *

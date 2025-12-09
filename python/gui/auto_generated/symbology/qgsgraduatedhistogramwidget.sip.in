@@ -22,7 +22,6 @@ renderer.
 #include "qgsgraduatedhistogramwidget.h"
 %End
   public:
-
     QgsGraduatedHistogramWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsGraduatedHistogramWidget constructor

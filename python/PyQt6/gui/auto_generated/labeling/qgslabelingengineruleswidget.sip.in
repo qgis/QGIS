@@ -29,7 +29,6 @@ list of :py:class:`QgsAbstractLabelingEngineRule` objects.
 #include "qgslabelingengineruleswidget.h"
 %End
   public:
-
     QgsLabelingEngineRulesWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLabelingEngineRulesWidget.
@@ -76,7 +75,6 @@ list of :py:class:`QgsAbstractLabelingEngineRule` objects.
 #include "qgslabelingengineruleswidget.h"
 %End
   public:
-
     QgsLabelingEngineRulesDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor for QgsLabelingEngineRulesDialog.

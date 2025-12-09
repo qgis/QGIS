@@ -48,7 +48,6 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
 {
     Q_OBJECT
   public:
-
     /**
      * Creates the dialog and initializes the content to what is passed in the legend configuration (may be NULLPTR).
      * The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned

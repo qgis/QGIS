@@ -19,7 +19,6 @@ and managing data sources.
 #include "qgsbrowserdockwidget.h"
 %End
   public:
-
     explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserDockWidget

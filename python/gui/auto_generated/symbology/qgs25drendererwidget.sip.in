@@ -19,7 +19,6 @@ A widget for configuring a Qgs25DRenderer.
 #include "qgs25drendererwidget.h"
 %End
   public:
-
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer /Transfer/ ) /Factory/;
 %Docstring
 Static creation method

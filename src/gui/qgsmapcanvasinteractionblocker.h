@@ -30,7 +30,6 @@
 class GUI_EXPORT QgsMapCanvasInteractionBlocker
 {
   public:
-
     /**
      * Available interactions to block.
      */

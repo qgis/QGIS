@@ -39,7 +39,6 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Contains common actions which are used across a variety of classes.
      * \since QGIS 4.0

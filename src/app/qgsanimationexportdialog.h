@@ -40,7 +40,6 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnimationExportDialog
      */

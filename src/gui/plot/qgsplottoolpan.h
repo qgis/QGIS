@@ -33,7 +33,6 @@ class GUI_EXPORT QgsPlotToolPan : public QgsPlotTool
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotToolPan, with the associated \a canvas.
      */

@@ -26,7 +26,6 @@ Contains helper functions to handle common API operations.
 #include "qgsserverapiutils.h"
 %End
   public:
-
     static QgsRectangle parseBbox( const QString &bbox );
 %Docstring
 Parses a comma separated ``bbox`` into a (possibly empty)

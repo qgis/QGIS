@@ -32,7 +32,6 @@
 class QgsWfsDescribeFeatureTypeJson
 {
   private:
-
     /**
       * Returns the GML geometry type.
       */
@@ -48,7 +47,6 @@ class QgsWfsDescribeFeatureTypeJson
     const QgsWfs::QgsWfsParameters wfsParameters;
 
   public:
-
     /**
      * Constructor
      *

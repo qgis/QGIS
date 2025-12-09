@@ -26,7 +26,6 @@ fetching from the registered layer metadata providers.
 #include "qgslayermetadataresultsmodel.h"
 %End
   public:
-
     explicit QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent = 0 );
 %Docstring
 Constructs a QgsLayerMetadataResultsModel from a ``searchContext`` and

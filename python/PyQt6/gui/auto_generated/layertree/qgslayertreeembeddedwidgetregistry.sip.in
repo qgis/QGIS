@@ -73,7 +73,6 @@ created, but rather accessed through
 #include "qgslayertreeembeddedwidgetregistry.h"
 %End
   public:
-
     QgsLayerTreeEmbeddedWidgetRegistry();
 %Docstring
 Constructor for QgsLayerTreeEmbeddedWidgetRegistry

@@ -38,7 +38,6 @@ class GUI_EXPORT QgsMessageLogViewer : public QDialog, private Ui::QgsMessageLog
 {
     Q_OBJECT
   public:
-
     /**
      * Create a new message log viewer. The viewer will automatically connect to the system's
      * QgsApplication::messageLog() instance.

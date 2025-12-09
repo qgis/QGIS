@@ -32,7 +32,6 @@ class _3D_EXPORT Qgs3DAlgorithms : public QgsProcessingProvider
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for Qgs3DAlgorithms.
      */

@@ -40,7 +40,6 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTiledSceneRendererPropertiesWidget, associated with the specified \a layer and \a style database.
      */

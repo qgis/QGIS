@@ -89,7 +89,6 @@ to the model.
 %End
 
   protected:
-
     virtual void mousePressEvent( QMouseEvent *event );
 
 %Docstring

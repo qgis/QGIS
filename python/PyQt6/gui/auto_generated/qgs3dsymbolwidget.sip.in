@@ -22,7 +22,6 @@ Base class for 3D symbol configuration widgets.
 #include "qgs3dsymbolwidget.h"
 %End
   public:
-
     Qgs3DSymbolWidget( QWidget *parent );
 %Docstring
 Constructor for Qgs3DSymbolWidget with the specified ``parent`` widget.
@@ -66,7 +65,6 @@ A dialog for configuring a 3D symbol.
 #include "qgs3dsymbolwidget.h"
 %End
   public:
-
     Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for Qgs3DSymbolDialog, initially showing the specified

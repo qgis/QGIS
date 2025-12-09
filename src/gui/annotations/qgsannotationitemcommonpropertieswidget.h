@@ -35,7 +35,6 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget : public QWidget, priva
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnnotationItemCommonPropertiesWidget.
      */

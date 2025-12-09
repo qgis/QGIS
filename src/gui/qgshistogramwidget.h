@@ -51,7 +51,6 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     Q_OBJECT
 
   public:
-
     /**
      * QgsHistogramWidget constructor. If layer and fieldOrExp are specified then the histogram
      * will be initially populated with the corresponding values.
@@ -185,7 +184,6 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     void setSourceFieldExp( const QString &fieldOrExp );
 
   protected:
-
     /**
      * Updates and redraws the histogram.
      */

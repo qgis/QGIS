@@ -43,7 +43,6 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */
@@ -148,7 +147,6 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a QgsAggregateMappingWidget from a set of \a sourceFields. A \a parent object
      * can also be specified.

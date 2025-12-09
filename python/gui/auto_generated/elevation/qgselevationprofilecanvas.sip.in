@@ -23,7 +23,6 @@ A canvas for elevation profiles.
 #include "qgselevationprofilecanvas.h"
 %End
   public:
-
     QgsElevationProfileCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsElevationProfileCanvas, with the specified ``parent``

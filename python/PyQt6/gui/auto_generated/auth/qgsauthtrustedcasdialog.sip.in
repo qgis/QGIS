@@ -22,7 +22,6 @@ in secure connections.
 #include "qgsauthtrustedcasdialog.h"
 %End
   public:
-
     explicit QgsAuthTrustedCAsDialog( QWidget *parent /TransferThis/ = 0, const QList<QSslCertificate> &trustedCAs = QList<QSslCertificate>() );
 %Docstring
 Construct a dialog that will list the trusted Certificate Authorities

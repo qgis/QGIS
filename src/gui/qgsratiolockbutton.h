@@ -37,7 +37,6 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
     Q_PROPERTY( bool locked READ locked WRITE setLocked )
 
   public:
-
     /**
      * Construct a new ratio lock button.
      * Use \a parent to attach a parent QWidget to the button.

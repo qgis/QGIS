@@ -40,7 +40,6 @@
 class GUI_EXPORT QgsAttributesFormData
 {
   public:
-
     /**
      * Custom item types.
      *
@@ -553,7 +552,6 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Custom model roles.
      *
@@ -646,7 +644,6 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     void fieldConfigDataChanged( QgsAttributesFormItem *item );
 
   protected:
-
     /**
      * Auxiliary function to sort indexes, returning true if index \a a is less than index \a b.
      *
@@ -698,7 +695,6 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributesAvailableWidgetsModel, with the given \a parent.
      *
@@ -752,7 +748,6 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
     void populateLayerActions( const QList< QgsAction > actions );
 
   private:
-
     /**
      * Refresh action items in the model.
      *
@@ -774,7 +769,6 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributesFormLayoutModel, with the given \a parent.
      *
@@ -886,7 +880,6 @@ class GUI_EXPORT QgsAttributesFormProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributesFormProxyModel, with the given \a parent.
      */

@@ -34,7 +34,6 @@ class GUI_EXPORT QgsHillshadeRendererWidget : public QgsRasterRendererWidget, pr
 {
     Q_OBJECT
   public:
-
     /**
      * \brief Renderer widget for the hill shade renderer.
      * \param layer The layer attached for this widget.
