@@ -719,6 +719,24 @@ int Qgis::sfcgalVersionInt()
 #endif
 }
 
+bool Qgis::hasGeographicLib()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return true;
+#else
+  return false;
+#endif
+}
+
+int Qgis::geographicLibVersion()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return GEOGRAPHICLIB_VERSION_MAJOR_INT * 10000 + GEOGRAPHICLIB_VERSION_MINOR_INT * 100 + GEOGRAPHICLIB_VERSION_PATCH_INT;
+#else
+  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+#endif
+}
+
 bool Qgis::hasQtWebkit()
 {
 #ifdef WITH_QTWEBKIT
