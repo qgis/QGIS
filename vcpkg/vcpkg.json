@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "4e73518faee954f3469342cd8c28389ea9a97de3",
+        "baseline": "1c3ef0209e78dceceeca3c4d18f93540a19c37bc",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -121,7 +121,9 @@
             "qt3d",
             "qt5compat",
             "qtcharts",
-            "qtdeclarative"
+            "qtdeclarative",
+            "qtpositioning",
+            "qtserialport"
           ]
         },
         "py-pysal",
