@@ -250,6 +250,12 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
       QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "pcx" ) );
+
+      // test parameterAsOutputRasterFormat()
+      QVariantMap parameters;
+      parameters.insert( QStringLiteral( "raster2" ), QStringLiteral( "test.bmp" ) );
+      QgsProcessingContext context;
+      QCOMPARE( parameterAsOutputRasterFormat( parameters, QStringLiteral( "raster2" ), context ), QStringLiteral( "BMP" ) );
     }
 
     void runOutputChecks()
@@ -612,9 +618,11 @@ class DummyProvider3 : public QgsProcessingProvider // clazy:exclude=missing-qob
       return QStringList() << QStringLiteral( "dbf" );
     }
 
-    QStringList supportedOutputRasterLayerExtensions() const override
+    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
     {
-      return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "sdat" );
+      return QList<QPair<QString, QString>>()
+             << QPair<QString, QString>( QString(), QStringLiteral( "mig" ) )
+             << QPair<QString, QString>( QString(), QStringLiteral( "sdat" ) );
     }
 
     QStringList supportedOutputPointCloudLayerExtensions() const override
@@ -645,9 +653,10 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
       return QStringList() << QStringLiteral( "mif" );
     }
 
-    QStringList supportedOutputRasterLayerExtensions() const override
+    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
     {
-      return QStringList() << QStringLiteral( "mig" );
+      return QList<QPair<QString, QString>>()
+             << QPair<QString, QString>( QString(), QStringLiteral( "mig" ) );
     }
 
     void loadAlgorithms() override
@@ -8502,8 +8511,14 @@ void TestQgsProcessing::parameterRasterOut()
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );
   QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputFormat( def.get(), params, context ), QString() );
   params.insert( "non_optional", QgsProcessingOutputLayerDefinition( "test.tif" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
+
+  QgsProcessingOutputLayerDefinition outputLayerDef( "test.tif" );
+  outputLayerDef.setFormat( "foo" );
+  params.insert( "non_optional", outputLayerDef );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputFormat( def.get(), params, context ), QStringLiteral( "foo" ) );
 
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context ), QStringLiteral( "'abc'" ) );

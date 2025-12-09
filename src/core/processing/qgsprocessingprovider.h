@@ -143,8 +143,25 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputVectorLayerExtensions()
      * \see supportedOutputPointCloudLayerExtensions()
      * \see supportedOutputVectorTileLayerExtensions()
+     *
+     * \note Since QGIS 3.40, this method is no longer virtual and use internally
+     * supportedOutputRasterLayerFormatAndExtensions() instead.
      */
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    QStringList supportedOutputRasterLayerExtensions() const;
+
+    /**
+     * Returns a list of (format, file extension) supported by this provider.
+     *
+     * \since QGIS 3.40
+     */
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+
+    /**
+     * Returns a list of (format, file extension) supported by GDAL
+     *
+     * \since QGIS 3.40
+     */
+    static QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensionsDefault() SIP_SKIP;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.

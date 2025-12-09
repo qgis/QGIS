@@ -138,7 +138,7 @@ providers in a "beta" or "untrustworthy" state.
 Returns ``True`` if the provider is active and able to run algorithms.
 %End
 
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    QStringList supportedOutputRasterLayerExtensions() const;
 %Docstring
 Returns a list of the raster format file extensions supported by this
 provider.
@@ -148,7 +148,20 @@ provider.
 .. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
 
 .. seealso:: :py:func:`supportedOutputVectorTileLayerExtensions`
+
+.. note::
+
+   Since QGIS 3.40, this method is no longer virtual and use internally
+   :py:func:`~QgsProcessingProvider.supportedOutputRasterLayerFormatAndExtensions` instead.
 %End
+
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+%Docstring
+Returns a list of (format, file extension) supported by this provider.
+
+.. versionadded:: 3.40
+%End
+
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring

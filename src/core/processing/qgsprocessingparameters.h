@@ -375,6 +375,23 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     void setRemappingDefinition( const QgsRemappingSinkDefinition &definition );
 
     /**
+     * Returns the format (if set)
+     *
+     * \see setFormat()
+     * \since QGIS 4.0
+     */
+    QString format() const { return mFormat; }
+
+    /**
+     * Sets the \a format of the output dataset
+     *
+     * \see format()
+     *
+     * \since QGIS 4.0
+     */
+    void setFormat( const QString &format ) { mFormat = format; }
+
+    /**
      * Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      * \see loadVariant()
@@ -404,6 +421,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
 
     bool mUseRemapping = false;
     QgsRemappingSinkDefinition mRemappingDefinition = QgsRemappingSinkDefinition();
+    QString mFormat;
 
 };
 
@@ -1428,6 +1446,15 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.4
      */
     static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly = false );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a output format
+     *
+     * Output format may be empty.
+     *
+     * \since QGIS 3.40
+     */
+    static QString parameterAsOutputFormat( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a file based output destination.
@@ -3793,9 +3820,17 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     /**
      * Returns a list of the raster format file extensions supported for this parameter.
      * \see defaultFileExtension()
-     * \since QGIS 3.2
+     *
+     * \deprecated QGIS 3.40. Use supportedOutputRasterLayerFormatAndExtensions() instead.
      */
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    Q_DECL_DEPRECATED virtual QStringList supportedOutputRasterLayerExtensions() const SIP_DEPRECATED;
+
+    /**
+     * Returns a list of (format, file extension) supported by this provider.
+     *
+     * \since QGIS 3.40
+     */
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
 
     /**
      * Creates a new parameter using the definition from a script code.

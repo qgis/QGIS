@@ -22,6 +22,8 @@
 #include "qgsrasterfilewriter.h"
 #include "qgsvectorfilewriter.h"
 
+#include <QRegularExpressionMatch>
+
 #include "moc_qgsprocessingprovider.cpp"
 
 QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
@@ -66,7 +68,76 @@ QString QgsProcessingProvider::versionInfo() const
 
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
 {
-  return QgsRasterFileWriter::supportedFormatExtensions();
+  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  QSet< QString > extensions;
+  QStringList res;
+  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  {
+    if ( !extensions.contains( formatAndExt.second ) )
+    {
+      extensions.insert( formatAndExt.second );
+      res << formatAndExt.second;
+    }
+  }
+  return res;
+}
+
+QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions() const
+{
+  return supportedOutputRasterLayerFormatAndExtensionsDefault();
+}
+
+QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault()
+{
+  const auto formats = QgsRasterFileWriter::supportedFiltersAndFormats();
+  QList<QPair<QString, QString>> res;
+
+  const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
+
+  for ( const QgsRasterFileWriter::FilterFormatDetails &format : formats )
+  {
+    const QString ext = format.filterString;
+    const QRegularExpressionMatch match = rx.match( ext );
+    if ( !match.hasMatch() )
+      continue;
+
+    const QString matched = match.captured( 1 );
+    res << QPair<QString, QString>( format.driverName, matched );
+  }
+
+  std::sort( res.begin(), res.end(), []( const QPair<QString, QString> &a, const QPair<QString, QString> &b ) -> bool
+  {
+    for ( const QString &tifExt : { QStringLiteral( "tif" ), QStringLiteral( "tiff" ) } )
+    {
+      if ( a.second == tifExt )
+      {
+        if ( b.second == a.second )
+        {
+          if ( a.first == QLatin1String( "GTiff" ) )
+            return true;
+          else if ( b.first == QLatin1String( "GTiff" ) )
+            return false;
+          return a.first.toLower().localeAwareCompare( b.first.toLower() ) < 0;
+        }
+        return true;
+      }
+      else if ( b.second == tifExt )
+        return false;
+    }
+
+    if ( a.second == QLatin1String( "gpkg" ) )
+    {
+      if ( b.second == a.second )
+        return a.first.toLower().localeAwareCompare( b.first.toLower() ) < 0;
+      return true;
+    }
+    else if ( b.second == QLatin1String( "gpkg" ) )
+      return false;
+
+    return a.second.toLower().localeAwareCompare( b.second.toLower() ) < 0;
+  } );
+
+  return res;
 }
 
 QStringList QgsProcessingProvider::supportedOutputPointCloudLayerExtensions() const

@@ -128,9 +128,9 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
       return QStringList() << QStringLiteral( "mif" );
     }
 
-    QStringList supportedOutputRasterLayerExtensions() const override
+    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
     {
-      return QStringList() << QStringLiteral( "mig" );
+      return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), QStringLiteral( "mig" ) );
     }
 
     void loadAlgorithms() override
@@ -1815,7 +1815,9 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast<const QgsProcessingDestinationParameter *>( alg.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
+  Q_NOWARN_DEPRECATED_PUSH
   QCOMPARE( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->supportedOutputRasterLayerExtensions(), QStringList() << QStringLiteral( "mig" ) );
+  Q_NOWARN_DEPRECATED_POP
   QCOMPARE( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->defaultFileExtension(), QStringLiteral( "mig" ) );
   QVERIFY( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->generateTemporaryDestination().endsWith( QLatin1String( ".mig" ) ) );
   QVERIFY( !static_cast<const QgsProcessingDestinationParameter *>( alg.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );

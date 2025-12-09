@@ -850,6 +850,25 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QString parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a output format
+     *
+     * Output format may be empty.
+     *
+     * \since QGIS 3.40
+     */
+    QString parameterAsOutputFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a output format
+     *
+     * If no explicit output format is attached to the parameter, one will be
+     * attempted to be guessed from the file name extension.
+     *
+     * \since QGIS 3.40
+     */
+    QString parameterAsOutputRasterFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a file based output destination.
      */
     QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
