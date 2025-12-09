@@ -46,6 +46,5 @@
       (Qt3DRender::QCameraSelector{184/rubberBandsPass}) [ (Qt3DRender::QCamera:{0/<no_name>}) ]
         (Qt3DRender::QLayerFilter{185/<no_name>}) [ (AcceptAnyMatchingLayers:[ {7/mRubberBandsLayer} ]) ]
           (Qt3DRender::QRenderStateSet{188/<no_name>}) [ (QDepthTest:Always), (QBlendEquationArguments:[ (sourceRgb:SourceAlpha), (destinationRgb:Source1Alpha), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]), (QBlendEquation:Add) ]
-            (Qt3DRender::QRenderTargetSelector{190/<no_name>}) [ (outputs:[ (Depth:{18[DepthFormat]/<no_name>), (Color0:{17[RGB8_UNorm]/<no_name>) ]) ]
-      (Qt3DRender::QNoDraw{191/Sub pass RenderCapture})
-        (Qt3DRender::QRenderCapture{192/<no_name>})
+      (Qt3DRender::QNoDraw{190/Sub pass RenderCapture})
+        (Qt3DRender::QRenderCapture{191/<no_name>})
