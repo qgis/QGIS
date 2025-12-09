@@ -529,7 +529,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // initially populate layer tree with project layers and registered sources
   mLayerTreeView->populateInitialSources( QgsProject::instance() );
-  connect( QgsProject::instance(), &QgsProject::layersAdded, mLayerTreeView, [this] { mLayerTreeView->populateMissingLayers( QgsProject::instance() ); } );
+  // the layer tree registry bridge we rely on to sync project layers with the layer tree ignores layers added to the project
+  // but not the legend -- this ignores eg loading layers from QLR files or pasted layers, which have special logic which directly
+  // manipulate the PROJECT's layer tree ONLY, and consequently do not trigger the QgsProject::legendLayersAdded signal which the
+  // bridge relies on. So we also need to explicitly listen out for QgsProject::layersAddedWithoutLegend here, to ensure that
+  // layers added via QLR or copy/paste are also added to the elevation profile's layer tree
+  connect( QgsProject::instance(), &QgsProject::layersAddedWithoutLegend, mLayerTreeView, [this] { mLayerTreeView->populateMissingLayers( QgsProject::instance() ); } );
 
   connect( mProfile->layerTree(), &QgsLayerTree::layerOrderChanged, this, [this] {
     updateCanvasSources();
