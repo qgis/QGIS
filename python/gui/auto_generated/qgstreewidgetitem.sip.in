@@ -25,7 +25,6 @@ text and numeric values.
 #include "qgstreewidgetitem.h"
 %End
   public:
-
     explicit QgsTreeWidgetItem( QTreeWidget *view /TransferThis/, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
@@ -157,7 +156,6 @@ edited.
 #include "qgstreewidgetitem.h"
 %End
   public:
-
     explicit QgsTreeWidgetItemObject( int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItemObject

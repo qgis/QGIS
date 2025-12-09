@@ -36,7 +36,6 @@
 class GUI_EXPORT QgsCodeEditorColorSchemeRegistry
 {
   public:
-
     /**
      * Constructor for a color scheme registry.
      */

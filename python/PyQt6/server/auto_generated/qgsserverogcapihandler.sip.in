@@ -278,7 +278,6 @@ Returns a vector layer from the ``collectionId`` in the given
 
 
   protected:
-
     void setContentTypesInt( const QList<int> &contentTypes ) /PyName=setContentTypes/;
 %Docstring
 Set the content types to ``contentTypes``

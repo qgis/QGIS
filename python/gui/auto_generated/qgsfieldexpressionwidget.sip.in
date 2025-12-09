@@ -31,7 +31,6 @@ line edit is finished (focus lost, enter key pressed).
 #include "qgsfieldexpressionwidget.h"
 %End
   public:
-
     explicit QgsFieldExpressionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsFieldExpressionWidget creates a widget with a combo box to display

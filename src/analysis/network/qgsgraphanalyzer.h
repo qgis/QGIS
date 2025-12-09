@@ -31,7 +31,6 @@ class QgsGraph;
 class ANALYSIS_EXPORT QgsGraphAnalyzer
 {
   public:
-
     /**
      * Solve shortest path problem using Dijkstra algorithm
      * \param source source graph

@@ -48,7 +48,6 @@ class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
 #endif
 
   protected:
-
     /**
      * Constructor for QgsPlotCanvasItem for the specified \a canvas.
      */

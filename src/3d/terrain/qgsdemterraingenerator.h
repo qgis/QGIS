@@ -38,7 +38,6 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new instance of a QgsDemTerrainGenerator object.
      */

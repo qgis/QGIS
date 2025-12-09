@@ -28,7 +28,6 @@ structure.
 #include "qgsprocessingtoolboxtreeview.h"
 %End
   public:
-
     QgsProcessingToolboxTreeView( QWidget *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxTreeView, with the specified

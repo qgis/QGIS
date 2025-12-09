@@ -44,7 +44,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 {
     Q_OBJECT
   public:
-
     /**
      * This constructor is used when the query builder is called from the
      * layer properties dialog

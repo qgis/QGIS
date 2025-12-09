@@ -27,7 +27,6 @@ Base class for widgets which allow control over the properties of
 #include "qgslabelingenginerulewidget.h"
 %End
   public:
-
     QgsLabelingEngineRuleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLabelingEngineRuleWidget.

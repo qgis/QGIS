@@ -43,7 +43,6 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServerCacheFilter
 {
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors

@@ -65,7 +65,6 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 class GUI_EXPORT QgsEditorWidgetAutoConf SIP_SKIP
 {
   public:
-
     /**
      * Register the default plugins.
      */

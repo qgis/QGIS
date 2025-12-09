@@ -61,7 +61,6 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
 {
     Q_OBJECT
   public:
-
     /**
      * Widget modes.
      *

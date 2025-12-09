@@ -20,7 +20,6 @@ the width to the contents.
 #include "qgsvscrollarea.h"
 %End
   public:
-
     QgsVScrollArea( QWidget *parent = 0 );
 %Docstring
 QgsVScrollArea

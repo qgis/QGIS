@@ -38,7 +38,6 @@ class QgsDocumentationPanelWidget : public QgsDevToolWidget, private Ui::QgsDocu
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDocumentationPanelWidget.
      */

@@ -46,7 +46,6 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractFieldDomainWidget, with the specified \a parent widget.
      */
@@ -97,7 +96,6 @@ class GUI_EXPORT QgsRangeDomainWidget : public QgsAbstractFieldDomainWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRangeDomainWidget, with the specified \a parent widget.
      */
@@ -122,7 +120,6 @@ class GUI_EXPORT QgsGlobDomainWidget : public QgsAbstractFieldDomainWidget, priv
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGlobDomainWidget, with the specified \a parent widget.
      */
@@ -145,7 +142,6 @@ class GUI_EXPORT QgsCodedValueTableModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodedValueTableModel, with the specified \a parent object.
      */
@@ -193,7 +189,6 @@ class GUI_EXPORT QgsCodedFieldDomainWidget : public QgsAbstractFieldDomainWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodedFieldDomainWidget, with the specified \a parent widget.
      */
@@ -219,7 +214,6 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldDomainWidget for the given domain \a type, with the specified \a parent widget.
      */
@@ -280,7 +274,6 @@ class GUI_EXPORT QgsFieldDomainDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldDomainDialog for the given domain \a type, with the specified \a parent widget and window \a flags.
      */

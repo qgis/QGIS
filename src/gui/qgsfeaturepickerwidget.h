@@ -53,7 +53,6 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     Q_PROPERTY( bool showBrowserButtons READ showBrowserButtons WRITE setShowBrowserButtons NOTIFY showBrowserButtonsChanged )
 
   public:
-
     /**
      * Create a new QgsFeaturePickerWidget, optionally specifying a \a parent.
      */

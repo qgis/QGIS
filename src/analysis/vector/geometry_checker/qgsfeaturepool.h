@@ -37,7 +37,6 @@
 class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 {
   public:
-
     /**
      * Creates a new feature pool for \a layer.
      *
@@ -156,7 +155,6 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QString layerName() const;
 
   protected:
-
     /**
      * Inserts a feature into the cache and the spatial index.
      * To be used by implementations of ``addFeature``.

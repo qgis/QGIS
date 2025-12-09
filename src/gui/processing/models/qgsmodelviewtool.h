@@ -177,7 +177,6 @@ class GUI_EXPORT QgsModelViewTool : public QObject
     void itemFocused( QgsModelComponentGraphicItem *item );
 
   protected:
-
     /**
      * Sets the combination of \a flags that will be used for the tool.
      * \see flags()

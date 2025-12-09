@@ -36,7 +36,6 @@
 class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 {
   public:
-
     /**
      * Constructor for QgsTreeWidgetItem
      * \param view parent QTreeWidget view
@@ -161,7 +160,6 @@ class GUI_EXPORT QgsTreeWidgetItemObject : public QObject, public QgsTreeWidgetI
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTreeWidgetItemObject
      * \param type item type

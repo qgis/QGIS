@@ -22,7 +22,6 @@ A widget which allows users to modify the properties of a
 #include "qgslimitedrandomcolorrampdialog.h"
 %End
   public:
-
     QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLimitedRandomColorRampWidget.
@@ -99,7 +98,6 @@ A dialog which allows users to modify the properties of a
 #include "qgslimitedrandomcolorrampdialog.h"
 %End
   public:
-
     QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLimitedRandomColorRampDialog.

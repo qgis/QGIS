@@ -20,7 +20,6 @@ A widget for configuring a :py:class:`QgsInterpolatedLineSymbolLayer`.
 #include "qgsinterpolatedlinesymbollayerwidget.h"
 %End
   public:
-
     QgsInterpolatedLineSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

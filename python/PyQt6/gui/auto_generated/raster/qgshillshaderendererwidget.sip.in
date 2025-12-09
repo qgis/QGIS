@@ -21,7 +21,6 @@ Renderer widget for the hill shade renderer.
 #include "qgshillshaderendererwidget.h"
 %End
   public:
-
     QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Renderer widget for the hill shade renderer.

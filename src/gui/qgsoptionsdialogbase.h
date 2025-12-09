@@ -88,7 +88,6 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".

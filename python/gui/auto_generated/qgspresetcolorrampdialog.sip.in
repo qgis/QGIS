@@ -22,7 +22,6 @@ A widget which allows users to modify the properties of a
 #include "qgspresetcolorrampdialog.h"
 %End
   public:
-
     QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPresetColorRampWidget.
@@ -67,7 +66,6 @@ A dialog which allows users to modify the properties of a
 #include "qgspresetcolorrampdialog.h"
 %End
   public:
-
     QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPresetColorRampDialog.

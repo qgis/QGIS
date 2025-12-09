@@ -22,7 +22,6 @@ A widget for playing back audio and video media files.
 #include "qgsmediawidget.h"
 %End
   public:
-
     enum Mode
     {
       Audio,

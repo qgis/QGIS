@@ -31,7 +31,6 @@ class GUI_EXPORT QgsTextWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Create a text widget wrapper
      *

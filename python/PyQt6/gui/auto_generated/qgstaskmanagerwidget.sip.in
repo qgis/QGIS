@@ -23,7 +23,6 @@ allows for interaction with the manager.
 #include "qgstaskmanagerwidget.h"
 %End
   public:
-
     QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTaskManagerWidget

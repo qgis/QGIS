@@ -91,7 +91,6 @@ class GUI_EXPORT QgsStoredQueryManager : public QObject
     class QueryDetails
     {
       public:
-
         /**
          * Name of the query.
          */

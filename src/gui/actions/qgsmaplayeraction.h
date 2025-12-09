@@ -45,7 +45,6 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-
     /**
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.

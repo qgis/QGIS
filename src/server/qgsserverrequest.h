@@ -223,7 +223,6 @@ class SERVER_EXPORT QgsServerRequest
     const QString queryParameter( const QString &name, const QString &defaultValue = QString() ) const;
 
   protected:
-
     /**
      * Set the request original \a url (the request url as seen by the web server)
      *

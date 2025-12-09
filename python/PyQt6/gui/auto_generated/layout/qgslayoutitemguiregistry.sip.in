@@ -158,7 +158,6 @@ dialogs.
 #include "qgslayoutitemguiregistry.h"
 %End
   public:
-
     QgsLayoutItemGuiGroup( const QString &id = QString(), const QString &name = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsLayoutItemGuiGroup.
@@ -188,7 +187,6 @@ only the components related to the GUI behavior of layout items.
 #include "qgslayoutitemguiregistry.h"
 %End
   public:
-
     QgsLayoutItemGuiRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty item GUI registry.

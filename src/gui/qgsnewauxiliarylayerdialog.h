@@ -34,7 +34,6 @@ class GUI_EXPORT QgsNewAuxiliaryLayerDialog : public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-
     /**
      * Constructor.
      *

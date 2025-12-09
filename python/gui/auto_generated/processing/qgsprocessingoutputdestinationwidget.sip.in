@@ -28,7 +28,6 @@ style Processing parameter.
 #include "qgsprocessingoutputdestinationwidget.h"
 %End
   public:
-
     QgsProcessingLayerOutputDestinationWidget( const QgsProcessingDestinationParameter *parameter, bool defaultSelection, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingLayerOutputDestinationWidget, associated

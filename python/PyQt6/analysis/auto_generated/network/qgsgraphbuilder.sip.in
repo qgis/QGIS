@@ -20,7 +20,6 @@ Used for making the :py:class:`QgsGraph` object.
 #include "qgsgraphbuilder.h"
 %End
   public:
-
     QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
 Default constructor

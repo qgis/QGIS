@@ -55,7 +55,6 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     }
 
   private:
-
     /**
      * Helper function to get a feature based algorithm.
      */
