@@ -439,7 +439,8 @@ void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &re
     {
       if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( inputs.value( inputIt.key() ).toString(), context, false ) )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer ) )
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer );
+        if ( vl && vl->featureCount() >= 0 )
         {
           mLastResultCount.insert( inputs.value( inputIt.key() ).toString(), vl->featureCount() );
         }
@@ -451,7 +452,8 @@ void QgsModelGraphicsScene::setLastRunResult( const QgsProcessingModelResult &re
     {
       if ( QgsMapLayer *resultMapLayer = QgsProcessingUtils::mapLayerFromString( outputs.value( outputIt.key() ).toString(), context, false ) )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer ) )
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( resultMapLayer );
+        if ( vl && vl->featureCount() >= 0 )
         {
           mLastResultCount.insert( outputs.value( outputIt.key() ).toString(), vl->featureCount() );
         }
@@ -578,12 +580,14 @@ void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arro
   if ( mFlags & FlagHideFeatureCount )
     return;
 
-  if ( mLastResultCount.contains( layerId ) )
+  if ( !mLastResultCount.contains( layerId ) )
   {
-    QString numberFeatureText = QStringLiteral( "[%1]" ).arg( mLastResultCount.value( layerId ) );
-    QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
-    addItem( featureCount );
+    return;
   }
+
+  QString numberFeatureText = QStringLiteral( "[%1]" ).arg( mLastResultCount.value( layerId ) );
+  QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
+  addItem( featureCount );
 }
 
 
