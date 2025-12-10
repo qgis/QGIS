@@ -507,6 +507,10 @@ if(WITH_CORE)
   endif()
 
   if (WITH_GEOGRAPHICLIB)
+    if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+      # Workaround for https://bugs.launchpad.net/ubuntu/+source/geographiclib/+bug/1805173
+      list(APPEND CMAKE_MODULE_PATH /usr/share/cmake/geographiclib)
+    endif()
     find_package(GeographicLib REQUIRED)
     message(STATUS "Found GeographicLib: ${GeographicLib_VERSION}")
     string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\1" GEOGRAPHICLIB_VERSION_MAJOR_INT "${GeographicLib_VERSION}")
