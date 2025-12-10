@@ -49,7 +49,7 @@ QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   {
     setupUi( this );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-    connect( buttonBox, &QDialogButtonBox::helpRequested,  this, [] {
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
       QgsHelp::openHelp( QStringLiteral( "auth_system/auth_overview.html#authentication-methods" ) );
     } );
 

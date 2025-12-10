@@ -56,7 +56,7 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
     connect( btnPkiPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::helpRequested,  this, [] {
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
       QgsHelp::openHelp( QStringLiteral( "auth_system/auth_workflows.html#authentication-identities" ) );
     } );
     mIdentityType = identitytype;
