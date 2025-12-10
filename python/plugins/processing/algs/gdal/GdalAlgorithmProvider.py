@@ -76,6 +76,7 @@ from .rasterize_over import rasterize_over
 from .Buffer import Buffer
 from .ClipVectorByExtent import ClipVectorByExtent
 from .ClipVectorByMask import ClipVectorByMask
+from .DatasetIdentify import DatasetIdentify
 from .Dissolve import Dissolve
 from .ExecuteSql import ExecuteSql
 from .OffsetCurve import OffsetCurve
@@ -209,6 +210,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
 
         if int(gdal.VersionInfo()) >= 3070000:
             self.algs.append(ogrinfojson())
+
+        if int(gdal.VersionInfo()) >= 3130000:
+            self.algs.append(DatasetIdentify())
 
         for a in self.algs:
             self.addAlgorithm(a)
