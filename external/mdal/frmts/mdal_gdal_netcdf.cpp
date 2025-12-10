@@ -22,7 +22,7 @@ MDAL::DriverGdalNetCDF *MDAL::DriverGdalNetCDF::create()
 
 std::string MDAL::DriverGdalNetCDF::GDALFileName( const std::string &fileName )
 {
-#ifdef WIN32
+#ifdef _WIN32
   // Force usage of the predefined GDAL driver
   // http://gis.stackexchange.com/a/179167
   // on Windows, HDF5 driver is checked before NETCDF driver in GDAL
