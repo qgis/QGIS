@@ -173,12 +173,6 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   destProvider->setEditable( true );
   destProvider->setNoDataValue( 1, mNoData );
 
-  const int blockWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int blockHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int numBlocksX = static_cast<int>( std::ceil( 1.0 * mLayerWidth / blockWidth ) );
-  const int numBlocksY = static_cast<int>( std::ceil( 1.0 * mLayerHeight / blockHeight ) );
-  const int numBlocks = numBlocksX * numBlocksY;
-
   const bool hasReportsDuringClose = provider->hasReportsDuringClose();
   const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 
@@ -192,7 +186,7 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
     auto outputBlock = std::make_unique<QgsRasterBlock>( destProvider->dataType( 1 ), iterCols, iterRows );
-    feedback->setProgress( maxProgressDuringBlockWriting * ( ( iterTop / blockHeight * numBlocksX ) + iterLeft / blockWidth ) / numBlocks );
+    feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand ) );
 
     for ( int row = 0; row < iterRows; row++ )
     {
