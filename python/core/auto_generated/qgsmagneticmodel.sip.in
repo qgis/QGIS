@@ -275,6 +275,9 @@ of change.
 :param By: the northerly component of the magnetic field (in nanotesla)
 :param Bz: the vertical (up) component of the magnetic field (in
            nanotesla)
+:param Bxt: the rate of change of Bx (nT/yr)
+:param Byt: the rate of change of By (nT/yr)
+:param Bzt: the rate of change of Bz (nT/yr)
 
 :return: - ``True`` if the components were successfully calculated
          - H: the horizontal magnetic field (in nanotesla)
