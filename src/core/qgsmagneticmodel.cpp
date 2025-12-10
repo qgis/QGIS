@@ -199,53 +199,66 @@ int QgsMagneticModel::order() const
 
 bool QgsMagneticModel::getComponents( double years, double latitude, double longitude, double height, double &Bx, double &By, double &Bz ) const
 {
-#ifdef WITH_GEOGRAPHICLIB
   Bx = 0;
   By = 0;
   Bz = 0;
+#ifdef WITH_GEOGRAPHICLIB
   if ( !mModel )
     return false;
 
   ( *mModel )( years, latitude, longitude, height, Bx, By, Bz );
   return true;
 #else
+  ( void ) years;
+  ( void ) latitude;
+  ( void ) longitude;
+  ( void ) height;
   throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
 #endif
 }
 
 bool QgsMagneticModel::getComponentsWithTimeDerivatives( double years, double latitude, double longitude, double height, double &Bx, double &By, double &Bz, double &Bxt, double &Byt, double &Bzt ) const
 {
-#ifdef WITH_GEOGRAPHICLIB
   Bx = 0;
   By = 0;
   Bz = 0;
+  Bxt = 0;
+  Byt = 0;
+  Bzt = 0;
+#ifdef WITH_GEOGRAPHICLIB
   if ( !mModel )
     return false;
 
   ( *mModel )( years, latitude, longitude, height, Bx, By, Bz, Bxt, Byt, Bzt );
   return true;
 #else
+  ( void ) years;
+  ( void ) latitude;
+  ( void ) longitude;
+  ( void ) height;
   throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
 #endif
 }
 
 bool QgsMagneticModel::fieldComponents( double Bx, double By, double Bz, double &H, double &F, double &D, double &I )
 {
-#ifdef WITH_GEOGRAPHICLIB
   H = 0;
   F = 0;
   D = 0;
   I = 0;
+#ifdef WITH_GEOGRAPHICLIB
   GeographicLib::MagneticModel::FieldComponents( Bx, By, Bz, H, F, D, I );
   return true;
 #else
+  ( void ) Bx;
+  ( void ) By;
+  ( void ) Bz;
   throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
 #endif
 }
 
 bool QgsMagneticModel::fieldComponentsWithTimeDerivatives( double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H, double &F, double &D, double &I, double &Ht, double &Ft, double &Dt, double &It )
 {
-#ifdef WITH_GEOGRAPHICLIB
   H = 0;
   F = 0;
   D = 0;
@@ -254,9 +267,16 @@ bool QgsMagneticModel::fieldComponentsWithTimeDerivatives( double Bx, double By,
   Ft = 0;
   Dt = 0;
   It = 0;
+#ifdef WITH_GEOGRAPHICLIB
   GeographicLib::MagneticModel::FieldComponents( Bx, By, Bz, Bxt, Byt, Bzt, H, F, D, I, Ht, Ft, Dt, It );
   return true;
 #else
+  ( void ) Bx;
+  ( void ) By;
+  ( void ) Bz;
+  ( void ) Bxt;
+  ( void ) Byt;
+  ( void ) Bzt;
   throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
 #endif
 }
