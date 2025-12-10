@@ -18,6 +18,15 @@
 
 struct QgsMesh
 {
+%Docstring(signature="appended")
+Mesh - vertices, edges and faces.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
 
   enum ElementType /BaseType=IntEnum/
   {

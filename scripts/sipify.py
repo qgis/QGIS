@@ -2100,32 +2100,11 @@ def try_process_sip_skip():
         return True
 
 
-def process_struct_decl():
-    struct_match = re.match(
-        r"^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$", CONTEXT.current_line
-    )
-    if struct_match:
-        dbg_info("  going to struct => public")
-        CONTEXT.class_and_struct.append(struct_match.group("structname"))
-        CONTEXT.classname.append(
-            CONTEXT.classname[-1]
-            if CONTEXT.classname
-            else struct_match.group("structname")
-        )  # fake new class since struct has considered similarly
-        if CONTEXT.access[-1] != Visibility.Private:
-            CONTEXT.all_fully_qualified_class_names.append(
-                CONTEXT.current_fully_qualified_struct_name()
-            )
-        CONTEXT.access.append(Visibility.Public)
-        CONTEXT.exported.append(CONTEXT.exported[-1])
-        CONTEXT.bracket_nesting_idx.append(0)
-
-
 def process_class_decl():
     # class declaration started
     # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
     class_pattern = re.compile(
-        r"""^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
+        r"""^(\s*(?P<kind>class|struct))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
     )
     class_pattern_match = class_pattern.match(CONTEXT.current_line)
 
@@ -2138,7 +2117,16 @@ def process_class_decl():
         template_inheritance_class2 = []
         template_inheritance_class3 = []
 
-        CONTEXT.classname.append(class_pattern_match.group("classname"))
+        if class_pattern_match.group("kind") == "class":
+            CONTEXT.classname.append(class_pattern_match.group("classname"))
+        else:
+            assert class_pattern_match.group("kind") == "struct"
+            CONTEXT.classname.append(
+                CONTEXT.classname[-1]
+                if CONTEXT.classname
+                else class_pattern_match.group("classname"))
+            CONTEXT.exported.append(CONTEXT.exported[-1])
+
         CONTEXT.class_and_struct.append(class_pattern_match.group("classname"))
         if CONTEXT.access[-1] != Visibility.Private:
             CONTEXT.all_fully_qualified_class_names.append(
@@ -2286,7 +2274,10 @@ def process_class_decl():
 
         CONTEXT.reset_method_state()
         CONTEXT.header_code = True
-        CONTEXT.access[-1] = Visibility.Private
+        if class_pattern_match.group("kind") == "class":
+            CONTEXT.access[-1] = Visibility.Private
+        else:
+            CONTEXT.access[-1] = Visibility.Public
         return True
 
 
@@ -3564,8 +3555,6 @@ def process_input():
         if try_process_sip_skip():
             continue
         if detect_comment_block():
-            continue
-        if process_struct_decl():
             continue
         if process_class_decl():
             continue
