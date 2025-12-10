@@ -19,6 +19,8 @@
 
 #ifdef WITH_GEOGRAPHICLIB
 #include <GeographicLib/MagneticModel.hpp>
+#else
+#include "qgsexception.h"
 #endif
 
 QString QgsMagneticModel::defaultFilePath()
