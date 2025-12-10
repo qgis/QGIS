@@ -17,10 +17,11 @@
 #ifndef QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 #define QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 
-#include <QComboBox>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsauthcertutils.h"
-#include "qgis_gui.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui

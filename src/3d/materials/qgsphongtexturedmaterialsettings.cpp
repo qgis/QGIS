@@ -21,14 +21,14 @@
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
-#include <Qt3DRender/QPaintedTextureImage>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <QMap>
 
+#include <QMap>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QPaintedTextureImage>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTexture>
 
 QString QgsPhongTexturedMaterialSettings::type() const
 {

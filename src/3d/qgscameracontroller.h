@@ -20,9 +20,9 @@
 #include "qgscamerapose.h"
 #include "qgscoordinatetransform.h"
 
+#include <QImage>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
-#include <QImage>
 
 #ifndef SIP_RUN
 namespace Qt3DInput

@@ -16,13 +16,13 @@
 #ifndef QGSEXPRESSIONHIGHLIGHTER_H
 #define QGSEXPRESSIONHIGHLIGHTER_H
 
-#include <QSyntaxHighlighter>
+#include "qgis_gui.h"
 
 #include <QHash>
-#include <QTextCharFormat>
-#include <QStringList>
 #include <QRegularExpression>
-#include "qgis_gui.h"
+#include <QStringList>
+#include <QSyntaxHighlighter>
+#include <QTextCharFormat>
 
 class QTextDocument;
 

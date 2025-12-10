@@ -14,20 +14,21 @@
  ***************************************************************************/
 
 #include "qgsrenderchecker.h"
-#include "moc_qgsrenderchecker.cpp"
 
 #include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
 
+#include <QBuffer>
+#include <QByteArray>
 #include <QColor>
-#include <QPainter>
+#include <QCryptographicHash>
+#include <QDebug>
 #include <QImage>
 #include <QImageReader>
-#include <QCryptographicHash>
-#include <QByteArray>
-#include <QDebug>
-#include <QBuffer>
+#include <QPainter>
 #include <QUuid>
+
+#include "moc_qgsrenderchecker.cpp"
 
 #ifndef CMAKE_SOURCE_DIR
 #error CMAKE_SOURCE_DIR undefined

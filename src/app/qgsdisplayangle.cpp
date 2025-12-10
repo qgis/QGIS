@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsdisplayangle.h"
-#include "moc_qgsdisplayangle.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsunittypes.h"
-#include "qgssettings.h"
-#include "qgsprojectdisplaysettings.h"
-#include "qgsproject.h"
-#include "qgsbearingnumericformat.h"
-#include "qgsmaptool.h"
-#include "qgsgui.h"
 
 #include <cmath>
+
+#include "qgsbearingnumericformat.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptool.h"
+#include "qgsproject.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgssettings.h"
+#include "qgsunittypes.h"
+
+#include "moc_qgsdisplayangle.cpp"
 
 QgsDisplayAngle::QgsDisplayAngle( QgsMapTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )

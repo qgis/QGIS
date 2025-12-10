@@ -14,26 +14,28 @@
  ***************************************************************************/
 
 #include "qgsvariantutils.h"
+
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsunsetattributevalue.h"
 
-#include <QDate>
-#include <QTime>
-#include <QDateTime>
 #include <QBitArray>
-#include <QRect>
-#include <QLine>
-#include <QUuid>
-#include <QImage>
-#include <QPixmap>
+#include <QBitmap>
 #include <QBrush>
 #include <QColor>
-#include <QBitmap>
+#include <QDate>
+#include <QDateTime>
 #include <QIcon>
+#include <QImage>
+#include <QLine>
+#include <QPixmap>
+#include <QQuaternion>
+#include <QRect>
+#include <QTime>
+#include <QUuid>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
-#include <QQuaternion>
 
 QString QgsVariantUtils::typeToDisplayString( QMetaType::Type type, QMetaType::Type subType )
 {
@@ -631,4 +633,112 @@ QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
   return QVariant( QMetaType( metaType ) );
 #endif
 
+}
+
+QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
+{
+
+  auto _displayString = [ ]( const QVariant & variant, int precision ) -> QString
+  {
+
+    if ( QgsVariantUtils::isNull( variant ) )
+    {
+      return QgsApplication::nullRepresentation();
+    }
+
+    // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
+    if ( variant.userType() == QMetaType::Type::Double )
+    {
+      // Locales with decimal point != '.' or that require group separator: use QLocale
+      if ( QLocale().decimalPoint() != '.' ||
+           !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+      {
+        if ( precision > 0 )
+        {
+          if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
+          {
+            return QLocale().toString( variant.toDouble(), 'g', precision );
+          }
+          else
+          {
+            return QLocale().toString( variant.toDouble(), 'f', precision );
+          }
+        }
+        else
+        {
+          // Precision is not set, let's guess it from the
+          // standard conversion to string
+          const QString str( variant.toString() );
+          const int dotPosition( static_cast<int>( str.indexOf( '.' ) ) );
+          int precision;
+          if ( dotPosition < 0 && str.indexOf( 'e', 0, Qt::CaseInsensitive ) < 0 )
+          {
+            precision = 0;
+            return QLocale().toString( variant.toDouble(), 'f', precision );
+          }
+          else
+          {
+            if ( dotPosition < 0 ) precision = 0;
+            else precision = static_cast<int>( str.length() ) - dotPosition - 1;
+
+            if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
+            {
+              return QLocale().toString( variant.toDouble(), 'g', precision );
+            }
+            else
+            {
+              return QLocale().toString( variant.toDouble(), 'f', precision );
+            }
+          }
+        }
+      }
+      // Default for doubles with precision
+      else if ( precision > 0 )
+      {
+        if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
+        {
+          return QString::number( variant.toDouble(), 'g', precision );
+        }
+        else
+        {
+          return QString::number( variant.toDouble(), 'f', precision );
+        }
+      }
+    }
+    // Other numeric types than doubles
+    else if ( QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( variant.userType() ) ) &&
+              !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    {
+      bool ok;
+      const qlonglong converted( variant.toLongLong( &ok ) );
+      if ( ok )
+        return QLocale().toString( converted );
+    }
+    else if ( variant.userType() == QMetaType::Type::QByteArray )
+    {
+      return QObject::tr( "BLOB" );
+    }
+
+    // Fallback if special rules do not apply
+    return variant.toString();
+  };
+
+  if ( variant.userType() == QMetaType::Type::QStringList || variant.userType() == QMetaType::Type::QVariantList )
+  {
+    QString result;
+    const QVariantList list = variant.toList();
+    for ( const QVariant &var : list )
+    {
+      if ( !result.isEmpty() )
+      {
+        result.append( ';' );
+      }
+      result.append( _displayString( var, precision ) );
+    }
+    return result;
+  }
+  else
+  {
+    return _displayString( variant, precision );
+  }
 }

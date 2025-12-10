@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCoordinateOperationWidget : QWidget
 {
 %Docstring(signature="appended")

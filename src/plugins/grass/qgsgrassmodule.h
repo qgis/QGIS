@@ -19,10 +19,9 @@
 #include "ui_qgsgrassmodulebase.h"
 
 #include "qgis.h"
+#include "qgsgrassmoduleoptions.h"
 
 #include <QProcess>
-
-#include "qgsgrassmoduleoptions.h"
 
 class QDomNode;
 class QDomElement;
@@ -172,7 +171,7 @@ class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
     QStringList mOutputVector;
 
     //! True if the module successfully finished
-    bool mSuccess;
+    bool mSuccess = false;
 
     //! Direct mode
     bool mDirect;

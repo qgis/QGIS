@@ -14,25 +14,28 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputdestinationwidget.h"
-#include "moc_qgsprocessingoutputdestinationwidget.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgsnewdatabasetablenamewidget.h"
-#include "qgssettings.h"
-#include "qgsfileutils.h"
+
+#include "qgsapplication.h"
+#include "qgsdatasourceselectdialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsencodingfiledialog.h"
-#include "qgsdatasourceselectdialog.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsfieldmappingwidget.h"
-#include "qgsapplication.h"
-#include <QMenu>
+#include "qgsfileutils.h"
+#include "qgsnewdatabasetablenamewidget.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingparameters.h"
+#include "qgssettings.h"
+
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QCheckBox>
 #include <QLocale>
+#include <QMenu>
 #include <QTextCodec>
 #include <QUrl>
+
+#include "moc_qgsprocessingoutputdestinationwidget.cpp"
 
 ///@cond NOT_STABLE
 

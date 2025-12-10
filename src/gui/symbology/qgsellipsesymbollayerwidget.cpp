@@ -13,11 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsellipsesymbollayerwidget.h"
-#include "moc_qgsellipsesymbollayerwidget.cpp"
+
 #include "qgsellipsesymbollayer.h"
-#include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+
 #include <QColorDialog>
+
+#include "moc_qgsellipsesymbollayerwidget.cpp"
 
 QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

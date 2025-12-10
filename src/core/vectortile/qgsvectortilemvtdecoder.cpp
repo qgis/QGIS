@@ -13,24 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <string>
-
-#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 
+#include <string>
+
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtutils.h"
 #include "qgsvectortileutils.h"
 
-#include "qgslogger.h"
-#include "qgsmultipoint.h"
-#include "qgslinestring.h"
-#include "qgsmultilinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgspolygon.h"
-
-#include <QPointer>
 #include <QNetworkRequest>
-
+#include <QPointer>
 
 QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &structure )
   : mStructure( structure )

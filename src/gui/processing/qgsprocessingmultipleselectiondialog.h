@@ -16,11 +16,13 @@
 #ifndef QGSPROCESSINGMULTIPLESELECTIONDIALOG_H
 #define QGSPROCESSINGMULTIPLESELECTIONDIALOG_H
 
+#include "ui_qgsprocessingmultipleselectiondialogbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingmultipleselectiondialogbase.h"
-#include "qgsprocessingparameters.h"
 #include "qgsmimedatautils.h"
+#include "qgsprocessingparameters.h"
+
 #include <QDialog>
 
 class QStandardItemModel;

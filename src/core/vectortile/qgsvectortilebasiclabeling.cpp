@@ -17,10 +17,9 @@
 
 #include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
+#include "qgsrendercontext.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
-#include "qgsrendercontext.h"
-
 
 void QgsVectorTileBasicLabelingStyle::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {

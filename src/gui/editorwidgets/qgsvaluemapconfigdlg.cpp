@@ -14,20 +14,21 @@
  ***************************************************************************/
 
 #include "qgsvaluemapconfigdlg.h"
-#include "moc_qgsvaluemapconfigdlg.cpp"
 
-#include "qgsattributetypeloaddialog.h"
-#include "qgsvaluemapfieldformatter.h"
 #include "qgsapplication.h"
+#include "qgsattributetypeloaddialog.h"
 #include "qgssettings.h"
+#include "qgsvaluemapfieldformatter.h"
 
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTextStream>
 #include <QClipboard>
+#include <QFileDialog>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QTextStream>
+
+#include "moc_qgsvaluemapconfigdlg.cpp"
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

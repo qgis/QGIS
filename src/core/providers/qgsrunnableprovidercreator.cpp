@@ -14,13 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrunnableprovidercreator.h"
-#include "moc_qgsrunnableprovidercreator.cpp"
+
+#include "qgsproviderregistry.h"
+#include "qgsruntimeprofiler.h"
 
 #include <QDebug>
 #include <QThread>
 
-#include "qgsproviderregistry.h"
-#include "qgsruntimeprofiler.h"
+#include "moc_qgsrunnableprovidercreator.cpp"
 
 QgsRunnableProviderCreator::QgsRunnableProviderCreator( const QString &layerId, const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : mLayerId( layerId )

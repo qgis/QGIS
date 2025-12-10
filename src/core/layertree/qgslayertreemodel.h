@@ -16,16 +16,17 @@
 #ifndef QGSLAYERTREEMODEL_H
 #define QGSLAYERTREEMODEL_H
 
+#include <memory>
+
 #include "qgis_core.h"
+#include "qgsgeometry.h"
+#include "qgslayertreemodellegendnode.h"
+
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
 #include <QTimer>
 #include <QUuid>
-#include <memory>
-
-#include "qgsgeometry.h"
-#include "qgslayertreemodellegendnode.h"
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;

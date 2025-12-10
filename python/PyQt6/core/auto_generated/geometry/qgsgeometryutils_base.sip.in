@@ -8,6 +8,7 @@
 
 
 
+
 class QgsGeometryUtilsBase
 {
 %Docstring(signature="appended")

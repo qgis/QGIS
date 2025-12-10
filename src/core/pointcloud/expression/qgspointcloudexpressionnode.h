@@ -18,13 +18,13 @@
 #ifndef QGSPOINTCLOUDEXPRESSIONNODE_H
 #define QGSPOINTCLOUDEXPRESSIONNODE_H
 
-#include <QSet>
-#include <QVariant>
-#include <QCoreApplication>
-
 #include "qgis.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblock.h"
+
+#include <QCoreApplication>
+#include <QSet>
+#include <QVariant>
 
 class QgsPointCloudExpression;
 class QgsExpressionNode;

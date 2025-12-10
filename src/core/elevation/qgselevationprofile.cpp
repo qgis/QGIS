@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationprofile.h"
-#include "qgsproject.h"
-#include "moc_qgselevationprofile.cpp"
+
 #include "qgscurve.h"
-#include "qgslinesymbol.h"
-#include "qgssymbollayerutils.h"
 #include "qgslayertree.h"
+#include "qgslinesymbol.h"
+#include "qgsproject.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgselevationprofile.cpp"
 
 QgsElevationProfile::QgsElevationProfile( QgsProject *project )
   : mProject( project )

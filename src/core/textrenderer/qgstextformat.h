@@ -16,15 +16,15 @@
 #ifndef QGSTEXTFORMAT_H
 #define QGSTEXTFORMAT_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgstextbuffersettings.h"
-#include "qgstextbackgroundsettings.h"
-#include "qgstextshadowsettings.h"
-#include "qgstextmasksettings.h"
-#include "qgsstringutils.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsscreenproperties.h"
+#include "qgsstringutils.h"
+#include "qgstextbackgroundsettings.h"
+#include "qgstextbuffersettings.h"
+#include "qgstextmasksettings.h"
+#include "qgstextshadowsettings.h"
 
 #include <QSharedDataPointer>
 

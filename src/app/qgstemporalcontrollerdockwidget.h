@@ -18,8 +18,8 @@
 #ifndef QGSTEMPORALCONTROLLERDOCKWIDGET_H
 #define QGSTEMPORALCONTROLLERDOCKWIDGET_H
 
-#include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qgsdockwidget.h"
 
 class QgsTemporalControllerWidget;
 class QgsTemporalController;

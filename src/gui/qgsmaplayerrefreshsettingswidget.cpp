@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmaplayerrefreshsettingswidget.h"
-#include "moc_qgsmaplayerrefreshsettingswidget.cpp"
+
 #include "qgsmaplayer.h"
+
+#include "moc_qgsmaplayerrefreshsettingswidget.cpp"
 
 QgsMapLayerRefreshSettingsWidget::QgsMapLayerRefreshSettingsWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )

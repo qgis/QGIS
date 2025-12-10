@@ -15,13 +15,15 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerrenderer.h"
+
+#include <optional>
+
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
-#include "qgsrenderedannotationitemdetails.h"
 #include "qgspainteffect.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderedannotationitemdetails.h"
 #include "qgsthreadingutils.h"
-#include <optional>
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

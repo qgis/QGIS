@@ -18,10 +18,11 @@
 #ifndef QGSAUTHCONFIGEDIT_H
 #define QGSAUTHCONFIGEDIT_H
 
-#include <QDialog>
-
 #include "ui_qgsauthconfigedit.h"
+
 #include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 

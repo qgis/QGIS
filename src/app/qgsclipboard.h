@@ -18,16 +18,16 @@
 #ifndef QGSCLIPBOARD_H
 #define QGSCLIPBOARD_H
 
+#include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
+#include "qgsmaplayer.h"
+
 #include <QList>
 #include <QMap>
 #include <QObject>
 #include <QPointer>
-
-#include "qgsfields.h"
-#include "qgsfeature.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmaplayer.h"
-#include "qgis_app.h"
 
 class QgsVectorLayer;
 class QgsVectorTileLayer;

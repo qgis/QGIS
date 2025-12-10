@@ -30,7 +30,7 @@ struct QgsOgrProviderResultIterator: public QgsAbstractDatabaseProviderConnectio
 
     QgsOgrProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer );
 
-    ~QgsOgrProviderResultIterator();
+    ~QgsOgrProviderResultIterator() override;
 
     void setFields( const QgsFields &fields );
     void setGeometryColumnName( const QString &geometryColumnName );
@@ -89,6 +89,8 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsFieldDomain *fieldDomain( const QString &name ) const override;
     void setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const override;
     void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const override;
+    void updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const override;
+    void deleteFieldDomain( const QString &name, const QString &schema ) const override;
     void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
     void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const override;
     void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const override;

@@ -27,15 +27,21 @@ when extrusion height is non-zero.
 #include "qgstessellator.h"
 %End
   public:
-    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
+    QgsTessellator();
+
+ QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
 %Docstring
 Creates tessellator with a specified origin point of the world (in map
 coordinates)
+
+.. deprecated:: 4.0
+
+   Use the default QgsTessellator() constructor and individual setters instead.
 %End
 
-    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
+ QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
 %Docstring
 Creates tessellator with a specified ``bounds`` of input geometry
 coordinates. This constructor allows the tessellator to map input
@@ -46,6 +52,137 @@ If ``noZ`` is ``True``, then a 2-dimensional tessellation only will be
 performed and all z coordinates will be ignored.
 
 .. versionadded:: 3.10
+
+.. deprecated:: 4.0
+
+   Use the default QgsTessellator() constructor and individual setters instead.
+%End
+
+    void setOrigin( const QgsVector3D &origin );
+%Docstring
+Sets the origin point of the map.
+
+.. versionadded:: 4.0
+%End
+
+    QgsVector3D origin() const;
+%Docstring
+Returns the origin point of the map.
+
+.. versionadded:: 4.0
+%End
+
+    void setBounds( const QgsRectangle &bounds );
+%Docstring
+Sets scaling and the bounds of the input geometry coordinates.
+
+.. versionadded:: 4.0
+%End
+
+    void setInputZValueIgnored( bool ignore );
+%Docstring
+Sets whether Z values from the input geometries are ignored (``True``)
+or not (``False``). By default, this is ``False``.
+
+.. versionadded:: 4.0
+%End
+
+    bool isZValueIgnored() const;
+%Docstring
+Returns whether Z values from the input geometries are ignored
+(``True``) or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    void setExtrusionFaces( Qgis::ExtrusionFaces faces );
+%Docstring
+Sets which faces should be generated during extrusion.
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::ExtrusionFaces extrusionFaces() const;
+%Docstring
+Returns which faces are generated during extrusion.
+
+.. versionadded:: 4.0
+%End
+
+    void setTextureRotation( float rotation );
+%Docstring
+Sets the rotation of texture UV coordinates (in degrees).
+
+.. versionadded:: 4.0
+%End
+
+    float textureRotation() const;
+%Docstring
+Returns the rotation of texture UV coordinates (in degrees).
+
+.. versionadded:: 4.0
+%End
+
+    void setAddTextureUVs( bool addTextureUVs );
+%Docstring
+Sets whether texture UV coordinates should be added to the output data
+(``True``) or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    bool hasTextureUVs() const;
+%Docstring
+Returns whether texture UV coordinates are being added to the output
+data (``True``) or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    void setAddNormals( bool addNormals );
+%Docstring
+Sets whether normals should be added to the output data (``True``) or
+not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    bool hasNormals() const;
+%Docstring
+Returns whether normals are being added to the output data (``True``) or
+not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    void setBackFacesEnabled( bool addBackFaces );
+%Docstring
+Sets whether back faces should be added to the output data (``True``) or
+not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    bool hasBackFacesEnabled() const;
+%Docstring
+Returns whether back faces are being added to the output data (``True``)
+or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    void setInvertNormals( bool invertNormals );
+%Docstring
+Sets whether normals should be inverted (``True``) or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    bool hasInvertedNormals() const;
+%Docstring
+Returns whether normals are inverted (``True``) or not (``False``).
+
+.. versionadded:: 4.0
 %End
 
     void setOutputZUp( bool zUp );
@@ -114,6 +251,7 @@ Returns a descriptive error string if the tessellation failed.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

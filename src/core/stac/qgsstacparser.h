@@ -16,12 +16,13 @@
 #ifndef QGSSTACPARSER_H
 #define QGSSTACPARSER_H
 
-#include "qgis.h"
 #include <nlohmann/json.hpp>
-#include <QUrl>
 
-#include "qgsstacobject.h"
+#include "qgis.h"
 #include "qgsstacasset.h"
+#include "qgsstacobject.h"
+
+#include <QUrl>
 
 class QgsStacCatalog;
 class QgsStacCollection;

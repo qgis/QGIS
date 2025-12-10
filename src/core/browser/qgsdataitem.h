@@ -17,13 +17,14 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgsmimedatautils.h"
 #include "qgis.h"
-#include <QObject>
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmimedatautils.h"
+
 #include <QFutureWatcher>
 #include <QIcon>
+#include <QObject>
 
 class QgsDataItem;
 class QMenu;

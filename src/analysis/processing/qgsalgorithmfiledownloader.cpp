@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfiledownloader.h"
-#include "moc_qgsalgorithmfiledownloader.cpp"
-#include "qgsprocessingparameters.h"
+
 #include "qgis.h"
 #include "qgsfiledownloader.h"
 #include "qgsfileutils.h"
+#include "qgsprocessingparameters.h"
 
 #include <QEventLoop>
 #include <QFileInfo>
 #include <QTimer>
 #include <QUrl>
+
+#include "moc_qgsalgorithmfiledownloader.cpp"
 
 ///@cond PRIVATE
 

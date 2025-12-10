@@ -14,18 +14,23 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolzoom.h"
-#include "moc_qgslayoutviewtoolzoom.cpp"
-#include "qgslayoutviewmouseevent.h"
+
+#include <memory>
+
 #include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
 #include "qgslayoutviewrubberband.h"
 #include "qgsrectangle.h"
+
 #include <QScrollBar>
+
+#include "moc_qgslayoutviewtoolzoom.cpp"
 
 QgsLayoutViewToolZoom::QgsLayoutViewToolZoom( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Pan" ) )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
-  mRubberBand.reset( new QgsLayoutViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsLayoutViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 70, 50, 255, 25 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 70, 50, 255, 100 ) ), 0 ) );
 }

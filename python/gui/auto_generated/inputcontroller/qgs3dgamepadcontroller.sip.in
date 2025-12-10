@@ -12,6 +12,7 @@
 
 
 
+
 // this is needed for the "convert to subclass" code below to compile
 %ModuleHeaderCode
 #include "qgs3dgamepadcontroller.h"

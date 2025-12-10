@@ -13,21 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
-#include <QSvgRenderer>
-#include <QPainter>
-#include <QPixmap>
-
 #include "qgsmeshrenderer3daveragingwidget.h"
-#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
+
+#include <memory>
 
 #include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsmesh3daveraging.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshrenderersettings.h"
-#include "qgsmesh3daveraging.h"
-#include "qgsapplication.h"
 #include "qgsscreenhelper.h"
 
+#include <QPainter>
+#include <QPixmap>
+#include <QSvgRenderer>
+
+#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
 
 QgsMeshRenderer3DAveragingWidget::QgsMeshRenderer3DAveragingWidget( QWidget *parent )
   : QWidget( parent )
@@ -88,55 +89,55 @@ std::unique_ptr<QgsMesh3DAveragingMethod> QgsMeshRenderer3DAveragingWidget::aver
     case 0: // single level from top
     {
       const int verticalLevel = mSingleVerticalLayerIndexTopSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( verticalLevel, true ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( verticalLevel, true );
       break;
     }
     case 1: // single level from bottom
     {
       const int verticalLevel = mSingleVerticalLayerIndexBottomSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( verticalLevel, false ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( verticalLevel, false );
       break;
     }
     case 2: // multi level from top
     {
       const int startVerticalLevel = mMultiTopVerticalLayerStartIndexSpinBox->value();
       const int endVerticalLevel = mMultiTopVerticalLayerEndIndexSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel, endVerticalLevel, true ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( startVerticalLevel, endVerticalLevel, true );
       break;
     }
     case 3: // multi level from bottom
     {
       const int startVerticalLevel = mMultiBottomVerticalLayerStartIndexSpinBox->value();
       const int endVerticalLevel = mMultiBottomVerticalLayerEndIndexSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel, endVerticalLevel, false ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( startVerticalLevel, endVerticalLevel, false );
       break;
     }
     case 4: // sigma
     {
       const double startFraction = mSigmaStartFractionSpinBox->value();
       const double endFraction = mSigmaEndFractionSpinBox->value();
-      averaging.reset( new QgsMeshSigmaAveragingMethod( startFraction, endFraction ) );
+      averaging = std::make_unique<QgsMeshSigmaAveragingMethod>( startFraction, endFraction );
       break;
     }
     case 5: // depth (from surface)
     {
       const double startDepth = mDepthStartSpinBox->value();
       const double endDepth = mDepthEndSpinBox->value();
-      averaging.reset( new QgsMeshRelativeHeightAveragingMethod( startDepth, endDepth, true ) );
+      averaging = std::make_unique<QgsMeshRelativeHeightAveragingMethod>( startDepth, endDepth, true );
       break;
     }
     case 6: // height (from bed elevation)
     {
       const double startHeight = mHeightStartSpinBox->value();
       const double endHeight = mHeightEndSpinBox->value();
-      averaging.reset( new QgsMeshRelativeHeightAveragingMethod( startHeight, endHeight, false ) );
+      averaging = std::make_unique<QgsMeshRelativeHeightAveragingMethod>( startHeight, endHeight, false );
       break;
     }
     case 7: // elevation
     {
       const double startVerticalLevel = mElevationStartSpinBox->value();
       const double endVerticalLevel = mElevationEndSpinBox->value();
-      averaging.reset( new QgsMeshElevationAveragingMethod( startVerticalLevel, endVerticalLevel ) );
+      averaging = std::make_unique<QgsMeshElevationAveragingMethod>( startVerticalLevel, endVerticalLevel );
       break;
     }
   }

@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLPOINTSYMBOL_H
 #define QGSMAPTOOLPOINTSYMBOL_H
 
-#include "qgsmaptooledit.h"
-#include "qgsfeature.h"
 #include "qgis_app.h"
+#include "qgsfeature.h"
+#include "qgsmaptooledit.h"
 
 class QgsMarkerSymbol;
 
@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolPointSymbol : public QgsMapToolEdit
 
   protected:
     QgsVectorLayer *mActiveLayer = nullptr;
-    QgsFeatureId mFeatureNumber;
+    QgsFeatureId mFeatureNumber = -1;
 
     //! Screen coordinate of the snapped feature
     QPoint mSnappedPoint;

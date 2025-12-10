@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
 #include "qgsconfig.h"
-#include <editorwidgets/qgslistwidgetfactory.h>
-#include <qgslistwidget.h>
-#include <editorwidgets/core/qgseditorwidgetwrapper.h>
-#include <qgsapplication.h>
-#include <qgsvectorlayer.h>
-#include <editorwidgets/qgslistwidgetwrapper.h>
+
+#include "editorwidgets/core/qgseditorwidgetwrapper.h"
+#include "editorwidgets/qgslistwidgetfactory.h"
+#include "editorwidgets/qgslistwidgetwrapper.h"
+#include "qgsapplication.h"
+#include "qgslistwidget.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <QSignalSpy>
 
 class TestQgsListWidget : public QObject

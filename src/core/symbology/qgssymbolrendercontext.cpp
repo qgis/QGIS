@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgssymbolrendercontext.h"
-#include "qgsrendercontext.h"
+
+#include <memory>
+
 #include "qgslegendpatchshape.h"
+#include "qgsrendercontext.h"
 
 QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity, bool selected, Qgis::SymbolRenderHints renderHints, const QgsFeature *f, const QgsFields &fields, const QgsMapUnitScale &mapUnitScale )
   : mRenderContext( c )
@@ -26,8 +29,6 @@ QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, Qgis::Rende
   , mRenderHints( renderHints )
   , mFeature( f )
   , mFields( fields )
-  , mGeometryPartCount( 0 )
-  , mGeometryPartNum( 0 )
 {
 }
 
@@ -82,5 +83,5 @@ const QgsLegendPatchShape *QgsSymbolRenderContext::patchShape() const
 
 void QgsSymbolRenderContext::setPatchShape( const QgsLegendPatchShape &patchShape )
 {
-  mPatchShape.reset( new QgsLegendPatchShape( patchShape ) );
+  mPatchShape = std::make_unique<QgsLegendPatchShape>( patchShape );
 }

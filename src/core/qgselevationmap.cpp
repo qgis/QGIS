@@ -15,12 +15,13 @@
 
 #include "qgselevationmap.h"
 
+#include <algorithm>
+#include <cmath>
+#include <memory>
+
 #include "qgsrasterblock.h"
 
 #include <QPainter>
-#include <algorithm>
-#include <cmath>
-
 
 static const int ELEVATION_OFFSET = 7900;
 static const int ELEVATION_SCALE = 1000;
@@ -328,7 +329,7 @@ QPainter *QgsElevationMap::painter() const
 {
   if ( !mPainter )
   {
-    mPainter.reset( new QPainter );
+    mPainter = std::make_unique<QPainter>( );
     mPainter->begin( &mElevationImage );
   }
   return mPainter.get();

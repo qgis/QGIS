@@ -19,12 +19,12 @@
 #define QGSEXPRESSIONFIELDBUFFER_H
 
 #include "qgis_core.h"
-#include <QString>
-#include <QList>
-#include <QDomNode>
-
-#include "qgsfields.h"
 #include "qgsexpression.h"
+#include "qgsfields.h"
+
+#include <QDomNode>
+#include <QList>
+#include <QString>
 
 /**
  * \ingroup core

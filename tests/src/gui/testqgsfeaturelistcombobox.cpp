@@ -14,16 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgsapplication.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsfeaturelistcombobox.h"
 #include "qgsfilterlineedit.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
-
-#include <memory>
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QLineEdit>
 #include <QSignalSpy>
@@ -77,7 +76,7 @@ void TestQgsFeatureListComboBox::cleanupTestCase()
 void TestQgsFeatureListComboBox::init()
 {
   // create layer
-  mLayer.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) ) );
+  mLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   mLayer->setDisplayExpression( QStringLiteral( "pk" ) );
 
   // add features

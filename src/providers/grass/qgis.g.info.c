@@ -24,14 +24,15 @@
  *               License (>=v2).
  *
  *****************************************************************************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <float.h>
-#include <grass/version.h>
+#include <grass/display.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
-#include <grass/display.h>
+#include <grass/version.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #if defined( _MSC_VER ) && defined( M_PI_4 )
 #undef M_PI_4 //avoid redefinition warning
 #endif

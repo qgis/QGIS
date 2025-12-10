@@ -93,8 +93,7 @@ Check if CaptureMode matches layer type. Default is ``True``.
 Check if CaptureMode matches layer type. Default is ``True``.
 %End
 
-    virtual void layerGeometryCaptured( const QgsGeometry &geometry ) ${SIP_FINAL};
-
+    void layerGeometryCaptured( const QgsGeometry &geometry ) final;
 %Docstring
 Called when the feature has been digitized.
 

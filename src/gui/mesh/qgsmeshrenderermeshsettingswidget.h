@@ -17,8 +17,9 @@
 #define QGSMESHRENDERERMESHSETTINGSWIDGET_H
 
 #include "ui_qgsmeshrenderermeshsettingswidgetbase.h"
-#include "qgsmeshrenderersettings.h"
+
 #include "qgis_gui.h"
+#include "qgsmeshrenderersettings.h"
 
 #include <QWidget>
 

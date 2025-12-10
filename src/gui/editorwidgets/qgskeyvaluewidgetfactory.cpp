@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgskeyvaluewidgetfactory.h"
-#include "qgskeyvaluewidgetwrapper.h"
+
 #include "qgsdummyconfigdlg.h"
 #include "qgsfields.h"
+#include "qgskeyvaluewidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
-#include <QVariant>
 #include <QSettings>
+#include <QVariant>
 
 QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )

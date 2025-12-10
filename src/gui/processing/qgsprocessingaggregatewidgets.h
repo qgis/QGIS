@@ -16,14 +16,14 @@
 #ifndef QGSPROCESSINGAGGREGATEWIDGETS_H
 #define QGSPROCESSINGAGGREGATEWIDGETS_H
 
-#include <QAbstractTableModel>
-#include <QStyledItemDelegate>
-#include <QPointer>
-
-#include "qgsfields.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsfieldmappingmodel.h"
+#include "qgsfields.h"
 #include "qgspanelwidget.h"
+
+#include <QAbstractTableModel>
+#include <QPointer>
+#include <QStyledItemDelegate>
 
 class QLineEdit;
 class QToolButton;

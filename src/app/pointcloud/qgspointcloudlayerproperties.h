@@ -16,14 +16,13 @@
 #ifndef QGSPOINTCLOUDLAYERPROPERTIES_H
 #define QGSPOINTCLOUDLAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
-
 #include "ui_qgspointcloudlayerpropertiesbase.h"
 
-#include <QAbstractTableModel>
-
 #include "qgis_app.h"
+#include "qgslayerpropertiesdialog.h"
 #include "qgspointcloudlayer.h"
+
+#include <QAbstractTableModel>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -91,8 +90,8 @@ class APP_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog,
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
   private slots:
-    void apply() FINAL;
-    void rollback() FINAL;
+    void apply() final;
+    void rollback() final;
 
     void aboutToShowStyleMenu();
     void showHelp();
@@ -100,7 +99,7 @@ class APP_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog,
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   private:
-    void syncToLayer() FINAL;
+    void syncToLayer() final;
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;

@@ -61,7 +61,8 @@ bool QgsStacAsset::isCloudOptimized() const
   return format == QLatin1String( "COG" ) ||
          format == QLatin1String( "COPC" ) ||
          format == QLatin1String( "EPT" ) ||
-         format == QLatin1String( "Zarr" );
+         format == QLatin1String( "Zarr" ) ||
+         format == QLatin1String( "Parquet" );
 }
 
 QString QgsStacAsset::formatName() const
@@ -75,6 +76,8 @@ QString QgsStacAsset::formatName() const
     return QStringLiteral( "EPT" );
   else if ( mMediaType == QLatin1String( "application/vnd+zarr" ) )
     return QStringLiteral( "Zarr" );
+  else if ( mMediaType == QLatin1String( "application/vnd.apache.parquet" ) )
+    return QStringLiteral( "Parquet" );
   return QString();
 }
 
@@ -140,6 +143,26 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
       uri.uri = href();
     }
   }
+  else if ( formatName() == QLatin1String( "Parquet" ) )
+  {
+    uri.layerType = QStringLiteral( "vector" );
+    uri.providerKey = QStringLiteral( "ogr" );
+    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
+         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
+      if ( !authcfg.isEmpty() )
+        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
+    }
+    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
+    }
+    else
+    {
+      uri.uri = href();
+    }
+  }
   else
   {
     return {};
@@ -153,14 +176,14 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 QString QgsStacAsset::toHtml( const QString &assetId ) const
 {
   QString html = QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Asset" ) );
-  html += QStringLiteral( "<table class=\"list-view\">\n" );
+  html += QLatin1String( "<table class=\"list-view\">\n" );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), assetId );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), title() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "description" ), description() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), href() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), mediaType() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "roles" ), roles().join( ',' ) );
-  html += QStringLiteral( "</table><br/>\n" );
+  html += QLatin1String( "</table><br/>\n" );
   return html;
 }
 

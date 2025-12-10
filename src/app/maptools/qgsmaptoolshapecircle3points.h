@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPECIRCLE3POINTS_H
 #define QGSMAPTOOLSHAPECIRCLE3POINTS_H
 
-#include "qgsmaptoolshapecircleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapecircleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeCircle3PointsMetadata : public QgsMapToolShapeMetadata

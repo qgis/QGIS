@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsfeaturelistcomboboxplugin.h"
-#include "moc_qgsfeaturelistcomboboxplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsfeaturelistcombobox.h"
 
+#include "moc_qgsfeaturelistcomboboxplugin.cpp"
 
 QgsFeatureListComboBoxPlugin::QgsFeatureListComboBoxPlugin( QObject *parent )
   : QObject( parent )

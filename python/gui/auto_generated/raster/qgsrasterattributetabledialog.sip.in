@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsRasterAttributeTableDialog : QDialog
 {
 %Docstring(signature="appended")

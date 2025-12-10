@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgsdataitemguiproviderutils.h"
+
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsdbimportvectorlayerdialog.h"
 #include "qgsmessagebar.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsapplication.h"
-#include "qgstaskmanager.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageoutput.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayerexporter.h"
 
-#include <QPointer>
 #include <QMessageBox>
+#include <QPointer>
 #include <QPushButton>
 
 void QgsDataItemGuiProviderUtils::deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent )

@@ -18,11 +18,12 @@
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 
-#include "qgis_sip.h"
 #include "ui_qgsnewhttpconnectionbase.h"
-#include "qgsguiutils.h"
-#include "qgsauthorizationsettings.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthorizationsettings.h"
+#include "qgsguiutils.h"
 #include "qgssettingstree.h"
 
 class QgsAuthSettingsWidget;
@@ -190,6 +191,18 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * \since QGIS 3.2
      */
     QComboBox *wfsVersionComboBox() SIP_SKIP;
+
+    /**
+     * Returns the "Feature format detect" button.
+     * \since QGIS 4.0
+     */
+    QPushButton *featureFormatDetectButton() SIP_SKIP;
+
+    /**
+     * Returns the "Feature format" combobox.
+     * \since QGIS 4.0
+     */
+    QComboBox *featureFormatComboBox() SIP_SKIP;
 
     /**
      * Returns the "WFS paging" combobox

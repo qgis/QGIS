@@ -9,8 +9,6 @@
 
 
 
-
-
 class QgsMeshTriangulation : QObject
 {
 %Docstring(signature="appended")

@@ -18,13 +18,13 @@
 
 #include "qgsrendercontext.h"
 
-#include "qgsmapsettings.h"
-#include "qgsfeaturefilterprovider.h"
-#include "qgslogger.h"
 #include "qgselevationmap.h"
-#include "qgsunittypes.h"
-#include "qgssymbollayer.h"
+#include "qgsfeaturefilterprovider.h"
 #include "qgsgeometrypaintdevice.h"
+#include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgssymbollayer.h"
+#include "qgsunittypes.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4

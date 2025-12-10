@@ -13,52 +13,52 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgraduatedsymbolrendererwidget.h"
+
+#include "qgsapplication.h"
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationmethod.h"
+#include "qgsclassificationmethodregistry.h"
+#include "qgsclassificationstandarddeviation.h"
+#include "qgscolorrampbutton.h"
+#include "qgscolorrampimpl.h"
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsdatadefinedsizelegendwidget.h"
+#include "qgsdoublevalidator.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsludialog.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessinggui.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingwidgetwrapper.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgstemporalcontroller.h"
+#include "qgsvectorlayer.h"
+
+#include <QClipboard>
+#include <QCompleter>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QPen>
 #include <QPainter>
-#include <QClipboard>
-#include <QCompleter>
+#include <QPen>
 #include <QPointer>
 #include <QScreen>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QUuid>
 
-#include "qgsgraduatedsymbolrendererwidget.h"
 #include "moc_qgsgraduatedsymbolrendererwidget.cpp"
-#include "qgspanelwidget.h"
-
-#include "qgsdatadefinedsizelegend.h"
-#include "qgsdatadefinedsizelegendwidget.h"
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorrampimpl.h"
-#include "qgscolorrampbutton.h"
-#include "qgsstyle.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbolselectordialog.h"
-#include "qgslogger.h"
-#include "qgsludialog.h"
-#include "qgsproject.h"
-#include "qgsprojectstylesettings.h"
-#include "qgsmapcanvas.h"
-#include "qgsclassificationmethod.h"
-#include "qgsapplication.h"
-#include "qgsclassificationmethodregistry.h"
-#include "qgsclassificationequalinterval.h"
-#include "qgsclassificationstandarddeviation.h"
-#include "qgsgui.h"
-#include "qgsprocessinggui.h"
-#include "qgsprocessingguiregistry.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgstemporalcontroller.h"
-#include "qgsdoublevalidator.h"
-#include "qgsmarkersymbol.h"
-
 
 // ------------------------------ Model ------------------------------------
 

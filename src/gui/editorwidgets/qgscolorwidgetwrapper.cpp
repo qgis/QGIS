@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgscolorwidgetwrapper.h"
-#include "moc_qgscolorwidgetwrapper.cpp"
+
 #include "qgscolorbutton.h"
+
 #include <QLayout>
 
+#include "moc_qgscolorwidgetwrapper.cpp"
 
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

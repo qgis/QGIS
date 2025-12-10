@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthplanetarycomputeredit.h"
-#include "moc_qgsauthplanetarycomputeredit.cpp"
 #include "ui_qgsauthplanetarycomputeredit.h"
+#include "qgsauthplanetarycomputeredit.h"
 
+#include "moc_qgsauthplanetarycomputeredit.cpp"
 
 const QString QgsAuthPlanetaryComputerEdit::REQUEST_URL_TEMPLATE = QStringLiteral( "https://login.microsoftonline.com/%1/oauth2/v2.0/authorize" );
 const QString QgsAuthPlanetaryComputerEdit::TOKEN_URL_TEMPLATE = QStringLiteral( "https://login.microsoftonline.com/%1/oauth2/v2.0/token" );

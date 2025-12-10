@@ -17,13 +17,13 @@
 #ifndef QGSPOSTGRESIMPORTDIALOG_H
 #define QGSPOSTGRESIMPORTDIALOG_H
 
-#include <QDialog>
-#include <QComboBox>
-#include <QTableWidget>
-#include <QDialogButtonBox>
-#include <QToolButton>
-
 #include "qgspostgresconn.h"
+
+#include <QComboBox>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QTableWidget>
+#include <QToolButton>
 
 /**
  * A dialog for selection of QGIS projects to import into PostgreSQL database.
@@ -36,7 +36,8 @@ class QgsPostgresImportProjectDialog : public QDialog
   public:
     QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent = nullptr );
 
-    ~QgsPostgresImportProjectDialog();
+    ~QgsPostgresImportProjectDialog() override;
+
     /**
      * Returns pairs of project path and name under which it should be saved.
      */

@@ -12,20 +12,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgssvgcache.h"
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QElapsedTimer>
+#include <QFileInfo>
 #include <QObject>
+#include <QPainter>
+#include <QPicture>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
-#include <QPicture>
-#include <QPainter>
 #include <QtConcurrent>
-#include <QElapsedTimer>
-#include "qgssvgcache.h"
-#include "qgsapplication.h"
 
 /**
  * \ingroup UnitTests

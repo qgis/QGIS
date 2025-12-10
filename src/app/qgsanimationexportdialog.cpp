@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgsanimationexportdialog.h"
-#include "moc_qgsanimationexportdialog.cpp"
-#include "qgsmapcanvas.h"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
-#include "qgstemporalnavigationobject.h"
-#include "qgsprojecttimesettings.h"
-#include "qgstemporalutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapdecoration.h"
+#include "qgsprojecttimesettings.h"
+#include "qgstemporalnavigationobject.h"
+#include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+
+#include "moc_qgsanimationexportdialog.cpp"
 
 QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations )
   : QDialog( parent )

@@ -18,10 +18,10 @@
 
 #include "qgsapplication.h"
 #include "qgslayoutitempolyline.h"
+#include "qgstest.h"
 
 #include <QLocale>
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsLayoutPolyline : public QgsTest
 {

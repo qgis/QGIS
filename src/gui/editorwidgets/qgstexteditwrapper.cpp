@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgstexteditwrapper.h"
-#include "moc_qgstexteditwrapper.cpp"
 
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
-#include "qgsapplication.h"
 #include "qgsjsonutils.h"
-#include "qgsmessagebar.h"
 #include "qgslogger.h"
+#include "qgsmessagebar.h"
 
 #include <QSettings>
-#include <nlohmann/json.hpp>
+
+#include "moc_qgstexteditwrapper.cpp"
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgsappquerylogger.h"
-#include "moc_qgsappquerylogger.cpp"
-#include "qgsdatabasequeryloggernode.h"
-#include "qgsapplication.h"
+
 #include "devtools/qgsdevtoolsmodelnode.h"
-#include "qgssettings.h"
 #include "qgis.h"
-#include <QThread>
+#include "qgsapplication.h"
+#include "qgsdatabasequeryloggernode.h"
+#include "qgssettings.h"
+
 #include <QApplication>
-#include <QUrlQuery>
 #include <QPainter>
+#include <QThread>
+#include <QUrlQuery>
+
+#include "moc_qgsappquerylogger.cpp"
 
 QgsAppQueryLogger::QgsAppQueryLogger( QObject *parent )
   : QAbstractItemModel( parent )

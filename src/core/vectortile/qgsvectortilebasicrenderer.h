@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgsvectortilerenderer.h"
 
 class QgsLineSymbol;

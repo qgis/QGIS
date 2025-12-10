@@ -15,17 +15,16 @@
 
 #include "qgsalignraster.h"
 
-#include <gdalwarper.h>
-#include <ogr_srs_api.h>
 #include <cpl_conv.h>
+#include <gdalwarper.h>
 #include <limits>
-
-#include <QPair>
-#include <QString>
+#include <ogr_srs_api.h>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 
+#include <QPair>
+#include <QString>
 
 static double ceil_with_tolerance( double value )
 {

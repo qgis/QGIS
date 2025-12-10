@@ -56,12 +56,16 @@
 #endif
 
 #include "qsql_ocispatial.h"
-#include "moc_qsql_ocispatial.cpp"
+
+#include <cmath>
+
 #include "wkbptr.h"
 
+#include <QtSql/private/qsqlcachedresult_p.h>
+#include <QtSql/private/qsqldriver_p.h>
 #include <qcoreapplication.h>
-#include <qvariant.h>
 #include <qdatetime.h>
+#include <qdebug.h>
 #include <qmetatype.h>
 #include <qregularexpression.h>
 #include <qshareddata.h>
@@ -69,13 +73,12 @@
 #include <qsqlfield.h>
 #include <qsqlindex.h>
 #include <qsqlquery.h>
-#include <QtSql/private/qsqlcachedresult_p.h>
-#include <QtSql/private/qsqldriver_p.h>
 #include <qstringlist.h>
+#include <qvariant.h>
 #include <qvarlengtharray.h>
 #include <qvector.h>
-#include <qdebug.h>
-#include <cmath>
+
+#include "moc_qsql_ocispatial.cpp"
 
 #ifdef Q_OS_WIN
 #include <winsock.h>
@@ -332,8 +335,7 @@ class QOCISpatialRowId : public QSharedData
     OCIRowid *id = nullptr;
 
   private:
-    QOCISpatialRowId( const QOCISpatialRowId &other )
-      : QSharedData( other ), id( nullptr ) { Q_ASSERT( false ); }
+    QOCISpatialRowId( const QOCISpatialRowId &other ) = delete;
     QOCISpatialRowId &operator=( const QOCISpatialRowId & ) = delete;
 };
 

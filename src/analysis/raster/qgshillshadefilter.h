@@ -18,8 +18,8 @@
 #ifndef QGSHILLSHADEFILTER_H
 #define QGSHILLSHADEFILTER_H
 
-#include "qgsderivativefilter.h"
 #include "qgis_analysis.h"
+#include "qgsderivativefilter.h"
 
 /**
  * \ingroup analysis

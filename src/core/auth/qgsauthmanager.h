@@ -19,10 +19,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
-#include <QRecursiveMutex>
+
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QObject>
+#include <QRecursiveMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>

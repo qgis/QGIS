@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmbasicstatistics.h"
-#include "qgsstatisticalsummary.h"
-#include "qgsdatetimestatisticalsummary.h"
-#include "qgsstringstatisticalsummary.h"
 
+#include "qgsdatetimestatisticalsummary.h"
+#include "qgsstatisticalsummary.h"
+#include "qgsstringstatisticalsummary.h"
 
 ///@cond PRIVATE
 

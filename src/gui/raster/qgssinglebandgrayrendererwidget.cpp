@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgssinglebandgrayrendererwidget.h"
-#include "moc_qgssinglebandgrayrendererwidget.cpp"
-#include "qgssinglebandgrayrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterminmaxwidget.h"
-#include "qgsdoublevalidator.h"
+
 #include "qgscolorramplegendnodewidget.h"
+#include "qgsdoublevalidator.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterminmaxwidget.h"
+#include "qgssinglebandgrayrenderer.h"
+
+#include "moc_qgssinglebandgrayrendererwidget.cpp"
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
   connect( mMinLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged );

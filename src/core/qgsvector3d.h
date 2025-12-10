@@ -16,8 +16,8 @@
 #ifndef QGSVECTOR3D_H
 #define QGSVECTOR3D_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 #include <QVector3D>
 
@@ -135,10 +135,24 @@ class CORE_EXPORT QgsVector3D
                           v1.x() * v2.y() - v1.y() * v2.x() );
     }
 
-    //! Returns the length of the vector
+    /**
+     * Returns the length of the vector.
+     * \see lengthSquared()
+     */
     double length() const SIP_HOLDGIL
     {
       return sqrt( mX * mX + mY * mY + mZ * mZ );
+    }
+
+    /**
+     * Returns the squared length of the vector.
+     * \see length()
+     *
+     * \since QGIS 4.0
+     */
+    double lengthSquared() const SIP_HOLDGIL
+    {
+      return mX * mX + mY * mY + mZ * mZ;
     }
 
     //! Normalizes the current vector in place.

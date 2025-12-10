@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgstextblockformat.h"
+
 #include "qgsrendercontext.h"
 
 #include <QTextBlockFormat>
-
 
 Qgis::TextHorizontalAlignment convertTextBlockFormatAlign( const QTextBlockFormat &format, bool &set )
 {

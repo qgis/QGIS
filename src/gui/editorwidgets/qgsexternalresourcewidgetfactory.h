@@ -17,8 +17,8 @@
 #ifndef QGSEXTERNALRESOURCEWIDGETFACTORY_H
 #define QGSEXTERNALRESOURCEWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 SIP_NO_FILE
 
@@ -35,7 +35,7 @@ class GUI_EXPORT QgsExternalResourceWidgetFactory : public QgsEditorWidgetFactor
   public:
     /**
      * Constructor for QgsExternalResourceWidgetFactory, where \a name is a human-readable
-     * name for the factory, \a icon provides a visual representation of the widget, and \a messageBar 
+     * name for the factory, \a icon provides a visual representation of the widget, and \a messageBar
      * the message bar used to report messages.
      */
     QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );

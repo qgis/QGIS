@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgslayoutmanagermodel.h"
-#include "moc_qgslayoutmanagermodel.cpp"
-#include "qgsproject.h"
+
 #include "qgslayoutmanager.h"
+#include "qgsproject.h"
+
 #include <QMessageBox>
+
+#include "moc_qgslayoutmanagermodel.cpp"
 
 //
 // QgsLayoutManagerModel

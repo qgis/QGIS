@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsgrassselect.h"
-#include "moc_qgsgrassselect.cpp"
-#include "qgsgrass.h"
 
+#include "qgsgrass.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgsgrassselect.cpp"
 
 extern "C"
 {
@@ -33,7 +34,6 @@ extern "C"
 QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   : QDialog( parent )
   , QgsGrassSelectBase()
-  , selectedType( 0 )
 {
   QgsDebugMsgLevel( QString( "QgsGrassSelect() type = %1" ).arg( type ), 3 );
 

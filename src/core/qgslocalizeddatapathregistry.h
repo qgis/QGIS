@@ -18,13 +18,12 @@
 #define QGSLOCALIZEDDATAPATHREGISTRY_H
 
 
-#include <QDir>
-#include <QList>
-#include <QReadWriteLock>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QDir>
+#include <QList>
+#include <QReadWriteLock>
 
 class QgsSettingsEntryStringList;
 

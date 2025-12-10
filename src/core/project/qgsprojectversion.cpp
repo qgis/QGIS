@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include <QStringList>
+#include "qgsprojectversion.h"
 
 #include "qgslogger.h"
-#include "qgsprojectversion.h"
+
+#include <QString>
+#include <QStringList>
 
 QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, const QString &name )
   : mMajor( major )

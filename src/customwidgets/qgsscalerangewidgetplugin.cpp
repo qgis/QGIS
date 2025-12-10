@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsscalerangewidgetplugin.h"
-#include "moc_qgsscalerangewidgetplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsscalerangewidget.h"
 
+#include "moc_qgsscalerangewidgetplugin.cpp"
 
 QgsScaleRangeWidgetPlugin::QgsScaleRangeWidgetPlugin( QObject *parent )
   : QObject( parent )

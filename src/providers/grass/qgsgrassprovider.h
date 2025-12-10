@@ -16,12 +16,11 @@
 #ifndef QGSGRASSPROVIDER_H
 #define QGSGRASSPROVIDER_H
 
-#include <QDateTime>
-
-#include "qgsvectordataprovider.h"
-
 #include "qgsgrassvectormap.h"
 #include "qgsgrassvectormaplayer.h"
+#include "qgsvectordataprovider.h"
+
+#include <QDateTime>
 
 class QgsFeature;
 class QgsField;

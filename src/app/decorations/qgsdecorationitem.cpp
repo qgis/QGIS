@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsdecorationitem.h"
-#include "moc_qgsdecorationitem.cpp"
 
 #include "qgisapp.h"
 #include "qgslogger.h"
@@ -27,20 +26,22 @@
 #include "qgsmaptopixel.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
-#include <QPainter>
 #include <QAction>
+#include <QColor>
+#include <QFile>
+#include <QFont>
+#include <QFontMetrics>
+#include <QLocale>
+#include <QMenu>
+#include <QPainter>
 #include <QPen>
 #include <QPolygon>
 #include <QString>
-#include <QFontMetrics>
-#include <QFont>
-#include <QColor>
-#include <QMenu>
-#include <QFile>
-#include <QLocale>
+
+#include "moc_qgsdecorationitem.cpp"
 
 //non qt includes
 #include <cmath>

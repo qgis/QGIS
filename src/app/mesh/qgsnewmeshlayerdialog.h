@@ -18,9 +18,9 @@
 
 #include "ui_qgsnewmeshlayerdialogbase.h"
 
+#include "qgis_app.h"
 #include "qgsguiutils.h"
 #include "qgsmeshlayer.h"
-#include "qgis_app.h"
 
 /**
  * \brief A Dialog Widget that is used to create and load in the project a new Mesh Layer from scratch or derived from another mesh

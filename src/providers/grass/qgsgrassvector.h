@@ -17,12 +17,11 @@
 #ifndef QGSGRASSVECTOR_H
 #define QGSGRASSVECTOR_H
 
+#include "qgsfields.h"
+#include "qgsgrass.h"
+
 #include <QDateTime>
 #include <QObject>
-
-#include "qgsfields.h"
-
-#include "qgsgrass.h"
 
 class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 {

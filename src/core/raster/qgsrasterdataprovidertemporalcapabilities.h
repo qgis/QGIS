@@ -20,9 +20,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrange.h"
-#include "qgsinterval.h"
 #include "qgsdataprovidertemporalcapabilities.h"
+#include "qgsinterval.h"
+#include "qgsrange.h"
 
 /**
  * \class QgsRasterDataProviderTemporalCapabilities

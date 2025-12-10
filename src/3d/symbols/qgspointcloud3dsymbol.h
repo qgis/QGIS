@@ -17,14 +17,12 @@
 #define QGSPOINTCLOUD3DSYMBOL_H
 
 #include "qgis_3d.h"
-
-
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
-#include "qgsmaterial.h"
-#include "qgspointcloudlayer.h"
 #include "qgscontrastenhancement.h"
+#include "qgsmaterial.h"
 #include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudlayer.h"
 
 /**
  * \ingroup qgis_3d
@@ -59,7 +57,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     ~QgsPointCloud3DSymbol() override;
 
     QString type() const override { return "pointcloud"; }
-    virtual QgsPointCloud3DSymbol *clone() const override = 0 SIP_FACTORY;
+    QgsPointCloud3DSymbol *clone() const override = 0 SIP_FACTORY;
 
     /**
      * Returns a unique string identifier of the symbol type.

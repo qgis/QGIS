@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelviewmouseevent.h"
+
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelsnapper.h"
 

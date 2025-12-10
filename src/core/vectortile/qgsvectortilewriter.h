@@ -16,11 +16,12 @@
 #ifndef QGSVECTORTILEWRITER_H
 #define QGSVECTORTILEWRITER_H
 
-#include <QCoreApplication>
-#include "qgstiles.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsrectangle.h"
+#include "qgstiles.h"
+
+#include <QCoreApplication>
 
 class QgsFeedback;
 class QgsTileMatrix;

@@ -17,9 +17,9 @@
 #define QGSPREVIEWQUAD_H
 
 #include <Qt3DCore/QEntity>
+#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
-#include <Qt3DRender/QEffect>
 
 #define SIP_NO_FILE
 

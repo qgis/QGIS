@@ -13,16 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "editorwidgets/qgsvaluemapconfigdlg.h"
-#include "qgsgui.h"
-#include "qgseditorwidgetregistry.h"
 #include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 #include "qgsogrproviderutils.h"
-
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsValueMapConfigDlg : public QObject
 {

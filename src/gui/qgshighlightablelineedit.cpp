@@ -15,8 +15,10 @@
 
 
 #include "qgshighlightablelineedit.h"
-#include "moc_qgshighlightablelineedit.cpp"
+
 #include <QPainter>
+
+#include "moc_qgshighlightablelineedit.cpp"
 
 QgsHighlightableLineEdit::QgsHighlightableLineEdit( QWidget *parent )
   : QgsFilterLineEdit( parent )

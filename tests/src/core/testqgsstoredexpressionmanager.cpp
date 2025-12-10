@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include "qgstest.h"
 #include "qgsstoredexpressionmanager.h"
+#include "qgstest.h"
+
+#include <QString>
 
 class TestQgsStoredExpressionManager : public QObject
 {

@@ -12,37 +12,37 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QApplication>
-#include <QDir>
-#include <QPainter>
-#include <QPicture>
-
+#include "qgsapplication.h"
 #include "qgscallout.h"
 #include "qgscalloutsregistry.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
+#include "qgslayoutexporter.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslinesymbol.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgssymbol.h"
-#include "qgssinglesymbolrenderer.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutpagecollection.h"
+#include "qgsnullsymbolrenderer.h"
 #include "qgspallabeling.h"
-#include "qgsfontutils.h"
+#include "qgsproject.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslayoutexporter.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QObject>
+#include <QPainter>
+#include <QPicture>
+#include <QString>
+#include <QStringList>
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"

@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsexpressioncontext.h"
-#include "qgsxmlutils.h"
+
 #include "qgsexpression.h"
-#include "qgsmaplayerstore.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayerstore.h"
+#include "qgsxmlutils.h"
 
 const QString QgsExpressionContext::EXPR_FIELDS( QStringLiteral( "_fields_" ) );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( QStringLiteral( "value" ) );

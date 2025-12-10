@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmanualtable.h"
-#include "moc_qgslayoutitemmanualtable.cpp"
+
 #include "qgsconditionalstyle.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayouttablecolumn.h"
 #include "qgsnumericformat.h"
 #include "qgsxmlutils.h"
-#include "qgsexpressioncontextutils.h"
+
+#include "moc_qgslayoutitemmanualtable.cpp"
 
 //
 // QgsLayoutItemManualTable

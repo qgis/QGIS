@@ -9,6 +9,7 @@
 
 
 
+
 class QgsElevationProfileManager : QgsProjectStoredObjectManagerBase
 {
 %Docstring(signature="appended")

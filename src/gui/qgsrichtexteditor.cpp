@@ -29,27 +29,29 @@
 ****************************************************************************/
 
 #include "qgsrichtexteditor.h"
-#include "moc_qgsrichtexteditor.cpp"
-#include "qgsguiutils.h"
-#include "qgscolorbutton.h"
+
 #include "qgscodeeditor.h"
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorwidget.h"
+#include "qgscolorbutton.h"
+#include "qgsguiutils.h"
 
-#include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
-#include <QFontDatabase>
-#include <QInputDialog>
-#include <QTextList>
-#include <QtDebug>
-#include <QFileDialog>
-#include <QImageReader>
-#include <QSettings>
-#include <QUrl>
-#include <QMenu>
 #include <QComboBox>
+#include <QFileDialog>
+#include <QFontDatabase>
+#include <QImageReader>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMimeData>
+#include <QSettings>
+#include <QTextList>
 #include <QToolButton>
+#include <QUrl>
+#include <QtDebug>
+
+#include "moc_qgsrichtexteditor.cpp"
 
 QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   : QWidget( parent )

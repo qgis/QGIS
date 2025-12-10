@@ -16,18 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmssqldataitems.h"
-#include "moc_qgsmssqldataitems.cpp"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsmssqlutils.h"
-#include "qgsmssqlgeomcolumntypethread.h"
+
+#include "qgsdatasourceuri.h"
+#include "qgsfieldsitem.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsdatasourceuri.h"
-#include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlgeomcolumntypethread.h"
+#include "qgsmssqlutils.h"
 #include "qgsproject.h"
-#include "qgsfieldsitem.h"
+#include "qgssettings.h"
+
+#include "moc_qgsmssqldataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
@@ -40,9 +41,6 @@
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
-  , mUseGeometryColumns( false )
-  , mUseEstimatedMetadata( false )
-  , mAllowGeometrylessTables( true )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Collapse;
   mIconName = QStringLiteral( "mIconConnect.svg" );

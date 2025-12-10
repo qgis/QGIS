@@ -14,9 +14,12 @@
  ***************************************************************************/
 
 #include "qgsreportsectionmodel.h"
-#include "moc_qgsreportsectionmodel.cpp"
-#include "functional"
+
+#include <functional>
+
 #include "qgsguiutils.h"
+
+#include "moc_qgsreportsectionmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

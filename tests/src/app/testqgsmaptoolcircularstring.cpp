@@ -13,18 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
-
-#include "testqgsmaptoolutils.h"
 #include "qgsmaptoolshapecircularstringradius.h"
-
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolCircularString : public QObject
 {

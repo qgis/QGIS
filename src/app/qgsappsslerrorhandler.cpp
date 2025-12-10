@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsappsslerrorhandler.h"
-#include "qgslogger.h"
-#include "qgsauthcertutils.h"
+
+#include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthsslerrorsdialog.h"
-#include "qgisapp.h"
+#include "qgslogger.h"
 
 void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {

@@ -15,16 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterlayerprofilegenerator.h"
-#include "qgsprofilerequest.h"
+
 #include "qgscurve.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsrasteriterator.h"
+#include "qgsfillsymbol.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
 #include "qgsprofilepoint.h"
-#include "qgsfillsymbol.h"
+#include "qgsprofilerequest.h"
+#include "qgsrasteriterator.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
 #include "qgsthreadingutils.h"
 
 #include <QPolygonF>

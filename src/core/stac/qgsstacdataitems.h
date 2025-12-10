@@ -17,8 +17,8 @@
 #define QGSSTACDATAITEMS_H
 
 #include "qgis_core.h"
-#include "qgsdataitemprovider.h"
 #include "qgsconnectionsitem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 

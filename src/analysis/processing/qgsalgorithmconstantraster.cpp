@@ -15,9 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
-#include "math.h"
 #include "qgsalgorithmconstantraster.h"
+
+#include <limits>
+#include <math.h>
+
 #include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE

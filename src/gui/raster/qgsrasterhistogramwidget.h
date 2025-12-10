@@ -18,11 +18,11 @@
 #define QGSRASTERHISTOGRAMWIDGET_H
 
 #include "ui_qgsrasterhistogramwidgetbase.h"
-#include "qgis_sip.h"
-#include "qgis.h"
 
-#include "qgsmaplayerconfigwidget.h"
+#include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmaplayerconfigwidget.h"
 
 class QgsRasterLayer;
 class QgsRasterRendererWidget;

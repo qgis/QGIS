@@ -17,14 +17,16 @@
  ***************************************************************************/
 
 #include "qgscustomprojectionoptions.h"
-#include "moc_qgscustomprojectionoptions.cpp"
+
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystemregistry.h"
 
-#include <QMessageBox>
-#include <QLocale>
-#include <QRegularExpression>
 #include <QFileInfo>
+#include <QLocale>
+#include <QMessageBox>
+#include <QRegularExpression>
+
+#include "moc_qgscustomprojectionoptions.cpp"
 
 QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )

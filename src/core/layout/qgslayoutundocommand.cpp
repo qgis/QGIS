@@ -17,7 +17,6 @@
 
 #include "qgslayoutundocommand.h"
 
-
 QgsAbstractLayoutUndoCommand::QgsAbstractLayoutUndoCommand( const QString &text, int id, QUndoCommand *parent )
   : QUndoCommand( text, parent )
   , mId( id )

@@ -14,22 +14,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QMessageBox>
-#include <QRegularExpressionValidator>
-#include <QRegularExpression>
-
 #include "qgsnewogrconnection.h"
-#include "moc_qgsnewogrconnection.cpp"
+
+#include <cpl_error.h>
+#include <ogr_api.h>
+
+#include "qgsapplication.h"
+#include "qgsgdalguiutils.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
-#include "qgsgdalguiutils.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
 
-#include <ogr_api.h>
-#include <cpl_error.h>
-#include "qgshelp.h"
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+
+#include "moc_qgsnewogrconnection.cpp"
 
 QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connType, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

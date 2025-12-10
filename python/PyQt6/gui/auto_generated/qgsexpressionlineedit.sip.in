@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsExpressionLineEdit : QWidget
 {
 %Docstring(signature="appended")

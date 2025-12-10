@@ -14,10 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
+#include "qgsgrass.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassmoduleparam.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassvector.h"
+#include "qgslogger.h"
+
 #include <QCompleter>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QIcon>
 #include <QLatin1String>
 #include <QMessageBox>
@@ -27,16 +36,6 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QVBoxLayout>
-#include <QHeaderView>
-
-#include "qgis.h"
-#include "qgslogger.h"
-
-#include "qgsgrass.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrassmoduleparam.h"
-#include "qgsgrassplugin.h"
-#include "qgsgrassvector.h"
 
 extern "C"
 {
@@ -527,7 +526,6 @@ bool QgsGrassModuleInputCompleter::eventFilter( QObject *watched, QEvent *event 
 QgsGrassModuleInputComboBox::QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent )
   : QComboBox( parent )
   , mType( type )
-  , mSkipHide( false )
 {
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
@@ -767,10 +765,8 @@ bool QgsGrassModuleInputSelectedView::eventFilter( QObject *obj, QEvent *event )
 /**************************** QgsGrassModuleInput ****************************/
 QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module, QgsGrassModuleStandardOptions *options, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mType( QgsGrassObject::Vector )
   , mModuleStandardOptions( options )
-  , mUpdate( false )
-  , mUsesRegion( false )
+
 {
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
 

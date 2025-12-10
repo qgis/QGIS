@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsannotationlinetextitem.h"
-#include "qgsannotationitemnode.h"
+
 #include "qgsannotationitemeditoperation.h"
-#include "qgsrendercontext.h"
+#include "qgsannotationitemnode.h"
 #include "qgscurve.h"
 #include "qgslinestring.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
-#include "qgssymbollayerutils.h"
 
 QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve )
   : QgsAnnotationItem()

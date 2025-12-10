@@ -13,25 +13,26 @@
  ***************************************************************************/
 
 #include "qgso2.h"
-#include "moc_qgso2.cpp"
 
 #include "o0globals.h"
 #include "o0settingsstore.h"
 #include "o2replyserver.h"
 #include "qgsauthoauth2config.h"
+#include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsblockingnetworkrequest.h"
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRandomGenerator>
 #include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QCryptographicHash>
-#include <QRandomGenerator>
+
+#include "moc_qgso2.cpp"
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 
@@ -244,7 +245,7 @@ void QgsO2::link()
   // and we don't use an external web interceptor
   if ( !useExternalWebInterceptor_ )
   {
-    if ( replyServer() == NULL )
+    if ( replyServer() == nullptr )
     {
       O2ReplyServer *replyServer = new O2ReplyServer( this );
       connect( replyServer, &O2ReplyServer::verificationReceived, this, &QgsO2::onVerificationReceived );

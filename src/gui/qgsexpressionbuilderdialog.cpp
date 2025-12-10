@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilderdialog.h"
-#include "moc_qgsexpressionbuilderdialog.cpp"
-#include "qgssettings.h"
-#include "qgsguiutils.h"
+
 #include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
+
 #include <QMessageBox>
+
+#include "moc_qgsexpressionbuilderdialog.cpp"
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )

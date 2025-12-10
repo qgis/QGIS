@@ -18,9 +18,10 @@
 #define QGSDETAILEDITEMWIDGET_H
 
 #include "ui_qgsdetaileditemwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsdetaileditemdata.h"
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui

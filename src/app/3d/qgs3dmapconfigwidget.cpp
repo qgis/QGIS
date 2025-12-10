@@ -14,29 +14,30 @@
  ***************************************************************************/
 
 #include "qgs3dmapconfigwidget.h"
-#include "moc_qgs3dmapconfigwidget.cpp"
 
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsambientocclusionsettingswidget.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsflatterrainsettings.h"
-#include "qgsonlinedemterrainsettings.h"
-#include "qgsmeshterrainsettings.h"
-#include "qgs3dutils.h"
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
+#include "qgsmesh3dsymbolwidget.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshterrainsettings.h"
+#include "qgsonlinedemterrainsettings.h"
+#include "qgsproject.h"
 #include "qgsquantizedmeshterrainsettings.h"
 #include "qgsrasterlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsproject.h"
-#include "qgsmesh3dsymbolwidget.h"
 #include "qgssettings.h"
-#include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsshadowrenderingsettingswidget.h"
-#include "qgsambientocclusionsettingswidget.h"
-#include "qgs3dmapcanvas.h"
+#include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
-#include "qgsabstractterrainsettings.h"
+
+#include "moc_qgs3dmapconfigwidget.cpp"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )

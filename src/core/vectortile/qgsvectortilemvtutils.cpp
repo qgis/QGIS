@@ -17,7 +17,6 @@
 
 #include "qgslinestring.h"
 
-
 bool QgsVectorTileMVTUtils::isExteriorRing( const QgsLineString *lineString )
 {
   // Exterior rings have POSITIVE area while interior rings have NEGATIVE area

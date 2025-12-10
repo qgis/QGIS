@@ -1816,6 +1816,17 @@ if(WITH_INTERNAL_QWT)
     )
   endif()
 
+  set(QWT_COMPILE_OPTIONS)
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (QWT_COMPILE_OPTIONS)
+    set_source_files_properties($QGIS_QWT_SRCS PROPERTIES COMPILE_OPTIONS "${QWT_COMPILE_OPTIONS}")
+  endif()
+
   set(QGIS_GUI_SRCS
     ${QGIS_GUI_SRCS}
     ${QGIS_QWT_SRCS}

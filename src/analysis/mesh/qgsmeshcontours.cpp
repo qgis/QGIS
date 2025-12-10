@@ -15,25 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmeshcontours.h"
-#include "qgspoint.h"
-#include "qgsmultilinestring.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsmapsettings.h"
-#include "qgsmeshlayer.h"
-#include "qgstriangularmesh.h"
-#include "qgsgeometryutils.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsfeedback.h"
-#include "qgsproject.h"
 
 #include <limits>
 
-#include <QSet>
+#include "qgsfeature.h"
+#include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsmapsettings.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmultilinestring.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
+#include "qgstriangularmesh.h"
+
 #include <QPair>
+#include <QSet>
 
 QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   : mMeshLayer( layer )

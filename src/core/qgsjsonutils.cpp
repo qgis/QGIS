@@ -14,30 +14,33 @@
  ***************************************************************************/
 
 #include "qgsjsonutils.h"
-#include "moc_qgsjsonutils.cpp"
+
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
+#include "qgsexception.h"
+#include "qgsfeatureid.h"
 #include "qgsfeatureiterator.h"
-#include "qgsogrutils.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsogrutils.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
-#include "qgsproject.h"
-#include "qgsexception.h"
-#include "qgslogger.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
-#include "qgsapplication.h"
-#include "qgsfeatureid.h"
-#include "qgslinestring.h"
-#include "qgsmultipoint.h"
-#include "qgsmultilinestring.h"
-#include "qgspolygon.h"
-#include "qgsmultipolygon.h"
+#include "qgsvectorlayer.h"
 
-#include <QJsonDocument>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QTextCodec>
-#include <nlohmann/json.hpp>
+
+#include "moc_qgsjsonutils.cpp"
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )

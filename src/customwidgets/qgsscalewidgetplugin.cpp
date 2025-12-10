@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsscalewidgetplugin.h"
-#include "moc_qgsscalewidgetplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsscalewidget.h"
 
+#include "moc_qgsscalewidgetplugin.cpp"
 
 QgsScaleWidgetPlugin::QgsScaleWidgetPlugin( QObject *parent )
   : QObject( parent )

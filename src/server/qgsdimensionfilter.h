@@ -20,8 +20,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeaturefilterprovider.h"
 #include "qgis_server.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QHash>
 

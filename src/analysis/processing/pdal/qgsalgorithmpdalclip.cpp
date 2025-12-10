@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalclip.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 #include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE

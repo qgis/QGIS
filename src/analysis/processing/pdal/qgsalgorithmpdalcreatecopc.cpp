@@ -17,10 +17,10 @@
 
 #include "qgsalgorithmpdalcreatecopc.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QProcessEnvironment>
 #include <QThread>
-#include <QFileInfo>
-#include <QDir>
 
 #ifdef HAVE_PDAL_QGIS
 #include "QgisUntwine.hpp"

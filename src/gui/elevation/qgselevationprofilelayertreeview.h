@@ -19,9 +19,10 @@
 #define QGSELEVATIONPROFILELAYERTREEVIEW_H
 
 #include "qgsconfig.h"
+
+#include "qgis_gui.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgis_gui.h"
 
 #include <QSortFilterProxyModel>
 #include <QTreeView>
@@ -135,6 +136,7 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
 
   public slots:
+
     /**
      * Adds a custom node in the layer tree corresponding to a registered profile source.
      *

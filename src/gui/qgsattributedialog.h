@@ -17,16 +17,16 @@
 #ifndef QGSATTRIBUTEDIALOG_H
 #define QGSATTRIBUTEDIALOG_H
 
-#include "qgsattributeeditorcontext.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsattributeform.h"
-#include "qgstrackedvectorlayertools.h"
 #include "qgsmaplayeractioncontextgenerator.h"
+#include "qgstrackedvectorlayertools.h"
 
 #include <QDialog>
-#include <QMenuBar>
 #include <QGridLayout>
-#include "qgis_gui.h"
+#include <QMenuBar>
 
 class QgsHighlight;
 class QgsActionMenu;

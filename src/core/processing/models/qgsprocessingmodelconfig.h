@@ -18,8 +18,9 @@
 #ifndef QGSPROCESSINGMODELCONFIG_H
 #define QGSPROCESSINGMODELCONFIG_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QSet>
 
 #define SIP_NO_FILE

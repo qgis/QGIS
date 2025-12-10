@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPanelWidgetStack : QWidget
 {
 %Docstring(signature="appended")

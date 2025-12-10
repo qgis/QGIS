@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewnonremovableindicator.h"
-#include "moc_qgslayertreeviewnonremovableindicator.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 
+#include "moc_qgslayertreeviewnonremovableindicator.cpp"
 
 QgsLayerTreeViewNonRemovableIndicatorProvider::QgsLayerTreeViewNonRemovableIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

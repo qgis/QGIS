@@ -16,14 +16,13 @@
 #ifndef QGSRULEBASEDRENDERER_H
 #define QGSRULEBASEDRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfields.h"
 #include "qgsfeature.h"
-#include "qgis.h"
-
-#include "qgsrenderer.h"
+#include "qgsfields.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 
 class QgsExpression;
 

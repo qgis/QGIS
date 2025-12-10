@@ -29,13 +29,13 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
-#include "qgis.h"
-
 #include <memory>
-#include <QVector>
 
+#include "qgis.h"
+#include "qgis_core.h"
 #include "qgscoordinatetransform.h"
+
+#include <QVector>
 
 class QMatrix4x4;
 class QImage;

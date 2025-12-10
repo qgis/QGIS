@@ -16,8 +16,9 @@
 #define QGSGPSDEVICEOPTIONS_H
 
 #include "ui_qgsgpsdevicedialogbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QgsBabelGpsDeviceFormat;
 

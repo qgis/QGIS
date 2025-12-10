@@ -16,22 +16,26 @@
  ***************************************************************************/
 
 #include "qgsmeshtriangulation.h"
-#include "moc_qgsmeshtriangulation.cpp"
-#include "qgsdualedgetriangulation.h"
+
+#include <memory>
+
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
-#include "qgsmultisurface.h"
-#include "qgsmulticurve.h"
+#include "qgsdualedgetriangulation.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmesheditor.h"
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
+#include "qgsmulticurve.h"
+#include "qgsmultisurface.h"
+
+#include "moc_qgsmeshtriangulation.cpp"
 
 QgsMeshTriangulation::QgsMeshTriangulation()
   : QObject()
 {
-  mTriangulation.reset( new QgsDualEdgeTriangulation() );
+  mTriangulation = std::make_unique<QgsDualEdgeTriangulation>();
 }
 
 

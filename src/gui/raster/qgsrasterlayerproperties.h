@@ -17,13 +17,14 @@
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
-#include "qgsresamplingutils.h"
-#include "qgsrasterpipe.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsguiutils.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgsrasterpipe.h"
+#include "qgsresamplingutils.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) FINAL;
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) final;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -90,9 +91,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     Q_DECL_DEPRECATED void saveDefaultStyle() SIP_DEPRECATED;
 
   protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) FINAL;
-    void apply() FINAL;
-    void rollback() FINAL;
+    void optionsStackedWidget_CurrentChanged( int index ) final;
+    void apply() final;
+    void rollback() final;
 
   private:
     // TODO -- consider moving these to a common raster widget base class
@@ -163,7 +164,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     void aboutToShowStyleMenu();
 
     //! Make GUI reflect the layer's state
-    void syncToLayer() FINAL;
+    void syncToLayer() final;
 
     // Update the preview of the map tip
     void updateMapTipPreview();
@@ -181,12 +182,12 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     QString mDefaultContrastEnhancementAlgorithm;
 
     //! \brief default standard deviation
-    double mDefaultStandardDeviation;
+    double mDefaultStandardDeviation = 0;
 
     //! \brief Default band combination
-    int mDefaultRedBand;
-    int mDefaultGreenBand;
-    int mDefaultBlueBand;
+    int mDefaultRedBand = 0;
+    int mDefaultGreenBand = 0;
+    int mDefaultBlueBand = 0;
 
     //! \brief Flag to indicate if Gray minimum maximum values are actual minimum maximum values
     bool mGrayMinimumMaximumEstimated;
@@ -230,14 +231,14 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     QLinearGradient blueGradient();
     QLinearGradient grayGradient();
     QLinearGradient highlightGradient();
-    qreal mGradientHeight;
-    qreal mGradientWidth;
+    qreal mGradientHeight = 0.0;
+    qreal mGradientWidth = 0.0;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 
-    bool mMetadataFilled;
+    bool mMetadataFilled = false;
 
     //! Synchronize state with associated raster layer
     void sync();

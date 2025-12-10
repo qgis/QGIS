@@ -17,42 +17,43 @@
  ***************************************************************************/
 
 #include "qgsdecorationgrid.h"
-#include "moc_qgsdecorationgrid.cpp"
-#include "qgsdecorationgriddialog.h"
 
 #include "qgisapp.h"
+#include "qgsdecorationgriddialog.h"
+#include "qgslinesymbol.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
-#include "qgsrasterlayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgspathresolver.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
-#include "qgsmarkersymbollayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
-#include "qgstextrenderer.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
+#include "qgstextrenderer.h"
 
-#include <QPainter>
 #include <QAction>
+#include <QColor>
+#include <QDomDocument>
+#include <QFile>
+#include <QFont>
+#include <QFontMetrics>
+#include <QLocale>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPainter>
 #include <QPen>
 #include <QPolygon>
 #include <QString>
-#include <QFontMetrics>
-#include <QFont>
-#include <QColor>
-#include <QMenu>
-#include <QFile>
-#include <QLocale>
-#include <QDomDocument>
-#include <QMessageBox>
+
+#include "moc_qgsdecorationgrid.cpp"
 
 //non qt includes
 #include <cmath>

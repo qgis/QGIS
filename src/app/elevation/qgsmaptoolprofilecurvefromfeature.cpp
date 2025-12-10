@@ -15,11 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolprofilecurvefromfeature.h"
-#include "moc_qgsmaptoolprofilecurvefromfeature.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsidentifymenu.h"
-#include "qgsmapmouseevent.h"
+
 #include "qgsapplication.h"
+#include "qgsidentifymenu.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+
+#include "moc_qgsmaptoolprofilecurvefromfeature.cpp"
 
 QgsMapToolProfileCurveFromFeature::QgsMapToolProfileCurveFromFeature( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
