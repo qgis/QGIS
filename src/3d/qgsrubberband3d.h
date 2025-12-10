@@ -33,6 +33,7 @@
 #include "qgsgeometry.h"
 #include "qgspolygon.h"
 #include "qgstessellator.h"
+#include "qobjectuniqueptr.h"
 
 #include <QColor>
 
@@ -237,9 +238,9 @@ class _3D_EXPORT QgsRubberBand3D
     bool mEdgesEnabled = true;
     bool mPolygonFillEnabled = true;
 
-    Qt3DCore::QEntity *mLineEntity = nullptr;    // owned by parentEntity (from constructor)
-    Qt3DCore::QEntity *mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
-    Qt3DCore::QEntity *mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
+    QObjectUniquePtr<Qt3DCore::QEntity> mLineEntity = nullptr;    // owned by parentEntity (from constructor)
+    QObjectUniquePtr<Qt3DCore::QEntity> mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
+    QObjectUniquePtr<Qt3DCore::QEntity> mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
 
     QgsGeoTransform *mLineTransform = nullptr;
     QgsGeoTransform *mPolygonTransform = nullptr;
