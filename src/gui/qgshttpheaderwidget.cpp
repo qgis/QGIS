@@ -18,11 +18,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshttpheaderwidget.h"
-#include "moc_qgshttpheaderwidget.cpp"
 #include "ui_qgshttpheaderwidget.h"
+#include "qgshttpheaderwidget.h"
+
 #include "qgsapplication.h"
 
+#include "moc_qgshttpheaderwidget.cpp"
 
 QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent )
   : QWidget( parent )

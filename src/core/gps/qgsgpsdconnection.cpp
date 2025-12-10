@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsgpsdconnection.h"
-#include "moc_qgsgpsdconnection.cpp"
+
 #include "qgslogger.h"
 
 #include <QTcpSocket>
+
+#include "moc_qgsgpsdconnection.cpp"
 
 QgsGpsdConnection::QgsGpsdConnection( const QString &host, qint16 port, const QString &device )
   : QgsNmeaConnection( new QTcpSocket() )

@@ -14,20 +14,23 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanadataitems.h"
+
+#include <climits>
+
 #include "qgsdatasourceuri.h"
+#include "qgsfieldsitem.h"
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
-#include "qgshanadataitems.h"
-#include "moc_qgshanadataitems.cpp"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsfieldsitem.h"
 
 #include <QMessageBox>
-#include <climits>
+
+#include "moc_qgshanadataitems.cpp"
 
 QgsHanaConnectionItem::QgsHanaConnectionItem(
   QgsDataItem *parent,

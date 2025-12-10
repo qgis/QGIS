@@ -17,9 +17,11 @@
 #define QGSTABLEWIDGETBASE_H
 
 #include "ui_qgstablewidgetuibase.h"
+
+#include "qgis_gui.h"
+
 #include <QAbstractTableModel>
 #include <QVariant>
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui

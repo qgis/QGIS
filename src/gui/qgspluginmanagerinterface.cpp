@@ -15,4 +15,5 @@
  ***************************************************************************/
 
 #include "qgspluginmanagerinterface.h"
+
 #include "moc_qgspluginmanagerinterface.cpp"

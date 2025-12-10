@@ -16,13 +16,13 @@
 #ifndef QGSRASTERANALYSISUTILS_H
 #define QGSRASTERANALYSISUTILS_H
 
-#include "qgis_analysis.h"
-#include "qgis.h"
-#include "qgspointxy.h"
-
 #include <functional>
 #include <memory>
 #include <vector>
+
+#include "qgis.h"
+#include "qgis_analysis.h"
+#include "qgspointxy.h"
 
 #define SIP_NO_FILE
 

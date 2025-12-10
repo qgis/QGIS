@@ -13,14 +13,14 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QGridLayout>
-#include <QDialogButtonBox>
-
-
 #include "qgsscalevisibilitydialog.h"
-#include "moc_qgsscalevisibilitydialog.cpp"
+
 #include "qgsscalerangewidget.h"
 
+#include <QDialogButtonBox>
+#include <QGridLayout>
+
+#include "moc_qgsscalevisibilitydialog.cpp"
 
 QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QString &title, QgsMapCanvas *mapCanvas )
   : QDialog( parent )

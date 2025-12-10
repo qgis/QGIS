@@ -13,31 +13,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qqml.h>
+#include "qgsquickplugin.h"
 
-#include <QObject>
-#include <QQmlEngine>
-#include <QJSEngine>
-
+#include "qgscoordinateformatter.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgsrelationmanager.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgscoordinateformatter.h"
-#include "qgsvectorlayer.h"
-#include "qgsunittypes.h"
-
+#include "qgsquickelevationprofilecanvas.h"
 #include "qgsquickmapcanvasmap.h"
 #include "qgsquickmapsettings.h"
 #include "qgsquickmaptransform.h"
-#include "qgsquickelevationprofilecanvas.h"
-#include "qgsquickplugin.h"
-#include "moc_qgsquickplugin.cpp"
 #include "qgsquickutils.h"
+#include "qgsrelationmanager.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
+#include <QJSEngine>
+#include <QObject>
+#include <QQmlEngine>
+#include <qqml.h>
+
+#include "moc_qgsquickplugin.cpp"
 
 static QObject *buildUtilsSingleton( QQmlEngine *engine, QJSEngine *scriptEngine )
 {

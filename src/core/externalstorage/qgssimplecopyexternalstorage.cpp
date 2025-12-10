@@ -13,10 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssimplecopyexternalstorage_p.h"
-
-#include "qgscopyfiletask.h"
 #include "qgsapplication.h"
+#include "qgscopyfiletask.h"
+#include "qgssimplecopyexternalstorage_p.h"
 
 #include <QFileInfo>
 

@@ -14,20 +14,23 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooladditem.h"
-#include "moc_qgslayoutviewtooladditem.cpp"
-#include "qgslayoutview.h"
-#include "qgslayout.h"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslayoutviewrubberband.h"
+
 #include "qgsgui.h"
+#include "qgslayout.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutnewitempropertiesdialog.h"
-#include "qgssettings.h"
 #include "qgslayoutundostack.h"
-#include <QGraphicsRectItem>
-#include <QPen>
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgssettings.h"
+
 #include <QBrush>
+#include <QGraphicsRectItem>
 #include <QMouseEvent>
+#include <QPen>
+
+#include "moc_qgslayoutviewtooladditem.cpp"
 
 QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Add item" ) )

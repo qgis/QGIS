@@ -13,25 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QItemSelectionModel>
-#include <QApplication>
+#include "qgsattributetablefiltermodel.h"
 
 #include "qgis.h"
-#include "qgsattributetablefiltermodel.h"
-#include "moc_qgsattributetablefiltermodel.cpp"
 #include "qgsattributetablemodel.h"
-#include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayertemporalproperties.h"
-#include "qgsfeature.h"
-#include "qgsmapcanvas.h"
-#include "qgslogger.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayereditbuffer.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayercache.h"
-#include "qgsrendercontext.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapcanvasutils.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayertemporalproperties.h"
+
+#include <QApplication>
+#include <QItemSelectionModel>
+
+#include "moc_qgsattributetablefiltermodel.cpp"
 
 //////////////////
 // Filter Model //
@@ -242,7 +244,9 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   }
 
   if ( !config.sortExpression().isEmpty() )
+  {
     sort( config.sortExpression(), config.sortOrder() );
+  }
 }
 
 void QgsAttributeTableFilterModel::setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context )

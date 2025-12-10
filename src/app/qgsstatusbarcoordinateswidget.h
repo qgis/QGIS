@@ -27,11 +27,11 @@ class QValidator;
 class QgsMapCanvas;
 
 #include "qgis_app.h"
-#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgspointxy.h"
 
-#include <QWidget>
 #include <QElapsedTimer>
+#include <QWidget>
 
 class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 {
@@ -85,7 +85,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     int mMinimumWidth = 0;
 
     //! The number of decimal places to use if not automatic
-    unsigned int mMousePrecisionDecimalPlaces;
+    unsigned int mMousePrecisionDecimalPlaces = 0;
 
     QgsPointXY mLastCoordinate;
     QgsCoordinateReferenceSystem mLastCoordinateCrs;

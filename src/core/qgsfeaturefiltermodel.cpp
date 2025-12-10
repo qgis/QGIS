@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturefiltermodel.h"
-#include "moc_qgsfeaturefiltermodel.cpp"
-#include "qgsfeatureexpressionvaluesgatherer.h"
 
-#include "qgsvectorlayer.h"
+#include "qgsfeatureexpressionvaluesgatherer.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfeaturefiltermodel.cpp"
 
 bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
 {

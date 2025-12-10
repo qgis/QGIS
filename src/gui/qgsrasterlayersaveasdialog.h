@@ -16,11 +16,12 @@
 #define QGSRASTERLAYERSAVEASDIALOG_H
 
 #include "ui_qgsrasterlayersaveasdialogbase.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsrasterrange.h"
+
 #include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgshelp.h"
+#include "qgsrasterrange.h"
+#include "qgsrectangle.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;
@@ -93,6 +94,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
      * \deprecated QGIS 3.44. Use creationOptions() instead.
      */
     Q_DECL_DEPRECATED QStringList createOptions() const;
+
     /**
      * Raster creation options set for the output layer.
      * \since QGIS 3.44
@@ -170,7 +172,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;
     QgsCoordinateReferenceSystem mPreviousCrs;
-    ResolutionState mResolutionState;
+    ResolutionState mResolutionState = OriginalResolution;
     QVector<bool> mNoDataToEdited;
 
     void setValidators();

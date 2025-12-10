@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterlayerproperties.h"
+
 #include "qgsstringutils.h"
 
 ///@cond PRIVATE

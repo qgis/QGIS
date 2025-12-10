@@ -15,11 +15,11 @@
  ***************************************************************************/
 #include "qgselevationshadingrenderer.h"
 
-#include <QImage>
-
 #include "qgselevationmap.h"
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
+
+#include <QImage>
 
 QgsElevationShadingRenderer::QgsElevationShadingRenderer()
 {

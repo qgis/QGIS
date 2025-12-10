@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsrelationshipsitem.h"
-#include "moc_qgsrelationshipsitem.cpp"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
-#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include "moc_qgsrelationshipsitem.cpp"
 
 QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent,
     const QString &path,

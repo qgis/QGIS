@@ -17,14 +17,16 @@
 #ifndef QGSDATASOURCEMANAGERDIALOG_H
 #define QGSDATASOURCEMANAGERDIALOG_H
 
-#include <QList>
-#include <QDialog>
 #include "ui_qgsdatasourcemanagerdialog.h"
-#include "qgsoptionsdialogbase.h"
-#include "qgsguiutils.h"
-#include "qgsmimedatautils.h"
-#include "qgshelp.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsmimedatautils.h"
+#include "qgsoptionsdialogbase.h"
+
+#include <QDialog>
+#include <QList>
 
 #define SIP_NO_FILE
 
@@ -167,7 +169,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
     Ui::QgsDataSourceManagerDialog *ui = nullptr;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
-    int mPreviousRow;
+    int mPreviousRow = -1;
     QStringList mPageProviderKeys;
     QStringList mPageProviderNames;
     // Map canvas

@@ -17,11 +17,11 @@
 #ifndef QGSMAPTOOLSHAPECIRCLE2TANGENTSPOINT_H
 #define QGSMAPTOOLSHAPECIRCLE2TANGENTSPOINT_H
 
-#include "qgspointlocator.h"
 #include "qgsmaptoolshapecircleabstract.h"
-#include "qspinbox.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgspointlocator.h"
 
+#include <qspinbox.h>
 
 class QSpinBox;
 

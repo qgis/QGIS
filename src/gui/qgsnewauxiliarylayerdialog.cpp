@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsnewauxiliarylayerdialog.h"
-#include "moc_qgsnewauxiliarylayerdialog.cpp"
+
 #include "qgsauxiliarystorage.h"
-#include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgsproject.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsnewauxiliarylayerdialog.cpp"
 
 QgsNewAuxiliaryLayerDialog::QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )

@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
+
 #include <QApplication>
 #include <QDesktopServices>
-
+#include <QObject>
 
 //qgis includes...
 #include <qgsrasterlayer.h>

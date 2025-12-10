@@ -18,9 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgsvector3d.h"
-
 
 /**
  * \ingroup core

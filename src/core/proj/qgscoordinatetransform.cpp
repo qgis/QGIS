@@ -15,17 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
-#include "qgscoordinatetransform_p.h"
+
+#include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgslogger.h"
-#include "qgspointxy.h"
-#include "qgsrectangle.h"
+#include "qgscoordinatetransform_p.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgsreadwritelocker.h"
+#include "qgsrectangle.h"
 #include "qgsvector3d.h"
-#include "qgis.h"
 
 //qt includes
 #include <QDomNode>

@@ -17,13 +17,13 @@
 
 #include <functional>
 
-#include <QObject>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QAuthenticator>
-
 #include "qgsauthorizationsettings.h"
+
+#include <QAuthenticator>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QObject>
+#include <QUrl>
 
 //! Abstract base class for a WFS request.
 class QgsBaseNetworkRequest : public QObject
@@ -129,6 +129,9 @@ class QgsBaseNetworkRequest : public QObject
 
     //! Whether to log error messages
     bool mLogErrors = true;
+
+    //! Whether this is simulated HTTP mode (for unit tests)
+    bool mIsSimulatedMode = false;
 
     //! Whether in simulated HTTP mode, the response read in the file has HTTP headers
     bool mFakeResponseHasHeaders = false;

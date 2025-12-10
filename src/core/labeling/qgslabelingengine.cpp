@@ -15,27 +15,27 @@
  ***************************************************************************/
 
 #include "qgslabelingengine.h"
-#include "moc_qgslabelingengine.cpp"
-
-#include "qgslogger.h"
 
 #include "feature.h"
 #include "labelposition.h"
 #include "layer.h"
 #include "pal.h"
 #include "problem.h"
-#include "qgsrendercontext.h"
-#include "qgsmaplayer.h"
-#include "qgssymbol.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayerlabelprovider.h"
-#include "qgslabelingresults.h"
 #include "qgsfillsymbol.h"
-#include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
+#include "qgslabelingresults.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsrendercontext.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssymbol.h"
 #include "qgstextlabelfeature.h"
+#include "qgsvectorlayerlabelprovider.h"
 
 #include <QUuid>
+
+#include "moc_qgslabelingengine.cpp"
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )

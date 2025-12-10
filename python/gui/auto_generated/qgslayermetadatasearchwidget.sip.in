@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLayerMetadataSearchWidget : QgsAbstractDataSourceWidget
 {
 %Docstring(signature="appended")

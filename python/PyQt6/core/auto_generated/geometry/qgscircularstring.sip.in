@@ -10,7 +10,6 @@
 
 
 
-
 class QgsCircularString: QgsCurve
 {
 %Docstring(signature="appended")

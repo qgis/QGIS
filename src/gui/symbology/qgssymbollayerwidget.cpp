@@ -15,53 +15,53 @@
  ***************************************************************************/
 
 #include "qgssymbollayerwidget.h"
-#include "moc_qgssymbollayerwidget.cpp"
-
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsexpressioncontextutils.h"
 
 #include "characterwidget.h"
-#include "qgsdashspacedialog.h"
-#include "qgssvgcache.h"
-#include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
+#include "qgsauxiliarystorage.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
-#include "qgsfontutils.h"
-#include "qgsproperty.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgssvgselectorwidget.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgsnewauxiliaryfielddialog.h"
-#include "qgsauxiliarystorage.h"
-#include "qgsimagecache.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgsdashspacedialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsfontutils.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsiconutils.h"
+#include "qgsimagecache.h"
 #include "qgslinearreferencingsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsnewauxiliaryfielddialog.h"
+#include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnumericformatselectorwidget.h"
+#include "qgsproperty.h"
+#include "qgssvgcache.h"
+#include "qgssvgselectorwidget.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QAbstractButton>
+#include <QAction>
+#include <QBuffer>
 #include <QButtonGroup>
 #include <QColorDialog>
 #include <QCursor>
 #include <QDir>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMovie>
 #include <QPainter>
+#include <QRegularExpression>
 #include <QStandardItemModel>
 #include <QSvgRenderer>
-#include <QMessageBox>
-#include <QMenu>
-#include <QAction>
-#include <QInputDialog>
-#include <QBuffer>
-#include <QRegularExpression>
-#include <QMovie>
+
+#include "moc_qgssymbollayerwidget.cpp"
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {
@@ -257,7 +257,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   mTrimDistanceEndSpin->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsLineSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsLineSymbol>();
 
   if ( vectorLayer() )
     mPenWidthDDBtn->setSymbol( mAssistantPreviewSymbol );
@@ -667,7 +667,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
@@ -1117,7 +1117,7 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
@@ -2317,7 +2317,7 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsSvgMarkerSymbolLayerWidget::setSvgParameters );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
   {
@@ -2332,6 +2332,7 @@ QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget() = default;
 #include <QAbstractListModel>
 #include <QPixmapCache>
 #include <QStyle>
+#include <memory>
 
 
 void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors )
@@ -3374,7 +3375,7 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
   spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );

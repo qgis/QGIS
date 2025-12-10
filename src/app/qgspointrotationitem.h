@@ -16,11 +16,12 @@
 #ifndef QGSPOINTROTATIONITEM_H
 #define QGSPOINTROTATIONITEM_H
 
+#include "qgis_app.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsunittypes.h"
+
 #include <QFontMetricsF>
 #include <QPixmap>
-#include "qgis_app.h"
 
 //! An item that shows a rotated point symbol (e.g. arrow) centered to a map location together with a text displaying the rotation value
 class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem

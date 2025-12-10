@@ -19,21 +19,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
 #include "qgsowsconnection.h"
-#include "moc_qgsowsconnection.cpp"
-#include "qgssettings.h"
-#include "qgshttpheaders.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 
+#include "qgis.h"
+#include "qgsdatasourceuri.h"
+#include "qgshttpheaders.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPicture>
 #include <QUrl>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 
+#include "moc_qgsowsconnection.cpp"
 
 const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeXyzConnections, QString() ) ;
 const QgsSettingsEntryVariantMap *QgsXyzConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeXyzConnections ) ;

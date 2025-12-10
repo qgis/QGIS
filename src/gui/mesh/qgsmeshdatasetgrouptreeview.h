@@ -16,20 +16,21 @@
 #ifndef QGSMESHDATASETGROUPTREE_H
 #define QGSMESHDATASETGROUPTREE_H
 
-#include "qgis_gui.h"
+#include <memory>
 
-#include <QObject>
-#include <QTreeView>
+#include "qgis_gui.h"
+#include "qgsmeshdataset.h"
+
+#include <QItemSelection>
+#include <QList>
 #include <QMap>
 #include <QMenu>
-#include <QVector>
-#include <QItemSelection>
+#include <QObject>
+#include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
-#include <QList>
-#include <QSortFilterProxyModel>
-#include <memory>
-#include "qgsmeshdataset.h"
+#include <QTreeView>
+#include <QVector>
 
 SIP_NO_FILE
 

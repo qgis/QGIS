@@ -13,10 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
-#include <QStringList>
+
 #include <QApplication>
 #include <QFileInfo>
+#include <QObject>
+#include <QStringList>
 
 //qgis includes...
 #include "qgssqliteutils.h"

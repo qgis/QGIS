@@ -19,6 +19,7 @@
 #include "ui_qgsmeshrenderer3daveragingwidgetbase.h"
 
 #include <memory>
+
 #include <QWidget>
 
 SIP_NO_FILE

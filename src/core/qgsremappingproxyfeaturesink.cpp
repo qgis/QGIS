@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsremappingproxyfeaturesink.h"
+
 #include "qgslogger.h"
 
 QgsRemappingProxyFeatureSink::QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink, bool ownsSink )

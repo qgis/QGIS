@@ -18,8 +18,8 @@
 #ifndef QGS_GEOMETRY_DUPLICATE_CHECK_H
 #define QGS_GEOMETRY_DUPLICATE_CHECK_H
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
 
 /**

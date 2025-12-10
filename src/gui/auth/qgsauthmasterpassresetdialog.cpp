@@ -15,15 +15,15 @@
  ***************************************************************************/
 
 #include "qgsauthmasterpassresetdialog.h"
-#include "moc_qgsauthmasterpassresetdialog.cpp"
+
+#include "qgsapplication.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
 
 #include <QLineEdit>
 #include <QPushButton>
 
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthmasterpassresetdialog.cpp"
 
 QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   : QDialog( parent )

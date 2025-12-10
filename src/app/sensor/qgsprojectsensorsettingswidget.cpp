@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsprojectsensorsettingswidget.h"
-#include "moc_qgsprojectsensorsettingswidget.cpp"
 
 #include "qgis.h"
 #include "qgsabstractsensor.h"
@@ -22,6 +21,8 @@
 #include "qgsproject.h"
 #include "qgssensormanager.h"
 #include "qgssensortablewidget.h"
+
+#include "moc_qgsprojectsensorsettingswidget.cpp"
 
 QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )

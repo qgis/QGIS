@@ -15,20 +15,22 @@
  ***************************************************************************/
 
 #include "qgsogrproviderconnection.h"
-#include "qgsogrprovider.h"
-#include "qgsmessagelog.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsfielddomain.h"
-#include "qgsogrproviderutils.h"
-#include "qgssqlstatement.h"
+
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsfeedback.h"
+#include "qgsfielddomain.h"
+#include "qgsmessagelog.h"
+#include "qgsogrprovider.h"
+#include "qgsogrproviderutils.h"
+#include "qgsogrutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgssqlstatement.h"
+#include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
+
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
 #include "qgsgdalutils.h"
 #endif
@@ -543,6 +545,16 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
       if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteLayer ) )
         mCapabilities |= DropVectorTable;
     }
+
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCUpdateFieldDomain ) )
+    {
+      mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain;
+    }
+
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteFieldDomain ) )
+    {
+      mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain;
+    }
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
@@ -1028,6 +1040,77 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
   ( void )schema;
   throw QgsProviderConnectionException( QObject::tr( "Creating field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
+}
+
+void QgsOgrProviderConnection::updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const
+{
+  if ( !schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+
+  if ( GDALDatasetTestCapability( hDS.get(), ODsCUpdateFieldDomain ) )
+  {
+    OGRFieldDomainH ogrDomain = QgsOgrUtils::convertFieldDomain( domain );
+    if ( !ogrDomain )
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Could not update field domain" ) );
+    }
+
+    char *failureReason = nullptr;
+    const bool success = GDALDatasetUpdateFieldDomain( hDS.get(), ogrDomain, &failureReason );
+
+    if ( !success )
+    {
+      const QString error( failureReason );
+      CPLFree( failureReason );
+      OGR_FldDomain_Destroy( ogrDomain );
+      throw QgsProviderConnectionException( QObject::tr( "Could not update field domain: %1" ).arg( error ) );
+    }
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Updating field domains is not supported by the current dataset" ) );
+  }
+}
+
+void QgsOgrProviderConnection::deleteFieldDomain( const QString &name, const QString &schema ) const
+{
+  if ( !schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+
+  if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteFieldDomain ) )
+  {
+    char *failureReason = nullptr;
+    const bool success = GDALDatasetDeleteFieldDomain( hDS.get(), name.toUtf8().constData(), &failureReason );
+
+    if ( !success )
+    {
+      const QString error( failureReason );
+      CPLFree( failureReason );
+      throw QgsProviderConnectionException( QObject::tr( "Could not delete field domain: %1" ).arg( error ) );
+    }
+
+    CPLFree( failureReason );
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Deleting field domains is not supported by the current dataset" ) );
+  }
 }
 
 void QgsOgrProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const

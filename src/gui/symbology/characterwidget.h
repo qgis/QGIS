@@ -47,15 +47,14 @@
 #ifndef CHARACTERWIDGET_H
 #define CHARACTERWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #include <QFont>
 #include <QPoint>
 #include <QSize>
 #include <QString>
 #include <QWidget>
-
 
 class QMouseEvent;
 class QPaintEvent;

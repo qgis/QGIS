@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPEELLIPSECENTERPOINT_H
 #define QGSMAPTOOLSHAPEELLIPSECENTERPOINT_H
 
-#include "qgsmaptoolshapeellipseabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapeellipseabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeEllipseCenterPointMetadata : public QgsMapToolShapeMetadata

@@ -17,11 +17,11 @@
 #ifndef QGSMEDIAWIDGET_H
 #define QGSMEDIAWIDGET_H
 
-#include <QWidget>
-#include <QMediaPlayer>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QMediaPlayer>
+#include <QWidget>
 
 class QLabel;
 class QVBoxLayout;

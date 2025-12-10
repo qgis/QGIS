@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpolygonize.h"
+
 #include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE

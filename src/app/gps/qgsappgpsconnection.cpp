@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsappgpsconnection.h"
-#include "moc_qgsappgpsconnection.cpp"
+
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsgpsconnection.h"
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsdetector.h"
-#include "qgisapp.h"
-#include "qgsstatusbar.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgsstatusbar.h"
+
+#include "moc_qgsappgpsconnection.cpp"
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )

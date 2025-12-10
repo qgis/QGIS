@@ -15,21 +15,20 @@
 
 #include "qgsmapsettings.h"
 
-#include "qgsscalecalculator.h"
-#include "qgsmaptopixel.h"
-#include "qgslogger.h"
-
-#include "qgsmessagelog.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsxmlutils.h"
+#include "qgscoordinatetransform.h"
+#include "qgsellipsoidutils.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsgrouplayer.h"
-#include "qgscoordinatetransform.h"
-#include "qgsellipsoidutils.h"
-#include "qgsunittypes.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmaptopixel.h"
+#include "qgsmessagelog.h"
 #include "qgspainting.h"
+#include "qgsscalecalculator.h"
+#include "qgsunittypes.h"
+#include "qgsxmlutils.h"
 
 QgsMapSettings::QgsMapSettings()
   : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances

@@ -15,7 +15,6 @@
 
 #include "qgsnullpainterdevice.h"
 
-
 QgsNullPaintDevice::QgsNullPaintDevice()
 {
   mPaintEngine = std::make_unique<QgsNullPaintEngine>();

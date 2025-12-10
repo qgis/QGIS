@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 
+#include "qgsapplication.h"
+#include "qgslayerdefinition.h"
+#include "qgslayertree.h"
+#include "qgsproject.h"
 #include "qgstest.h"
-#include <QObject>
-#include <QTemporaryFile>
-#include <QTemporaryDir>
 
-#include <qgsapplication.h>
-#include <qgsproject.h>
-#include <qgslayertree.h>
-#include <qgslayerdefinition.h>
+#include <QObject>
+#include <QTemporaryDir>
+#include <QTemporaryFile>
 
 class TestQgsLayerDefinition : public QObject
 {

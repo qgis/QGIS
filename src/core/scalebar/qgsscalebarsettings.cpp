@@ -15,13 +15,14 @@
  ***************************************************************************/
 
 #include "qgsscalebarsettings.h"
-#include "qgsnumericformat.h"
+
 #include "qgsbasicnumericformat.h"
-#include "qgslinesymbollayer.h"
-#include "qgssymbol.h"
+#include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsnumericformat.h"
+#include "qgssymbol.h"
 
 QgsScaleBarSettings::QgsScaleBarSettings()
 {

@@ -17,16 +17,16 @@
 #ifndef QGSOPTIONSDIALOGBASE_H
 #define QGSOPTIONSDIALOGBASE_H
 
+#include <functional>
+
+#include "qgis_gui.h"
 #include "qgsguiutils.h"
 #include "qgssettings.h"
-#include "qgis_gui.h"
-
-#include <functional>
 
 #include <QDialog>
 #include <QPointer>
-#include <QStyledItemDelegate>
 #include <QSortFilterProxyModel>
+#include <QStyledItemDelegate>
 
 class QDialogButtonBox;
 class QListWidget;

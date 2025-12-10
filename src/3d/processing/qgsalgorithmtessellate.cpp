@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtessellate.h"
-#include "qgstessellator.h"
+
+#include <geos_c.h>
+
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include <geos_c.h>
+#include "qgstessellator.h"
 
 ///@cond PRIVATE
 

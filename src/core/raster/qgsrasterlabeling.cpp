@@ -15,21 +15,22 @@
  ***************************************************************************/
 
 #include "qgsrasterlabeling.h"
-#include "qgsrasterlayer.h"
-#include "labelposition.h"
+
 #include "feature.h"
-#include "qgstextrenderer.h"
-#include "qgstextlabelfeature.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsstyle.h"
+#include "labelposition.h"
+#include "qgsapplication.h"
+#include "qgsbasicnumericformat.h"
+#include "qgsmessagelog.h"
 #include "qgsnumericformat.h"
 #include "qgsnumericformatregistry.h"
-#include "qgsbasicnumericformat.h"
-#include "qgsapplication.h"
-#include "qgsscaleutils.h"
-#include "qgsmessagelog.h"
-#include "qgsrasterpipe.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterlayerrenderer.h"
+#include "qgsrasterpipe.h"
+#include "qgsscaleutils.h"
+#include "qgsstyle.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
 
 QgsRasterLayerLabelProvider::QgsRasterLayerLabelProvider( QgsRasterLayer *layer )
   : QgsAbstractLabelProvider( layer )

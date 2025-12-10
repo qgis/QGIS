@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbasenetworkrequest.h"
-#include "moc_qgsbasenetworkrequest.cpp"
+
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
@@ -25,11 +25,13 @@
 #include "qgsvariantutils.h"
 
 #include <QCache>
+#include <QCryptographicHash>
 #include <QEventLoop>
-#include <QNetworkCacheMetaData>
-#include <QCryptographicHash> // just for testing file:// fake_qgis_http_endpoint hack
 #include <QFuture>
+#include <QNetworkCacheMetaData>
 #include <QtConcurrent>
+
+#include "moc_qgsbasenetworkrequest.cpp"
 
 static QMutex gMemoryCacheMmutex;
 static QCache<QUrl, std::pair<QDateTime, QByteArray>> gCache( 10 * 1024 * 1024 );
@@ -109,6 +111,8 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   // Specific code for testing
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
+    mIsSimulatedMode = true;
+
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString;
 
@@ -423,6 +427,7 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -494,6 +499,8 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   QByteArray allowValue;
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -554,6 +561,8 @@ bool QgsBaseNetworkRequest::sendDELETE( const QUrl &url )
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -713,7 +722,8 @@ void QgsBaseNetworkRequest::replyFinished()
 
         mResponse = mReply->readAll();
 
-        extractResponseHeadersForUnitTests();
+        if ( mIsSimulatedMode )
+          extractResponseHeadersForUnitTests();
 
         if ( mResponse.isEmpty() && !mGotNonEmptyResponse && !mEmptyResponseIsValid )
         {
@@ -749,7 +759,7 @@ void QgsBaseNetworkRequest::replyFinished()
 
   if ( mReply )
   {
-    if ( !mFakeResponseHasHeaders )
+    if ( !mIsSimulatedMode )
       mResponseHeaders = mReply->rawHeaderPairs();
 
     mReply->deleteLater();

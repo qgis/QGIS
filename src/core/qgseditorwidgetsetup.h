@@ -17,6 +17,7 @@
 #define QGSEDITORWIDGETSETUP_H
 
 #include "qgis_core.h"
+
 #include <QVariantMap>
 
 /**

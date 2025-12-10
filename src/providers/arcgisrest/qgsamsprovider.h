@@ -19,13 +19,12 @@
 #ifndef QGSMAPSERVERPROVIDER_H
 #define QGSMAPSERVERPROVIDER_H
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgshttpheaders.h"
+#include "qgsprovidermetadata.h"
 #include "qgsrasterdataprovider.h"
 
-#include "qgshttpheaders.h"
 #include <QNetworkRequest>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsprovidermetadata.h"
 
 class QgsArcGisAsyncQuery;
 class QgsAmsProvider;

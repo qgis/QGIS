@@ -19,10 +19,9 @@
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 
+#include <QDomDocument>
 #include <QString>
 #include <QVariantMap>
-#include <QDomDocument>
-
 
 class QgsReadWriteContext;
 

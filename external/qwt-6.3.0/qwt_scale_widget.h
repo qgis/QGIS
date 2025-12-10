@@ -50,7 +50,7 @@ class QWT_EXPORT QwtScaleWidget : public QWidget
 
     explicit QwtScaleWidget( QWidget* parent = NULL );
     explicit QwtScaleWidget( QwtScaleDraw::Alignment, QWidget* parent = NULL );
-    virtual ~QwtScaleWidget();
+    ~QwtScaleWidget() override;
 
   Q_SIGNALS:
     //! Signal emitted, whenever the scale division changes

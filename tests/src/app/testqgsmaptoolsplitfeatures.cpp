@@ -13,15 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssnappingutils.h"
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaptoolsplitfeatures.h"
-
+#include "qgssnappingutils.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolSplitFeatures : public QObject

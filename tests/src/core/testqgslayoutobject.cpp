@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutobject.h"
-#include "qgstest.h"
+#include "qgsprintlayout.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgsprintlayout.h"
+#include "qgstest.h"
 
 class TestQgsLayoutObject : public QgsTest
 {

@@ -12,14 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
+#include "qgsziputils.h"
+
+#include <QDirIterator>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QDirIterator>
-
-#include "qgsziputils.h"
-#include "qgsapplication.h"
 
 class TestQgsZipUtils : public QObject
 {

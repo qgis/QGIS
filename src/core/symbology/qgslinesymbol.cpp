@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgslinesymbol.h"
-#include "qgslinesymbollayer.h"
+
 #include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgssymbollayerutils.h"
+#include "qgslinesymbollayer.h"
 #include "qgspainteffect.h"
+#include "qgssymbollayerutils.h"
 
 std::unique_ptr< QgsLineSymbol > QgsLineSymbol::createSimple( const QVariantMap &properties )
 {

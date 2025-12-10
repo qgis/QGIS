@@ -16,12 +16,12 @@
 #ifndef QGSABSTRACTDATABASEPROVIDERCONNECTION_H
 #define QGSABSTRACTDATABASEPROVIDERCONNECTION_H
 
+#include "qgis_core.h"
+#include "qgsabstractlayermetadataprovider.h"
 #include "qgsabstractproviderconnection.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
-#include "qgsabstractlayermetadataprovider.h"
 
 #include <QObject>
 
@@ -1022,6 +1022,30 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.26
      */
     virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Update an existing field \a domain in the database, the domain is identified by name.
+     *
+     * \param domain field domain to update
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 4.0
+     */
+    virtual void updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes the field domain with the specified \a name from the provider.
+     *
+     * \param name name of the field domain to be deleted
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \see fieldDomainNames()
+     * \since QGIS 4.0
+     */
+    virtual void deleteFieldDomain( const QString &name, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Sets the \a alias for the existing field with the specified name.

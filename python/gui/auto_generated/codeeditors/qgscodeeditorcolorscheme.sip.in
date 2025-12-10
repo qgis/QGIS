@@ -8,6 +8,7 @@
 
 
 
+
 class QgsCodeEditorColorScheme
 {
 %Docstring(signature="appended")

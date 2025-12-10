@@ -14,31 +14,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditor.h"
-#include "moc_qgscodeeditor.cpp"
-#include "qgssettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgui.h"
+
+#include "qgsapplication.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorhistorydialog.h"
-#include "qgsstringutils.h"
 #include "qgsfontutils.h"
+#include "qgsgui.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsshortcutsmanager.h"
+#include "qgsstringutils.h"
+#include "qgssymbollayerutils.h"
 
-#include <QLabel>
-#include <QWidget>
-#include <QFont>
-#include <QFontDatabase>
+#include <QClipboard>
 #include <QDebug>
 #include <QFocusEvent>
-#include <Qsci/qscistyle.h>
+#include <QFont>
+#include <QFontDatabase>
+#include <QLabel>
 #include <QMenu>
-#include <QClipboard>
-#include <QScrollBar>
 #include <QMessageBox>
-#include "Qsci/qscilexer.h"
+#include <QScrollBar>
+#include <QWidget>
+#include <Qsci/qscilexer.h>
+#include <Qsci/qscistyle.h>
+
+#include "moc_qgscodeeditor.cpp"
 
 ///@cond PRIVATE
 const QgsSettingsEntryBool *QgsCodeEditor::settingContextHelpHover = new QgsSettingsEntryBool( QStringLiteral( "context-help-hover" ), sTreeCodeEditor, false, QStringLiteral( "Whether the context help should works on hovered words" ) );

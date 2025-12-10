@@ -17,14 +17,16 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetcherregistry.h"
-#include "moc_qgsnetworkcontentfetcherregistry.cpp"
 
 #include "qgsapplication.h"
-#include <QUrl>
-#include <QFileInfo>
+
 #include <QDir>
-#include <QMimeType>
+#include <QFileInfo>
 #include <QMimeDatabase>
+#include <QMimeType>
+#include <QUrl>
+
+#include "moc_qgsnetworkcontentfetcherregistry.cpp"
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {

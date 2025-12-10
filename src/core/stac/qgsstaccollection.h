@@ -18,9 +18,9 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsstacasset.h"
 #include "qgsstaccatalog.h"
 #include "qgsstacextent.h"
-#include "qgsstacasset.h"
 #include "qgsstacprovider.h"
 
 /**

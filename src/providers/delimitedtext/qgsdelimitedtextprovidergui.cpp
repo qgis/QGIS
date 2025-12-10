@@ -16,11 +16,10 @@
 #include "qgsdelimitedtextprovidergui.h"
 
 #include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
-
 #include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextsourceselect.h"
+#include "qgsproviderguimetadata.h"
+#include "qgssourceselectprovider.h"
 
 //! Provider for delimited text source select
 class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider

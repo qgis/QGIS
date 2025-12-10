@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgstiledsceneconnectiondialog.h"
-#include "moc_qgstiledsceneconnectiondialog.cpp"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsgui.h"
 #include "qgssettings.h"
+#include "qgstiledsceneconnection.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgstiledsceneconnectiondialog.cpp"
 
 ///@cond PRIVATE
 

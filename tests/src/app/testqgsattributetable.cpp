@@ -12,25 +12,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include <memory>
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayertemporalproperties.h"
 #include "qgsattributetabledialog.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsfeaturelistmodel.h"
 #include "qgsclipboard.h"
-#include "qgsvectorlayercache.h"
-#include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsgeometry.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 #include <QSignalSpy>
 
@@ -220,7 +222,7 @@ void TestQgsAttributeTable::testNoGeom()
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible ) );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 
@@ -300,7 +302,7 @@ void TestQgsAttributeTable::testSelected()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with selection when dialog created
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected ) );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
@@ -339,7 +341,7 @@ void TestQgsAttributeTable::testEdited()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with edited features when dialog created
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );

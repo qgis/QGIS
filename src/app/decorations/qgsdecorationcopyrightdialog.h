@@ -14,6 +14,7 @@
 #define QGSCOPYRIGHTLABELPLUGINGUI_H
 
 #include "ui_qgsdecorationcopyrightdialog.h"
+
 #include "qgis_app.h"
 
 class QColor;

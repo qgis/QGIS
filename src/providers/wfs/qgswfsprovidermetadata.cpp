@@ -17,29 +17,32 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswfsprovidermetadata.h"
+
 #include "qgis.h"
 #include "qgsfeedback.h"
+#include "qgsgml.h"
 #include "qgslogger.h"
-#include "qgsogcutils.h"
 #include "qgsoapifprovider.h"
-#include "qgswfsdataitems.h"
+#include "qgsogcutils.h"
 #include "qgsprovidersublayerdetails.h"
-#include "qgswfsconstants.h"
-#include "qgswfsprovider.h"
-#include "qgswfsprovidermetadata.h"
-#include "moc_qgswfsprovidermetadata.cpp"
-#include "qgswfscapabilities.h"
-#include "qgswfsgetfeature.h"
-#include "qgswfsshareddata.h"
 #include "qgssettings.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsconstants.h"
+#include "qgswfsdataitems.h"
+#include "qgswfsgetfeature.h"
+#include "qgswfsprovider.h"
+#include "qgswfsshareddata.h"
 
 #include <QDomDocument>
-#include <QMessageBox>
 #include <QDomNodeList>
 #include <QFile>
 #include <QIcon>
-#include <QUrl>
+#include <QMessageBox>
 #include <QTimer>
+#include <QUrl>
+
+#include "moc_qgswfsprovidermetadata.cpp"
 
 QgsDataProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -214,7 +217,7 @@ QString QgsWfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   QgsDataSourceUri dsUri;
   for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
   {
-    if ( it.key() == QStringLiteral( "authcfg" ) )
+    if ( it.key() == QLatin1String( "authcfg" ) )
     {
       dsUri.setAuthConfigId( it.value().toString() );
     }

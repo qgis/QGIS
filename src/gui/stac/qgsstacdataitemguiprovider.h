@@ -19,9 +19,8 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include "qgsdataitemguiprovider.h"
 #include "qgis_gui.h"
-
+#include "qgsdataitemguiprovider.h"
 
 class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {

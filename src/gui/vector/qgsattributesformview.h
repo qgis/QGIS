@@ -98,6 +98,7 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
     QgsAttributesFormModel *sourceModel() const;
 
   public slots:
+
     /**
      * Selects the first item that matches a \a itemType and a \a itemId.
      *

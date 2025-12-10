@@ -8,6 +8,7 @@
 
 
 
+
 class QgsArrowSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")

@@ -14,9 +14,10 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
-#include "qgsgrassmoduleinput.h"
 #include "ui_qgsgrassmapcalcbase.h"
+
 #include "qgsgrassmodule.h"
+#include "qgsgrassmoduleinput.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -155,7 +156,7 @@ class QgsGrassMapcalc : public QMainWindow, private Ui::QgsGrassMapcalcBase, pub
     QGraphicsScene *mCanvasScene = nullptr;
 
     // Tool
-    int mTool;
+    int mTool = -1;
     int mToolStep;
 
     // Pointer to current object
@@ -400,25 +401,25 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
     QRect mRect;
 
     // Rounding of box
-    int mRound;
+    int mRound = 0.;
 
     // Center of object
     QPoint mCenter;
 
     // Half size of socket symbol
-    int mSocketHalf;
+    int mSocketHalf = 0.;
 
     // Margin between mRect and QCanvasRectangle.rect()
-    int mMargin;
+    int mMargin = 0.;
 
     // Space between text boxes
-    int mSpace;
+    int mSpace = 0.;
 
     // Height of text box
-    int mTextHeight;
+    int mTextHeight = 0;
 
     // Maximum width of input labels
-    int mInputTextWidth;
+    int mInputTextWidth = 0;
 
     // Label box
     QRect mLabelRect;
@@ -430,7 +431,7 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
     QPoint mOutputPoint;
 
     // Selection box size
-    int mSelectionBoxSize;
+    int mSelectionBoxSize = 5;
 
     // Input connectors
     std::vector<QgsGrassMapcalcConnector *> mInputConnectors;
@@ -438,7 +439,7 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
 
     // Output connector
     QgsGrassMapcalcConnector *mOutputConnector = nullptr;
-    int mOutputConnectorEnd;
+    int mOutputConnectorEnd = 0;
 };
 
 /*

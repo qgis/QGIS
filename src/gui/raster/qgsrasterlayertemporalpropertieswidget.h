@@ -19,8 +19,10 @@
 #define QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H
 
 #include "ui_qgsrasterlayertemporalpropertieswidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgsrange.h"
+
 #include <QStyledItemDelegate>
 
 class QgsRasterLayer;

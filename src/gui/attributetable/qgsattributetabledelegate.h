@@ -16,9 +16,10 @@
 #ifndef QGSATTRIBUTETABLEDELEGATE_H
 #define QGSATTRIBUTETABLEDELEGATE_H
 
-#include <QItemDelegate>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QItemDelegate>
 
 class QgsFeatureSelectionModel;
 class QPainter;

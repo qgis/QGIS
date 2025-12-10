@@ -17,14 +17,16 @@
 
 
 #include "qgspointxy.h"
-#include "moc_qgspointxy.cpp"
-#include "qgspoint.h"
 
 #include <cmath>
-#include <QTextStream>
-#include <QObject> // for tr()
 
 #include "qgsexception.h"
+#include "qgspoint.h"
+
+#include <QObject>
+#include <QTextStream>
+
+#include "moc_qgspointxy.cpp"
 
 QgsPointXY::QgsPointXY( const QgsPointXY &p )
   : mX( p.x() )

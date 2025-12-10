@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLegendPatchShapeButton : QToolButton
 {
 %Docstring(signature="appended")

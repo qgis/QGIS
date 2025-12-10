@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgspointcloudblock.h"
-#include "qgspointcloudattribute.h"
 
+#include "qgis.h"
+#include "qgspointcloudattribute.h"
 
 QgsPointCloudBlock::QgsPointCloudBlock(
   int count,

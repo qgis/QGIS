@@ -14,23 +14,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTreeWidgetItemIterator>
-
 #include "qgsnewdatabasetablenamewidget.h"
-#include "moc_qgsnewdatabasetablenamewidget.cpp"
-#include "qgsapplication.h"
-#include "qgsdataitemproviderregistry.h"
-#include "qgsdataitemprovider.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgssettings.h"
-#include "qgsguiutils.h"
-#include "qgsdatacollectionitem.h"
-#include "qgsabstractdatabaseproviderconnection.h"
 
-#include <QRegularExpression>
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
+#include "qgsguiutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QRegularExpression>
+#include <QTreeWidgetItemIterator>
+
+#include "moc_qgsnewdatabasetablenamewidget.cpp"
 
 // List of data item provider keys that are filesystem based
 QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { QStringLiteral( "GPKG" ), QStringLiteral( "spatialite" ) };

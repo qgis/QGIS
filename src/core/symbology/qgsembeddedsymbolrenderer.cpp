@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsembeddedsymbolrenderer.h"
+
+#include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgssymbollayerutils.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
-#include "qgspainteffect.h"
+#include "qgssymbollayerutils.h"
 
 QgsEmbeddedSymbolRenderer::QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol )
   : QgsFeatureRenderer( QStringLiteral( "embeddedSymbol" ) )

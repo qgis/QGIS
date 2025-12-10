@@ -13,24 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QClipboard>
-#include <QMenu>
+#include "qgswfsdataitems.h"
 
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifcollection.h"
+#include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifprovider.h"
-#include "qgswfsconstants.h"
-#include "qgswfsconnection.h"
-#include "qgswfsgetcapabilities.h"
-#include "qgswfsdataitems.h"
-#include "moc_qgswfsdataitems.cpp"
-#include "qgswfsdatasourceuri.h"
-#include "qgswfsprovider.h"
-#include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgswfsconnection.h"
+#include "qgswfsconstants.h"
+#include "qgswfsdatasourceuri.h"
+#include "qgswfsgetcapabilities.h"
+#include "qgswfsprovider.h"
+
+#include <QClipboard>
+#include <QMenu>
+
+#include "moc_qgswfsdataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgswfssourceselect.h"

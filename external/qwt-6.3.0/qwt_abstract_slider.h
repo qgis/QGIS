@@ -48,7 +48,7 @@ class QWT_EXPORT QwtAbstractSlider : public QwtAbstractScale
 
   public:
     explicit QwtAbstractSlider( QWidget* parent = NULL );
-    virtual ~QwtAbstractSlider();
+    ~QwtAbstractSlider() override;
 
     void setValid( bool );
     bool isValid() const;

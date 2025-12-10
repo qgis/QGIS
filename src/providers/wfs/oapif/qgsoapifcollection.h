@@ -16,14 +16,15 @@
 #ifndef QGSOAPIFCOLLECTION_H
 #define QGSOAPIFCOLLECTION_H
 
+#include <nlohmann/json.hpp>
+
+#include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+#include "qgslayermetadata.h"
+#include "qgsrectangle.h"
+
 #include <QObject>
 
-#include "qgsdatasourceuri.h"
-#include "qgsbasenetworkrequest.h"
-#include "qgsrectangle.h"
-#include "qgslayermetadata.h"
-
-#include <nlohmann/json.hpp>
 using namespace nlohmann;
 #include <vector>
 

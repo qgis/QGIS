@@ -15,12 +15,12 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERER_H
 #define QGSGRADUATEDSYMBOLRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+#include "qgsclassificationmethod.h"
 #include "qgsrenderer.h"
 #include "qgsrendererrange.h"
-#include "qgsclassificationmethod.h"
 
 class QgsVectorLayer;
 class QgsColorRamp;

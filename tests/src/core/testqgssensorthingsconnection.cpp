@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgssensorthingsconnection.h"
+#include "qgssettings.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QtConcurrent>
-#include "qgssensorthingsconnection.h"
-#include "qgssettings.h"
 
 class TestQgsSensorThingsConnection : public QObject
 {

@@ -15,13 +15,14 @@
  ***************************************************************************/
 
 #include "qgsconfig.h"
-
 #include "qgsplotregistry.h"
-#include "moc_qgsplotregistry.cpp"
+
 #include "qgsbarchartplot.h"
 #include "qgslinechartplot.h"
 #include "qgspiechartplot.h"
 #include "qgsplot.h"
+
+#include "moc_qgsplotregistry.cpp"
 
 QgsPlotRegistry::QgsPlotRegistry( QObject *parent )
   : QObject( parent )

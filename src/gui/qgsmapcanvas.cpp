@@ -15,10 +15,65 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
+#include "qgsmapcanvas.h"
 
-#include <QtGlobal>
+#include <cmath>
+#include <memory>
+
+#include "qgis.h"
+#include "qgs2dmapcontroller.h"
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgscoordinatereferencesystemutils.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgscustomdrophandler.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgrouplayer.h"
+#include "qgsimagecache.h"
+#include "qgslabelingresults.h"
+#include "qgslogger.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsmapcanvasmap.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaprenderercache.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaprendererjob.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettingsutils.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmaptoolpan.h"
+#include "qgsmaptopixel.h"
+#include "qgsmessagelog.h"
+#include "qgsmimedatautils.h"
+#include "qgsoverlaywidgetlayout.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsrendereditemresults.h"
+#include "qgsrubberband.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsscreenhelper.h"
+#include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
+#include "qgstemporalcontroller.h"
+#include "qgstemporalnavigationobject.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+
 #include <QApplication>
+#include <QClipboard>
 #include <QCursor>
 #include <QDir>
 #include <QFile>
@@ -26,75 +81,23 @@ email                : sherman at mrcc.com
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QKeyEvent>
-#include <QPainter>
+#include <QMenu>
 #include <QPaintEvent>
+#include <QPainter>
 #include <QPixmap>
+#include <QPropertyAnimation>
 #include <QRect>
-#include <QTextStream>
 #include <QResizeEvent>
 #include <QScreen>
 #include <QString>
 #include <QStringList>
+#include <QTextStream>
+#include <QVariantAnimation>
 #include <QWheelEvent>
 #include <QWindow>
-#include <QMenu>
-#include <QClipboard>
-#include <QVariantAnimation>
-#include <QPropertyAnimation>
+#include <QtGlobal>
 
-#include "qgis.h"
-#include "qgssettings.h"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsapplication.h"
-#include "qgsexception.h"
-#include "qgsfeatureiterator.h"
-#include "qgsgrouplayer.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "moc_qgsmapcanvas.cpp"
-#include "qgsmapcanvasmap.h"
-#include "qgsmapcanvassnappingutils.h"
-#include "qgsmaplayer.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmaptoolpan.h"
-#include "qgsmaptopixel.h"
-#include "qgsmaprenderercache.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "qgsmaprendererjob.h"
-#include "qgsmaprendererparalleljob.h"
-#include "qgsmaprenderersequentialjob.h"
-#include "qgsmapsettingsutils.h"
-#include "qgsmessagelog.h"
-#include "qgsproject.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsmapthemecollection.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgscoordinatereferencesystemutils.h"
-#include "qgssvgcache.h"
-#include "qgsimagecache.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmimedatautils.h"
-#include "qgscustomdrophandler.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsprojectviewsettings.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgstemporalcontroller.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsannotationlayer.h"
-#include "qgsmaplayerelevationproperties.h"
-#include "qgscoordinatereferencesystemregistry.h"
-#include "qgslabelingresults.h"
-#include "qgsmaplayerutils.h"
-#include "qgssettingsregistrygui.h"
-#include "qgsrendereditemresults.h"
-#include "qgstemporalnavigationobject.h"
-#include "qgssymbollayerutils.h"
-#include "qgsvectortilelayer.h"
-#include "qgsscreenhelper.h"
-#include "qgs2dmapcontroller.h"
-#include "qgsoverlaywidgetlayout.h"
 
 /**
  * \ingroup gui
@@ -2354,7 +2357,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         //mCanvasProperties->dragging = true;
         if ( !e->isAutoRepeat() )
         {
-          mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+          mTemporaryCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::ClosedHandCursor );
           mCanvasProperties->panSelectorDown = true;
           panActionStart( mCanvasProperties->mouseLastXY );
         }
@@ -2442,9 +2445,9 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent *e )
 void QgsMapCanvas::beginZoomRect( QPoint pos )
 {
   mZoomRect.setRect( 0, 0, 0, 0 );
-  mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( mZoomCursor ) );
+  mTemporaryCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( mZoomCursor );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, Qgis::GeometryType::Polygon ) );
+  mZoomRubberBand = std::make_unique<QgsRubberBand>( this, Qgis::GeometryType::Polygon );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );
@@ -2496,7 +2499,7 @@ void QgsMapCanvas::startPan()
   if ( !mCanvasProperties->panSelectorDown )
   {
     mCanvasProperties->panSelectorDown = true;
-    mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+    mTemporaryCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::ClosedHandCursor );
     panActionStart( mCanvasProperties->mouseLastXY );
   }
 }

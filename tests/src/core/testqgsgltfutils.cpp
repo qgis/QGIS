@@ -13,12 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsgltfutils.h"
-#include "tiny_gltf.h"
-
 #include "qgsmatrix4x4.h"
+#include "qgstest.h"
+#include "tiny_gltf.h"
 
 class TestQgsGltfUtils : public QObject
 {

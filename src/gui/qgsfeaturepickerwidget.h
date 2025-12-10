@@ -15,13 +15,13 @@
 #ifndef QGSFEATURECHOOSER_H
 #define QGSFEATURECHOOSER_H
 
-#include <QWidget>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QCompleter>
-
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeature.h"
+
+#include <QComboBox>
+#include <QCompleter>
+#include <QLineEdit>
+#include <QWidget>
 
 class QToolButton;
 

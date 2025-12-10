@@ -16,10 +16,10 @@
 #ifndef QGSCOLORTOOLTIP_P_H
 #define QGSCOLORTOOLTIP_P_H
 
-#include <QPainter>
-#include <QBuffer>
-
 #include "qgssymbollayerutils.h"
+
+#include <QBuffer>
+#include <QPainter>
 
 /**
  * \ingroup gui

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmminimumenclosingcircle.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

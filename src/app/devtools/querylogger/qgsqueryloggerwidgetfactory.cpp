@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgsqueryloggerwidgetfactory.h"
-#include "qgsqueryloggerpanelwidget.h"
+
 #include "qgsapplication.h"
+#include "qgsqueryloggerpanelwidget.h"
 
 QgsDatabaseQueryLoggerWidgetFactory::QgsDatabaseQueryLoggerWidgetFactory( QgsAppQueryLogger *logger )
   : QgsDevToolWidgetFactory( QObject::tr( "Query Logger" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/database.svg" ) ) )

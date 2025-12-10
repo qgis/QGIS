@@ -10,7 +10,6 @@
 
 
 
-
 class QgsSettingsRegistryGui : QgsSettingsRegistry
 {
 %Docstring(signature="appended")
@@ -25,7 +24,7 @@ Used for settings introspection and collects all
 %End
   public:
     QgsSettingsRegistryGui();
-    virtual ~QgsSettingsRegistryGui();
+    ~QgsSettingsRegistryGui();
 
 };
 

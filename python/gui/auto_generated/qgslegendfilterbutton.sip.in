@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLegendFilterButton : QToolButton
 {
 %Docstring(signature="appended")

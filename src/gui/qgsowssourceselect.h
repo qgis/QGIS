@@ -20,16 +20,17 @@
 #ifndef QGSOWSSOURCESELECT_H
 #define QGSOWSSOURCESELECT_H
 #include "ui_qgsowssourceselectbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsabstractdatasourcewidget.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
 
-#include <QStringList>
-#include <QPushButton>
 #include <QNetworkRequest>
-#include "qgis_gui.h"
+#include <QPushButton>
+#include <QStringList>
 
 class QgsDataProvider;
 class QButtonGroup;

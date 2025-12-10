@@ -14,26 +14,26 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-#include <QPushButton>
-#include <QLineEdit>
-#include <QSignalSpy>
-
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "qgsapplication.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
 #include "qgsattributeform.h"
-#include <qgsapplication.h>
-#include "qgseditorwidgetwrapper.h"
-#include <qgsvectorlayer.h>
-#include "qgsvectordataprovider.h"
-#include <qgsfeature.h>
-#include <qgsvectorlayerjoininfo.h>
-#include "qgsgui.h"
 #include "qgsattributeformeditorwidget.h"
 #include "qgsattributeforminterface.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsfeature.h"
+#include "qgsgui.h"
 #include "qgsmultiedittoolbutton.h"
-#include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorcontainer.h"
 #include "qgsspinbox.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSignalSpy>
 
 class TestQgsAttributeForm : public QObject
 {
@@ -955,7 +955,7 @@ void TestQgsAttributeForm::testAttributeFormInterface()
       MyInterface( QgsAttributeForm *form )
         : QgsAttributeFormInterface( form ) {}
 
-      virtual void featureChanged()
+      void featureChanged() override
       {
         QgsAttributeForm *f = form();
         QLineEdit *le = f->findChild<QLineEdit *>( "col0" );

@@ -13,11 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenedataitems.h"
-#include "moc_qgstiledscenedataitems.cpp"
-#include "qgsprovidermetadata.h"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsdataprovider.h"
+#include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgstiledsceneconnection.h"
+
+#include "moc_qgstiledscenedataitems.cpp"
 
 ///@cond PRIVATE
 

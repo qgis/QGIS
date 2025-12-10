@@ -15,19 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemregistry.h"
-#include "qgis.h"
-#include "qgsproject.h"
-#include "qgssymbol.h"
-#include "qgsfillsymbollayer.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgslayoutpagecollection.h"
-#include <QObject>
+#include "qgsproject.h"
+#include "qgssymbol.h"
 #include "qgstest.h"
-#include "qgsfillsymbol.h"
-#include "qgslayoutrendercontext.h"
+
+#include <QObject>
 
 class TestQgsLayoutPage : public QgsTest
 {

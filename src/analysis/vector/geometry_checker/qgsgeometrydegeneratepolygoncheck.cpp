@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrydegeneratepolygoncheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometrydegeneratepolygoncheck.h"
-#include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
-
 
 QgsGeometryCheck::Result QgsGeometryDegeneratePolygonCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {

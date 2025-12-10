@@ -15,15 +15,16 @@
 
 #include "qgsrulebased3drenderer.h"
 
-#include "qgsvectorlayer.h"
-#include "qgsxmlutils.h"
+#include <memory>
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
+#include "qgsapplication.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsrulebasedchunkloader_p.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgsxmlutils.h"
 
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "rulebased" ) )
@@ -93,7 +94,7 @@ void QgsRuleBased3DRenderer::Rule::initFilter()
   }
   else if ( !mFilterExp.isEmpty() )
   {
-    mFilter.reset( new QgsExpression( mFilterExp ) );
+    mFilter = std::make_unique<QgsExpression>( mFilterExp );
   }
   else
   {

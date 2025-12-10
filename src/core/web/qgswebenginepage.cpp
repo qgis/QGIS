@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswebenginepage.h"
-#include "moc_qgswebenginepage.cpp"
 #include "qgsconfig.h"
-#include <QWebEnginePage>
+#include "qgswebenginepage.h"
+
 #include <QEventLoop>
 #include <QSizeF>
+#include <QWebEnginePage>
+
+#include "moc_qgswebenginepage.cpp"
 
 #ifdef HAVE_PDF4QT
 #include "qgspdfrenderer.h"

@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsgoochmaterialwidget.h"
-#include "moc_qgsgoochmaterialwidget.cpp"
 
-#include "qgsgoochmaterialsettings.h"
 #include "qgis.h"
+#include "qgsgoochmaterialsettings.h"
+
+#include "moc_qgsgoochmaterialwidget.cpp"
 
 QgsGoochMaterialWidget::QgsGoochMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )

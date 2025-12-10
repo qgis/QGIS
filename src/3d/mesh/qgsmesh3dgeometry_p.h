@@ -19,8 +19,8 @@
 #define QGSMESHGEOMETRY_P_H
 
 #include <QFuture>
-
 #include <Qt3DExtras/qt3dextras_global.h>
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QGeometry>
 #else
@@ -116,7 +116,7 @@ class QgsMesh3DGeometry : public Qt3DCore::QGeometry
     //! Constructor
     explicit QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh, const QgsVector3D &origin, const QgsRectangle &extent, double verticalScale, QNode *parent );
 
-    ~QgsMesh3DGeometry() = default;
+    ~QgsMesh3DGeometry() override = default;
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     void prepareVerticesPositionAttribute( Qt3DRender::QBuffer *buffer, int stride, int offset );

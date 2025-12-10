@@ -13,11 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationprofilemanager.h"
-#include "moc_qgselevationprofilemanager.cpp"
+
 #include "qgselevationprofile.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgsruntimeprofiler.h"
+
+#include "moc_qgselevationprofilemanager.cpp"
 
 QgsElevationProfileManager::QgsElevationProfileManager( QgsProject *project )
   : QgsAbstractProjectStoredObjectManager( project )

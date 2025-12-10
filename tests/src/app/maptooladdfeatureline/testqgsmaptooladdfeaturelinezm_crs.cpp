@@ -13,22 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
-#include "qgssnappingconfig.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
-#include "qgsmapmouseevent.h"
-#include <QTest>
+
 #include <QDebug>
+#include <QTest>
 
 // Comparison operator for QgsGeometry.
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )

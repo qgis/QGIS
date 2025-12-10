@@ -17,14 +17,14 @@
 #ifndef QGSAUTHCONFIGSELECT_H
 #define QGSAUTHCONFIGSELECT_H
 
-#include <QWidget>
-#include <QLabel>
-#include "qgis_sip.h"
-
 #include "ui_qgsauthconfigselect.h"
-#include "qgsauthconfig.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthconfig.h"
+
+#include <QLabel>
+#include <QWidget>
 
 /**
  * \ingroup gui

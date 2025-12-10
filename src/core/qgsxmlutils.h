@@ -20,14 +20,12 @@ class QDomDocument;
 class QgsRectangle;
 class QgsBox3D;
 
-#include <QDomElement>
-#include <QMetaEnum>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-
+#include <QDomElement>
+#include <QMetaEnum>
 
 /**
  * \ingroup core

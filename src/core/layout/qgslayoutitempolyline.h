@@ -18,10 +18,11 @@
 #define QGSLAYOUTITEMPOLYLINE_H
 
 #include "qgis_core.h"
-#include "qgslayoutitemnodeitem.h"
-#include <QGraphicsPathItem>
-#include "qgslogger.h"
 #include "qgslayout.h"
+#include "qgslayoutitemnodeitem.h"
+#include "qgslogger.h"
+
+#include <QGraphicsPathItem>
 
 class QgsLineSymbol;
 

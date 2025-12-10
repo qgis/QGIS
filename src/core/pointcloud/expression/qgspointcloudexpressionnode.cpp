@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgspointcloudexpressionnode.h"
-#include "qgspointcloudexpressionnodeimpl.h"
-#include "qgspointcloudexpression.h"
+
 #include "qgsexpressionnode.h"
 #include "qgsexpressionnodeimpl.h"
-
+#include "qgspointcloudexpression.h"
+#include "qgspointcloudexpressionnodeimpl.h"
 
 double QgsPointCloudExpressionNode::eval( QgsPointCloudExpression *parent, int pointIndex )
 {

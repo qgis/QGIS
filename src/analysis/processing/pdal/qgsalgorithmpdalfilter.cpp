@@ -17,9 +17,9 @@
 
 #include "qgsalgorithmpdalfilter.h"
 
-#include "qgsrunprocess.h"
-#include "qgspointcloudlayer.h"
 #include "qgspointcloudexpression.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 

@@ -20,10 +20,11 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_sip.h"
-#include "qgis_analysis.h"
-#include "qgsprocessingalgorithm.h"
 #include <unordered_map>
+
+#include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgsprocessingalgorithm.h"
 
 class QgsSpatialIndexKDBush;
 

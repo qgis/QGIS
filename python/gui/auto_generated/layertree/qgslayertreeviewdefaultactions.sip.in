@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLayerTreeViewDefaultActions : QObject
 {
 %Docstring(signature="appended")

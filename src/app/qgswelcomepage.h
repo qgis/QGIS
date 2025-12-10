@@ -16,12 +16,12 @@
 #ifndef QGSWELCOMEPAGE_H
 #define QGSWELCOMEPAGE_H
 
-#include <QWidget>
-#include <QTextBrowser>
-#include <QStandardItemModel>
-#include <QFileSystemWatcher>
-
 #include "qgsrecentprojectsitemsmodel.h"
+
+#include <QFileSystemWatcher>
+#include <QStandardItemModel>
+#include <QTextBrowser>
+#include <QWidget>
 
 class QgsVersionInfo;
 class QListView;

@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")

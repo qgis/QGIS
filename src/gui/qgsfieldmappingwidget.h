@@ -16,14 +16,14 @@
 #ifndef QGSFIELDMAPPINGWIDGET_H
 #define QGSFIELDMAPPINGWIDGET_H
 
-#include <QWidget>
-#include <QAbstractTableModel>
-#include <QStyledItemDelegate>
-#include <QPointer>
-
 #include "qgis_gui.h"
 #include "qgsfieldmappingmodel.h"
 #include "qgspanelwidget.h"
+
+#include <QAbstractTableModel>
+#include <QPointer>
+#include <QStyledItemDelegate>
+#include <QWidget>
 
 class QTableView;
 class QItemSelectionModel;

@@ -17,8 +17,8 @@
 #define QGSTRACKEDVECTORLAYERTOOLS_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayertools.h"
 #include "qgsexpressioncontext.h"
+#include "qgsvectorlayertools.h"
 
 /**
  * \ingroup core

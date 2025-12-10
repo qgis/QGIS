@@ -17,13 +17,14 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
-#include <QExplicitlySharedDataPointer>
-
 #include "qgsconfig.h"
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+
+#include <QExplicitlySharedDataPointer>
 
 class QgsCoordinateTransformPrivate;
 class QgsPointXY;

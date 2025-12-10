@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsimageoperation.h"
+
 #include "qgis.h"
 #include "qgscolorramp.h"
-#include "qgslogger.h"
 #include "qgsfeedback.h"
-#include <QtConcurrentMap>
+#include "qgslogger.h"
+
 #include <QColor>
 #include <QPainter>
+#include <QtConcurrentMap>
 
 //determined via trial-and-error. Could possibly be optimised, or varied
 //depending on the image size.

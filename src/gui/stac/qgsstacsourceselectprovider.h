@@ -17,6 +17,7 @@
 #define QGSSTACSOURCESELECTPROVIDER_H
 
 #include "qgssourceselectprovider.h"
+
 // #include "qgis_gui.h"
 
 #define SIP_NO_FILE

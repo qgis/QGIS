@@ -8,6 +8,7 @@
 
 
 
+
 class QgsHollowScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring(signature="appended")

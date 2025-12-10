@@ -7,7 +7,8 @@ set(WFS_SRCS
   qgswfsprovidermetadata.cpp
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
-  qgswfsfeatureiterator.cpp
+  qgswfsfeaturehitsasyncrequest.cpp
+  qgswfsfeaturedownloaderimpl.cpp
   qgswfsgetcapabilities.cpp
   qgswfsgetfeature.cpp
   qgswfsrequest.cpp
@@ -19,9 +20,14 @@ set(WFS_SRCS
   qgswfstransactionrequest.cpp
   qgswfsutils.cpp
   qgsbackgroundcachedfeatureiterator.cpp
+  qgsbackgroundcachedfeaturesource.cpp
   qgsbackgroundcachedshareddata.cpp
   qgscachedirectorymanager.cpp
   qgsbasenetworkrequest.cpp
+  qgsfeaturedownloader.cpp
+  qgsfeaturedownloaderimpl.cpp
+  qgsfeaturedownloaderprogresstask.cpp
+  qgsthreadedfeaturedownloader.cpp
 
   oapif/qgsoapiflandingpagerequest.cpp
   oapif/qgsoapifapirequest.cpp
@@ -30,6 +36,7 @@ set(WFS_SRCS
   oapif/qgsoapifcreatefeaturerequest.cpp
   oapif/qgsoapifcql2textexpressioncompiler.cpp
   oapif/qgsoapifdeletefeaturerequest.cpp
+  oapif/qgsoapiffeaturedownloaderimpl.cpp
   oapif/qgsoapifpatchfeaturerequest.cpp
   oapif/qgsoapifputfeaturerequest.cpp
   oapif/qgsoapifitemsrequest.cpp
@@ -37,6 +44,7 @@ set(WFS_SRCS
   oapif/qgsoapifprovider.cpp
   oapif/qgsoapifqueryablesrequest.cpp
   oapif/qgsoapifschemarequest.cpp
+  oapif/qgsoapifshareddata.cpp
   oapif/qgsoapifsingleitemrequest.cpp
   oapif/qgsoapifutils.cpp
 )

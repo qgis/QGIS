@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryareacheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometryengine.h"
-#include "qgsgeometrycollection.h"
-#include "qgsgeometryareacheck.h"
-#include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeometryengine.h"
 
 QgsGeometryCheck::Result QgsGeometryAreaCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {

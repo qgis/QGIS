@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsoapifdeletefeaturerequest.h"
+
+#include "qgslogger.h"
+
 #include "moc_qgsoapifdeletefeaturerequest.cpp"
 
 QgsOapifDeleteFeatureRequest::QgsOapifDeleteFeatureRequest( const QgsDataSourceUri &uri )

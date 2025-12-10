@@ -16,10 +16,10 @@
 #ifndef QGSPROCESSINGPARAMETERALIGNRASTERLAYERS_H
 #define QGSPROCESSINGPARAMETERALIGNRASTERLAYERS_H
 
+#include "qgsalignrasterdata.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsalignrasterdata.h"
 
 /**
  * \brief A parameter for Processing algorithms specifying how rasters should be aligned.
