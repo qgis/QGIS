@@ -5583,13 +5583,8 @@ QString QgisApp::getVersionString()
 
   // GeographicLib version
 #ifdef WITH_GEOGRAPHICLIB
-  const QString geographicLibVersionCompiled = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR_INT ).arg( GEOGRAPHICLIB_VERSION_MINOR_INT ).arg( GEOGRAPHICLIB_VERSION_PATCH_INT );
   const QString geographicLibVersionRunning = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH );
-  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), geographicLibVersionCompiled );
-  if ( geographicLibVersionCompiled != geographicLibVersionRunning )
-  {
-    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, geographicLibVersionRunning, runLabel );
-  }
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), geographicLibVersionRunning );
 #else
   versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), tr( "No support" ) );
 #endif

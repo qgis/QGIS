@@ -37,6 +37,10 @@
 #include <geos_c.h>
 #include <ogr_api.h>
 
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
+
 #define qgis_xstr(x) qgis_str(x)
 #define qgis_str(x) #x
 
@@ -731,7 +735,7 @@ bool Qgis::hasGeographicLib()
 int Qgis::geographicLibVersion()
 {
 #ifdef WITH_GEOGRAPHICLIB
-  return GEOGRAPHICLIB_VERSION_MAJOR_INT * 10000 + GEOGRAPHICLIB_VERSION_MINOR_INT * 100 + GEOGRAPHICLIB_VERSION_PATCH_INT;
+  return GEOGRAPHICLIB_VERSION_MAJOR * 10000 + GEOGRAPHICLIB_VERSION_MINOR * 100 + GEOGRAPHICLIB_VERSION_PATCH;
 #else
   throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
 #endif
