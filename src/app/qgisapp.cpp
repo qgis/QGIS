@@ -994,6 +994,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
+  // Initialize QGIS (and the plugins) before the network
   QgsApplication::initQgis();
 
   // start the network logger early, we want all requests logged!
