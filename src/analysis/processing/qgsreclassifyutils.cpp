@@ -56,15 +56,8 @@ void QgsReclassifyUtils::checkForOverlaps( const QVector<QgsReclassifyUtils::Ras
 
 void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsRasterInterface *sourceRaster, int band, const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double destNoDataValue, bool useNoDataForMissingValues, QgsProcessingFeedback *feedback )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-
   QgsRasterIterator iter( sourceRaster );
   iter.startRasterRead( band, sourceWidthPixels, sourceHeightPixels, extent );
-
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * sourceWidthPixels / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * sourceHeightPixels / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   const bool hasReportsDuringClose = destinationRaster->hasReportsDuringClose();
   const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
@@ -80,7 +73,7 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
   while ( iter.readNextRasterPart( band, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( maxProgressDuringBlockWriting * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( band ) );
     if ( feedback && feedback->isCanceled() )
       break;
     auto reclassifiedBlock = std::make_unique<QgsRasterBlock>( destinationRaster->dataType( 1 ), iterCols, iterRows );
