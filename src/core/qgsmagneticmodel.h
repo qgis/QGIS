@@ -18,15 +18,19 @@
 #ifndef QGSMAGNETICMODEL_H
 #define QGSMAGNETICMODEL_H
 
+#include "qgsconfig.h"
+
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
 #ifndef SIP_RUN
+#ifdef WITH_GEOGRAPHICLIB
 namespace GeographicLib
 {
   class MagneticModel;
 }
+#endif
 #endif
 
 /**
@@ -282,7 +286,9 @@ class CORE_EXPORT QgsMagneticModel
     QString mName;
     QString mPath;
 
+#ifdef WITH_GEOGRAPHICLIB
     std::unique_ptr< GeographicLib::MagneticModel > mModel;
+#endif
     QString mError;
 
 };
