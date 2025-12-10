@@ -68,7 +68,11 @@ QgsMagneticModel::~QgsMagneticModel() = default;
 
 bool QgsMagneticModel::isValid() const
 {
+#ifdef WITH_GEOGRAPHICLIB
   return static_cast< bool >( mModel );
+#else
+  return false;
+#endif
 }
 
 QString QgsMagneticModel::description() const
