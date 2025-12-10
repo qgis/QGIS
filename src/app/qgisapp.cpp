@@ -997,6 +997,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
+  QgsApplication::initQgis();
+
   // start the network logger early, we want all requests logged!
   startProfile( tr( "Create network logger" ) );
   mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
@@ -1042,8 +1044,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   mSplash->showMessage( tr( "Setting up the GUI" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
-
-  QgsApplication::initQgis();
 
   // setup connections to auth system
   masterPasswordSetup();
