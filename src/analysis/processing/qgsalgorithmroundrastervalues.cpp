@@ -171,12 +171,6 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
   destinationRasterProvider->setEditable( true );
   destinationRasterProvider->setNoDataValue( 1, mInputNoDataValue );
 
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   const bool closeReportsProgress = provider->closeReportsProgress();
   const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
 
@@ -190,7 +184,7 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, analysisRasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( maxProgressDuringBlockWriting * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand ) );
     if ( mIsInteger && mDecimalPrecision > -1 )
     {
       //nothing to round, just write raster block

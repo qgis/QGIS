@@ -209,12 +209,6 @@ bool QgsFuzzifyRasterLinearMembershipAlgorithm::prepareAlgorithmFuzzificationPar
 
 void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -226,7 +220,7 @@ void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( 100 * iter.progress( mBand ) );
     auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
@@ -343,12 +337,6 @@ bool QgsFuzzifyRasterPowerMembershipAlgorithm::prepareAlgorithmFuzzificationPara
 
 void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -360,7 +348,7 @@ void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( 100 * iter.progress( mBand ) );
     auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
@@ -472,12 +460,6 @@ bool QgsFuzzifyRasterLargeMembershipAlgorithm::prepareAlgorithmFuzzificationPara
 
 void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -489,7 +471,7 @@ void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( 100 * iter.progress( mBand ) );
     auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
@@ -584,12 +566,6 @@ bool QgsFuzzifyRasterSmallMembershipAlgorithm::prepareAlgorithmFuzzificationPara
 
 void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -601,7 +577,7 @@ void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( 100 * iter.progress( mBand ) );
     auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
@@ -696,12 +672,6 @@ bool QgsFuzzifyRasterGaussianMembershipAlgorithm::prepareAlgorithmFuzzificationP
 
 void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -713,7 +683,7 @@ void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsRasterDataProvider
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( 100 * iter.progress( mBand ) );
     auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
@@ -809,12 +779,6 @@ bool QgsFuzzifyRasterNearMembershipAlgorithm::prepareAlgorithmFuzzificationParam
 
 void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *destinationProvider, QgsProcessingFeedback *feedback )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
   int iterLeft = 0;
@@ -826,7 +790,7 @@ void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *de
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( 100 * iter.progress( mBand ) );
     auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
