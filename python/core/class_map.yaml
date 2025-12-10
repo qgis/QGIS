@@ -5502,6 +5502,7 @@ QgsGeometryUtils.pointFractionAlongLine: src/core/geometry/qgsgeometryutils.h#L1
 QgsGeometryUtils.pointOnLineWithDistance: src/core/geometry/qgsgeometryutils.h#L226
 QgsGeometryUtils.pointOnLineWithDistance: src/core/geometry/qgsgeometryutils.h#L741
 QgsGeometryUtils.pointsAreCollinear: src/core/geometry/qgsgeometryutils.h#L1148
+QgsGeometryUtils.pointsAreCollinear: src/core/geometry/qgsgeometryutils.h#L1468
 QgsGeometryUtils.projectPointOnSegment: src/core/geometry/qgsgeometryutils.h#L191
 QgsGeometryUtils.segmentIntersection: src/core/geometry/qgsgeometryutils.h#L1275
 QgsGeometryUtils.segmentMidPoint: src/core/geometry/qgsgeometryutils.h#L244
@@ -5526,12 +5527,12 @@ QgsGeometryUtils.verticesAtDistance: src/core/geometry/qgsgeometryutils.h#L78
 QgsGeometryUtils.weightedPointInTriangle: src/core/geometry/qgsgeometryutils.h#L1132
 QgsGeometryUtils: src/core/geometry/qgsgeometryutils.h#L37
 QgsGeometryUtilsBase.angleBetweenThreePoints: src/core/geometry/qgsgeometryutils_base.h#L205
-QgsGeometryUtilsBase.angleBisector: src/core/geometry/qgsgeometryutils_base.h#L421
+QgsGeometryUtilsBase.angleBisector: src/core/geometry/qgsgeometryutils_base.h#L429
 QgsGeometryUtilsBase.angleOnCircle: src/core/geometry/qgsgeometryutils_base.h#L139
 QgsGeometryUtilsBase.averageAngle: src/core/geometry/qgsgeometryutils_base.h#L223
 QgsGeometryUtilsBase.averageAngle: src/core/geometry/qgsgeometryutils_base.h#L231
-QgsGeometryUtilsBase.azimuth: src/core/geometry/qgsgeometryutils_base.h#L508
-QgsGeometryUtilsBase.bisector: src/core/geometry/qgsgeometryutils_base.h#L440
+QgsGeometryUtilsBase.azimuth: src/core/geometry/qgsgeometryutils_base.h#L516
+QgsGeometryUtilsBase.bisector: src/core/geometry/qgsgeometryutils_base.h#L448
 QgsGeometryUtilsBase.calculateArcLength: src/core/geometry/qgsgeometryutils_base.h#L165
 QgsGeometryUtilsBase.ccwAngle: src/core/geometry/qgsgeometryutils_base.h#L118
 QgsGeometryUtilsBase.circleAngleBetween: src/core/geometry/qgsgeometryutils_base.h#L133
@@ -5544,7 +5545,7 @@ QgsGeometryUtilsBase.distance3D: src/core/geometry/qgsgeometryutils_base.h#L49
 QgsGeometryUtilsBase.interpolateArcValue: src/core/geometry/qgsgeometryutils_base.h#L175
 QgsGeometryUtilsBase.leftOfLine: src/core/geometry/qgsgeometryutils_base.h#L73
 QgsGeometryUtilsBase.lineAngle: src/core/geometry/qgsgeometryutils_base.h#L192
-QgsGeometryUtilsBase.lineIntersection: src/core/geometry/qgsgeometryutils_base.h#L458
+QgsGeometryUtilsBase.lineIntersection: src/core/geometry/qgsgeometryutils_base.h#L466
 QgsGeometryUtilsBase.linePerpendicularAngle: src/core/geometry/qgsgeometryutils_base.h#L217
 QgsGeometryUtilsBase.linesIntersection3D: src/core/geometry/qgsgeometryutils_base.h#L350
 QgsGeometryUtilsBase.normalizedAngle: src/core/geometry/qgsgeometryutils_base.h#L182
@@ -5552,9 +5553,10 @@ QgsGeometryUtilsBase.perpendicularCenterSegment: src/core/geometry/qgsgeometryut
 QgsGeometryUtilsBase.perpendicularOffsetPointAlongSegment: src/core/geometry/qgsgeometryutils_base.h#L115
 QgsGeometryUtilsBase.pointFractionAlongLine: src/core/geometry/qgsgeometryutils_base.h#L370
 QgsGeometryUtilsBase.pointOnLineWithDistance: src/core/geometry/qgsgeometryutils_base.h#L84
+QgsGeometryUtilsBase.points3DAreCollinear: src/core/geometry/qgsgeometryutils_base.h#L406
 QgsGeometryUtilsBase.pointsAreCollinear: src/core/geometry/qgsgeometryutils_base.h#L398
-QgsGeometryUtilsBase.project: src/core/geometry/qgsgeometryutils_base.h#L498
-QgsGeometryUtilsBase.segmentIntersection: src/core/geometry/qgsgeometryutils_base.h#L478
+QgsGeometryUtilsBase.project: src/core/geometry/qgsgeometryutils_base.h#L506
+QgsGeometryUtilsBase.segmentIntersection: src/core/geometry/qgsgeometryutils_base.h#L486
 QgsGeometryUtilsBase.skewLinesDistance: src/core/geometry/qgsgeometryutils_base.h#L296
 QgsGeometryUtilsBase.skewLinesProjection: src/core/geometry/qgsgeometryutils_base.h#L309
 QgsGeometryUtilsBase.sqrDistToLine: src/core/geometry/qgsgeometryutils_base.h#L64
