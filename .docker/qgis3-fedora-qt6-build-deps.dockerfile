@@ -96,6 +96,9 @@ RUN dnf -y --refresh install \
     blend2d-devel
 
 
+# download wmm2025 magnetic field model for testing
+RUN geographiclib-get-magnetic wmm2025
+
 # Oracle : client side
 RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-basic-linux.x64-21.16.0.0.0dbru.zip > instantclient-basic-linux.x64-21.16.0.0.0dbru.zip
 RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip > instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
