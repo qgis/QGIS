@@ -227,12 +227,6 @@ Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )
 
 void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * width / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * height / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   destinationRaster->setEditable( true );
   QgsRasterIterator outputIter( destinationRaster.get() );
   outputIter.startRasterRead( 1, width, height, extent );
@@ -258,7 +252,7 @@ void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRast
       }
     }
 
-    feedback->setProgress( maxProgressDuringBlockWriting * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( maxProgressDuringBlockWriting * outputIter.progress( 1 ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
