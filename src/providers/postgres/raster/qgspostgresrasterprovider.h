@@ -46,6 +46,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QString name() const override;
     QString description() const override;
 
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 

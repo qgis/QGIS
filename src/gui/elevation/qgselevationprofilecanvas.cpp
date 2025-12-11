@@ -237,6 +237,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
       }
     }
 
+    using QgsPlotCanvasItem::paint;
     void paint( QPainter *painter ) override
     {
       // cache rendering to an image, so we don't need to redraw the plot
@@ -324,6 +325,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       return mRect;
     }
 
+    using QgsPlotCanvasItem::paint;
     void paint( QPainter *painter ) override
     {
       const QgsPointXY crossHairPlotPoint = mPlotItem->plotPointToCanvasPoint( mPoint );

@@ -310,6 +310,7 @@ class QgsWFSProviderSQLFunctionValidator : public QgsSQLStatement::RecursiveVisi
     const QString &errorMessage() const { return mErrorMessage; }
 
   protected:
+    using QgsSQLStatement::RecursiveVisitor::visit;
     void visit( const QgsSQLStatement::NodeFunction &n ) override;
 
   private:
@@ -374,6 +375,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
     const QString &errorMessage() const { return mErrorMessage; }
 
   protected:
+    using QgsSQLStatement::RecursiveVisitor::visit;
     void visit( const QgsSQLStatement::NodeColumnRef &n ) override;
 
   private:

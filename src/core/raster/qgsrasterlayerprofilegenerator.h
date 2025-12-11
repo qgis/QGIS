@@ -48,6 +48,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfac
   public:
 
     QString type() const override;
+    using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:

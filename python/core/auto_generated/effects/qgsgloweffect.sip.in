@@ -36,6 +36,7 @@ picture.
 
     virtual QVariantMap properties() const;
 
+
     virtual void readProperties( const QVariantMap &props );
 
 
