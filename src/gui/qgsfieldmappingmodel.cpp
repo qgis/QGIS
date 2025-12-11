@@ -437,12 +437,6 @@ void QgsFieldMappingModel::appendDestinationFields( const QgsFields &destination
         }
       }
     }
-    else
-    {
-      const QString expression { findExpressionForDestinationField( f, usedFields ) };
-      if ( !expression.isEmpty() )
-        f.expression = expression;
-    }
     mMapping.push_back( f );
   }
 
