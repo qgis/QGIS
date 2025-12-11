@@ -82,6 +82,8 @@ to the caller.
 
     virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &box ) const /HoldGIL/;
+
 
     double roundness() const;
 %Docstring

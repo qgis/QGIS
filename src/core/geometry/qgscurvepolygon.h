@@ -147,8 +147,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
-    using QgsSurface::boundingBoxIntersects;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsRectangle &box ) const override SIP_HOLDGIL;
 
     /**
      * Returns the roundness of the curve polygon.
