@@ -401,6 +401,50 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
   endResetModel();
 }
 
+void QgsFieldMappingModel::appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
+{
+  QStringList usedFields;
+  for ( const Field &existingField : mMapping )
+  {
+    const QgsExpression exp { existingField.expression };
+    if ( exp.isField() )
+    {
+      const QStringList referencedCols = qgis::setToList( exp.referencedColumns() );
+      if ( !referencedCols.isEmpty() && mSourceFields.names().contains( referencedCols.constFirst() ) )
+      {
+        usedFields.push_back( referencedCols.constFirst() );
+      }
+    }
+  }
+
+  const int startRow = mMapping.count();
+  beginInsertRows( QModelIndex(), startRow, startRow + destinationFields.count() - 1 );
+
+  for ( const QgsField &df : destinationFields )
+  {
+    Field f;
+    f.field = df;
+    f.field.setTypeName( qgsFieldToTypeName( df ) );
+    f.originalName = df.name();
+    if ( expressions.contains( f.field.name() ) )
+    {
+      f.expression = expressions.value( f.field.name() );
+      const QgsExpression exp { f.expression };
+      if ( exp.isField() )
+      {
+        const QStringList referencedCols = qgis::setToList( exp.referencedColumns() );
+        if ( !referencedCols.isEmpty() && mSourceFields.names().contains( referencedCols.constFirst() ) )
+        {
+          usedFields.push_back( referencedCols.constFirst() );
+        }
+      }
+    }
+    mMapping.push_back( f );
+  }
+
+  endInsertRows();
+}
+
 bool QgsFieldMappingModel::destinationEditable() const
 {
   return mDestinationEditable;

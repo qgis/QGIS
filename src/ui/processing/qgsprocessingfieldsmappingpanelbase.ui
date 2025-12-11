@@ -179,6 +179,16 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="mAppendFieldsCheckBox">
+       <property name="toolTip">
+        <string>When checked, fields from template layer will be appended to existing fields. When unchecked, existing fields will be replaced.</string>
+       </property>
+       <property name="text">
+        <string>Append fields</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

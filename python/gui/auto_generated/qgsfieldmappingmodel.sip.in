@@ -165,6 +165,16 @@ expressions can be optionally specified through ``expressions`` which is
 a map from the original field name to the corresponding expression.
 %End
 
+    void appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+%Docstring
+Appends destination fields from ``destinationFields`` to the existing
+fields, initial values for the expressions can be optionally specified
+through ``expressions`` which is a map from the original field name to
+the corresponding expression.
+
+.. versionadded:: 3.42
+%End
+
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
