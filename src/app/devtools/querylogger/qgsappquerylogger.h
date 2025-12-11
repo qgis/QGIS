@@ -51,18 +51,18 @@ class QgsAppQueryLogger : public QAbstractItemModel
 
     // Implementation of virtual functions from QAbstractItemModel
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     /**
      * Returns node for given index. Returns root node for invalid index.
      */
-    QgsDevToolsModelNode *index2node( const QModelIndex &index ) const;
+    [[nodiscard]] QgsDevToolsModelNode *index2node( const QModelIndex &index ) const;
 
     /**
      * Returns a list of actions corresponding to the item at the specified \a index.
@@ -126,7 +126,7 @@ class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
     void setFilterString( const QString &string );
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QgsAppQueryLogger *mLogger = nullptr;

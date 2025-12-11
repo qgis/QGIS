@@ -75,8 +75,8 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     }
 
     void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
-    QString name() const override { return mName; }
-    QString displayName() const override { return mName; }
+    [[nodiscard]] QString name() const override { return mName; }
+    [[nodiscard]] QString displayName() const override { return mName; }
 
     // we use static members here as the algorithm instance will be internally privately cloned before executing
     static bool mRaiseProcessException;
@@ -107,8 +107,8 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       return QVariantMap();
     }
 
-    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
-    DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( name() ); }
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
+    [[nodiscard]] DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( name() ); }
 
     QString mName;
 
@@ -500,9 +500,9 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
     DummyProvider( const QString &id )
       : mId( id ) {}
 
-    QString id() const override { return mId; }
+    [[nodiscard]] QString id() const override { return mId; }
 
-    QString name() const override { return "dummy"; }
+    [[nodiscard]] QString name() const override { return "dummy"; }
 
     void unload() override
     {
@@ -512,22 +512,22 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
       }
     }
 
-    QString defaultVectorFileExtension( bool ) const override
+    [[nodiscard]] QString defaultVectorFileExtension( bool ) const override
     {
       return "xshp"; // shape-X. Just like shapefiles, but to the max!
     }
 
-    QString defaultRasterFileExtension() const override
+    [[nodiscard]] QString defaultRasterFileExtension() const override
     {
       return "pcx"; // next-gen raster storage
     }
 
-    bool supportsNonFileBasedOutput() const override
+    [[nodiscard]] bool supportsNonFileBasedOutput() const override
     {
       return supportsNonFileOutputs;
     }
 
-    bool isActive() const override
+    [[nodiscard]] bool isActive() const override
     {
       return active;
     }
@@ -583,12 +583,12 @@ class DummyAlgorithm2 : public QgsProcessingAlgorithm
       addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "raster_dest" ) ) );
       addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "sink" ) ) );
     }
-    QString name() const override { return mName; }
-    QString displayName() const override { return mName; }
+    [[nodiscard]] QString name() const override { return mName; }
+    [[nodiscard]] QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
-    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
-    DummyAlgorithm2 *createInstance() const override { return new DummyAlgorithm2( name() ); }
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
+    [[nodiscard]] DummyAlgorithm2 *createInstance() const override { return new DummyAlgorithm2( name() ); }
 
     QString mName;
 
@@ -599,25 +599,25 @@ class DummyProvider3 : public QgsProcessingProvider // clazy:exclude=missing-qob
 {
   public:
     DummyProvider3() = default;
-    QString id() const override { return QStringLiteral( "dummy3" ); }
-    QString name() const override { return QStringLiteral( "dummy3" ); }
+    [[nodiscard]] QString id() const override { return QStringLiteral( "dummy3" ); }
+    [[nodiscard]] QString name() const override { return QStringLiteral( "dummy3" ); }
 
-    QStringList supportedOutputVectorLayerExtensions() const override
+    [[nodiscard]] QStringList supportedOutputVectorLayerExtensions() const override
     {
       return QStringList() << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
     }
 
-    QStringList supportedOutputTableExtensions() const override
+    [[nodiscard]] QStringList supportedOutputTableExtensions() const override
     {
       return QStringList() << QStringLiteral( "dbf" );
     }
 
-    QStringList supportedOutputRasterLayerExtensions() const override
+    [[nodiscard]] QStringList supportedOutputRasterLayerExtensions() const override
     {
       return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "sdat" );
     }
 
-    QStringList supportedOutputPointCloudLayerExtensions() const override
+    [[nodiscard]] QStringList supportedOutputPointCloudLayerExtensions() const override
     {
       return QStringList() << QStringLiteral( "las" ) << QStringLiteral( "ept.json" );
     }
@@ -632,20 +632,20 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 {
   public:
     DummyProvider4() = default;
-    QString id() const override { return QStringLiteral( "dummy4" ); }
-    QString name() const override { return QStringLiteral( "dummy4" ); }
+    [[nodiscard]] QString id() const override { return QStringLiteral( "dummy4" ); }
+    [[nodiscard]] QString name() const override { return QStringLiteral( "dummy4" ); }
 
-    bool supportsNonFileBasedOutput() const override
+    [[nodiscard]] bool supportsNonFileBasedOutput() const override
     {
       return false;
     }
 
-    QStringList supportedOutputVectorLayerExtensions() const override
+    [[nodiscard]] QStringList supportedOutputVectorLayerExtensions() const override
     {
       return QStringList() << QStringLiteral( "mif" );
     }
 
-    QStringList supportedOutputRasterLayerExtensions() const override
+    [[nodiscard]] QStringList supportedOutputRasterLayerExtensions() const override
     {
       return QStringList() << QStringLiteral( "mig" );
     }
@@ -660,31 +660,31 @@ class DummyParameterType : public QgsProcessingParameterType
 {
     // QgsProcessingParameterType interface
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override
+    [[nodiscard]] QgsProcessingParameterDefinition *create( const QString &name ) const override
     {
       return new QgsProcessingParameterString( name );
     }
 
-    QString description() const override
+    [[nodiscard]] QString description() const override
     {
       return QStringLiteral( "Description" );
     }
 
-    QString name() const override
+    [[nodiscard]] QString name() const override
     {
       return QStringLiteral( "ParamType" );
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return QStringLiteral( "paramType" );
     }
 
-    QStringList acceptedParameterTypes() const override
+    [[nodiscard]] QStringList acceptedParameterTypes() const override
     {
       return QStringList();
     }
-    QStringList acceptedOutputTypes() const override
+    [[nodiscard]] QStringList acceptedOutputTypes() const override
     {
       return QStringList();
     }

@@ -104,12 +104,12 @@ class CORE_EXPORT QgsProviderRegistry
     Q_DECL_DEPRECATED QString library( const QString &providerKey ) const SIP_DEPRECATED;
 
     //! Returns list of provider plugins found
-    QString pluginList( bool asHtml = false ) const;
+    [[nodiscard]] QString pluginList( bool asHtml = false ) const;
 
     /**
      * Returns the library directory where plugins are found.
      */
-    QDir libraryDirectory() const;
+    [[nodiscard]] QDir libraryDirectory() const;
 
     //! Sets library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see relativeToAbsoluteUri()
      * \since QGIS 3.30
      */
-    QString absoluteToRelativeUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
+    [[nodiscard]] QString absoluteToRelativeUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
 
     /**
      * Converts relative path(s) to absolute path(s) in the given provider-specific URI. and
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see absoluteToRelativeUri()
      * \since QGIS 3.30
      */
-    QString relativeToAbsoluteUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
+    [[nodiscard]] QString relativeToAbsoluteUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
 
     /**
      * Returns a new widget for selecting layers from a provider.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \note Ownership of created data item providers is passed to the caller.
      * \since QGIS 3.10
      */
-    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const SIP_FACTORY;
+    [[nodiscard]] QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const SIP_FACTORY;
 
     /**
      * Lists stored layer styles in the provider defined by \a providerKey and \a uri
@@ -369,10 +369,10 @@ class CORE_EXPORT QgsProviderRegistry
     Q_DECL_DEPRECATED QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY SIP_DEPRECATED;
 
     //! Returns list of available providers by their keys
-    QStringList providerList() const;
+    [[nodiscard]] QStringList providerList() const;
 
     //! Returns metadata of the provider or NULLPTR if not found
-    QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
+    [[nodiscard]] QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
      * Returns a list of the provider keys for available providers which handle the specified
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.26
      */
-    QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
+    [[nodiscard]] QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
 
     /**
      * \ingroup core
@@ -405,13 +405,13 @@ class CORE_EXPORT QgsProviderRegistry
         /**
          * Returns the candidate provider metadata.
          */
-        QgsProviderMetadata *metadata() const { return mMetadata; }
+        [[nodiscard]] QgsProviderMetadata *metadata() const { return mMetadata; }
 
         /**
          * Returns a list of map layer types which are valid options for opening the
          * target using this candidate provider.
          */
-        QList<Qgis::LayerType> layerTypes() const { return mLayerTypes; }
+        [[nodiscard]] QList<Qgis::LayerType> layerTypes() const { return mLayerTypes; }
 
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
@@ -444,7 +444,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see shouldDeferUriForOtherProviders()
      * \since QGIS 3.18
      */
-    QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
+    [[nodiscard]] QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
 
     /**
      * \ingroup core
@@ -526,12 +526,12 @@ class CORE_EXPORT QgsProviderRegistry
         /**
          * Returns TRUE if the handle is an unusable URI handler for the specified \a uri.
          */
-        virtual bool matchesUri( const QString &uri ) const = 0;
+        [[nodiscard]] virtual bool matchesUri( const QString &uri ) const = 0;
 
         /**
          * Returns the details for advising the user why the \a uri is not usable.
          */
-        virtual UnusableUriDetails details( const QString &uri ) const = 0;
+        [[nodiscard]] virtual UnusableUriDetails details( const QString &uri ) const = 0;
 
     };
 
@@ -588,7 +588,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see preferredProvidersForUri()
      * \since QGIS 3.18
      */
-    bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
+    [[nodiscard]] bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
 
     /**
      * Returns TRUE if the specified \a uri is known by any registered provider to be something which should
@@ -603,7 +603,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.18
      */
-    bool uriIsBlocklisted( const QString &uri ) const;
+    [[nodiscard]] bool uriIsBlocklisted( const QString &uri ) const;
 
     /**
      * Queries the specified \a uri and returns a list of any valid sublayers found in the dataset which can be handled by any registered data provider.
@@ -630,7 +630,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see fileVectorTileFilters()
      * \see fileTiledSceneFilters()
      */
-    QString fileVectorFilters() const;
+    [[nodiscard]] QString fileVectorFilters() const;
 
     /**
      * Returns a file filter string for supported raster files.
@@ -646,7 +646,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see fileVectorTileFilters()
      * \see fileTiledSceneFilters()
      */
-    QString fileRasterFilters() const;
+    [[nodiscard]] QString fileRasterFilters() const;
 
     /**
      * Returns a file filter string for supported mesh files.
@@ -663,7 +663,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.6
      */
-    QString fileMeshFilters() const;
+    [[nodiscard]] QString fileMeshFilters() const;
 
     /**
      * Returns a file filter string for supported mesh dataset files.
@@ -675,7 +675,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.6
      */
-    QString fileMeshDatasetFilters() const;
+    [[nodiscard]] QString fileMeshDatasetFilters() const;
 
     /**
      * Returns a file filter string for supported point clouds.
@@ -691,7 +691,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.18
      */
-    QString filePointCloudFilters() const;
+    [[nodiscard]] QString filePointCloudFilters() const;
 
     /**
      * Returns a file filter string for supported vector tile files.
@@ -707,7 +707,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.32
      */
-    QString fileVectorTileFilters() const;
+    [[nodiscard]] QString fileVectorTileFilters() const;
 
     /**
      * Returns a file filter string for supported tiled scene files.
@@ -723,14 +723,14 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.34
      */
-    QString fileTiledSceneFilters() const;
+    [[nodiscard]] QString fileTiledSceneFilters() const;
 
     //! Returns a string containing the available database drivers
-    QString databaseDrivers() const;
+    [[nodiscard]] QString databaseDrivers() const;
     //! Returns a string containing the available directory drivers
-    QString directoryDrivers() const;
+    [[nodiscard]] QString directoryDrivers() const;
     //! Returns a string containing the available protocol drivers
-    QString protocolDrivers() const;
+    [[nodiscard]] QString protocolDrivers() const;
 
     /**
      * \deprecated QGIS 3.10. Does nothing - use QgsGui::providerGuiRegistry().

@@ -64,11 +64,11 @@ class QgsTerrainEntity : public QgsChunkedEntity
     QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator; }
 
     //! Returns the transform attached to the terrain entity
-    Qt3DCore::QTransform *transform() const { return mTerrainTransform; }
+    [[nodiscard]] Qt3DCore::QTransform *transform() const { return mTerrainTransform; }
     //! Returns the terrain elevation offset (adjusts the terrain position up and down)
-    float terrainElevationOffset() const;
+    [[nodiscard]] float terrainElevationOffset() const;
 
-    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
+    [[nodiscard]] QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
   private slots:
     void onShowBoundingBoxesChanged();

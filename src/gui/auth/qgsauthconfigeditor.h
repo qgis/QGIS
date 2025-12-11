@@ -52,7 +52,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
      * Returns the list of selected authentication configuration IDs
      * \since QGIS 3.20
      */
-    QStringList selectedAuthenticationConfigIds() const;
+    [[nodiscard]] QStringList selectedAuthenticationConfigIds() const;
 
   public slots:
     //! Sets whether to show the widget's utilities button, e.g. when embedding

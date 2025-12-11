@@ -105,7 +105,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
      */
     void initAvailableWidgetsActions( const QList< QgsAction > actions );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   protected:
     void updateButtons();

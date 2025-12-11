@@ -75,16 +75,16 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   public:
     //! Gets the simplification hints of the vector layer managed
-    int simplifyFlags() const { return mSimplifyFlags; }
+    [[nodiscard]] int simplifyFlags() const { return mSimplifyFlags; }
     //! Sets the simplification hints of the vector layer managed
     void setSimplifyFlags( int simplifyFlags ) { mSimplifyFlags = simplifyFlags; }
 
     //! Gets the local simplification algorithm of the vector layer managed
-    Qgis::VectorSimplificationAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
+    [[nodiscard]] Qgis::VectorSimplificationAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
     //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( Qgis::VectorSimplificationAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
 
-    QgsGeometry simplify( const QgsGeometry &geometry ) const override;
+    [[nodiscard]] QgsGeometry simplify( const QgsGeometry &geometry ) const override;
     QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const override SIP_FACTORY;
 
     //! Sets the tolerance of the vector layer managed
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    inline bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const
+    [[nodiscard]] inline bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const
     {
       return isGeneralizableByMapBoundingBox( envelope, mTolerance );
     }

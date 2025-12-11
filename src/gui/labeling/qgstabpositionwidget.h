@@ -49,7 +49,7 @@ class GUI_EXPORT QgsTabPositionWidget : public QgsPanelWidget, private Ui::QgsTa
      *
      * \see setPositions()
      */
-    QList<QgsTextFormat::Tab> positions() const;
+    [[nodiscard]] QList<QgsTextFormat::Tab> positions() const;
 
     /**
      * Sets the unit type used for the tab positions (used to update interface labels).
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsTabPositionDialog : public QDialog
     *
     * \see setPositions()
     */
-    QList<QgsTextFormat::Tab> positions() const;
+    [[nodiscard]] QList<QgsTextFormat::Tab> positions() const;
 
     /**
      * Sets the unit type used for the tab positions (used to update interface labels).

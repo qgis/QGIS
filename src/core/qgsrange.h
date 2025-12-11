@@ -75,14 +75,14 @@ class QgsRange
      * \see upper()
      * \see includeLower()
      */
-    T lower() const { return mLower; }
+    [[nodiscard]] T lower() const { return mLower; }
 
     /**
      * Returns the upper bound of the range.
      * \see lower()
      * \see includeUpper()
      */
-    T upper() const { return mUpper; }
+    [[nodiscard]] T upper() const { return mUpper; }
 
     /**
      * Returns TRUE if the lower bound is inclusive, or FALSE if the lower
@@ -90,7 +90,7 @@ class QgsRange
      * \see lower()
      * \see includeUpper()
      */
-    bool includeLower() const { return mIncludeLower; }
+    [[nodiscard]] bool includeLower() const { return mIncludeLower; }
 
     /**
      * Returns TRUE if the upper bound is inclusive, or FALSE if the upper
@@ -98,14 +98,14 @@ class QgsRange
      * \see upper()
      * \see includeLower()
      */
-    bool includeUpper() const { return mIncludeUpper; }
+    [[nodiscard]] bool includeUpper() const { return mIncludeUpper; }
 
     /**
      * Returns the limit handling of the range.
      *
      * \since QGIS 3.38
      */
-    Qgis::RangeLimits rangeLimits() const
+    [[nodiscard]] Qgis::RangeLimits rangeLimits() const
     {
       if ( mIncludeLower && mIncludeUpper )
         return Qgis::RangeLimits::IncludeBoth;
@@ -122,19 +122,19 @@ class QgsRange
      * and either the bounds are exclusive.
      * \see isSingleton()
      */
-    bool isEmpty() const { return mLower > mUpper || ( mUpper == mLower && !( mIncludeLower || mIncludeUpper ) ); }
+    [[nodiscard]] bool isEmpty() const { return mLower > mUpper || ( mUpper == mLower && !( mIncludeLower || mIncludeUpper ) ); }
 
     /**
      * Returns TRUE if the range consists only of a single value or instant.
      * \see isEmpty()
      */
-    bool isSingleton() const { return mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
+    [[nodiscard]] bool isSingleton() const { return mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
 
     /**
      * Returns TRUE if this range contains another range.
      * \see overlaps()
      */
-    bool contains( const QgsRange<T> &other ) const
+    [[nodiscard]] bool contains( const QgsRange<T> &other ) const
     {
       const bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
                            || ( !mIncludeLower && mLower < other.mLower )
@@ -154,7 +154,7 @@ class QgsRange
     /**
      * Returns TRUE if this range contains a specified \a element.
      */
-    bool contains( T element ) const
+    [[nodiscard]] bool contains( T element ) const
     {
       const bool lowerOk = ( mIncludeLower && mLower <= element )
                            || ( !mIncludeLower && mLower < element );
@@ -173,7 +173,7 @@ class QgsRange
      * Returns TRUE if this range overlaps another range.
      * \see contains()
      */
-    bool overlaps( const QgsRange<T> &other ) const
+    [[nodiscard]] bool overlaps( const QgsRange<T> &other ) const
     {
       // other range is completely before or completely after self range
       if ( other.mUpper < mLower || other.mLower > mUpper )
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
      * Returns TRUE if the range consists of all possible values.
      * \since QGIS 3.18
      */
-    bool isInfinite() const
+    [[nodiscard]] bool isInfinite() const
     {
       return lower() == std::numeric_limits< double >::lowest() && upper() == std::numeric_limits< double >::max();
     }
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
      * Returns TRUE if the range consists of all possible values.
      * \since QGIS 3.18
      */
-    bool isInfinite() const
+    [[nodiscard]] bool isInfinite() const
     {
       return lower() == std::numeric_limits< int >::lowest() && upper() == std::numeric_limits< int >::max();
     }
@@ -443,14 +443,14 @@ class QgsTemporalRange
      * \see end()
      * \see includeBeginning()
      */
-    T begin() const { return mLower; }
+    [[nodiscard]] T begin() const { return mLower; }
 
     /**
      * Returns the upper bound of the range.
      * \see begin()
      * \see includeEnd()
      */
-    T end() const { return mUpper; }
+    [[nodiscard]] T end() const { return mUpper; }
 
     /**
      * Returns TRUE if the beginning is inclusive, or FALSE if the beginning
@@ -458,28 +458,28 @@ class QgsTemporalRange
      * \see begin()
      * \see includeEnd()
      */
-    bool includeBeginning() const { return mIncludeLower; }
+    [[nodiscard]] bool includeBeginning() const { return mIncludeLower; }
 
     /**
      * Returns TRUE if the end is inclusive, or FALSE if the end is exclusive.
      * \see end()
      * \see includeBeginning()
      */
-    bool includeEnd() const { return mIncludeUpper; }
+    [[nodiscard]] bool includeEnd() const { return mIncludeUpper; }
 
     /**
      * Returns TRUE if the range consists only of a single instant.
      * \see isEmpty()
      * \see isInfinite()
      */
-    bool isInstant() const { return mLower.isValid() && mUpper.isValid() && mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
+    [[nodiscard]] bool isInstant() const { return mLower.isValid() && mUpper.isValid() && mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
 
     /**
      * Returns TRUE if the range consists of all possible values.
      * \see isEmpty()
      * \see isInstant()
      */
-    bool isInfinite() const
+    [[nodiscard]] bool isInfinite() const
     {
       return !mLower.isValid() && !mUpper.isValid();
     }
@@ -489,7 +489,7 @@ class QgsTemporalRange
      * and either of the bounds are exclusive.
      * A range with both invalid beginning and end is considered infinite and not empty.
      */
-    bool isEmpty() const
+    [[nodiscard]] bool isEmpty() const
     {
       if ( !mLower.isValid() && !mUpper.isValid() )
         return false;
@@ -509,7 +509,7 @@ class QgsTemporalRange
     /**
      * Returns TRUE if this range contains another range.
      */
-    bool contains( const QgsTemporalRange<T> &other ) const
+    [[nodiscard]] bool contains( const QgsTemporalRange<T> &other ) const
     {
       if ( !other.mLower.isValid() && mLower.isValid() )
         return false;
@@ -541,7 +541,7 @@ class QgsTemporalRange
     /**
      * Returns TRUE if this range contains a specified \a element.
      */
-    bool contains( const T &element ) const
+    [[nodiscard]] bool contains( const T &element ) const
     {
       if ( !element.isValid() )
         return false;
@@ -569,7 +569,7 @@ class QgsTemporalRange
      * Returns TRUE if this range overlaps another range.
      * \see contains()
      */
-    bool overlaps( const QgsTemporalRange<T> &other ) const
+    [[nodiscard]] bool overlaps( const QgsTemporalRange<T> &other ) const
     {
       // one or both range is infinite
       if ( isInfinite() || other.isInfinite() )

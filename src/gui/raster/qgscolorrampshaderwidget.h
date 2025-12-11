@@ -74,13 +74,13 @@ class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, protected Ui::QgsCol
     void setMinimumMaximum( double minimum, double maximum );
 
     //! Gets min value
-    double minimum() const;
+    [[nodiscard]] double minimum() const;
 
     //! Gets max value
-    double maximum() const;
+    [[nodiscard]] double maximum() const;
 
     //! Returns shared function used in the renderer
-    QgsColorRampShader shader() const;
+    [[nodiscard]] QgsColorRampShader shader() const;
 
     //! Sets widget state from the color ramp shader
     void setFromShader( const QgsColorRampShader &colorRampShader );

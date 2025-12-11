@@ -85,10 +85,10 @@ class CORE_EXPORT QgsVectorTileLabeling
     virtual ~QgsVectorTileLabeling() = default;
 
     //! Unique type string of the labeling configuration implementation
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     //! Returns a new copy of the object
-    virtual QgsVectorTileLabeling *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsVectorTileLabeling *clone() const = 0 SIP_FACTORY;
 
     /**
      * Factory for label provider implementation

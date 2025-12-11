@@ -60,7 +60,7 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 {
   public:
     QgsLayerStyleManagerWidgetFactory();
-    bool supportsStyleDock() const override { return true; }
+    [[nodiscard]] bool supportsStyleDock() const override { return true; }
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
 };
@@ -74,7 +74,7 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
      * Returns unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
      */
-    int id() const override { return 0xbeef; }
+    [[nodiscard]] int id() const override { return 0xbeef; }
 
     void undo() override;
     void redo() override;

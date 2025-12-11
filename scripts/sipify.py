@@ -1873,6 +1873,9 @@ def try_skip_sip_directives():
 
 def try_process_preprocessor_directive():
     # Skip preprocessor directives
+    if re.match(r"^\s*//\s*NOLINTNEXTLINE", CONTEXT.current_line):
+        return True
+
     if re.match(r"^\s*#", CONTEXT.current_line):
         # Skip #if 0 or #if defined(Q_OS_WIN) blocks
         match = re.match(r"^\s*#if (0|defined\(Q_OS_WIN\))", CONTEXT.current_line)
@@ -2760,7 +2763,7 @@ def process_misc_keywords():
         r"^(\s*)?\[\[maybe_unused\]\](\s*)?", r"\1\2", CONTEXT.current_line
     )
     CONTEXT.current_line = re.sub(
-        r"^(\s*)?\[\[nodiscard\]\](\s*)?", r"\1\2", CONTEXT.current_line
+        r"(.*?)\[\[nodiscard\]\]\s*", r"\1", CONTEXT.current_line
     )
     CONTEXT.current_line = re.sub(r"\s*\bQ_DECL_DEPRECATED\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(

@@ -66,12 +66,12 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
      *
      * \see setIsActive()
     */
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     /**
      * Returns flags associated to the temporal property.
      */
-    virtual QgsTemporalProperty::Flags flags() const { return QgsTemporalProperty::Flags(); }
+    [[nodiscard]] virtual QgsTemporalProperty::Flags flags() const { return QgsTemporalProperty::Flags(); }
 
   signals:
 

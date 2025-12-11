@@ -69,7 +69,7 @@ class CORE_EXPORT QgsCalloutPosition
      * \see setOrigin()
      * \see destination()
      */
-    QPointF origin() const { return mOrigin; }
+    [[nodiscard]] QPointF origin() const { return mOrigin; }
 
     /**
      * Sets the \a origin of the callout line, in map coordinates.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsCalloutPosition
      * \see setDestination()
      * \see origin()
      */
-    QPointF destination() const { return mDestination; }
+    [[nodiscard]] QPointF destination() const { return mDestination; }
 
     /**
      * Sets the \a destination of the callout line, in map coordinates.
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsCalloutPosition
      * \see destinationIsPinned()
      * \see setOriginIsPinned()
      */
-    bool originIsPinned() const { return mOriginIsPinned; }
+    [[nodiscard]] bool originIsPinned() const { return mOriginIsPinned; }
 
     /**
      * Sets whether the origin of the callout has pinned (manually placed).
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsCalloutPosition
      * \see originIsPinned()
      * \see setDestinationIsPinned()
      */
-    bool destinationIsPinned() const { return mDestinationIsPinned; }
+    [[nodiscard]] bool destinationIsPinned() const { return mDestinationIsPinned; }
 
     /**
      * Sets whether the destination of the callout has pinned (manually placed).

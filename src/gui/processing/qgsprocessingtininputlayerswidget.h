@@ -39,18 +39,18 @@ class QgsProcessingTinInputLayersModel : public QAbstractTableModel
 
     QgsProcessingTinInputLayersModel( QgsProject *project );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
     void addLayer( QgsProcessingParameterTinInputLayers::InputLayer &layer );
     void removeLayer( int index );
     void clear();
 
-    QList<QgsProcessingParameterTinInputLayers::InputLayer> layers() const;
+    [[nodiscard]] QList<QgsProcessingParameterTinInputLayers::InputLayer> layers() const;
 
     void setProject( QgsProject *project );
 
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsProcessingTinInputLayersWidget : public QWidget, private Ui:
   public:
     QgsProcessingTinInputLayersWidget( QgsProject *project );
 
-    QVariant value() const;
+    [[nodiscard]] QVariant value() const;
     void setValue( const QVariant &value );
     void setProject( QgsProject *project );
 
@@ -102,13 +102,13 @@ class GUI_EXPORT QgsProcessingTinInputLayersWidgetWrapper : public QgsAbstractPr
   public:
     QgsProcessingTinInputLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
-    QString parameterType() const override;
+    [[nodiscard]] QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
 
   protected:
     QWidget *createWidget() override SIP_FACTORY;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
-    QVariant widgetValue() const override;
+    [[nodiscard]] QVariant widgetValue() const override;
 
   private:
     QgsProcessingTinInputLayersWidget *mWidget = nullptr;

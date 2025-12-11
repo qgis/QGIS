@@ -58,18 +58,18 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
   public:
     QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    QList<QgsDxfExport::DxfLayer> layers() const;
+    [[nodiscard]] QList<QgsDxfExport::DxfLayer> layers() const;
 
     void saveLayersOutputAttribute( QgsLayerTreeNode *node );
     void loadLayersOutputAttribute( QgsLayerTreeNode *node );
 
-    QgsVectorLayer *vectorLayer( const QModelIndex &index ) const;
+    [[nodiscard]] QgsVectorLayer *vectorLayer( const QModelIndex &index ) const;
     int attributeIndex( const QgsVectorLayer *vl ) const;
 
     void applyVisibilityPreset( const QString &name );
@@ -111,20 +111,20 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsDxfExportDialog() override;
 
-    QList<QgsDxfExport::DxfLayer> layers() const;
+    [[nodiscard]] QList<QgsDxfExport::DxfLayer> layers() const;
 
-    double symbologyScale() const;
-    Qgis::FeatureSymbologyExport symbologyMode() const;
-    QString saveFile() const;
-    bool exportMapExtent() const;
-    bool selectedFeaturesOnly() const;
-    bool layerTitleAsName() const;
-    bool force2d() const;
-    bool useMText() const;
-    bool hairlineWidthExport() const;
-    QString mapTheme() const;
-    QString encoding() const;
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] double symbologyScale() const;
+    [[nodiscard]] Qgis::FeatureSymbologyExport symbologyMode() const;
+    [[nodiscard]] QString saveFile() const;
+    [[nodiscard]] bool exportMapExtent() const;
+    [[nodiscard]] bool selectedFeaturesOnly() const;
+    [[nodiscard]] bool layerTitleAsName() const;
+    [[nodiscard]] bool force2d() const;
+    [[nodiscard]] bool useMText() const;
+    [[nodiscard]] bool hairlineWidthExport() const;
+    [[nodiscard]] QString mapTheme() const;
+    [[nodiscard]] QString encoding() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
     bool loadSettingsFromXML( QDomDocument &document, QString &errorMessage ) const;
     void saveSettingsToXML( QDomDocument &document ) const;
 

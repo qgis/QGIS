@@ -44,17 +44,17 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //Reimplemented to set fixed size on widget
-    QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
 
     //Reimplemented to set fixed size on widget
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     /**
      * Gets the current context for the grid
      * \returns context string which is passed to scheme for color generation
      * \see setContext
      */
-    QString context() const { return mContext; }
+    [[nodiscard]] QString context() const { return mContext; }
 
     /**
      * Sets the current context for the grid
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * \returns base color which is passed to scheme for color generation
      * \see setBaseColor
      */
-    QColor baseColor() const { return mBaseColor; }
+    [[nodiscard]] QColor baseColor() const { return mBaseColor; }
 
     /**
      * Sets the base color for the widget
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * Calculate height of widget based on number of colors
      * \returns required height of widget in pixels
      */
-    int calculateHeight() const;
+    [[nodiscard]] int calculateHeight() const;
 
     /**
      * Draws widget
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * \param position position
      * \returns swatch number (starting at 0), or -1 if position is outside a swatch
      */
-    int swatchForPosition( QPoint position ) const;
+    [[nodiscard]] int swatchForPosition( QPoint position ) const;
 
     /**
      * Updates the widget's tooltip for a given color index
@@ -212,14 +212,14 @@ class GUI_EXPORT QgsColorSwatchGridAction : public QWidgetAction
      * \returns base color which is passed to scheme for color generation
      * \see setBaseColor
      */
-    QColor baseColor() const;
+    [[nodiscard]] QColor baseColor() const;
 
     /**
      * Gets the current context for the color grid
      * \returns context string which is passed to scheme for color generation
      * \see setContext
      */
-    QString context() const;
+    [[nodiscard]] QString context() const;
 
     /**
      * Sets the current context for the color grid
@@ -243,7 +243,7 @@ class GUI_EXPORT QgsColorSwatchGridAction : public QWidgetAction
      * action's color widget.
      * \see setDismissOnColorSelection
      */
-    bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
+    [[nodiscard]] bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
 
   public slots:
 

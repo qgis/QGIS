@@ -236,7 +236,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget : public QgsPanelWidget
      * \returns QgsPaintEffect modified by the widget
      * \see setPaintEffect
      */
-    QgsPaintEffect *paintEffect() const;
+    [[nodiscard]] QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the picture to use for effect previews for the dialog

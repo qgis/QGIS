@@ -153,7 +153,7 @@ class CORE_EXPORT QgsFeatureRequest
          * The expression
          * \returns the expression
          */
-        QgsExpression expression() const;
+        [[nodiscard]] QgsExpression expression() const;
 
         /**
          * Prepare the expression with the given context.
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsFeatureRequest
          * Order ascending
          * \returns If ascending order is requested
          */
-        bool ascending() const;
+        [[nodiscard]] bool ascending() const;
 
         /**
          * Set if ascending order is requested
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsFeatureRequest
          * Set if NULLS should be returned first
          * \returns if NULLS should be returned first
          */
-        bool nullsFirst() const;
+        [[nodiscard]] bool nullsFirst() const;
 
         /**
          * Set if NULLS should be returned first
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Dumps the content to an SQL equivalent
          */
-        QString dump() const;
+        [[nodiscard]] QString dump() const;
 
         // friend inline int qHash(const OrderByClause &a) { return qHash(a.mExpression.expression()) ^ qHash(a.mAscending) ^ qHash( a.mNullsFirst); }
 
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsFeatureRequest
          * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
          */
-        QList<QgsFeatureRequest::OrderByClause> CORE_EXPORT list() const;
+        [[nodiscard]] QList<QgsFeatureRequest::OrderByClause> CORE_EXPORT list() const;
 
         /**
          * Serialize to XML
@@ -265,18 +265,18 @@ class CORE_EXPORT QgsFeatureRequest
          * Returns a set of used attributes
          * \note The returned attributes names are NOT guaranteed to be valid.
          */
-        QSet<QString> CORE_EXPORT usedAttributes() const;
+        [[nodiscard]] QSet<QString> CORE_EXPORT usedAttributes() const;
 
         /**
          * Returns a set of used, validated attribute indices
          * \since QGIS 3.8
          */
-        QSet<int> CORE_EXPORT usedAttributeIndices( const QgsFields &fields ) const;
+        [[nodiscard]] QSet<int> CORE_EXPORT usedAttributeIndices( const QgsFields &fields ) const;
 
         /**
          * Dumps the content to an SQL equivalent syntax
          */
-        QString CORE_EXPORT dump() const;
+        [[nodiscard]] QString CORE_EXPORT dump() const;
     };
 
     /**

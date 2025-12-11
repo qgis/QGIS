@@ -49,16 +49,16 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     void setCategories( QgsMapLayer::StyleCategories categories );
 
     //! Returns the categories as defined in the model
-    QgsMapLayer::StyleCategories categories() const;
+    [[nodiscard]] QgsMapLayer::StyleCategories categories() const;
 
     //! Defines if the model should list the AllStyleCategories entry
     void setShowAllCategories( bool showAll );
 
-    int rowCount( const QModelIndex & = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    Qt::ItemFlags flags( const QModelIndex & ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex & ) const override;
 
   private:
     //! map layer type
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsCategoryDisplayLabelDelegate : public QItemDelegate
 
   protected:
     void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 #endif // QGSMAPLAYERSTYLECATEGORIESMODEL_H

@@ -93,21 +93,21 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QString id() const { return mRelationId; }
+    [[nodiscard]] QString id() const { return mRelationId; }
 
     /**
      * Returns the relationship's name.
      *
      * \since QGIS 3.28
      */
-    QString name() const { return mRelationName; }
+    [[nodiscard]] QString name() const { return mRelationName; }
 
     /**
      * Returns a weak reference to the referencing (or "child" / "right") layer.
      *
      * \note Not available in Python bindings.
      */
-    QgsVectorLayerRef referencingLayer() const SIP_SKIP;
+    [[nodiscard]] QgsVectorLayerRef referencingLayer() const SIP_SKIP;
 
     /**
      * Returns the source URI for the referencing (or "child" / "right") layer.
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setReferencingLayer()
      * \since QGIS 3.28
      */
-    QString referencingLayerSource() const;
+    [[nodiscard]] QString referencingLayerSource() const;
 
     /**
      * Returns the provider ID for the referencing (or "child" / "right") layer.
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setReferencingLayer()
      * \since QGIS 3.28
      */
-    QString referencingLayerProvider() const;
+    [[nodiscard]] QString referencingLayerProvider() const;
 
     /**
      * Returns the layer name of the referencing (or "child" / "right") layer.
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QString referencingLayerName() const;
+    [[nodiscard]] QString referencingLayerName() const;
 
     /**
      * Sets the source for the referencing (or "child" / "right") layer, by \a sourceUri and \a provider ID.
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \note Not available in Python bindings.
      */
-    QgsVectorLayerRef referencedLayer() const SIP_SKIP;
+    [[nodiscard]] QgsVectorLayerRef referencedLayer() const SIP_SKIP;
 
     /**
      * Returns the source URI for the referenced (or "parent" / "left") layer.
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setReferencedLayer()
      * \since QGIS 3.28
      */
-    QString referencedLayerSource() const;
+    [[nodiscard]] QString referencedLayerSource() const;
 
     /**
      * Returns the provider ID for the referenced (or "parent" / "left") layer.
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setReferencedLayer()
      * \since QGIS 3.28
      */
-    QString referencedLayerProvider() const;
+    [[nodiscard]] QString referencedLayerProvider() const;
 
     /**
      * Returns the layer name of the referenced (or "parent" / "left") layer.
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QString referencedLayerName() const;
+    [[nodiscard]] QString referencedLayerName() const;
 
     /**
      * Sets the source for the referenced (or "parent" / "left") layer, by \a sourceUri and \a provider ID.
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QgsVectorLayerRef mappingTable() const SIP_SKIP;
+    [[nodiscard]] QgsVectorLayerRef mappingTable() const SIP_SKIP;
 
     /**
      * Sets a weak reference to the mapping \a table, which forms the middle table in many-to-many relationships.
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setMappingTable()
      * \since QGIS 3.28
      */
-    QString mappingTableSource() const;
+    [[nodiscard]] QString mappingTableSource() const;
 
     /**
      * Returns the provider ID for the mapping table, which forms the middle table in many-to-many relationships.
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setMappingTable()
      * \since QGIS 3.28
      */
-    QString mappingTableProvider() const;
+    [[nodiscard]] QString mappingTableProvider() const;
 
     /**
      * Returns the layer name of the mapping table, which forms the middle table in many-to-many relationships.
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QString mappingTableName() const;
+    [[nodiscard]] QString mappingTableName() const;
 
     /**
      * Sets the source for the mapping table, which forms the middle table in many-to-many relationships, by \a sourceUri and \a provider ID.
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QStringList referencingLayerFields() const { return mReferencingLayerFields; }
+    [[nodiscard]] QStringList referencingLayerFields() const { return mReferencingLayerFields; }
 
     /**
      * Sets the list of \a fields from the referencingLayer() involved in the relationship.
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QStringList mappingReferencingLayerFields() const { return mMappingReferencingLayerFields; }
+    [[nodiscard]] QStringList mappingReferencingLayerFields() const { return mMappingReferencingLayerFields; }
 
     /**
      * Sets the list of \a fields from the mappingTable() involved in the relationship.
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QStringList referencedLayerFields() const { return mReferencedLayerFields; }
+    [[nodiscard]] QStringList referencedLayerFields() const { return mReferencedLayerFields; }
 
     /**
      * Sets the list of \a fields from the referencedLayer() involved in the relationship.
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
      */
-    QStringList mappingReferencedLayerFields() const { return mMappingReferencedLayerFields; }
+    [[nodiscard]] QStringList mappingReferencedLayerFields() const { return mMappingReferencedLayerFields; }
 
     /**
      * Sets the list of \a fields from the mappingTable() involved in the relationship.
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsWeakRelation
     /**
      * Returns the strength of the relation.
      */
-    Qgis::RelationshipStrength strength() const;
+    [[nodiscard]] Qgis::RelationshipStrength strength() const;
 
     /**
      * Returns the relationship's cardinality.
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setCardinality()
      * \since QGIS 3.28
      */
-    Qgis::RelationshipCardinality cardinality() const { return mCardinality; }
+    [[nodiscard]] Qgis::RelationshipCardinality cardinality() const { return mCardinality; }
 
     /**
      * Sets the relationship's \a cardinality.
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
     */
-    QString forwardPathLabel() const { return mForwardPathLabel; }
+    [[nodiscard]] QString forwardPathLabel() const { return mForwardPathLabel; }
 
     /**
      * Returns the label of the backward path for the relationship.
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.28
     */
-    QString backwardPathLabel() const { return mBackwardPathLabel; }
+    [[nodiscard]] QString backwardPathLabel() const { return mBackwardPathLabel; }
 
     /**
      * Sets the \a label of the forward path for the relationship.
@@ -417,7 +417,7 @@ class CORE_EXPORT QgsWeakRelation
      * \see setRelatedTableType()
      * \since QGIS 3.28
     */
-    QString relatedTableType() const { return mRelatedTableType; }
+    [[nodiscard]] QString relatedTableType() const { return mRelatedTableType; }
 
     /**
      * Sets the \a type string of the related table.

@@ -37,7 +37,7 @@ class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
     //! constructor
     QgsMapToolEmitPoint( QgsMapCanvas *canvas );
 
-    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    [[nodiscard]] Flags flags() const override { return QgsMapTool::AllowZoomRect; }
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;

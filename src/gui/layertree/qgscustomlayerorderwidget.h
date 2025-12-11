@@ -76,19 +76,19 @@ class CustomLayerOrderModel : public QAbstractListModel
   public:
     CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge *bridge, QObject *parent = nullptr );
 
-    int rowCount( const QModelIndex & ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex & ) const override;
 
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
-    Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
 
-    QStringList mimeTypes() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
 
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
@@ -96,7 +96,7 @@ class CustomLayerOrderModel : public QAbstractListModel
 
     void refreshModel( const QList<QgsMapLayer *> &order );
 
-    QStringList order() const { return mOrder; }
+    [[nodiscard]] QStringList order() const { return mOrder; }
 
     void updateLayerVisibility( const QString &layerId );
 

@@ -79,7 +79,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * \see setAvailableFlags()
      * \see activeFlags()
      */
-    QgsSearchWidgetWrapper::FilterFlags availableFlags() const { return mAvailableFilterFlags; }
+    [[nodiscard]] QgsSearchWidgetWrapper::FilterFlags availableFlags() const { return mAvailableFilterFlags; }
 
     /**
      * Sets the current active filter flags for the widget. Any flags
@@ -109,14 +109,14 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * \see toggleFlag()
      * \see availableFlags()
      */
-    QgsSearchWidgetWrapper::FilterFlags activeFlags() const { return mFilterFlags; }
+    [[nodiscard]] QgsSearchWidgetWrapper::FilterFlags activeFlags() const { return mFilterFlags; }
 
     /**
      * Returns TRUE if the widget is set to be included in the search.
      * \see setInactive()
      * \see setActive()
      */
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
   public slots:
 

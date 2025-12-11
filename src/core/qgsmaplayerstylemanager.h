@@ -64,7 +64,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     QgsMapLayerStyleManager( QgsMapLayer *layer SIP_TRANSFERTHIS );
 
     //! Gets pointer to the associated map layer
-    QgsMapLayer *layer() const { return mLayer; }
+    [[nodiscard]] QgsMapLayer *layer() const { return mLayer; }
 
     //! Reset the style manager to a basic state - with one default style which is set as current
     void reset();
@@ -75,16 +75,16 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     void writeXml( QDomElement &mgrElement ) const;
 
     //! Returns list of all defined style names
-    QStringList styles() const;
+    [[nodiscard]] QStringList styles() const;
 
     /**
      * Gets available styles for the associated map layer.
      * \returns A map of map layer style by style name
      */
-    QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
+    [[nodiscard]] QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
 
     //! Returns data of a stored style - accessed by its unique name
-    QgsMapLayerStyle style( const QString &name ) const;
+    [[nodiscard]] QgsMapLayerStyle style( const QString &name ) const;
 
     /**
      * Add a style with given name and data
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     bool renameStyle( const QString &name, const QString &newName );
 
     //! Returns name of the current style
-    QString currentStyle() const;
+    [[nodiscard]] QString currentStyle() const;
 
     /**
      * Set a different style as the current style - will apply it to the layer

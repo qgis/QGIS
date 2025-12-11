@@ -40,10 +40,10 @@ class CORE_EXPORT QgsPathResolver
      * Creates an absolute or relative path according to the project settings.
      * Paths written to the project file should be prepared with this method.
     */
-    QString writePath( const QString &filename ) const;
+    [[nodiscard]] QString writePath( const QString &filename ) const;
 
     //! Turn filename read from the project file to an absolute path
-    QString readPath( const QString &filename ) const;
+    [[nodiscard]] QString readPath( const QString &filename ) const;
 
 #ifndef SIP_RUN
 

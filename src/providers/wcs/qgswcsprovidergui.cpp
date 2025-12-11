@@ -28,10 +28,10 @@
 class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "wcs" ); }
-    QString text() const override { return QObject::tr( "WCS" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "wcs" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "WCS" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 30; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsWCSSourceSelect( parent, fl, widgetMode );

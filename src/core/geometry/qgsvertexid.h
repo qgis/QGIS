@@ -42,7 +42,7 @@ struct CORE_EXPORT QgsVertexId
   /**
    * Returns TRUE if the vertex id is valid
    */
-  bool isValid() const  SIP_HOLDGIL { return part >= 0 && ring >= 0 && vertex >= 0; }
+  [[nodiscard]] bool isValid() const  SIP_HOLDGIL { return part >= 0 && ring >= 0 && vertex >= 0; }
 
   bool operator==( QgsVertexId other ) const SIP_HOLDGIL
   {
@@ -56,7 +56,7 @@ struct CORE_EXPORT QgsVertexId
   /**
    * Returns TRUE if this vertex ID belongs to the same part as another vertex ID.
    */
-  bool partEqual( QgsVertexId o ) const SIP_HOLDGIL
+  [[nodiscard]] bool partEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return part >= 0 && o.part == part;
   }
@@ -65,7 +65,7 @@ struct CORE_EXPORT QgsVertexId
    * Returns TRUE if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
    * and ring number are equal).
    */
-  bool ringEqual( QgsVertexId o ) const SIP_HOLDGIL
+  [[nodiscard]] bool ringEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return partEqual( o ) && ( ring >= 0 && o.ring == ring );
   }
@@ -74,7 +74,7 @@ struct CORE_EXPORT QgsVertexId
    * Returns TRUE if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
    * ring number and vertex number are equal).
    */
-  bool vertexEqual( QgsVertexId o ) const SIP_HOLDGIL
+  [[nodiscard]] bool vertexEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return ringEqual( o ) && ( vertex >= 0 && o.vertex == vertex );
   }

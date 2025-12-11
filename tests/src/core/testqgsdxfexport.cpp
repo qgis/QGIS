@@ -96,7 +96,7 @@ class TestQgsDxfExport : public QObject
     QgsVectorLayer *mPolygonLayer = nullptr;
 
     void setDefaultLabelParams( QgsPalLayerSettings &settings );
-    QString getTempFileName( const QString &file ) const;
+    [[nodiscard]] QString getTempFileName( const QString &file ) const;
 
     bool fileContainsText( const QString &path, const QString &text, QString *debugInfo = nullptr ) const;
 };

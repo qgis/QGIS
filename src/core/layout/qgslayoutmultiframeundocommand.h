@@ -56,13 +56,13 @@ class CORE_EXPORT QgsLayoutMultiFrameUndoCommand: public QgsAbstractLayoutUndoCo
     /**
      * Returns the layout associated with this command.
      */
-    QgsLayout *layout() const;
+    [[nodiscard]] QgsLayout *layout() const;
 
     /**
      * Returns the associated multiframes's UUID, which uniquely identifies the frame
      * within the layout.
      */
-    QString multiFrameUuid() const;
+    [[nodiscard]] QString multiFrameUuid() const;
 
   protected:
 
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLayoutMultiFrameAddItemCommand: public QgsLayoutMultiFrameU
      * \param parent command
      */
     QgsLayoutMultiFrameAddItemCommand( QgsLayoutMultiFrame *frame, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
-    bool containsChange() const override;
+    [[nodiscard]] bool containsChange() const override;
     bool mergeWith( const QUndoCommand *command ) override;
     void undo() override;
 

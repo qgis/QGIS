@@ -84,18 +84,18 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     /**
      * Returns the current connection name.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the current connection url.
      */
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
     /**
      * Returns the original connection name (might be empty)
      * \since QGIS 4.0
      */
-    QString originalConnectionName() const;
+    [[nodiscard]] QString originalConnectionName() const;
 
   public slots:
 
@@ -159,26 +159,26 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * \note Not available in Python bindings
      * \since QGIS 4.0
      */
-    QgsAuthorizationSettings authorizationSettings() const SIP_SKIP;
+    [[nodiscard]] QgsAuthorizationSettings authorizationSettings() const SIP_SKIP;
 
     /**
      * Returns the ignore axis orientation checkbox status.
      * \since QGIS 4.0
      */
-    bool ignoreAxisOrientation() const;
+    [[nodiscard]] bool ignoreAxisOrientation() const;
 
     /**
      * Returns the "WMS preferred format" combobox.
      * \note Not available in Python bindings
      * \since QGIS 4.0
      */
-    QComboBox *wmsPreferredFormatCombo() const SIP_SKIP;
+    [[nodiscard]] QComboBox *wmsPreferredFormatCombo() const SIP_SKIP;
 
     /**
      * Returns the invert axis orientation checkbox status.
      * \since QGIS 4.0
      */
-    bool invertAxisOrientation() const;
+    [[nodiscard]] bool invertAxisOrientation() const;
 
     /**
      * Returns the "WFS version detect" button.
@@ -227,25 +227,25 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      *
      * \since QGIS 3.44
      */
-    Qgis::HttpMethod preferredHttpMethod() const;
+    [[nodiscard]] Qgis::HttpMethod preferredHttpMethod() const;
 
     /**
      * Returns the url.
      * \since QGIS 3.2
      */
-    QUrl urlTrimmed() const SIP_SKIP;
+    [[nodiscard]] QUrl urlTrimmed() const SIP_SKIP;
 
     /**
      * Returns the QSettings key for WFS related settings for the connection.
      * \see wmsSettingsKey()
      */
-    virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
+    [[nodiscard]] virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
 
     /**
      * Returns the QSettings key for WMS related settings for the connection.
      * \see wfsSettingsKey()
      */
-    virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
+    [[nodiscard]] virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
 
     /**
      * Triggers a resync of the GUI widgets for the service specific settings (i.e. WFS

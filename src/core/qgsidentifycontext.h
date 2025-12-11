@@ -47,12 +47,12 @@ class CORE_EXPORT QgsIdentifyContext
      * \see setTemporalRange()
      * \see isTemporal()
     */
-    const QgsDateTimeRange &temporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &temporalRange() const;
 
     /**
      * Returns TRUE if the temporal range setting is enabled.
     */
-    bool isTemporal() const;
+    [[nodiscard]] bool isTemporal() const;
 
     /**
      * Returns the range of z-values to identify within, or an infinite range if no filtering by
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsIdentifyContext
      * \see setZRange()
      * \since QGIS 3.38
      */
-    QgsDoubleRange zRange() const;
+    [[nodiscard]] QgsDoubleRange zRange() const;
 
     /**
      * Sets the \a range of z-values to identify within.

@@ -30,12 +30,12 @@ class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
 
   public:
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
-    QgsActionLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "actions" ); }
-    QString displayName() const override { return tr( "Actions" ); }
-    Priority priority() const override { return Lowest; }
-    QString prefix() const override { return QStringLiteral( "." ); }
-    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+    [[nodiscard]] QgsActionLocatorFilter *clone() const override;
+    [[nodiscard]] QString name() const override { return QStringLiteral( "actions" ); }
+    [[nodiscard]] QString displayName() const override { return tr( "Actions" ); }
+    [[nodiscard]] Priority priority() const override { return Lowest; }
+    [[nodiscard]] QString prefix() const override { return QStringLiteral( "." ); }
+    [[nodiscard]] QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;

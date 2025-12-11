@@ -46,7 +46,7 @@ class APP_EXPORT QgsMergeAttributesDialog : public QDialog, private Ui::QgsMerge
     QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, bool skipAll = false, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsMergeAttributesDialog() override;
 
-    QgsAttributes mergedAttributes() const;
+    [[nodiscard]] QgsAttributes mergedAttributes() const;
 
     /**
      * Returns the id of the target feature.
@@ -58,13 +58,13 @@ class APP_EXPORT QgsMergeAttributesDialog : public QDialog, private Ui::QgsMerge
      *
      * \since QGIS 3.30
      */
-    QgsFeatureId targetFeatureId() const;
+    [[nodiscard]] QgsFeatureId targetFeatureId() const;
 
     /**
      * Returns a list of attribute indexes which should be skipped when merging (e.g., attributes
      * which have been set to "skip"
      */
-    QSet<int> skippedAttributeIndexes() const;
+    [[nodiscard]] QSet<int> skippedAttributeIndexes() const;
 
   public slots:
 

@@ -51,7 +51,7 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
       : mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
     {}
 
-    qintptr id() const override
+    [[nodiscard]] qintptr id() const override
     {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<ArrowsTextureGenerator>::id );

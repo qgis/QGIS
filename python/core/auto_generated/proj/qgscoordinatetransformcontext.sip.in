@@ -187,7 +187,7 @@ Removes the coordinate operation for the specified ``sourceCrs`` and
 %End
 
     bool hasTransform( const QgsCoordinateReferenceSystem &source,
-                       const QgsCoordinateReferenceSystem &destination ) const;
+                                     const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
 Returns ``True`` if the context has a valid coordinate operation to use
 when transforming from the specified ``source`` CRS to ``destination``

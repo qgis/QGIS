@@ -63,7 +63,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      * Returns the layout the guide belongs to.
      * \see setLayout()
      */
-    QgsLayout *layout() const;
+    [[nodiscard]] QgsLayout *layout() const;
 
     /**
      * Sets the \a layout the guide belongs to.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
     /**
      * Returns the guide's orientation.
      */
-    Qt::Orientation orientation() const;
+    [[nodiscard]] Qt::Orientation orientation() const;
 
     /**
      * Returns the guide's position within the page.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      *
      * \see setPosition()
      */
-    QgsLayoutMeasurement position() const;
+    [[nodiscard]] QgsLayoutMeasurement position() const;
 
     /**
      * Sets the guide's \a position within the page.
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      * Returns the guide's position in absolute layout units.
      * \see setLayoutPosition()
      */
-    double layoutPosition() const;
+    [[nodiscard]] double layoutPosition() const;
 
     /**
      * Sets the guide's \a position in absolute layout units.
@@ -200,16 +200,15 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
     ~QgsLayoutGuideCollection() override;
 
-    QString stringType() const override { return QStringLiteral( "LayoutGuideCollection" ); }
+    [[nodiscard]] QString stringType() const override { return QStringLiteral( "LayoutGuideCollection" ); }
     QgsLayout *layout() override;
 
-    int rowCount( const QModelIndex & ) const override;
-    int columnCount( const QModelIndex & ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex & ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     /**
@@ -269,7 +268,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
      * Returns TRUE if the guide lines should be drawn.
      * \see setVisible()
      */
-    bool visible() const;
+    [[nodiscard]] bool visible() const;
 
     /**
      * Sets whether the guide lines should be \a visible.
@@ -338,8 +337,8 @@ class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
      */
     void setPage( int page );
 
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
     Qt::Orientation mOrientation = Qt::Horizontal;

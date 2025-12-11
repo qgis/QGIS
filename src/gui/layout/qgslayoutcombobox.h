@@ -51,7 +51,7 @@ class GUI_EXPORT QgsLayoutComboBox : public QComboBox
      *
      * \see setFilters()
      */
-    QgsLayoutManagerProxyModel::Filters filters() const;
+    [[nodiscard]] QgsLayoutManagerProxyModel::Filters filters() const;
 
     /**
      * Sets the current \a filters used for filtering available layouts.
@@ -70,17 +70,17 @@ class GUI_EXPORT QgsLayoutComboBox : public QComboBox
      * Returns TRUE if the combobox includes the empty layout ("not set") choice.
      * \see setAllowEmptyLayout()
      */
-    bool allowEmptyLayout() const;
+    [[nodiscard]] bool allowEmptyLayout() const;
 
     /**
      * Returns the layout currently selected in the combo box.
      */
-    QgsMasterLayoutInterface *currentLayout() const;
+    [[nodiscard]] QgsMasterLayoutInterface *currentLayout() const;
 
     /**
      * Returns the layout at the specified \a index.
      */
-    QgsMasterLayoutInterface *layout( int index ) const;
+    [[nodiscard]] QgsMasterLayoutInterface *layout( int index ) const;
 
   public slots:
 

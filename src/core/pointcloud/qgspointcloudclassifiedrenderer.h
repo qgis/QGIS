@@ -56,27 +56,27 @@ class CORE_EXPORT QgsPointCloudCategory
      *
      * \see setValue()
      */
-    int value() const { return mValue; }
+    [[nodiscard]] int value() const { return mValue; }
 
     /**
      * Returns the color which will be used to render this category.
      * \see setColor()
      */
-    QColor color() const { return mColor; }
+    [[nodiscard]] QColor color() const { return mColor; }
 
     /**
      * Returns the point size for this category.
      * \see setPointSize()
      * \since QGIS 3.36
      */
-    double pointSize() const { return mPointSize; }
+    [[nodiscard]] double pointSize() const { return mPointSize; }
 
     /**
      * Returns the label for this category, which is used to represent the category within
      * legends and the layer tree.
      * \see setLabel()
      */
-    QString label() const { return mLabel; }
+    [[nodiscard]] QString label() const { return mLabel; }
 
     /**
      * Sets the \a value corresponding to this category.
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsPointCloudCategory
      * Returns TRUE if the category is currently enabled and should be rendered.
      * \see setRenderState()
      */
-    bool renderState() const { return mRender; }
+    [[nodiscard]] bool renderState() const { return mRender; }
 
     /**
      * Sets whether the category is currently enabled and should be rendered.
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData: public QgsPrepare
 {
   public:
 
-    QSet< QString > usedAttributes() const override;
+    [[nodiscard]] QSet< QString > usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
 
@@ -169,14 +169,14 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
      */
     QgsPointCloudClassifiedRenderer( const QString &attributeName = QString(), const QgsPointCloudCategoryList &categories = QgsPointCloudCategoryList() );
 
-    QString type() const override;
-    QgsPointCloudRenderer *clone() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     bool willRenderPoint( const QVariantMap &pointAttributes ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+    [[nodiscard]] QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
-    QStringList legendRuleKeys() const override;
+    [[nodiscard]] QStringList legendRuleKeys() const override;
     bool legendItemChecked( const QString &key ) override;
     void checkLegendItem( const QString &key, bool state = true ) override;
     std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
      *
      * \see setAttribute()
      */
-    QString attribute() const;
+    [[nodiscard]] QString attribute() const;
 
     /**
      * Sets the \a attribute to use for the renderer.
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
      *
      * \see setCategories()
      */
-    QgsPointCloudCategoryList categories() const;
+    [[nodiscard]] QgsPointCloudCategoryList categories() const;
 
     /**
      * Sets the classification \a categories used for rendering.

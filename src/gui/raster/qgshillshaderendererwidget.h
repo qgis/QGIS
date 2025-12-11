@@ -58,25 +58,25 @@ class GUI_EXPORT QgsHillshadeRendererWidget : public QgsRasterRendererWidget, pr
      * Returns the direction of the light over the raster between 0-360.
      * \see setAzimuth()
      */
-    double azimuth() const;
+    [[nodiscard]] double azimuth() const;
 
     /**
      * Returns the angle of the light source over the raster.
      * \see setAltitude()
      */
-    double altitude() const;
+    [[nodiscard]] double altitude() const;
 
     /**
      * Returns the Z scaling factor.
      * \see setZFactor()
      */
-    double zFactor() const;
+    [[nodiscard]] double zFactor() const;
 
     /**
      * Returns TRUE if the renderer should use the multi-directional hillshade algorithm.
      * \see setMultiDirectional()
      */
-    bool multiDirectional() const;
+    [[nodiscard]] bool multiDirectional() const;
 
   public slots:
 

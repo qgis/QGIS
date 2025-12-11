@@ -45,7 +45,7 @@ class GUI_EXPORT QgsDevToolWidgetFactory
      * Returns the icon that will be shown in the tool in the panel.
      * \see setIcon()
      */
-    virtual QIcon icon() const { return mIcon; }
+    [[nodiscard]] virtual QIcon icon() const { return mIcon; }
 
     /**
      * Sets the \a icon for the factory object, which will be shown for the tool in the panel.
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsDevToolWidgetFactory
      * Returns the (translated) title of the tool.
      * \see setTitle()
      */
-    virtual QString title() const { return mTitle; }
+    [[nodiscard]] virtual QString title() const { return mTitle; }
 
     /**
      * Set the translated \a title for the tool.

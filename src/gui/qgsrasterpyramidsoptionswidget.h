@@ -37,16 +37,16 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget : public QWidget, private Ui::Qg
     //! Constructor for QgsRasterPyramidsOptionsWidget
     QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &provider = "gdal" );
 
-    QStringList configOptions() const { return mSaveOptionsWidget->options(); }
+    [[nodiscard]] QStringList configOptions() const { return mSaveOptionsWidget->options(); }
     QgsRasterFormatSaveOptionsWidget *createOptionsWidget() SIP_FACTORY { return mSaveOptionsWidget; }
-    const QList<int> overviewList() const { return mOverviewList; }
+    [[nodiscard]] const QList<int> overviewList() const { return mOverviewList; }
 
     /**
      * Returns the selected pyramid format.
      */
-    Qgis::RasterPyramidFormat pyramidsFormat() const { return cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(); }
+    [[nodiscard]] Qgis::RasterPyramidFormat pyramidsFormat() const { return cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(); }
 
-    QString resamplingMethod() const;
+    [[nodiscard]] QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
     void setRasterFileName( const QString &file ) { mSaveOptionsWidget->setRasterFileName( file ); }
 

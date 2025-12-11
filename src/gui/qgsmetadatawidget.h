@@ -76,7 +76,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * \see setMode()
      * \since QGIS 3.2
      */
-    Mode mode() const { return mMode; }
+    [[nodiscard]] Mode mode() const { return mMode; }
 
     /**
      * Sets the \a metadata to display in the widget.
@@ -164,7 +164,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      *
      * \since QGIS 3.2
      */
-    QString title() const;
+    [[nodiscard]] QString title() const;
 
   public slots:
 

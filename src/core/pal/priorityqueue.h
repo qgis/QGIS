@@ -69,10 +69,10 @@ namespace pal
 
       void print();
 
-      int getSize() const;
-      int getSizeByPos() const;
+      [[nodiscard]] int getSize() const;
+      [[nodiscard]] int getSizeByPos() const;
 
-      bool isIn( int key ) const;
+      [[nodiscard]] bool isIn( int key ) const;
 
       int getBest(); // O(log n)
 
@@ -88,7 +88,7 @@ namespace pal
       void setPriority( int key, double new_p );
 
 
-      int getId( int key ) const;
+      [[nodiscard]] int getId( int key ) const;
     private:
 
       int size = 0;

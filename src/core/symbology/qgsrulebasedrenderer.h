@@ -172,25 +172,25 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param indent How many characters to indent. Will increase by two with every of the recursive calls
          * \returns A string representing this rule
          */
-        QString dump( int indent = 0 ) const;
+        [[nodiscard]] QString dump( int indent = 0 ) const;
 
         /**
          * Returns the attributes used to evaluate the expression of this rule
          * \returns A set of attribute names
          */
-        QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+        [[nodiscard]] QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
         /**
          * Returns TRUE if this rule or one of its children needs the geometry to be applied.
          */
-        bool needsGeometry() const;
+        [[nodiscard]] bool needsGeometry() const;
 
         /**
          * Returns a list of the symbols used by this rule and all children of this rule.
          */
-        QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
+        [[nodiscard]] QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
-        QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
+        [[nodiscard]] QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
 
         /**
          * Check if a given feature shall be rendered by this rule
@@ -208,11 +208,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns If the rule will be evaluated at this scale
          */
-        bool isScaleOK( double scale ) const;
+        [[nodiscard]] bool isScaleOK( double scale ) const;
 
         QgsSymbol *symbol() { return mSymbol.get(); }
-        QString label() const { return mLabel; }
-        bool dependsOnScale() const { return mMaximumScale != 0 || mMinimumScale != 0; }
+        [[nodiscard]] QString label() const { return mLabel; }
+        [[nodiscard]] bool dependsOnScale() const { return mMaximumScale != 0 || mMinimumScale != 0; }
 
         /**
          * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the rule will be active.
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \see minimumScale()
          * \see setMaximumScale()
         */
-        double maximumScale() const { return mMaximumScale; }
+        [[nodiscard]] double maximumScale() const { return mMaximumScale; }
 
         /**
          * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the rule will be active.
@@ -230,38 +230,38 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \see maximumScale()
          * \see setMinimumScale()
         */
-        double minimumScale() const { return mMinimumScale; }
+        [[nodiscard]] double minimumScale() const { return mMinimumScale; }
 
         /**
          * A filter that will check if this rule applies
          * \returns An expression
          */
-        QgsExpression *filter() const { return mFilter.get(); }
+        [[nodiscard]] QgsExpression *filter() const { return mFilter.get(); }
 
         /**
          * A filter that will check if this rule applies
          * \returns An expression
          */
-        QString filterExpression() const { return mFilterExp; }
+        [[nodiscard]] QString filterExpression() const { return mFilterExp; }
 
         /**
          * A human readable description for this rule
          *
          * \returns Description
          */
-        QString description() const { return mDescription; }
+        [[nodiscard]] QString description() const { return mDescription; }
 
         /**
          * Returns if this rule is active
          *
          * \returns TRUE if the rule is active
          */
-        bool active() const { return mIsActive; }
+        [[nodiscard]] bool active() const { return mIsActive; }
 
         /**
          * Unique rule identifier (for identification of rule within renderer)
          */
-        QString ruleKey() const { return mRuleKey; }
+        [[nodiscard]] QString ruleKey() const { return mRuleKey; }
 
         /**
          * Override the assigned rule key (should be used just internally by rule-based renderer)
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         void setActive( bool state ) { mIsActive = state; }
 
         //! clone this rule, return new instance
-        QgsRuleBasedRenderer::Rule *clone() const SIP_FACTORY;
+        [[nodiscard]] QgsRuleBasedRenderer::Rule *clone() const SIP_FACTORY;
 
         /**
          * Saves the symbol layer as SLD.
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \since QGIS 3.30
          */
-        bool hasActiveChildren() const;
+        [[nodiscard]] bool hasActiveChildren() const;
 
         //! Gets all used z-levels from this rule and children
         QSet<int> collectZLevels();
@@ -410,14 +410,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns A list of rules
          */
-        const QgsRuleBasedRenderer::RuleList &children() const { return mChildren; }
+        [[nodiscard]] const QgsRuleBasedRenderer::RuleList &children() const { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * \returns A list of descendant rules
          */
-        QgsRuleBasedRenderer::RuleList descendants() const;
+        [[nodiscard]] QgsRuleBasedRenderer::RuleList descendants() const;
 
         /**
          * The parent rule
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns TRUE if this rule is an else rule
          */
-        bool isElse() const { return mElseRule; }
+        [[nodiscard]] bool isElse() const { return mElseRule; }
 
         /**
          * Accepts the specified symbology \a visitor, causing it to visit all child rules associated

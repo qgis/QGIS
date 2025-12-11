@@ -66,21 +66,21 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation : public QgsTriangulation
     //! Draws the points, edges and the forced lines
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     //! Returns a pointer to the point with number i
-    QgsPoint *point( int i ) const override;
+    [[nodiscard]] QgsPoint *point( int i ) const override;
     int oppositePoint( int p1, int p2 ) override;
     bool triangleVertices( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT ) override;
     bool triangleVertices( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) override;
     QList<int> surroundingTriangles( int pointno ) override;
     //! Returns the largest x-coordinate value of the bounding box
-    double xMax() const override { return mXMax; }
+    [[nodiscard]] double xMax() const override { return mXMax; }
     //! Returns the smallest x-coordinate value of the bounding box
-    double xMin() const override { return mXMin; }
+    [[nodiscard]] double xMin() const override { return mXMin; }
     //! Returns the largest y-coordinate value of the bounding box
-    double yMax() const override { return mYMax; }
+    [[nodiscard]] double yMax() const override { return mYMax; }
     //! Returns the smallest x-coordinate value of the bounding box
-    double yMin() const override { return mYMin; }
+    [[nodiscard]] double yMin() const override { return mYMin; }
     //! Returns the number of points
-    int pointsCount() const override;
+    [[nodiscard]] int pointsCount() const override;
     //! Sets the behavior of the triangulation in case of crossing forced lines
     void setForcedCrossBehavior( QgsTriangulation::ForcedCrossBehavior b ) override;
     //! Sets an interpolator object
@@ -141,7 +141,7 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation : public QgsTriangulation
     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.
     bool checkSwapRecursively( unsigned int edge, unsigned int recursiveDeep );
     //! Return true if edge need to be swapped after Delaunay criteria control
-    bool isEdgeNeedSwap( unsigned int edge ) const;
+    [[nodiscard]] bool isEdgeNeedSwap( unsigned int edge ) const;
     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)
     void doSwapRecursively( unsigned int edge, unsigned int recursiveDeep );
     //! Swaps 'edge' and does no recursiv testing
@@ -157,13 +157,13 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation : public QgsTriangulation
     //! If a point has been inserted twice, its number is stored in this member
     int mTwiceInsPoint = 0;
     //! Returns TRUE, if it is possible to swap an edge, otherwise FALSE(concave quad or edge on (or outside) the convex hull)
-    bool swapPossible( unsigned int edge ) const;
+    [[nodiscard]] bool swapPossible( unsigned int edge ) const;
     //! Divides a polygon in a triangle and two polygons and calls itself recursively for these two polygons. 'poly' is a pointer to a list with the numbers of the edges of the polygon, 'free' is a pointer to a list of free halfedges, and 'mainedge' is the number of the edge, towards which the new triangle is inserted. Mainedge has to be the same as poly->begin(), otherwise the recursion does not work
     void triangulatePolygon( QList<int> *poly, QList<int> *free, int mainedge );
     //! Tests, if the bounding box of the halfedge with index i intersects the specified bounding box. The main purpose for this method is the drawing of the triangulation
-    bool halfEdgeBBoxTest( int edge, double xlowleft, double ylowleft, double xupright, double yupright ) const;
+    [[nodiscard]] bool halfEdgeBBoxTest( int edge, double xlowleft, double ylowleft, double xupright, double yupright ) const;
     //! Calculates the minimum angle, which would be present, if the specified halfedge would be swapped
-    double swapMinAngle( int edge ) const;
+    [[nodiscard]] double swapMinAngle( int edge ) const;
     //! Inserts a new point on the halfedge with number 'edge'. The position can have a value from 0 to 1 (e.g. 0.5 would be in the middle). The return value is the number of the new inserted point. tin is the triangulation, which should be used to calculate the elevation of the inserted point
     int splitHalfEdge( int edge, float position );
     //! Returns TRUE, if a half edge is on the convex hull and FALSE otherwise

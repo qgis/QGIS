@@ -58,32 +58,32 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
     //! Sets human readable name of this style
     void setStyleName( const QString &name ) { mStyleName = name; }
     //! Returns human readable name of this style
-    QString styleName() const { return mStyleName; }
+    [[nodiscard]] QString styleName() const { return mStyleName; }
 
     //! Sets name of the sub-layer to render (empty layer means that all layers match)
     void setLayerName( const QString &name ) { mLayerName = name; }
     //! Returns name of the sub-layer to render (empty layer means that all layers match)
-    QString layerName() const { return mLayerName; }
+    [[nodiscard]] QString layerName() const { return mLayerName; }
 
     //! Sets type of the geometry that will be used (point / line / polygon)
     void setGeometryType( Qgis::GeometryType geomType ) { mGeometryType = geomType; }
     //! Returns type of the geometry that will be used (point / line / polygon)
-    Qgis::GeometryType geometryType() const { return mGeometryType; }
+    [[nodiscard]] Qgis::GeometryType geometryType() const { return mGeometryType; }
 
     //! Sets filter expression (empty filter means that all features match)
     void setFilterExpression( const QString &expr ) { mExpression = expr; }
     //! Returns filter expression (empty filter means that all features match)
-    QString filterExpression() const { return mExpression; }
+    [[nodiscard]] QString filterExpression() const { return mExpression; }
 
     //! Sets symbol for rendering. Takes ownership of the symbol.
     void setSymbol( QgsSymbol *sym SIP_TRANSFER );
     //! Returns symbol for rendering
-    QgsSymbol *symbol() const { return mSymbol.get(); }
+    [[nodiscard]] QgsSymbol *symbol() const { return mSymbol.get(); }
 
     //! Sets whether this style is enabled (used for rendering)
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     //! Returns whether this style is enabled (used for rendering)
-    bool isEnabled() const { return mEnabled; }
+    [[nodiscard]] bool isEnabled() const { return mEnabled; }
 
     /**
      * Sets minimum zoom level index (negative number means no limit).
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
      * \see setMinZoomLevel()
      * \see maxZoomLevel()
      */
-    int minZoomLevel() const { return mMinZoomLevel; }
+    [[nodiscard]] int minZoomLevel() const { return mMinZoomLevel; }
 
     /**
      * Sets maximum zoom level index (negative number means no limit).
@@ -135,10 +135,10 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
      * \see setMaxZoomLevel()
      * \see minZoomLevel()
      */
-    int maxZoomLevel() const { return mMaxZoomLevel; }
+    [[nodiscard]] int maxZoomLevel() const { return mMaxZoomLevel; }
 
     //! Returns whether the style is active at given zoom level (also checks "enabled" flag)
-    bool isActive( int zoomLevel ) const
+    [[nodiscard]] bool isActive( int zoomLevel ) const
     {
       return mEnabled && ( mMinZoomLevel == -1 || zoomLevel >= mMinZoomLevel ) && ( mMaxZoomLevel == -1 || zoomLevel <= mMaxZoomLevel );
     }
@@ -174,8 +174,8 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     //! Constructs renderer with no styles
     QgsVectorTileBasicRenderer();
 
-    QString type() const override;
-    QgsVectorTileBasicRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsVectorTileBasicRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) override;
     QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) override SIP_SKIP;
     QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const override;
@@ -190,11 +190,11 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     //! Sets list of styles of the renderer
     void setStyles( const QList<QgsVectorTileBasicRendererStyle> &styles );
     //! Returns list of styles of the renderer
-    QList<QgsVectorTileBasicRendererStyle> styles() const;
+    [[nodiscard]] QList<QgsVectorTileBasicRendererStyle> styles() const;
     //! Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
     void setStyle( int index, const QgsVectorTileBasicRendererStyle &style ) { mStyles[index] = style; }
     //! Returns style definition at the particular index
-    QgsVectorTileBasicRendererStyle style( int index ) const { return mStyles[index]; }
+    [[nodiscard]] QgsVectorTileBasicRendererStyle style( int index ) const { return mStyles[index]; }
 
     //! Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
     static QList<QgsVectorTileBasicRendererStyle> simpleStyle(

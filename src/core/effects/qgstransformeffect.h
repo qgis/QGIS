@@ -47,10 +47,10 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsTransformEffect() = default;
 
-    QString type() const override { return QStringLiteral( "transform" ); }
-    QVariantMap properties() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "transform" ); }
+    [[nodiscard]] QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
-    QgsTransformEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsTransformEffect *clone() const override SIP_FACTORY;
 
     /**
      * Sets the transform x translation.
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see translateUnit
      * \see translateMapUnitScale
      */
-    double translateX() const { return mTranslateX; }
+    [[nodiscard]] double translateX() const { return mTranslateX; }
 
     /**
      * Sets the transform y translation.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see translateUnit
      * \see translateMapUnitScale
      */
-    double translateY() const { return mTranslateY; }
+    [[nodiscard]] double translateY() const { return mTranslateY; }
 
     /**
      * Sets the units used for the transform translation.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see translateY
      * \see translateMapUnitScale
      */
-    Qgis::RenderUnit translateUnit() const { return mTranslateUnit; }
+    [[nodiscard]] Qgis::RenderUnit translateUnit() const { return mTranslateUnit; }
 
     /**
      * Sets the map unit scale used for the transform translation.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see translateY
      * \see translateUnit
      */
-    const QgsMapUnitScale &translateMapUnitScale() const { return mTranslateMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &translateMapUnitScale() const { return mTranslateMapUnitScale; }
 
     /**
      * Sets the x axis scaling factor.
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setScaleX
      * \see scaleY
      */
-    double scaleX() const { return mScaleX; }
+    [[nodiscard]] double scaleX() const { return mScaleX; }
 
     /**
      * Sets the y axis scaling factor.
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setScaleY
      * \see scaleX
      */
-    double scaleY() const { return mScaleY; }
+    [[nodiscard]] double scaleY() const { return mScaleY; }
 
     /**
      * Sets the transform \a rotation, in degrees clockwise.
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * Returns the transform rotation, in degrees clockwise.
      * \see setRotation()
      */
-    double rotation() const { return mRotation; }
+    [[nodiscard]] double rotation() const { return mRotation; }
 
     /**
      * Sets the x axis shearing factor.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setShearX
      * \see shearY
      */
-    double shearX() const { return mShearX; }
+    [[nodiscard]] double shearX() const { return mShearX; }
 
     /**
      * Sets the y axis shearing factor.
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setShearY
      * \see shearX
      */
-    double shearY() const { return mShearY; }
+    [[nodiscard]] double shearY() const { return mShearY; }
 
     /**
      * Sets whether to reflect along the x-axis
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setReflectX
      * \see reflectY
      */
-    bool reflectX() const { return mReflectX; }
+    [[nodiscard]] bool reflectX() const { return mReflectX; }
 
     /**
      * Sets whether to reflect along the y-axis
@@ -237,12 +237,12 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setReflectY
      * \see reflectX
      */
-    bool reflectY() const { return mReflectY; }
+    [[nodiscard]] bool reflectY() const { return mReflectY; }
 
   protected:
 
     void draw( QgsRenderContext &context ) override;
-    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    [[nodiscard]] QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
 
   private:
 
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     bool mReflectX = false;
     bool mReflectY = false;
 
-    QTransform createTransform( const QgsRenderContext &context ) const;
+    [[nodiscard]] QTransform createTransform( const QgsRenderContext &context ) const;
 
 };
 

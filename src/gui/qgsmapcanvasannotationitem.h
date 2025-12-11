@@ -78,7 +78,7 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanva
      * Returns the item's annotation.
      * \note not available in Python bindings
      */
-    const QgsAnnotation *annotation() const SIP_SKIP
+    [[nodiscard]] const QgsAnnotation *annotation() const SIP_SKIP
     {
       return mAnnotation;
     }
@@ -90,19 +90,19 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanva
 
     void updatePosition() override;
 
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
 
     void paint( QPainter *painter ) override;
 
     /**
      * Returns the mouse move behavior for a given position in scene coordinates
      */
-    MouseMoveAction moveActionForPosition( QPointF pos ) const;
+    [[nodiscard]] MouseMoveAction moveActionForPosition( QPointF pos ) const;
 
     /**
      * Returns matching cursor shape for a mouse move action.
      */
-    Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
+    [[nodiscard]] Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
 
   private slots:
 
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanva
     void drawSelectionBoxes( QPainter *p ) const;
 
     //! Returns the symbol size scaled in (mapcanvas) pixels. Used for the counting rect calculation
-    double scaledSymbolSize() const;
+    [[nodiscard]] double scaledSymbolSize() const;
 
     QgsAnnotation *mAnnotation = nullptr;
 

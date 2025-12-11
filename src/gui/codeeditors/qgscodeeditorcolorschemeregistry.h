@@ -58,14 +58,14 @@ class GUI_EXPORT QgsCodeEditorColorSchemeRegistry
     /**
      * Returns a list of the QgsCodeEditorColorScheme::id() values for all registered color schemes.
      */
-    QStringList schemes() const;
+    [[nodiscard]] QStringList schemes() const;
 
     /**
      * Returns the color scheme with matching \a id.
      *
      * If the specified scheme \a id does not exist then the default scheme will be returned instead.
      */
-    QgsCodeEditorColorScheme scheme( const QString &id ) const;
+    [[nodiscard]] QgsCodeEditorColorScheme scheme( const QString &id ) const;
 
   private:
     QMap<QString, QgsCodeEditorColorScheme> mColorSchemes;

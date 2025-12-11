@@ -66,8 +66,8 @@ class QgsAnnotationItemPropertiesWidgetFactory : public QObject, public QgsMapLa
     explicit QgsAnnotationItemPropertiesWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-    bool supportLayerPropertiesDialog() const override;
-    bool supportsStyleDock() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportsStyleDock() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
 };
 

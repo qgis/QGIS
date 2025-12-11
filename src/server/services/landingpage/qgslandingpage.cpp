@@ -35,7 +35,7 @@ class QgsLandingPageApi : public QgsServerOgcApi
     {
     }
 
-    bool accept( const QUrl &url ) const override
+    [[nodiscard]] bool accept( const QUrl &url ) const override
     {
       QString baseUrlPrefix { serverIface()->serverSettings()->landingPageBaseUrlPrefix() };
 

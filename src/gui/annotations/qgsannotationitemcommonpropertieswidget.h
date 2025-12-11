@@ -61,7 +61,7 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget : public QWidget, priva
      * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
   signals:
 

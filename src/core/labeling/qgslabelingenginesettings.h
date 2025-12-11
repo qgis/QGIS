@@ -65,9 +65,9 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Sets flags of the labeling engine
     void setFlags( Qgis::LabelingFlags flags ) { mFlags = flags; }
     //! Gets flags of the labeling engine
-    Qgis::LabelingFlags flags() const { return mFlags; }
+    [[nodiscard]] Qgis::LabelingFlags flags() const { return mFlags; }
     //! Test whether a particular flag is enabled
-    bool testFlag( Qgis::LabelingFlag f ) const { return mFlags.testFlag( f ); }
+    [[nodiscard]] bool testFlag( Qgis::LabelingFlag f ) const { return mFlags.testFlag( f ); }
     //! Sets whether a particual flag is enabled
     void setFlag( Qgis::LabelingFlag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~static_cast< int >( f ); }
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setMaximumLineCandidatesPerCm()
      * \since QGIS 3.12
      */
-    double maximumLineCandidatesPerCm() const { return mMaxLineCandidatesPerCm; }
+    [[nodiscard]] double maximumLineCandidatesPerCm() const { return mMaxLineCandidatesPerCm; }
 
     /**
      * Sets the maximum number of line label \a candidates per centimeter.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setMaximumPolygonCandidatesPerCmSquared()
      * \since QGIS 3.12
      */
-    double maximumPolygonCandidatesPerCmSquared() const { return mMaxPolygonCandidatesPerCmSquared; }
+    [[nodiscard]] double maximumPolygonCandidatesPerCmSquared() const { return mMaxPolygonCandidatesPerCmSquared; }
 
     /**
      * Sets the maximum number of polygon label \a candidates per centimeter squared.
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setDefaultTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    Qgis::TextRenderFormat defaultTextRenderFormat() const
+    [[nodiscard]] Qgis::TextRenderFormat defaultTextRenderFormat() const
     {
       return mDefaultTextRenderFormat;
     }
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setUnplacedLabelColor()
      * \since QGIS 3.10
      */
-    QColor unplacedLabelColor() const;
+    [[nodiscard]] QColor unplacedLabelColor() const;
 
     /**
      * Sets the \a color to use when rendering unplaced labels.
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setPlacementVersion()
      * \since QGIS 3.10.2
      */
-    Qgis::LabelPlacementEngineVersion placementVersion() const;
+    [[nodiscard]] Qgis::LabelPlacementEngineVersion placementVersion() const;
 
     /**
      * Sets the placement engine \a version, which dictates how the label placement problem is solved.
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setRules()
      * \since QGIS 3.40
      */
-    QList< const QgsAbstractLabelingEngineRule * > rules() const SIP_SKIP;
+    [[nodiscard]] QList< const QgsAbstractLabelingEngineRule * > rules() const SIP_SKIP;
 
     /**
      * Adds a labeling engine \a rule which must be satisfied

@@ -45,7 +45,7 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
      * Returns the fill symbol used for shading layout extents.
      * \see setSymbol()
      */
-    QgsFillSymbol *symbol() const;
+    [[nodiscard]] QgsFillSymbol *symbol() const;
 
     /**
      * Sets the fill \a symbol used for shading layout extents. Ownership of
@@ -59,7 +59,7 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
      * \see setTextFormat()
      * \see labelExtents()
      */
-    QgsTextFormat textFormat() const { return mTextFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const { return mTextFormat; }
 
     /**
      * Sets the text \a format for extent labels.
@@ -73,7 +73,7 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
      * \see setLabelExtents()
      * \see textFormat()
      */
-    bool labelExtents() const;
+    [[nodiscard]] bool labelExtents() const;
 
     /**
      * Sets whether layout extents should be labeled with the name of the associated layout & map.
@@ -82,7 +82,7 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
      */
     void setLabelExtents( bool labelExtents );
 
-    bool hasFixedMapPosition() const override { return true; }
+    [[nodiscard]] bool hasFixedMapPosition() const override { return true; }
 
   public slots:
     void projectRead() override;

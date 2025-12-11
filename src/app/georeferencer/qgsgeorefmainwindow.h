@@ -209,7 +209,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     // gdal script
     void showGDALScript( const QStringList &commands );
     QString generateGDALtranslateCommand( bool generateTFW = true );
-    QString generateGDALogr2ogrCommand() const;
+    [[nodiscard]] QString generateGDALogr2ogrCommand() const;
 
     /**
      * Generate command-line for gdalwarp based on current GCPs and given parameters.

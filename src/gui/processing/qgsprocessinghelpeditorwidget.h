@@ -64,7 +64,7 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
     void changeItem( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
   private:
-    QString formattedHelp() const;
+    [[nodiscard]] QString formattedHelp() const;
 
     void storeCurrentValue();
 

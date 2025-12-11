@@ -47,7 +47,7 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
      * Current configuration
      * \return current configuration map
      */
-    QgsStringMap configMap() const final;
+    [[nodiscard]] QgsStringMap configMap() const final;
 
 
   public slots:
@@ -136,29 +136,29 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     void initGui();
     void parseSoftwareStatement( const QString &path );
 
-    QWidget *parentWidget() const;
-    QLineEdit *parentNameField() const;
-    QString parentConfigId() const;
+    [[nodiscard]] QWidget *parentWidget() const;
+    [[nodiscard]] QLineEdit *parentNameField() const;
+    [[nodiscard]] QString parentConfigId() const;
 
     void initConfigObjs();
 
     bool hasTokenCacheFile();
 
     void addQueryPairRow( const QString &key, const QString &val );
-    QVariantMap queryPairs() const;
+    [[nodiscard]] QVariantMap queryPairs() const;
 
     void addExtraTokenRow( const QString &key, const QString &val );
-    QVariantMap extraTokens() const;
+    [[nodiscard]] QVariantMap extraTokens() const;
 
-    int customTab() const { return 0; }
-    int definedTab() const { return 1; }
-    int statementTab() const { return 2; }
-    bool onCustomTab() const;
-    bool onDefinedTab() const;
-    bool onStatementTab() const;
+    [[nodiscard]] int customTab() const { return 0; }
+    [[nodiscard]] int definedTab() const { return 1; }
+    [[nodiscard]] int statementTab() const { return 2; }
+    [[nodiscard]] bool onCustomTab() const;
+    [[nodiscard]] bool onDefinedTab() const;
+    [[nodiscard]] bool onStatementTab() const;
     void getSoftwareStatementConfig();
 
-    QString currentDefinedConfig() const { return mDefinedId; }
+    [[nodiscard]] QString currentDefinedConfig() const { return mDefinedId; }
 
     void updatePredefinedLocationsTooltip();
 

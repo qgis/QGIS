@@ -145,12 +145,12 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
   public:
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
 
-    QgsLocatorFilterFilter *clone() const override SIP_FACTORY;
-    QgsLocatorFilter::Flags flags() const override;
+    [[nodiscard]] QgsLocatorFilterFilter *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsLocatorFilter::Flags flags() const override;
 
-    QString name() const override { return QStringLiteral( "filters" ); }
-    QString displayName() const override { return QString(); }
-    Priority priority() const override { return static_cast<QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
+    [[nodiscard]] QString name() const override { return QStringLiteral( "filters" ); }
+    [[nodiscard]] QString displayName() const override { return QString(); }
+    [[nodiscard]] Priority priority() const override { return static_cast<QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 

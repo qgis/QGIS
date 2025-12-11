@@ -34,11 +34,11 @@ class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
 
     QgsSingleBoxScaleBarRenderer() = default;
 
-    QString id() const override;
-    QString visibleName() const override;
-    int sortKey() const override;
-    Flags flags() const override;
-    QgsSingleBoxScaleBarRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
+    [[nodiscard]] int sortKey() const override;
+    [[nodiscard]] Flags flags() const override;
+    [[nodiscard]] QgsSingleBoxScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

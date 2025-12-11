@@ -154,7 +154,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \returns TRUE if force suppress form popup is set.
      * \since QGIS 3.14
      */
-    bool forceSuppressFormPopup() const;
+    [[nodiscard]] bool forceSuppressFormPopup() const;
 
     /**
      * Sets force suppress form popup status to \a forceSuppressFormPopup.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * \since QGIS 3.34
      */
-    QgsProject *project() const { return mProject; }
+    [[nodiscard]] QgsProject *project() const { return mProject; }
 
   private:
 

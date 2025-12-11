@@ -63,7 +63,7 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
      *
      * \see setGeometryType()
     */
-    Qgis::GeometryType geometryType() const { return mGeometryType; }
+    [[nodiscard]] Qgis::GeometryType geometryType() const { return mGeometryType; }
 
     /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
      * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Sets the widget state to match the specified \a callout.

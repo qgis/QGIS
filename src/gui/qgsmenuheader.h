@@ -39,8 +39,8 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
      */
     explicit QgsMenuHeader( const QString &text, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    QSize minimumSizeHint() const override;
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
   protected:
     void paintEvent( QPaintEvent *event ) override;

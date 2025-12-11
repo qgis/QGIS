@@ -58,17 +58,17 @@ class _3D_EXPORT Qgs3DTerrainAbstractMetadata
     /**
      * Returns the unique terrain type string.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns the terrain's visible (translated) name.
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns an icon representing the terrain type, if available.
      */
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
     /**
      * Creates a new instance of this terrain settings type.
@@ -127,12 +127,12 @@ class _3D_EXPORT Qgs3DTerrainMetadata : public Qgs3DTerrainAbstractMetadata
     /**
      * Returns the terrain setting's creation function.
      */
-    QgsTerrainSettingsCreateFunc createSettingsFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsTerrainSettingsCreateFunc createSettingsFunction() const { return mCreateFunc; }
 
     /**
      * Returns the terrain generator creation function.
      */
-    QgsTerrainGeneratorCreateFunc createGeneratorFunction() const { return mGeneratorCreateFunc; }
+    [[nodiscard]] QgsTerrainGeneratorCreateFunc createGeneratorFunction() const { return mGeneratorCreateFunc; }
 
     QgsAbstractTerrainSettings *createTerrainSettings() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
     QgsTerrainGenerator *createTerrainGenerator() override { return mGeneratorCreateFunc ? mGeneratorCreateFunc() : nullptr; }
@@ -163,12 +163,12 @@ class _3D_EXPORT Qgs3DTerrainRegistry
     Qgs3DTerrainRegistry &operator=( const Qgs3DTerrainRegistry &rh ) = delete;
 
     //! Returns metadata for specified terrain \a type. Returns NULLPTR if not found
-    Qgs3DTerrainAbstractMetadata *terrainMetadata( const QString &type ) const;
+    [[nodiscard]] Qgs3DTerrainAbstractMetadata *terrainMetadata( const QString &type ) const;
 
     /**
      * Returns a list of all available terrain types.
      */
-    QStringList types() const;
+    [[nodiscard]] QStringList types() const;
 
     //! Registers a new terrain type. Takes ownership of the \a metadata instance.
     bool addType( Qgs3DTerrainAbstractMetadata *metadata SIP_TRANSFER );
@@ -180,7 +180,7 @@ class _3D_EXPORT Qgs3DTerrainRegistry
      *
      * Returns NULLPTR if the specified type is not found in the registry.
      */
-    QgsAbstractTerrainSettings *createTerrainSettings( const QString &type ) const SIP_FACTORY;
+    [[nodiscard]] QgsAbstractTerrainSettings *createTerrainSettings( const QString &type ) const SIP_FACTORY;
 
     /**
      * Creates a new instance of the terrain generator of the specified \a type.
@@ -191,7 +191,7 @@ class _3D_EXPORT Qgs3DTerrainRegistry
      *
      * \note Not available in Python bindings
      */
-    SIP_SKIP QgsTerrainGenerator *createTerrainGenerator( const QString &type ) const;
+    SIP_SKIP [[nodiscard]] QgsTerrainGenerator *createTerrainGenerator( const QString &type ) const;
 
     /**
      * Create terrain settings directly from a project's elevation \a properties.

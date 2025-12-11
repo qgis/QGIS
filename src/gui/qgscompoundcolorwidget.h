@@ -58,7 +58,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * Returns the current color for the dialog
      * \returns dialog color
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Sets whether opacity modification (transparency) is permitted
@@ -219,14 +219,14 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * \param image image to sample
      * \returns average color from image
      */
-    QColor averageColor( const QImage &image ) const;
+    [[nodiscard]] QColor averageColor( const QImage &image ) const;
 
     /**
      * Samples a color from the desktop
      * \param point position of color to sample
      * \returns average color from sampled position
      */
-    QColor sampleColor( QPoint point ) const;
+    [[nodiscard]] QColor sampleColor( QPoint point ) const;
 
     /**
      * Repopulates the scheme combo box with current color schemes

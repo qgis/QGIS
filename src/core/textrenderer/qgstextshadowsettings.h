@@ -63,7 +63,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * Returns whether the shadow is enabled.
      * \see setEnabled()
      */
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     /**
      * Sets whether the text shadow will be drawn.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * background shape) is used for casting the shadow.
      * \see setShadowPlacement()
      */
-    QgsTextShadowSettings::ShadowPlacement shadowPlacement() const;
+    [[nodiscard]] QgsTextShadowSettings::ShadowPlacement shadowPlacement() const;
 
     /**
      * Sets the placement for the drop shadow. The placement determines
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setOffsetAngle
      * \see offsetDistance()
      */
-    int offsetAngle() const;
+    [[nodiscard]] int offsetAngle() const;
 
     /**
      * Sets the angle for offsetting the position of the shadow from the text.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setOffsetDistance()
      * \see offsetUnit()
      */
-    double offsetDistance() const;
+    [[nodiscard]] double offsetDistance() const;
 
     /**
      * Sets the distance for offsetting the position of the shadow from the text. Offset units
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setOffsetUnit()
      * \see offsetDistance()
      */
-    Qgis::RenderUnit offsetUnit() const;
+    [[nodiscard]] Qgis::RenderUnit offsetUnit() const;
 
     /**
      * Sets the units used for the shadow's offset.
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setOffsetMapUnitScale()
      * \see offsetUnit()
      */
-    QgsMapUnitScale offsetMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale offsetMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the shadow offset distance. This is only used if the
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * Returns TRUE if the global shadow offset will be used.
      * \see setOffsetGlobal()
      */
-    bool offsetGlobal() const;
+    [[nodiscard]] bool offsetGlobal() const;
 
     /**
      * Sets whether the global shadow offset should be used.
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setBlurRadius()
      * \see blurRadiusUnit()
      */
-    double blurRadius() const;
+    [[nodiscard]] double blurRadius() const;
 
     /**
      * Sets the blur radius for the shadow. Radius units are specified via setBlurRadiusUnits().
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setBlurRadiusUnit()
      * \see blurRadius()
      */
-    Qgis::RenderUnit blurRadiusUnit() const;
+    [[nodiscard]] Qgis::RenderUnit blurRadiusUnit() const;
 
     /**
      * Sets the units used for the shadow's blur radius.
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setBlurRadiusMapUnitScale()
      * \see blurRadiusUnit()
      */
-    QgsMapUnitScale blurRadiusMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale blurRadiusMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the shadow blur radius. This is only used if the
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * Returns whether only the alpha channel for the shadow will be blurred.
      * \see setBlurAlphaOnly()
      */
-    bool blurAlphaOnly() const;
+    [[nodiscard]] bool blurAlphaOnly() const;
 
     /**
      * Sets whether only the alpha channel for the shadow should be blurred.
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * opaque).
      * \see setOpacity()
      */
-    double opacity() const;
+    [[nodiscard]] double opacity() const;
 
     /**
      * Sets the shadow's opacity.
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * Returns the scaling used for the drop shadow (in percentage of original size).
      * \see setScale()
      */
-    int scale() const;
+    [[nodiscard]] int scale() const;
 
     /**
      * Sets the scaling used for the drop shadow (in percentage of original size).
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * Returns the color of the drop shadow.
      * \see setColor()
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Sets the color for the drop shadow.
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * Returns the blending mode used for drawing the drop shadow.
      * \see setBlendMode()
      */
-    QPainter::CompositionMode blendMode() const;
+    [[nodiscard]] QPainter::CompositionMode blendMode() const;
 
     /**
      * Sets the blending mode used for drawing the drop shadow.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * Returns all field names referenced by the configuration (e.g. from data defined properties).
      * \since QGIS 3.14
      */
-    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+    [[nodiscard]] QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
   private:
 

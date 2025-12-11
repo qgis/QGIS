@@ -35,19 +35,19 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
     void setDockMode( bool dockMode );
 
-    QgsPointCloud3DSymbol *symbol() const;
+    [[nodiscard]] QgsPointCloud3DSymbol *symbol() const;
 
     void setMaximumScreenError( double maxScreenError );
-    double maximumScreenError() const;
+    [[nodiscard]] double maximumScreenError() const;
 
     void setShowBoundingBoxes( bool showBoundingBoxes );
-    bool showBoundingBoxes() const;
+    [[nodiscard]] bool showBoundingBoxes() const;
 
     void setPointBudget( double budget );
-    double pointBudget() const;
+    [[nodiscard]] double pointBudget() const;
 
     void setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior );
-    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const;
+    [[nodiscard]] Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const;
 
     void connectChildPanels( QgsPanelWidget *parent );
 

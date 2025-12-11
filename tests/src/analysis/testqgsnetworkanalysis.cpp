@@ -54,11 +54,11 @@ class TestQgsNetworkAnalysis : public QgsTest
 
 class TestNetworkStrategy : public QgsNetworkStrategy
 {
-    QSet<int> requiredAttributes() const override
+    [[nodiscard]] QSet<int> requiredAttributes() const override
     {
       return QSet<int>() << 0;
     }
-    QVariant cost( double, const QgsFeature &f ) const override
+    [[nodiscard]] QVariant cost( double, const QgsFeature &f ) const override
     {
       return f.attribute( 0 );
     }

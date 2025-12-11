@@ -45,12 +45,12 @@ class APP_EXPORT QgsCreateRelationDialog : public QDialog, private Ui::QgsRelati
   public:
     explicit QgsCreateRelationDialog( QWidget *parent = nullptr );
 
-    QString referencingLayerId() const;
-    QString referencedLayerId() const;
-    QList<QPair<QString, QString>> references() const;
-    QString relationId() const;
-    QString relationName() const;
-    Qgis::RelationshipStrength relationStrength() const;
+    [[nodiscard]] QString referencingLayerId() const;
+    [[nodiscard]] QString referencedLayerId() const;
+    [[nodiscard]] QList<QPair<QString, QString>> references() const;
+    [[nodiscard]] QString relationId() const;
+    [[nodiscard]] QString relationName() const;
+    [[nodiscard]] Qgis::RelationshipStrength relationStrength() const;
 
   private slots:
     void addFieldsRow();

@@ -48,7 +48,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, const QPicture &picture, const QPointF &position, const QSizeF &size = QSizeF( 16, 16 ) );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     /**
      * Returns the button's position.
      */
-    QPointF position() const { return mPosition; };
+    [[nodiscard]] QPointF position() const { return mPosition; };
 
 
     /**
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets
      * or QgsModelDesignerSocketGraphicItem::mOutSockets array
      */
-    int index() const { return mIndex; };
+    [[nodiscard]] int index() const { return mIndex; };
 
     /**
      * Returns on which edge this socket is:
@@ -183,14 +183,14 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      * - Qt::Edge::TopEdge for input socket
      * - Qt::Edge::BottomEdge for output socket
      */
-    Qt::Edge edge() const { return mEdge; };
+    [[nodiscard]] Qt::Edge edge() const { return mEdge; };
 
     /**
      * Returns whether the socket is an input socket or not.
      *
      * Convenient function around mEdge member
      */
-    bool isInput() const { return mEdge == Qt::TopEdge; };
+    [[nodiscard]] bool isInput() const { return mEdge == Qt::TopEdge; };
 
     /**
      * Return the component associated to the socket.
@@ -206,13 +206,13 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      * Returns the color of the socket based on the type of data the param corresponds to.
      * \since QGIS 4.0
      */
-    QColor socketColor() const;
+    [[nodiscard]] QColor socketColor() const;
 
     /*
      * Returns TRUE if the parameter is set to the default parameter value.
      * \since QGIS 4.0
      */
-    bool isDefaultParameterValue() const;
+    [[nodiscard]] bool isDefaultParameterValue() const;
 
   signals:
 

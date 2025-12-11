@@ -60,7 +60,7 @@ class TestQgsMeshRenderer : public QgsTest
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init();            // will be called before each testfunction is executed.
-    QString readFile( const QString &fname ) const;
+    [[nodiscard]] QString readFile( const QString &fname ) const;
 
     void test_native_mesh_rendering();
     void test_native_mesh_renderingWithClipping();

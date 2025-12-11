@@ -118,34 +118,34 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * The current lock mode of this constraint
          * \returns Lock mode
          */
-        LockMode lockMode() const { return mLockMode; }
+        [[nodiscard]] LockMode lockMode() const { return mLockMode; }
 
         /**
          * Is any kind of lock mode enabled
          */
-        bool isLocked() const { return mLockMode != NoLock; }
+        [[nodiscard]] bool isLocked() const { return mLockMode != NoLock; }
 
         /**
          * Returns TRUE if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \see setRepeatingLock()
          */
-        bool isRepeatingLock() const { return mRepeatingLock; }
+        [[nodiscard]] bool isRepeatingLock() const { return mRepeatingLock; }
 
         /**
          * Is the constraint in relative mode
          */
-        bool relative() const { return mRelative; }
+        [[nodiscard]] bool relative() const { return mRelative; }
 
         /**
          * The value of the constraint
          */
-        double value() const { return mValue; }
+        [[nodiscard]] double value() const { return mValue; }
 
         /**
          * The line edit that manages the value of the constraint
          */
-        QLineEdit *lineEdit() const { return mLineEdit; }
+        [[nodiscard]] QLineEdit *lineEdit() const { return mLineEdit; }
 
         /**
          * Set the lock mode
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * Returns a localized formatted string representation of the value.
          * \since QGIS 3.32
          */
-        QString displayValue() const;
+        [[nodiscard]] QString displayValue() const;
 
         /**
          * Toggle lock mode
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * \see setPrecision()
          * \since QGIS 3.22
          */
-        int precision() const { return mPrecision; }
+        [[nodiscard]] int precision() const { return mPrecision; }
 
         /**
          * Sets the numeric precision (decimal places) to show in the associated widget.
@@ -208,7 +208,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * Returns the constraint type
          * \since QGIS 3.32
          */
-        Qgis::CadConstraintType cadConstraintType() const;
+        [[nodiscard]] Qgis::CadConstraintType cadConstraintType() const;
 
         /**
          * Sets the constraint type to \a constraintType

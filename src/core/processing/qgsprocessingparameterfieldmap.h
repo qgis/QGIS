@@ -34,14 +34,14 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
     //! Constructor for QgsProcessingParameterFieldMapping.
     QgsProcessingParameterFieldMapping( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
 
-    QgsProcessingParameterDefinition *clone() const override;
-    QString type() const override;
+    [[nodiscard]] QgsProcessingParameterDefinition *clone() const override;
+    [[nodiscard]] QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
-    QVariantMap toVariantMap() const override;
+    [[nodiscard]] QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+    [[nodiscard]] QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
-    QStringList dependsOnOtherParameters() const override;
+    [[nodiscard]] QStringList dependsOnOtherParameters() const override;
 
     //! Returns the type name for the parameter class.
     static QString typeName() { return QStringLiteral( "fields_mapping" ); }
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
      * \see setParentLayerParameterName()
      */
-    QString parentLayerParameterName() const;
+    [[nodiscard]] QString parentLayerParameterName() const;
 
     /**
      * Sets the \a name of the parent layer parameter. Use an empty string if this is not required.
@@ -76,48 +76,48 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
 class CORE_EXPORT QgsProcessingParameterTypeFieldMapping : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    [[nodiscard]] QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
       return new QgsProcessingParameterFieldMapping( name );
     }
 
-    QString description() const override
+    [[nodiscard]] QString description() const override
     {
       return QCoreApplication::translate( "Processing", "A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm." );
     }
 
-    QString name() const override
+    [[nodiscard]] QString name() const override
     {
       return QCoreApplication::translate( "Processing", "Fields Mapper" );
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return QgsProcessingParameterFieldMapping::typeName();
     }
 
-    QString pythonImportString() const override
+    [[nodiscard]] QString pythonImportString() const override
     {
       return QStringLiteral( "from qgis.core import QgsProcessingParameterFieldMapping" );
     }
 
-    QString className() const override
+    [[nodiscard]] QString className() const override
     {
       return QStringLiteral( "QgsProcessingParameterFieldMapping" );
     }
 
-    QStringList acceptedPythonTypes() const override
+    [[nodiscard]] QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[dict]: list of field definitions as dictionaries" );
     }
 
-    QStringList acceptedParameterTypes() const override
+    [[nodiscard]] QStringList acceptedParameterTypes() const override
     {
       return QStringList()
              << QgsProcessingParameterFieldMapping::typeName();
     }
 
-    QStringList acceptedOutputTypes() const override
+    [[nodiscard]] QStringList acceptedOutputTypes() const override
     {
       return QStringList();
     }

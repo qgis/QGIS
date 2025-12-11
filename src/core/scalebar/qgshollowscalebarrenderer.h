@@ -37,11 +37,11 @@ class CORE_EXPORT QgsHollowScaleBarRenderer: public QgsScaleBarRenderer
 
     QgsHollowScaleBarRenderer() = default;
 
-    QString id() const override;
-    QString visibleName() const override;
-    Flags flags() const override;
-    int sortKey() const override;
-    QgsHollowScaleBarRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
+    [[nodiscard]] Flags flags() const override;
+    [[nodiscard]] int sortKey() const override;
+    [[nodiscard]] QgsHollowScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

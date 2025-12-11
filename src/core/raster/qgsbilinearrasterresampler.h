@@ -41,9 +41,9 @@ class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResamplerV2
     Q_DECL_DEPRECATED void resample( const QImage &srcImage, QImage &dstImage ) override SIP_DEPRECATED;
 
     QImage resampleV2( const QImage &source, const QSize &size ) override;
-    QString type() const override;
-    QgsBilinearRasterResampler *clone() const override SIP_FACTORY;
-    int tileBufferPixels() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsBilinearRasterResampler *clone() const override SIP_FACTORY;
+    [[nodiscard]] int tileBufferPixels() const override;
 };
 
 #endif // QGSBILINEARRASTERRESAMPLER_H

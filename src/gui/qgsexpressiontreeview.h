@@ -60,14 +60,14 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
       setData( itemType, ITEM_TYPE_ROLE );
     }
 
-    QString getExpressionText() const { return mExpressionText; }
+    [[nodiscard]] QString getExpressionText() const { return mExpressionText; }
 
     /**
      * Gets the help text that is associated with this expression item.
       *
       * \returns The help text.
       */
-    QString getHelpText() const { return mHelpText; }
+    [[nodiscard]] QString getHelpText() const { return mHelpText; }
 
     /**
      * Set the help text for the current item
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
       *
       * \returns The QgsExpressionItem::ItemType
       */
-    QgsExpressionItem::ItemType getItemType() const { return mType; }
+    [[nodiscard]] QgsExpressionItem::ItemType getItemType() const { return mType; }
 
     //! Custom sort order role
     static const int CUSTOM_SORT_ROLE = Qt::UserRole + 1;
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
   public:
     QgsExpressionItemSearchProxy();
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
     /**
      * Sets the search filter \a string.
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
     void setFilterString( const QString &string );
 
   protected:
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
     QString mFilterString;

@@ -52,19 +52,19 @@ class _3D_EXPORT QgsFontTextureAtlas
     /**
      * Returns TRUE if the atlas is valid.
      */
-    bool isValid() const { return mAtlasSize.isValid(); }
+    [[nodiscard]] bool isValid() const { return mAtlasSize.isValid(); }
 
     /**
      * Returns the total size required for the atlas, i.e. the total
      * size for the texture.
      */
-    QSize atlasSize() const { return mAtlasSize; }
+    [[nodiscard]] QSize atlasSize() const { return mAtlasSize; }
 
 #ifndef SIP_RUN
     /**
      * Returns the packed rectangle for the texture for the specified \a grapheme.
      */
-    QRect rect( const QString &grapheme ) const;
+    [[nodiscard]] QRect rect( const QString &grapheme ) const;
 #else
 
     /**
@@ -93,7 +93,7 @@ class _3D_EXPORT QgsFontTextureAtlas
      * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
      * creating the texture atlas.
      */
-    int graphemeCount( const QString &string ) const;
+    [[nodiscard]] int graphemeCount( const QString &string ) const;
 
     /**
      * Returns the total width (in pixels) required for a given \a string.
@@ -101,7 +101,7 @@ class _3D_EXPORT QgsFontTextureAtlas
      * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
      * creating the texture atlas.
      */
-    int totalWidth( const QString &string ) const;
+    [[nodiscard]] int totalWidth( const QString &string ) const;
 
     /**
      * Returns the pixel offset at which the texture for the matching grapheme should be placed.
@@ -109,7 +109,7 @@ class _3D_EXPORT QgsFontTextureAtlas
      * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
      * creating the texture atlas.
      */
-    QPoint pixelOffsetForGrapheme( const QString &string, int graphemeIndex ) const;
+    [[nodiscard]] QPoint pixelOffsetForGrapheme( const QString &string, int graphemeIndex ) const;
 
     /**
      * Returns the packed rectangle for the texture for the matching grapheme.
@@ -117,12 +117,12 @@ class _3D_EXPORT QgsFontTextureAtlas
      * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
      * creating the texture atlas.
      */
-    QRect textureRectForGrapheme( const QString &string, int graphemeIndex ) const;
+    [[nodiscard]] QRect textureRectForGrapheme( const QString &string, int graphemeIndex ) const;
 
     /**
      * Renders the combined texture atlas, containing all required characters.
      */
-    QImage renderAtlasTexture() const;
+    [[nodiscard]] QImage renderAtlasTexture() const;
 
     /**
      * Renders a debug texture.
@@ -130,12 +130,12 @@ class _3D_EXPORT QgsFontTextureAtlas
      * The debug texture renders all packed character rectangles with a unique color, and can be used
      * to visualize the solution.
      */
-    QImage renderDebugTexture() const;
+    [[nodiscard]] QImage renderDebugTexture() const;
 
     /**
      * Returns the number of textures in the atlas.
      */
-    int count() const;
+    [[nodiscard]] int count() const;
 
 #ifdef SIP_RUN
     int __len__() const;

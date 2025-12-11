@@ -44,12 +44,12 @@ class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsCha
     explicit QgsChamferFilletUserWidget( QWidget *parent = nullptr );
 
     void setValue1( double value1 );
-    double value1() const;
+    [[nodiscard]] double value1() const;
     void setValue2( double value2 );
-    double value2() const;
+    [[nodiscard]] double value2() const;
     void setMaximumValue1( double maximum );
-    QDoubleSpinBox *editor() const { return mValue1SpinBox; }
-    QgsGeometry::ChamferFilletOperationType operation() const;
+    [[nodiscard]] QDoubleSpinBox *editor() const { return mValue1SpinBox; }
+    [[nodiscard]] QgsGeometry::ChamferFilletOperationType operation() const;
 
   signals:
     void distanceEditingFinished( const Qt::KeyboardModifiers &modifiers );

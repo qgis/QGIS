@@ -52,11 +52,11 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     ~QgsGeometryChecker() override;
     QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
-    const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }
-    QStringList getMessages() const { return mMessages; }
+    [[nodiscard]] const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }
+    [[nodiscard]] QStringList getMessages() const { return mMessages; }
     void setMergeAttributeIndices( const QMap<QString, int> &mergeAttributeIndices ) { mMergeAttributeIndices = mergeAttributeIndices; }
-    QgsGeometryCheckContext *getContext() const { return mContext; }
-    const QMap<QString, QgsFeaturePool *> &featurePools() const { return mFeaturePools; }
+    [[nodiscard]] QgsGeometryCheckContext *getContext() const { return mContext; }
+    [[nodiscard]] const QMap<QString, QgsFeaturePool *> &featurePools() const { return mFeaturePools; }
 
   signals:
     void errorAdded( QgsGeometryCheckError *error );

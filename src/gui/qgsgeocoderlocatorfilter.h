@@ -57,7 +57,7 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
      */
     QgsGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas, const QgsRectangle &boundingBox = QgsRectangle() );
 
-    QgsLocatorFilter *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsLocatorFilter *clone() const override SIP_FACTORY;
 
   protected:
     /**

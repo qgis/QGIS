@@ -62,12 +62,12 @@ class CORE_EXPORT QgsSphere
     /**
      * Returns TRUE if the sphere is a null (default constructed) sphere.
      */
-    bool isNull() const SIP_HOLDGIL;
+    [[nodiscard]] bool isNull() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the sphere is considered empty, i.e. it has a radius of 0.
      */
-    bool isEmpty() const SIP_HOLDGIL;
+    [[nodiscard]] bool isEmpty() const SIP_HOLDGIL;
 
     /**
      * Returns the center point of the sphere.
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsSphere
      * \see centerZ()
      * \see setCenter()
      */
-    QgsPoint center() const SIP_HOLDGIL;
+    [[nodiscard]] QgsPoint center() const SIP_HOLDGIL;
 
     /**
      * Returns the vector to the center of the sphere.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsSphere
      * \see centerZ()
      * \see setCenter()
      */
-    QgsVector3D centerVector() const SIP_HOLDGIL;
+    [[nodiscard]] QgsVector3D centerVector() const SIP_HOLDGIL;
 
     /**
      * Returns the x-coordinate of the center of the sphere.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsSphere
      * \see centerZ()
      * \see setCenter()
      */
-    double centerX() const { return mCenterX; }
+    [[nodiscard]] double centerX() const { return mCenterX; }
 
     /**
      * Returns the y-coordinate of the center of the sphere.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSphere
      * \see centerZ()
      * \see setCenter()
      */
-    double centerY() const { return mCenterY; }
+    [[nodiscard]] double centerY() const { return mCenterY; }
 
     /**
      * Returns the z-coordinate of the center of the sphere.
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsSphere
      * \see centerY()
      * \see setCenter()
      */
-    double centerZ() const { return mCenterZ; }
+    [[nodiscard]] double centerZ() const { return mCenterZ; }
 
     /**
      * Sets the center point of the sphere.
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsSphere
      * \see setRadius()
      * \see diameter()
      */
-    double radius() const SIP_HOLDGIL { return mRadius; }
+    [[nodiscard]] double radius() const SIP_HOLDGIL { return mRadius; }
 
     /**
      * Sets the \a radius of the sphere.
@@ -151,27 +151,27 @@ class CORE_EXPORT QgsSphere
      *
      * \see radius()
      */
-    double diameter() const SIP_HOLDGIL { return mRadius * 2; }
+    [[nodiscard]] double diameter() const SIP_HOLDGIL { return mRadius * 2; }
 
     /**
      * Returns the volume of the sphere.
      */
-    double volume() const SIP_HOLDGIL;
+    [[nodiscard]] double volume() const SIP_HOLDGIL;
 
     /**
      * Returns the surface area of the sphere.
      */
-    double surfaceArea() const SIP_HOLDGIL;
+    [[nodiscard]] double surfaceArea() const SIP_HOLDGIL;
 
     /**
      * Converts the sphere to a 2-dimensional circle.
      */
-    QgsCircle toCircle() const SIP_HOLDGIL;
+    [[nodiscard]] QgsCircle toCircle() const SIP_HOLDGIL;
 
     /**
      * Returns the 3-dimensional bounding box containing the sphere.
      */
-    QgsBox3D boundingBox() const SIP_HOLDGIL;
+    [[nodiscard]] QgsBox3D boundingBox() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

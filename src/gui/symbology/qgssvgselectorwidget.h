@@ -73,7 +73,7 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
     //! Sets the parameters
     void setParameters( const QMap<QString, QgsProperty> &parameters );
     //! Returns the valid parameters of the model
-    QMap<QString, QgsProperty> parameters() const;
+    [[nodiscard]] QMap<QString, QgsProperty> parameters() const;
 
     //! Remove the parameters at the given indexes
     void removeParameters( const QModelIndexList &indexList );
@@ -81,19 +81,19 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
     //! Sets the vector layer
     void setLayer( QgsVectorLayer *layer );
     //! Returns the vector layer
-    QgsVectorLayer *layer() const { return mLayer; }
+    [[nodiscard]] QgsVectorLayer *layer() const { return mLayer; }
 
     //! Sets the expression context generator
     void setExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
     //! Returns the expression context generator
-    const QgsExpressionContextGenerator *expressionContextGenerator() const { return mExpressionContextGenerator; }
+    [[nodiscard]] const QgsExpressionContextGenerator *expressionContextGenerator() const { return mExpressionContextGenerator; }
 
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   public slots:
     //! Adds a new parameter
@@ -317,14 +317,14 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
      */
     QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, const QString &path, int iconSize = 30 );
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   protected:
     QStringList mSvgFiles;
 
   private:
-    QPixmap createPreview( const QString &entry ) const;
+    [[nodiscard]] QPixmap createPreview( const QString &entry ) const;
     QgsSvgSelectorLoader *mSvgLoader = nullptr;
 
     int mIconSize = 30;
@@ -387,13 +387,13 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      */
     void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer = nullptr );
 
-    QString currentSvgPath() const;
+    [[nodiscard]] QString currentSvgPath() const;
 
     /**
      * Returns the source line edit
      * \since QGIS 3.16
      */
-    QgsPictureSourceLineEditBase *sourceLineEdit() const { return mSourceLineEdit; }
+    [[nodiscard]] QgsPictureSourceLineEditBase *sourceLineEdit() const { return mSourceLineEdit; }
 
     /**
      * Defines if the group box to fill parameters is visible
@@ -412,7 +412,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Returns if the group box to fill parameters is visible
      * \since QGIS 3.38
      */
-    bool allowParameters() const { return mAllowParameters; }
+    [[nodiscard]] bool allowParameters() const { return mAllowParameters; }
 
     /**
      * Defines if the SVG browser should be visible
@@ -424,13 +424,13 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Returns if the SVG browser should be visible
      * \since QGIS 3.20
      */
-    bool browserVisible() const { return mBrowserVisible; }
+    [[nodiscard]] bool browserVisible() const { return mBrowserVisible; }
 
     /**
      * Returns the property override tool button of the file line edit
      * \since QGIS 3.20
      */
-    QgsPropertyOverrideButton *propertyOverrideToolButton() const;
+    [[nodiscard]] QgsPropertyOverrideButton *propertyOverrideToolButton() const;
 
   public slots:
     //! Accepts absolute paths

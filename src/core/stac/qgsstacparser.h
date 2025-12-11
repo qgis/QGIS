@@ -91,10 +91,10 @@ class CORE_EXPORT QgsStacParser
     QgsStacCollectionList *collections();
 
     //! Returns the type of the parsed object
-    Qgis::StacObjectType type() const;
+    [[nodiscard]] Qgis::StacObjectType type() const;
 
     //! Returns the last parsing error
-    QString error() const;
+    [[nodiscard]] QString error() const;
 
   private:
 #ifdef SIP_RUN

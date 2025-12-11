@@ -45,7 +45,7 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
      * Returns the unit currently selected in the combo box.
      * \see setUnit()
      */
-    Qgis::LayoutUnit unit() const;
+    [[nodiscard]] Qgis::LayoutUnit unit() const;
 
     /**
      * Sets the \a unit currently selected in the combo box.
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
      * Returns the converter used when automatically converting units for linked widgets.
      * \see setConverter()
      */
-    QgsLayoutMeasurementConverter *converter() const;
+    [[nodiscard]] QgsLayoutMeasurementConverter *converter() const;
 
     /**
      * Sets a \a converter to use when automatically converting units for linked widgets.

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsTextDocumentRenderContext
      *
      * \see setFlags()
      */
-    Qgis::TextRendererFlags flags() const { return mFlags; }
+    [[nodiscard]] Qgis::TextRendererFlags flags() const { return mFlags; }
 
     /**
      * Sets associated text renderer flags.
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsTextDocumentRenderContext
      *
      * \see setMaximumWidth()
      */
-    double maximumWidth() const { return mMaximumWidth; }
+    [[nodiscard]] double maximumWidth() const { return mMaximumWidth; }
 
     /**
      * Sets the maximum width (in painter units) for rendered text.
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.30
      */
-    bool isNullFontSize() const { return mIsNullSize; }
+    [[nodiscard]] bool isNullFontSize() const { return mIsNullSize; }
 
     /**
      * Returns the document associated with the calculated metrics.
@@ -127,12 +127,12 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.40
      */
-    const QgsTextDocument &document() const { return mDocument; }
+    [[nodiscard]] const QgsTextDocument &document() const { return mDocument; }
 
     /**
      * Returns the overall size of the document.
      */
-    QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
+    [[nodiscard]] QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
 
     /**
      * Returns the outer bounds of the document, which is the documentSize() adjusted to account
@@ -143,36 +143,36 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.30
      */
-    QRectF outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
+    [[nodiscard]] QRectF outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
 
     /**
      * Returns the width of the block at the specified index.
      */
-    double blockWidth( int blockIndex ) const;
+    [[nodiscard]] double blockWidth( int blockIndex ) const;
 
     /**
      * Returns the height of the block at the specified index.
      */
-    double blockHeight( int blockIndex ) const;
+    [[nodiscard]] double blockHeight( int blockIndex ) const;
 
     /**
      * Returns the cap height for the first line of text.
      *
      * \since QGIS 3.30
      */
-    double firstLineCapHeight() const;
+    [[nodiscard]] double firstLineCapHeight() const;
 
     /**
      * Returns the offset from the top of the document to the text baseline for the given block index.
      */
-    double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
+    [[nodiscard]] double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the horizontal advance of the fragment at the specified block and fragment index.
      *
      * \since QGIS 3.30
      */
-    double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+    [[nodiscard]] double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the vertical offset from a text block's baseline which should be applied
@@ -180,14 +180,14 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.30
      */
-    double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+    [[nodiscard]] double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the fixed height of the fragment at the specified block and fragment index, or -1 if the fragment does not have a fixed height.
      *
      * \since QGIS 3.40
      */
-    double fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+    [[nodiscard]] double fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the ascent of the fragment at the specified block and fragment index.
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.42
      */
-    double fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+    [[nodiscard]] double fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the descent of the fragment at the specified block and fragment index.
@@ -205,24 +205,24 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.42
      */
-    double fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+    [[nodiscard]] double fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the vertical orientation x offset for the specified block.
      */
-    double verticalOrientationXOffset( int blockIndex ) const;
+    [[nodiscard]] double verticalOrientationXOffset( int blockIndex ) const;
 
     /**
      * Returns the maximum character width for the specified block.
      */
-    double blockMaximumCharacterWidth( int blockIndex ) const;
+    [[nodiscard]] double blockMaximumCharacterWidth( int blockIndex ) const;
 
     /**
      * Returns the maximum descent encountered in the specified block.
      *
      * \see blockMaximumAscent()
      */
-    double blockMaximumDescent( int blockIndex ) const;
+    [[nodiscard]] double blockMaximumDescent( int blockIndex ) const;
 
     /**
      * Returns the maximum ascent encountered in the specified block.
@@ -230,17 +230,17 @@ class CORE_EXPORT QgsTextDocumentMetrics
      * \see blockMaximumDescent()
      * \since QGIS 3.42
      */
-    double blockMaximumAscent( int blockIndex ) const;
+    [[nodiscard]] double blockMaximumAscent( int blockIndex ) const;
 
     /**
      * Returns the calculated font for the fragment at the specified block and fragment indices.
      */
-    QFont fragmentFont( int blockIndex, int fragmentIndex ) const;
+    [[nodiscard]] QFont fragmentFont( int blockIndex, int fragmentIndex ) const;
 
     /**
      * Returns the ascent offset of the first block in the document.
      */
-    double ascentOffset() const { return mFirstLineAscentOffset; }
+    [[nodiscard]] double ascentOffset() const { return mFirstLineAscentOffset; }
 
     /**
      * Returns the vertical margin for the specified block index.
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.42
      */
-    double blockVerticalMargin( int blockIndex ) const;
+    [[nodiscard]] double blockVerticalMargin( int blockIndex ) const;
 
     /**
      * Returns the margin for the left side of the specified block index.
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.42
      */
-    double blockLeftMargin( int blockIndex ) const;
+    [[nodiscard]] double blockLeftMargin( int blockIndex ) const;
 
     /**
      * Returns the margin for the right side of the specified block index.
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
      *
      * \since QGIS 3.42
      */
-    double blockRightMargin( int blockIndex ) const;
+    [[nodiscard]] double blockRightMargin( int blockIndex ) const;
 
   private:
 

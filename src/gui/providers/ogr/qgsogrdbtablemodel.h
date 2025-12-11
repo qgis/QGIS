@@ -32,9 +32,9 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
   public:
     QgsOgrDbTableModel( QObject *parent = nullptr );
 
-    QStringList columns() const override;
-    int defaultSearchColumn() const override;
-    bool searchableColumn( int column ) const override;
+    [[nodiscard]] QStringList columns() const override;
+    [[nodiscard]] int defaultSearchColumn() const override;
+    [[nodiscard]] bool searchableColumn( int column ) const override;
 
     //! Sets the geometry type for the table
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
@@ -46,7 +46,7 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     void setSql( const QModelIndex &index, const QString &sql ) override;
 
     //! Returns the number of tables in the model
-    int tableCount() const
+    [[nodiscard]] int tableCount() const
     {
       return mTableCount;
     }
@@ -71,10 +71,10 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     QString mPath;
     QStringList mColumns;
 
-    QIcon iconForType( Qgis::WkbType type ) const;
-    QString displayStringForType( Qgis::WkbType type ) const;
+    [[nodiscard]] QIcon iconForType( Qgis::WkbType type ) const;
+    [[nodiscard]] QString displayStringForType( Qgis::WkbType type ) const;
     //! Returns qgis wkbtype from database typename
-    Qgis::WkbType qgisTypeFromDbType( const QString &dbType ) const;
+    [[nodiscard]] Qgis::WkbType qgisTypeFromDbType( const QString &dbType ) const;
 };
 
 ///@endcond

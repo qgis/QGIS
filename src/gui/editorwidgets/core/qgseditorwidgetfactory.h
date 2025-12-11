@@ -75,19 +75,19 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \returns a name
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the icon of this widget type
      * \since QGIS 4.0
      */
-    QIcon icon() const;
+    [[nodiscard]] QIcon icon() const;
 
     /**
      * Returns true if this widget is a read-only widget.
      * \since QGIS 3.44
      */
-    virtual bool isReadOnly() const { return false; }
+    [[nodiscard]] virtual bool isReadOnly() const { return false; }
 
     /**
      * Override this in your implementation.

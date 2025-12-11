@@ -77,14 +77,14 @@ class CORE_EXPORT QgsProviderConnectionModel : public QAbstractItemModel
      * Returns TRUE if the model allows the empty connection ("not set") choice.
      * \see setAllowEmptyConnection()
      */
-    bool allowEmptyConnection() const { return mAllowEmpty; }
+    [[nodiscard]] bool allowEmptyConnection() const { return mAllowEmpty; }
 
     // QAbstractItemModel interface
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
   private slots:
     void removeConnection( const QString &connection );
     void addConnection( const QString &connection );

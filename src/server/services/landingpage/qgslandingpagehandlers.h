@@ -38,20 +38,20 @@ class QgsLandingPageHandler : public QgsServerOgcApiHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     // QgsServerOgcApiHandler interface
-    QRegularExpression path() const override;
-    std::string operationId() const override { return "getLandingPage"; }
-    QStringList tags() const override { return { QStringLiteral( "Catalog" ) }; }
-    std::string summary() const override
+    [[nodiscard]] QRegularExpression path() const override;
+    [[nodiscard]] std::string operationId() const override { return "getLandingPage"; }
+    [[nodiscard]] QStringList tags() const override { return { QStringLiteral( "Catalog" ) }; }
+    [[nodiscard]] std::string summary() const override
     {
       return "Server Landing Page";
     }
-    std::string description() const override
+    [[nodiscard]] std::string description() const override
     {
       return "The landing page provides information about available projects and services.";
     }
-    std::string linkTitle() const override { return "Landing page"; }
-    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
-    const QString templatePath( const QgsServerApiContext &context ) const override;
+    [[nodiscard]] std::string linkTitle() const override { return "Landing page"; }
+    [[nodiscard]] QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
+    [[nodiscard]] const QString templatePath( const QgsServerApiContext &context ) const override;
 
     /**
      *  Returns the path prefix, default is empty. Also makes sure that not-empty
@@ -61,7 +61,7 @@ class QgsLandingPageHandler : public QgsServerOgcApiHandler
 
 
   private:
-    json projectsData( const QgsServerRequest &request ) const;
+    [[nodiscard]] json projectsData( const QgsServerRequest &request ) const;
 
     const QgsServerSettings *mSettings = nullptr;
 };
@@ -78,19 +78,19 @@ class QgsLandingPageMapHandler : public QgsServerOgcApiHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     // QgsServerOgcApiHandler interface
-    QRegularExpression path() const override;
-    std::string operationId() const override { return "getMap"; }
-    QStringList tags() const override { return { QStringLiteral( "Catalog" ), QStringLiteral( "Map Viewer" ) }; }
-    std::string summary() const override
+    [[nodiscard]] QRegularExpression path() const override;
+    [[nodiscard]] std::string operationId() const override { return "getMap"; }
+    [[nodiscard]] QStringList tags() const override { return { QStringLiteral( "Catalog" ), QStringLiteral( "Map Viewer" ) }; }
+    [[nodiscard]] std::string summary() const override
     {
       return "Server Map Viewer";
     }
-    std::string description() const override
+    [[nodiscard]] std::string description() const override
     {
       return "Shows a map";
     }
-    std::string linkTitle() const override { return "Map Viewer"; }
-    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
+    [[nodiscard]] std::string linkTitle() const override { return "Map Viewer"; }
+    [[nodiscard]] QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
 
   private:
     const QgsServerSettings *mSettings = nullptr;

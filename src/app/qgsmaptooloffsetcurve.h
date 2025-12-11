@@ -40,7 +40,7 @@ class APP_EXPORT QgsOffsetUserWidget : public QWidget, private Ui::QgsOffsetUser
 
     void setOffset( double offset );
     double offset();
-    QDoubleSpinBox *editor() const { return mOffsetSpinBox; }
+    [[nodiscard]] QDoubleSpinBox *editor() const { return mOffsetSpinBox; }
 
     void setPolygonMode( bool polygon );
 

@@ -184,14 +184,14 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
     /**
      * After a call to run(), returns the process' exit status.
      */
-    QProcess::ExitStatus exitStatus() const;
+    [[nodiscard]] QProcess::ExitStatus exitStatus() const;
 
     /**
      * After a call to run(), returns the process' reported error.
      *
      * Returns QProcess::UnknownError if no error occurred.
      */
-    QProcess::ProcessError processError() const;
+    [[nodiscard]] QProcess::ProcessError processError() const;
 
   private:
 

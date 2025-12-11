@@ -49,7 +49,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     /**
      * Returns TRUE if the output is set to be skipped.
      */
-    bool outputIsSkipped() const;
+    [[nodiscard]] bool outputIsSkipped() const;
 
     /**
      * Sets the \a value to show in the widget.
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     /**
      * Returns the widgets current value.
      */
-    QVariant value() const;
+    [[nodiscard]] QVariant value() const;
 
     /**
      * Sets the \a context in which the widget is shown, e.g., the
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     /**
      * Returns TRUE if the widget has the "Open output file after running" option checked.
      */
-    bool openAfterRunning() const;
+    [[nodiscard]] bool openAfterRunning() const;
 
   signals:
 

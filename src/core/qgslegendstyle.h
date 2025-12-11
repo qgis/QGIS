@@ -76,7 +76,7 @@ class CORE_EXPORT QgsLegendStyle
      * \see setTextFormat()
      * \since QGIS 3.30
      */
-    QgsTextFormat textFormat() const SIP_SKIP { return mTextFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const SIP_SKIP { return mTextFormat; }
 
     /**
      * Sets the text \a format used for rendering this legend component.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsLegendStyle
      *
      * \see setMargin()
      */
-    double margin( Side side ) const { return mMarginMap.value( side ); }
+    [[nodiscard]] double margin( Side side ) const { return mMarginMap.value( side ); }
 
     /**
      * Sets the \a margin (in mm) for the specified \a side of the component.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLegendStyle
      * \see setAlignment()
      * \since QGIS 3.10
      */
-    Qt::Alignment alignment() const { return mAlignment; }
+    [[nodiscard]] Qt::Alignment alignment() const { return mAlignment; }
 
     /**
      * Sets the alignment for the legend component.
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsLegendStyle
     * \see indent()
     * \since QGIS 3.22
     */
-    double indent() const { return mIndent; }
+    [[nodiscard]] double indent() const { return mIndent; }
 
     /**
      * Sets the indent (in mm) of a group or subgroup.

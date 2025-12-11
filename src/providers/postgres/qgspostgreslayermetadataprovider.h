@@ -21,7 +21,7 @@
 class QgsPostgresLayerMetadataProvider : public QgsAbstractLayerMetadataProvider
 {
   public:
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
     QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback = nullptr ) const override;
 };

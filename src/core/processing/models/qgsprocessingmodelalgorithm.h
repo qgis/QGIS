@@ -47,16 +47,16 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;  //#spellok
 
-    Qgis::ProcessingAlgorithmFlags flags() const override;
-    QString name() const override;
-    QString displayName() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QIcon icon() const override;
-    QString svgIconPath() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QString helpUrl() const override;
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QString svgIconPath() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QString helpUrl() const override;
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
     QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see setChildAlgorithms()
      * \see addChildAlgorithm()
      */
-    QMap<QString, QgsProcessingModelChildAlgorithm> childAlgorithms() const;
+    [[nodiscard]] QMap<QString, QgsProcessingModelChildAlgorithm> childAlgorithms() const;
 
     /**
      * Sets the map of child algorithms contained in the model. The keys
@@ -167,21 +167,21 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \see dependsOnChildAlgorithms()
      */
-    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString() ) const;
+    [[nodiscard]] QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString() ) const;
 
     /**
      * Returns a list of the child algorithm IDs on which the child
      * algorithm with the specified \a childId depends upon.
      * \see dependentChildAlgorithms()
      */
-    QSet< QString > dependsOnChildAlgorithms( const QString &childId ) const;
+    [[nodiscard]] QSet< QString > dependsOnChildAlgorithms( const QString &childId ) const;
 
     /**
      * Returns details of available dependencies for the child algorithm with matching id.
      *
      * \since QGIS 3.14
      */
-    QList< QgsProcessingModelChildDependency > availableDependenciesForChildAlgorithm( const QString &childId ) const;
+    [[nodiscard]] QList< QgsProcessingModelChildDependency > availableDependenciesForChildAlgorithm( const QString &childId ) const;
 
     /**
      * Validates the child algorithm with matching ID, returning TRUE if
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * with the specified \a name.
      * \see otherParametersDependOnParameter()
      */
-    bool childAlgorithmsDependOnParameter( const QString &name ) const;
+    [[nodiscard]] bool childAlgorithmsDependOnParameter( const QString &name ) const;
 
     /**
      * Returns TRUE if any other model parameters depend on the parameter
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * is the parent layer parameter).
      * \see childAlgorithmsDependOnParameter()
      */
-    bool otherParametersDependOnParameter( const QString &name ) const;
+    [[nodiscard]] bool otherParametersDependOnParameter( const QString &name ) const;
 
     /**
      * Returns the map of parameter components used by the model. The keys
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see setParameterComponent()
      * \see parameterComponent()
      */
-    QMap<QString, QgsProcessingModelParameter> parameterComponents() const;
+    [[nodiscard]] QMap<QString, QgsProcessingModelParameter> parameterComponents() const;
 
     /**
      * Sets the map of parameter components used by the model. The keys
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see setParameterOrder()
      * \since QGIS 3.14
      */
-    QList< QgsProcessingModelParameter > orderedParameters() const;
+    [[nodiscard]] QList< QgsProcessingModelParameter > orderedParameters() const;
 
     /**
      * Sets the \a order for showing parameters for the model.
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see setOutputOrder()
      * \since QGIS 3.32
      */
-    QList< QgsProcessingModelOutput > orderedOutputs() const;
+    [[nodiscard]] QList< QgsProcessingModelOutput > orderedOutputs() const;
 
     /**
      * Sets the \a order for sorting outputs for the model.
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see setOutputGroup()
      * \since QGIS 3.32
      */
-    QString outputGroup() const;
+    [[nodiscard]] QString outputGroup() const;
 
     /**
      * Sets the destination layer tree \a group name for outputs created by the model.
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see addGroupBox()
      * \since QGIS 3.14
      */
-    QList< QgsProcessingModelGroupBox > groupBoxes() const;
+    [[nodiscard]] QList< QgsProcessingModelGroupBox > groupBoxes() const;
 
     /**
      * Removes the group box with matching \a uuid from the model.
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Writes the model to a file, at the specified \a path.
      * \see fromFile()
      */
-    bool toFile( const QString &path ) const;
+    [[nodiscard]] bool toFile( const QString &path ) const;
 
     /**
      * Reads the model from a file, at the specified \a path.
@@ -385,7 +385,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see loadVariant()
      * \since QGIS 3.4
      */
-    QVariant toVariant() const;
+    [[nodiscard]] QVariant toVariant() const;
 
     /**
      * Loads this model from a QVariantMap, wrapped in a QVariant \a variant.
@@ -408,7 +408,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * use and metadata).
      * \see setHelpContent()
      */
-    SIP_SKIP QVariantMap helpContent() const;
+    SIP_SKIP [[nodiscard]] QVariantMap helpContent() const;
 
     /**
      * Sets the model's help \a contents (a free-form map of values describing the algorithm's
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Returns the source file path for the model, if available.
      * \see setSourceFilePath()
      */
-    QString sourceFilePath() const;
+    [[nodiscard]] QString sourceFilePath() const;
 
     /**
      * Sets the source file \a path for the model, if available.
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \since QGIS 3.24
      */
-    bool modelNameMatchesFilePath() const;
+    [[nodiscard]] bool modelNameMatchesFilePath() const;
 
     /**
      * Attempts to convert the model to executable Python code, and returns the generated lines of code.
@@ -446,7 +446,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * The \a indentSize arguments specifies the size of indented lines.
      */
-    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, int indentSize ) const;
+    [[nodiscard]] QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, int indentSize ) const;
 
     /**
      * Returns a list of possible sources which can be used for the parameter \a param for a child \a childId
@@ -468,7 +468,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * Use it when you need fine grained support for the requested compatible sources
      */
-    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
+    [[nodiscard]] QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
         const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;
 
     /**
@@ -531,7 +531,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see setVariables()
      * \since QGIS 3.8
      */
-    QVariantMap variables() const;
+    [[nodiscard]] QVariantMap variables() const;
 
     /**
      * Sets the map of custom expression context \a variables for this model.
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \since QGIS 3.14
      */
-    QVariantMap designerParameterValues() const;
+    [[nodiscard]] QVariantMap designerParameterValues() const;
 
     /**
      * Sets the parameter \a values to use as default values when running this model through the
@@ -575,7 +575,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \since QGIS 3.26
      */
-    const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
+    [[nodiscard]] const QgsProcessingParameterDefinition *modelParameterFromChildIdAndOutputName( const QString &childId, const QString &childOutputName ) const;
 
     /**
      * Makes a name "safe", by replacing any non-alphanumeric characters with underscores.
@@ -600,7 +600,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override SIP_THROW( QgsProcessingException );
 
@@ -643,7 +643,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Returns TRUE if an output from a child algorithm is required elsewhere in
      * the model.
      */
-    bool childOutputIsRequired( const QString &childId, const QString &outputName ) const;
+    [[nodiscard]] bool childOutputIsRequired( const QString &childId, const QString &outputName ) const;
 
     /**
      * Checks whether the output vector type given by \a outputType is compatible

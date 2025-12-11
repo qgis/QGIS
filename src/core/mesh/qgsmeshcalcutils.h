@@ -111,13 +111,13 @@ class CORE_EXPORT QgsMeshCalcUtils
 
 
     //! Returns whether the input parameters are consistent and valid for given mesh layer
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     //! Returns associated mesh layer
-    const QgsMeshLayer *layer() const;
+    [[nodiscard]] const QgsMeshLayer *layer() const;
 
     //! Returns dataset group based on name
-    std::shared_ptr<const QgsMeshMemoryDatasetGroup> group( const QString &groupName ) const;
+    [[nodiscard]] std::shared_ptr<const QgsMeshMemoryDatasetGroup> group( const QString &groupName ) const;
 
     //! Creates a single dataset with all values set to 1
     void ones( QgsMeshMemoryDatasetGroup &group1 ) const;
@@ -126,13 +126,13 @@ class CORE_EXPORT QgsMeshCalcUtils
     void nodata( QgsMeshMemoryDatasetGroup &group1 ) const;
 
     //! Returns a single dataset with all values set to val
-    std::shared_ptr<QgsMeshMemoryDataset> number( double val, double time ) const;
+    [[nodiscard]] std::shared_ptr<QgsMeshMemoryDataset> number( double val, double time ) const;
 
     //! Creates a deepcopy of group with groupName to group1. Does not copy datasets for filtered out times.
     void copy( QgsMeshMemoryDatasetGroup &group1, const QString &groupName, bool forAggregate = false ) const;
 
     //! Creates a deepcopy of dataset0
-    std::shared_ptr<QgsMeshMemoryDataset> copy( std::shared_ptr<const QgsMeshMemoryDataset> dataset0 ) const;
+    [[nodiscard]] std::shared_ptr<QgsMeshMemoryDataset> copy( std::shared_ptr<const QgsMeshMemoryDataset> dataset0 ) const;
 
     //! Changes ownership of all datasets from group2 to group1
     void transferDatasets( QgsMeshMemoryDatasetGroup &group1, QgsMeshMemoryDatasetGroup &group2 ) const;
@@ -225,28 +225,28 @@ class CORE_EXPORT QgsMeshCalcUtils
     static QgsMeshDatasetGroupMetadata::DataType determineResultDataType( QgsMeshLayer *layer, const QStringList &usedGroupNames );
 
     //! Returns the data type of result dataset group
-    QgsMeshDatasetGroupMetadata::DataType outputType() const;
+    [[nodiscard]] QgsMeshDatasetGroupMetadata::DataType outputType() const;
 
   private:
-    double ffilter( double val1, double filter ) const;
-    double fadd( double val1, double val2 ) const;
-    double fsubtract( double val1, double val2 ) const;
-    double fmultiply( double val1, double val2 ) const;
-    double fdivide( double val1, double val2 ) const;
-    double fpower( double val1, double val2 ) const;
-    double fequal( double val1, double val2 ) const;
-    double fnotEqual( double val1, double val2 ) const;
-    double fgreaterThan( double val1, double val2 ) const;
-    double flesserThan( double val1, double val2 ) const;
-    double flesserEqual( double val1, double val2 ) const;
-    double fgreaterEqual( double val1, double val2 ) const;
-    double flogicalAnd( double val1, double val2 ) const;
-    double flogicalOr( double val1, double val2 ) const;
-    double flogicalNot( double val1 ) const;
-    double fchangeSign( double val1 ) const;
-    double fmin( double val1, double val2 ) const;
-    double fmax( double val1, double val2 ) const;
-    double fabs( double val1 ) const;
+    [[nodiscard]] double ffilter( double val1, double filter ) const;
+    [[nodiscard]] double fadd( double val1, double val2 ) const;
+    [[nodiscard]] double fsubtract( double val1, double val2 ) const;
+    [[nodiscard]] double fmultiply( double val1, double val2 ) const;
+    [[nodiscard]] double fdivide( double val1, double val2 ) const;
+    [[nodiscard]] double fpower( double val1, double val2 ) const;
+    [[nodiscard]] double fequal( double val1, double val2 ) const;
+    [[nodiscard]] double fnotEqual( double val1, double val2 ) const;
+    [[nodiscard]] double fgreaterThan( double val1, double val2 ) const;
+    [[nodiscard]] double flesserThan( double val1, double val2 ) const;
+    [[nodiscard]] double flesserEqual( double val1, double val2 ) const;
+    [[nodiscard]] double fgreaterEqual( double val1, double val2 ) const;
+    [[nodiscard]] double flogicalAnd( double val1, double val2 ) const;
+    [[nodiscard]] double flogicalOr( double val1, double val2 ) const;
+    [[nodiscard]] double flogicalNot( double val1 ) const;
+    [[nodiscard]] double fchangeSign( double val1 ) const;
+    [[nodiscard]] double fmin( double val1, double val2 ) const;
+    [[nodiscard]] double fmax( double val1, double val2 ) const;
+    [[nodiscard]] double fabs( double val1 ) const;
     double fsumAggregated( QVector<double> &vals ) const;
     double fminimumAggregated( QVector<double> &vals ) const;
     double fmaximumAggregated( QVector<double> &vals ) const;
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsMeshCalcUtils
      * memory dataset group. Returns NULLPTR if no such dataset group
      * exists. Resulting datasets are guaranteed to have the same mOutputType type
      */
-    std::shared_ptr<QgsMeshMemoryDatasetGroup> createMemoryDatasetGroup( const QString &datasetGroupName,
+    [[nodiscard]] std::shared_ptr<QgsMeshMemoryDatasetGroup> createMemoryDatasetGroup( const QString &datasetGroupName,
         const QgsInterval &relativeTime = QgsInterval(),
         const QgsInterval &startTime = QgsInterval(),
         const QgsInterval &endTime = QgsInterval() ) const;
@@ -272,22 +272,22 @@ class CORE_EXPORT QgsMeshCalcUtils
      *  will be operated only for this relative time, dataset group involved in a aggregate function will have all the dataset between
      *  start time and end time, other dataset will only have the dataset corresponding to relative time.
      */
-    std::shared_ptr<const QgsMeshMemoryDatasetGroup> group( const QString &groupName, bool isAggregate ) const;
+    [[nodiscard]] std::shared_ptr<const QgsMeshMemoryDatasetGroup> group( const QString &groupName, bool isAggregate ) const;
 
     /**
      *  Creates dataset based on group. Initializes values and active based on group type.
      */
-    std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshMemoryDatasetGroup &grp ) const;
+    [[nodiscard]] std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshMemoryDatasetGroup &grp ) const;
 
     /**
      *  Creates dataset based on group. Fill with values of corresponding dataset
      */
-    std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshDatasetIndex &datasetIndex ) const;
+    [[nodiscard]] std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshDatasetIndex &datasetIndex ) const;
 
     /**
      *  Creates dataset with given type. Initializes values and active based on type.
      */
-    std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshDatasetGroupMetadata::DataType type ) const;
+    [[nodiscard]] std::shared_ptr<QgsMeshMemoryDataset> createMemoryDataset( const QgsMeshDatasetGroupMetadata::DataType type ) const;
 
     /**
      * Returns dataset based on (time) index. If group has only 1 dataset, returns first one
@@ -298,13 +298,13 @@ class CORE_EXPORT QgsMeshCalcUtils
     /**
      * Returns dataset based on on (time) index. If group has only 1 dataset, returns first one
      */
-    std::shared_ptr<const QgsMeshMemoryDataset> constCandidateDataset( const QgsMeshMemoryDatasetGroup &group,
+    [[nodiscard]] std::shared_ptr<const QgsMeshMemoryDataset> constCandidateDataset( const QgsMeshMemoryDatasetGroup &group,
         int datasetIndex ) const;
 
     /**
      * Returns maximum number of datasets in the groups
      */
-    int datasetCount( const QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const;
+    [[nodiscard]] int datasetCount( const QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const;
 
     /**
      * Set active property for vertices in dataset based on:
@@ -336,8 +336,8 @@ class CORE_EXPORT QgsMeshCalcUtils
     void funcAggr( QgsMeshMemoryDatasetGroup &group1,
                    std::function<double( QVector<double>& )> func ) const;
 
-    const QgsTriangularMesh *triangularMesh() const;
-    const QgsMesh *nativeMesh() const;
+    [[nodiscard]] const QgsTriangularMesh *triangularMesh() const;
+    [[nodiscard]] const QgsMesh *nativeMesh() const;
     void updateMesh() const;
 
     QgsMeshLayer *mMeshLayer; //!< Reference mesh

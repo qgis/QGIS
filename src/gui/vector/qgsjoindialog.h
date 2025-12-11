@@ -43,10 +43,10 @@ class GUI_EXPORT QgsJoinDialog : public QDialog, private Ui::QgsJoinDialogBase
     void setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo );
 
     //! Returns the join info
-    QgsVectorLayerJoinInfo joinInfo() const;
+    [[nodiscard]] QgsVectorLayerJoinInfo joinInfo() const;
 
     //! Returns true if user wants to create an attribute index on the join field
-    bool createAttributeIndex() const;
+    [[nodiscard]] bool createAttributeIndex() const;
 
   private slots:
     void joinedLayerChanged( QgsMapLayer *layer );

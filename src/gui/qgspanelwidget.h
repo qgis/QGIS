@@ -47,7 +47,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * The title of the panel.
      * \returns The title pf the panel.
      */
-    QString panelTitle() const { return mPanelTitle; }
+    [[nodiscard]] QString panelTitle() const { return mPanelTitle; }
 
     /**
     * Connect the given sub panel widgets showPanel signals to this current panels
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      *
      * \since QGIS 3.20
      */
-    virtual bool applySizeConstraintsToStack() const;
+    [[nodiscard]] virtual bool applySizeConstraintsToStack() const;
 
     /**
      * Returns the dock mode state.
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * will emit the showPanel signal to handle panel opening
      * If FALSE it will open dialogs when openPanel is called.
      */
-    bool dockMode() const { return mDockMode; }
+    [[nodiscard]] bool dockMode() const { return mDockMode; }
 
     /**
      * The the auto delete property on the widget. TRUE by default.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * it will be deleted.
      * \returns The auto delete value for the widget.
      */
-    bool autoDelete() const { return mAutoDelete; }
+    [[nodiscard]] bool autoDelete() const { return mAutoDelete; }
 
     /**
      * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      *
      * \since QGIS 3.12
      */
-    virtual QString menuButtonTooltip() const;
+    [[nodiscard]] virtual QString menuButtonTooltip() const;
 
     /**
      * Returns the menu to use for the menu button for this panel, or NULLPTR if

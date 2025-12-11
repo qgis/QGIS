@@ -42,14 +42,14 @@ class GUI_EXPORT QgsNetworkLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
     QgsNetworkLoggerRootNode();
-    QVariant data( int role = Qt::DisplayRole ) const final;
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const final;
 
     /**
      * Removes a \a row from the root group.
      */
     void removeRow( int row );
 
-    QVariant toVariant() const override;
+    [[nodiscard]] QVariant toVariant() const override;
 };
 
 class QgsNetworkLoggerRequestDetailsGroup;
@@ -100,19 +100,19 @@ class GUI_EXPORT QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGro
      * specified \a request details.
      */
     QgsNetworkLoggerRequestGroup( const QgsNetworkRequestParameters &request );
-    QVariant data( int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override;
     QList<QAction *> actions( QObject *parent ) final;
-    QVariant toVariant() const override;
+    [[nodiscard]] QVariant toVariant() const override;
 
     /**
      * Returns the request's status.
      */
-    Status status() const { return mStatus; }
+    [[nodiscard]] Status status() const { return mStatus; }
 
     /**
      * Returns the request's URL.
      */
-    QUrl url() const { return mUrl; }
+    [[nodiscard]] QUrl url() const { return mUrl; }
 
     /**
      * Sets the request's URL.
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGro
     /**
      * Returns TRUE if the request was served directly from local cache.
      */
-    bool replyFromCache() const { return mReplyFromCache; }
+    [[nodiscard]] bool replyFromCache() const { return mReplyFromCache; }
 
     /**
      * Called to set the \a reply associated with the request.
@@ -220,7 +220,7 @@ class GUI_EXPORT QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsM
      * specified \a request details.
      */
     QgsNetworkLoggerRequestDetailsGroup( const QgsNetworkRequestParameters &request );
-    QVariant toVariant() const override;
+    [[nodiscard]] QVariant toVariant() const override;
 
   private:
     QgsNetworkLoggerRequestQueryGroup *mQueryGroup = nullptr;
@@ -324,7 +324,7 @@ class GUI_EXPORT QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
      * specified \a reply details.
      */
     QgsNetworkLoggerReplyGroup( const QgsNetworkReplyContent &reply );
-    QVariant toVariant() const override;
+    [[nodiscard]] QVariant toVariant() const override;
 
   private:
     QgsNetworkLoggerReplyHeadersGroup *mReplyHeaders = nullptr;
@@ -376,7 +376,7 @@ class GUI_EXPORT QgsNetworkLoggerSslErrorGroup final : public QgsDevToolsModelGr
      * specified \a errors.
      */
     QgsNetworkLoggerSslErrorGroup( const QList<QSslError> &errors );
-    QVariant data( int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override;
 };
 
 

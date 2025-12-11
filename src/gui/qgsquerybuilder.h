@@ -61,12 +61,12 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
     void showEvent( QShowEvent *event ) override;
 
     //! Returns the sql statement entered in the dialog.
-    QString sql() const;
+    [[nodiscard]] QString sql() const;
 
     //! Set the sql statement to display in the dialog.
     void setSql( const QString &sqlStatement );
 
-    QString subsetString() const override { return sql(); }
+    [[nodiscard]] QString subsetString() const override { return sql(); }
     void setSubsetString( const QString &subsetString ) override { setSql( subsetString ); }
 
 #ifdef SIP_RUN
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
      * Returns the code editor widget for the SQL.
      * \since QGIS 3.18
      */
-    QgsCodeEditor *codeEditorWidget() const { return mTxtSql; }
+    [[nodiscard]] QgsCodeEditor *codeEditorWidget() const { return mTxtSql; }
 #endif
 
     /**

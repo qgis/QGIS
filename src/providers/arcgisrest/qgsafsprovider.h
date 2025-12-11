@@ -117,12 +117,12 @@ class QgsAfsProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsAfsProviderMetadata();
-    QIcon icon() const override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
     QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSAFSPROVIDER_H

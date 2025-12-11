@@ -37,13 +37,13 @@ class CORE_EXPORT QgsSimpleCopyExternalStorage : public QgsExternalStorage
 {
   public:
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
-    QString displayName() const override;
+    [[nodiscard]] QString displayName() const override;
 
-    QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
+    [[nodiscard]] QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
 
-    QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
+    [[nodiscard]] QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
 };
 
 /**
@@ -61,7 +61,7 @@ class QgsSimpleCopyExternalStorageStoredContent  : public QgsExternalStorageStor
 
     void cancel() override;
 
-    QString url() const override;
+    [[nodiscard]] QString url() const override;
 
     void store() override;
 
@@ -84,7 +84,7 @@ class QgsSimpleCopyExternalStorageFetchedContent : public QgsExternalStorageFetc
 
     QgsSimpleCopyExternalStorageFetchedContent( const QString &filePath );
 
-    QString filePath() const override;
+    [[nodiscard]] QString filePath() const override;
 
     void fetch() override;
 

@@ -53,7 +53,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setNumberOfSegments()
      * \see numberOfSegmentsLeft()
      */
-    int numberOfSegments() const { return mNumSegments; }
+    [[nodiscard]] int numberOfSegments() const { return mNumSegments; }
 
     /**
      * Sets the number of \a segments included in the scalebar.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setNumberOfSegmentsLeft()
      * \see numberOfSegments()
      */
-    int numberOfSegmentsLeft() const { return mNumSegmentsLeft; }
+    [[nodiscard]] int numberOfSegmentsLeft() const { return mNumSegmentsLeft; }
 
     /**
      * Sets the number of \a segments included in the left part of the scalebar.
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setNumberOfSubdivisions()
      * \since QGIS 3.14
      */
-    int numberOfSubdivisions() const { return mNumSubdivisions; }
+    [[nodiscard]] int numberOfSubdivisions() const { return mNumSubdivisions; }
 
     /**
      * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setSubdivisionsHeight()
      * \since QGIS 3.14
      */
-    double subdivisionsHeight() const { return mSubdivisionsHeight; }
+    [[nodiscard]] double subdivisionsHeight() const { return mSubdivisionsHeight; }
 
     /**
      * Sets the scalebar subdivisions \a height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the number of scalebar units per segment.
      * \see setUnitsPerSegment()
      */
-    double unitsPerSegment() const { return mNumUnitsPerSegment; }
+    [[nodiscard]] double unitsPerSegment() const { return mNumUnitsPerSegment; }
 
     /**
      * Sets the number of scalebar \a units per segment.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see minimumBarWidth()
      * \see maximumBarWidth()
      */
-    Qgis::ScaleBarSegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
+    [[nodiscard]] Qgis::ScaleBarSegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
 
     /**
      * Sets the size \a mode for scale bar segments.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setMinimumBarWidth()
      * \see maximumBarWidth()
      */
-    double minimumBarWidth() const { return mMinBarWidth; }
+    [[nodiscard]] double minimumBarWidth() const { return mMinBarWidth; }
 
     /**
      * Sets the minimum \a width (in millimeters) for scale bar segments. This
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setMaximumBarWidth()
      * \see minimumBarWidth()
      */
-    double maximumBarWidth() const { return mMaxBarWidth; }
+    [[nodiscard]] double maximumBarWidth() const { return mMaxBarWidth; }
 
     /**
      * Sets the maximum \a width (in millimeters) for scale bar segments. This
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the distance units used by the scalebar.
      * \see setUnits()
      */
-    Qgis::DistanceUnit units() const { return mUnits; }
+    [[nodiscard]] Qgis::DistanceUnit units() const { return mUnits; }
 
     /**
      * Sets the distance \a units used by the scalebar.
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the number of map units per scale bar unit used by the scalebar.
      * \see setMapUnitsPerScaleBarUnit()
      */
-    double mapUnitsPerScaleBarUnit() const { return mNumMapUnitsPerScaleBarUnit; }
+    [[nodiscard]] double mapUnitsPerScaleBarUnit() const { return mNumMapUnitsPerScaleBarUnit; }
 
     /**
      * Sets the number of map \a units per scale bar unit used by the scalebar.
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the label for units.
      * \see setUnitLabel()
      */
-    QString unitLabel() const { return mUnitLabeling; }
+    [[nodiscard]] QString unitLabel() const { return mUnitLabeling; }
 
     /**
      * Sets the \a label for units.
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setTextFormat()
      * \since QGIS 3.2
      */
-    QgsTextFormat textFormat() const SIP_SKIP { return mTextFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const SIP_SKIP { return mTextFormat; }
 
     /**
      * Sets the text \a format used for drawing text in the scalebar.
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see subdivisionLineSymbol()
      * \since QGIS 3.14
      */
-    QgsLineSymbol *lineSymbol() const;
+    [[nodiscard]] QgsLineSymbol *lineSymbol() const;
 
     /**
      * Sets the line \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see subdivisionLineSymbol()
      * \since QGIS 3.14
      */
-    QgsLineSymbol *divisionLineSymbol() const;
+    [[nodiscard]] QgsLineSymbol *divisionLineSymbol() const;
 
     /**
      * Sets the line \a symbol used to render the scalebar divisions (only used for some scalebar types). Ownership of \a symbol is
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see divisionLineSymbol()
      * \since QGIS 3.14
      */
-    QgsLineSymbol *subdivisionLineSymbol() const;
+    [[nodiscard]] QgsLineSymbol *subdivisionLineSymbol() const;
 
     /**
      * Sets the line \a symbol used to render the scalebar subdivisions (only used for some scalebar types). Ownership of \a symbol is
@@ -433,7 +433,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see alternateFillSymbol()
      * \since QGIS 3.14
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the primary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
@@ -455,7 +455,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see fillSymbol()
      * \since QGIS 3.14
      */
-    QgsFillSymbol *alternateFillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *alternateFillSymbol() const;
 
     /**
      * Sets the secondary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
@@ -503,7 +503,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the scalebar height (in millimeters).
      * \see setHeight()
      */
-    double height() const { return mHeight; }
+    [[nodiscard]] double height() const { return mHeight; }
 
     /**
      * Sets the scalebar \a height (in millimeters).
@@ -515,7 +515,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the spacing (in millimeters) between labels and the scalebar.
      * \see setLabelBarSpace()
      */
-    double labelBarSpace() const { return mLabelBarSpace; }
+    [[nodiscard]] double labelBarSpace() const { return mLabelBarSpace; }
 
     /**
      * Sets the spacing (in millimeters) between labels and the scalebar.
@@ -528,7 +528,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setLabelVerticalPlacement()
      * \since QGIS 3.10
      */
-    Qgis::ScaleBarDistanceLabelVerticalPlacement labelVerticalPlacement() const { return mLabelVerticalPlacement; }
+    [[nodiscard]] Qgis::ScaleBarDistanceLabelVerticalPlacement labelVerticalPlacement() const { return mLabelVerticalPlacement; }
 
     /**
      * Sets the vertical \a placement of text labels.
@@ -542,7 +542,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setLabelHorizontalPlacement()
      * \since QGIS 3.10
      */
-    Qgis::ScaleBarDistanceLabelHorizontalPlacement labelHorizontalPlacement() const { return mLabelHorizontalPlacement; }
+    [[nodiscard]] Qgis::ScaleBarDistanceLabelHorizontalPlacement labelHorizontalPlacement() const { return mLabelHorizontalPlacement; }
 
     /**
      * Sets the horizontal \a placement of text labels.
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the spacing (margin) between the scalebar box and content in millimeters.
      * \see setBoxContentSpace()
      */
-    double boxContentSpace() const { return mBoxContentSpace; }
+    [[nodiscard]] double boxContentSpace() const { return mBoxContentSpace; }
 
     /**
      * Sets the \a space (margin) between the scalebar box and content in millimeters.
@@ -567,7 +567,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the scalebar alignment.
      * \see setAlignment()
      */
-    Qgis::ScaleBarAlignment alignment() const { return mAlignment; }
+    [[nodiscard]] Qgis::ScaleBarAlignment alignment() const { return mAlignment; }
 
     /**
      * Sets the scalebar \a alignment.
@@ -609,7 +609,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * \see setNumericFormat()
      * \since QGIS 3.12
      */
-    const QgsNumericFormat *numericFormat() const;
+    [[nodiscard]] const QgsNumericFormat *numericFormat() const;
 
     /**
      * Sets the numeric \a format used for numbers in the scalebar.

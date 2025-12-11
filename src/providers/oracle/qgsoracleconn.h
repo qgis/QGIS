@@ -50,7 +50,7 @@ struct QgsOracleLayerProperty
 
     QgsOracleLayerProperty() = default;
 
-    int size() const
+    [[nodiscard]] int size() const
     {
       Q_ASSERT( types.size() == srids.size() );
       return types.size();
@@ -61,7 +61,7 @@ struct QgsOracleLayerProperty
       return types == other.types && srids == other.srids && ownerName == other.ownerName && tableName == other.tableName && geometryColName == other.geometryColName && isView == other.isView && pkCols == other.pkCols && sql == other.sql;
     }
 
-    QgsOracleLayerProperty at( int i ) const
+    [[nodiscard]] QgsOracleLayerProperty at( int i ) const
     {
       QgsOracleLayerProperty property;
 
@@ -80,7 +80,7 @@ struct QgsOracleLayerProperty
     }
 
 #ifdef QGISDEBUG
-    QString toString() const
+    [[nodiscard]] QString toString() const
     {
       QString typeString;
       const auto constTypes = types;
@@ -124,7 +124,7 @@ class QgsPoolOracleConn
     QgsPoolOracleConn( const QString &connInfo );
     ~QgsPoolOracleConn();
 
-    class QgsOracleConn *get() const { return mConn; }
+    [[nodiscard]] class QgsOracleConn *get() const { return mConn; }
 };
 
 

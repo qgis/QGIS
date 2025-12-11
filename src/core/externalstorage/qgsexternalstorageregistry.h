@@ -48,12 +48,12 @@ class CORE_EXPORT QgsExternalStorageRegistry
      * Returns external storage implementation if the storage \a type matches one.
      * Returns nullptr otherwise
      */
-    QgsExternalStorage *externalStorageFromType( const QString &type ) const;
+    [[nodiscard]] QgsExternalStorage *externalStorageFromType( const QString &type ) const;
 
     /**
      * Returns a list of registered project storage implementations
      */
-    QList<QgsExternalStorage *> externalStorages() const;
+    [[nodiscard]] QList<QgsExternalStorage *> externalStorages() const;
 
     /**
      * Registers a \a storage backend and takes ownership of it

@@ -55,14 +55,14 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * \returns unique string
      * \see visibleName
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns the user visible string representing the paint effect class
      * \returns friendly user visible string
      * \see name
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Create a paint effect of this class given an encoded map of properties.
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \returns creation function
      * \note not available in Python bindings
      */
-    QgsPaintEffectCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    [[nodiscard]] QgsPaintEffectCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
 
     /**
      * Returns the paint effect properties widget creation function for the paint effect class
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see setWidgetFunction
      */
-    QgsPaintEffectWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    [[nodiscard]] QgsPaintEffectWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
 
     /**
      * Sets the paint effect properties widget creation function for the paint effect class
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \param name unique string name for paint effect class
      * \returns paint effect metadata if found, otherwise NULLPTR
      */
-    QgsPaintEffectAbstractMetadata *effectMetadata( const QString &name ) const;
+    [[nodiscard]] QgsPaintEffectAbstractMetadata *effectMetadata( const QString &name ) const;
 
     /**
      * Registers a new effect type.
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect of specified class, or NULLPTR if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QString &name, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
+    [[nodiscard]] QgsPaintEffect *createEffect( const QString &name, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
 
     /**
      * Creates a new paint effect given a DOM element storing paint effect
@@ -210,13 +210,13 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect, or NULLPTR if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QDomElement &element ) const SIP_FACTORY;
+    [[nodiscard]] QgsPaintEffect *createEffect( const QDomElement &element ) const SIP_FACTORY;
 
     /**
      * Returns a list of known paint effects.
      * \returns list of paint effect names
      */
-    QStringList effects() const;
+    [[nodiscard]] QStringList effects() const;
 
     /**
      * Returns a new effect stack consisting of a sensible selection of default

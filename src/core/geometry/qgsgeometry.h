@@ -135,7 +135,7 @@ class CORE_EXPORT QgsGeometryParameters
      *
      * \see setGridSize()
      */
-    double gridSize() const { return mGridSize; }
+    [[nodiscard]] double gridSize() const { return mGridSize; }
 
     /**
      * Sets the grid \a size which will be used to snap vertices of a geometry.
@@ -2783,17 +2783,17 @@ class CORE_EXPORT QgsGeometry
         /**
          * A human readable error message containing details about the error.
          */
-        QString what() const;
+        [[nodiscard]] QString what() const;
 
         /**
          * The coordinates at which the error is located and should be visualized.
          */
-        QgsPointXY where() const;
+        [[nodiscard]] QgsPointXY where() const;
 
         /**
          * TRUE if the location available from \see where is valid.
          */
-        bool hasWhere() const;
+        [[nodiscard]] bool hasWhere() const;
 
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();

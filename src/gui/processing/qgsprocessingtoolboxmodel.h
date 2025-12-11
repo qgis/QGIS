@@ -92,7 +92,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     /**
      * Returns the node's type.
      */
-    virtual NodeType nodeType() const = 0;
+    [[nodiscard]] virtual NodeType nodeType() const = 0;
 
     /**
      * Returns the node's parent. If the node's parent is NULLPTR, then the node is a root node.
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
      * Returns a list of children belonging to the node.
      * \note Not available in Python bindings
      */
-    QList<QgsProcessingToolboxModelNode *> children() const SIP_SKIP
+    [[nodiscard]] QList<QgsProcessingToolboxModelNode *> children() const SIP_SKIP
     {
       return mChildren;
     }
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
   public:
     QgsProcessingToolboxModelRecentNode() = default;
 
-    NodeType nodeType() const override { return NodeType::Recent; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeType::Recent; }
 };
 
 /**
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsProcessingToolboxModelFavoriteNode : public QgsProcessingToo
   public:
     QgsProcessingToolboxModelFavoriteNode() = default;
 
-    NodeType nodeType() const override { return NodeType::Favorite; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeType::Favorite; }
 };
 
 /**
@@ -187,7 +187,7 @@ class GUI_EXPORT QgsProcessingToolboxModelParameterGroupNode : public QgsProcess
   public:
     QgsProcessingToolboxModelParameterGroupNode() = default;
 
-    NodeType nodeType() const override { return NodeType::ParameterGroup; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeType::ParameterGroup; }
 };
 
 /**
@@ -207,7 +207,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
      */
     QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
 
-    NodeType nodeType() const override { return NodeType::Provider; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeType::Provider; }
 
     /**
      * Returns the provider associated with this node.
@@ -217,7 +217,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
     /**
      * Returns the provider ID.
      */
-    QString providerId() const { return mProviderId; }
+    [[nodiscard]] QString providerId() const { return mProviderId; }
 
   private:
     // NOTE: we store both the provider ID and a pointer to the provider here intentionally.
@@ -249,17 +249,17 @@ class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolbo
      */
     QgsProcessingToolboxModelGroupNode( const QString &id, const QString &name );
 
-    NodeType nodeType() const override { return NodeType::Group; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeType::Group; }
 
     /**
      * Returns the group's ID, which is unique and untranslated.
      */
-    QString id() const { return mId; }
+    [[nodiscard]] QString id() const { return mId; }
 
     /**
      * Returns the group's name, which is translated and user-visible.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
   private:
     QString mId;
@@ -283,12 +283,12 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
      */
     QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 
-    NodeType nodeType() const override { return NodeType::Algorithm; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeType::Algorithm; }
 
     /**
      * Returns the algorithm associated with this node.
      */
-    const QgsProcessingAlgorithm *algorithm() const;
+    [[nodiscard]] const QgsProcessingAlgorithm *algorithm() const;
 
   private:
     const QgsProcessingAlgorithm *mAlgorithm = nullptr;
@@ -312,12 +312,12 @@ class GUI_EXPORT QgsProcessingToolboxModelParameterNode : public QgsProcessingTo
      */
     QgsProcessingToolboxModelParameterNode( const QgsProcessingParameterType *paramType );
 
-    NodeType nodeType() const override { return NodeType::Parameter; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeType::Parameter; }
 
     /**
      * Returns the parameter type associated with this node.
      */
-    const QgsProcessingParameterType *parameterType() const;
+    [[nodiscard]] const QgsProcessingParameterType *parameterType() const;
 
   private:
     const QgsProcessingParameterType *mParamType = nullptr;
@@ -377,19 +377,19 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      */
     QgsProcessingToolboxModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr, QgsProcessingRecentAlgorithmLog *recentLog = nullptr, QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     /**
      * Returns the model node corresponding to the given \a index.
      * \see node2index()
      */
-    QgsProcessingToolboxModelNode *index2node( const QModelIndex &index ) const;
+    [[nodiscard]] QgsProcessingToolboxModelNode *index2node( const QModelIndex &index ) const;
 
     /**
      * Returns the model index corresponding to the given \a node.
@@ -404,7 +404,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * \see algorithmForIndex()
      * \see indexForProvider()
      */
-    QgsProcessingProvider *providerForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsProcessingProvider *providerForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the provider ID which corresponds to a given \a index, or
@@ -413,7 +413,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * \see algorithmForIndex()
      * \see indexForProvider()
      */
-    QString providerIdForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QString providerIdForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the algorithm which corresponds to a given \a index, or
@@ -422,14 +422,14 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * \see isAlgorithm()
      * \see providerForIndex()
      */
-    const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns TRUE if \a index corresponds to an algorithm.
      *
      * \see algorithmForIndex()
      */
-    bool isAlgorithm( const QModelIndex &index ) const;
+    [[nodiscard]] bool isAlgorithm( const QModelIndex &index ) const;
 
     /**
      * Returns the algorithm which corresponds to a given \a index, or
@@ -439,7 +439,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * \see providerForIndex()
      * \since QGIS 3.44
      */
-    const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns TRUE if \a index corresponds to a parameter.
@@ -447,13 +447,13 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * \see parameterTypeForIndex()
      * \since QGIS 3.44
      */
-    bool isParameter( const QModelIndex &index ) const;
+    [[nodiscard]] bool isParameter( const QModelIndex &index ) const;
 
     /**
      * Returns the index corresponding to the specified \a providerId.
      * \see providerForIndex()
      */
-    QModelIndex indexForProvider( const QString &providerId ) const;
+    [[nodiscard]] QModelIndex indexForProvider( const QString &providerId ) const;
 
     /**
      * Returns the index corresponding to the parent of a given node.
@@ -556,7 +556,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      * Returns the underlying source Processing toolbox model.
      * \note Not available in Python bindings
      */
-    const QgsProcessingToolboxModel *toolboxModel() const SIP_SKIP;
+    [[nodiscard]] const QgsProcessingToolboxModel *toolboxModel() const SIP_SKIP;
 
     /**
      * Set \a filters that affect how toolbox content is filtered.
@@ -568,7 +568,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      * Returns any filters that affect how toolbox content is filtered.
      * \see setFilters()
      */
-    Filters filters() const { return mFilters; }
+    [[nodiscard]] Filters filters() const { return mFilters; }
 
     /**
      * Sets the vector \a layer for in-place algorithm filter
@@ -591,11 +591,11 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      *
      * \see setFilterString()
      */
-    QString filterString() const { return mFilterString; }
+    [[nodiscard]] QString filterString() const { return mFilterString; }
 
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   private:
     QgsProcessingToolboxModel *mModel = nullptr;

@@ -89,7 +89,7 @@ class CORE_EXPORT QgsHttpHeaders
      * \brief Returns the headers as a variant map
      * \since QGIS 3.30
      */
-    QVariantMap headers() const {return mHeaders;}
+    [[nodiscard]] QVariantMap headers() const {return mHeaders;}
 
     /**
      * \brief Updates the \a settings by adding all the http headers in the path "key/PATH_PREFIX/"
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsHttpHeaders
      * \brief Returns a cleansed \a key
      * \param key a key to be sanitized
      */
-    QString sanitizeKey( const QString &key ) const;
+    [[nodiscard]] QString sanitizeKey( const QString &key ) const;
 
     /**
      * \param key http header key name
@@ -207,10 +207,10 @@ class CORE_EXPORT QgsHttpHeaders
     /**
      * Returns the list of all HTTP header keys.
      */
-    QList<QString> keys() const;
+    [[nodiscard]] QList<QString> keys() const;
 
     //! Returns key/value pairs as strings separated by space
-    QString toSpacedString() const;
+    [[nodiscard]] QString toSpacedString() const;
 
 #ifndef SIP_RUN
 

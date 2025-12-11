@@ -39,10 +39,10 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
   public:
     QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
-    QgsGeometryValidationModel *geometryValidationModel() const;
+    [[nodiscard]] QgsGeometryValidationModel *geometryValidationModel() const;
     void setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel );
 
-    QgsGeometryValidationService *geometryValidationService() const;
+    [[nodiscard]] QgsGeometryValidationService *geometryValidationService() const;
     void setGeometryValidationService( QgsGeometryValidationService *geometryValidationService );
 
   private slots:
@@ -69,14 +69,14 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
 
     void showHighlight( const QModelIndex &current );
 
-    QgsCoordinateTransform layerTransform() const;
+    [[nodiscard]] QgsCoordinateTransform layerTransform() const;
 
     ZoomToAction mLastZoomToAction = ZoomToFeature;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationService *mGeometryValidationService = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgisApp *mQgisApp = nullptr;
-    QModelIndex currentIndex() const;
+    [[nodiscard]] QModelIndex currentIndex() const;
     QgsRubberBand *mFeatureRubberband = nullptr;
     QgsRubberBand *mErrorRubberband = nullptr;
     QgsRubberBand *mErrorLocationRubberband = nullptr;

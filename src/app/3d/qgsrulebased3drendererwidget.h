@@ -38,30 +38,30 @@ class QgsRuleBased3DRendererModel : public QAbstractItemModel
   public:
     QgsRuleBased3DRendererModel( QgsRuleBased3DRenderer::Rule *rootRule, QObject *parent = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
     //! provide model index for parent's child item
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     //! provide parent model index
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // new methods
 
-    QgsRuleBased3DRenderer::Rule *ruleForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsRuleBased3DRenderer::Rule *ruleForIndex( const QModelIndex &index ) const;
 
     void insertRule( const QModelIndex &parent, int before, QgsRuleBased3DRenderer::Rule *newrule );
     void updateRule( const QModelIndex &parent, int row );

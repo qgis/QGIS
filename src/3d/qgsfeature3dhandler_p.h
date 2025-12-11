@@ -67,18 +67,18 @@ class QgsFeature3DHandler
      * Returns minimal Z value of the data (in world coordinates).
      * \note this method should not be called before call to finalize() - it may not be initialized
      */
-    float zMinimum() const { return mZMin; }
+    [[nodiscard]] float zMinimum() const { return mZMin; }
 
     /**
      * Returns maximal Z value of the data (in world coordinates).
      * \note this method should not be called before call to finalize() - it may not be initialized
      */
-    float zMaximum() const { return mZMax; }
+    [[nodiscard]] float zMaximum() const { return mZMax; }
 
     /**
      * Returns the number of features processed by the handler.
      */
-    int featureCount() const { return mFeatureCount; }
+    [[nodiscard]] int featureCount() const { return mFeatureCount; }
 
   protected:
     //! updates zMinimum, zMaximum from the vector of positions in 3D world coordinates

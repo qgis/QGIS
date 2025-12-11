@@ -156,21 +156,21 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \see listShortcuts()
      * \see listAll()
      */
-    QList<QAction *> listActions() const;
+    [[nodiscard]] QList<QAction *> listActions() const;
 
     /**
      * Returns a list of shortcuts in the manager.
      * \see listActions()
      * \see listAll()
      */
-    QList<QShortcut *> listShortcuts() const;
+    [[nodiscard]] QList<QShortcut *> listShortcuts() const;
 
     /**
      * Returns a list of both actions and shortcuts in the manager.
      * \see listActions()
      * \see listShortcuts()
      */
-    QList<QObject *> listAll() const;
+    [[nodiscard]] QList<QObject *> listAll() const;
 
     /**
      * Returns the default sequence for an object (either a QAction or QShortcut).
@@ -236,7 +236,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \see actionForSequence()
      * \see shortcutForSequence()
      */
-    QObject *objectForSequence( const QKeySequence &sequence ) const;
+    [[nodiscard]] QObject *objectForSequence( const QKeySequence &sequence ) const;
 
     /**
      * Returns the action which is associated for a shortcut sequence, or NULLPTR if no action is associated.
@@ -244,7 +244,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \see objectForSequence()
      * \see shortcutForSequence()
      */
-    QAction *actionForSequence( const QKeySequence &sequence ) const;
+    [[nodiscard]] QAction *actionForSequence( const QKeySequence &sequence ) const;
 
     /**
      * Returns the shortcut which is associated for a key sequence, or NULLPTR if no shortcut is associated.
@@ -252,30 +252,30 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \see objectForSequence()
      * \see actionForSequence()
      */
-    QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
+    [[nodiscard]] QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 
     /**
      * Returns the key sequence which is associated with a common \a action, or an empty sequence if no shortcut is assigned to that action.
      * \since QGIS 4.0
      */
-    QKeySequence sequenceForCommonAction( CommonAction action ) const;
+    [[nodiscard]] QKeySequence sequenceForCommonAction( CommonAction action ) const;
 
     /**
      * Returns an action by its name, or NULLPTR if nothing found.
      * \param name action name. Must match QAction's text.
      * \see shortcutByName()
      */
-    QAction *actionByName( const QString &name ) const;
+    [[nodiscard]] QAction *actionByName( const QString &name ) const;
 
     /**
      * Returns a shortcut by its name, or NULLPTR if nothing found
      * \param name shortcut name. Must match QShortcut's QObject::objectName() property.
      * \see actionByName()
      */
-    QShortcut *shortcutByName( const QString &name ) const;
+    [[nodiscard]] QShortcut *shortcutByName( const QString &name ) const;
 
     //! Returns the root settings path used to store shortcut customization.
-    QString settingsPath() const { return mSettingsPath; }
+    [[nodiscard]] QString settingsPath() const { return mSettingsPath; }
 
     /**
      * Returns the full settings key matching the QShortcut or QAction
@@ -291,7 +291,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      *
      * \since QGIS 3.30
      */
-    QObject *objectForSettingKey( const QString &name ) const;
+    [[nodiscard]] QObject *objectForSettingKey( const QString &name ) const;
 
   private slots:
 

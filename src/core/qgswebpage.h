@@ -242,7 +242,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
      * log so that users can identify which QgsWebPage has logged the message.
      * \see setIdentifier()
      */
-    QString identifier() const { return mIdentifier; }
+    [[nodiscard]] QString identifier() const { return mIdentifier; }
 
   protected:
 

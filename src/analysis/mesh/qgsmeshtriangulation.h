@@ -108,12 +108,12 @@ class QgsMeshZValueDataset : public QgsMeshDataset
     //! Constructor with the mesh
     QgsMeshZValueDataset( const QgsMesh &mesh );
 
-    QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
-    QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;
-    QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;
-    bool isActive( int faceIndex ) const override;
-    QgsMeshDatasetMetadata metadata() const override;
-    int valuesCount() const override;
+    [[nodiscard]] QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
+    [[nodiscard]] QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;
+    [[nodiscard]] QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;
+    [[nodiscard]] bool isActive( int faceIndex ) const override;
+    [[nodiscard]] QgsMeshDatasetMetadata metadata() const override;
+    [[nodiscard]] int valuesCount() const override;
 
   private:
     QgsMesh mMesh;
@@ -171,7 +171,7 @@ class ANALYSIS_EXPORT QgsMeshEditingDelaunayTriangulation : public QgsMeshAdvanc
   public:
     QgsMeshEditingDelaunayTriangulation();
 
-    QString text() const override;
+    [[nodiscard]] QString text() const override;
 
   private:
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;

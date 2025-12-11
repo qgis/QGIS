@@ -314,7 +314,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
      * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the symbol that is currently active in the widget. Can be NULLPTR.
@@ -333,7 +333,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
      * Returns a reference to the dialog's button box.
      * \since QGIS 3.10
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   public slots:
 

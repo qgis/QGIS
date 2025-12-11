@@ -38,7 +38,7 @@ class GUI_EXPORT QgsPlotToolPan : public QgsPlotTool
      */
     QgsPlotToolPan( QgsPlotCanvas *canvas );
 
-    Qgis::PlotToolFlags flags() const override;
+    [[nodiscard]] Qgis::PlotToolFlags flags() const override;
     void plotMoveEvent( QgsPlotMouseEvent *event ) override;
     void plotPressEvent( QgsPlotMouseEvent *event ) override;
     void plotReleaseEvent( QgsPlotMouseEvent *event ) override;

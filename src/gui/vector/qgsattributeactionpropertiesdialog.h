@@ -44,25 +44,25 @@ class GUI_EXPORT QgsAttributeActionPropertiesDialog : public QDialog, private Ui
 
     QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    Qgis::AttributeActionType type() const;
+    [[nodiscard]] Qgis::AttributeActionType type() const;
 
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
-    QString shortTitle() const;
+    [[nodiscard]] QString shortTitle() const;
 
-    QString iconPath() const;
+    [[nodiscard]] QString iconPath() const;
 
-    QString actionText() const;
+    [[nodiscard]] QString actionText() const;
 
-    QSet<QString> actionScopes() const;
+    [[nodiscard]] QSet<QString> actionScopes() const;
 
-    QString notificationMessage() const;
+    [[nodiscard]] QString notificationMessage() const;
 
-    bool isEnabledOnlyWhenEditable() const;
+    [[nodiscard]] bool isEnabledOnlyWhenEditable() const;
 
-    bool capture() const;
+    [[nodiscard]] bool capture() const;
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void browse();

@@ -42,28 +42,28 @@ class _3D_EXPORT QgsTilingScheme
     QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs );
 
     //! Returns map coordinates at tile coordinates (for lower-left corner of the tile)
-    QgsPointXY tileToMap( int x, int y, int z ) const;
+    [[nodiscard]] QgsPointXY tileToMap( int x, int y, int z ) const;
     //! Returns tile coordinates for given map coordinates and Z level
     void mapToTile( const QgsPointXY &pt, int z, float &x, float &y ) const;
 
     //! Returns map coordinates of the extent of a tile
-    QgsRectangle tileToExtent( int x, int y, int z ) const;
+    [[nodiscard]] QgsRectangle tileToExtent( int x, int y, int z ) const;
 
     //! Returns map coordinates of the extent of a tile
-    QgsRectangle tileToExtent( const QgsChunkNodeId &nodeId ) const;
+    [[nodiscard]] QgsRectangle tileToExtent( const QgsChunkNodeId &nodeId ) const;
 
     //! Returns coordinates of a tile that most tightly fits the whole extent
     void extentToTile( const QgsRectangle &extent, int &x, int &y, int &z ) const;
 
     //! Returns CRS of the tiling scheme
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     /**
      * Returns the full extent used in the constructor, which might not be square.
      * Level 0 tile is centered at the full extent and the full extent completely fits into the level 0 tile
      * \since QGIS 3.30
      */
-    QgsRectangle fullExtent() const { return mFullExtent; }
+    [[nodiscard]] QgsRectangle fullExtent() const { return mFullExtent; }
 
   private:
     QgsPointXY mMapOrigin;             //!< Origin point in map coordinates: (0,0) in the tiling scheme

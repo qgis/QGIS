@@ -83,7 +83,7 @@ class CORE_EXPORT QgsGdalCloudProviderConnection : public QgsAbstractProviderCon
     /**
      * Returns the contents of the bucket at the specified \a path.
      */
-    QList< DirectoryObject > contents( const QString &path ) const;
+    [[nodiscard]] QList< DirectoryObject > contents( const QString &path ) const;
 
     /**
     * \brief Represents decoded data of a GDAL cloud provider connection.

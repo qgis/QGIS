@@ -85,9 +85,9 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
         inline const QgsFeature *feature() { return mFeature.get(); }
 
-        bool allAttributesFetched() const;
+        [[nodiscard]] bool allAttributesFetched() const;
 
-        bool geometryFetched() const;
+        [[nodiscard]] bool geometryFetched() const;
 
       private:
         std::unique_ptr<QgsFeature> mFeature;

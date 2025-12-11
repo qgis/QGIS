@@ -55,7 +55,7 @@ class CORE_EXPORT QgsTableCell
      *
      * \see setContent()
      */
-    QVariant content() const { return mContent; }
+    [[nodiscard]] QVariant content() const { return mContent; }
 
     /**
      * Sets the cell's \a content.
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsTableCell
      *
      * \see setBackgroundColor()
      */
-    QColor backgroundColor() const { return mBackgroundColor; }
+    [[nodiscard]] QColor backgroundColor() const { return mBackgroundColor; }
 
     /**
      * Sets the cell's background \a color.
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsTableCell
      *
      * \see setForegroundColor()
      */
-    QColor foregroundColor() const { return mForegroundColor; }
+    [[nodiscard]] QColor foregroundColor() const { return mForegroundColor; }
 
     /**
      * Sets the cell's foreground \a color.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsTableCell
      * \see setTextFormat()
      * \since QGIS 3.16
      */
-    QgsTextFormat textFormat() const { return mTextFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const { return mTextFormat; }
 
     /**
      * Sets the cell's text \a format.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsTableCell
      *
      * \see setNumericFormat()
      */
-    const QgsNumericFormat *numericFormat() const;
+    [[nodiscard]] const QgsNumericFormat *numericFormat() const;
 
     /**
      * Sets the numeric \a format used for numbers in the cell, or NULLPTR if no specific format is set.
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsTableCell
      * \see verticalAlignment()
      * \since QGIS 3.16
      */
-    Qt::Alignment horizontalAlignment() const;
+    [[nodiscard]] Qt::Alignment horizontalAlignment() const;
 
     /**
      * Sets the horizontal \a alignment for text in the cell.
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsTableCell
      * \see horizontalAlignment()
      * \since QGIS 3.16
      */
-    Qt::Alignment verticalAlignment() const;
+    [[nodiscard]] Qt::Alignment verticalAlignment() const;
 
     /**
      * Sets the vertical \a alignment for text in the cell.
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsTableCell
      *
      * \since QGIS 3.40
      */
-    int rowSpan() const { return mRowSpan; }
+    [[nodiscard]] int rowSpan() const { return mRowSpan; }
 
     /**
      * Returns the column span for the cell.
@@ -196,14 +196,14 @@ class CORE_EXPORT QgsTableCell
      *
      * \since QGIS 3.40
      */
-    int columnSpan() const { return mColumnSpan; }
+    [[nodiscard]] int columnSpan() const { return mColumnSpan; }
 
     /**
      * Returns the properties of the cell.
      *
      * \see setProperties()
      */
-    QVariantMap properties( const QgsReadWriteContext &context ) const;
+    [[nodiscard]] QVariantMap properties( const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the \a properties for the cell.

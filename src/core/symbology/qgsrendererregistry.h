@@ -73,19 +73,19 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * Returns the unique name of the renderer. This value is not translated.
      * \see visibleName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns a friendly display name of the renderer. This value is translated.
      * \see name()
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns an icon representing the renderer.
      * \see setIcon()
      */
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
     /**
      * Sets an \a icon representing the renderer.
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     /**
      * Returns flags indicating the types of layer the renderer is compatible with.
      */
-    virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const { return All; }
+    [[nodiscard]] virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const { return All; }
 
     /**
      * Returns new instance of the renderer given the DOM element. Returns NULLPTR on error.
@@ -185,16 +185,16 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! \note not available in Python bindings
-    QgsRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    [[nodiscard]] QgsRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    [[nodiscard]] QgsRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
     //! \note not available in Python bindings
-    QgsRendererCreateFromSldFunc createFromSldFunction() const SIP_SKIP { return mCreateFromSldFunc; }
+    [[nodiscard]] QgsRendererCreateFromSldFunc createFromSldFunction() const SIP_SKIP { return mCreateFromSldFunc; }
 
     //! \note not available in Python bindings
     void setWidgetFunction( QgsRendererWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
 
-    QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
+    [[nodiscard]] QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
 
   protected:
     //! pointer to function that creates an instance of the renderer when loading project / style
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsRendererRegistry
      * Returns a list of available renderers.
      * \param layerTypes flags to filter the renderers by compatible layer types
      */
-    QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
+    [[nodiscard]] QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
 
     /**
      * Returns a list of available renderers which are compatible with a specified layer.

@@ -54,8 +54,8 @@ namespace QgsWfs
         , mServerIface( serverIface )
       {}
 
-      QString name() const override { return QStringLiteral( "WFS" ); }
-      QString version() const override { return mVersion; }
+      [[nodiscard]] QString name() const override { return QStringLiteral( "WFS" ); }
+      [[nodiscard]] QString version() const override { return mVersion; }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {

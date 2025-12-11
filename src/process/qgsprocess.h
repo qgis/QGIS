@@ -52,7 +52,7 @@ class ConsoleFeedback : public QgsProcessingFeedback
     void pushConsoleInfo( const QString &info ) override;
     void pushFormattedMessage( const QString &html, const QString &text ) override;
 
-    QVariantMap jsonLog() const;
+    [[nodiscard]] QVariantMap jsonLog() const;
 
   private slots:
     void showTerminalProgress( double progress );

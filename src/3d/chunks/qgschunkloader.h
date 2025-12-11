@@ -77,7 +77,7 @@ class QgsChunkLoaderFactory : public QObject
     }
 
     //! Creates root node of the hierarchy. Ownership of the returned object is passed to the caller.
-    virtual QgsChunkNode *createRootNode() const = 0;
+    [[nodiscard]] virtual QgsChunkNode *createRootNode() const = 0;
     //! Creates child nodes for the given node. Ownership of the returned objects is passed to the caller.
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const = 0;
 
@@ -133,7 +133,7 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     //! Initializes the root node setup (bounding box and error) and tree depth
     void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D = QgsBox3D() );
 
-    QgsChunkNode *createRootNode() const override;
+    [[nodiscard]] QgsChunkNode *createRootNode() const override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
   protected:

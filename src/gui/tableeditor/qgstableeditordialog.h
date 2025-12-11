@@ -73,7 +73,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      *
      * \see setTableContents()
      */
-    QgsTableContents tableContents() const;
+    [[nodiscard]] QgsTableContents tableContents() const;
 
     /**
      * Returns the configured row height for the specified \a row, or 0 if an automatic height
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      *
      * \see setIncludeTableHeader()
      */
-    bool includeTableHeader() const;
+    [[nodiscard]] bool includeTableHeader() const;
 
     /**
      * Sets whether the table includes a header row.
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      *
      * \see setTableHeaders()
      */
-    QVariantList tableHeaders() const;
+    [[nodiscard]] QVariantList tableHeaders() const;
 
     /**
      * Sets the table \a headers.
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      * Returns the (possibly NULLPTR) layer associated with the expression editor context.
      * \since QGIS 3.40
      */
-    QgsMapLayer *layer() const;
+    [[nodiscard]] QgsMapLayer *layer() const;
 
     /**
      * Sets the \a layer to be used associated with the expression editor context.
@@ -162,7 +162,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      * Returns the manual table associated with the editor.
      * \since QGIS 3.42
      */
-    QgsLayoutItemManualTable *table() const SIP_SKIP;
+    [[nodiscard]] QgsLayoutItemManualTable *table() const SIP_SKIP;
 
     /**
      * Sets the \a table associated with the editor.

@@ -96,25 +96,25 @@ class CORE_EXPORT QgsVectorTileWriter
         }
 
         //! Returns vector layer of this entry
-        QgsVectorLayer *layer() const { return mLayer; }
+        [[nodiscard]] QgsVectorLayer *layer() const { return mLayer; }
 
         //! Returns filter expression. If not empty, only features matching the expression will be used
-        QString filterExpression() const { return mFilterExpression; }
+        [[nodiscard]] QString filterExpression() const { return mFilterExpression; }
         //! Sets filter expression. If not empty, only features matching the expression will be used
         void setFilterExpression( const QString &expr ) { mFilterExpression = expr; }
 
         //! Returns layer name in the output. If not set, layer()->name() will be used.
-        QString layerName() const { return mLayerName; }
+        [[nodiscard]] QString layerName() const { return mLayerName; }
         //! Sets layer name in the output. If not set, layer()->name() will be used.
         void setLayerName( const QString &name ) { mLayerName = name; }
 
         //! Returns minimum zoom level at which this layer will be used. Negative value means no min. zoom level
-        int minZoom() const { return mMinZoom; }
+        [[nodiscard]] int minZoom() const { return mMinZoom; }
         //! Sets minimum zoom level at which this layer will be used. Negative value means no min. zoom level
         void setMinZoom( int minzoom ) { mMinZoom = minzoom; }
 
         //! Returns maximum zoom level at which this layer will be used. Negative value means no max. zoom level
-        int maxZoom() const { return mMaxZoom; }
+        [[nodiscard]] int maxZoom() const { return mMaxZoom; }
         //! Sets maximum zoom level at which this layer will be used. Negative value means no max. zoom level
         void setMaxZoom( int maxzoom ) { mMaxZoom = maxzoom; }
 
@@ -170,10 +170,10 @@ class CORE_EXPORT QgsVectorTileWriter
      * Returns error message related to the previous call to writeTiles(). Will return
      * an empty string if writing was successful.
      */
-    QString errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] QString errorMessage() const { return mErrorMessage; }
 
     //! Returns calculated extent that combines extent of all input layers
-    QgsRectangle fullExtent() const;
+    [[nodiscard]] QgsRectangle fullExtent() const;
 
     /**
      * Encodes single MVT tile
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
   private:
     bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix, const QByteArray &tileData );
-    QString mbtilesJsonSchema() const;
+    [[nodiscard]] QString mbtilesJsonSchema() const;
 
   private:
     QgsTileMatrix mRootTileMatrix;

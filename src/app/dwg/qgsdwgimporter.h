@@ -184,13 +184,13 @@ class QgsDwgImporter : public DRW_Interface
     OGRLayerH query( const QString &sql );
 
     void progress( const QString &msg );
-    QString decode( const std::string &s ) const;
+    [[nodiscard]] QString decode( const std::string &s ) const;
     void cleanText( QString &s );
 
     void addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_Entity &data );
-    QString colorString( int color, int color24, int transparency, const QString &layer ) const;
-    double lineWidth( int lWeight, const QString &layer ) const;
-    QString linetypeString( const QString &linetype, const QString &layer ) const;
+    [[nodiscard]] QString colorString( int color, int color24, int transparency, const QString &layer ) const;
+    [[nodiscard]] double lineWidth( int lWeight, const QString &layer ) const;
+    [[nodiscard]] QString linetypeString( const QString &linetype, const QString &layer ) const;
     void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const std::string &value ) const;
     void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const QString &value ) const;
     void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const char *value ) const;

@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAttributeEditorTextElement : public QgsAttributeEditorEleme
     /**
      * The Text that will be represented within this widget.
      */
-    QString text() const;
+    [[nodiscard]] QString text() const;
 
     /**
      * Sets the text that will be represented within this widget to \a text
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsAttributeEditorTextElement : public QgsAttributeEditorEleme
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
-    QString typeIdentifier() const override;
+    [[nodiscard]] QString typeIdentifier() const override;
     QString mText;
 };
 

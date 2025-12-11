@@ -59,7 +59,7 @@ struct CORE_EXPORT QgsPointCloudAttributeStatistics
    * Returns the count of points in given class or -1 on error
    * \since QGIS 3.42
    */
-  int singleClassCount( int cls ) const;
+  [[nodiscard]] int singleClassCount( int cls ) const;
 };
 
 /**
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsPointCloudStatistics
 #endif
 
     //! Returns the number of points used to calculate the statistics
-    int sampledPointsCount() const { return mSampledPointsCount; }
+    [[nodiscard]] int sampledPointsCount() const { return mSampledPointsCount; }
 
     //! Clears the statistics of all attributes
     void clear();
@@ -90,10 +90,10 @@ class CORE_EXPORT QgsPointCloudStatistics
     void clear( const QVector<QgsPointCloudAttribute> &attributes );
 
     //! Returns the calculated statistics of attribute \a attribute
-    QgsPointCloudAttributeStatistics statisticsOf( const QString &attribute ) const;
+    [[nodiscard]] QgsPointCloudAttributeStatistics statisticsOf( const QString &attribute ) const;
 
     //! Returns a list of existing classes which are present for the specified \a attribute
-    QList<int> classesOf( const QString &attribute ) const;
+    [[nodiscard]] QList<int> classesOf( const QString &attribute ) const;
 
 #ifndef SIP_RUN
 
@@ -101,45 +101,45 @@ class CORE_EXPORT QgsPointCloudStatistics
      * Returns a map containing the count of each class of the attribute \a attribute
      * If no matching statistic is available then an empty map will be returned.
      */
-    QMap<int, int> availableClasses( const QString &attribute ) const;
+    [[nodiscard]] QMap<int, int> availableClasses( const QString &attribute ) const;
 #endif
 
     /**
      * Returns the minimum value for the attribute \a attribute
      * If no matching statistic is available then NaN will be returned.
      */
-    double minimum( const QString &attribute ) const;
+    [[nodiscard]] double minimum( const QString &attribute ) const;
 
     /**
      * Returns the maximum value for the attribute \a attribute
      * If no matching statistic is available then NaN will be returned.
      */
-    double maximum( const QString &attribute ) const;
+    [[nodiscard]] double maximum( const QString &attribute ) const;
 
     /**
      * Returns the mean value for the attribute \a attribute
      * If no matching statistic is available then NaN will be returned.
      */
-    double mean( const QString &attribute ) const;
+    [[nodiscard]] double mean( const QString &attribute ) const;
 
     /**
      * Returns the standard deviation value for the attribute \a attribute
      * If no matching statistic is available then NaN will be returned.
      */
-    double stDev( const QString &attribute ) const;
+    [[nodiscard]] double stDev( const QString &attribute ) const;
 
     //! Merges the current statistics with the statistics from \a stats
     void combineWith( const QgsPointCloudStatistics &stats );
 
     //! Converts the current statistics object into JSON object
-    QByteArray toStatisticsJson() const;
+    [[nodiscard]] QByteArray toStatisticsJson() const;
 
     //! Creates a statistics object from the JSON object \a stats
     static QgsPointCloudStatistics fromStatisticsJson( const QByteArray &stats );
 
 #ifndef SIP_RUN
     //! Returns a map object containing all the statistics
-    QMap<QString, QgsPointCloudAttributeStatistics> statisticsMap() const { return mStatisticsMap; };
+    [[nodiscard]] QMap<QString, QgsPointCloudAttributeStatistics> statisticsMap() const { return mStatisticsMap; };
 #endif
   private:
     int mSampledPointsCount = 0;

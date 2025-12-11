@@ -55,13 +55,13 @@ class QgsSpatiaLiteSourceSelect : public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables() const;
+    [[nodiscard]] QStringList selectedTables() const;
     //! Connection info (DB-path)
     QString connectionInfo();
     // Store the selected database
     void dbChanged();
 
-    QString settingPath() const override;
+    [[nodiscard]] QString settingPath() const override;
 
   public slots:
 

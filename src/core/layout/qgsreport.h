@@ -51,13 +51,13 @@ class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, p
      */
     QgsReport( QgsProject *project );
 
-    QgsMasterLayoutInterface::Type layoutType() const override;
-    QString type() const override { return QStringLiteral( "SectionReport" ); }
-    QString description() const override { return QObject::tr( "Report" ); }
-    QIcon icon() const override;
-    QgsProject *layoutProject() const override { return mProject; }
-    QgsReport *clone() const override SIP_FACTORY;
-    QString name() const override { return mName; }
+    [[nodiscard]] QgsMasterLayoutInterface::Type layoutType() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "SectionReport" ); }
+    [[nodiscard]] QString description() const override { return QObject::tr( "Report" ); }
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QgsProject *layoutProject() const override { return mProject; }
+    [[nodiscard]] QgsReport *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override { return mName; }
     void setName( const QString &name ) override;
     QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;

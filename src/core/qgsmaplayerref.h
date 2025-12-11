@@ -112,7 +112,7 @@ struct _LayerRef
    * Returns a pointer to the layer, or NULLPTR if the reference has not yet been matched
    * to a layer.
    */
-  TYPE *get() const
+  [[nodiscard]] TYPE *get() const
   {
     return layer.data();
   }

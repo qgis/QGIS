@@ -87,7 +87,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      *
      * \see setFilters()
      */
-    Qgis::LayerFilters filters() const { return mProxyModel->filters(); }
+    [[nodiscard]] Qgis::LayerFilters filters() const { return mProxyModel->filters(); }
 
     /**
      * Sets a list of layers which should be excluded from the combo box.
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      *
      * \see setExceptedLayerList()
      */
-    QList<QgsMapLayer *> exceptedLayerList() const { return mProxyModel->exceptedLayerList(); }
+    [[nodiscard]] QList<QgsMapLayer *> exceptedLayerList() const { return mProxyModel->exceptedLayerList(); }
 
     /**
      * Sets a list of data providers which should be excluded from the combobox.
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * Returns the list of data providers which are excluded from the combobox.
      * \see setExcludedProviders()
      */
-    QStringList excludedProviders() const;
+    [[nodiscard]] QStringList excludedProviders() const;
 
     /**
      * Sets the \a project from which map layers are shown.
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * Returns TRUE if the combo box allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
      */
-    bool allowEmptyLayer() const;
+    [[nodiscard]] bool allowEmptyLayer() const;
 
     /**
      * Sets whether the CRS of layers is also included in the combo box text.
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * Returns TRUE if the combo box shows the layer's CRS.
      * \see setShowCrs()
      */
-    bool showCrs() const;
+    [[nodiscard]] bool showCrs() const;
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the combobox.
@@ -164,7 +164,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * Returns the list of additional (non map layer) items included at the end of the combo box.
      * \see setAdditionalItems()
      */
-    QStringList additionalItems() const;
+    [[nodiscard]] QStringList additionalItems() const;
 
     /**
      * Sets a list of additional \a layers to include in the combobox.
@@ -183,20 +183,20 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * \see setAdditionalLayers()
      * \since QGIS 3.22
      */
-    QList<QgsMapLayer *> additionalLayers() const;
+    [[nodiscard]] QList<QgsMapLayer *> additionalLayers() const;
 
     /**
      * Returns the current layer selected in the combo box.
      * \see layer
      */
-    QgsMapLayer *currentLayer() const;
+    [[nodiscard]] QgsMapLayer *currentLayer() const;
 
     /**
      * Returns the layer currently shown at the specified index within the combo box.
      * \param layerIndex position of layer to return
      * \see currentLayer
      */
-    QgsMapLayer *layer( int layerIndex ) const;
+    [[nodiscard]] QgsMapLayer *layer( int layerIndex ) const;
 
   public slots:
 

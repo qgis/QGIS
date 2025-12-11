@@ -53,7 +53,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * Returns the current color for the dialog
      * \returns dialog color
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Sets the title for the color dialog

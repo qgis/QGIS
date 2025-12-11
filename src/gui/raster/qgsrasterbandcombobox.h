@@ -46,20 +46,20 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
      * Returns the layer currently associated with the combobox.
      * \see setLayer()
      */
-    QgsRasterLayer *layer() const;
+    [[nodiscard]] QgsRasterLayer *layer() const;
 
     /**
      * Returns the current band number selected in the combobox, or -1
      * if no band is selected.
      * \see setBand()
      */
-    int currentBand() const;
+    [[nodiscard]] int currentBand() const;
 
     /**
      * Returns TRUE if the combo box is showing the "not set" option.
      * \see setShowNotSetOption()
      */
-    bool isShowingNotSetOption() const;
+    [[nodiscard]] bool isShowingNotSetOption() const;
 
     /**
      * Sets whether the combo box should show the "not set" option.

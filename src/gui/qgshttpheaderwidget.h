@@ -49,7 +49,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     /**
      * Returns the headers as defined in the widget.
      */
-    QgsHttpHeaders httpHeaders() const;
+    [[nodiscard]] QgsHttpHeaders httpHeaders() const;
 
     /**
      * Sets the widget from the headers

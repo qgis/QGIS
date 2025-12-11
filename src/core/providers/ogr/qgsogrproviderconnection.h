@@ -75,20 +75,20 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
   public:
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
-    QString tableUri( const QString &schema, const QString &name ) const override;
+    [[nodiscard]] QString tableUri( const QString &schema, const QString &name ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
-    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    [[nodiscard]] QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
-    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
-    QStringList fieldDomainNames() const override;
-    QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const override;
-    QgsFieldDomain *fieldDomain( const QString &name ) const override;
+    [[nodiscard]] QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    [[nodiscard]] QStringList fieldDomainNames() const override;
+    [[nodiscard]] QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const override;
+    [[nodiscard]] QgsFieldDomain *fieldDomain( const QString &name ) const override;
     void setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const override;
     void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const override;
     void updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const override;
@@ -97,21 +97,21 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const override;
     void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
-    QList< Qgis::RelationshipCardinality > supportedRelationshipCardinalities() const override;
-    QList< Qgis::RelationshipStrength > supportedRelationshipStrengths() const override;
-    Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const override;
-    QStringList relatedTableTypes() const override;
-    QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const override;
+    [[nodiscard]] QList< Qgis::RelationshipCardinality > supportedRelationshipCardinalities() const override;
+    [[nodiscard]] QList< Qgis::RelationshipStrength > supportedRelationshipStrengths() const override;
+    [[nodiscard]] Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const override;
+    [[nodiscard]] QStringList relatedTableTypes() const override;
+    [[nodiscard]] QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const override;
     void addRelationship( const QgsWeakRelation &relationship ) const override;
     void updateRelationship( const QgsWeakRelation &relationship ) const override;
     void deleteRelationship( const QgsWeakRelation &relationship ) const override;
-    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    [[nodiscard]] Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
 
   protected:
 
-    virtual QString databaseQueryLogIdentifier() const;
+    [[nodiscard]] virtual QString databaseQueryLogIdentifier() const;
 
-    virtual QString primaryKeyColumnName( const QString &table ) const;
+    [[nodiscard]] virtual QString primaryKeyColumnName( const QString &table ) const;
 
     //! Use GDAL to execute SQL
     QueryResult executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;

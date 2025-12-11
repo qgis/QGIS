@@ -72,20 +72,20 @@ class CORE_EXPORT QgsExpressionFunction
         {}
 
         //! Returns the name of the parameter.
-        QString name() const { return mName; }
+        [[nodiscard]] QString name() const { return mName; }
 
         //! Returns TRUE if the parameter is optional.
-        bool optional() const { return mOptional; }
+        [[nodiscard]] bool optional() const { return mOptional; }
 
         //! Returns the default value for the parameter.
-        QVariant defaultValue() const { return mDefaultValue; }
+        [[nodiscard]] QVariant defaultValue() const { return mDefaultValue; }
 
         /**
          * Returns TRUE if parameter argument is a separate sub-expression, and
          * should not be checked while determining referenced columns for the expression.
          * \since QGIS 3.2
          */
-        bool isSubExpression() const { return mIsSubExpression; }
+        [[nodiscard]] bool isSubExpression() const { return mIsSubExpression; }
 
         bool operator==( const QgsExpressionFunction::Parameter &other ) const
         {
@@ -183,13 +183,13 @@ class CORE_EXPORT QgsExpressionFunction
     virtual ~QgsExpressionFunction() = default;
 
     //! The name of the function.
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     //! The number of parameters this function takes.
-    int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
+    [[nodiscard]] int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
 
     //! The minimum number of parameters this function takes.
-    int minParams() const
+    [[nodiscard]] int minParams() const
     {
       if ( mParameterList.isEmpty() )
         return mParams;
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsExpressionFunction
     /**
      * Returns the list of named parameters for the function, if set.
     */
-    const QgsExpressionFunction::ParameterList &parameters() const { return mParameterList; }
+    [[nodiscard]] const QgsExpressionFunction::ParameterList &parameters() const { return mParameterList; }
 
     //! Does this function use a geometry object.
     virtual bool usesGeometry( const QgsExpressionNodeFunction *node ) const;
@@ -216,14 +216,14 @@ class CORE_EXPORT QgsExpressionFunction
      * other permissible names for the function, e.g., deprecated names.
      * \returns list of known aliases
      */
-    virtual QStringList aliases() const;
+    [[nodiscard]] virtual QStringList aliases() const;
 
     /**
      * TRUE if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
      * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
      * Functions are non lazy default and will be given the node return value when called.
      */
-    bool lazyEval() const { return mLazyEval; }
+    [[nodiscard]] bool lazyEval() const { return mLazyEval; }
 
     /**
      * Will be called during prepare to determine if the function is static.
@@ -257,28 +257,28 @@ class CORE_EXPORT QgsExpressionFunction
     /**
      * Returns whether the function is only available if provided by a QgsExpressionContext object.
      */
-    bool isContextual() const { return mIsContextual; }
+    [[nodiscard]] bool isContextual() const { return mIsContextual; }
 
     /**
      * Returns TRUE if the function is deprecated and should not be presented as a valid option
      * to users in expression builders.
      */
-    virtual bool isDeprecated() const;
+    [[nodiscard]] virtual bool isDeprecated() const;
 
     /**
      * Returns the first group which the function belongs to.
      * \note consider using groups() instead, as some functions naturally belong in multiple groups
     */
-    QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
+    [[nodiscard]] QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
 
     /**
      * Returns a list of the groups the function belongs to.
      * \see group()
     */
-    QStringList groups() const { return mGroups; }
+    [[nodiscard]] QStringList groups() const { return mGroups; }
 
     //! The help text for the function.
-    const QString helpText() const;
+    [[nodiscard]] const QString helpText() const;
 
     /**
      * Returns result of evaluating the function.
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsExpressionFunction
      * Returns TRUE if the function handles NULL values in arguments by itself, and the default
      * NULL value handling should be skipped.
      */
-    virtual bool handlesNull() const;
+    [[nodiscard]] virtual bool handlesNull() const;
 
   protected:
 
@@ -456,7 +456,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
       return mFnc ? mFnc( values, context, parent, node ) : QVariant();
     }
 
-    QStringList aliases() const override;
+    [[nodiscard]] QStringList aliases() const override;
 
     bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
 

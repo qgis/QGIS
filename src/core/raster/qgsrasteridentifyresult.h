@@ -49,10 +49,10 @@ class CORE_EXPORT QgsRasterIdentifyResult
     virtual ~QgsRasterIdentifyResult() = default;
 
     //! \brief Returns TRUE if valid
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     //! Returns the results format.
-    Qgis::RasterIdentifyFormat format() const { return mFormat; }
+    [[nodiscard]] Qgis::RasterIdentifyFormat format() const { return mFormat; }
 
     /**
      * Returns the identify results. Results are different for each format:
@@ -61,16 +61,16 @@ class CORE_EXPORT QgsRasterIdentifyResult
      * - Qgis::RasterIdentifyFormat::Feature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
      * - Qgis::RasterIdentifyFormat::Html: a map of WMS sublayer keys and HTML strings.
      */
-    QMap<int, QVariant> results() const { return mResults; }
+    [[nodiscard]] QMap<int, QVariant> results() const { return mResults; }
 
     //! Sets map of optional parameters
     void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
 
     //! Gets map of optional parameters
-    QMap<QString, QVariant> params() const { return mParams; }
+    [[nodiscard]] QMap<QString, QVariant> params() const { return mParams; }
 
     //! Returns the last error
-    QgsError error() const { return mError; }
+    [[nodiscard]] QgsError error() const { return mError; }
 
     //! Sets the last error
     void setError( const QgsError &error ) { mError = error;}

@@ -59,7 +59,7 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
     void update();
 
     //! Returns the current selection
-    QList<MaskSource> selection() const;
+    [[nodiscard]] QList<MaskSource> selection() const;
 
     //! Sets the symbol layer selection
     void setSelection( const QList<MaskSource> &sel );

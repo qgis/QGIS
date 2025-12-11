@@ -47,14 +47,14 @@ class GUI_EXPORT QgsProcessingMatrixModelerWidget : public QWidget, private Ui::
     /**
     * Returns list of matrix headers.
     */
-    QStringList headers() const;
+    [[nodiscard]] QStringList headers() const;
 
     /**
     * Returns matrix defined by user.
     *
     * \see setValue()
     */
-    QVariant value() const;
+    [[nodiscard]] QVariant value() const;
 
     /**
     * Sets value of the widget.
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsProcessingMatrixModelerWidget : public QWidget, private Ui::
      * Returns TRUE if the parameter has fixed number of rows.
      * \see setFixedRows()
      */
-    bool fixedRows() const;
+    [[nodiscard]] bool fixedRows() const;
 
     /**
      * Sets whether the parameter has fixed number of rows.

@@ -43,17 +43,17 @@ class CORE_EXPORT QgsEmbeddedScriptEntity
     /**
      * Returns the entity's embedded script type.
      */
-    Qgis::EmbeddedScriptType type() const { return mType; }
+    [[nodiscard]] Qgis::EmbeddedScriptType type() const { return mType; }
 
     /**
      * Returns the entity's name.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns the entity's script
      */
-    QString script() const { return mScript; }
+    [[nodiscard]] QString script() const { return mScript; }
 
   private:
 
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsEmbeddedScriptVisitor : public QgsObjectEntityVisitorInterf
     }
 
     //! Returns the collected embedded scripts.
-    const QList<QgsEmbeddedScriptEntity> &embeddedScripts() const { return mEmbeddedScripts; }
+    [[nodiscard]] const QList<QgsEmbeddedScriptEntity> &embeddedScripts() const { return mEmbeddedScripts; }
 
   private:
     QList<QgsEmbeddedScriptEntity> mEmbeddedScripts;

@@ -42,7 +42,7 @@ struct AttributeField
     bool isUnique = false;
     QString comment;
 
-    QgsField toQgsField() const;
+    [[nodiscard]] QgsField toQgsField() const;
 };
 
 using AttributeFields = QVector<AttributeField>;
@@ -53,7 +53,7 @@ class QgsHanaConnection : public QObject
   public:
     ~QgsHanaConnection() override;
 
-    QString connInfo() const;
+    [[nodiscard]] QString connInfo() const;
 
     void execute( const QString &sql );
     bool execute( const QString &sql, QString *errorMessage );

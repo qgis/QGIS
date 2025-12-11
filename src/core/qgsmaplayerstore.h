@@ -48,13 +48,13 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     /**
      * Returns the number of layers contained in the store.
      */
-    int count() const;
+    [[nodiscard]] int count() const;
 
     /**
      * Returns the number of valid layers contained in the store.
      * \since QGIS 3.6
      */
-    int validCount() const;
+    [[nodiscard]] int validCount() const;
 
 #ifdef SIP_RUN
 
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see mapLayersByName()
      * \see mapLayers()
      */
-    QgsMapLayer *mapLayer( const QString &id ) const;
+    [[nodiscard]] QgsMapLayer *mapLayer( const QString &id ) const;
 
     /**
      * Retrieve a list of matching layers by layer \a name.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see mapLayer()
      * \see mapLayers()
      */
-    QList<QgsMapLayer *> mapLayersByName( const QString &name ) const;
+    [[nodiscard]] QList<QgsMapLayer *> mapLayersByName( const QString &name ) const;
 
     /**
      * Returns a map of all layers by layer ID.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see mapLayersByName()
      * \see layers()
      */
-    QMap<QString, QgsMapLayer *> mapLayers() const;
+    [[nodiscard]] QMap<QString, QgsMapLayer *> mapLayers() const;
 
     /**
      * Returns a map of all valid layers by layer ID.
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see layers()
      * \since QGIS 3.6
      */
-    QMap<QString, QgsMapLayer *> validMapLayers() const;
+    [[nodiscard]] QMap<QString, QgsMapLayer *> validMapLayers() const;
 
 #ifndef SIP_RUN
 
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see mapLayers()
      */
     template <typename T>
-    QVector<T> layers() const
+    [[nodiscard]] QVector<T> layers() const
     {
       QVector<T> layers;
       QMap<QString, QgsMapLayer *>::const_iterator layerIt = mMapLayers.constBegin();

@@ -45,7 +45,7 @@ class CORE_EXPORT QgsRelationContext
      * If there is no associated project, then it will return the global
      * project instance
      */
-    const QgsProject *project() const;
+    [[nodiscard]] const QgsProject *project() const;
 
     ~QgsRelationContext();
 

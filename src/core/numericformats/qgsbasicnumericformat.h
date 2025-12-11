@@ -47,13 +47,13 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
       */
     QgsBasicNumericFormat();
 
-    QString id() const override;
-    QString visibleName() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
     int sortKey() override;
-    QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
-    QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
-    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
+    [[nodiscard]] QgsNumericFormat *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    [[nodiscard]] QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the maximum number of decimal places to show.
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      * \see setNumberDecimalPlaces()
      * \see showTrailingZeros()
      */
-    int numberDecimalPlaces() const;
+    [[nodiscard]] int numberDecimalPlaces() const;
 
     /**
      * Sets the maximum number of decimal \a places to show.
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      * Returns TRUE if the thousands grouping separator will be shown.
      * \see setShowThousandsSeparator()
      */
-    bool showThousandsSeparator() const;
+    [[nodiscard]] bool showThousandsSeparator() const;
 
     /**
      * Sets whether the thousands grouping separator will be shown.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      * Returns TRUE if a leading plus sign will be shown for positive values.
      * \see setShowPlusSign()
      */
-    bool showPlusSign() const;
+    [[nodiscard]] bool showPlusSign() const;
 
     /**
      * Sets whether a leading plus sign will be shown for positive values.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      * \see setShowTrailingZeros()
      * \see numberDecimalPlaces()
      */
-    bool showTrailingZeros() const;
+    [[nodiscard]] bool showTrailingZeros() const;
 
     /**
      * Sets whether trailing zeros will be shown (up to the specified
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      *
      * \see setRoundingType()
      */
-    RoundingType roundingType() const;
+    [[nodiscard]] RoundingType roundingType() const;
 
     /**
      * Sets the rounding \a type, which controls the behavior of the numberDecimalPlaces() setting.
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      *
      * \see setThousandsSeparator()
      */
-    QChar thousandsSeparator() const;
+    [[nodiscard]] QChar thousandsSeparator() const;
 
     /**
      * Sets an override \a character for the thousands separator character. If an invalid QChar is set,
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
      *
      * \see setDecimalSeparator()
      */
-    QChar decimalSeparator() const;
+    [[nodiscard]] QChar decimalSeparator() const;
 
     /**
      * Sets an override \a character for the decimal separator character. If an invalid QChar is set,

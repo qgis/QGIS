@@ -95,7 +95,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * \see setFlags()
      * \see setFlag()
      */
-    QgsModelGraphicsScene::Flags flags() const { return mFlags; }
+    [[nodiscard]] QgsModelGraphicsScene::Flags flags() const { return mFlags; }
 
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Returns the topmost component item at a specified \a position.
      */
-    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
+    [[nodiscard]] QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
 
     /**
      * Returns the graphic item corresponding to the specified group box \a uuid.
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      *
      * \see setMessageBar()
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Sets the message \a bar associated with the scene.

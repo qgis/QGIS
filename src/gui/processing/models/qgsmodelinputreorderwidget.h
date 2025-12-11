@@ -55,7 +55,7 @@ class GUI_EXPORT QgsModelInputReorderWidget : public QWidget, private Ui::QgsMod
     /**
      * Returns the ordered list of inputs (by name).
      */
-    QStringList inputOrder() const;
+    [[nodiscard]] QStringList inputOrder() const;
 
   private:
     QgsProcessingModelAlgorithm *mModel;
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsModelInputReorderDialog : public QDialog
     /**
      * Returns the ordered list of inputs (by name).
      */
-    QStringList inputOrder() const;
+    [[nodiscard]] QStringList inputOrder() const;
 
   private:
     QgsModelInputReorderWidget *mWidget = nullptr;

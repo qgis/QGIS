@@ -630,20 +630,20 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
         /**
          * Gets a deep copy of this WhenThen combination.
          */
-        QgsExpressionNodeCondition::WhenThen *clone() const SIP_FACTORY;
+        [[nodiscard]] QgsExpressionNodeCondition::WhenThen *clone() const SIP_FACTORY;
 
         /**
          * The expression that makes the WHEN part of the condition.
          * \return The expression node that makes the WHEN part of the condition check.
          */
-        QgsExpressionNode *whenExp() const { return mWhenExp.get(); }
+        [[nodiscard]] QgsExpressionNode *whenExp() const { return mWhenExp.get(); }
 
         /**
          * The expression node that makes the THEN result part of the condition.
          * \return The expression node that makes the THEN result part of the condition.
          */
 
-        QgsExpressionNode *thenExp() const { return mThenExp.get(); }
+        [[nodiscard]] QgsExpressionNode *thenExp() const { return mThenExp.get(); }
 
       private:
 #ifdef SIP_RUN

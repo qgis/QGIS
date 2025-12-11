@@ -91,11 +91,11 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
      */
     void deferredClear();
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QHash<int, QByteArray> roleNames() const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
   public slots:
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsLocatorProxyModel : public QSortFilterProxyModel
      * Constructor for QgsLocatorProxyModel, with the specified \a parent object.
      */
     explicit QgsLocatorProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 
 #endif // QGSLOCATORMODEL_H

@@ -64,17 +64,17 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      */
     Result processRaster( QgsFeedback *feedback = nullptr );
 
-    double cellSizeX() const { return mCellSizeX; }
+    [[nodiscard]] double cellSizeX() const { return mCellSizeX; }
     void setCellSizeX( double size ) { mCellSizeX = size; }
-    double cellSizeY() const { return mCellSizeY; }
+    [[nodiscard]] double cellSizeY() const { return mCellSizeY; }
     void setCellSizeY( double size ) { mCellSizeY = size; }
 
-    double zFactor() const { return mZFactor; }
+    [[nodiscard]] double zFactor() const { return mZFactor; }
     void setZFactor( double factor ) { mZFactor = factor; }
 
-    double inputNodataValue() const { return mInputNodataValue; }
+    [[nodiscard]] double inputNodataValue() const { return mInputNodataValue; }
     void setInputNodataValue( double value ) { mInputNodataValue = value; }
-    double outputNodataValue() const { return mOutputNodataValue; }
+    [[nodiscard]] double outputNodataValue() const { return mOutputNodataValue; }
     void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
 
     /**
@@ -91,7 +91,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      * \see setCreationOptions()
      * \since QGIS 3.44
      */
-    QStringList creationOptions() const { return mCreationOptions; }
+    [[nodiscard]] QStringList creationOptions() const { return mCreationOptions; }
 
     /**
      * Calculates output value from nine input values. The input values and the output
@@ -159,7 +159,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
       Q_UNUSED( params )
     }
 
-    virtual const QString openClProgramBaseName() const
+    [[nodiscard]] virtual const QString openClProgramBaseName() const
     {
       return QString();
     }

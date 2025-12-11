@@ -40,7 +40,7 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
     /**
      * Returns the filter string.
      */
-    const QString filterString() const;
+    [[nodiscard]] const QString filterString() const;
 
     /**
      * Sets the geometry type filter status to \a enabled.
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
 
     // QSortFilterProxyModel interface
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
 
   private:

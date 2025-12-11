@@ -61,12 +61,12 @@ class GUI_EXPORT QgsTiledSceneRendererWidget : public QgsPanelWidget
      * Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the tiled scene layer associated with the widget.
      */
-    const QgsTiledSceneLayer *layer() const { return mLayer; }
+    [[nodiscard]] const QgsTiledSceneLayer *layer() const { return mLayer; }
 
   signals:
 

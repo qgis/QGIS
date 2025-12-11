@@ -41,16 +41,16 @@ class CORE_EXPORT QgsStacLink
     QgsStacLink( const QString &href, const QString &relation, const QString &mediaType, const QString &title );
 
     //! Returns the actual link in the format of an URL.
-    QString href() const;
+    [[nodiscard]] QString href() const;
 
     //! Returns the relationship between the parent document and the linked document.
-    QString relation() const;
+    [[nodiscard]] QString relation() const;
 
     //! Returns the Media type of the referenced entity
-    QString mediaType() const;
+    [[nodiscard]] QString mediaType() const;
 
     //! Returns a human readable title to be used in rendered displays of the link.
-    QString title() const;
+    [[nodiscard]] QString title() const;
 
   private:
     QString mHref;

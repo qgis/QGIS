@@ -39,7 +39,7 @@ class GUI_EXPORT QgsHistoryEntryProxyModel : public QSortFilterProxyModel
     QgsHistoryEntryProxyModel( QObject *parent = nullptr );
 
     void setFilter( const QString &filter );
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QString mFilter;

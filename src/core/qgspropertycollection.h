@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Returns the descriptive name of the property collection.
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the descriptive name for the property collection.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Returns a list of property keys contained within the collection.
      */
-    virtual QSet<int> propertyKeys() const = 0;
+    [[nodiscard]] virtual QSet<int> propertyKeys() const = 0;
 
     /**
      * Removes all properties from the collection.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \see property()
      */
-    virtual bool hasProperty( int key ) const = 0;
+    [[nodiscard]] virtual bool hasProperty( int key ) const = 0;
 
     /**
      * Returns a matching property from the collection, if one exists.
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \returns matching property, or null if no matching, active property found.
      * \see hasProperty()
      */
-    virtual QgsProperty property( int key ) const = 0;
+    [[nodiscard]] virtual QgsProperty property( int key ) const = 0;
 
     /**
      * Returns the calculated value of the property with the specified key from within the collection.
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
+    [[nodiscard]] virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a datetime.
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
      * Returns TRUE if preparation was successful.
      */
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
+    [[nodiscard]] virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
     /**
      * Returns the set of any fields referenced by the active properties from the collection.
@@ -235,28 +235,28 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      *                      in context's fields() will be reported - this is useful e.g. with vector tiles
      *                      where the actual available field names may not be known beforehand.
      */
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
+    [[nodiscard]] virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
 
     /**
      * Returns TRUE if the collection contains an active property with the specified key.
      * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      */
-    virtual bool isActive( int key ) const = 0;
+    [[nodiscard]] virtual bool isActive( int key ) const = 0;
 
     /**
      * Returns TRUE if the collection has any active properties, or FALSE if all properties
      * within the collection are deactivated.
      * \see hasDynamicProperties()
      */
-    virtual bool hasActiveProperties() const = 0;
+    [[nodiscard]] virtual bool hasActiveProperties() const = 0;
 
     /**
      * Returns TRUE if the collection has any active, non-static properties, or FALSE if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
      * \see hasActiveProperties()
      */
-    virtual bool hasDynamicProperties() const = 0;
+    [[nodiscard]] virtual bool hasDynamicProperties() const = 0;
 
     /**
      * Writes the current state of the property collection into an XML element
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      *
      * \see loadVariant()
      */
-    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
+    [[nodiscard]] virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
 
     /**
      * Loads this property collection from a QVariantMap, wrapped in a QVariant.
@@ -497,7 +497,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Returns the number of collections contained within the stack.
      */
-    int count() const;
+    [[nodiscard]] int count() const;
 
     /**
      * Removes all collections from the stack.
@@ -524,7 +524,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \returns collection if one exists at the specified index
      * \note not available in Python bindings
      */
-    const QgsPropertyCollection *at( int index ) const SIP_SKIP;
+    [[nodiscard]] const QgsPropertyCollection *at( int index ) const SIP_SKIP;
 
     /**
      * Returns the first collection with a matching name from the stack.
@@ -539,14 +539,14 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \see isActive()
      * \see hasDynamicProperties()
      */
-    bool hasActiveProperties() const override;
+    [[nodiscard]] bool hasActiveProperties() const override;
 
     /**
      * Returns TRUE if the collection has any active, non-static properties, or FALSE if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
      * \see hasActiveProperties()
      */
-    bool hasDynamicProperties() const override;
+    [[nodiscard]] bool hasDynamicProperties() const override;
 
     /**
      * Returns TRUE if the stack contains an active property with the specified key.
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * int and used for the key value.
      * \see hasActiveProperties()
      */
-    bool isActive( int key ) const override;
+    [[nodiscard]] bool isActive( int key ) const override;
 
     /**
      * Returns the highest priority property with a matching key from within the stack.
@@ -563,7 +563,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \returns matching property, or null if no matching, active property found.
      * \see hasActiveProperty()
      */
-    QgsProperty property( int key ) const override;
+    [[nodiscard]] QgsProperty property( int key ) const override;
 
     /**
      * Returns the calculated value of the highest priority property with the specified key from within the stack.
@@ -574,7 +574,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * cannot be calculated
      * \returns calculated property value, or default value if property could not be evaluated
      */
-    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
+    [[nodiscard]] QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
 
     /**
      * Returns the set of any fields referenced by the active properties from the stack.
@@ -583,13 +583,13 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      *                      in context's fields() will be reported - this is useful e.g. with vector tiles
      *                      where the actual available field names may not be known beforehand.
      */
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
-    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    [[nodiscard]] QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
+    [[nodiscard]] bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
-    QSet<int> propertyKeys() const override;
-    bool hasProperty( int key ) const override;
+    [[nodiscard]] QSet<int> propertyKeys() const override;
+    [[nodiscard]] bool hasProperty( int key ) const override;
 
-    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+    [[nodiscard]] QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
 
     bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 

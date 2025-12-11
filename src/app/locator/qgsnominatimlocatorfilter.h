@@ -29,11 +29,11 @@ class APP_EXPORT QgsNominatimLocatorFilter : public QgsGeocoderLocatorFilter
     static const QgsSettingsEntryString *settingCountryCodes;
 
     QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas );
-    QgsNominatimLocatorFilter *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsNominatimLocatorFilter *clone() const override SIP_FACTORY;
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
-    bool hasConfigWidget() const override { return true; }
+    [[nodiscard]] bool hasConfigWidget() const override { return true; }
     void openConfigWidget( QWidget *parent ) override;
 };
 

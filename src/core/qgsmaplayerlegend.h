@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
      * \see setFlags()
      * \since QGIS 4.0
      */
-    Qgis::MapLayerLegendFlags flags() const { return mFlags; }
+    [[nodiscard]] Qgis::MapLayerLegendFlags flags() const { return mFlags; }
 
     /**
      * Enables or disables a particular \a flag (other flags are not affected).
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
      * by textOnSymbolContent() and textOnSymbolTextFormat().
      * \since QGIS 3.2
      */
-    bool textOnSymbolEnabled() const { return mTextOnSymbolEnabled; }
+    [[nodiscard]] bool textOnSymbolEnabled() const { return mTextOnSymbolEnabled; }
 
     /**
      * Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
      * Returns whether the legend for the labeling is shown
      * \since QGIS 3.20
     */
-    bool showLabelLegend() const { return mShowLabelLegend; }
+    [[nodiscard]] bool showLabelLegend() const { return mShowLabelLegend; }
 
     /**
      * Sets if a legend for the labeling should be shown
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
      * Returns text format of symbol labels for "text on symbol" functionality.
      * \since QGIS 3.2
      */
-    QgsTextFormat textOnSymbolTextFormat() const { return mTextOnSymbolTextFormat; }
+    [[nodiscard]] QgsTextFormat textOnSymbolTextFormat() const { return mTextOnSymbolTextFormat; }
 
     /**
      * Sets text format of symbol labels for "text on symbol" functionality.
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
      * the keys are rule keys of legend items, the values are labels to be shown.
      * \since QGIS 3.2
      */
-    QHash<QString, QString> textOnSymbolContent() const { return mTextOnSymbolContent; }
+    [[nodiscard]] QHash<QString, QString> textOnSymbolContent() const { return mTextOnSymbolContent; }
 
     /**
      * Sets per-symbol content of labels for "text on symbol" functionality. In the passed dictionary

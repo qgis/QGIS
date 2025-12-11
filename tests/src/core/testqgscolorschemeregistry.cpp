@@ -30,7 +30,7 @@ class DummyColorScheme : public QgsColorScheme
   public:
     DummyColorScheme() = default;
 
-    QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
+    [[nodiscard]] QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
     QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override
     {
@@ -50,7 +50,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    QgsColorScheme *clone() const override
+    [[nodiscard]] QgsColorScheme *clone() const override
     {
       return new DummyColorScheme();
     }
@@ -61,7 +61,7 @@ class DummyColorScheme2 : public QgsColorScheme
   public:
     DummyColorScheme2() = default;
 
-    QString schemeName() const override { return QStringLiteral( "Dummy scheme2" ); }
+    [[nodiscard]] QString schemeName() const override { return QStringLiteral( "Dummy scheme2" ); }
 
     QgsNamedColorList fetchColors( const QString & = QString(), const QColor & = QColor() ) override
     {
@@ -70,7 +70,7 @@ class DummyColorScheme2 : public QgsColorScheme
       return colors;
     }
 
-    QgsColorScheme *clone() const override
+    [[nodiscard]] QgsColorScheme *clone() const override
     {
       return new DummyColorScheme2();
     }

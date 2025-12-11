@@ -144,7 +144,7 @@ class PYTHON_EXPORT QgsPythonUtils
      *
      * \see isPluginLoaded()
      */
-    virtual bool isPluginEnabled( const QString &packageName ) const = 0;
+    [[nodiscard]] virtual bool isPluginEnabled( const QString &packageName ) const = 0;
 
     /**
      * Returns a list of active (loaded) plugins.

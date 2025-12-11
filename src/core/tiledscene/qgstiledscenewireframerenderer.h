@@ -41,14 +41,14 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
     QgsTiledSceneWireframeRenderer();
     ~QgsTiledSceneWireframeRenderer() override;
 
-    QString type() const override;
-    QgsTiledSceneRenderer *clone() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsTiledSceneRenderer *clone() const override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) override;
     void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) override;
     void startRender( QgsTiledSceneRenderContext &context ) override;
     void stopRender( QgsTiledSceneRenderContext &context ) override;
-    Qgis::TiledSceneRendererFlags flags() const override;
+    [[nodiscard]] Qgis::TiledSceneRendererFlags flags() const override;
 
     /**
      * Creates a textured renderer from an XML \a element.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setFillSymbol()
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the fill \a symbol used to render triangles in the wireframe.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setLineSymbol()
      */
-    QgsLineSymbol *lineSymbol() const;
+    [[nodiscard]] QgsLineSymbol *lineSymbol() const;
 
     /**
      * Sets the line \a symbol used to render lines in the wireframe.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setUseTextureColors()
      */
-    bool useTextureColors() const;
+    [[nodiscard]] bool useTextureColors() const;
 
     /**
      * Sets whether representative colors from the textures should be used to recolor

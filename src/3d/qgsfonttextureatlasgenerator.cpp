@@ -46,12 +46,12 @@ class QgsCharTextureRect
     {
       return paddedRect;
     }
-    const auto &get_rect() const
+    [[nodiscard]] const auto &get_rect() const
     {
       return paddedRect;
     }
 
-    QRect asQRect() const
+    [[nodiscard]] QRect asQRect() const
     {
       return QRect( paddedRect.x, paddedRect.y, paddedRect.w, paddedRect.h );
     }

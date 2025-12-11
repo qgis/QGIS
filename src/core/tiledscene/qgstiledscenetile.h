@@ -58,12 +58,12 @@ class CORE_EXPORT QgsTiledSceneTile
     /**
      * Returns TRUE if the tile is a valid tile (i.e. not default constructed).
      */
-    bool isValid() const { return mId >= 0; }
+    [[nodiscard]] bool isValid() const { return mId >= 0; }
 
     /**
      * Returns the tile's unique ID.
      */
-    long long id() const { return mId; }
+    [[nodiscard]] long long id() const { return mId; }
 
     /**
      * Returns the tile's refinement process.
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see setRefinementProcess()
      */
-    Qgis::TileRefinementProcess refinementProcess() const { return mRefinementProcess; }
+    [[nodiscard]] Qgis::TileRefinementProcess refinementProcess() const { return mRefinementProcess; }
 
     /**
      * Sets the tile's refinement \a process.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see setBoundingVolume()
      */
-    const QgsTiledSceneBoundingVolume &boundingVolume() const;
+    [[nodiscard]] const QgsTiledSceneBoundingVolume &boundingVolume() const;
 
     /**
      * Sets the tile's \a transform.
@@ -114,14 +114,14 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see transform()
      */
-    const QgsMatrix4x4 *transform() const { return mTransform.get(); }
+    [[nodiscard]] const QgsMatrix4x4 *transform() const { return mTransform.get(); }
 
     /**
      * Returns the resources attached to the tile.
      *
      * \see setResources()
      */
-    QVariantMap resources() const;
+    [[nodiscard]] QVariantMap resources() const;
 
     /**
      * Sets the \a resources \a attached to the tile.
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see setGeometricError()
      */
-    double geometricError() const { return mGeometricError; }
+    [[nodiscard]] double geometricError() const { return mGeometricError; }
 
     /**
      * Sets the tile's geometric \a error, which is the error, in meters, of
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see setBaseUrl()
      */
-    QUrl baseUrl() const;
+    [[nodiscard]] QUrl baseUrl() const;
 
     /**
      * Sets the tile's base URL. If this tile's resources are relative paths, they would
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see setMetadata()
      */
-    QVariantMap metadata() const;
+    [[nodiscard]] QVariantMap metadata() const;
 
     /**
      * Sets additional \a metadata attached to the tile.

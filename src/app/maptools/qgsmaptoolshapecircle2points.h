@@ -30,10 +30,10 @@ class APP_EXPORT QgsMapToolShapeCircle2PointsMetadata : public QgsMapToolShapeMe
 
     static const inline QString TOOL_ID = QStringLiteral( "circle-from-2-points" );
 
-    QString id() const override;
-    QString name() const override;
-    QIcon icon() const override;
-    QgsMapToolShapeAbstract::ShapeCategory category() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QgsMapToolShapeAbstract::ShapeCategory category() const override;
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 

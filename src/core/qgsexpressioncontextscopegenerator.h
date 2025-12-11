@@ -33,7 +33,7 @@ class CORE_EXPORT QgsExpressionContextScopeGenerator
      * and return an expression context scope.
      *
      */
-    virtual QgsExpressionContextScope *createExpressionContextScope() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsExpressionContextScope *createExpressionContextScope() const = 0 SIP_FACTORY;
 
     virtual ~QgsExpressionContextScopeGenerator() = default;
 };

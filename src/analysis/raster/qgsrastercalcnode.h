@@ -93,7 +93,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QgsRasterCalcNode &rh ) = delete;
     QgsRasterCalcNode &operator=( const QgsRasterCalcNode &rh ) = delete;
 
-    Type type() const { return mType; }
+    [[nodiscard]] Type type() const { return mType; }
 
     //set left node
     void setLeft( QgsRasterCalcNode *left )
@@ -122,13 +122,13 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * \param cStyle if TRUE operators will follow C syntax
      * \since QGIS 3.6
      */
-    QString toString( bool cStyle = false ) const;
+    [[nodiscard]] QString toString( bool cStyle = false ) const;
 
     /**
      * Returns a list of nodes of a specific \a type
      * \since QGIS 3.6
      */
-    QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
+    [[nodiscard]] QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
@@ -137,13 +137,13 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * It uses QgsRasterCalcNode::cleanRasterReferences
      * \note since QGIS 3.22
      */
-    QStringList referencedLayerNames() const;
+    [[nodiscard]] QStringList referencedLayerNames() const;
 
     /**
      * Returns a list of raster layer references that are addressed in the formula, without quotation marks.
      * \note since QGIS 3.22
      */
-    QStringList cleanRasterReferences() const;
+    [[nodiscard]] QStringList cleanRasterReferences() const;
 
   private:
 #ifdef SIP_RUN

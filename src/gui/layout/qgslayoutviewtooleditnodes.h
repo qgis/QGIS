@@ -48,7 +48,7 @@ class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
     void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
     void deactivate() override;
-    QList<QgsLayoutItem *> ignoredSnapItems() const override;
+    [[nodiscard]] QList<QgsLayoutItem *> ignoredSnapItems() const override;
 
   private:
     const double mMoveContentSearchRadius = 25;

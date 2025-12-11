@@ -61,7 +61,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
      * See QgsStackedWidget::SizeMode for interpretation
      * \see setSizeMode()
      */
-    SizeMode sizeMode() const { return mSizeMode; }
+    [[nodiscard]] SizeMode sizeMode() const { return mSizeMode; }
 
     /**
      * Sets the \a mode for this QgsStackedWidget.
@@ -70,8 +70,8 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
      */
     void setSizeMode( SizeMode mode ) { mSizeMode = mode; }
 
-    QSize sizeHint() const override;
-    QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
 
   private:
     SizeMode mSizeMode = SizeMode::ConsiderAllPages; //#spellok

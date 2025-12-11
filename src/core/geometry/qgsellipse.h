@@ -110,32 +110,32 @@ class CORE_EXPORT QgsEllipse
     virtual bool operator !=( const QgsEllipse &elp ) const;
 
     //! An ellipse is empty if axes are equal to 0
-    virtual bool isEmpty() const SIP_HOLDGIL;
+    [[nodiscard]] virtual bool isEmpty() const SIP_HOLDGIL;
 
     /**
      * Returns the center point.
      * \see setCenter()
      * \see rcenter()
      */
-    QgsPoint center() const SIP_HOLDGIL {return mCenter; }
+    [[nodiscard]] QgsPoint center() const SIP_HOLDGIL {return mCenter; }
 
     /**
      * Returns the semi-major axis.
      * \see setSemiMajorAxis()
      */
-    double semiMajorAxis() const SIP_HOLDGIL {return mSemiMajorAxis; }
+    [[nodiscard]] double semiMajorAxis() const SIP_HOLDGIL {return mSemiMajorAxis; }
 
     /**
      * Returns the semi-minor axis.
      * \see setSemiMinorAxis()
      */
-    double semiMinorAxis() const SIP_HOLDGIL {return mSemiMinorAxis; }
+    [[nodiscard]] double semiMinorAxis() const SIP_HOLDGIL {return mSemiMinorAxis; }
 
     /**
      * Returns the azimuth.
      * \see setAzimuth()
      */
-    double azimuth() const SIP_HOLDGIL {return mAzimuth; }
+    [[nodiscard]] double azimuth() const SIP_HOLDGIL {return mAzimuth; }
 
     /**
      * Returns a reference to the center point of this ellipse.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsEllipse
      * \see foci()
      * \return The distance between the center and each foci.
      */
-    virtual double focusDistance() const SIP_HOLDGIL;
+    [[nodiscard]] virtual double focusDistance() const SIP_HOLDGIL;
 
     /**
      * Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
@@ -185,59 +185,59 @@ class CORE_EXPORT QgsEllipse
      * \see focusDistance()
      * \return the two foci.
      */
-    virtual QVector<QgsPoint> foci() const;
+    [[nodiscard]] virtual QVector<QgsPoint> foci() const;
 
     /**
      * The eccentricity of the ellipse.
      * nan is returned if the ellipse is empty.
      */
-    virtual double eccentricity() const SIP_HOLDGIL;
+    [[nodiscard]] virtual double eccentricity() const SIP_HOLDGIL;
     //! The area of the ellipse.
-    virtual double area() const SIP_HOLDGIL;
+    [[nodiscard]] virtual double area() const SIP_HOLDGIL;
     //! The circumference of the ellipse using first approximation of Ramanujan.
-    virtual double perimeter() const SIP_HOLDGIL;
+    [[nodiscard]] virtual double perimeter() const SIP_HOLDGIL;
 
     /**
      * The four quadrants of the ellipse.
      * They are oriented and started always from semi-major axis.
      * \return quadrants defined by four points.
      */
-    virtual QVector<QgsPoint> quadrant() const;
+    [[nodiscard]] virtual QVector<QgsPoint> quadrant() const;
 
     /**
      * Returns a list of points with segmentation from \a segments.
      * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsPointSequence points( unsigned int segments = 36 ) const;
+    [[nodiscard]] virtual QgsPointSequence points( unsigned int segments = 36 ) const;
 
     /**
      * Returns a segmented polygon.
      * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsPolygon *toPolygon( unsigned int segments = 36 ) const SIP_FACTORY;
+    [[nodiscard]] virtual QgsPolygon *toPolygon( unsigned int segments = 36 ) const SIP_FACTORY;
 
     /**
      * Returns a segmented linestring.
      * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsLineString *toLineString( unsigned int segments = 36 ) const SIP_FACTORY;
+    [[nodiscard]] virtual QgsLineString *toLineString( unsigned int segments = 36 ) const SIP_FACTORY;
     //virtual QgsCurvePolygon toCurvePolygon() const;
 
     /**
      * Returns the oriented minimal bounding box for the ellipse.
      */
-    virtual QgsPolygon *orientedBoundingBox() const SIP_FACTORY;
+    [[nodiscard]] virtual QgsPolygon *orientedBoundingBox() const SIP_FACTORY;
 
     /**
      * Returns the minimal bounding box for the ellipse.
      */
-    virtual QgsRectangle boundingBox() const;
+    [[nodiscard]] virtual QgsRectangle boundingBox() const;
 
     /**
      * returns a string representation of the ellipse.
      * Members will be truncated to the specified precision.
      */
-    virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
+    [[nodiscard]] virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

@@ -46,7 +46,7 @@ class GUI_EXPORT QgsLegendFilterButton : public QToolButton
     /**
      * Returns the current text used as filter expression
      */
-    QString expressionText() const;
+    [[nodiscard]] QString expressionText() const;
 
     /**
      * Sets the current text used as filter expression.
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsLegendFilterButton : public QToolButton
      * Returns the current associated vectorLayer
      * May be NULLPTR
      */
-    QgsVectorLayer *vectorLayer() const;
+    [[nodiscard]] QgsVectorLayer *vectorLayer() const;
 
     /**
      * Sets the associated vectorLayer

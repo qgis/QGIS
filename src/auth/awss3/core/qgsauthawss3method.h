@@ -35,11 +35,11 @@ class QgsAuthAwsS3Method : public QgsAuthMethod
     explicit QgsAuthAwsS3Method();
 
     // QgsAuthMethod interface
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
@@ -67,7 +67,7 @@ class QgsAuthAwsS3MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthAwsS3MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthAwsS3Method::AUTH_METHOD_KEY, QgsAuthAwsS3Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthAwsS3Method *createAuthMethod() const override { return new QgsAuthAwsS3Method; }
+    [[nodiscard]] QgsAuthAwsS3Method *createAuthMethod() const override { return new QgsAuthAwsS3Method; }
 };
 
 #endif // QGSAUTHAWSS3METHOD_H

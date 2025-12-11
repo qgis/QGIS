@@ -55,13 +55,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     ~QgsColorRampButton() override;
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     /**
      * Returns a copy of the current color ramp.
      * \see setColorRamp()
      */
-    QgsColorRamp *colorRamp() const SIP_FACTORY;
+    [[nodiscard]] QgsColorRamp *colorRamp() const SIP_FACTORY;
 
     /**
      * Set the title for the color ramp dialog window.
@@ -75,14 +75,14 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * \returns title for the color ramp dialog
      * \see setColorRampDialogTitle
      */
-    QString colorRampDialogTitle() const;
+    [[nodiscard]] QString colorRampDialogTitle() const;
 
     /**
      * Returns whether the button accepts live updates from QgsColorRampDialog.
      * \returns TRUE if the button will be accepted immediately when the dialog's color ramp changes
      * \see setAcceptLiveUpdates
      */
-    bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
+    [[nodiscard]] bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
 
     /**
      * Sets whether the button accepts live updates from QgsColorRampDialog. Live updates may cause changes
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * \returns TRUE if drop-down menu is shown
      * \see setShowMenu
      */
-    bool showMenu() const;
+    [[nodiscard]] bool showMenu() const;
 
     /**
      * Sets the default color ramp for the button, which is shown in the button's drop-down menu for the
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * option is disabled. Caller takes ownership of the returned object.
      * \see setDefaultColorRamp
      */
-    QgsColorRamp *defaultColorRamp() const SIP_FACTORY;
+    [[nodiscard]] QgsColorRamp *defaultColorRamp() const SIP_FACTORY;
 
     /**
      * Sets whether a random colors option is shown in the button's drop-down menu.
@@ -136,14 +136,14 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * Returns whether random colors option is shown in the button's drop-down menu.
      * \see setShowRandomColorRamp()
      */
-    bool showRandomColorRamp() const { return mShowRandomColorRamp; }
+    [[nodiscard]] bool showRandomColorRamp() const { return mShowRandomColorRamp; }
 
     /**
      * Returns TRUE if the current color ramp is random.
      * \see setShowNull()
      * \see showNull()
      */
-    bool isRandomColorRamp() const;
+    [[nodiscard]] bool isRandomColorRamp() const;
 
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
@@ -158,14 +158,14 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * \see setShowNull()
      * \see isNull()
      */
-    bool showNull() const;
+    [[nodiscard]] bool showNull() const;
 
     /**
      * Returns TRUE if the current color ramp is null.
      * \see setShowNull()
      * \see showNull()
      */
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
     /**
      * Sets the context string for the color ramp button. The context string is passed to all color ramp
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * \returns context context string for the color dialog button's color ramp preview icons
      * \see setContext
      */
-    QString context() const { return mContext; }
+    [[nodiscard]] QString context() const { return mContext; }
 
     /**
      * Sets whether the color ramp button only shows gradient type ramps
@@ -196,7 +196,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * Returns TRUE if the color ramp button only shows gradient type ramps
      * \see setShowGradientOnly
      */
-    bool showGradientOnly() const { return mShowGradientOnly; }
+    [[nodiscard]] bool showGradientOnly() const { return mShowGradientOnly; }
 
     /**
      * Sets the name of the current color ramp when it's available in the style manager
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * Returns the name of the current color ramp when it's available in the style manager
      * \see setColorRampName
      */
-    QString colorRampName() const { return mColorRampName; }
+    [[nodiscard]] QString colorRampName() const { return mColorRampName; }
 
   public slots:
 

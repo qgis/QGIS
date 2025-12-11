@@ -44,9 +44,9 @@ class QgsWmstSettingsWidget : public QgsMapLayerConfigWidget, private Ui::QgsWms
 class QgsWmstSettingsConfigWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
   public:
-    bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
-    ParentPage parentPage() const override;
+    [[nodiscard]] ParentPage parentPage() const override;
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = nullptr ) const override;
 };
 

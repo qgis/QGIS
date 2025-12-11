@@ -40,7 +40,7 @@ class CORE_EXPORT QgsRasterBandStats
     QgsRasterBandStats() = default;
 
     //! Compares region, size etc. not collected statistics
-    bool contains( const QgsRasterBandStats &s ) const
+    [[nodiscard]] bool contains( const QgsRasterBandStats &s ) const
     {
       return ( s.bandNumber == bandNumber &&
                s.extent == extent &&

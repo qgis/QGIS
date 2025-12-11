@@ -46,22 +46,22 @@ class _3D_EXPORT QgsCameraPose
 {
   public:
     //! Returns center point (towards which point the camera is looking)
-    QgsVector3D centerPoint() const { return mCenterPoint; }
+    [[nodiscard]] QgsVector3D centerPoint() const { return mCenterPoint; }
     //! Sets center point (towards which point the camera is looking)
     void setCenterPoint( const QgsVector3D &point );
 
     //! Returns distance of the camera from the center point
-    float distanceFromCenterPoint() const { return mDistanceFromCenterPoint; }
+    [[nodiscard]] float distanceFromCenterPoint() const { return mDistanceFromCenterPoint; }
     //! Sets distance of the camera from the center point
     void setDistanceFromCenterPoint( float distance );
 
     //! Returns pitch angle in degrees
-    float pitchAngle() const { return mPitchAngle; }
+    [[nodiscard]] float pitchAngle() const { return mPitchAngle; }
     //! Sets pitch angle in degrees
     void setPitchAngle( float pitch );
 
     //! Returns heading (yaw) angle in degrees
-    float headingAngle() const { return mHeadingAngle; }
+    [[nodiscard]] float headingAngle() const { return mHeadingAngle; }
     //! Sets heading (yaw) angle in degrees
     void setHeadingAngle( float heading ) { mHeadingAngle = heading; }
 

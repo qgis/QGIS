@@ -109,19 +109,19 @@ class CORE_EXPORT QgsAbstractValidityCheck
     /**
      * Creates a new instance of the check and returns it.
      */
-    virtual QgsAbstractValidityCheck *create() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractValidityCheck *create() const = 0 SIP_FACTORY;
 
     /**
      * Returns the unique ID of the check.
      *
      * This is a non-translated, non-user visible string identifying the check.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Returns the type of the check.
      */
-    virtual int checkType() const = 0;
+    [[nodiscard]] virtual int checkType() const = 0;
 
     /**
      * Prepares the check for execution, and returns TRUE if the check can be run.

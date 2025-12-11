@@ -51,9 +51,9 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     //! Alternative constructor.
     QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
 
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns filtered list of active legend nodes attached to a particular layer node

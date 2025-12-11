@@ -44,7 +44,7 @@ class APP_EXPORT QgsNewMeshLayerDialog : public QDialog, private Ui::QgsNewMeshL
     void setSourceMeshLayer( QgsMeshLayer *meshLayer, bool fromExistingAsDefault = false );
 
     //! Returns a pointer to the new created mesh layer
-    QgsMeshLayer *newLayer() const;
+    [[nodiscard]] QgsMeshLayer *newLayer() const;
 
   private slots:
     void updateDialog();

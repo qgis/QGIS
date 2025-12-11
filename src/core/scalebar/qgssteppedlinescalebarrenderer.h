@@ -34,11 +34,11 @@ class CORE_EXPORT QgsSteppedLineScaleBarRenderer: public QgsScaleBarRenderer
 
     QgsSteppedLineScaleBarRenderer() = default;
 
-    QString id() const override;
-    QString visibleName() const override;
-    int sortKey() const override;
-    Flags flags() const override;
-    QgsSteppedLineScaleBarRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
+    [[nodiscard]] int sortKey() const override;
+    [[nodiscard]] Flags flags() const override;
+    [[nodiscard]] QgsSteppedLineScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

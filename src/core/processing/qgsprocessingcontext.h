@@ -308,7 +308,7 @@ class CORE_EXPORT QgsProcessingContext
          * \see setPostProcessor()
          * \since QGIS 3.2
          */
-        QgsProcessingLayerPostProcessorInterface *postProcessor() const;
+        [[nodiscard]] QgsProcessingLayerPostProcessorInterface *postProcessor() const;
 
         /**
          * Sets the layer post-processor. May be NULLPTR if no post-processing is required.

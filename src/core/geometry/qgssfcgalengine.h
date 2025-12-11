@@ -184,13 +184,13 @@ namespace sfcgal
       void clearText( QString *errorMsg = nullptr );
 
       //! Returns true if no failure has been caught.
-      bool isTextEmpty() const;
+      [[nodiscard]] bool isTextEmpty() const;
 
       //! Returns the first caught failure message.
-      QString getMainText() const;
+      [[nodiscard]] QString getMainText() const;
 
       //! Returns all failure messages as a stack trace.
-      QString getFullText() const;
+      [[nodiscard]] QString getFullText() const;
 
       //! Adds \a msg to the failure message list.
       void addText( const QString &msg, const char *fromFile = nullptr, const char *fromFunc = nullptr, int fromLine = 0 );

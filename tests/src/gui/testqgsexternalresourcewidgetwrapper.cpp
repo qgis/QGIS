@@ -102,7 +102,7 @@ class QgsTestExternalStorageFetchedContent
     }
 
 
-    QString filePath() const override
+    [[nodiscard]] QString filePath() const override
     {
       return mUrl;
     }
@@ -166,7 +166,7 @@ class QgsTestExternalStorageStoredContent
       emit canceled();
     };
 
-    QString url() const override
+    [[nodiscard]] QString url() const override
     {
       return mUrl.endsWith( "/" ) ? QString( "http://www.test.com/here/myfile.txt" )
                                   : mUrl;
@@ -180,11 +180,11 @@ class QgsTestExternalStorageStoredContent
 class QgsTestExternalStorage : public QgsExternalStorage
 {
   public:
-    QString type() const override { return QStringLiteral( "test" ); }
+    [[nodiscard]] QString type() const override { return QStringLiteral( "test" ); }
 
-    QString displayName() const override { return QStringLiteral( "Test" ); }
+    [[nodiscard]] QString displayName() const override { return QStringLiteral( "Test" ); }
 
-    QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override
+    [[nodiscard]] QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override
     {
       Q_UNUSED( authcfg );
       Q_UNUSED( filePath );
@@ -193,7 +193,7 @@ class QgsTestExternalStorage : public QgsExternalStorage
       return sStoreContent;
     }
 
-    QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authcfg = QString() ) const override
+    [[nodiscard]] QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authcfg = QString() ) const override
     {
       Q_UNUSED( authcfg );
 

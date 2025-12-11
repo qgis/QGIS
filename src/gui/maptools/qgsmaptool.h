@@ -117,7 +117,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     /**
      * Returns the flags for the map tool.
      */
-    virtual Flags flags() const { return Flags(); }
+    [[nodiscard]] virtual Flags flags() const { return Flags(); }
 
     ~QgsMapTool() override;
 
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      * Returns if the current map tool active on the map canvas
      * \since QGIS 3.4
      */
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     /**
      * Use this to associate a button to this maptool. It has the same meaning
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual void clean();
 
     //! returns pointer to the tool's map canvas
-    QgsMapCanvas *canvas() const;
+    [[nodiscard]] QgsMapCanvas *canvas() const;
 
     /**
      * Emit map tool changed with the old tool
@@ -335,7 +335,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
     //! Transforms a \a point from map coordinates to screen coordinates.
-    QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
+    [[nodiscard]] QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 
     /**
      * Returns the map layer with the matching ID, or NULLPTR if no layers could be found.

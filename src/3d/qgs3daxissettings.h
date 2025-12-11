@@ -56,32 +56,32 @@ class _3D_EXPORT Qgs3DAxisSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Returns the default axis viewport size in millimeters
-    int defaultViewportSize() const { return mDefaultViewportSize; }
+    [[nodiscard]] int defaultViewportSize() const { return mDefaultViewportSize; }
     //! Sets the defaultl axis viewport size in millimeters
     void setDefaultViewportSize( int size ) { mDefaultViewportSize = size; }
 
     //! Returns the minimal axis viewport ratio (see Qt3DRender::QViewport::normalizedRect())
-    double minViewportRatio() const { return mMinViewportRatio; }
+    [[nodiscard]] double minViewportRatio() const { return mMinViewportRatio; }
     //! Sets the minimal axis viewport ratio between 0-1
     void setMinViewportRatio( double ratio );
 
     //! Returns the maximal axis viewport ratio (see Qt3DRender::QViewport::normalizedRect())
-    double maxViewportRatio() const { return mMaxViewportRatio; }
+    [[nodiscard]] double maxViewportRatio() const { return mMaxViewportRatio; }
     //! Sets the maximal axis viewport ratio between 0-1
     void setMaxViewportRatio( double ratio );
 
     //! Returns the type of the 3daxis
-    Qgs3DAxisSettings::Mode mode() const { return mMode; }
+    [[nodiscard]] Qgs3DAxisSettings::Mode mode() const { return mMode; }
     //! Sets the type of the 3daxis
     void setMode( Qgs3DAxisSettings::Mode type ) { mMode = type; }
 
     //! Returns the horizontal position for the 3d axis
-    Qt::AnchorPoint horizontalPosition() const { return mHorizontalPosition; }
+    [[nodiscard]] Qt::AnchorPoint horizontalPosition() const { return mHorizontalPosition; }
     //! Sets the horizontal position for the 3d axis
     void setHorizontalPosition( Qt::AnchorPoint position ) { mHorizontalPosition = position; }
 
     //! Returns the vertical position for the 3d axis
-    Qt::AnchorPoint verticalPosition() const { return mVerticalPosition; }
+    [[nodiscard]] Qt::AnchorPoint verticalPosition() const { return mVerticalPosition; }
     //! Sets the vertical position for the 3d axis
     void setVerticalPosition( Qt::AnchorPoint position ) { mVerticalPosition = position; }
 

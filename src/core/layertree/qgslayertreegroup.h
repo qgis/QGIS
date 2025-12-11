@@ -62,7 +62,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Returns the group's name.
      */
-    QString name() const override;
+    [[nodiscard]] QString name() const override;
 
     /**
      * Sets the group's name.
@@ -167,21 +167,21 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
      */
-    QgsLayerTreeLayer *findLayer( const QString &layerId ) const;
+    [[nodiscard]] QgsLayerTreeLayer *findLayer( const QString &layerId ) const;
 
     /**
      * Find all layer nodes. Searches recursively the whole sub-tree.
      *
      * \see findLayersAndCustomNodes()
      */
-    QList<QgsLayerTreeLayer *> findLayers() const;
+    [[nodiscard]] QList<QgsLayerTreeLayer *> findLayers() const;
 
     /**
      * Find custom node representing an object specified by its ID. Searches recursively the whole sub-tree.
      *
      * \since QGIS 4.0
      */
-    QgsLayerTreeCustomNode *findCustomNode( const QString &id ) const;
+    [[nodiscard]] QgsLayerTreeCustomNode *findCustomNode( const QString &id ) const;
 
     /**
      * Find all layer and custom nodes. Searches recursively the whole sub-tree.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * \see findLayers()
      * \since QGIS 4.0
      */
-    QList<QgsLayerTreeNode *> findLayersAndCustomNodes() const;
+    [[nodiscard]] QList<QgsLayerTreeNode *> findLayersAndCustomNodes() const;
 
     /**
      * Reorders layers in the group to match the order specified by \a order.
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * \see layerAndCustomNodeOrderRespectingGroupLayers()
      * \since QGIS 3.24
      */
-    QList<QgsMapLayer *> layerOrderRespectingGroupLayers() const SIP_SKIP;
+    [[nodiscard]] QList<QgsMapLayer *> layerOrderRespectingGroupLayers() const SIP_SKIP;
 
     /**
      * Returns an ordered list of map layers and custom nodes in the group, ignoring
@@ -243,17 +243,17 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * \see layerOrderRespectingGroupLayers()
      * \since QGIS 4.0
      */
-    QList<QgsLayerTreeNode *> layerAndCustomNodeOrderRespectingGroupLayers() const SIP_SKIP;
+    [[nodiscard]] QList<QgsLayerTreeNode *> layerAndCustomNodeOrderRespectingGroupLayers() const SIP_SKIP;
 
     /**
      * Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
      */
-    QStringList findLayerIds() const;
+    [[nodiscard]] QStringList findLayerIds() const;
 
     /**
      * Find custom node IDs. Searches recursively the whole sub-tree.
      */
-    QStringList findCustomNodeIds() const;
+    [[nodiscard]] QStringList findCustomNodeIds() const;
 
     /**
      * Find group node with specified name. Searches recursively the whole sub-tree.
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Find group layer nodes. Searches recursively the whole sub-tree, if recursive is set.
     */
-    QList<QgsLayerTreeGroup *> findGroups( bool recursive = false ) const;
+    [[nodiscard]] QList<QgsLayerTreeGroup *> findGroups( bool recursive = false ) const;
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
@@ -291,12 +291,12 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Returns text representation of the tree. For debugging purposes only.
      */
-    QString dump() const override;
+    [[nodiscard]] QString dump() const override;
 
     /**
      * Returns a clone of the group. The children are cloned too.
      */
-    QgsLayerTreeGroup *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsLayerTreeGroup *clone() const override SIP_FACTORY;
 
     /**
      * Calls resolveReferences() on child tree nodes
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Returns whether the group is mutually exclusive (only one child can be checked at a time)
      */
-    bool isMutuallyExclusive() const;
+    [[nodiscard]] bool isMutuallyExclusive() const;
 
     /**
      * Set whether the group is mutually exclusive (only one child can be checked at a time).
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Returns QGIS Server Properties const for the layer tree group
      * \since QGIS 3.44
      */
-    const QgsMapLayerServerProperties *serverProperties() const SIP_SKIP;
+    [[nodiscard]] const QgsMapLayerServerProperties *serverProperties() const SIP_SKIP;
 
     /**
      * Sets whether the WMS time dimension should be computed for this group or not
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * \see setHasWmsTimeDimension()
      * \since QGIS 3.44
      */
-    bool hasWmsTimeDimension() const;
+    [[nodiscard]] bool hasWmsTimeDimension() const;
 
   protected slots:
 

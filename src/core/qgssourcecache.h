@@ -46,7 +46,7 @@ class CORE_EXPORT QgsSourceCacheEntry : public QgsAbstractContentCacheEntry
     //! The local file path of the source string
     QString filePath;
 
-    int dataSize() const override;
+    [[nodiscard]] int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
 

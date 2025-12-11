@@ -66,13 +66,13 @@ class GUI_EXPORT QgsProcessingPointCloudExpressionLineEdit : public QWidget
      * Returns the layer currently associated with the widget.
      * \see setLayer()
      */
-    QgsPointCloudLayer *layer() const;
+    [[nodiscard]] QgsPointCloudLayer *layer() const;
 
     /**
      * Returns the current expression shown in the widget.
      * \see setExpression()
      */
-    QString expression() const;
+    [[nodiscard]] QString expression() const;
 
   signals:
 

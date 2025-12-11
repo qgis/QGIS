@@ -65,13 +65,13 @@ class QgsBaseNetworkRequest : public QObject
     };
 
     //! Returns the error code (after download/post)
-    ErrorCode errorCode() const { return mErrorCode; }
+    [[nodiscard]] ErrorCode errorCode() const { return mErrorCode; }
 
     //! Returns the error message (after download/post)
-    QString errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] QString errorMessage() const { return mErrorMessage; }
 
     //! Returns the server response (after download/post)
-    QByteArray response() const { return mResponse; }
+    [[nodiscard]] QByteArray response() const { return mResponse; }
 
   public slots:
     //! Abort network request immediately

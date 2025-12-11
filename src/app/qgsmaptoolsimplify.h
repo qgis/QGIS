@@ -56,18 +56,18 @@ class APP_EXPORT QgsMapToolSimplify : public QgsMapToolEdit
     //! called when map tool is being deactivated
     void deactivate() override;
 
-    double tolerance() const { return mTolerance; }
+    [[nodiscard]] double tolerance() const { return mTolerance; }
 
-    Qgis::MapToolUnit toleranceUnits() const { return mToleranceUnits; }
+    [[nodiscard]] Qgis::MapToolUnit toleranceUnits() const { return mToleranceUnits; }
 
-    QString statusText() const;
+    [[nodiscard]] QString statusText() const;
 
-    Method method() const;
+    [[nodiscard]] Method method() const;
 
-    int smoothIterations() const;
+    [[nodiscard]] int smoothIterations() const;
     void setSmoothIterations( int smoothIterations );
 
-    double smoothOffset() const;
+    [[nodiscard]] double smoothOffset() const;
     void setSmoothOffset( double smoothOffset );
 
   public slots:
@@ -95,7 +95,7 @@ class APP_EXPORT QgsMapToolSimplify : public QgsMapToolEdit
      * Simplifies a \a geometry to the specified \a tolerance, respecting the preset
      * simplification method.
      */
-    QgsGeometry processGeometry( const QgsGeometry &geometry, double tolerance ) const;
+    [[nodiscard]] QgsGeometry processGeometry( const QgsGeometry &geometry, double tolerance ) const;
 
     // data
     //! Dialog with slider to set correct tolerance value

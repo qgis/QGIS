@@ -42,17 +42,17 @@ class CORE_EXPORT QgsEditorWidgetSetup
     /**
      * Returns the widget type to use.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns the widget configuration.
      */
-    QVariantMap config() const { return mConfig; }
+    [[nodiscard]] QVariantMap config() const { return mConfig; }
 
     /**
      * Returns TRUE if there is no widget configured.
      */
-    bool isNull() const { return mType.isEmpty(); }
+    [[nodiscard]] bool isNull() const { return mType.isEmpty(); }
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsEditorWidgetSetup &other ) const

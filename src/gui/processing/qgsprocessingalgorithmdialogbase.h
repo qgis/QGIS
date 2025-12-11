@@ -154,14 +154,14 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * \see results()
      * \see setExecuted()
      */
-    bool wasExecuted() const { return mExecuted; }
+    [[nodiscard]] bool wasExecuted() const { return mExecuted; }
 
     /**
      * Returns the results returned by the algorithm executed.
      * \see wasExecuted()
      * \see setResults()
      */
-    QVariantMap results() const { return mResults; }
+    [[nodiscard]] QVariantMap results() const { return mResults; }
 
     /**
      * Creates a new processing feedback object, automatically connected to the appropriate
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * \see setLogLevel()
      * \since QGIS 3.20
      */
-    Qgis::ProcessingLogLevel logLevel() const;
+    [[nodiscard]] Qgis::ProcessingLogLevel logLevel() const;
 
     /**
      * Sets the logging \a level to use when running algorithms from the dialog.
@@ -559,17 +559,17 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
     /**
      * Returns the invalid geometry check selected in the widget.
      */
-    Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
+    [[nodiscard]] Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
 
     /**
      * Returns the distance unit selected in the widget.
      */
-    Qgis::DistanceUnit distanceUnit() const;
+    [[nodiscard]] Qgis::DistanceUnit distanceUnit() const;
 
     /**
      * Returns the area unit selected in the widget.
      */
-    Qgis::AreaUnit areaUnit() const;
+    [[nodiscard]] Qgis::AreaUnit areaUnit() const;
 
     /**
      * Returns the optional temporary folder override location.
@@ -579,7 +579,7 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
     /**
      * Returns the number of threads to use selected in the widget.
      */
-    int maximumThreads() const;
+    [[nodiscard]] int maximumThreads() const;
 
     /**
      * Sets the log \a level to shown in the widget.
@@ -593,7 +593,7 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
      *
      * \since QGIS 3.34
      */
-    Qgis::ProcessingLogLevel logLevel() const;
+    [[nodiscard]] Qgis::ProcessingLogLevel logLevel() const;
 };
 
 #endif

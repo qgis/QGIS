@@ -54,14 +54,14 @@ class EffectItem : public QStandardItem
       emitDataChanged();
     }
 
-    int type() const override { return EFFECT_ITEM_TYPE; }
+    [[nodiscard]] int type() const override { return EFFECT_ITEM_TYPE; }
 
     QgsPaintEffect *effect()
     {
       return mEffect;
     }
 
-    QVariant data( int role ) const override
+    [[nodiscard]] QVariant data( int role ) const override
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {

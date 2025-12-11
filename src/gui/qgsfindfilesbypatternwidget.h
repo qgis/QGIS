@@ -45,7 +45,7 @@ class GUI_EXPORT QgsFindFilesByPatternWidget : public QWidget, private Ui::QgsFi
      * no matching files were found.
      * \see findComplete()
      */
-    QStringList files() const { return mFiles; }
+    [[nodiscard]] QStringList files() const { return mFiles; }
 
   signals:
 
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsFindFilesByPatternDialog : public QDialog
      * Returns the list of files found by the dialog. This may be empty if
      * no matching files were found.
      */
-    QStringList files() const;
+    [[nodiscard]] QStringList files() const;
 
   private:
     QgsFindFilesByPatternWidget *mWidget = nullptr;

@@ -100,7 +100,7 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     void setBillboardData( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards, bool includePixelOffsets = false );
 
     //! Returns the number of points.
-    int count() const;
+    [[nodiscard]] int count() const;
 
   signals:
     //! Signal when the number of points changed.

@@ -84,15 +84,15 @@ class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
 
     void removeHeader( const QString &key ) override;
 
-    QString header( const QString &key ) const override;
+    [[nodiscard]] QString header( const QString &key ) const override;
 
-    QMap<QString, QString> headers() const override { return mHeaders; }
+    [[nodiscard]] QMap<QString, QString> headers() const override { return mHeaders; }
 
-    bool headersSent() const override;
+    [[nodiscard]] bool headersSent() const override;
 
     void setStatusCode( int code ) override;
 
-    int statusCode() const override { return mStatusCode; }
+    [[nodiscard]] int statusCode() const override { return mStatusCode; }
 
     void sendError( int code, const QString &message ) override;
 
@@ -104,7 +104,7 @@ class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
 
     void clear() override;
 
-    QByteArray data() const override;
+    [[nodiscard]] QByteArray data() const override;
 
     void truncate() override;
 
@@ -117,7 +117,7 @@ class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
      * Returns socket feedback if any
      * \since QGIS 3.36
      */
-    QgsFeedback *feedback() const override { return mFeedback.get(); }
+    [[nodiscard]] QgsFeedback *feedback() const override { return mFeedback.get(); }
 
   private:
     QMap<QString, QString> mHeaders;

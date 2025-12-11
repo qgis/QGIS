@@ -56,11 +56,11 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
     void setSymbol( const QImage &symbolImage );
 
     void setOrientation( Orientation o ) { mOrientation = o; }
-    Orientation orientation() const { return mOrientation; }
+    [[nodiscard]] Orientation orientation() const { return mOrientation; }
 
   private:
     //! Converts rotation into QPainter rotation considering mOrientation
-    int painterRotation( int rotation ) const;
+    [[nodiscard]] int painterRotation( int rotation ) const;
     //! Clockwise (default) or counterclockwise
     Orientation mOrientation = Clockwise;
     //! Font to display the numerical rotation values

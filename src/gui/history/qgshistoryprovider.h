@@ -53,7 +53,7 @@ class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
     /**
      * Returns the provider's unique id, which is used to associate existing history entries with the provider.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Creates a new history node for the given \a entry.

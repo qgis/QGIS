@@ -38,7 +38,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-    const QString &connInfo() const;
+    [[nodiscard]] const QString &connInfo() const;
 
   private:
     QgsFields mFields;
@@ -71,7 +71,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     std::shared_ptr<QgsMssqlDatabase> mTransactionConn;
 
     // Return True if this feature source has spatial attributes.
-    bool isSpatial() const { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
+    [[nodiscard]] bool isSpatial() const { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
     // Uri information for query logger
     QString mConnInfo;

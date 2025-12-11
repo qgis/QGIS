@@ -59,7 +59,7 @@ class CORE_EXPORT QgsTimeDuration
     /**
      * Returns TRUE if the duration is null, i.e. an empty duration.
      */
-    bool isNull() const
+    [[nodiscard]] bool isNull() const
     {
       return !years && !months && !days &&
              !hours && !minutes && !seconds;
@@ -81,12 +81,12 @@ class CORE_EXPORT QgsTimeDuration
     /**
      * Converts the duration to an interval value.
      */
-    QgsInterval toInterval() const;
+    [[nodiscard]] QgsInterval toInterval() const;
 
     /**
      * Converts the duration to an ISO8601 duration string.
      */
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     /**
      * Returns the total duration in seconds.
@@ -94,12 +94,12 @@ class CORE_EXPORT QgsTimeDuration
      * \warning If the duration contains year or month intervals then the returned
      * value is approximate only, due to the variable length of these intervals.
      */
-    long long toSeconds() const;
+    [[nodiscard]] long long toSeconds() const;
 
     /**
      * Adds this duration to a starting \a dateTime value.
      */
-    QDateTime addToDateTime( const QDateTime &dateTime ) const;
+    [[nodiscard]] QDateTime addToDateTime( const QDateTime &dateTime ) const;
 
     /**
      * Creates a QgsTimeDuration from a \a string value.

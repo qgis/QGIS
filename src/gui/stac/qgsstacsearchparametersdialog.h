@@ -45,13 +45,13 @@ class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchP
     void setMapCanvas( QgsMapCanvas *canvas );
     void setCollectionsUrl( const QString &url );
 
-    bool hasTemporalFilter() const;
-    bool hasSpatialFilter() const;
-    bool hasCollectionsFilter() const;
+    [[nodiscard]] bool hasTemporalFilter() const;
+    [[nodiscard]] bool hasSpatialFilter() const;
+    [[nodiscard]] bool hasCollectionsFilter() const;
 
-    QgsGeometry spatialExtent() const;
-    QgsDateTimeRange temporalRange() const;
-    QSet<QString> selectedCollections() const;
+    [[nodiscard]] QgsGeometry spatialExtent() const;
+    [[nodiscard]] QgsDateTimeRange temporalRange() const;
+    [[nodiscard]] QSet<QString> selectedCollections() const;
 
     //! clears model, deletes pointers
     void clearCollections();
@@ -59,7 +59,7 @@ class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchP
     void appendCollections( const QVector<QgsStacCollection *> &collections );
 
     //! ownership not transferred
-    QVector<QgsStacCollection *> collections() const;
+    [[nodiscard]] QVector<QgsStacCollection *> collections() const;
 
     QString activeFiltersPreview();
 

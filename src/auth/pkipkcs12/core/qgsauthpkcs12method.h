@@ -37,11 +37,11 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
     ~QgsAuthPkcs12Method() override;
 
     // QgsAuthMethod interface
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
@@ -75,7 +75,7 @@ class QgsAuthPkcs12MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthPkcs12MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthPkcs12Method::AUTH_METHOD_KEY, QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthPkcs12Method *createAuthMethod() const override { return new QgsAuthPkcs12Method; }
+    [[nodiscard]] QgsAuthPkcs12Method *createAuthMethod() const override { return new QgsAuthPkcs12Method; }
     //QStringList supportedDataProviders() const override;
 };
 

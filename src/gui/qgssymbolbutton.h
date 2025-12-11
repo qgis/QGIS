@@ -56,8 +56,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     QgsSymbolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
     ~QgsSymbolButton() override;
 
-    QSize minimumSizeHint() const override;
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     /**
      * Sets the symbol \a type which the button requires.
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Returns the symbol type which the button requires.
      * \see setSymbolType()
      */
-    Qgis::SymbolType symbolType() const { return mType; }
+    [[nodiscard]] Qgis::SymbolType symbolType() const { return mType; }
 
     /**
      * Sets the \a title for the symbol settings dialog window.
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Returns the title for the symbol settings dialog window.
      * \see setDialogTitle()
      */
-    QString dialogTitle() const;
+    [[nodiscard]] QString dialogTitle() const;
 
     /**
     * Returns the current symbol defined by the button.
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
      */
-    QgsMapCanvas *mapCanvas() const;
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const;
 
     /**
      * Sets a map \a canvas to associate with the widget. This allows the
@@ -140,13 +140,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \see setMessageBar()
      * \since QGIS 3.6
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Returns the layer associated with the widget.
      * \see setLayer()
      */
-    QgsVectorLayer *layer() const;
+    [[nodiscard]] QgsVectorLayer *layer() const;
 
     /**
      * Sets a \a layer to associate with the widget. This allows the
@@ -180,7 +180,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \see setDefaultSymbol()
      * \since QGIS 3.30
      */
-    const QgsSymbol *defaultSymbol() const;
+    [[nodiscard]] const QgsSymbol *defaultSymbol() const;
 
     /**
      * Returns whether the set to null (clear) option is shown in the button's drop-down menu.
@@ -188,7 +188,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \see isNull()
      * \since QGIS 3.26
      */
-    bool showNull() const;
+    [[nodiscard]] bool showNull() const;
 
     /**
      * Returns TRUE if the current symbol is null.
@@ -196,14 +196,14 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \see showNull()
      * \since QGIS 3.26
      */
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
     /**
      * Returns TRUE if the widget adopts fixed size constraints.
      *
      * \since QGIS 4.0
      */
-    bool fixedSizeConstraints() const;
+    [[nodiscard]] bool fixedSizeConstraints() const;
 
   public slots:
 
@@ -381,7 +381,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     /**
      * Create a \a color icon for display in the drop-down menu.
      */
-    QPixmap createColorIcon( const QColor &color ) const;
+    [[nodiscard]] QPixmap createColorIcon( const QColor &color ) const;
 
     /**
      * Ends a color picking operation

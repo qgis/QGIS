@@ -103,7 +103,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
   private:
     //! Connection name
-    QString connName() const;
+    [[nodiscard]] QString connName() const;
 
     //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
@@ -203,7 +203,7 @@ class QgsWmsInterpretationComboBox : public QComboBox
     void setInterpretation( const QString &interpretationKey );
 
     //! Returns the key of the current selected interpretation, returns empty string if the current is default
-    QString interpretation() const;
+    [[nodiscard]] QString interpretation() const;
 };
 
 #endif // QGSWMSSOURCESELECT_H

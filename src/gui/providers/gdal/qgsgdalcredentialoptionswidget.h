@@ -42,21 +42,21 @@ class QgsGdalCredentialOptionsModel : public QAbstractItemModel
     };
 
     QgsGdalCredentialOptionsModel( QObject *parent );
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     bool insertRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
     bool removeRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
 
     void setOptions( const QList<QPair<QString, QString>> &options );
     void setAvailableOptions( const QList<QgsGdalOption> &options );
-    QStringList availableKeys() const { return mAvailableKeys; }
-    QgsGdalOption option( const QString &key ) const;
-    QList<QPair<QString, QString>> credentialOptions() const { return mCredentialOptions; }
+    [[nodiscard]] QStringList availableKeys() const { return mAvailableKeys; }
+    [[nodiscard]] QgsGdalOption option( const QString &key ) const;
+    [[nodiscard]] QList<QPair<QString, QString>> credentialOptions() const { return mCredentialOptions; }
     void setCredentialOptions( const QList<QPair<QString, QString>> &options );
 
   signals:
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsGdalCredentialOptionsWidget : public QWidget, private Ui::Qg
      *
      * \see setCredentialOptions()
      */
-    QVariantMap credentialOptions() const;
+    [[nodiscard]] QVariantMap credentialOptions() const;
 
     /**
      * Sets the credential \a options to show in the widget.

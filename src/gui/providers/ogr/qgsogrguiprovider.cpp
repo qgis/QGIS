@@ -40,10 +40,10 @@ static const QString TEXT_PROVIDER_KEY = QStringLiteral( "ogr" );
 class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "ogr" ); }
-    QString text() const override { return QObject::tr( "Vector" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "Vector" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 10; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
     QgsSourceSelectProvider::Capabilities capabilities() override;
 };
@@ -53,11 +53,11 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString name() const override;
-    QString providerKey() const override { return QStringLiteral( "ogr" ); }
-    QString text() const override { return QObject::tr( "GeoPackage" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 45; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "GeoPackage" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 45; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
     QgsSourceSelectProvider::Capabilities capabilities() override;
 };
@@ -66,7 +66,7 @@ class QgsOgrSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 {
   public:
     QgsOgrSourceWidgetProvider();
-    QString providerKey() const override;
+    [[nodiscard]] QString providerKey() const override;
     bool canHandleLayer( QgsMapLayer *layer ) const override;
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };

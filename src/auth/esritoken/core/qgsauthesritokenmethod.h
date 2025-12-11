@@ -36,11 +36,11 @@ class QgsAuthEsriTokenMethod : public QgsAuthMethod
     explicit QgsAuthEsriTokenMethod();
 
     // QgsAuthMethod interface
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
@@ -68,7 +68,7 @@ class QgsAuthEsriTokenMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthEsriTokenMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthEsriTokenMethod::AUTH_METHOD_KEY, QgsAuthEsriTokenMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthEsriTokenMethod *createAuthMethod() const override { return new QgsAuthEsriTokenMethod; }
+    [[nodiscard]] QgsAuthEsriTokenMethod *createAuthMethod() const override { return new QgsAuthEsriTokenMethod; }
     //QStringList supportedDataProviders() const override;
 };
 

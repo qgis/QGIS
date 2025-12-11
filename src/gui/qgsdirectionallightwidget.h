@@ -45,13 +45,13 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
     void setAzimuth( double azimuth );
 
     //! Returns the \a azimuth value (degree)
-    double azimuth() const;
+    [[nodiscard]] double azimuth() const;
 
     //! Sets the \a altitude value (degree)
     void setAltitude( double altitude );
 
     //! Returns the \a altitude value (degree)
-    double altitude() const;
+    [[nodiscard]] double altitude() const;
 
     //! Sets whether the azimut can be changed, for example, when using multidirectional light
     void setEnableAzimuth( bool enable );

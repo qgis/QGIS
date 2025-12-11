@@ -25,10 +25,10 @@
 class QgsTiledSceneSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "tiledscene" ); }
-    QString text() const override { return QObject::tr( "Scene" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 51; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTiledSceneLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "tiledscene" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "Scene" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 51; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTiledSceneLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsTiledSceneSourceSelect( parent, fl, widgetMode );

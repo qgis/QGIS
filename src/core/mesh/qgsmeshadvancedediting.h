@@ -49,7 +49,7 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
     void setInputFaces( const QList<int> faceIndexes );
 
     //! Returns a message that can be provided by the advanced editing when applying is done
-    QString message() const;
+    [[nodiscard]] QString message() const;
 
     //! Removes all data provided to the editing or created by the editing
     void clear();
@@ -58,10 +58,10 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
      *  Returns whether the advanced edit is finished,
      *  if not, this edit has to be applied again with QgsMeshEditor::advancedEdit() until is finished returns TRUE
      */
-    virtual bool isFinished() const;
+    [[nodiscard]] virtual bool isFinished() const;
 
     //! Returns a short text string describing what this advanced edit does. Default implementation return a void string.
-    virtual QString text() const;
+    [[nodiscard]] virtual QString text() const;
 
   protected:
     QList<int> mInputVertices;
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 
     QgsMeshEditRefineFaces();
 
-    QString text() const override;
+    [[nodiscard]] QString text() const override;
 
   private:
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
 
     QgsMeshTransformVerticesByExpression() = default;
 
-    QString text() const override;
+    [[nodiscard]] QString text() const override;
 
     /**
      * Sets the expressions for the coordinates transformation.

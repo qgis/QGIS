@@ -2713,7 +2713,7 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
     GetNamedProjectColor( const QHash< QString, QColor > &colors );
 
     QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
-    QgsScopedExpressionFunction *clone() const override;
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override;
 
   private:
 
@@ -2732,7 +2732,7 @@ class GetNamedProjectColorObject : public QgsScopedExpressionFunction
     GetNamedProjectColorObject( const QHash< QString, QColor > &colors );
 
     QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
-    QgsScopedExpressionFunction *clone() const override;
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override;
 
   private:
 
@@ -2746,7 +2746,7 @@ class GetSensorData : public QgsScopedExpressionFunction
   public:
     GetSensorData( const QMap<QString, QgsAbstractSensor::SensorData> &sensorData = QMap<QString, QgsAbstractSensor::SensorData>() );
     QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
-    QgsScopedExpressionFunction *clone() const override;
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override;
 
   private:
 

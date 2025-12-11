@@ -54,7 +54,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * \see setUserVisible()
      * \see toggleUserVisible()
      */
-    bool isUserVisible() const;
+    [[nodiscard]] bool isUserVisible() const;
 
     /**
      * Links an \a action to the dock, so that toggling the action will automatically set the dock's visibility

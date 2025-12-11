@@ -85,14 +85,14 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
      */
     QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = nullptr, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
   private slots:
     void bookmarkAboutToBeAdded( const QString &id );
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
     bool mBlocked = false;
     QgsBookmarkManager *mManager = nullptr;
     QgsBookmarkManager *mProjectManager = nullptr;
-    QgsBookmark bookmarkForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsBookmark bookmarkForIndex( const QModelIndex &index ) const;
 
 };
 

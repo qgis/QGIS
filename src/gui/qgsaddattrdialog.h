@@ -56,7 +56,7 @@ class GUI_EXPORT QgsAddAttrDialog : public QDialog, private Ui::QgsAddAttrDialog
     void setIllegalFieldNames( const QSet<QString> &names );
 
     //! Returns a field for the configured attribute
-    QgsField field() const;
+    [[nodiscard]] QgsField field() const;
 
   private slots:
     void mTypeBox_currentIndexChanged( int idx );

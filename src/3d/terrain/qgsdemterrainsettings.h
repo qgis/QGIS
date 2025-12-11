@@ -40,13 +40,13 @@ class _3D_EXPORT QgsDemTerrainSettings : public QgsAbstractTerrainSettings
      */
     static QgsAbstractTerrainSettings *create() SIP_FACTORY;
 
-    QgsDemTerrainSettings *clone() const final SIP_FACTORY;
-    QString type() const final;
+    [[nodiscard]] QgsDemTerrainSettings *clone() const final SIP_FACTORY;
+    [[nodiscard]] QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     void resolveReferences( const QgsProject *project ) final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
-    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
+    [[nodiscard]] std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
 
     /**
      * Sets the raster \a layer with elevation model to be used for terrain generation.
@@ -59,7 +59,7 @@ class _3D_EXPORT QgsDemTerrainSettings : public QgsAbstractTerrainSettings
      *
      * \see setLayer()
      */
-    QgsRasterLayer *layer() const;
+    [[nodiscard]] QgsRasterLayer *layer() const;
 
     /**
      * Sets the \a resolution of the terrain (how many elevation samples are taken on one side of a terrain tile).
@@ -73,7 +73,7 @@ class _3D_EXPORT QgsDemTerrainSettings : public QgsAbstractTerrainSettings
      *
      * \see resolution()
      */
-    int resolution() const { return mResolution; }
+    [[nodiscard]] int resolution() const { return mResolution; }
 
     /**
      * Sets the skirt \a height (in world units).
@@ -91,7 +91,7 @@ class _3D_EXPORT QgsDemTerrainSettings : public QgsAbstractTerrainSettings
      *
      * \see setSkirtHeight()
      */
-    double skirtHeight() const { return mSkirtHeight; }
+    [[nodiscard]] double skirtHeight() const { return mSkirtHeight; }
 
   private:
     //! source layer for heights

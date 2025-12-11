@@ -63,7 +63,7 @@ class CORE_EXPORT QgsProfileSnapResult
     /**
      * Returns TRUE if the result is a valid point.
      */
-    bool isValid() const { return !snappedPoint.isEmpty(); }
+    [[nodiscard]] bool isValid() const { return !snappedPoint.isEmpty(); }
 };
 
 #endif // QGSPROFILESNAPPING_H

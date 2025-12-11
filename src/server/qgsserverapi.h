@@ -90,28 +90,28 @@ class SERVER_EXPORT QgsServerApi
     /**
      * Returns the API name
      */
-    virtual const QString name() const = 0;
+    [[nodiscard]] virtual const QString name() const = 0;
 
     /**
      * Returns the API description
      */
-    virtual const QString description() const = 0;
+    [[nodiscard]] virtual const QString description() const = 0;
 
     /**
      * Returns the version of the service
      * \note the default implementation returns an empty string
      */
-    virtual const QString version() const { return QString(); }
+    [[nodiscard]] virtual const QString version() const { return QString(); }
 
     /**
      * Returns the root path for the API
      */
-    virtual const QString rootPath() const = 0;
+    [[nodiscard]] virtual const QString rootPath() const = 0;
 
     /**
      * Returns TRUE if the given \a url is handled by the API, default implementation checks for the presence of rootPath inside the \a url path.
      */
-    virtual bool accept( const QUrl &url ) const;
+    [[nodiscard]] virtual bool accept( const QUrl &url ) const;
 
     /**
      * Executes a request by passing the given \a context to the API handlers.
@@ -121,7 +121,7 @@ class SERVER_EXPORT QgsServerApi
     /**
      * Returns the server interface
      */
-    QgsServerInterface *serverIface() const;
+    [[nodiscard]] QgsServerInterface *serverIface() const;
 
   private:
     QgsServerInterface *mServerIface = nullptr;

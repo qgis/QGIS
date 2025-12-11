@@ -64,7 +64,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * \see setType()
      * \since QGIS 3.32
      */
-    Qgis::AttributeEditorContainerType type() const { return mType; }
+    [[nodiscard]] Qgis::AttributeEditorContainerType type() const { return mType; }
 
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * \see setCollapsed()
      * \since QGIS 3.26
      */
-    bool collapsed() const { return mCollapsed; };
+    [[nodiscard]] bool collapsed() const { return mCollapsed; };
 
     /**
      * For group box containers sets if this group box is \a collapsed.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \returns A list of elements
      */
-    QList<QgsAttributeEditorElement *> children() const { return mChildren; }
+    [[nodiscard]] QList<QgsAttributeEditorElement *> children() const { return mChildren; }
 
     /**
      * Traverses the element tree to find any element of the specified type
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \returns A list of elements of the type which has been searched for
      */
-    virtual QList<QgsAttributeEditorElement *> findElements( Qgis::AttributeEditorType type ) const;
+    [[nodiscard]] virtual QList<QgsAttributeEditorElement *> findElements( Qgis::AttributeEditorType type ) const;
 
     /**
      * Clear all children from this container.
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \see setColumnCount()
      */
-    int columnCount() const;
+    [[nodiscard]] int columnCount() const;
 
     /**
      * Set the number of columns in this group.
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * the field value controlled by editor widgets.
      *
      */
-    QgsOptionalExpression visibilityExpression() const;
+    [[nodiscard]] QgsOptionalExpression visibilityExpression() const;
 
     /**
      * The visibility expression is used in the attribute form to
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * \see setCollapsedExpression()
      * \since QGIS 3.26
      */
-    QgsOptionalExpression collapsedExpression() const SIP_SKIP;
+    [[nodiscard]] QgsOptionalExpression collapsedExpression() const SIP_SKIP;
 
     /**
      * The collapsed expression is used in the attribute form to
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * \see setBackgroundColor()
      * \since QGIS 3.8
      */
-    QColor backgroundColor() const;
+    [[nodiscard]] QColor backgroundColor() const;
 
     /**
      * Sets the background color to \a backgroundColor.
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
-    QString typeIdentifier() const override;
+    [[nodiscard]] QString typeIdentifier() const override;
 
     Qgis::AttributeEditorContainerType mType = Qgis::AttributeEditorContainerType::GroupBox;
     QList<QgsAttributeEditorElement *> mChildren;

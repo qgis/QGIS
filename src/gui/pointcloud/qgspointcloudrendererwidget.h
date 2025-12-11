@@ -61,12 +61,12 @@ class GUI_EXPORT QgsPointCloudRendererWidget : public QgsPanelWidget
      * Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the point cloud layer associated with the widget.
      */
-    const QgsPointCloudLayer *layer() const { return mLayer; }
+    [[nodiscard]] const QgsPointCloudLayer *layer() const { return mLayer; }
 
   signals:
 

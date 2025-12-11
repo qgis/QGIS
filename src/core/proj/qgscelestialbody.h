@@ -37,17 +37,17 @@ class CORE_EXPORT QgsCelestialBody
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
      */
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     /**
      * Name of celestial body.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Authority name, e.g. EPSG.
      */
-    QString authority() const { return mAuthority; }
+    [[nodiscard]] QString authority() const { return mAuthority; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

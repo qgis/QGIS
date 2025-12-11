@@ -178,7 +178,7 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
     void updateMapForAtlas();
 
     //! Is there some predefined scales, globally or as project's options ?
-    bool hasPredefinedScales() const;
+    [[nodiscard]] bool hasPredefinedScales() const;
 
     QListWidgetItem *addGridListItem( const QString &id, const QString &name );
 
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
      * Returns list of layer IDs that should be visible for particular preset.
      * The order will match the layer order from the map canvas
      */
-    QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
+    [[nodiscard]] QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
 
     void setToCustomExtent( const QgsReferencedRectangle &extent );
 };
@@ -214,13 +214,13 @@ class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyMode
     //! constructor
     explicit QgsLayoutMapItemBlocksLabelsModel( QgsLayoutItemMap *map, QgsLayoutModel *layoutModel, QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QgsLayoutModel *mLayoutModel = nullptr;

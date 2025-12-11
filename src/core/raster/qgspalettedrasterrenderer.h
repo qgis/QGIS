@@ -102,28 +102,28 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
     const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & ) = delete;
 
-    QgsPalettedRasterRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsPalettedRasterRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Returns number of colors
-    int nColors() const;
+    [[nodiscard]] int nColors() const;
 
     /**
      * Returns a map of value to classes (colors) used by the renderer.
      */
-    ClassData classes() const;
+    [[nodiscard]] ClassData classes() const;
 
     /**
      * Returns a map of multi value to classes (colors) used by the renderer.
      * \since QGIS 3.30
      */
-    MultiValueClassData multiValueClasses( ) const;
+    [[nodiscard]] MultiValueClassData multiValueClasses( ) const;
 
-    bool canCreateRasterAttributeTable( ) const override;
+    [[nodiscard]] bool canCreateRasterAttributeTable( ) const override;
 
     /**
      * Sets the multi value classes to \a setMultiValueClasses.
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**
      * Returns optional category label
     */
-    QString label( double idx ) const;
+    [[nodiscard]] QString label( double idx ) const;
 
     /**
      * Set category label
@@ -148,13 +148,13 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     Q_DECL_DEPRECATED int band() const SIP_DEPRECATED { return mBand; }
 
-    int inputBand() const override;
+    [[nodiscard]] int inputBand() const override;
     bool setInputBand( int band ) override;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    [[nodiscard]] QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
-    QList<int> usesBands() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
     Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
     bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * Gets the source color ramp
      * \see setSourceColorRamp()
      */
-    QgsColorRamp *sourceColorRamp() const;
+    [[nodiscard]] QgsColorRamp *sourceColorRamp() const;
 
     /**
      * Converts a raster color \a table to paletted renderer class data.
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     int mBand;
     MultiValueClassData mMultiValueClassData;
 
-    ClassData classData() const;
+    [[nodiscard]] ClassData classData() const;
 
     //! Source color ramp
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;

@@ -101,21 +101,21 @@ class CORE_EXPORT QgsRasterShaderFunction
                         int *returnBlueValue SIP_OUT,
                         int *returnAlpha SIP_OUT ) const;
 
-    double minimumMaximumRange() const { return mMinimumMaximumRange; }
+    [[nodiscard]] double minimumMaximumRange() const { return mMinimumMaximumRange; }
 
     /**
      * Returns the maximum value for the raster shader.
      * \see setMaximumValue()
      * \see minimumValue()
     */
-    double minimumValue() const { return mMinimumValue; }
+    [[nodiscard]] double minimumValue() const { return mMinimumValue; }
 
     /**
      * Returns the minimum value for the raster shader.
      * \see setMinimumValue()
      * \see maximumValue()
     */
-    double maximumValue() const { return mMaximumValue; }
+    [[nodiscard]] double maximumValue() const { return mMaximumValue; }
 
     /**
      * Returns legend symbology items if provided by renderer.
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsRasterShaderFunction
      * Returns label precision
      * \since QGIS 3.16
      */
-    int labelPrecision() const;
+    [[nodiscard]] int labelPrecision() const;
 
     /**
      * Sets label precision to \a labelPrecision

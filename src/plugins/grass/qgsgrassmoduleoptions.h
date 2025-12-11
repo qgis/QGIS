@@ -113,7 +113,7 @@ class QgsGrassModuleOptions
     //! Flag names
     virtual QStringList flagNames() { return QStringList(); }
 
-    QStringList errors() const { return mErrors; }
+    [[nodiscard]] QStringList errors() const { return mErrors; }
 
   protected:
     //! Pointer to the QGIS interface object

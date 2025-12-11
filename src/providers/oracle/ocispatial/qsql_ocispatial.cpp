@@ -394,15 +394,15 @@ class QOCISpatialResult : public QSqlCachedResult
     ~QOCISpatialResult() override;
     bool prepare( const QString &query ) override;
     bool exec() override;
-    QVariant handle() const override;
+    [[nodiscard]] QVariant handle() const override;
 
   protected:
     bool gotoNext( ValueCache &values, int index ) override;
     bool reset( const QString &query ) override;
     int size() override;
     int numRowsAffected() override;
-    QSqlRecord record() const override;
-    QVariant lastInsertId() const override;
+    [[nodiscard]] QSqlRecord record() const override;
+    [[nodiscard]] QVariant lastInsertId() const override;
     bool execBatch( bool arrayBind = false ) override;
     void virtual_hook( int id, void *data ) override;
 };
@@ -469,12 +469,12 @@ class QOCISpatialResultPrivate : public QSqlCachedResultPrivate
     int bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError *err, int pos, const QVariant &val, dvoid *indPtr, ub2 *tmpSize, QList<QByteArray> &tmpStorage );
     int bindValues( QVector<QVariant> &values, IndicatorArray &indicators, SizeArray &tmpSizes, QList<QByteArray> &tmpStorage );
     void outValues( QVector<QVariant> &values, IndicatorArray &indicators, QList<QByteArray> &tmpStorage );
-    inline bool isOutValue( int i ) const
+    [[nodiscard]] inline bool isOutValue( int i ) const
     {
       Q_Q( const QOCISpatialResult );
       return q->bindValueType( i ) & QSql::Out;
     }
-    inline bool isBinaryValue( int i ) const
+    [[nodiscard]] inline bool isBinaryValue( int i ) const
     {
       Q_Q( const QOCISpatialResult );
       return q->bindValueType( i ) & QSql::Binary;
@@ -1124,7 +1124,7 @@ class QOCISpatialCols
     int readLOBs( QVector<QVariant> &values, int index = 0 ) const;
     int fieldFromDefine( OCIDefine *d ) const;
     void getValues( QVector<QVariant> &v, int index );
-    inline int size() const { return fieldInf.size(); }
+    [[nodiscard]] inline int size() const { return fieldInf.size(); }
     static bool execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> &boundValues, bool arrayBind );
 
     QSqlRecord rec;

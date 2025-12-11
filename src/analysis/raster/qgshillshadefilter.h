@@ -33,15 +33,15 @@ class ANALYSIS_EXPORT QgsHillshadeFilter : public QgsDerivativeFilter
 
     float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) override;
 
-    float lightAzimuth() const { return mLightAzimuth; }
+    [[nodiscard]] float lightAzimuth() const { return mLightAzimuth; }
     void setLightAzimuth( float azimuth );
-    float lightAngle() const { return mLightAngle; }
+    [[nodiscard]] float lightAngle() const { return mLightAngle; }
     void setLightAngle( float angle );
 
   private:
 #ifdef HAVE_OPENCL
 
-    const QString openClProgramBaseName() const override
+    [[nodiscard]] const QString openClProgramBaseName() const override
     {
       return QStringLiteral( "hillshade" );
     }

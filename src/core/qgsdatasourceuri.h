@@ -69,17 +69,17 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Returns the connection part of the URI.
      */
-    QString connectionInfo( bool expandAuthConfig = true ) const;
+    [[nodiscard]] QString connectionInfo( bool expandAuthConfig = true ) const;
 
     /**
      * Returns the complete URI as a string.
      */
-    QString uri( bool expandAuthConfig = true ) const;
+    [[nodiscard]] QString uri( bool expandAuthConfig = true ) const;
 
     /**
      * Returns the complete encoded URI as a byte array.
      */
-    QByteArray encodedUri() const;
+    [[nodiscard]] QByteArray encodedUri() const;
 
     /**
      * Sets the complete encoded \a uri.
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Returns the URI's table name, escaped and quoted.
      */
-    QString quotedTablename() const;
+    [[nodiscard]] QString quotedTablename() const;
 
     /**
      * Sets a generic parameter \a value on the URI.
@@ -120,17 +120,17 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Returns a generic parameter value corresponding to the specified \a key.
      */
-    QString param( const QString &key ) const;
+    [[nodiscard]] QString param( const QString &key ) const;
 
     /**
      * Returns multiple generic parameter values corresponding to the specified \a key.
      */
-    QStringList params( const QString &key ) const;
+    [[nodiscard]] QStringList params( const QString &key ) const;
 
     /**
      * Returns TRUE if a parameter with the specified \a key exists.
      */
-    bool hasParam( const QString &key ) const;
+    [[nodiscard]] bool hasParam( const QString &key ) const;
 
     /**
      * Sets all connection related members at once.
@@ -198,16 +198,16 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Returns any associated authentication configuration ID stored in the URI.
      */
-    QString authConfigId() const;
+    [[nodiscard]] QString authConfigId() const;
 
     //! Returns the username stored in the URI.
-    QString username() const;
+    [[nodiscard]] QString username() const;
 
     //! Returns the schema stored in the URI.
-    QString schema() const;
+    [[nodiscard]] QString schema() const;
 
     //! Returns the table name stored in the URI.
-    QString table() const;
+    [[nodiscard]] QString table() const;
 
     /**
      * Returns the SQL filter stored in the URI, if set.
@@ -217,22 +217,22 @@ class CORE_EXPORT QgsDataSourceUri
      *
      * \see setSql()
      */
-    QString sql() const;
+    [[nodiscard]] QString sql() const;
 
     //! Returns the name of the geometry column stored in the URI, if set.
-    QString geometryColumn() const;
+    [[nodiscard]] QString geometryColumn() const;
 
     //! Sets whether estimated metadata should be used for the connection.
     void setUseEstimatedMetadata( bool flag );
 
     //! Returns TRUE if estimated metadata should be used for the connection.
-    bool useEstimatedMetadata() const;
+    [[nodiscard]] bool useEstimatedMetadata() const;
 
     //! Set to TRUE to disable selection by feature ID.
     void disableSelectAtId( bool flag );
 
     //! Returns whether the selection by feature ID is disabled.
-    bool selectAtIdDisabled() const;
+    [[nodiscard]] bool selectAtIdDisabled() const;
 
     //! Clears the schema stored in the URI.
     void clearSchema();
@@ -265,10 +265,10 @@ class CORE_EXPORT QgsDataSourceUri
      *
      * \see setHost()
      */
-    QString host() const;
+    [[nodiscard]] QString host() const;
 
     //! Returns the database name stored in the URI.
-    QString database() const;
+    [[nodiscard]] QString database() const;
 
     /**
      * Sets the \a port stored in the URI.
@@ -283,12 +283,12 @@ class CORE_EXPORT QgsDataSourceUri
      *
      * \see setPort()
      */
-    QString port() const;
+    [[nodiscard]] QString port() const;
 
     /**
      * Returns the driver name stored in the URI
      */
-    QString driver() const;
+    [[nodiscard]] QString driver() const;
 
     /**
      * Sets the \a driver name stored in the URI.
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsDataSourceUri
     void setDriver( const QString &driver );
 
     //! Returns the password stored in the URI.
-    QString password() const;
+    [[nodiscard]] QString password() const;
 
     /**
      * Sets the SSL \a mode associated with the URI.
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsDataSourceUri
      *
      * \see setSslMode()
      */
-    SslMode sslMode() const;
+    [[nodiscard]] SslMode sslMode() const;
 
     /**
      * Sets the \a service name associated with the URI.
@@ -326,10 +326,10 @@ class CORE_EXPORT QgsDataSourceUri
      *
      * \see setService()
      */
-    QString service() const;
+    [[nodiscard]] QString service() const;
 
     //! Returns the name of the (primary) key column for the referenced table.
-    QString keyColumn() const;
+    [[nodiscard]] QString keyColumn() const;
 
     //! Sets the name of the (primary) key \a column.
     void setKeyColumn( const QString &column );
@@ -337,13 +337,13 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Returns the WKB type associated with the URI.
      */
-    Qgis::WkbType wkbType() const;
+    [[nodiscard]] Qgis::WkbType wkbType() const;
 
     //! Sets the WKB \a type associated with the URI.
     void setWkbType( Qgis::WkbType type );
 
     //! Returns the spatial reference ID associated with the URI.
-    QString srid() const;
+    [[nodiscard]] QString srid() const;
 
     //! Sets the spatial reference ID associated with the URI.
     void setSrid( const QString &srid );
@@ -376,11 +376,11 @@ class CORE_EXPORT QgsDataSourceUri
      * Returns parameter keys used in the uri: specialized ones ("table", "schema", etc.) or generic parameters.
      * \since QGIS 3.26
      */
-    QSet<QString> parameterKeys() const;
+    [[nodiscard]] QSet<QString> parameterKeys() const;
 
 #ifndef SIP_RUN
     //! Returns http headers
-    QgsHttpHeaders httpHeaders() const { return mHttpHeaders; }
+    [[nodiscard]] QgsHttpHeaders httpHeaders() const { return mHttpHeaders; }
 #endif
 
     /**
@@ -415,7 +415,7 @@ class CORE_EXPORT QgsDataSourceUri
   private:
     void skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );
-    QString escape( const QString &uri, QChar delim ) const;
+    [[nodiscard]] QString escape( const QString &uri, QChar delim ) const;
 
     /* data */
 

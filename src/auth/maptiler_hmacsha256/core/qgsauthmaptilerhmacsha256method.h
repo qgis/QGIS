@@ -36,11 +36,11 @@ class QgsAuthMapTilerHmacSha256Method : public QgsAuthMethod
     explicit QgsAuthMapTilerHmacSha256Method();
 
     // QgsAuthMethod interface
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
@@ -70,7 +70,7 @@ class QgsAuthMapTilerHmacSha256MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthMapTilerHmacSha256MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_KEY, QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthMapTilerHmacSha256Method *createAuthMethod() const override { return new QgsAuthMapTilerHmacSha256Method; }
+    [[nodiscard]] QgsAuthMapTilerHmacSha256Method *createAuthMethod() const override { return new QgsAuthMapTilerHmacSha256Method; }
 };
 
 #endif // QGSAUTHHMACSHA256METHOD_H

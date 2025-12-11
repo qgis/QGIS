@@ -55,7 +55,7 @@ class QgsFilteredTableWidget : public QWidget
     /**
      * Returns the list of selected (checked) items
      */
-    QStringList selection() const;
+    [[nodiscard]] QStringList selection() const;
 
     /**
      * Updates the check state of the table's items. Items whose DisplayRole is contained in \a checked are checked, the rest are unchecked
@@ -85,7 +85,7 @@ class QgsFilteredTableWidget : public QWidget
     /**
      * Returns the number of rows of the table
      */
-    int rowCount() const { return mTableWidget->rowCount(); }
+    [[nodiscard]] int rowCount() const { return mTableWidget->rowCount(); }
 
   signals:
 
@@ -102,7 +102,7 @@ class QgsFilteredTableWidget : public QWidget
   private:
     void filterStringChanged( const QString &filterString );
     void itemChanged_p( QTableWidgetItem *item );
-    QTableWidgetItem *item( const int row, const int column ) const { return mTableWidget->item( row, column ); }
+    [[nodiscard]] QTableWidgetItem *item( const int row, const int column ) const { return mTableWidget->item( row, column ); }
 
     int mColumnCount = 1;
     QgsFilterLineEdit *mSearchWidget = nullptr;

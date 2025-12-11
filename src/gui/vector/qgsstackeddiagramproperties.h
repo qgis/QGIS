@@ -191,7 +191,7 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
      * first enabled sub diagram, as well as disabled sub diagrams that,
      * after being edited, can become the first enabled one.
      */
-    bool couldBeFirstSubDiagram( const QModelIndex &index ) const;
+    [[nodiscard]] bool couldBeFirstSubDiagram( const QModelIndex &index ) const;
 
   private slots:
     void subDiagramWidgetPanelAccepted( QgsPanelWidget *panel );

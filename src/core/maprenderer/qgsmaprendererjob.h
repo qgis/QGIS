@@ -112,7 +112,7 @@ class LayerRenderJob
      */
     bool previewRenderImageInitialized = false;
 
-    bool imageCanBeComposed() const;
+    [[nodiscard]] bool imageCanBeComposed() const;
 
     QgsMapLayerRenderer *renderer = nullptr; // must be deleted
 

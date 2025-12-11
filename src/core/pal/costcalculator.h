@@ -94,7 +94,7 @@ namespace pal
       /**
        * Returns the minimum distance between the candidate and all added rings.
        */
-      double minimumDistance() const;
+      [[nodiscard]] double minimumDistance() const;
 
     private:
 

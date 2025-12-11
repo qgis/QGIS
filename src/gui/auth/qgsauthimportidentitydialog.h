@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Gets identity type
-    QgsAuthImportIdentityDialog::IdentityType identityType() const;
+    [[nodiscard]] QgsAuthImportIdentityDialog::IdentityType identityType() const;
 
     /**
      * Gets certificate/key bundle to be imported.
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     const QPair<QSslCertificate, QSslKey> certBundleToImport() SIP_SKIP;
 
     //! Gets certificate/key bundle to be imported as a PKI bundle object
-    const QgsPkiBundle pkiBundleToImport() const { return mPkiBundle; }
+    [[nodiscard]] const QgsPkiBundle pkiBundleToImport() const { return mPkiBundle; }
 
   private slots:
     void populateIdentityType();

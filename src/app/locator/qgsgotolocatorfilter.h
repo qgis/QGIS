@@ -27,12 +27,12 @@ class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
 
   public:
     QgsGotoLocatorFilter( QObject *parent = nullptr );
-    QgsGotoLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "goto" ); }
-    QString displayName() const override { return tr( "Go to Coordinate" ); }
-    Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "go" ); }
-    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+    [[nodiscard]] QgsGotoLocatorFilter *clone() const override;
+    [[nodiscard]] QString name() const override { return QStringLiteral( "goto" ); }
+    [[nodiscard]] QString displayName() const override { return tr( "Go to Coordinate" ); }
+    [[nodiscard]] Priority priority() const override { return Medium; }
+    [[nodiscard]] QString prefix() const override { return QStringLiteral( "go" ); }
+    [[nodiscard]] QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;

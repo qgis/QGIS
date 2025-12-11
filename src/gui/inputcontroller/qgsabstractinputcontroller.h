@@ -58,17 +58,17 @@ class GUI_EXPORT QgsAbstractInputController : public QObject
     /**
      * Returns a new copy of the controller.
      */
-    virtual QgsAbstractInputController *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractInputController *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns a string uniquely identifying the device.
      */
-    virtual QString deviceId() const = 0;
+    [[nodiscard]] virtual QString deviceId() const = 0;
 
     /**
      * Returns the input controller type.
      */
-    virtual Qgis::InputControllerType type() const = 0;
+    [[nodiscard]] virtual Qgis::InputControllerType type() const = 0;
 };
 
 

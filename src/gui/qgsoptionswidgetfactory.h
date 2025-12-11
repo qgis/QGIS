@@ -49,7 +49,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      * If an empty string is returned by this method the default QGIS options
      * help will be retrieved.
      */
-    virtual QString helpKey() const { return QString(); }
+    [[nodiscard]] virtual QString helpKey() const { return QString(); }
 
     /**
      * Returns the registered highlight widgets used to search and highlight text in
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
      * \returns A QIcon for the panel icon.
      * \see setIcon()
      */
-    virtual QIcon icon() const { return mIcon; }
+    [[nodiscard]] virtual QIcon icon() const { return mIcon; }
 
     /**
      * Set the \a icon to show in the interface for the factory object.
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
      * The title of the panel.
      * \see setTitle()
      */
-    virtual QString title() const { return mTitle; }
+    [[nodiscard]] virtual QString title() const { return mTitle; }
 
     /**
      * Set the \a title for the interface.
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
      *
      * \since QGIS 3.32
      */
-    virtual QString key() const { return mKey; }
+    [[nodiscard]] virtual QString key() const { return mKey; }
 
     /**
      * Set the \a key for the interface.
@@ -172,7 +172,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
      *
      * \since QGIS 3.18
      */
-    virtual QString pagePositionHint() const { return QString(); }
+    [[nodiscard]] virtual QString pagePositionHint() const { return QString(); }
 
     /**
      * Returns the path to place the widget page at, for options dialogs
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
      *
      * \since QGIS 3.22
      */
-    virtual QStringList path() const { return QStringList(); }
+    [[nodiscard]] virtual QStringList path() const { return QStringList(); }
 
     /**
      * \brief Factory function to create the widget on demand as needed by the options dialog.

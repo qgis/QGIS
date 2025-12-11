@@ -38,12 +38,12 @@ class GUI_EXPORT QgsSnapIndicator
     //! Sets snapping match that should be displayed in map canvas. Invalid match hides the indicator
     void setMatch( const QgsPointLocator::Match &match );
     //! Returns currently displayed snapping match
-    QgsPointLocator::Match match() const { return mMatch; }
+    [[nodiscard]] QgsPointLocator::Match match() const { return mMatch; }
 
     //! Sets whether the snapping indicator is visible
     void setVisible( bool visible = true );
     //! Returns whether the snapping indicator is visible
-    bool isVisible() const;
+    [[nodiscard]] bool isVisible() const;
 
   private:
     Q_DISABLE_COPY( QgsSnapIndicator )

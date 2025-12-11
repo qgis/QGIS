@@ -56,19 +56,19 @@ class CORE_EXPORT QgsStacController : public QObject
      *  Returns a STAC Catalog by parsing a local file
      *  The caller takes ownership of the returned catalog
      */
-    std::unique_ptr< QgsStacCatalog > openLocalCatalog( const QString &fileName ) const;
+    [[nodiscard]] std::unique_ptr< QgsStacCatalog > openLocalCatalog( const QString &fileName ) const;
 
     /**
      *  Returns a STAC Collection by parsing a local file
      *  The caller takes ownership of the returned collection
      */
-    std::unique_ptr< QgsStacCollection > openLocalCollection( const QString &fileName ) const;
+    [[nodiscard]] std::unique_ptr< QgsStacCollection > openLocalCollection( const QString &fileName ) const;
 
     /**
      *  Returns a STAC Item by parsing a local file
      *  The caller takes ownership of the returned item
      */
-    std::unique_ptr< QgsStacItem > openLocalItem( const QString &fileName ) const;
+    [[nodiscard]] std::unique_ptr< QgsStacItem > openLocalItem( const QString &fileName ) const;
 
     /**
      * Fetches a STAC object from \a url using a blocking network request.
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * Returns the authentication config id which will be used during the request.
      * \see setAuthCfg()
      */
-    QString authCfg() const;
+    [[nodiscard]] QString authCfg() const;
 
     /**
      * Sets the authentication config id which should be used during the request.

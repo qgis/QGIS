@@ -45,7 +45,7 @@ class GUI_EXPORT QgsStyleSaveDialog : public QDialog, private Ui::QgsStyleSaveDi
     /**
      * Returns the entered name for the new symbol.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Sets the default \a tags for the newly created item.
@@ -57,18 +57,18 @@ class GUI_EXPORT QgsStyleSaveDialog : public QDialog, private Ui::QgsStyleSaveDi
     /**
      * Returns any tags entered for the new symbol (as a comma separated value list).
      */
-    QString tags() const;
+    [[nodiscard]] QString tags() const;
 
     /**
      * Returns TRUE if the favorite is checked for the symbol.
      */
-    bool isFavorite() const;
+    [[nodiscard]] bool isFavorite() const;
 
     /**
      * Returns the type of style entity to save.
      * \since QGIS 3.10
      */
-    QgsStyle::StyleEntity selectedType() const;
+    [[nodiscard]] QgsStyle::StyleEntity selectedType() const;
 
     /**
      * Returns the destination style database.

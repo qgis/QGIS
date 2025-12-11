@@ -145,21 +145,21 @@ struct VTable
 
     QgsVectorLayer *layer() { return mLayer; }
 
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
-    QString creationString() const { return mCreationStr; }
+    [[nodiscard]] QString creationString() const { return mCreationStr; }
 
-    long crs() const { return mCrs; }
+    [[nodiscard]] long crs() const { return mCrs; }
 
     sqlite3 *sql() { return mSql; }
 
-    int pkColumn() const { return mPkColumn; }
+    [[nodiscard]] int pkColumn() const { return mPkColumn; }
 
     void invalidate() { mValid = false; }
 
-    bool valid() const { return mValid; }
+    [[nodiscard]] bool valid() const { return mValid; }
 
-    QgsFields fields() const { return mFields; }
+    [[nodiscard]] QgsFields fields() const { return mFields; }
 
   private:
     VTable( const VTable &other ) = delete;
@@ -291,20 +291,20 @@ struct VTableCursor
       }
     }
 
-    bool eof() const { return mEof; }
+    [[nodiscard]] bool eof() const { return mEof; }
 
-    int nColumns() const
+    [[nodiscard]] int nColumns() const
     {
       if ( !mVtab->valid() )
         return 0;
       return mVtab->layer() ? mVtab->layer()->fields().count() : mVtab->provider()->fields().count();
     }
 
-    sqlite3_int64 currentId() const { return mCurrentFeature.id(); }
+    [[nodiscard]] sqlite3_int64 currentId() const { return mCurrentFeature.id(); }
 
-    QVariant currentAttribute( int column ) const { return mCurrentFeature.attribute( column ); }
+    [[nodiscard]] QVariant currentAttribute( int column ) const { return mCurrentFeature.attribute( column ); }
 
-    QPair<char *, int> currentGeometry() const
+    [[nodiscard]] QPair<char *, int> currentGeometry() const
     {
       int blob_len = 0;
       char *blob = nullptr;

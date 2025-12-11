@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      */
     void makeGraph( QgsGraphBuilderInterface *builder, const QVector<QgsPointXY> &additionalPoints, QVector<QgsPointXY> &snappedPoints SIP_OUT, QgsFeedback *feedback = nullptr ) const override;
 
-    QString name() const override;
+    [[nodiscard]] QString name() const override;
 
   private:
     QgsFeatureSource *mSource = nullptr;
@@ -74,8 +74,8 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     QString mBothDirectionValue;
     Direction mDefaultDirection = DirectionBoth;
 
-    QgsAttributeList requiredAttributes() const;
-    Direction directionForFeature( const QgsFeature &feature ) const;
+    [[nodiscard]] QgsAttributeList requiredAttributes() const;
+    [[nodiscard]] Direction directionForFeature( const QgsFeature &feature ) const;
 };
 
 #endif // QGSVECTORLAYERDIRECTOR_H

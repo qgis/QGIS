@@ -45,7 +45,7 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
-    QString lastError() const override;
+    [[nodiscard]] QString lastError() const override;
     bool flushBuffer() override;
     void finalize() override;
 

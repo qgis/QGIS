@@ -45,12 +45,12 @@ class CORE_EXPORT QgsSensorAbstractMetadata
     /**
      * Returns the unique type code for the sensor class.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns a translated, user visible name for the sensor class.
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsSensorMetadata : public QgsSensorAbstractMetadata
     /**
      * Returns the classes' sensor creation function.
      */
-    QgsSensorCreateFunc createFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsSensorCreateFunc createFunction() const { return mCreateFunc; }
 
     QgsAbstractSensor *createSensor( QObject *parent ) override { return mCreateFunc ? mCreateFunc( parent ) : nullptr; }
 
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsSensorRegistry : public QObject
      * Returns the metadata for the specified sensor \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      */
-    QgsSensorAbstractMetadata *sensorMetadata( const QString &type ) const;
+    [[nodiscard]] QgsSensorAbstractMetadata *sensorMetadata( const QString &type ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsSensorRegistry : public QObject
     /**
      * Returns a map of available sensor types to translated name.
      */
-    QMap<QString, QString> sensorTypes() const;
+    [[nodiscard]] QMap<QString, QString> sensorTypes() const;
 
   signals:
 

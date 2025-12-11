@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPointCloudRgbRendererPreparedData: public QgsPreparedPointC
 {
   public:
 
-    QSet< QString > usedAttributes() const override;
+    [[nodiscard]] QSet< QString > usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override;
 
@@ -75,11 +75,11 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      */
     QgsPointCloudRgbRenderer();
 
-    QString type() const override;
-    QgsPointCloudRenderer *clone() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+    [[nodiscard]] QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
 
     /**
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * \see blueAttribute()
      * \see setRedAttribute()
      */
-    QString redAttribute() const;
+    [[nodiscard]] QString redAttribute() const;
 
     /**
      * Sets the \a attribute to use for the red channel.
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * \see blueAttribute()
      * \see setGreenAttribute()
      */
-    QString greenAttribute() const;
+    [[nodiscard]] QString greenAttribute() const;
 
     /**
      * Sets the \a attribute to use for the green channel.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * \see redAttribute()
      * \see setBlueAttribute()
      */
-    QString blueAttribute() const;
+    [[nodiscard]] QString blueAttribute() const;
 
     /**
      * Sets the \a attribute to use for the blue channel.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * \see greenContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *redContrastEnhancement() const;
+    [[nodiscard]] const QgsContrastEnhancement *redContrastEnhancement() const;
 
     /**
      * Sets the contrast \a enhancement to use for the red channel.
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * \see redContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *greenContrastEnhancement() const;
+    [[nodiscard]] const QgsContrastEnhancement *greenContrastEnhancement() const;
 
     /**
      * Sets the contrast \a enhancement to use for the green channel.
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * \see redContrastEnhancement()
      * \see greenContrastEnhancement()
      */
-    const QgsContrastEnhancement *blueContrastEnhancement() const;
+    [[nodiscard]] const QgsContrastEnhancement *blueContrastEnhancement() const;
 
     /**
      * Sets the contrast \a enhancement to use for the blue channel.

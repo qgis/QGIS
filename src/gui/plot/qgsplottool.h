@@ -78,12 +78,12 @@ class GUI_EXPORT QgsPlotTool : public QObject
     /**
      * Returns the flags for the plot tool.
      */
-    virtual Qgis::PlotToolFlags flags() const;
+    [[nodiscard]] virtual Qgis::PlotToolFlags flags() const;
 
     /**
      * Returns a user-visible, translated name for the tool.
      */
-    QString toolName() const { return mToolName; }
+    [[nodiscard]] QString toolName() const { return mToolName; }
 
     /**
      * Mouse move \a event for overriding.
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsPlotTool : public QObject
     /**
      * Returns TRUE if this tool is the current tool active on the plot canvas.
      */
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     /**
      * Called when the tool is set as the currently active plot tool.
@@ -180,7 +180,7 @@ class GUI_EXPORT QgsPlotTool : public QObject
     /**
      * Returns the tool's plot canvas.
      */
-    QgsPlotCanvas *canvas() const;
+    [[nodiscard]] QgsPlotCanvas *canvas() const;
 
     /**
      * Associates an \a action with this tool. When the setTool
@@ -239,14 +239,14 @@ class GUI_EXPORT QgsPlotTool : public QObject
      *
      * May return an empty point if the canvas point cannot be converted to a map point.
      */
-    QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
+    [[nodiscard]] QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
 
     /**
      * Converts a \a point in map coordinates to the associated canvas point.
      *
      * May return an empty point if the map point cannot be converted to a canvas point.
      */
-    QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
+    [[nodiscard]] QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
 
     /**
      * Returns TRUE if a mouse press/release operation which started at
@@ -254,7 +254,7 @@ class GUI_EXPORT QgsPlotTool : public QObject
      * a "click and drag". If FALSE is returned, the operation should be
      * instead treated as just a click on \a startViewPoint.
      */
-    bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
+    [[nodiscard]] bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
 
     /**
      * Constrains a point to force it to fall within the specified rectangle.

@@ -61,7 +61,7 @@ class CORE_EXPORT QgsActionScopeRegistry : public QObject
      * Gets all registered action scopes.
      *
      */
-    QSet<QgsActionScope> actionScopes() const;
+    [[nodiscard]] QSet<QgsActionScope> actionScopes() const;
 
     /**
      * Register an additional action scope.

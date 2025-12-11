@@ -71,20 +71,20 @@ class QgsMbTilesVectorTileDataProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsMbTilesVectorTileDataProviderMetadata();
-    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+    [[nodiscard]] QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsMbTilesVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QIcon icon() const override;
-    ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
     QString filters( Qgis::FileFilterType type ) override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
-    int priorityForUri( const QString &uri ) const override;
-    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
+    [[nodiscard]] int priorityForUri( const QString &uri ) const override;
+    [[nodiscard]] QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
 
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 

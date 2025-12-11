@@ -56,7 +56,7 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      * \see create2DMapController()
      * \see register2DMapController()
      */
-    QStringList available2DMapControllers() const;
+    [[nodiscard]] QStringList available2DMapControllers() const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotation here, that's not
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      *
      * \see available2DMapControllers()
      */
-    QgsAbstract2DMapController *create2DMapController( const QString &deviceId ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsAbstract2DMapController *create2DMapController( const QString &deviceId ) const SIP_TRANSFERBACK;
 
     /**
      * Registers a new 2D map \a controller.
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      * \see create3DMapController()
      * \see register3DMapController()
      */
-    QStringList available3DMapControllers() const;
+    [[nodiscard]] QStringList available3DMapControllers() const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotation here, that's not
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
      *
      * \see available3DMapControllers()
      */
-    QgsAbstract3DMapController *create3DMapController( const QString &deviceId ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsAbstract3DMapController *create3DMapController( const QString &deviceId ) const SIP_TRANSFERBACK;
 
     /**
      * Registers a new 3D map \a controller.

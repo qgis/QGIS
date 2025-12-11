@@ -40,7 +40,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     //! Constructor for QgsCodeEditorSQL
     QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qgis::ScriptLanguage language() const override;
+    [[nodiscard]] Qgis::ScriptLanguage language() const override;
 
     ~QgsCodeEditorSQL() override;
 
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      * Returns field names from the lexer API.
      * \since QGIS 3.22
      */
-    QStringList fieldNames() const;
+    [[nodiscard]] QStringList fieldNames() const;
 
     /**
      * Set extra keywords to \a extraKeywords.
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      *
      * \since QGIS 3.22
      */
-    QStringList extraKeywords() const;
+    [[nodiscard]] QStringList extraKeywords() const;
 
   protected:
     void initializeLexer() override;
@@ -121,7 +121,7 @@ class QgsCaseInsensitiveLexerSQL : public QsciLexerSQL
     explicit QgsCaseInsensitiveLexerSQL( QObject *parent = nullptr )
       : QsciLexerSQL( parent ) {}
 
-    bool caseSensitive() const override { return false; }
+    [[nodiscard]] bool caseSensitive() const override { return false; }
 };
 ///@endcond
 #endif

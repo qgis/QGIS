@@ -50,13 +50,13 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
     /**
      * Returns the list of available providers.
      */
-    QList<QgsDataItemProvider *> providers() const;
+    [[nodiscard]] QList<QgsDataItemProvider *> providers() const;
 
     /**
      * Returns the (possibly NULLPTR) data item provider named \a providerName
      * \since QGIS 3.14
      */
-    QgsDataItemProvider *provider( const QString &providerName ) const;
+    [[nodiscard]] QgsDataItemProvider *provider( const QString &providerName ) const;
 
     /**
      * Adds a \a provider implementation to the registry. Ownership of the provider

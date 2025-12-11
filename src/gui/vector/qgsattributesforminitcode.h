@@ -72,28 +72,28 @@ class GUI_EXPORT QgsAttributesFormInitCode : public QDialog, private Ui::QgsAttr
      *
      * \see setCodeSource()
      */
-    Qgis::AttributeFormPythonInitCodeSource codeSource() const;
+    [[nodiscard]] Qgis::AttributeFormPythonInitCodeSource codeSource() const;
 
     /**
      * Returns the name of the init function.
      *
      * \see setInitFunction()
      */
-    QString initFunction() const;
+    [[nodiscard]] QString initFunction() const;
 
     /**
      * Returns the file path for the file containing the init code.
      *
      * \see setInitFilePath()
      */
-    QString initFilePath() const;
+    [[nodiscard]] QString initFilePath() const;
 
     /**
      * Returns the init code contents.
      *
      * \see setInitCode()
      */
-    QString initCode() const;
+    [[nodiscard]] QString initCode() const;
 
   private:
     //Ui::QgsAttributesFormInitCode *ui;

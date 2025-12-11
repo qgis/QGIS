@@ -23,10 +23,10 @@
 class QgsMdalMeshSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "mdal" ); }
-    QString text() const override { return QObject::tr( "Mesh" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 22; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMeshLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "mdal" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "Mesh" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 22; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMeshLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsMdalSourceSelect( parent, fl, widgetMode );

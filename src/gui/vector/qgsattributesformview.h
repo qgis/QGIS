@@ -50,17 +50,17 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
      *
      * \note The first selected row is the first one the user selected, and not necessarily the one closer to the header.
      */
-    QModelIndex firstSelectedIndex() const;
+    [[nodiscard]] QModelIndex firstSelectedIndex() const;
 
     // QgsExpressionContextGenerator interface
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Returns the list of indicators associated with a given \a index.
      *
      * \since QGIS 4.0
      */
-    const QList<QgsAttributesFormTreeViewIndicator *> indicators( const QModelIndex &index ) const;
+    [[nodiscard]] const QList<QgsAttributesFormTreeViewIndicator *> indicators( const QModelIndex &index ) const;
 
     /**
      * Returns the list of indicators associated with a given \a item.
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
      *
      * \since QGIS 4.0
      */
-    QgsAttributesFormModel *sourceModel() const;
+    [[nodiscard]] QgsAttributesFormModel *sourceModel() const;
 
   public slots:
 
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsView : public QgsAttributesFormBas
     void setModel( QAbstractItemModel *model ) override;
 
     //! Access the underlying QgsAttributesAvailableWidgetsModel source model
-    QgsAttributesAvailableWidgetsModel *availableWidgetsModel() const;
+    [[nodiscard]] QgsAttributesAvailableWidgetsModel *availableWidgetsModel() const;
 };
 
 

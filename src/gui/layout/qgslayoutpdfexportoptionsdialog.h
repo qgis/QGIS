@@ -57,55 +57,55 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
     //! Sets the text render format
     void setTextRenderFormat( Qgis::TextRenderFormat format );
     //! Returns the current text render format
-    Qgis::TextRenderFormat textRenderFormat() const;
+    [[nodiscard]] Qgis::TextRenderFormat textRenderFormat() const;
     //! Set whether to force vector output
     void setForceVector( bool force );
     //! Returns whether vector output is being forced
-    bool forceVector() const;
+    [[nodiscard]] bool forceVector() const;
     //! Sets whether to enable georeferencing options
     void enableGeoreferencingOptions( bool enabled );
     //! Sets whether to enable georeferencing
     void setGeoreferencingEnabled( bool enabled );
     //! Returns whether georeferencing is enabled
-    bool georeferencingEnabled() const;
+    [[nodiscard]] bool georeferencingEnabled() const;
     //! Sets whether to enable metadata
     void setMetadataEnabled( bool enabled );
     //! Returns whether metadata is enabled
-    bool metadataEnabled() const;
+    [[nodiscard]] bool metadataEnabled() const;
     //! Sets whether to disable raster tiling
     void setRasterTilingDisabled( bool disabled );
     //! Returns whether raster tiling is disabled
-    bool rasterTilingDisabled() const;
+    [[nodiscard]] bool rasterTilingDisabled() const;
     //! Sets whether to simplify geometries
     void setGeometriesSimplified( bool enabled );
     //! Returns whether geometry simplification is enabled
-    bool geometriesSimplified() const;
+    [[nodiscard]] bool geometriesSimplified() const;
 
     //! Sets whether to use lossless image compression
     void setLosslessImageExport( bool enabled );
     //! Returns whether lossless image compression is enabled
-    bool losslessImageExport() const;
+    [[nodiscard]] bool losslessImageExport() const;
 
     //! Sets whether to export a Geospatial PDF
     void setExportGeospatialPdf( bool enabled );
     //! Returns whether Geospatial PDF export is enabled
-    bool exportGeospatialPdf() const;
+    [[nodiscard]] bool exportGeospatialPdf() const;
 
     //! Sets the list of export themes
     void setExportThemes( const QStringList &themes );
     //! Returns the list of export themes
-    QStringList exportThemes() const;
+    [[nodiscard]] QStringList exportThemes() const;
 
     //! Returns a list of map layer IDs in the desired order they should appear in a generated Geospatial PDF file
-    QStringList geospatialPdfLayerOrder() const;
+    [[nodiscard]] QStringList geospatialPdfLayerOrder() const;
 
     //! Returns a list of groups in the desired order they should appear in a generated Geospatial PDF file
-    QStringList geospatialPdfGroupOrder() const;
+    [[nodiscard]] QStringList geospatialPdfGroupOrder() const;
 
     //! Sets whether to open the pdf after exporting it
     void setOpenAfterExporting( bool enabled );
     //! Returns whether the pdf should be opened after exporting it
-    bool openAfterExporting() const;
+    [[nodiscard]] bool openAfterExporting() const;
 
   private slots:
 

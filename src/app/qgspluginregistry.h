@@ -49,7 +49,7 @@ class APP_EXPORT QgsPluginRegistry
     void setQgisInterface( QgisInterface *iface );
 
     //! Check whether this module is loaded
-    bool isLoaded( const QString &key ) const;
+    [[nodiscard]] bool isLoaded( const QString &key ) const;
 
     //! Retrieve library of the plugin
     QString library( const QString &key );
@@ -58,7 +58,7 @@ class APP_EXPORT QgsPluginRegistry
     QgisPlugin *plugin( const QString &key );
 
     //! Returns whether the plugin is pythonic
-    bool isPythonPlugin( const QString &key ) const;
+    [[nodiscard]] bool isPythonPlugin( const QString &key ) const;
 
     //! Add a plugin to the map of loaded plugins
     void addPlugin( const QString &key, const QgsPluginMetadata &metadata );
@@ -91,7 +91,7 @@ class APP_EXPORT QgsPluginRegistry
     void restoreSessionPlugins( const QString &pluginDirString );
 
     //! Check whether plugin is compatible with current version of QGIS
-    bool isPythonPluginCompatible( const QString &packageName ) const;
+    [[nodiscard]] bool isPythonPluginCompatible( const QString &packageName ) const;
 
     //! Returns metadata of all loaded plugins
     QList<QgsPluginMetadata *> pluginData();
@@ -109,7 +109,7 @@ class APP_EXPORT QgsPluginRegistry
      * Check current QGIS version against requested minimal and optionally maximal QGIS version
      * if maxVersion not specified, the default value is assumed: std::floor(minVersion) + 0.99.99
      */
-    bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = QString() ) const;
+    [[nodiscard]] bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = QString() ) const;
 
   private:
     static QgsPluginRegistry *sInstance;

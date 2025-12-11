@@ -92,7 +92,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget : public QWidget, private Ui::QgsRasterMi
     void userHasSetManualMinMaxValues();
 
     //! Returns if the widget is collaped.
-    bool isCollapsed() const { return mLoadMinMaxValuesGroupBox->isCollapsed(); }
+    [[nodiscard]] bool isCollapsed() const { return mLoadMinMaxValuesGroupBox->isCollapsed(); }
 
     //! Sets collapsed state of widget
     void setCollapsed( bool b ) { mLoadMinMaxValuesGroupBox->setCollapsed( b ); }

@@ -412,7 +412,7 @@ class QgsThreadStackOverflowGuard
 #endif
     }
 
-    bool hasStackOverflow() const
+    [[nodiscard]] bool hasStackOverflow() const
     {
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
       if ( mStorage.localData().size() > mMaxDepth )
@@ -424,7 +424,7 @@ class QgsThreadStackOverflowGuard
         return false;
     }
 
-    QString topFrames() const
+    [[nodiscard]] QString topFrames() const
     {
       QStringList dumpStack;
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
@@ -443,7 +443,7 @@ class QgsThreadStackOverflowGuard
       return dumpStack.join( '\n' );
     }
 
-    std::size_t depth() const
+    [[nodiscard]] std::size_t depth() const
     {
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
       return mStorage.localData().size();

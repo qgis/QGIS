@@ -51,7 +51,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
     /**
      * Returns a list of warning messages generated during the conversion.
      */
-    QStringList warnings() const { return mWarnings; }
+    [[nodiscard]] QStringList warnings() const { return mWarnings; }
 
     /**
      * Clears the list of warning messages.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      *
      * \see setTargetUnit()
      */
-    Qgis::RenderUnit targetUnit() const;
+    [[nodiscard]] Qgis::RenderUnit targetUnit() const;
 
     /**
      * Sets the target unit type.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      *
      * \see setPixelSizeConversionFactor()
      */
-    double pixelSizeConversionFactor() const;
+    [[nodiscard]] double pixelSizeConversionFactor() const;
 
     /**
      * Sets the pixel size conversion factor, used to scale the original pixel sizes
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      * \see spriteImage()
      * \since QGIS 3.44
      */
-    QStringList spriteCategories() const;
+    [[nodiscard]] QStringList spriteCategories() const;
 
     /**
      * Returns the sprite image for a given \a category to use during conversion, or an invalid image if this is not set.
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      * \see spriteDefinitions()
      * \see setSprites()
      */
-    QImage spriteImage( const QString &category = QString() ) const;
+    [[nodiscard]] QImage spriteImage( const QString &category = QString() ) const;
 
     /**
      * Returns the sprite definitions for a given \a category to use during conversion.
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      * \see spriteImage()
      * \see setSprites()
      */
-    QVariantMap spriteDefinitions( const QString &category = QString() ) const;
+    [[nodiscard]] QVariantMap spriteDefinitions( const QString &category = QString() ) const;
 
     /**
      * Sets the sprite \a image and \a definitions JSON for a given \a category to use during conversion.
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      *
      * \see setLayerId()
      */
-    QString layerId() const;
+    [[nodiscard]] QString layerId() const;
 
     /**
      * Sets the layer ID of the layer currently being converted.
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsMapBoxGlStyleAbstractSource
     /**
      * Returns the source type.
      */
-    virtual Qgis::MapBoxGlStyleSourceType type() const = 0;
+    [[nodiscard]] virtual Qgis::MapBoxGlStyleSourceType type() const = 0;
 
     /**
      * Sets the source's state from a \a json map.
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsMapBoxGlStyleAbstractSource
     /**
      * Returns the source's name.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
   private:
 
@@ -244,44 +244,44 @@ class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstract
      */
     QgsMapBoxGlStyleRasterSource( const QString &name );
 
-    Qgis::MapBoxGlStyleSourceType type() const override;
+    [[nodiscard]] Qgis::MapBoxGlStyleSourceType type() const override;
     bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context ) override;
 
     /**
      * Returns the source's attribution text.
      */
-    QString attribution() const { return mAttribution; }
+    [[nodiscard]] QString attribution() const { return mAttribution; }
 
     /**
      * Returns the minimum tile zoom for which tiles are available.
      *
      * \see maximumZoom()
      */
-    int minimumZoom() const { return mMinZoom; }
+    [[nodiscard]] int minimumZoom() const { return mMinZoom; }
 
     /**
      * Returns the maximum tile zoom for which tiles are available.
      *
      * \see minimumZoom()
      */
-    int maximumZoom() const { return mMaxZoom; }
+    [[nodiscard]] int maximumZoom() const { return mMaxZoom; }
 
     /**
      * Returns the associated tile size.
      */
-    int tileSize() const { return mTileSize; }
+    [[nodiscard]] int tileSize() const { return mTileSize; }
 
     /**
      * Returns the list of tile sources.
      */
-    QStringList tiles() const { return mTiles; }
+    [[nodiscard]] QStringList tiles() const { return mTiles; }
 
     /**
      * Returns a new raster layer representing the raster source, or NULLPTR if the source cannot be represented as a raster layer.
      *
      * The caller takes ownership of the returned layer.
      */
-    QgsRasterLayer *toRasterLayer() const SIP_FACTORY;
+    [[nodiscard]] QgsRasterLayer *toRasterLayer() const SIP_FACTORY;
 
   private:
 
@@ -418,7 +418,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \see warnings()
      */
-    QString errorMessage() const { return mError; }
+    [[nodiscard]] QString errorMessage() const { return mError; }
 
     /**
      * Returns a list of user-friendly warnings generated during the conversion, e.g. as a result
@@ -426,19 +426,19 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \see errorMessage()
      */
-    QStringList warnings() const { return mWarnings; }
+    [[nodiscard]] QStringList warnings() const { return mWarnings; }
 
     /**
      * Returns a new instance of a vector tile renderer representing the converted style,
      * or NULLPTR if the style could not be converted successfully.
      */
-    QgsVectorTileRenderer *renderer() const SIP_FACTORY;
+    [[nodiscard]] QgsVectorTileRenderer *renderer() const SIP_FACTORY;
 
     /**
      * Returns a new instance of a vector tile labeling representing the converted style,
      * or NULLPTR if the style could not be converted successfully.
      */
-    QgsVectorTileLabeling *labeling() const SIP_FACTORY;
+    [[nodiscard]] QgsVectorTileLabeling *labeling() const SIP_FACTORY;
 
     /**
      * Returns the list of converted sources.
@@ -452,7 +452,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \since QGIS 3.28
      */
-    QList< QgsMapBoxGlStyleRasterSubLayer > rasterSubLayers() const;
+    [[nodiscard]] QList< QgsMapBoxGlStyleRasterSubLayer > rasterSubLayers() const;
 
     /**
      * Returns a list of new map layers corresponding to sublayers of the style, e.g. raster layers.
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \since QGIS 3.28
      */
-    QList< QgsMapLayer * > createSubLayers() const SIP_FACTORY;
+    [[nodiscard]] QList< QgsMapLayer * > createSubLayers() const SIP_FACTORY;
 
   protected:
 

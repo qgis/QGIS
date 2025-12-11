@@ -82,13 +82,13 @@ class CORE_EXPORT QgsColorScheme
      * Gets the name for the color scheme
      * \returns color scheme name
      */
-    virtual QString schemeName() const = 0;
+    [[nodiscard]] virtual QString schemeName() const = 0;
 
     /**
      * Returns the current flags for the color scheme.
      * \returns current flags
      */
-    virtual SchemeFlags flags() const { return ShowInColorDialog; }
+    [[nodiscard]] virtual SchemeFlags flags() const { return ShowInColorDialog; }
 
     /**
      * Gets a list of colors from the scheme. The colors can optionally
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsColorScheme
      * \returns TRUE if scheme is editable
      * \see setColors
      */
-    virtual bool isEditable() const { return false; }
+    [[nodiscard]] virtual bool isEditable() const { return false; }
 
     /**
      * Sets the colors for the scheme. This method is only valid for editable color schemes.
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsColorScheme
      * Clones a color scheme
      * \returns copy of color scheme
      */
-    virtual QgsColorScheme *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsColorScheme *clone() const = 0 SIP_FACTORY;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
@@ -172,13 +172,13 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
      */
     QgsUserColorScheme( const QString &filename );
 
-    QString schemeName() const override;
+    [[nodiscard]] QString schemeName() const override;
 
-    QgsUserColorScheme *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsUserColorScheme *clone() const override SIP_FACTORY;
 
-    bool isEditable() const override { return mEditable; }
+    [[nodiscard]] bool isEditable() const override { return mEditable; }
 
-    QgsColorScheme::SchemeFlags flags() const override;
+    [[nodiscard]] QgsColorScheme::SchemeFlags flags() const override;
 
     /**
      * Sets the name for the scheme
@@ -221,14 +221,14 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     QgsRecentColorScheme() = default;
 
-    QString schemeName() const override { return QObject::tr( "Recent colors" ); }
+    [[nodiscard]] QString schemeName() const override { return QObject::tr( "Recent colors" ); }
 
-    SchemeFlags flags() const override { return ShowInAllContexts; }
+    [[nodiscard]] SchemeFlags flags() const override { return ShowInAllContexts; }
 
     QgsNamedColorList fetchColors( const QString &context = QString(),
                                    const QColor &baseColor = QColor() ) override;
 
-    QgsRecentColorScheme *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsRecentColorScheme *clone() const override SIP_FACTORY;
 
     /**
      * Adds a color to the list of recent colors.
@@ -255,18 +255,18 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     QgsCustomColorScheme() = default;
 
-    QString schemeName() const override { return QObject::tr( "Standard colors" ); }
+    [[nodiscard]] QString schemeName() const override { return QObject::tr( "Standard colors" ); }
 
-    SchemeFlags flags() const override { return ShowInAllContexts; }
+    [[nodiscard]] SchemeFlags flags() const override { return ShowInAllContexts; }
 
     QgsNamedColorList fetchColors( const QString &context = QString(),
                                    const QColor &baseColor = QColor() ) override;
 
-    bool isEditable() const override { return true; }
+    [[nodiscard]] bool isEditable() const override { return true; }
 
     bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsCustomColorScheme *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsCustomColorScheme *clone() const override SIP_FACTORY;
 };
 
 /**
@@ -280,18 +280,18 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     QgsProjectColorScheme() = default;
 
-    QString schemeName() const override { return QObject::tr( "Project colors" ); }
+    [[nodiscard]] QString schemeName() const override { return QObject::tr( "Project colors" ); }
 
-    SchemeFlags flags() const override { return ShowInAllContexts; }
+    [[nodiscard]] SchemeFlags flags() const override { return ShowInAllContexts; }
 
     QgsNamedColorList fetchColors( const QString &context = QString(),
                                    const QColor &baseColor = QColor() ) override;
 
-    bool isEditable() const override { return true; }
+    [[nodiscard]] bool isEditable() const override { return true; }
 
     bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsProjectColorScheme *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProjectColorScheme *clone() const override SIP_FACTORY;
 };
 
 #endif

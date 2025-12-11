@@ -34,7 +34,7 @@ class GUI_EXPORT QgsDatabaseSchemaComboBoxSortModel : public QSortFilterProxyMod
     explicit QgsDatabaseSchemaComboBoxSortModel( QObject *parent = nullptr );
 
   protected:
-    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
 };
 #endif
 ///@endcond
@@ -78,12 +78,12 @@ class GUI_EXPORT QgsDatabaseSchemaComboBox : public QWidget
      * Returns TRUE if the combobox allows the empty schema ("not set") choice.
      * \see setAllowEmptySchema()
      */
-    bool allowEmptySchema() const;
+    [[nodiscard]] bool allowEmptySchema() const;
 
     /**
      * Returns the name of the current schema selected in the combo box.
      */
-    QString currentSchema() const;
+    [[nodiscard]] QString currentSchema() const;
 
     /**
      * Returns the combobox portion of the widget.

@@ -45,14 +45,14 @@ class CORE_EXPORT QgsTileXYZ
     }
 
     //! Returns tile's column index (X)
-    int column() const { return mColumn; }
+    [[nodiscard]] int column() const { return mColumn; }
     //! Returns tile's row index (Y)
-    int row() const { return mRow; }
+    [[nodiscard]] int row() const { return mRow; }
     //! Returns tile's zoom level (Z)
-    int zoomLevel() const { return mZoomLevel; }
+    [[nodiscard]] int zoomLevel() const { return mZoomLevel; }
 
     //! Returns tile coordinates in a formatted string
-    QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
+    [[nodiscard]] QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
     bool operator==( const QgsTileXYZ &other ) const { return mColumn == other.mColumn && mRow == other.mRow && mZoomLevel == other.mZoomLevel; }
     bool operator!=( const QgsTileXYZ &other ) const { return !( *this == other ); }
@@ -118,23 +118,23 @@ class CORE_EXPORT QgsTileRange
       : mStartColumn( c1 ), mEndColumn( c2 ), mStartRow( r1 ), mEndRow( r2 ) {}
 
     //! Returns whether the range is valid (when all row/column numbers are not negative)
-    bool isValid() const { return mStartColumn >= 0 && mEndColumn >= 0 && mStartRow >= 0 && mEndRow >= 0; }
+    [[nodiscard]] bool isValid() const { return mStartColumn >= 0 && mEndColumn >= 0 && mStartRow >= 0 && mEndRow >= 0; }
 
     //! Returns index of the first column in the range
-    int startColumn() const { return mStartColumn; }
+    [[nodiscard]] int startColumn() const { return mStartColumn; }
     //! Returns index of the last column in the range
-    int endColumn() const { return mEndColumn; }
+    [[nodiscard]] int endColumn() const { return mEndColumn; }
     //! Returns index of the first row in the range
-    int startRow() const { return mStartRow; }
+    [[nodiscard]] int startRow() const { return mStartRow; }
     //! Returns index of the last row in the range
-    int endRow() const { return mEndRow; }
+    [[nodiscard]] int endRow() const { return mEndRow; }
 
     /**
      * Returns the total number of tiles in the range.
      *
      * \since QGIS 3.44
      */
-    int count() const { return isValid() ? ( mEndRow - mStartRow + 1 ) * ( mEndColumn - mStartColumn + 1 ) : 0; }
+    [[nodiscard]] int count() const { return isValid() ? ( mEndRow - mStartRow + 1 ) * ( mEndColumn - mStartColumn + 1 ) : 0; }
 
   private:
     int mStartColumn = -1;
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsTileMatrix
      *
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     /**
      * Sets the \a crs of the tile matrix.
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsTileMatrix
      *
      * \see setZoomLevel()
      */
-    int zoomLevel() const { return mZoomLevel; }
+    [[nodiscard]] int zoomLevel() const { return mZoomLevel; }
 
     /**
      * Sets the zoom \a level of the tile matrix.
@@ -204,20 +204,20 @@ class CORE_EXPORT QgsTileMatrix
     void setZoomLevel( int level ) { mZoomLevel = level; }
 
     //! Returns number of columns of the tile matrix
-    int matrixWidth() const { return mMatrixWidth; }
+    [[nodiscard]] int matrixWidth() const { return mMatrixWidth; }
 
     //! Returns number of rows of the tile matrix
-    int matrixHeight() const { return mMatrixHeight; }
+    [[nodiscard]] int matrixHeight() const { return mMatrixHeight; }
 
     //! Returns extent of the tile matrix
-    QgsRectangle extent() const { return mExtent; }
+    [[nodiscard]] QgsRectangle extent() const { return mExtent; }
 
     /**
      * Returns scale denominator of the tile matrix.
      *
      * \see setScale()
      */
-    double scale() const { return mScaleDenom; }
+    [[nodiscard]] double scale() const { return mScaleDenom; }
 
     /**
      * Sets the scale denominator of the tile matrix.
@@ -228,19 +228,19 @@ class CORE_EXPORT QgsTileMatrix
     void setScale( double scale ) { mScaleDenom = scale; }
 
     //! Returns extent of the given tile in this matrix
-    QgsRectangle tileExtent( QgsTileXYZ id ) const;
+    [[nodiscard]] QgsRectangle tileExtent( QgsTileXYZ id ) const;
 
     //! Returns center of the given tile in this matrix
-    QgsPointXY tileCenter( QgsTileXYZ id ) const;
+    [[nodiscard]] QgsPointXY tileCenter( QgsTileXYZ id ) const;
 
     //! Returns tile range that fully covers the given extent
-    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent ) const;
+    [[nodiscard]] QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent ) const;
 
     //! Returns row/column coordinates (floating point number) from the given point in map coordinates
-    QPointF mapToTileCoordinates( const QgsPointXY &mapPoint ) const;
+    [[nodiscard]] QPointF mapToTileCoordinates( const QgsPointXY &mapPoint ) const;
 
     //! Returns the root status of the tile matrix (zoom level == 0)
-    bool isRootTileMatrix() const { return mZoomLevel == 0; }
+    [[nodiscard]] bool isRootTileMatrix() const { return mZoomLevel == 0; }
 
   private:
     //! Crs associated with the tile matrix
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsTileMatrixSet
     /**
      * Returns TRUE if the matrix set is empty.
      */
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     /**
      * Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad setup.
@@ -292,14 +292,14 @@ class CORE_EXPORT QgsTileMatrixSet
     /**
      * Returns the tile matrix corresponding to the specified \a zoom.
      */
-    QgsTileMatrix tileMatrix( int zoom ) const;
+    [[nodiscard]] QgsTileMatrix tileMatrix( int zoom ) const;
 
     /**
      * Returns the root tile matrix (usually corresponding to zoom level 0).
      *
      * \since QGIS 3.28
      */
-    QgsTileMatrix rootMatrix() const;
+    [[nodiscard]] QgsTileMatrix rootMatrix() const;
 
     /**
      * Sets the root tile \a matrix (usually corresponding to zoom level 0).
@@ -320,14 +320,14 @@ class CORE_EXPORT QgsTileMatrixSet
      *
      * \see maximumZoom()
      */
-    int minimumZoom() const;
+    [[nodiscard]] int minimumZoom() const;
 
     /**
      * Returns the maximum zoom level for tiles present in the set.
      *
      * \see minimumZoom()
      */
-    int maximumZoom() const;
+    [[nodiscard]] int maximumZoom() const;
 
     /**
      * Deletes any existing matrices which fall outside the zoom range specified
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsTileMatrixSet
      *
      * \since QGIS 3.32
      */
-    Qgis::TileAvailability tileAvailability( QgsTileXYZ id ) const;
+    [[nodiscard]] Qgis::TileAvailability tileAvailability( QgsTileXYZ id ) const;
 
     /**
      * Returns the coordinate reference system associated with the tiles.
@@ -354,14 +354,14 @@ class CORE_EXPORT QgsTileMatrixSet
      * In the case of a tile set containing mixed CRS at different zoom levels
      * this method will return the crs of the minimum zoom tile matrix.
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Calculates a fractional zoom level given a map \a scale denominator.
      *
      * The zoom level will be linearly interpolated between zoom levels present in the set.
      */
-    double scaleToZoom( double scale ) const;
+    [[nodiscard]] double scaleToZoom( double scale ) const;
 
     /**
      * Finds the best fitting (integer) zoom level given a map \a scale denominator. An
@@ -370,26 +370,26 @@ class CORE_EXPORT QgsTileMatrixSet
      *
      * Values are constrained to the zoom levels between minimumZoom() and maximumZoom().
      */
-    int scaleToZoomLevel( double scale, bool clamp = true ) const;
+    [[nodiscard]] int scaleToZoomLevel( double scale, bool clamp = true ) const;
 
     /**
      * Calculates the correct scale to use for the tiles when rendered using the specified render \a context.
      *
      * \since QGIS 3.26
      */
-    double scaleForRenderContext( const QgsRenderContext &context ) const;
+    [[nodiscard]] double scaleForRenderContext( const QgsRenderContext &context ) const;
 
     /**
      * Calculates the correct scale to use for the tiles when rendered using the specified map properties.
      *
      * \since QGIS 3.26
      */
-    double calculateTileScaleForMap( double actualMapScale,
-                                     const QgsCoordinateReferenceSystem &mapCrs,
-                                     const QgsRectangle &mapExtent,
-                                     const QSize mapSize,
-                                     const double mapDpi
-                                   ) const;
+    [[nodiscard]] double calculateTileScaleForMap( double actualMapScale,
+        const QgsCoordinateReferenceSystem &mapCrs,
+        const QgsRectangle &mapExtent,
+        const QSize mapSize,
+        const double mapDpi
+                                                 ) const;
 
     /**
      * Reads the set from an XML \a element.
@@ -408,7 +408,7 @@ class CORE_EXPORT QgsTileMatrixSet
      *
      * \see setScaleToTileZoomMethod()
      */
-    Qgis::ScaleToTileZoomLevelMethod scaleToTileZoomMethod() const { return mScaleToTileZoomMethod; }
+    [[nodiscard]] Qgis::ScaleToTileZoomLevelMethod scaleToTileZoomMethod() const { return mScaleToTileZoomMethod; }
 
     /**
      * Sets the scale to tile zoom method.
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsTileMatrixSet
      *
      * \since QGIS 3.32
      */
-    QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel ) const;
+    [[nodiscard]] QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel ) const;
 
   protected:
     std::function< Qgis::TileAvailability( QgsTileXYZ id ) > mTileAvailabilityFunction;

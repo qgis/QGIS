@@ -56,7 +56,7 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
      * \see labelExtents()
      * \since QGIS 3.2
      */
-    QgsTextFormat textFormat() const { return mTextFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const { return mTextFormat; }
 
     /**
      * Sets the text \a format for extent labels.

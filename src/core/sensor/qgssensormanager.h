@@ -59,13 +59,13 @@ class CORE_EXPORT QgsSensorManager : public QObject
     /**
      * Returns a list of pointers to all registered sensors.
      */
-    QList<QgsAbstractSensor *> sensors() const;
+    [[nodiscard]] QList<QgsAbstractSensor *> sensors() const;
 
     /**
      * Returns a registered sensor pointer matching a given \a id. If not
      * matching sensor is found, a NULLPTR will be returned.
      */
-    QgsAbstractSensor *sensor( const QString &id ) const;
+    [[nodiscard]] QgsAbstractSensor *sensor( const QString &id ) const;
 
     /**
      * Registers a new \a sensor.
@@ -86,17 +86,17 @@ class CORE_EXPORT QgsSensorManager : public QObject
     /**
      * Returns a list of registered sensor names.
      */
-    QStringList sensorNames() const;
+    [[nodiscard]] QStringList sensorNames() const;
 
     /**
      * Returns the last captured data from a registered sensor matching a given \a name.
      */
-    QgsAbstractSensor::SensorData sensorData( const QString &name ) const;
+    [[nodiscard]] QgsAbstractSensor::SensorData sensorData( const QString &name ) const;
 
     /**
      * Returns the last captured data of all registered sensors.
      */
-    QMap<QString, QgsAbstractSensor::SensorData> sensorsData() const;
+    [[nodiscard]] QMap<QString, QgsAbstractSensor::SensorData> sensorsData() const;
 
     /**
      * Reads the manager's state from a DOM element, restoring all sensors

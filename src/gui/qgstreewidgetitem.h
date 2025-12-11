@@ -111,7 +111,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * text will be used when sorting.
      * \see setSortData()
      */
-    QVariant sortData( int column ) const;
+    [[nodiscard]] QVariant sortData( int column ) const;
 
     /**
      * Sets a the item to display always on top of other items in the widget, regardless of the
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * \returns priority, or -1 if item is not set to show always on top
      * \see setAlwaysOnTopPriority()
      */
-    int alwaysOnTopPriority() const;
+    [[nodiscard]] int alwaysOnTopPriority() const;
 
     /**
      * Returns TRUE if this item should appear before another item when sorting

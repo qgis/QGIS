@@ -49,7 +49,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see setChildAlgorithmSubset()
      */
-    QSet<QString> childAlgorithmSubset() const { return mChildAlgorithmSubset; }
+    [[nodiscard]] QSet<QString> childAlgorithmSubset() const { return mChildAlgorithmSubset; }
 
     /**
      * Sets the \a subset of child algorithms to run (by child ID).
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see setInitialChildInputs()
      */
-    QVariantMap initialChildInputs() const { return mInitialChildInputs; }
+    [[nodiscard]] QVariantMap initialChildInputs() const { return mInitialChildInputs; }
 
     /**
      * Sets the map of child algorithm \a inputs to use as the initial state when running the model.
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see setInitialChildOutputs()
      */
-    QVariantMap initialChildOutputs() const { return mInitialChildOutputs; }
+    [[nodiscard]] QVariantMap initialChildOutputs() const { return mInitialChildOutputs; }
 
     /**
      * Sets the map of child algorithm \a outputs to use as the initial state when running the model.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see setPreviouslyExecutedChildAlgorithms()
      */
-    QSet< QString > previouslyExecutedChildAlgorithms() const { return mPreviouslyExecutedChildren; }
+    [[nodiscard]] QSet< QString > previouslyExecutedChildAlgorithms() const { return mPreviouslyExecutedChildren; }
 
     /**
      * Sets the previously executed child algorithm IDs to use as the initial state

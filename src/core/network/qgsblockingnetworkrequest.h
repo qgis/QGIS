@@ -87,7 +87,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * \since QGIS 4.0
      */
-    Qgis::NetworkRequestFlags flags() const { return mFlags; }
+    [[nodiscard]] Qgis::NetworkRequestFlags flags() const { return mFlags; }
 
     /**
      * Performs a "get" operation on the specified \a request.
@@ -214,18 +214,18 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     /**
      * Returns the error message string, after a get(), post(), head() or put() request has been made.
      */
-    QString errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] QString errorMessage() const { return mErrorMessage; }
 
     /**
      * Returns the content of the network reply, after a get(), post(), head() or put() request has been made.
      */
-    QgsNetworkReplyContent reply() const { return mReplyContent; }
+    [[nodiscard]] QgsNetworkReplyContent reply() const { return mReplyContent; }
 
     /**
      * Returns the authentication config id which will be used during the request.
      * \see setAuthCfg()
      */
-    QString authCfg() const;
+    [[nodiscard]] QString authCfg() const;
 
     /**
      * Sets the authentication config id which should be used during the request.

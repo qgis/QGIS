@@ -41,7 +41,7 @@ class _3D_EXPORT QgsRayCastContext
      * Returns whether to fetch only the closest hit for each layer or entity type.
      * If not set it defaults to TRUE.
      */
-    bool singleResult() const;
+    [[nodiscard]] bool singleResult() const;
 
     /**
      * Sets the maximum \a distance from ray origin to look for hits when casting a ray.
@@ -53,7 +53,7 @@ class _3D_EXPORT QgsRayCastContext
      * The maximum distance from ray origin to look for hits when casting a ray.
      * Default value is -1, meaning that the far plane will be used as a maximum distance.
      */
-    float maximumDistance() const;
+    [[nodiscard]] float maximumDistance() const;
 
     /**
      * Sets an \a angle threshold in degrees for ray intersections, effectively turning a ray into a cone.
@@ -64,7 +64,7 @@ class _3D_EXPORT QgsRayCastContext
     /**
      * Sets an \a angle threshold in degrees for ray intersections, effectively turning a ray into a cone.
      */
-    float angleThreshold() const;
+    [[nodiscard]] float angleThreshold() const;
 
   private:
     bool mSingleResult = true;

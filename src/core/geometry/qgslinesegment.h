@@ -55,7 +55,7 @@ class CORE_EXPORT QgsLineSegment2D
      * Returns the length of the segment.
      * \see lengthSquared()
      */
-    double length() const SIP_HOLDGIL
+    [[nodiscard]] double length() const SIP_HOLDGIL
     {
       return mStart.distance( mEnd );
     }
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLineSegment2D
      * Returns the squared length of the segment.
      * \see length()
      */
-    double lengthSquared() const SIP_HOLDGIL
+    [[nodiscard]] double lengthSquared() const SIP_HOLDGIL
     {
       return mStart.sqrDist( mEnd );
     }
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see start()
      * \see startY()
      */
-    double startX() const SIP_HOLDGIL
+    [[nodiscard]] double startX() const SIP_HOLDGIL
     {
       return mStart.x();
     }
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see start()
      * \see startX()
      */
-    double startY() const SIP_HOLDGIL
+    [[nodiscard]] double startY() const SIP_HOLDGIL
     {
       return mStart.y();
     }
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see end()
      * \see endY()
      */
-    double endX() const SIP_HOLDGIL
+    [[nodiscard]] double endX() const SIP_HOLDGIL
     {
       return mEnd.x();
     }
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see end()
      * \see endX()
      */
-    double endY() const SIP_HOLDGIL
+    [[nodiscard]] double endY() const SIP_HOLDGIL
     {
       return mEnd.y();
     }
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see startX()
      * \see startY()
      */
-    QgsPointXY start() const SIP_HOLDGIL
+    [[nodiscard]] QgsPointXY start() const SIP_HOLDGIL
     {
       return mStart;
     }
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see endX()
      * \see endY()
      */
-    QgsPointXY end() const SIP_HOLDGIL
+    [[nodiscard]] QgsPointXY end() const SIP_HOLDGIL
     {
       return mEnd;
     }
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsLineSegment2D
      *
      * \see QgsGeometryUtils::leftOfLine()
      */
-    int pointLeftOfLine( const QgsPointXY &point ) const SIP_HOLDGIL;
+    [[nodiscard]] int pointLeftOfLine( const QgsPointXY &point ) const SIP_HOLDGIL;
 
     /**
      * Reverses the line segment, so that the start and end points are flipped.

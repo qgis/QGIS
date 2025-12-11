@@ -44,27 +44,27 @@ class CORE_EXPORT QgsFeatureSource
      * An optional \a request can be used to optimise the returned
      * iterator, eg by restricting the returned attributes or geometry.
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
+    [[nodiscard]] virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
 
     /**
      * Returns a friendly display name for the source. The returned value can be an empty string.
      */
-    virtual QString sourceName() const = 0;
+    [[nodiscard]] virtual QString sourceName() const = 0;
 
     /**
      * Returns the coordinate reference system for features in the source.
      */
-    virtual QgsCoordinateReferenceSystem sourceCrs() const = 0;
+    [[nodiscard]] virtual QgsCoordinateReferenceSystem sourceCrs() const = 0;
 
     /**
      * Returns the fields associated with features in the source.
      */
-    virtual QgsFields fields() const = 0;
+    [[nodiscard]] virtual QgsFields fields() const = 0;
 
     /**
      * Returns the geometry type for features returned by this source.
      */
-    virtual Qgis::WkbType wkbType() const = 0;
+    [[nodiscard]] virtual Qgis::WkbType wkbType() const = 0;
 
 #ifdef SIP_RUN
 
@@ -88,14 +88,14 @@ class CORE_EXPORT QgsFeatureSource
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
-    virtual long long featureCount() const = 0;
+    [[nodiscard]] virtual long long featureCount() const = 0;
 
     /**
      * Determines if there are any features available in the source.
      *
      * \since QGIS 3.2
      */
-    virtual Qgis::FeatureAvailability hasFeatures() const;
+    [[nodiscard]] virtual Qgis::FeatureAvailability hasFeatures() const;
 
     /**
      * Returns the set of unique values contained within the specified \a fieldIndex from this source.
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsFeatureSource
      * \see minimumValue()
      * \see maximumValue()
      */
-    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+    [[nodiscard]] virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
 
     /**
      * Returns the minimum value for an attribute column or an invalid variant in case of error.
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsFeatureSource
      * \see maximumValue()
      * \see uniqueValues()
      */
-    virtual QVariant minimumValue( int fieldIndex ) const;
+    [[nodiscard]] virtual QVariant minimumValue( int fieldIndex ) const;
 
     /**
      * Returns the maximum value for an attribute column or an invalid variant in case of error.
@@ -123,14 +123,14 @@ class CORE_EXPORT QgsFeatureSource
      * \see minimumValue()
      * \see uniqueValues()
      */
-    virtual QVariant maximumValue( int fieldIndex ) const;
+    [[nodiscard]] virtual QVariant maximumValue( int fieldIndex ) const;
 
     /**
      * Returns the extent of all geometries from the source.
      * The base class implementation uses a non-optimised approach of looping through
      * all features in the source.
      */
-    virtual QgsRectangle sourceExtent() const;
+    [[nodiscard]] virtual QgsRectangle sourceExtent() const;
 
     /**
      * Returns the 3D extent of all geometries from the source.
@@ -138,12 +138,12 @@ class CORE_EXPORT QgsFeatureSource
      * all features in the source.
      * \since QGIS 3.36
      */
-    virtual QgsBox3D sourceExtent3D() const;
+    [[nodiscard]] virtual QgsBox3D sourceExtent3D() const;
 
     /**
      * Returns a list of all feature IDs for features present in the source.
      */
-    virtual QgsFeatureIds allFeatureIds() const;
+    [[nodiscard]] virtual QgsFeatureIds allFeatureIds() const;
 
     /**
      * Materializes a \a request (query) made against this feature source, by running
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsFeatureSource
      *
      * \since QGIS 3.10.1
      */
-    virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
+    [[nodiscard]] virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSource * )

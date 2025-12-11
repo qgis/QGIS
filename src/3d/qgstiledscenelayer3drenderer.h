@@ -68,7 +68,7 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
     //! Sets tiled scene layer associated with the renderer
     void setLayer( QgsTiledSceneLayer *layer );
     //! Returns tiled scene layer associated with the renderer
-    QgsTiledSceneLayer *layer() const;
+    [[nodiscard]] QgsTiledSceneLayer *layer() const;
 
     /**
      * Returns the maximum screen error allowed when rendering the tiled scene.
@@ -77,7 +77,7 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
      *
      * \see setMaximumScreenError()
      */
-    double maximumScreenError() const;
+    [[nodiscard]] double maximumScreenError() const;
 
     /**
      * Sets the maximum screen \a error allowed when rendering the tiled scene.
@@ -93,7 +93,7 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
      *
      * \see setShowBoundingBoxes()
      */
-    bool showBoundingBoxes() const;
+    [[nodiscard]] bool showBoundingBoxes() const;
 
     /**
      * Sets whether bounding boxes will be visible when rendering the tiled scene.
@@ -102,8 +102,8 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setShowBoundingBoxes( bool showBoundingBoxes );
 
-    QString type() const override { return "tiledscene"; }
-    QgsAbstract3DRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override { return "tiledscene"; }
+    [[nodiscard]] QgsAbstract3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;

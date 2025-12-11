@@ -67,7 +67,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      * \see setSourceCrs()
      * \see destinationCrs()
      */
-    QgsCoordinateReferenceSystem sourceCrs() const { return mSourceCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem sourceCrs() const { return mSourceCrs; }
 
     /**
      * Returns the destination CRS for the operations shown in the widget.
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      * \see setDestinationCrs()
      * \see sourceCrs()
      */
-    QgsCoordinateReferenceSystem destinationCrs() const { return mDestinationCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem destinationCrs() const { return mDestinationCrs; }
 
     /**
      * Sets the source \a crs for the operations shown in the widget.
@@ -107,28 +107,28 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
     /**
      * Returns TRUE if the "make default" option is selected.
      */
-    bool makeDefaultSelected() const;
+    [[nodiscard]] bool makeDefaultSelected() const;
 
     /**
      * Returns TRUE if there is a valid selection in the widget.
      */
-    bool hasSelection() const;
+    [[nodiscard]] bool hasSelection() const;
 
     /**
      * Returns a list of the available operations shown in the widget.
      */
-    QList<QgsCoordinateOperationWidget::OperationDetails> availableOperations() const;
+    [[nodiscard]] QList<QgsCoordinateOperationWidget::OperationDetails> availableOperations() const;
 
     /**
      * Returns the details of the default operation suggested by the widget.
      */
-    QgsCoordinateOperationWidget::OperationDetails defaultOperation() const;
+    [[nodiscard]] QgsCoordinateOperationWidget::OperationDetails defaultOperation() const;
 
     /**
      * Returns the details of the operation currently selected within the widget.
      * \see setSelectedOperation()
      */
-    QgsCoordinateOperationWidget::OperationDetails selectedOperation() const;
+    [[nodiscard]] QgsCoordinateOperationWidget::OperationDetails selectedOperation() const;
 
     /**
      * Sets the details of the \a operation currently selected within the widget.
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
       MissingGridUrlsRole
     };
 
-    bool gridShiftTransformation( const QString &itemText ) const;
+    [[nodiscard]] bool gridShiftTransformation( const QString &itemText ) const;
     //! Returns FALSE if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
     bool testGridShiftFileAvailability( QTableWidgetItem *item ) const;
     void loadAvailableOperations();

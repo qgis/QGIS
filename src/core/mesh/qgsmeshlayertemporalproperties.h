@@ -71,12 +71,12 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     /**
      * Returns the time extent
      */
-    QgsDateTimeRange timeExtent() const;
+    [[nodiscard]] QgsDateTimeRange timeExtent() const;
 
     /**
      * Returns the reference time
      */
-    QDateTime referenceTime() const;
+    [[nodiscard]] QDateTime referenceTime() const;
 
     /**
      * Sets the reference time and update the time extent from the temporal capabilities,
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     /**
      * Returns the method used to match dataset from temporal capabilities
      */
-    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod matchingMethod() const;
+    [[nodiscard]] QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod matchingMethod() const;
 
     /**
      * Sets the method used to match dataset from temporal capabilities
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
      *
      * \since QGIS 3.22
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Sets whether the instance is valid
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
      *
      * \since QGIS 3.28
      */
-    bool alwaysLoadReferenceTimeFromSource() const;
+    [[nodiscard]] bool alwaysLoadReferenceTimeFromSource() const;
 
     /**
      * Sets whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded

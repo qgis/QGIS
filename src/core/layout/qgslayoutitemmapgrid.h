@@ -89,12 +89,12 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
     /**
      * Returns a reference to a grid with matching \a gridId within the stack.
      */
-    QgsLayoutItemMapGrid *grid( const QString &gridId ) const;
+    [[nodiscard]] QgsLayoutItemMapGrid *grid( const QString &gridId ) const;
 
     /**
      * Returns a reference to a grid at the specified \a index within the stack.
      */
-    QgsLayoutItemMapGrid *grid( int index ) const;
+    [[nodiscard]] QgsLayoutItemMapGrid *grid( int index ) const;
 
     /**
      * Returns a reference to a grid at the specified \a index within the stack.
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
     /**
      * Returns a list of QgsLayoutItemMapGrids contained by the stack.
      */
-    QList< QgsLayoutItemMapGrid * > asList() const; // cppcheck-suppress duplInheritedMember
+    [[nodiscard]] QList< QgsLayoutItemMapGrid * > asList() const; // cppcheck-suppress duplInheritedMember
 
     bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
      * beyond the QgsLayoutItemMap's item rect.
      * \see calculateMaxGridExtension()
      */
-    double maxGridExtension() const;
+    [[nodiscard]] double maxGridExtension() const;
 
     /**
      * Calculates the maximum distance grids within the stack extend beyond the

@@ -45,14 +45,14 @@ class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
     /**
      * Returns the list of registered QgsSettingsEntryBase.
      */
-    QList<const QgsSettingsEntryBase *> settingEntries() const;
+    [[nodiscard]] QList<const QgsSettingsEntryBase *> settingEntries() const;
 
     /**
      * Returns the QgsSettingsEntry with the given \a key or nullptr if not found.
      *
      * The \a searchChildRegistries parameter specifies if child registries should be included in the search
      */
-    const QgsSettingsEntryBase *settingsEntry( const QString &key, bool searchChildRegistries = true ) const;
+    [[nodiscard]] const QgsSettingsEntryBase *settingsEntry( const QString &key, bool searchChildRegistries = true ) const;
 
     /**
      * Append a child \a settingsRegistry to the register.
@@ -67,7 +67,7 @@ class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
     /**
      * Returns the list of registered child QgsSettingsRegistry.
      */
-    QList<const QgsSettingsRegistry *> subRegistries() const;
+    [[nodiscard]] QList<const QgsSettingsRegistry *> subRegistries() const;
 
   protected:
 

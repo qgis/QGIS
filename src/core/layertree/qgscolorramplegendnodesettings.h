@@ -64,7 +64,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * \see setDirection()
      * \see orientation()
      */
-    QgsColorRampLegendNodeSettings::Direction direction() const;
+    [[nodiscard]] QgsColorRampLegendNodeSettings::Direction direction() const;
 
     /**
      * Sets the \a direction of the ramp.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * \see maximumLabel()
      * \see setMinimumLabel()
      */
-    QString minimumLabel() const;
+    [[nodiscard]] QString minimumLabel() const;
 
     /**
      * Sets the \a label for the minimum value on the ramp.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * \see minimumLabel()
      * \see setMaximumLabel()
      */
-    QString maximumLabel() const;
+    [[nodiscard]] QString maximumLabel() const;
 
     /**
      * Sets the \a label for the maximum value on the ramp.
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * \see setNumericFormat()
      * \since QGIS 3.12
      */
-    const QgsNumericFormat *numericFormat() const;
+    [[nodiscard]] const QgsNumericFormat *numericFormat() const;
 
     /**
      * Sets the numeric \a format used for numbers in the scalebar.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * \see setPrefix()
      * \see suffix()
      */
-    QString prefix() const;
+    [[nodiscard]] QString prefix() const;
 
     /**
      * Sets the \a prefix to show before legend text.
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * \see setSuffix()
      * \see prefix()
      */
-    QString suffix() const;
+    [[nodiscard]] QString suffix() const;
 
     /**
      * Sets the \a suffix to show after legend text.
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      *
      * \see setTextFormat()
      */
-    QgsTextFormat textFormat() const;
+    [[nodiscard]] QgsTextFormat textFormat() const;
 
     /**
      * Sets the text \a format used to render text in the legend item.
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * \see setOrientation()
      * \see direction()
      */
-    Qt::Orientation orientation() const;
+    [[nodiscard]] Qt::Orientation orientation() const;
 
     /**
      * Sets the ramp \a orientation (i.e. horizontal or vertical).
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      *
      * \see setUseContinuousLegend()
      */
-    bool useContinuousLegend() const;
+    [[nodiscard]] bool useContinuousLegend() const;
 
     /**
      * Sets the flag to use a continuous gradient legend to \a useContinuousLegend.

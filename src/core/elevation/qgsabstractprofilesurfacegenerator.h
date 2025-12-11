@@ -55,10 +55,10 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
 
     std::unique_ptr< QgsCurve > mProfileCurve;
 
-    QMap< double, double > distanceToHeightMap() const override;
-    QgsPointSequence sampledPoints() const override;
-    QgsDoubleRange zRange() const override;
-    QVector< QgsGeometry > asGeometries() const override;
+    [[nodiscard]] QMap< double, double > distanceToHeightMap() const override;
+    [[nodiscard]] QgsPointSequence sampledPoints() const override;
+    [[nodiscard]] QgsDoubleRange zRange() const override;
+    [[nodiscard]] QVector< QgsGeometry > asGeometries() const override;
     QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -87,17 +87,17 @@ class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfile
     /**
      * Returns the symbology type for rendering the results.
      */
-    Qgis::ProfileSurfaceSymbology symbology() const;
+    [[nodiscard]] Qgis::ProfileSurfaceSymbology symbology() const;
 
     /**
      * Returns the line symbol to be used for rendering the results.
      */
-    QgsLineSymbol *lineSymbol() const;
+    [[nodiscard]] QgsLineSymbol *lineSymbol() const;
 
     /**
      * Returns the fill symbol to be used for rendering the results.
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Returns the elevation limit, which is used when symbology() is
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfile
      * \see setElevationLimit()
      * \since QGIS 3.32
      */
-    double elevationLimit() const;
+    [[nodiscard]] double elevationLimit() const;
 
     /**
      * Sets the elevation \a limit, which is used when symbology() is

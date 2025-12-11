@@ -55,7 +55,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     std::unique_ptr<QgsPointCloudBlock> takeBlock();
 
     //! Returns the error message string of the request
-    QString errorStr() const;
+    [[nodiscard]] QString errorStr() const;
 
   signals:
     //! Emitted when the request processing has finished

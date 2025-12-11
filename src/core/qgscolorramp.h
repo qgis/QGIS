@@ -54,24 +54,24 @@ class CORE_EXPORT QgsColorRamp
     /**
      * Returns number of defined colors, or -1 if undefined
      */
-    virtual int count() const = 0;
+    [[nodiscard]] virtual int count() const = 0;
 
     /**
      * Returns relative value between [0,1] of color at specified index
      */
-    virtual double value( int index ) const = 0;
+    [[nodiscard]] virtual double value( int index ) const = 0;
 
     /**
      * Returns the color corresponding to a specified value.
      * \param value value between [0, 1] inclusive
      * \returns color for value
      */
-    virtual QColor color( double value ) const = 0;
+    [[nodiscard]] virtual QColor color( double value ) const = 0;
 
     /**
      * Returns a string representing the color ramp type.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
 
     /**
@@ -82,12 +82,12 @@ class CORE_EXPORT QgsColorRamp
     /**
      * Creates a clone of the color ramp.
      */
-    virtual QgsColorRamp *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsColorRamp *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns a string map containing all the color ramp's properties.
      */
-    virtual QVariantMap properties() const = 0;
+    [[nodiscard]] virtual QVariantMap properties() const = 0;
 
     /**
      * Returns a list of available ramp types, where the first value in each item is the QgsColorRamp::type() string

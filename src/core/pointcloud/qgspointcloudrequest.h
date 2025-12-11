@@ -48,7 +48,7 @@ class CORE_EXPORT QgsPointCloudRequest
     bool operator==( const QgsPointCloudRequest &other ) const;
 
     //! Returns attributes
-    QgsPointCloudAttributeCollection attributes() const;
+    [[nodiscard]] QgsPointCloudAttributeCollection attributes() const;
 
     //! Set attributes filter in the request
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsPointCloudRequest
      * Returns the rectangle from which points will be taken, in point cloud's crs. If the returned rectangle is empty, then no filter rectangle is set.
      * \since QGIS 3.30
      */
-    QgsRectangle filterRect() const { return mFilterRect; }
+    [[nodiscard]] QgsRectangle filterRect() const { return mFilterRect; }
 
     /**
      * Sets the rectangle from which points will be taken, in point cloud's crs. An empty rectangle removes the filter.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsPointCloudRequest
      * \see setIgnoreIndexFilterEnabled
      * \since QGIS 3.42
      */
-    bool ignoreIndexFilterEnabled() const { return mIgnoreIndexFilter; }
+    [[nodiscard]] bool ignoreIndexFilterEnabled() const { return mIgnoreIndexFilter; }
 
   private:
     QgsPointCloudAttributeCollection mAttributes;

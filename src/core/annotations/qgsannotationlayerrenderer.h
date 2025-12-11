@@ -47,9 +47,9 @@ class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
      */
     QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context );
     ~QgsAnnotationLayerRenderer() override;
-    QgsFeedback *feedback() const override;
+    [[nodiscard]] QgsFeedback *feedback() const override;
     bool render() override;
-    bool forceRasterRender() const override;
+    [[nodiscard]] bool forceRasterRender() const override;
 
   private:
     std::vector < std::pair< QString, std::unique_ptr< QgsAnnotationItem > > > mItems;

@@ -55,7 +55,7 @@ class MissingFieldException : public std::exception
 {
   public:
     MissingFieldException( const char *field ) : mField( field ) { }
-    const char *what() const noexcept override
+    [[nodiscard]] const char *what() const noexcept override
     {
       return QString( "Missing field: %1" ).arg( mField ).toLocal8Bit().constData();
     }

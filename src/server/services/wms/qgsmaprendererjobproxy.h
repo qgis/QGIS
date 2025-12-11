@@ -63,7 +63,7 @@ namespace QgsWms
        * \brief Returns map rendering errors
        * \returns error list
        */
-      QgsMapRendererJob::Errors errors() const { return mErrors; }
+      [[nodiscard]] QgsMapRendererJob::Errors errors() const { return mErrors; }
 
     private:
       bool mParallelRendering;

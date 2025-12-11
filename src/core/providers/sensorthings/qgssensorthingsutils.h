@@ -207,14 +207,14 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     /**
      * Returns TRUE if the definition is valid.
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns the target child entity which should be expanded.
      *
      * \see setChildEntity()
      */
-    Qgis::SensorThingsEntity childEntity() const;
+    [[nodiscard]] Qgis::SensorThingsEntity childEntity() const;
 
     /**
     * Sets the target child \a entity which should be expanded.
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
      * \see sortOrder()
      * \see setOrderBy()
      */
-    QString orderBy() const;
+    [[nodiscard]] QString orderBy() const;
 
     /**
      * Sets the \a field name to order the expanded child entities by.
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
      * \see orderBy()
      * \see setSortOrder()
      */
-    Qt::SortOrder sortOrder() const;
+    [[nodiscard]] Qt::SortOrder sortOrder() const;
 
     /**
      * Sets the sort order for the expanded child entities.
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
      *
      * \see setLimit()
      */
-    int limit() const;
+    [[nodiscard]] int limit() const;
 
     /**
      * Sets the \a limit on the number of child features to fetch.
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
      *
      * \see setFilter()
      */
-    QString filter() const;
+    [[nodiscard]] QString filter() const;
 
     /**
      * Returns the the string \a filter to filter expanded child entities by.
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
      *
      * \see fromString()
      */
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     /**
      * Returns a QgsSensorThingsExpansionDefinition from a string representation.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
      *
      * Optionally a list of additional query options can be specified for the expansion.
      */
-    QString asQueryString( Qgis::SensorThingsEntity parentEntityType, const QStringList &additionalOptions = QStringList() ) const;
+    [[nodiscard]] QString asQueryString( Qgis::SensorThingsEntity parentEntityType, const QStringList &additionalOptions = QStringList() ) const;
 
     bool operator==( const QgsSensorThingsExpansionDefinition &other ) const;
     bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;

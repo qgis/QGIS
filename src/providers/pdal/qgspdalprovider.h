@@ -72,17 +72,17 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
 
   public:
     QgsPdalProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsPdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    int priorityForUri( const QString &uri ) const override;
-    QList<Qgis::LayerType> validLayerTypesForUri( const QString &uri ) const override;
+    [[nodiscard]] QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] int priorityForUri( const QString &uri ) const override;
+    [[nodiscard]] QList<Qgis::LayerType> validLayerTypesForUri( const QString &uri ) const override;
     QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QString filters( Qgis::FileFilterType type ) override;
-    ProviderCapabilities providerCapabilities() const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 
   private:
     static QString sFilterString;

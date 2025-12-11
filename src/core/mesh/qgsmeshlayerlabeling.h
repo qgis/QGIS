@@ -49,10 +49,10 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
     virtual ~QgsAbstractMeshLayerLabeling() = default;
 
     //! Unique type string of the labeling configuration implementation
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     //! Returns a new copy of the object
-    virtual QgsAbstractMeshLayerLabeling *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractMeshLayerLabeling *clone() const = 0 SIP_FACTORY;
 
     /**
      * Factory for label provider implementation
@@ -64,13 +64,13 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
     //! Gets list of sub-providers within the layer's labeling.
-    virtual QStringList subProviders() const { return QStringList( QString() ); }
+    [[nodiscard]] virtual QStringList subProviders() const { return QStringList( QString() ); }
 
     /**
      * Gets associated label settings. In case of multiple sub-providers with different settings,
      * they are identified by their ID.
      */
-    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
+    [[nodiscard]] virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 
     /**
      * Set pal settings for a specific provider (takes ownership).
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
      * modes, which could prevent it being used as an isolated cached image
      * or exported to a vector format.
      */
-    virtual bool requiresAdvancedEffects() const = 0;
+    [[nodiscard]] virtual bool requiresAdvancedEffects() const = 0;
 
     /**
      * Returns TRUE the labeling requires a non-default composition mode.
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
      *
      * \since QGIS 3.44
      */
-    virtual bool hasNonDefaultCompositionMode() const = 0;
+    [[nodiscard]] virtual bool hasNonDefaultCompositionMode() const = 0;
 
     /**
      * Multiply opacity by \a opacityFactor.
@@ -164,12 +164,12 @@ class CORE_EXPORT QgsMeshLayerSimpleLabeling : public QgsAbstractMeshLayerLabeli
      */
     explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces = false );
 
-    QString type() const override;
-    QgsMeshLayerSimpleLabeling *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsMeshLayerSimpleLabeling *clone() const override SIP_FACTORY;
     //! \note not available in Python bindings
     QgsMeshLayerLabelProvider *provider( QgsMeshLayer *layer ) const override SIP_SKIP;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    [[nodiscard]] QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
@@ -180,8 +180,8 @@ class CORE_EXPORT QgsMeshLayerSimpleLabeling : public QgsAbstractMeshLayerLabeli
      */
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
 
-    bool requiresAdvancedEffects() const override;
-    bool hasNonDefaultCompositionMode() const override;
+    [[nodiscard]] bool requiresAdvancedEffects() const override;
+    [[nodiscard]] bool hasNonDefaultCompositionMode() const override;
     void multiplyOpacity( double opacityFactor ) override;
     //! Create the instance from a DOM element with saved configuration
     static QgsMeshLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember

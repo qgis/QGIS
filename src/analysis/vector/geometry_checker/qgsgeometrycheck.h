@@ -109,12 +109,12 @@ class ANALYSIS_EXPORT QgsGeometryCheck
         QMap<QString, QgsFeatureIds> ids SIP_SKIP;
 
 #ifndef SIP_RUN
-        QMap<QString, QgsFeatureIds> toMap() const
+        [[nodiscard]] QMap<QString, QgsFeatureIds> toMap() const
         {
           return ids;
         }
 
-        bool isEmpty() const
+        [[nodiscard]] bool isEmpty() const
         {
           return ids.isEmpty();
         }
@@ -268,12 +268,12 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.4
      */
-    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const = 0;
+    [[nodiscard]] virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const = 0;
 
     /**
      * Flags for this geometry check.
      */
-    virtual QgsGeometryCheck::Flags flags() const;
+    [[nodiscard]] virtual QgsGeometryCheck::Flags flags() const;
 
     /**
      * The main worker method.
@@ -301,7 +301,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.12
      */
-    virtual QList<QgsGeometryCheckResolutionMethod> availableResolutionMethods() const;
+    [[nodiscard]] virtual QList<QgsGeometryCheckResolutionMethod> availableResolutionMethods() const;
 
     /**
      * Returns a list of descriptions for available resolutions for errors.
@@ -317,28 +317,28 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.4
      */
-    virtual QString description() const = 0;
+    [[nodiscard]] virtual QString description() const = 0;
 
     /**
      * Returns an id for this check.
      *
      * \since QGIS 3.4
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Returns the check type.
      *
      * \since QGIS 3.4
      */
-    virtual CheckType checkType() const = 0;
+    [[nodiscard]] virtual CheckType checkType() const = 0;
 
     /**
      * Returns the context
      *
      * \since QGIS 3.4
      */
-    const QgsGeometryCheckContext *context() const { return mContext; }
+    [[nodiscard]] const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
     /**
@@ -347,7 +347,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * \note Not available in Python bindings
      * \since QGIS 3.4
      */
-    QMap<QString, QgsFeatureIds> allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const SIP_SKIP;
+    [[nodiscard]] QMap<QString, QgsFeatureIds> allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const SIP_SKIP;
 
     /**
      * Replaces a part in a feature geometry.
@@ -382,7 +382,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * \note Not available in Python bindings
      * \since QGIS 3.4
      */
-    double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
+    [[nodiscard]] double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
 
     /**
      * Checks that there are no duplicated unique IDs

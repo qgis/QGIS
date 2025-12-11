@@ -45,7 +45,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, publi
     explicit QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   protected:
     bool setNewItem( QgsLayoutItem *item ) override;

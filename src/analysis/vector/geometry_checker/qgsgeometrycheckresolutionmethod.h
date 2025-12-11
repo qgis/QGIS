@@ -37,22 +37,22 @@ class ANALYSIS_EXPORT QgsGeometryCheckResolutionMethod
     /**
      * An id that is unique per check. This will be used to trigger resolutions.
      */
-    int id() const;
+    [[nodiscard]] int id() const;
 
     /**
      * If this fix is stable enough to be listed by default.
      */
-    bool isStable() const;
+    [[nodiscard]] bool isStable() const;
 
     /**
      * A human readable and translated name for this fix.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * A human readable and translated description for this fix.
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
   private:
     int mId = -1;

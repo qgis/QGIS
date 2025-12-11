@@ -585,7 +585,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     Q_DECL_DEPRECATED static void setupESRIWktFix() SIP_DEPRECATED;
 
     //! Returns whether this CRS is correctly initialized and usable
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Perform some validation on this CRS. If the CRS doesn't validate the
@@ -651,7 +651,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Returns the internal CRS ID, if available.
      *  \returns the internal sqlite3 srs.db primary key for this CRS
      */
-    long srsid() const;
+    [[nodiscard]] long srsid() const;
 
     // TODO QGIS 4: remove unless really necessary - let's use EPSG codes instead
 
@@ -659,7 +659,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Returns PostGIS SRID for the CRS.
      * \returns the PostGIS spatial_ref_sys identifier for this CRS (defaults to 0)
      */
-    long postgisSrid() const;
+    [[nodiscard]] long postgisSrid() const;
 
     /**
      * Returns the authority identifier for the CRS.
@@ -673,7 +673,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \returns the authority identifier for this CRS
      * \see description()
      */
-    QString authid() const;
+    [[nodiscard]] QString authid() const;
 
     /**
      * Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94".
@@ -682,7 +682,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see authid()
      * \see userFriendlyIdentifier()
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Returns a user friendly identifier for the CRS.
@@ -697,7 +697,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see description()
      * \since QGIS 3.10.3
      */
-    QString userFriendlyIdentifier( Qgis::CrsIdentifierType type = Qgis::CrsIdentifierType::MediumString ) const;
+    [[nodiscard]] QString userFriendlyIdentifier( Qgis::CrsIdentifierType type = Qgis::CrsIdentifierType::MediumString ) const;
 
     /**
      * Returns the projection acronym for the projection used by the CRS.
@@ -705,7 +705,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note an empty string will be returned if the projectionAcronym is not available for the CRS
      * \see ellipsoidAcronym()
      */
-    QString projectionAcronym() const;
+    [[nodiscard]] QString projectionAcronym() const;
 
     /**
      * Returns the ellipsoid acronym for the ellipsoid used by the CRS.
@@ -713,7 +713,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note an empty string will be returned if the ellipsoidAcronym is not available for the CRS
      * \see projectionAcronym()
      */
-    QString ellipsoidAcronym() const;
+    [[nodiscard]] QString ellipsoidAcronym() const;
 
     /**
      * Returns a WKT representation of this CRS.
@@ -726,7 +726,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \see toProj()
      */
-    QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1Gdal, bool multiline = false, int indentationWidth = 4 ) const;
+    [[nodiscard]] QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1Gdal, bool multiline = false, int indentationWidth = 4 ) const;
 
     /**
      * Returns a Proj string representation of this CRS.
@@ -754,7 +754,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see toWkt()
      * \since QGIS 3.10.3
      */
-    QString toProj() const;
+    [[nodiscard]] QString toProj() const;
 
     /**
      * Returns a JSON string representation of this CRS.
@@ -767,27 +767,27 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 4.0
      */
-    std::string toJsonString( bool multiline = false, int indentationWidth = 4, const QString &schema = QString() ) const;
+    [[nodiscard]] std::string toJsonString( bool multiline = false, int indentationWidth = 4, const QString &schema = QString() ) const;
 
     /**
      * Returns the type of the CRS.
      *
      * \since QGIS 3.34
      */
-    Qgis::CrsType type() const;
+    [[nodiscard]] Qgis::CrsType type() const;
 
     /**
      * Returns TRUE if the CRS is considered deprecated.
      *
      * \since QGIS 3.36
      */
-    bool isDeprecated() const;
+    [[nodiscard]] bool isDeprecated() const;
 
     /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */
-    bool isGeographic() const;
+    [[nodiscard]] bool isGeographic() const;
 
     /**
      * Returns TRUE if the CRS is a dynamic CRS.
@@ -797,7 +797,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.20
      */
-    bool isDynamic() const;
+    [[nodiscard]] bool isDynamic() const;
 
     /**
      * Attempts to retrieve datum ensemble details from the CRS.
@@ -809,14 +809,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.20
      */
-    QgsDatumEnsemble datumEnsemble() const;
+    [[nodiscard]] QgsDatumEnsemble datumEnsemble() const;
 
     /**
      * Attempts to retrieve the name of the celestial body associated with the CRS (e.g. "Earth").
      *
      * \since QGIS 3.20
      */
-    QString celestialBodyName() const;
+    [[nodiscard]] QString celestialBodyName() const;
 
     /**
      * Sets the coordinate \a epoch, as a decimal year.
@@ -866,7 +866,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.20
      */
-    double coordinateEpoch() const;
+    [[nodiscard]] double coordinateEpoch() const;
 
     /**
      * Calculate various cartographic properties, such as scale factors, angular distortion and meridian convergence for
@@ -879,7 +879,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.20
      */
-    QgsProjectionFactors factors( const QgsPoint &point ) const;
+    [[nodiscard]] QgsProjectionFactors factors( const QgsPoint &point ) const;
 
     /**
      * Returns information about the PROJ operation associated with the coordinate reference system, for example
@@ -887,7 +887,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.20
      */
-    QgsProjOperation operation() const;
+    [[nodiscard]] QgsProjOperation operation() const;
 
     /**
      * Returns whether the axis order is inverted for the CRS compared to the order east/north (longitude/latitude).
@@ -896,7 +896,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \see axisOrdering()
      */
-    bool hasAxisInverted() const;
+    [[nodiscard]] bool hasAxisInverted() const;
 
     /**
      * Returns an ordered list of the axis directions reflecting the native axis order for the CRS.
@@ -904,7 +904,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.26
      */
 #ifndef SIP_RUN
-    QList< Qgis::CrsAxisDirection > axisOrdering() const;
+    [[nodiscard]] QList< Qgis::CrsAxisDirection > axisOrdering() const;
 #else
     SIP_PYOBJECT axisOrdering() const SIP_TYPEHINT( List[Qgis.CrsAxisDirection] );
     % MethodCode
@@ -948,7 +948,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \note In the case of a compound CRS, this method will always return the units for the horizontal component.
      */
-    Qgis::DistanceUnit mapUnits() const;
+    [[nodiscard]] Qgis::DistanceUnit mapUnits() const;
 
     /**
      * Returns the approximate bounds for the region the CRS is usable within.
@@ -957,7 +957,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * projection in the WGS 84 CRS.
      *
      */
-    QgsRectangle bounds() const;
+    [[nodiscard]] QgsRectangle bounds() const;
 
     /**
      * Returns the crs as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
@@ -965,7 +965,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.30
      */
-    QString toOgcUri() const;
+    [[nodiscard]] QString toOgcUri() const;
 
     /**
      * Returns the crs as OGC URN (format: urn:ogc:def:crs:OGC:1.3:CRS84)
@@ -973,7 +973,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.38
      */
-    QString toOgcUrn() const;
+    [[nodiscard]] QString toOgcUrn() const;
 
     // Mutators -----------------------------------
 
@@ -1003,7 +1003,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Gets user hint for validation
      */
-    QString validationHint() const;
+    [[nodiscard]] QString validationHint() const;
 
     /**
      * Update proj.4 parameters in our database from proj.4
@@ -1048,7 +1048,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see setNativeFormat()
      * \since QGIS 3.24
      */
-    Qgis::CrsDefinitionFormat nativeFormat() const;
+    [[nodiscard]] Qgis::CrsDefinitionFormat nativeFormat() const;
 
     /**
      * Returns the geographic CRS associated with this CRS object.
@@ -1059,7 +1059,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.24
      */
-    QgsCoordinateReferenceSystem toGeographicCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem toGeographicCrs() const;
 
     /**
      * Returns a new geocentric CRS based on this CRS object.
@@ -1072,7 +1072,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see createGeocentricCrs()
      * \since QGIS 3.44
      */
-    QgsCoordinateReferenceSystem toGeocentricCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem toGeocentricCrs() const;
 
     /**
      * Returns the horizontal CRS associated with this CRS object.
@@ -1084,7 +1084,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see verticalCrs()
      * \since QGIS 3.38
      */
-    QgsCoordinateReferenceSystem horizontalCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem horizontalCrs() const;
 
     /**
      * Returns the vertical CRS associated with this CRS object.
@@ -1098,7 +1098,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 3.38
      */
-    QgsCoordinateReferenceSystem verticalCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem verticalCrs() const;
 
     /**
      * Returns TRUE if the CRS has a vertical axis.
@@ -1106,10 +1106,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see verticalCrs()
      * \since QGIS 3.38
      */
-    bool hasVerticalAxis() const;
+    [[nodiscard]] bool hasVerticalAxis() const;
 
     //! Returns auth id of related geographic CRS
-    QString geographicCrsAuthId() const;
+    [[nodiscard]] QString geographicCrsAuthId() const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -1132,7 +1132,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     * \note Not available in Python bindings.
     * \since QGIS 3.8
     */
-    PJ *projObject() const;
+    [[nodiscard]] PJ *projObject() const;
 
     /**
      * Constructs a QgsCoordinateReferenceSystem from a PROJ PJ object.
@@ -1288,7 +1288,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * parameter order and naming for proj or WKT strings (internally, uses the PJ_COMP_EQUIVALENT
      * criteria).
      */
-    long matchToUserCrs() const;
+    [[nodiscard]] long matchToUserCrs() const;
 
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,

@@ -96,13 +96,13 @@ class CORE_EXPORT QgsElevationProfileManager : public QgsAbstractProjectStoredOb
     /**
      * Returns a list of all profiles contained in the manager.
      */
-    QList< QgsElevationProfile * > profiles() const;
+    [[nodiscard]] QList< QgsElevationProfile * > profiles() const;
 
     /**
      * Returns the profile with a matching name, or NULLPTR if no matching profiles
      * were found.
      */
-    QgsElevationProfile *profileByName( const QString &name ) const;
+    [[nodiscard]] QgsElevationProfile *profileByName( const QString &name ) const;
 
     /**
      * Reads the manager's state from a DOM element, restoring all profiles
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsElevationProfileManager : public QgsAbstractProjectStoredOb
      * Generates a unique title for a new profile, which does not
      * clash with any already contained by the manager.
      */
-    QString generateUniqueTitle() const;
+    [[nodiscard]] QString generateUniqueTitle() const;
 
   signals:
 

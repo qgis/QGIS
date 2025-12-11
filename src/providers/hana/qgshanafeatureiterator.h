@@ -35,7 +35,7 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
-    bool isSpatial() const { return !mGeometryColumn.isEmpty() && mGeometryType != Qgis::WkbType::Unknown; }
+    [[nodiscard]] bool isSpatial() const { return !mGeometryColumn.isEmpty() && mGeometryType != Qgis::WkbType::Unknown; }
 
   private:
     QVersionNumber mDatabaseVersion;

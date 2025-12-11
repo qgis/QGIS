@@ -61,18 +61,18 @@ class CORE_EXPORT QgsAnnotationItemAbstractMetadata
     /**
      * Returns the unique item type string for the annotation item class.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns a translated, user visible name for the annotation item class.
      * \see visiblePluralName()
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns a translated, user visible name for plurals of the annotation item class (e.g. "Labels" for a "Label" item).
      */
-    QString visiblePluralName() const { return mVisibleNamePlural; }
+    [[nodiscard]] QString visiblePluralName() const { return mVisibleNamePlural; }
 
     /**
      * Creates a new, default, annotation item of this class.
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsAnnotationItemMetadata : public QgsAnnotationItemAbstractMe
     /**
      * Returns the classes' item default creation function.
      */
-    QgsAnnotationItemCreateFunc createFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsAnnotationItemCreateFunc createFunction() const { return mCreateFunc; }
 
     QgsAnnotationItem *createItem() override { return mCreateFunc ? mCreateFunc() : nullptr; }
 
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
      * Returns the metadata for the specified item \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      */
-    QgsAnnotationItemAbstractMetadata *itemMetadata( const QString &type ) const;
+    [[nodiscard]] QgsAnnotationItemAbstractMetadata *itemMetadata( const QString &type ) const;
 
     /**
      * Registers a new annotation item type. Takes ownership of the metadata instance.
@@ -182,12 +182,12 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
     /**
      * Creates a new instance of a annotation item given the item \a type.
      */
-    QgsAnnotationItem *createItem( const QString &type ) const SIP_FACTORY;
+    [[nodiscard]] QgsAnnotationItem *createItem( const QString &type ) const SIP_FACTORY;
 
     /**
      * Returns a map of available item types to translated name.
      */
-    QMap< QString, QString> itemTypes() const;
+    [[nodiscard]] QMap< QString, QString> itemTypes() const;
 
   signals:
 

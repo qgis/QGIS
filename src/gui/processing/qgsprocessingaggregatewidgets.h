@@ -84,10 +84,10 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
     QgsAggregateMappingModel( const QgsFields &sourceFields = QgsFields(), QObject *parent = nullptr );
 
     //! Returns a list of source fields
-    QgsFields sourceFields() const;
+    [[nodiscard]] QgsFields sourceFields() const;
 
     //! Returns a list of Aggregate objects representing the current status of the model
-    QList<QgsAggregateMappingModel::Aggregate> mapping() const;
+    [[nodiscard]] QList<QgsAggregateMappingModel::Aggregate> mapping() const;
 
     /**
      * Sets the \a mapping to show in the model.
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
     void setSourceFields( const QgsFields &sourceFields );
 
     //! Returns the context generator with the source fields
-    QgsExpressionContextGenerator *contextGenerator() const;
+    [[nodiscard]] QgsExpressionContextGenerator *contextGenerator() const;
 
     /**
      * Sets the base expression context \a generator, which will generate the expression
@@ -119,11 +119,11 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
     void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
     // QAbstractItemModel interface
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
   private:
@@ -154,10 +154,10 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
     explicit QgsAggregateMappingWidget( QWidget *parent = nullptr, const QgsFields &sourceFields = QgsFields() );
 
     //! Returns the underlying mapping model
-    QgsAggregateMappingModel *model() const;
+    [[nodiscard]] QgsAggregateMappingModel *model() const;
 
     //! Returns a list of Aggregate objects representing the current status of the underlying mapping model
-    QList<QgsAggregateMappingModel::Aggregate> mapping() const;
+    [[nodiscard]] QList<QgsAggregateMappingModel::Aggregate> mapping() const;
 
     /**
      * Sets the \a mapping to show in the model.

@@ -45,14 +45,14 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
       */
     QgsBearingNumericFormat();
 
-    QString id() const override;
-    QString visibleName() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
     int sortKey() override;
-    double suggestSampleValue() const override;
-    QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
-    QgsBearingNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
-    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] double suggestSampleValue() const override;
+    [[nodiscard]] QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
+    [[nodiscard]] QgsBearingNumericFormat *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    [[nodiscard]] QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the directional formatting option, which controls how bearing direction is
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsBearingNumericFormat : public QgsBasicNumericFormat
      *
      * \see setDirectionFormat()
      */
-    FormatDirectionOption directionFormat() const;
+    [[nodiscard]] FormatDirectionOption directionFormat() const;
 
     /**
      * Sets the directional formatting option, which controls how bearing direction is

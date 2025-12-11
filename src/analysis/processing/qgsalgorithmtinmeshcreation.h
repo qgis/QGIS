@@ -28,17 +28,17 @@ struct QgsMesh;
 class QgsTinMeshCreationAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QStringList tags() const override;
-    QString name() const override;
-    QString displayName() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
     bool canExecute( QString *errorMessage ) const override;
 
   protected:
-    QgsProcessingAlgorithm *createInstance() const override;
+    [[nodiscard]] QgsProcessingAlgorithm *createInstance() const override;
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

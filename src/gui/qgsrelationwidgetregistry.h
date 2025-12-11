@@ -54,12 +54,12 @@ class GUI_EXPORT QgsRelationWidgetRegistry
     /**
      * Returns a list of names of registered relation widgets
      */
-    QStringList relationWidgetNames() const;
+    [[nodiscard]] QStringList relationWidgetNames() const;
 
     /**
      * Gets access to all registered factories
      */
-    QMap<QString, QgsAbstractRelationEditorWidgetFactory *> factories() const;
+    [[nodiscard]] QMap<QString, QgsAbstractRelationEditorWidgetFactory *> factories() const;
 
     /**
      * Create a relation widget of a given type for a given field.
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsRelationWidgetRegistry
      * Returns the default editor widget type.
      * \since QGIS 3.20
      */
-    QString defaultWidgetType() const;
+    [[nodiscard]] QString defaultWidgetType() const;
 
   private:
     QMap<QString, QgsAbstractRelationEditorWidgetFactory *> mRelationWidgetFactories;

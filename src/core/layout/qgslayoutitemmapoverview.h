@@ -86,12 +86,12 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
     /**
      * Returns a reference to an overview with matching overviewId within the stack.
      */
-    QgsLayoutItemMapOverview *overview( const QString &overviewId ) const;
+    [[nodiscard]] QgsLayoutItemMapOverview *overview( const QString &overviewId ) const;
 
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
      */
-    QgsLayoutItemMapOverview *overview( int index ) const;
+    [[nodiscard]] QgsLayoutItemMapOverview *overview( int index ) const;
 
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
     /**
      * Returns a list of QgsLayoutItemMapOverviews contained by the stack.
      */
-    QList< QgsLayoutItemMapOverview * > asList() const; // cppcheck-suppress duplInheritedMember
+    [[nodiscard]] QList< QgsLayoutItemMapOverview * > asList() const; // cppcheck-suppress duplInheritedMember
     bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     /**

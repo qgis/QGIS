@@ -63,22 +63,22 @@ class ANALYSIS_EXPORT QgsAlignRaster
         RasterInfo &operator=( const RasterInfo &rh ) = delete;
 
         //! Check whether the given path is a valid raster
-        bool isValid() const { return nullptr != mDataset; }
+        [[nodiscard]] bool isValid() const { return nullptr != mDataset; }
 
         //! Returns the CRS in WKT format
-        QString crs() const { return mCrsWkt; }
+        [[nodiscard]] QString crs() const { return mCrsWkt; }
         //! Returns the size of the raster grid in pixels
-        QSize rasterSize() const { return QSize( mXSize, mYSize ); }
+        [[nodiscard]] QSize rasterSize() const { return QSize( mXSize, mYSize ); }
         //! Returns the number of raster bands in the file
-        int bandCount() const { return mBandCnt; }
+        [[nodiscard]] int bandCount() const { return mBandCnt; }
         //! Returns the cell size in map units
-        QSizeF cellSize() const;
+        [[nodiscard]] QSizeF cellSize() const;
         //! Returns the grid offset
-        QPointF gridOffset() const;
+        [[nodiscard]] QPointF gridOffset() const;
         //! Returns the extent of the raster
-        QgsRectangle extent() const;
+        [[nodiscard]] QgsRectangle extent() const;
         //! Returns the origin of the raster
-        QPointF origin() const;
+        [[nodiscard]] QPointF origin() const;
 
         //! Write contents of the object to standard error stream - for debugging
         void dump() const;
@@ -128,19 +128,19 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Assign a progress handler instance. Does not take ownership. NULLPTR can be passed.
     void setProgressHandler( ProgressHandler *progressHandler ) { mProgressHandler = progressHandler; }
     //! Gets associated progress handler. May be NULLPTR (default)
-    ProgressHandler *progressHandler() const { return mProgressHandler; }
+    [[nodiscard]] ProgressHandler *progressHandler() const { return mProgressHandler; }
 
     //! Sets list of rasters that will be aligned
     void setRasters( const List &list ) { mRasters = list; }
     //! Gets list of rasters that will be aligned
-    List rasters() const { return mRasters; }
+    [[nodiscard]] List rasters() const { return mRasters; }
 
     void setGridOffset( QPointF offset )
     {
       mGridOffsetX = offset.x();
       mGridOffsetY = offset.y();
     }
-    QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
+    [[nodiscard]] QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
 
     //! Sets output cell size
     void setCellSize( double x, double y ) { setCellSize( QSizeF( x, y ) ); }
@@ -151,12 +151,12 @@ class ANALYSIS_EXPORT QgsAlignRaster
       mCellSizeY = size.height();
     }
     //! Gets output cell size
-    QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
+    [[nodiscard]] QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
     //! Sets the output CRS in WKT format
     void setDestinationCrs( const QString &crsWkt ) { mCrsWkt = crsWkt; }
     //! Gets the output CRS in WKT format
-    QString destinationCrs() const { return mCrsWkt; }
+    [[nodiscard]] QString destinationCrs() const { return mCrsWkt; }
 
     /**
      * Configure clipping extent (region of interest).
@@ -174,7 +174,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
      * Gets clipping extent (region of interest).
      * No extra clipping is done if the rectangle is null
      */
-    QgsRectangle clipExtent() const;
+    [[nodiscard]] QgsRectangle clipExtent() const;
 
     /**
      * Set destination CRS, cell size and grid offset from a raster file.
@@ -205,13 +205,13 @@ class ANALYSIS_EXPORT QgsAlignRaster
      * Returns the expected size of the resulting aligned raster
      * \note first need to run checkInputParameters() which returns with success
      */
-    QSize alignedRasterSize() const;
+    [[nodiscard]] QSize alignedRasterSize() const;
 
     /**
      * Returns the expected extent of the resulting aligned raster
      * \note first need to run checkInputParameters() which returns with success
      */
-    QgsRectangle alignedRasterExtent() const;
+    [[nodiscard]] QgsRectangle alignedRasterExtent() const;
 
     /**
      * Run the alignment process
@@ -223,13 +223,13 @@ class ANALYSIS_EXPORT QgsAlignRaster
      * Returns the error from a previous run() call.
      * Error message is empty if run() succeeded (returned TRUE)
      */
-    QString errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] QString errorMessage() const { return mErrorMessage; }
 
     //! write contents of the object to standard error stream - for debugging
     void dump() const;
 
     //! Returns the index of the layer which has smallest cell size (returns -1 on error)
-    int suggestedReferenceLayer() const;
+    [[nodiscard]] int suggestedReferenceLayer() const;
 
   protected:
     //! Internal function for processing of one raster (1. create output, 2. do the alignment)

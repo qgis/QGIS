@@ -57,7 +57,7 @@ class APP_EXPORT QgsDecorationGrid : public QgsDecorationItem
      * \see setTextFormat()
      * \see labelExtents()
      */
-    QgsTextFormat textFormat() const { return mTextFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const { return mTextFormat; }
 
     /**
      * Sets the title text \a format.
@@ -68,27 +68,27 @@ class APP_EXPORT QgsDecorationGrid : public QgsDecorationItem
 
     //! Sets coordinate grid style.
     void setGridStyle( GridStyle style ) { mGridStyle = style; }
-    GridStyle gridStyle() const { return mGridStyle; }
+    [[nodiscard]] GridStyle gridStyle() const { return mGridStyle; }
 
     //! Sets coordinate interval in x-direction for composergrid.
     void setGridIntervalX( double interval ) { mGridIntervalX = interval; }
-    double gridIntervalX() const { return mGridIntervalX; }
+    [[nodiscard]] double gridIntervalX() const { return mGridIntervalX; }
 
     //! Sets coordinate interval in y-direction for composergrid.
     void setGridIntervalY( double interval ) { mGridIntervalY = interval; }
-    double gridIntervalY() const { return mGridIntervalY; }
+    [[nodiscard]] double gridIntervalY() const { return mGridIntervalY; }
 
     //! Sets x-coordinate offset for composer grid
     void setGridOffsetX( double offset ) { mGridOffsetX = offset; }
-    double gridOffsetX() const { return mGridOffsetX; }
+    [[nodiscard]] double gridOffsetX() const { return mGridOffsetX; }
 
     //! Sets y-coordinate offset for composer grid
     void setGridOffsetY( double offset ) { mGridOffsetY = offset; }
-    double gridOffsetY() const { return mGridOffsetY; }
+    [[nodiscard]] double gridOffsetY() const { return mGridOffsetY; }
 
     //! Sets the pen to draw composer grid
     void setGridPen( const QPen &p ) { mGridPen = p; }
-    QPen gridPen() const { return mGridPen; }
+    [[nodiscard]] QPen gridPen() const { return mGridPen; }
     //! Sets with of grid pen
     void setGridPenWidth( double w ) { mGridPen.setWidthF( w ); }
     //! Sets the color of the grid pen
@@ -96,35 +96,35 @@ class APP_EXPORT QgsDecorationGrid : public QgsDecorationItem
 
     //! Sets font for grid annotations
     void setGridAnnotationFont( const QFont &f ) { mGridAnnotationFont = f; }
-    QFont gridAnnotationFont() const { return mGridAnnotationFont; }
+    [[nodiscard]] QFont gridAnnotationFont() const { return mGridAnnotationFont; }
 
     //! Sets coordinate precision for grid annotations
     void setGridAnnotationPrecision( int p ) { mGridAnnotationPrecision = p; }
-    int gridAnnotationPrecision() const { return mGridAnnotationPrecision; }
+    [[nodiscard]] int gridAnnotationPrecision() const { return mGridAnnotationPrecision; }
 
     //! Sets flag if grid annotation should be shown
     void setShowGridAnnotation( bool show ) { mShowGridAnnotation = show; }
-    bool showGridAnnotation() const { return mShowGridAnnotation; }
+    [[nodiscard]] bool showGridAnnotation() const { return mShowGridAnnotation; }
 
     //! Sets distance between map frame and annotations
     void setAnnotationFrameDistance( double d ) { mAnnotationFrameDistance = d; }
-    double annotationFrameDistance() const { return mAnnotationFrameDistance; }
+    [[nodiscard]] double annotationFrameDistance() const { return mAnnotationFrameDistance; }
 
     //! Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
     void setGridAnnotationDirection( GridAnnotationDirection d ) { mGridAnnotationDirection = d; }
-    GridAnnotationDirection gridAnnotationDirection() const { return mGridAnnotationDirection; }
+    [[nodiscard]] GridAnnotationDirection gridAnnotationDirection() const { return mGridAnnotationDirection; }
 
     //! Sets symbol that is used to draw grid lines. Takes ownership
     void setLineSymbol( QgsLineSymbol *symbol );
-    const QgsLineSymbol *lineSymbol() const { return mLineSymbol.get(); }
+    [[nodiscard]] const QgsLineSymbol *lineSymbol() const { return mLineSymbol.get(); }
 
     //! Sets symbol that is used to draw markers. Takes ownership
     void setMarkerSymbol( QgsMarkerSymbol *symbol );
-    const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
+    [[nodiscard]] const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
 
     //! Sets map unit type
     void setMapUnits( Qgis::DistanceUnit t ) { mMapUnits = t; }
-    Qgis::DistanceUnit mapUnits() const { return mMapUnits; }
+    [[nodiscard]] Qgis::DistanceUnit mapUnits() const { return mMapUnits; }
 
     //! Sets mapUnits value
     void setDirty( bool dirty = true );
@@ -135,7 +135,7 @@ class APP_EXPORT QgsDecorationGrid : public QgsDecorationItem
     //! Computes interval from current raster layer
     bool getIntervalFromCurrentLayer( double *values ) const;
 
-    bool hasFixedMapPosition() const override { return true; }
+    [[nodiscard]] bool hasFixedMapPosition() const override { return true; }
 
   public slots:
     //! Sets values on the gui when a project is read or the gui first loaded

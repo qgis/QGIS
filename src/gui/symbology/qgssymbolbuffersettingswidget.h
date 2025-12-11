@@ -51,7 +51,7 @@ class GUI_EXPORT QgsSymbolBufferSettingsWidget : public QgsPanelWidget, private 
      *
      * \see setBufferSettings()
      */
-    QgsSymbolBufferSettings bufferSettings() const;
+    [[nodiscard]] QgsSymbolBufferSettings bufferSettings() const;
 
   private slots:
 
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsSymbolBufferSettingsDialog : public QDialog
      *
      * \see setBufferSettings()
      */
-    QgsSymbolBufferSettings bufferSettings() const;
+    [[nodiscard]] QgsSymbolBufferSettings bufferSettings() const;
 
   private:
     QgsSymbolBufferSettingsWidget *mWidget = nullptr;

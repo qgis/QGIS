@@ -122,7 +122,7 @@ class CORE_EXPORT QgsVector
      * Returns the length of the vector.
      * \see lengthSquared()
      */
-    double length() const SIP_HOLDGIL
+    [[nodiscard]] double length() const SIP_HOLDGIL
     {
       return std::sqrt( mX * mX + mY * mY );
     }
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsVector
      * \see length()
      * \since QGIS 3.2
      */
-    double lengthSquared() const SIP_HOLDGIL
+    [[nodiscard]] double lengthSquared() const SIP_HOLDGIL
     {
       return mX * mX + mY * mY;
     }
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsVector
      * Returns the vector's x-component.
      * \see y()
      */
-    double x() const SIP_HOLDGIL
+    [[nodiscard]] double x() const SIP_HOLDGIL
     {
       return mX;
     }
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsVector
      * Returns the vector's y-component.
      * \see x()
      */
-    double y() const SIP_HOLDGIL
+    [[nodiscard]] double y() const SIP_HOLDGIL
     {
       return mY;
     }
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsVector
     /**
      * Returns the perpendicular vector to this vector (rotated 90 degrees counter-clockwise)
      */
-    QgsVector perpVector() const SIP_HOLDGIL
+    [[nodiscard]] QgsVector perpVector() const SIP_HOLDGIL
     {
       return QgsVector( -mY, mX );
     }
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsVector
     /**
      * Returns the angle of the vector in radians.
      */
-    double angle() const SIP_HOLDGIL
+    [[nodiscard]] double angle() const SIP_HOLDGIL
     {
       const double angle = std::atan2( mY, mX );
       return angle < 0.0 ? angle + 2.0 * M_PI : angle;
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsVector
     /**
      * Returns the angle between this vector and another vector in radians.
      */
-    double angle( QgsVector v ) const SIP_HOLDGIL
+    [[nodiscard]] double angle( QgsVector v ) const SIP_HOLDGIL
     {
       return v.angle() - angle();
     }
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsVector
      *
      * \since QGIS 3.2
      */
-    double crossProduct( QgsVector v ) const SIP_HOLDGIL
+    [[nodiscard]] double crossProduct( QgsVector v ) const SIP_HOLDGIL
     {
       return mX * v.y() - mY * v.x();
     }
@@ -195,14 +195,14 @@ class CORE_EXPORT QgsVector
      * Rotates the vector by a specified angle.
      * \param rot angle in radians
      */
-    QgsVector rotateBy( double rot ) const SIP_HOLDGIL;
+    [[nodiscard]] QgsVector rotateBy( double rot ) const SIP_HOLDGIL;
 
     /**
      * Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0).
      *
      * \throws QgsException if called on a vector with length of 0.
      */
-    QgsVector normalized() const SIP_THROW( QgsException );
+    [[nodiscard]] QgsVector normalized() const SIP_THROW( QgsException );
 
     bool operator==( QgsVector other ) const SIP_HOLDGIL
     {
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsVector
     * Returns a string representation of the vector.
     * Members will be truncated to the specified \a precision.
     */
-    QString toString( int precision = 17 ) const SIP_HOLDGIL
+    [[nodiscard]] QString toString( int precision = 17 ) const SIP_HOLDGIL
     {
       QString str = "Vector (";
       str += qgsDoubleToString( mX, precision );

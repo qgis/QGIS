@@ -45,23 +45,23 @@ class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     //! constructor
     QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule *rootRule, QObject *parent = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
     //! provide model index for parent's child item
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     //! provide parent model index
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     // new methods
 
     //! Returns the rule at the specified index
-    QgsRuleBasedLabeling::Rule *ruleForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsRuleBasedLabeling::Rule *ruleForIndex( const QModelIndex &index ) const;
 
     //! Inserts a new rule at the specified position
     void insertRule( const QModelIndex &parent, int before, QgsRuleBasedLabeling::Rule *newrule );
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui:
     ~QgsRuleBasedLabelingWidget() override;
 
     //! Gives access to the internal root of the rule tree
-    const QgsRuleBasedLabeling::Rule *rootRule() const { return mRootRule; }
+    [[nodiscard]] const QgsRuleBasedLabeling::Rule *rootRule() const { return mRootRule; }
 
     void setDockMode( bool dockMode ) override;
 

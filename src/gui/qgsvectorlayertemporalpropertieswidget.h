@@ -46,7 +46,7 @@ class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, public
      */
     void saveTemporalProperties();
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Updates the widget state to match the current layer state.

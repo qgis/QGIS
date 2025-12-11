@@ -75,7 +75,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \see setSourceFieldExp
      * \see layer
      */
-    QString sourceFieldExp() const { return mSourceFieldExp; }
+    [[nodiscard]] QString sourceFieldExp() const { return mSourceFieldExp; }
 
     /**
      * Sets the pen to use when drawing histogram bars. If set to Qt::NoPen then the
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \see setPen
      * \see brush
      */
-    QPen pen() const { return mPen; }
+    [[nodiscard]] QPen pen() const { return mPen; }
 
     /**
      * Sets the brush used for drawing histogram bars. If ranges have been set using setGraduatedRanges()
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \see setBrush
      * \see pen
      */
-    QBrush brush() const { return mBrush; }
+    [[nodiscard]] QBrush brush() const { return mBrush; }
 
     /**
      * Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
@@ -124,14 +124,14 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \returns graduated range list
      * \see setGraduatedRanges
      */
-    QgsRangeList graduatedRanges() const { return mRanges; }
+    [[nodiscard]] QgsRangeList graduatedRanges() const { return mRanges; }
 
     /**
      * Returns the title for the histogram's x-axis.
      * \see setXAxisTitle
      * \see yAxisTitle
      */
-    QString xAxisTitle() const { return mXAxisTitle; }
+    [[nodiscard]] QString xAxisTitle() const { return mXAxisTitle; }
 
     /**
      * Sets the title for the histogram's x-axis.
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \see setYAxisTitle
      * \see xAxisTitle
      */
-    QString yAxisTitle() const { return mYAxisTitle; }
+    [[nodiscard]] QString yAxisTitle() const { return mYAxisTitle; }
 
     /**
      * Sets the title for the histogram's y-axis.
@@ -210,7 +210,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     void clearHistogram();
 
-    QwtPlotHistogram *createPlotHistogram( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
+    [[nodiscard]] QwtPlotHistogram *createPlotHistogram( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
 };
 
 #endif //QGSHISTOGRAMWIDGET_H

@@ -374,7 +374,7 @@ class CORE_EXPORT QgsScopedProjCollectingLogger
     /**
      * Returns the (possibly empty) list of collected errors.
      */
-    QStringList errors() const { return mProjErrors; }
+    [[nodiscard]] QStringList errors() const { return mProjErrors; }
 
   private:
 

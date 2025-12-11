@@ -108,7 +108,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * If the tool is NULLPTR, events will be used for camera manipulation.
      * \since QGIS 4.0
      */
-    Qgs3DMapTool *mapTool() const { return mMapTool; }
+    [[nodiscard]] Qgs3DMapTool *mapTool() const { return mMapTool; }
 
     /**
      * Casts a ray towards the 3d scene and returns information about the intersected 3d entities.
@@ -145,7 +145,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * \see enableCrossSection()
      * \since QGIS 4.0
      */
-    bool crossSectionEnabled() const;
+    [[nodiscard]] bool crossSectionEnabled() const;
 
 #ifndef SIP_RUN
 
@@ -162,17 +162,17 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     /**
      * Returns the node of the active frame graph.
      */
-    Qt3DRender::QFrameGraphNode *activeFrameGraph() const;
+    [[nodiscard]] Qt3DRender::QFrameGraphNode *activeFrameGraph() const;
 
     /**
      * Returns the default camera of the 3D Window.
      */
-    Qt3DRender::QCamera *camera() const;
+    [[nodiscard]] Qt3DRender::QCamera *camera() const;
 
     /**
      * Returns the render settings of the 3D Window.
      */
-    Qt3DRender::QRenderSettings *renderSettings() const;
+    [[nodiscard]] Qt3DRender::QRenderSettings *renderSettings() const;
 
     //! Configure map scene being displayed. Takes ownership.
     void setMapSettings( Qgs3DMapSettings *mapSettings );
@@ -189,7 +189,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     /**
      * Returns the 3D engine.
      */
-    QgsWindow3DEngine *engine() const { return mEngine; }
+    [[nodiscard]] QgsWindow3DEngine *engine() const { return mEngine; }
 
     /**
      * Sets the temporal controller

@@ -86,13 +86,13 @@ class CORE_EXPORT QgsRegularPolygon
     bool operator !=( const QgsRegularPolygon &rp ) const SIP_HOLDGIL;
 
     //! A regular polygon is empty if radius equal to 0 or number of sides < 3
-    bool isEmpty() const SIP_HOLDGIL;
+    [[nodiscard]] bool isEmpty() const SIP_HOLDGIL;
 
     /**
      * Returns the center point of the regular polygon.
      * \see setCenter()
      */
-    QgsPoint center() const SIP_HOLDGIL { return mCenter; }
+    [[nodiscard]] QgsPoint center() const SIP_HOLDGIL { return mCenter; }
 
     /**
      * Returns the radius.
@@ -100,26 +100,26 @@ class CORE_EXPORT QgsRegularPolygon
      * \see apothem()
      * \see setRadius()
      */
-    double radius() const SIP_HOLDGIL { return mRadius; }
+    [[nodiscard]] double radius() const SIP_HOLDGIL { return mRadius; }
 
     /**
      * Returns the first vertex (corner) of the regular polygon.
      * \see setFirstVertex()
      */
-    QgsPoint firstVertex() const SIP_HOLDGIL { return mFirstVertex; }
+    [[nodiscard]] QgsPoint firstVertex() const SIP_HOLDGIL { return mFirstVertex; }
 
     /**
      * Returns the apothem of the regular polygon.
      * The apothem is the radius of the inscribed circle.
      * \see radius()
      */
-    double apothem() const SIP_HOLDGIL { return mRadius * std::cos( M_PI / mNumberSides ); }
+    [[nodiscard]] double apothem() const SIP_HOLDGIL { return mRadius * std::cos( M_PI / mNumberSides ); }
 
     /**
      * Returns the number of sides of the regular polygon.
      * \see setNumberSides()
      */
-    unsigned int numberSides() const SIP_HOLDGIL { return mNumberSides; }
+    [[nodiscard]] unsigned int numberSides() const SIP_HOLDGIL { return mNumberSides; }
 
     /**
      * Sets the center point.
@@ -152,73 +152,73 @@ class CORE_EXPORT QgsRegularPolygon
     /**
      * Returns a list including the vertices of the regular polygon.
      */
-    QgsPointSequence points() const;
+    [[nodiscard]] QgsPointSequence points() const;
 
     /**
      * Returns as a polygon.
      */
-    QgsPolygon *toPolygon() const SIP_FACTORY;
+    [[nodiscard]] QgsPolygon *toPolygon() const SIP_FACTORY;
 
     /**
      * Returns as a linestring.
      */
-    QgsLineString *toLineString() const SIP_FACTORY;
+    [[nodiscard]] QgsLineString *toLineString() const SIP_FACTORY;
 
     /**
      * Returns as a triangle.
      * An empty triangle is returned if the regular polygon is empty or if the number of sides is different from 3.
      */
-    QgsTriangle toTriangle() const;
+    [[nodiscard]] QgsTriangle toTriangle() const;
 
     /**
      * Returns a triangulation (vertices from sides to the center) of the regular polygon.
      * An empty list is returned if the regular polygon is empty.
      */
-    QVector<QgsTriangle> triangulate() const;
+    [[nodiscard]] QVector<QgsTriangle> triangulate() const;
 
     /**
      * Returns the inscribed circle
      */
-    QgsCircle inscribedCircle() const SIP_HOLDGIL;
+    [[nodiscard]] QgsCircle inscribedCircle() const SIP_HOLDGIL;
 
     /**
      * Returns the circumscribed circle
      */
-    QgsCircle circumscribedCircle() const SIP_HOLDGIL;
+    [[nodiscard]] QgsCircle circumscribedCircle() const SIP_HOLDGIL;
 
     /**
      * Returns a string representation of the regular polygon.
      * Members will be truncated to the specified precision.
      */
-    QString toString( int pointPrecision = 17, int radiusPrecision = 17, int anglePrecision = 2 ) const;
+    [[nodiscard]] QString toString( int pointPrecision = 17, int radiusPrecision = 17, int anglePrecision = 2 ) const;
 
     /**
      * Returns the measure of the interior angles in degrees.
      */
-    double interiorAngle() const SIP_HOLDGIL;
+    [[nodiscard]] double interiorAngle() const SIP_HOLDGIL;
 
     /**
      * Returns the measure of the central angle (the angle subtended at the center of the polygon by one of its sides) in degrees.
      */
-    double centralAngle() const SIP_HOLDGIL;
+    [[nodiscard]] double centralAngle() const SIP_HOLDGIL;
 
     /**
      * Returns the area.
      * Returns 0 if the regular polygon is empty.
      */
-    double area() const SIP_HOLDGIL;
+    [[nodiscard]] double area() const SIP_HOLDGIL;
 
     /**
      * Returns the perimeter.
      * Returns 0 if the regular polygon is empty.
      */
-    double perimeter() const SIP_HOLDGIL;
+    [[nodiscard]] double perimeter() const SIP_HOLDGIL;
 
     /**
      * Returns the length of a side.
      * Returns 0 if the regular polygon is empty.
      */
-    double length() const SIP_HOLDGIL;
+    [[nodiscard]] double length() const SIP_HOLDGIL;
 
   private:
     QgsPoint mCenter;
@@ -229,17 +229,17 @@ class CORE_EXPORT QgsRegularPolygon
     /**
      * Convenient method to convert an apothem to a radius.
      */
-    double apothemToRadius( double apothem, unsigned int numberSides ) const;
+    [[nodiscard]] double apothemToRadius( double apothem, unsigned int numberSides ) const;
 
     /**
      * Convenient method for interiorAngle used by constructors.
      */
-    double interiorAngle( unsigned int nbSides ) const;
+    [[nodiscard]] double interiorAngle( unsigned int nbSides ) const;
 
     /**
      * Convenient method for centralAngle used by constructors.
      */
-    double centralAngle( unsigned int nbSides ) const;
+    [[nodiscard]] double centralAngle( unsigned int nbSides ) const;
 
 };
 

@@ -33,10 +33,10 @@ class QgsWfsRequest : public QgsBaseNetworkRequest
     explicit QgsWfsRequest( const QgsWFSDataSourceURI &uri );
 
     //! Returns the url for a WFS request
-    QUrl requestUrl( const QString &request ) const;
+    [[nodiscard]] QUrl requestUrl( const QString &request ) const;
 
   protected:
-    QDomDocument createPostDocument() const;
+    [[nodiscard]] QDomDocument createPostDocument() const;
     QDomElement createRootPostElement(
       const QgsWfsCapabilities &capabilities,
       const QString &wfsVersion,

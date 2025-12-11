@@ -60,7 +60,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * are always calculated (e.g., sum, min and max).
      * \see setStatistics
      */
-    Qgis::Statistics statistics() const { return mStatistics; }
+    [[nodiscard]] Qgis::Statistics statistics() const { return mStatistics; }
 
     /**
      * Sets flags which specify which statistics will be calculated. Some statistics
@@ -127,53 +127,53 @@ class CORE_EXPORT QgsStatisticalSummary
      * \returns calculated value of statistic. A NaN value may be returned for invalid
      * statistics.
      */
-    double statistic( Qgis::Statistic stat ) const;
+    [[nodiscard]] double statistic( Qgis::Statistic stat ) const;
 
     /**
      * Returns calculated count of values
      */
-    int count() const { return mCount; }
+    [[nodiscard]] int count() const { return mCount; }
 
     /**
      * Returns the number of missing (null) values
      */
-    int countMissing() const { return mMissing; }
+    [[nodiscard]] int countMissing() const { return mMissing; }
 
     /**
      * Returns calculated sum of values
      */
-    double sum() const { return mSum; }
+    [[nodiscard]] double sum() const { return mSum; }
 
     /**
      * Returns calculated mean of values. A NaN value may be returned if the mean cannot
      * be calculated.
      */
-    double mean() const { return mMean; }
+    [[nodiscard]] double mean() const { return mMean; }
 
     /**
      * Returns calculated median of values. This is only calculated if Statistic::Median has
      * been specified in the constructor or via setStatistics. A NaN value may be returned if the median cannot
      * be calculated.
      */
-    double median() const { return mMedian; }
+    [[nodiscard]] double median() const { return mMedian; }
 
     /**
      * Returns calculated minimum from values. A NaN value may be returned if the minimum cannot
      * be calculated.
      */
-    double min() const { return mMin; }
+    [[nodiscard]] double min() const { return mMin; }
 
     /**
      * Returns calculated maximum from values. A NaN value may be returned if the maximum cannot
      * be calculated.
      */
-    double max() const { return mMax; }
+    [[nodiscard]] double max() const { return mMax; }
 
     /**
      * Returns calculated range (difference between maximum and minimum values). A NaN value may be returned if the range cannot
      * be calculated.
      */
-    double range() const { return std::isnan( mMax ) || std::isnan( mMin ) ? std::numeric_limits<double>::quiet_NaN() : mMax - mMin; }
+    [[nodiscard]] double range() const { return std::isnan( mMax ) || std::isnan( mMin ) ? std::numeric_limits<double>::quiet_NaN() : mMax - mMin; }
 
     /**
      * Returns the first value obtained. A NaN value may be returned if no values were encountered.
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \see last()
      * \since QGIS 3.6
      */
-    double first() const { return mFirst; }
+    [[nodiscard]] double first() const { return mFirst; }
 
     /**
      * Returns the last value obtained. A NaN value may be returned if no values were encountered.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \see first()
      * \since QGIS 3.6
      */
-    double last() const { return mLast; }
+    [[nodiscard]] double last() const { return mLast; }
 
     /**
      * Returns population standard deviation. This is only calculated if Statistic::StDev has
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * be calculated.
      * \see sampleStDev
      */
-    double stDev() const { return mStdev; }
+    [[nodiscard]] double stDev() const { return mStdev; }
 
     /**
      * Returns sample standard deviation. This is only calculated if Statistic::StDev has
@@ -205,14 +205,14 @@ class CORE_EXPORT QgsStatisticalSummary
      * be calculated.
      * \see stDev
      */
-    double sampleStDev() const { return mSampleStdev; }
+    [[nodiscard]] double sampleStDev() const { return mSampleStdev; }
 
     /**
      * Returns variety of values. The variety is the count of unique values from the list.
      * This is only calculated if Statistic::Variety has been specified in the constructor
      * or via setStatistics.
      */
-    int variety() const { return mValueCount.count(); }
+    [[nodiscard]] int variety() const { return mValueCount.count(); }
 
     /**
      * Returns minority of values. The minority is the value with least occurrences in the list.
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * initial values order. A NaN value may be returned if the minority cannot be calculated.
      * \see majority
      */
-    double minority() const { return mMinority; }
+    [[nodiscard]] double minority() const { return mMinority; }
 
     /**
      * Returns majority of values. The majority is the value with most occurrences in the list.
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * initial values order. A NaN value may be returned if the minority cannot be calculated.
      * \see minority
      */
-    double majority() const { return mMajority; }
+    [[nodiscard]] double majority() const { return mMajority; }
 
     /**
      * Returns the first quartile of the values. The quartile is calculated using the
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \see thirdQuartile
      * \see interQuartileRange
      */
-    double firstQuartile() const { return mFirstQuartile; }
+    [[nodiscard]] double firstQuartile() const { return mFirstQuartile; }
 
     /**
      * Returns the third quartile of the values. The quartile is calculated using the
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \see firstQuartile
      * \see interQuartileRange
      */
-    double thirdQuartile() const { return mThirdQuartile; }
+    [[nodiscard]] double thirdQuartile() const { return mThirdQuartile; }
 
     /**
      * Returns the inter quartile range of the values. The quartiles are calculated using the
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \see firstQuartile
      * \see thirdQuartile
      */
-    double interQuartileRange() const { return std::isnan( mThirdQuartile ) || std::isnan( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
+    [[nodiscard]] double interQuartileRange() const { return std::isnan( mThirdQuartile ) || std::isnan( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /**
      * Returns the friendly display name for a \a statistic.

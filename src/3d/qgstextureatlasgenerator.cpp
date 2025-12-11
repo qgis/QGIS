@@ -39,12 +39,12 @@ class QgsTextureRect
     {
       return rect;
     }
-    const auto &get_rect() const
+    [[nodiscard]] const auto &get_rect() const
     {
       return rect;
     }
 
-    QRect asQRect() const
+    [[nodiscard]] QRect asQRect() const
     {
       return QRect( rect.x, rect.y, rect.w, rect.h );
     }

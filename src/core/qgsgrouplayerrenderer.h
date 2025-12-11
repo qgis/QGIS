@@ -51,9 +51,9 @@ class CORE_EXPORT QgsGroupLayerRenderer : public QgsMapLayerRenderer
      */
     QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderContext &context );
     ~QgsGroupLayerRenderer() override;
-    QgsFeedback *feedback() const override;
+    [[nodiscard]] QgsFeedback *feedback() const override;
     bool render() override;
-    bool forceRasterRender() const override;
+    [[nodiscard]] bool forceRasterRender() const override;
 
   private:
     std::unique_ptr< QgsFeedback > mFeedback;

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsBookmark
      * Returns the bookmark's unique ID.
      * \see setId()
      */
-    QString id() const;
+    [[nodiscard]] QString id() const;
 
     /**
      * Sets the bookmark's unique \a id.
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsBookmark
      * the bookmark.
      * \see setName()
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Sets the bookmark's \a name, which is a user-visible string identifying
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsBookmark
      * the bookmark's category.
      * \see setGroup()
      */
-    QString group() const;
+    [[nodiscard]] QString group() const;
 
     /**
      * Sets the bookmark's \a group, which is a user-visible string identifying
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsBookmark
      * Returns the bookmark's spatial extent.
      * \see setExtent()
      */
-    QgsReferencedRectangle extent() const;
+    [[nodiscard]] QgsReferencedRectangle extent() const;
 
     /**
      * Sets the bookmark's spatial \a extent.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsBookmark
      *
      * \since QGIS 3.32
      */
-    double rotation() const;
+    [[nodiscard]] double rotation() const;
 
     /**
      * Sets the bookmark's spatial map \a rotation.
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     /**
      * Returns a list of all bookmark groups contained in the manager.
      */
-    QStringList groups() const;
+    [[nodiscard]] QStringList groups() const;
 
     /**
      * Renames an existing group from \a oldName to \a newName. This updates
@@ -256,13 +256,13 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     /**
      * Returns a list of all bookmarks contained in the manager.
      */
-    QList< QgsBookmark > bookmarks() const;
+    [[nodiscard]] QList< QgsBookmark > bookmarks() const;
 
     /**
      * Returns the bookmark with a matching \a id, or an empty bookmark if no matching bookmarks
      * were found.
      */
-    QgsBookmark bookmarkById( const QString &id ) const;
+    [[nodiscard]] QgsBookmark bookmarkById( const QString &id ) const;
 
     /**
      * Returns a list of bookmark with a matching \a group, or an empty list if no matching bookmarks

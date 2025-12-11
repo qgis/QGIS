@@ -54,9 +54,9 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
      */
     QgsDataSourceUri uri();
     //! Returns the path
-    QString path( ) const { return mPath; }
+    [[nodiscard]] QString path( ) const { return mPath; }
     //! Returns the connection name
-    QString name() const { return mConnName; }
+    [[nodiscard]] QString name() const { return mConnName; }
     //! Sets the \a path for the connection
     void setPath( const QString &path );
     //! Store the connection data in the settings

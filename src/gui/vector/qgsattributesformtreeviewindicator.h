@@ -41,12 +41,12 @@ class GUI_EXPORT QgsAttributesFormTreeViewIndicator : public QObject
     explicit QgsAttributesFormTreeViewIndicator( QObject *parent = nullptr );
 
     //! Indicator icon that will be displayed in the Attributes Form tree view.
-    QIcon icon() const;
+    [[nodiscard]] QIcon icon() const;
     //! Sets indicator icon that will be displayed in the Attributes Form tree view.
     void setIcon( const QIcon &icon );
 
     //! Returns tool tip text that will be shown when user hovers mouse over the indicator.
-    QString toolTip() const;
+    [[nodiscard]] QString toolTip() const;
     //! Sets tool tip text for the indicator.
     void setToolTip( const QString &tip );
 

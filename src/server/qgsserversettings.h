@@ -134,25 +134,25 @@ class SERVER_EXPORT QgsServerSettings
      * Returns the ini file loaded by QSetting.
      * \returns the path of the ini file or an empty string if none is loaded.
      */
-    QString iniFile() const;
+    [[nodiscard]] QString iniFile() const;
 
     /**
      * Returns parallel rendering setting.
      * \returns TRUE if parallel rendering is activated, FALSE otherwise.
      */
-    bool parallelRendering() const;
+    [[nodiscard]] bool parallelRendering() const;
 
     /**
      * Returns the maximum number of threads to use.
      * \returns the number of threads.
      */
-    int maxThreads() const;
+    [[nodiscard]] int maxThreads() const;
 
     /**
      * Returns the log level.
      * \returns the log level.
      */
-    Qgis::MessageLevel logLevel() const;
+    [[nodiscard]] Qgis::MessageLevel logLevel() const;
 
     /**
      * Returns TRUE if profile information has to be added to the logs, default value is FALSE.
@@ -161,66 +161,66 @@ class SERVER_EXPORT QgsServerSettings
      * \see logLevel()
      * \since QGIS 3.18
      */
-    bool logProfile() const;
+    [[nodiscard]] bool logProfile() const;
 
     /**
      * Returns the QGS project file to use.
      * \returns the path of the QGS project or an empty string if none is defined.
      */
-    QString projectFile() const;
+    [[nodiscard]] QString projectFile() const;
 
     /**
      * Returns the log file.
      * \returns the path of the log file or an empty string if none is defined.
      */
-    QString logFile() const;
+    [[nodiscard]] QString logFile() const;
 
     /**
      * Returns whether logging to stderr is activated.
      * \returns TRUE if logging to stderr is activated, FALSE otherwise.
      * \since QGIS 3.4
      */
-    bool logStderr() const;
+    [[nodiscard]] bool logStderr() const;
 
     /**
      * Returns the cache size.
      * \returns the cache size.
      */
-    qint64 cacheSize() const;
+    [[nodiscard]] qint64 cacheSize() const;
 
     /**
      * Returns the cache directory.
      * \returns the directory.
      */
-    QString cacheDirectory() const;
+    [[nodiscard]] QString cacheDirectory() const;
 
     /**
      * Overrides system locale
      * \returns the optional override for system locale.
      * \since QGIS 3.8
      */
-    QString overrideSystemLocale() const;
+    [[nodiscard]] QString overrideSystemLocale() const;
 
     /**
      * Show group (thousand) separator
      * \returns if group separator must be shown, default to FALSE.
      * \since QGIS 3.8
      */
-    bool showGroupSeparator() const;
+    [[nodiscard]] bool showGroupSeparator() const;
 
     /**
      * Returns the server-wide max height of a WMS GetMap request. The lower one of this and the project configuration is used.
      * \returns the max height of a WMS GetMap request.
      * \since QGIS 3.6.2
      */
-    int wmsMaxHeight() const;
+    [[nodiscard]] int wmsMaxHeight() const;
 
     /**
      * Returns the server-wide max width of a WMS GetMap request. The lower one of this and the project configuration is used.
      * \returns the max width of a WMS GetMap request.
      * \since QGIS 3.6.2
      */
-    int wmsMaxWidth() const;
+    [[nodiscard]] int wmsMaxWidth() const;
 
     /**
      * Returns the directories used by the landing page service to find .qgs
@@ -228,7 +228,7 @@ class SERVER_EXPORT QgsServerSettings
      * them with '||'.
      * \since QGIS 3.16
      */
-    QString landingPageProjectsDirectories() const;
+    [[nodiscard]] QString landingPageProjectsDirectories() const;
 
     /**
      * Returns the PostgreSQL connection strings used by the landing page
@@ -236,13 +236,13 @@ class SERVER_EXPORT QgsServerSettings
      * separating them with '||'.
      * \since QGIS 3.16
      */
-    QString landingPageProjectsPgConnections() const;
+    [[nodiscard]] QString landingPageProjectsPgConnections() const;
 
     /**
      * Returns the landing page base URL regular expression, defaults to `/`.
      * \since QGIS 3.20
      */
-    QString landingPageBaseUrlPrefix() const;
+    [[nodiscard]] QString landingPageBaseUrlPrefix() const;
 
     /**
      * Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.
@@ -252,7 +252,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.10
      */
-    QString apiResourcesDirectory() const;
+    [[nodiscard]] QString apiResourcesDirectory() const;
 
     /**
      * Returns the server-wide maximum allowed value for \"limit\" in a features request.
@@ -262,7 +262,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.10
      */
-    qlonglong apiWfs3MaxLimit() const;
+    [[nodiscard]] qlonglong apiWfs3MaxLimit() const;
 
     /**
      * Returns the server-wide root path for OAPIF (WFS3) service API.
@@ -272,7 +272,7 @@ class SERVER_EXPORT QgsServerSettings
      * \note The default will be changed to "/ogcapi" for QGIS 4.
      * \since QGIS 3.44.3
      */
-    QString apiWfs3RootPath() const;
+    [[nodiscard]] QString apiWfs3RootPath() const;
 
     /**
      * Returns TRUE if the bad layers are ignored and FALSE when the presence of a
@@ -283,19 +283,19 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.10.5
      */
-    bool ignoreBadLayers() const;
+    [[nodiscard]] bool ignoreBadLayers() const;
 
     /**
      * Returns TRUE if rendering errors are ignored by the server. Returns FALSE if the server throws an error in case of rendering errors.
      * \since QGIS 4.0
      */
-    bool ignoreRenderingErrors() const;
+    [[nodiscard]] bool ignoreRenderingErrors() const;
 
     /**
      * Returns TRUE if bad layers should be re-checked after the project has been cached. The default value is FALSE
      * \since QGIS 4.0
      */
-    bool retryBadLayers() const;
+    [[nodiscard]] bool retryBadLayers() const;
 
     /**
      * Returns TRUE if the reading flag trust layer metadata is activated.
@@ -305,7 +305,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.16
      */
-    bool trustLayerMetadata() const;
+    [[nodiscard]] bool trustLayerMetadata() const;
 
     /**
      * Returns TRUE if the reading flag force layer read only is activated.
@@ -315,7 +315,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.28
      */
-    bool forceReadOnlyLayers() const;
+    [[nodiscard]] bool forceReadOnlyLayers() const;
 
     /**
      * Returns TRUE if WMS GetPrint request is disabled and the project's
@@ -326,19 +326,19 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.16
      */
-    bool getPrintDisabled() const;
+    [[nodiscard]] bool getPrintDisabled() const;
 
     /**
      * Returns the service URL from the setting.
      * \since QGIS 3.20
      */
-    QString serviceUrl( const QString &service ) const;
+    [[nodiscard]] QString serviceUrl( const QString &service ) const;
 
     /**
      * Returns the config cache check interval (in ms) for the 'periodic' strategy.
      * \since QGIS 3.26
      */
-    int projectCacheCheckInterval() const;
+    [[nodiscard]] int projectCacheCheckInterval() const;
 
     /**
      * Returns the project's cache strategy
@@ -353,7 +353,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.26
      */
-    QString projectCacheStrategy() const;
+    [[nodiscard]] QString projectCacheStrategy() const;
 
     /**
      * Returns the projects cache size
@@ -362,7 +362,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.44
      */
-    int projectCacheSize() const;
+    [[nodiscard]] int projectCacheSize() const;
 
     /**
      * Returns the list of strings that represent the allowed extra SQL tokens
@@ -372,7 +372,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.28
      */
-    QStringList allowedExtraSqlTokens() const;
+    [[nodiscard]] QStringList allowedExtraSqlTokens() const;
 
     /**
      * Returns the QGIS Server application name.
@@ -382,7 +382,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.30
      */
-    QString applicationName() const;
+    [[nodiscard]] QString applicationName() const;
 
     /**
      * Returns the string representation of a setting.
@@ -397,12 +397,12 @@ class SERVER_EXPORT QgsServerSettings
      *
      * \since QGIS 3.31
      */
-    int capabilitiesCacheSize() const;
+    [[nodiscard]] int capabilitiesCacheSize() const;
 
   private:
     void initSettings();
-    QVariant value( QgsServerSettingsEnv::EnvVar envVar, bool actual = false ) const;
-    QMap<QgsServerSettingsEnv::EnvVar, QString> getEnv() const;
+    [[nodiscard]] QVariant value( QgsServerSettingsEnv::EnvVar envVar, bool actual = false ) const;
+    [[nodiscard]] QMap<QgsServerSettingsEnv::EnvVar, QString> getEnv() const;
     void loadQSettings( const QString &envOptPath ) const;
     void prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env );
 

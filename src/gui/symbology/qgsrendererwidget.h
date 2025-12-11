@@ -50,7 +50,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget, public QgsExpression
     Q_OBJECT
   public:
     QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style );
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     //! Returns pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRenderer *renderer() = 0;
@@ -71,12 +71,12 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget, public QgsExpression
      * Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the vector layer associated with the widget.
      */
-    const QgsVectorLayer *vectorLayer() const { return mLayer; }
+    [[nodiscard]] const QgsVectorLayer *vectorLayer() const { return mLayer; }
 
     /**
      * This method should be called whenever the renderer is actually set on the layer.
@@ -242,12 +242,12 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
      * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the vector layer associated with the widget.
      */
-    const QgsVectorLayer *vectorLayer() const { return mLayer; }
+    [[nodiscard]] const QgsVectorLayer *vectorLayer() const { return mLayer; }
 
   public slots:
     void dataDefinedChanged();
@@ -261,7 +261,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
-    QgsProperty symbolDataDefined() const SIP_FORCE;
+    [[nodiscard]] QgsProperty symbolDataDefined() const SIP_FORCE;
 
     virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0 SIP_FORCE;
     virtual double value( const QgsSymbol * ) const = 0 SIP_FORCE;
@@ -272,7 +272,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 
     QgsSymbolWidgetContext mContext;
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 };
 
 /**

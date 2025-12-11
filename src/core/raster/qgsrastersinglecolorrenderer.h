@@ -43,8 +43,8 @@ class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
     //! QgsRasterSingleColorRenderer cannot be copied. Use clone() instead.
     const QgsRasterSingleColorRenderer &operator=( const QgsRasterSingleColorRenderer & ) = delete;
 
-    QgsRasterSingleColorRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsRasterSingleColorRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
 
     //! Creates an instance of the renderer based on definition from XML (used by the renderer registry)
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
      * Returns the single color used by the renderer.
      * \see setColor()
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Sets the single \a color used by the renderer.
@@ -65,9 +65,9 @@ class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    int inputBand() const override;
+    [[nodiscard]] int inputBand() const override;
     bool setInputBand( int band ) override;
-    QList<int> usesBands() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
 
   private:
 #ifdef SIP_RUN

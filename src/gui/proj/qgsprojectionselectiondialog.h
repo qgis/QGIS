@@ -55,7 +55,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      * Returns the CRS currently selected in the widget.
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets a \a message to show in the dialog.
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * \see setShowNoCrs()
      */
-    bool showNoCrs() const;
+    [[nodiscard]] bool showNoCrs() const;
 
     /**
      * Sets the text to show for the not set option. Note that this option is not shown
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
     /**
      * Returns TRUE if the widget has a valid CRS defined.
      */
-    bool hasValidSelection() const;
+    [[nodiscard]] bool hasValidSelection() const;
 
     /**
      * Returns the filters set on the available CRS.
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      * \see setFilters()
      * \since QGIS 3.36
      */
-    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+    [[nodiscard]] QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
 
     /**
      * Sets \a filters for the available CRS.
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
      * Returns the CRS currently selected in the widget.
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets a \a message to show in the dialog.
@@ -228,7 +228,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * \see setShowNoProjection()
      */
-    bool showNoProjection() const;
+    [[nodiscard]] bool showNoProjection() const;
 
     /**
      * Sets the text to show for the not set option. Note that this option is not shown
@@ -254,7 +254,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
      *
      * \since QGIS 3.24
      */
-    bool hasValidSelection() const;
+    [[nodiscard]] bool hasValidSelection() const;
 
     /**
      * Returns the filters set on the available CRS.
@@ -262,7 +262,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
      * \see setFilters()
      * \since QGIS 3.36
      */
-    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+    [[nodiscard]] QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
 
     /**
      * Sets \a filters for the available CRS.

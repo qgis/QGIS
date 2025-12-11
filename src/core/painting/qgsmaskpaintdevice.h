@@ -36,14 +36,14 @@ class QgsMaskPaintEngine: public QPaintEngine
 
     bool begin( QPaintDevice * ) override { return true; };
     bool end() override { return true; };
-    QPaintEngine::Type type() const override { return QPaintEngine::User; };
+    [[nodiscard]] QPaintEngine::Type type() const override { return QPaintEngine::User; };
     void updateState( const QPaintEngineState & ) override { return; };
 
     void drawPath( const QPainterPath & ) override;
     void drawPolygon( const QPointF *, int, PolygonDrawMode ) override;
     void drawPixmap( const QRectF &, const QPixmap &, const QRectF & ) override { return; };
 
-    QPainterPath maskPainterPath() const;
+    [[nodiscard]] QPainterPath maskPainterPath() const;
 
   private:
 
@@ -74,9 +74,9 @@ class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice
      */
     Q_DECL_DEPRECATED QgsMaskPaintDevice( bool usePathStroker = false ) SIP_DEPRECATED;
 
-    QPaintEngine *paintEngine() const override;
+    [[nodiscard]] QPaintEngine *paintEngine() const override;
 
-    int metric( PaintDeviceMetric metric ) const override;
+    [[nodiscard]] int metric( PaintDeviceMetric metric ) const override;
 
     /**
      * Returns the mask painter path painted on this paint device

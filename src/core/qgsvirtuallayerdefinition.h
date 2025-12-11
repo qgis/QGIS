@@ -54,22 +54,22 @@ class CORE_EXPORT QgsVirtualLayerDefinition
         {}
 
         //! Is it a live layer or not ?
-        bool isReferenced() const { return !mRef.isEmpty(); }
+        [[nodiscard]] bool isReferenced() const { return !mRef.isEmpty(); }
 
         //! The reference (id) of the live layer
-        QString reference() const { return mRef; }
+        [[nodiscard]] QString reference() const { return mRef; }
 
         //! Name of the layer
-        QString name() const { return mName; }
+        [[nodiscard]] QString name() const { return mName; }
 
         //! Provider key
-        QString provider() const { return mProvider; }
+        [[nodiscard]] QString provider() const { return mProvider; }
 
         //! The source url used by the provider to build the layer
-        QString source() const { return mSource; }
+        [[nodiscard]] QString source() const { return mSource; }
 
         //! Optional encoding for the provider
-        QString encoding() const { return mEncoding; }
+        [[nodiscard]] QString encoding() const { return mEncoding; }
 
       private:
         QString mName;
@@ -100,10 +100,10 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
 
     //! Convert the definition into a QUrl
-    QUrl toUrl() const;
+    [[nodiscard]] QUrl toUrl() const;
 
     //! Converts the definition into a QString that can be read by the virtual layer provider
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     //! Add a live layer source layer
     void addSource( const QString &name, const QString &ref );
@@ -115,20 +115,20 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     typedef QList<QgsVirtualLayerDefinition::SourceLayer> SourceLayers;
 
     //! Gets access to the source layers
-    const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const { return mSourceLayers; }
+    [[nodiscard]] const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const { return mSourceLayers; }
 
     //! Gets the SQL query
-    QString query() const { return mQuery; }
+    [[nodiscard]] QString query() const { return mQuery; }
     //! Sets the SQL query
     void setQuery( const QString &query ) { mQuery = query; }
 
     //! Gets the file path. May be empty
-    QString filePath() const { return mFilePath; }
+    [[nodiscard]] QString filePath() const { return mFilePath; }
     //! Sets the file path
     void setFilePath( const QString &filePath ) { mFilePath = filePath; }
 
     //! Gets the name of the field with unique identifiers
-    QString uid() const { return mUid; }
+    [[nodiscard]] QString uid() const { return mUid; }
     //! Sets the name of the field with unique identifiers
     void setUid( const QString &uid ) { mUid = uid; }
 
@@ -148,10 +148,10 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      * \see setLazy()
      * \since QGIS 3.2
      */
-    bool isLazy() const { return mLazy; }
+    [[nodiscard]] bool isLazy() const { return mLazy; }
 
     //! Gets the name of the geometry field. Empty if no geometry field
-    QString geometryField() const { return mGeometryField; }
+    [[nodiscard]] QString geometryField() const { return mGeometryField; }
     //! Sets the name of the geometry field
     void setGeometryField( const QString &geometryField ) { mGeometryField = geometryField; }
 
@@ -160,28 +160,28 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      * QgsWkbTypes::NoGeometry to hide any geometry
      * QgsWkbTypes::Unknown for unknown types
      */
-    Qgis::WkbType geometryWkbType() const { return mGeometryWkbType; }
+    [[nodiscard]] Qgis::WkbType geometryWkbType() const { return mGeometryWkbType; }
     //! Sets the type of the geometry
     void setGeometryWkbType( Qgis::WkbType t ) { mGeometryWkbType = t; }
 
     //! Gets the SRID of the geometry
-    long geometrySrid() const { return mGeometrySrid; }
+    [[nodiscard]] long geometrySrid() const { return mGeometrySrid; }
     //! Sets the SRID of the geometry
     void setGeometrySrid( long srid ) { mGeometrySrid = srid; }
 
     //! Gets field definitions
-    QgsFields fields() const { return mFields; }
+    [[nodiscard]] QgsFields fields() const { return mFields; }
     //! Sets field definitions
     void setFields( const QgsFields &fields ) { mFields = fields; }
 
     //! Convenience method to test if a given source layer is part of the definition
-    bool hasSourceLayer( const QString &name ) const;
+    [[nodiscard]] bool hasSourceLayer( const QString &name ) const;
 
     //! Convenience method to test whether the definition has referenced (live) layers
-    bool hasReferencedLayers() const;
+    [[nodiscard]] bool hasReferencedLayers() const;
 
     //! Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
-    bool hasDefinedGeometry() const
+    [[nodiscard]] bool hasDefinedGeometry() const
     {
       return geometryWkbType() != Qgis::WkbType::NoGeometry && geometryWkbType() != Qgis::WkbType::Unknown;
     }
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
      * Returns the subset string.
      * \since QGIS 3.16
      */
-    QString subsetString() const;
+    [[nodiscard]] QString subsetString() const;
 
     /**
      * Sets the \a subsetString

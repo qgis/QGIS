@@ -1088,7 +1088,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.4
      */
-    int maxConcurrentConnectionsPerPool() const;
+    [[nodiscard]] int maxConcurrentConnectionsPerPool() const;
 
     /**
      * Set translation locale code
@@ -1102,7 +1102,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \see setTranslation()
      * \since QGIS 3.22
      */
-    QString translation() const;
+    [[nodiscard]] QString translation() const;
 
     /**
      * Emits the signal to collect all the strings of .qgs to be included in ts file

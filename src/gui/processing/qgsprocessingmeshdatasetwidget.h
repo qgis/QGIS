@@ -41,7 +41,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidget : public QWidget
      */
     void setMeshLayer( QgsMeshLayer *layer, bool layerFromProject = false );
     void setValue( const QVariant &value );
-    QVariant value() const;
+    [[nodiscard]] QVariant value() const;
 
   signals:
     void changed();
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper : public QgsAbstrac
   public:
     QgsProcessingMeshDatasetGroupsWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
-    QString parameterType() const override;
+    [[nodiscard]] QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
     QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
       QgsProcessingContext &context,
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper : public QgsAbstrac
   protected:
     QWidget *createWidget() override;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
-    QVariant widgetValue() const override;
+    [[nodiscard]] QVariant widgetValue() const override;
 
   private:
     QgsProcessingMeshDatasetGroupsWidget *mWidget = nullptr;
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsParameterDefinitionWidget : publi
   public:
     QgsProcessingMeshDatasetGroupsParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+    [[nodiscard]] QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
     QComboBox *mParentLayerComboBox = nullptr;
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidget : public QWidget, private Ui
     void setDatasetGroupIndexes( const QList<int> datasetGroupIndexes );
 
     void setValue( const QVariant &value );
-    QVariant value() const;
+    [[nodiscard]] QVariant value() const;
 
   public slots:
     void updateValue();
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidget : public QWidget, private Ui
     QDateTime mReferenceTime;
 
     void populateTimeSteps();
-    bool hasTemporalDataset() const;
+    [[nodiscard]] bool hasTemporalDataset() const;
     //! Populates directly the time steps combo box with the referenced layer, used if layer comes from project
     void populateTimeStepsFromLayer();
     //! Stores the dataset time steps to use them later depending of chosen dataset groups (setDatasetGroupIndexes()), used if layer does not come from project
@@ -168,7 +168,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper : public QgsAbstractP
   public:
     QgsProcessingMeshDatasetTimeWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
-    QString parameterType() const override;
+    [[nodiscard]] QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
     void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers ) override;
     QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
@@ -187,7 +187,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper : public QgsAbstractP
   protected:
     QWidget *createWidget() override;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
-    QVariant widgetValue() const override;
+    [[nodiscard]] QVariant widgetValue() const override;
 
   private:
     QgsProcessingMeshDatasetTimeWidget *mWidget = nullptr;
@@ -202,7 +202,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeParameterDefinitionWidget : public 
   public:
     QgsProcessingMeshDatasetTimeParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+    [[nodiscard]] QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
     QComboBox *mParentDatasetComboBox = nullptr;

@@ -94,10 +94,10 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() );
 
     // QgsServerApi interface
-    const QString name() const override { return mName; }
-    const QString description() const override { return mDescription; }
-    const QString version() const override { return mVersion; }
-    const QString rootPath() const override { return mRootPath; }
+    [[nodiscard]] const QString name() const override { return mName; }
+    [[nodiscard]] const QString description() const override { return mDescription; }
+    [[nodiscard]] const QString version() const override { return mVersion; }
+    [[nodiscard]] const QString rootPath() const override { return mRootPath; }
 
     ~QgsServerOgcApi() override;
 
@@ -183,7 +183,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     /**
      * Returns registered handlers
      */
-    const std::vector<std::shared_ptr<QgsServerOgcApiHandler>> handlers() const SIP_SKIP;
+    [[nodiscard]] const std::vector<std::shared_ptr<QgsServerOgcApiHandler>> handlers() const SIP_SKIP;
 
   private:
     QString mRootPath;

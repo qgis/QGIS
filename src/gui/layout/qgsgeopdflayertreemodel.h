@@ -53,10 +53,10 @@ class GUI_EXPORT QgsGeospatialPdfLayerTreeModel : public QgsMapLayerModel
     //! constructor
     QgsGeospatialPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &idx ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &idx ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
     /**
@@ -65,8 +65,8 @@ class GUI_EXPORT QgsGeospatialPdfLayerTreeModel : public QgsMapLayerModel
     void checkAll( bool checked, const QModelIndex &parent = QModelIndex(), int column = IncludeVectorAttributes );
 
   private:
-    QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
-    QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
+    [[nodiscard]] QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
+    [[nodiscard]] QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 };
 
 
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsGeospatialPdfLayerFilteredTreeModel : public QSortFilterProx
   public:
     QgsGeospatialPdfLayerFilteredTreeModel( QgsGeospatialPdfLayerTreeModel *sourceModel, QObject *parent = nullptr );
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QgsGeospatialPdfLayerTreeModel *mLayerTreeModel = nullptr;

@@ -33,9 +33,9 @@ class QgsQlrDataItem : public QgsLayerItem
 
   public:
     QgsQlrDataItem( QgsDataItem *parent, const QString &name, const QString &path );
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::Uri mimeUri() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 };
 
 /**
@@ -45,7 +45,7 @@ class QgsQlrDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -57,7 +57,7 @@ class QgsQlrDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override;
+    [[nodiscard]] QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
 };
 
@@ -70,8 +70,8 @@ class QgsQptDataItem : public QgsDataItem
 
   public:
     QgsQptDataItem( QgsDataItem *parent, const QString &name, const QString &path );
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::Uri mimeUri() const override;
     bool handleDoubleClick() override;
     QList<QAction *> actions( QWidget *parent ) override;
 };
@@ -83,7 +83,7 @@ class QgsQptDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -95,7 +95,7 @@ class QgsQptDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override;
+    [[nodiscard]] QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
     bool handleFileDrop( const QString &file ) override;
 };
@@ -110,8 +110,8 @@ class QgsPyDataItem : public QgsDataItem
 
   public:
     QgsPyDataItem( QgsDataItem *parent, const QString &name, const QString &path );
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::Uri mimeUri() const override;
     bool handleDoubleClick() override;
     QList<QAction *> actions( QWidget *parent ) override;
 };
@@ -123,7 +123,7 @@ class QgsPyDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -135,7 +135,7 @@ class QgsPyDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override;
+    [[nodiscard]] QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
     bool handleFileDrop( const QString &file ) override;
 };
@@ -150,8 +150,8 @@ class QgsStyleXmlDataItem : public QgsDataItem
 
   public:
     QgsStyleXmlDataItem( QgsDataItem *parent, const QString &name, const QString &path );
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::Uri mimeUri() const override;
     bool handleDoubleClick() override;
     QList<QAction *> actions( QWidget *parent ) override;
 
@@ -165,7 +165,7 @@ class QgsStyleXmlDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -177,7 +177,7 @@ class QgsStyleXmlDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override;
+    [[nodiscard]] QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
     bool handleFileDrop( const QString &file ) override;
 };
@@ -220,7 +220,7 @@ class APP_EXPORT QgsProjectDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -231,7 +231,7 @@ class APP_EXPORT QgsBookmarksDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
@@ -272,7 +272,7 @@ class APP_EXPORT QgsBookmarksItem : public QgsDataCollectionItem
     //! Icon for bookmark manager container
     static QIcon iconBookmarks();
 
-    QVariant sortKey() const override;
+    [[nodiscard]] QVariant sortKey() const override;
 
   private:
     QgsBookmarkManager *mApplicationManager = nullptr;
@@ -324,7 +324,7 @@ class APP_EXPORT QgsBookmarkGroupItem : public QgsDataCollectionItem
 
     void addBookmark( const QgsBookmark &bookmark );
 
-    QString group() const { return mGroup; }
+    [[nodiscard]] QString group() const { return mGroup; }
     QgsBookmarkManager *manager() { return mManager; }
 
     QgsBookmarkItem *childItemById( const QString &id );
@@ -350,13 +350,13 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
      */
     QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager );
     QgsBookmarkManager *manager() { return mManager; }
-    QgsBookmark bookmark() const { return mBookmark; }
+    [[nodiscard]] QgsBookmark bookmark() const { return mBookmark; }
     void setBookmark( const QgsBookmark &bookmark );
 
     //! Icon for bookmark item
     static QIcon iconBookmark();
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 
   private:
     QgsBookmarkManager *mManager = nullptr;
@@ -372,7 +372,7 @@ class QgsBookmarkDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override;
+    [[nodiscard]] QString customUriProviderKey() const override;
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) override;
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const override;
 };
@@ -385,7 +385,7 @@ class QgsHtmlDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

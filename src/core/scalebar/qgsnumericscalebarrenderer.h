@@ -33,11 +33,11 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
 
     QgsNumericScaleBarRenderer() = default;
 
-    QString id() const override;
-    QString visibleName() const override;
-    int sortKey() const override;
-    Flags flags() const override;
-    QgsNumericScaleBarRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
+    [[nodiscard]] int sortKey() const override;
+    [[nodiscard]] Flags flags() const override;
+    [[nodiscard]] QgsNumericScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
   private:
 
     //! Returns the text for the scale bar or an empty string in case of error
-    QString scaleText( double scale, const QgsScaleBarSettings &settings ) const;
+    [[nodiscard]] QString scaleText( double scale, const QgsScaleBarSettings &settings ) const;
 
 };
 

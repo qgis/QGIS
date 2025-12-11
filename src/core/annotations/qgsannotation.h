@@ -85,13 +85,13 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Clones the annotation, returning a new copy of the annotation
      * reflecting the annotation's current state.
      */
-    virtual QgsAnnotation *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAnnotation *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns TRUE if the annotation is visible and should be rendered.
      * \see setVisible()
      */
-    bool isVisible() const { return mVisible; }
+    [[nodiscard]] bool isVisible() const { return mVisible; }
 
     /**
      * Sets whether the annotation is visible and should be rendered.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see mapPosition()
      * \see relativePosition()
      */
-    bool hasFixedMapPosition() const { return mHasFixedMapPosition; }
+    [[nodiscard]] bool hasFixedMapPosition() const { return mHasFixedMapPosition; }
 
     /**
      * Sets whether the annotation is attached to a fixed map position, or
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see hasFixedMapPosition()
      * \see mapPositionCrs()
      */
-    QgsPointXY mapPosition() const { return mMapPosition; }
+    [[nodiscard]] QgsPointXY mapPosition() const { return mMapPosition; }
 
     /**
      * Sets the map position of the annotation, if it is attached to a fixed map
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * not have a fixed map position.
      * \see setMapPositionCrs()
      */
-    QgsCoordinateReferenceSystem mapPositionCrs() const { return mMapPositionCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem mapPositionCrs() const { return mMapPositionCrs; }
 
     /**
      * Sets the CRS of the map position.
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * the relative percentage for the position compared to the map width and height.
      * \see setRelativePosition()
      */
-    QPointF relativePosition() const { return mRelativePosition; }
+    [[nodiscard]] QPointF relativePosition() const { return mRelativePosition; }
 
     /**
      * Sets the relative position of the annotation, if it is not attached to a fixed map
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see setFrameOffsetFromReferencePointMm()
      * \since QGIS 3.4.8
      */
-    QPointF frameOffsetFromReferencePointMm() const { return mOffsetFromReferencePoint; }
+    [[nodiscard]] QPointF frameOffsetFromReferencePointMm() const { return mOffsetFromReferencePoint; }
 
     /**
      * Sets the size (in pixels) of the annotation's frame (the main area in which
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see setFrameSizeMm()
      * \since QGIS 3.4.8
      */
-    QSizeF frameSizeMm() const { return mFrameSize; }
+    [[nodiscard]] QSizeF frameSizeMm() const { return mFrameSize; }
 
     /**
      * Sets the margins (in millimeters) between the outside of the frame and the annotation
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * content.
      * \see setContentsMargin()
      */
-    QgsMargins contentsMargin() const { return mContentsMargins; }
+    [[nodiscard]] QgsMargins contentsMargin() const { return mContentsMargins; }
 
     /**
      * Sets the fill symbol used for rendering the annotation frame. Ownership
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the symbol that is used for rendering the annotation frame.
      * \see setFillSymbol()
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Renders the annotation to a target render context.
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the symbol that is drawn at the annotation's map position.
      * \see setMarkerSymbol()
      */
-    QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
+    [[nodiscard]] QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
 
     /**
      * Returns the map layer associated with the annotation. Annotations can be
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * with the layer's visibility.
      * \see setMapLayer()
      */
-    QgsMapLayer *mapLayer() const { return mMapLayer.data(); }
+    [[nodiscard]] QgsMapLayer *mapLayer() const { return mMapLayer.data(); }
 
     /**
      * Sets the map layer associated with the annotation. Annotations can be
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * feature if none has been set.
      * \see setAssociatedFeature()
      */
-    QgsFeature associatedFeature() const { return mFeature; }
+    [[nodiscard]] QgsFeature associatedFeature() const { return mFeature; }
 
     /**
      * Sets the feature associated with the annotation.
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the minimum frame size for the annotation. Subclasses should implement this if they
      * cannot be resized smaller than a certain minimum size.
      */
-    virtual QSizeF minimumFrameSize() const;
+    [[nodiscard]] virtual QSizeF minimumFrameSize() const;
 
     /**
      * Writes common annotation properties to a DOM element.

@@ -44,7 +44,7 @@ class QgsArcGisRestBrowserProxyModel : public QgsBrowserProxyModel
     explicit QgsArcGisRestBrowserProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     void setConnectionName( const QString &name );
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
     QString mConnectionName;
@@ -74,7 +74,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     //! Updates the UI for the list of available image encodings from the specified list.
     void populateImageEncodings( const QString &supportedFormats );
     //! Returns the selected image encoding.
-    QString getSelectedImageEncoding() const;
+    [[nodiscard]] QString getSelectedImageEncoding() const;
     void showEvent( QShowEvent *event ) override;
 
   private:

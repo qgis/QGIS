@@ -35,8 +35,8 @@ class QgsSensorThingsConnectionDialog : public QDialog, public Ui::QgsSensorThin
 
     void setConnection( const QString &name, const QString &uri );
 
-    QString connectionUri() const;
-    QString connectionName() const;
+    [[nodiscard]] QString connectionUri() const;
+    [[nodiscard]] QString connectionName() const;
 
     QgsSensorThingsConnectionWidget *connectionWidget() { return mConnectionWidget; }
 

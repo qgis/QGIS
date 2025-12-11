@@ -30,7 +30,7 @@ class QgsSensorThingsFeatureSource : public QgsAbstractFeatureSource
     QgsSensorThingsFeatureSource( const std::shared_ptr<QgsSensorThingsSharedData> &sharedData );
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-    QgsSensorThingsSharedData *sharedData() const;
+    [[nodiscard]] QgsSensorThingsSharedData *sharedData() const;
 
   protected:
     std::shared_ptr<QgsSensorThingsSharedData> mSharedData;

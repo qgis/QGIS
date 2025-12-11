@@ -89,7 +89,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * \brief documentPath returns the path of the current document in the widget
      * \param type determines the type of the returned null variant if the document is not defined yet
      */
-    QVariant documentPath( QMetaType::Type type = QMetaType::Type::QString ) const;
+    [[nodiscard]] QVariant documentPath( QMetaType::Type type = QMetaType::Type::QString ) const;
 
     /**
      * \brief documentPath returns the path of the current document in the widget
@@ -106,17 +106,17 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QgsExternalStorageFileWidget *fileWidget();
 
     //! returns if the file widget is visible in the widget
-    bool fileWidgetVisible() const;
+    [[nodiscard]] bool fileWidgetVisible() const;
     //! Sets the visibility of the file widget in the layout
     void setFileWidgetVisible( bool visible );
 
     //! returns the type of content used in the document viewer
-    QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
+    [[nodiscard]] QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
     //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapted accordingly
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
 
     //! returns the height of the document viewer
-    int documentViewerHeight() const;
+    [[nodiscard]] int documentViewerHeight() const;
 
     /**
      * \brief setDocumentViewerWidth set the height of the document viewer.
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      */
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
-    int documentViewerWidth() const;
+    [[nodiscard]] int documentViewerWidth() const;
 
     /**
      * \brief setDocumentViewerWidth set the width of the document viewer.
@@ -139,7 +139,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Configures if paths are handled absolute or relative and if relative,
      * which should be the base path.
      */
-    QgsFileWidget::RelativeStorage relativeStorage() const;
+    [[nodiscard]] QgsFileWidget::RelativeStorage relativeStorage() const;
 
     /**
      * Configures if paths are handled absolute or relative and if relative,
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Configures the base path which should be used if the relativeStorage property
      * is set to QgsFileWidget::RelativeDefaultPath.
      */
-    QString defaultRoot() const;
+    [[nodiscard]] QString defaultRoot() const;
 
     /**
      * Configures the base path which should be used if the relativeStorage property
@@ -174,7 +174,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * \see setStorageType
      * \since QGIS 3.22
      */
-    QString storageType() const;
+    [[nodiscard]] QString storageType() const;
 
     /**
      * Sets the authentication configuration ID to be used for the current external storage (if
@@ -187,7 +187,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Returns the authentication configuration ID used for the current external storage (if defined)
      * \since QGIS 3.22
      */
-    QString storageAuthConfigId() const;
+    [[nodiscard]] QString storageAuthConfigId() const;
 
     /**
      * Set \a messageBar to report messages
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Returns message bar used to report messages
      * \since QGIS 3.22
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
   signals:
     //! Emitted as soon as the current document changes

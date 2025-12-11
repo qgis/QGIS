@@ -50,11 +50,11 @@ class GUI_EXPORT QgsQsciLexerBash : public QsciLexer
     };
 
     QgsQsciLexerBash( QObject *parent = nullptr );
-    const char *language() const override;
-    const char *lexer() const override;
-    int lexerId() const override;
-    QString description( int style ) const override;
-    const char *keywords( int set ) const override;
+    [[nodiscard]] const char *language() const override;
+    [[nodiscard]] const char *lexer() const override;
+    [[nodiscard]] int lexerId() const override;
+    [[nodiscard]] QString description( int style ) const override;
+    [[nodiscard]] const char *keywords( int set ) const override;
 };
 
 class GUI_EXPORT QgsQsciLexerBatch : public QsciLexer
@@ -74,11 +74,11 @@ class GUI_EXPORT QgsQsciLexerBatch : public QsciLexer
     };
 
     QgsQsciLexerBatch( QObject *parent = nullptr );
-    const char *language() const override;
-    const char *lexer() const override;
-    int lexerId() const override;
-    QString description( int style ) const override;
-    const char *keywords( int set ) const override;
+    [[nodiscard]] const char *language() const override;
+    [[nodiscard]] const char *lexer() const override;
+    [[nodiscard]] int lexerId() const override;
+    [[nodiscard]] QString description( int style ) const override;
+    [[nodiscard]] const char *keywords( int set ) const override;
 };
 ///@endcond
 #endif
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsCodeEditorShell : public QgsCodeEditor
      * on all other platforms.
      */
     QgsCodeEditorShell( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, Qgis::ScriptLanguage language = Qgis::ScriptLanguage::Unknown );
-    Qgis::ScriptLanguage language() const override;
+    [[nodiscard]] Qgis::ScriptLanguage language() const override;
 
   protected:
     void initializeLexer() override;

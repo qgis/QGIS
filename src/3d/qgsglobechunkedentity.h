@@ -110,7 +110,7 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
     QgsGlobeEntity( Qgs3DMapSettings *mapSettings );
     ~QgsGlobeEntity() override;
 
-    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
+    [[nodiscard]] QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
   private slots:
     void invalidateMapImages();

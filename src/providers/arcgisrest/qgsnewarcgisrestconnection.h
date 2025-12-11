@@ -43,12 +43,12 @@ class QgsNewArcGisRestConnectionDialog : public QDialog, private Ui::QgsNewArcGi
     /**
      * Returns the current connection name.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the current connection url.
      */
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
   public slots:
 
@@ -70,7 +70,7 @@ class QgsNewArcGisRestConnectionDialog : public QDialog, private Ui::QgsNewArcGi
     /**
      * Returns the url.
      */
-    QUrl urlTrimmed() const SIP_SKIP;
+    [[nodiscard]] QUrl urlTrimmed() const SIP_SKIP;
 
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename

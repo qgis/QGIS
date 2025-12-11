@@ -35,43 +35,43 @@ class CORE_EXPORT QgsProjectionFactors
     /**
      * Returns TRUE if the factors are valid, or FALSE if they could not be calculated.
      */
-    bool isValid() const { return mIsValid; }
+    [[nodiscard]] bool isValid() const { return mIsValid; }
 
     //! Meridional scale at coordinate (λ,ϕ).
-    double meridionalScale() const { return mMeridionalScale; }
+    [[nodiscard]] double meridionalScale() const { return mMeridionalScale; }
 
     //! Parallel scale at coordinate (λ,ϕ).
-    double parallelScale() const { return mParallelScale; }
+    [[nodiscard]] double parallelScale() const { return mParallelScale; }
 
     //! Areal scale factor at coordinate (λ,ϕ).
-    double arealScale() const { return mArealScale; }
+    [[nodiscard]] double arealScale() const { return mArealScale; }
 
     //! Angular distortion at coordinate (λ,ϕ).
-    double angularDistortion() const { return mAngularDistortion; }
+    [[nodiscard]] double angularDistortion() const { return mAngularDistortion; }
 
     //! Meridian/parallel angle (in degrees), θ′, at coordinate (λ,ϕ).
-    double meridianParallelAngle() const { return mMeridianParallelAngle; }
+    [[nodiscard]] double meridianParallelAngle() const { return mMeridianParallelAngle; }
 
     //! Meridian convergence (in degrees) at coordinate (λ,ϕ). Sometimes also described as grid declination.
-    double meridianConvergence() const { return mMeridianConvergence; }
+    [[nodiscard]] double meridianConvergence() const { return mMeridianConvergence; }
 
     //! Maximum scale factor.
-    double tissotSemimajor() const { return mTissotSemimajor; }
+    [[nodiscard]] double tissotSemimajor() const { return mTissotSemimajor; }
 
     //! Minimum scale factor.
-    double tissotSemiminor() const { return mTissotSemiminor; }
+    [[nodiscard]] double tissotSemiminor() const { return mTissotSemiminor; }
 
     //! Partial derivative ∂x/∂λ of coordinate (λ,ϕ).
-    double dxDlam() const  { return mDxDlam; }
+    [[nodiscard]] double dxDlam() const  { return mDxDlam; }
 
     //! Partial derivative ∂x/∂ϕ of coordinate (λ,ϕ).
-    double dxDphi() const  { return mDxDphi; }
+    [[nodiscard]] double dxDphi() const  { return mDxDphi; }
 
     //! Partial derivative ∂y/∂λ of coordinate (λ,ϕ).
-    double dyDlam() const  { return mDyDlam; }
+    [[nodiscard]] double dyDlam() const  { return mDyDlam; }
 
     //!Partial derivative ∂y/∂ϕ of coordinate (λ,ϕ).
-    double dyDphi() const  { return mDyDphi; }
+    [[nodiscard]] double dyDphi() const  { return mDyDphi; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

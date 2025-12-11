@@ -60,10 +60,10 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRende
     //! Sets 3D symbol associated with the renderer. Takes ownership of the symbol
     void setSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
     //! Returns 3D symbol associated with the renderer
-    const QgsAbstract3DSymbol *symbol() const;
+    [[nodiscard]] const QgsAbstract3DSymbol *symbol() const;
 
-    QString type() const override { return "vector"; }
-    QgsVectorLayer3DRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override { return "vector"; }
+    [[nodiscard]] QgsVectorLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

@@ -94,7 +94,7 @@ class CORE_EXPORT QgsScaleBarRenderer
        *
        * \since QGIS 3.40
        */
-      bool isValid() const;
+      [[nodiscard]] bool isValid() const;
 
     };
 
@@ -111,32 +111,32 @@ class CORE_EXPORT QgsScaleBarRenderer
      * Returns the unique ID for this renderer.
      * \since QGIS 3.14
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Returns the user friendly, translated name for the renderer.
      * \since QGIS 3.14
      */
-    virtual QString visibleName() const = 0;
+    [[nodiscard]] virtual QString visibleName() const = 0;
 
     /**
      * Returns the scalebar rendering flags, which dictates the renderer's behavior.
      *
      * \since QGIS 3.14
      */
-    virtual Flags flags() const;
+    [[nodiscard]] virtual Flags flags() const;
 
     /**
      * Returns a sorting key value, where renderers with a lower sort key will be shown earlier in lists.
      *
      * Generally, subclasses should return QgsScaleBarRenderer::sortKey() as their sorting key.
      */
-    virtual int sortKey() const;
+    [[nodiscard]] virtual int sortKey() const;
 
     /**
      * Returns a clone of the renderer. The caller takes ownership of the returned value.
      */
-    virtual QgsScaleBarRenderer *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsScaleBarRenderer *clone() const = 0 SIP_FACTORY;
 
     /**
      * Draws the scalebar using the specified \a settings and \a scaleContext to a destination render \a context.
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsScaleBarRenderer
     /**
      * Returns the text used for the first label in the scalebar.
      */
-    QString firstLabelString( const QgsScaleBarSettings &settings ) const;
+    [[nodiscard]] QString firstLabelString( const QgsScaleBarSettings &settings ) const;
 
     /**
      * Returns the x-offset (in millimeters) used for the first label in the scalebar.
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsScaleBarRenderer
      * Returns the x-offset (in render context painter units) used for the first label in the scalebar.
      * \since QGIS 3.2
      */
-    double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context, const ScaleBarContext &scaleContext ) const;
+    [[nodiscard]] double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context, const ScaleBarContext &scaleContext ) const;
 
     /**
      * Returns a list of positions for each segment within the scalebar.
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsScaleBarRenderer
     /**
      * Returns a list of widths of each segment of the scalebar.
      */
-    QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
+    [[nodiscard]] QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
 
 };
 

@@ -325,12 +325,12 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
     /**
      * Returns the last error message encountered during the export.
      */
-    QString errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] QString errorMessage() const { return mErrorMessage; }
 
     /**
      * Returns a file path to use for temporary files required for Geospatial PDF creation.
      */
-    QString generateTemporaryFilepath( const QString &filename ) const;
+    [[nodiscard]] QString generateTemporaryFilepath( const QString &filename ) const;
 
     /**
      * Returns TRUE if the specified composition \a mode is supported for layers

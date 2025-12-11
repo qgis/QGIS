@@ -58,15 +58,15 @@ class _3D_EXPORT Qgs3DExportObject
       : mName( name ) {}
 
     //! Returns the object name
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
     //! Sets the object name
     void setName( const QString &name ) { mName = name; }
 
     //! Returns the object type
-    ObjectType type() const { return mType; }
+    [[nodiscard]] ObjectType type() const { return mType; }
 
     //! Returns whether object edges will look smooth
-    bool smoothEdges() const { return mSmoothEdges; }
+    [[nodiscard]] bool smoothEdges() const { return mSmoothEdges; }
     //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
 
@@ -89,7 +89,7 @@ class _3D_EXPORT Qgs3DExportObject
     //! Sets the texture image used by the object
     void setTextureImage( const QImage &image ) { this->mTextureImage = image; };
     //! Returns the texture image used by the object
-    QImage textureImage() const { return mTextureImage; }
+    [[nodiscard]] QImage textureImage() const { return mTextureImage; }
 
     /**
      *
@@ -104,16 +104,16 @@ class _3D_EXPORT Qgs3DExportObject
     QString saveMaterial( QTextStream &mtlOut, const QString &folder ) const;
 
     //! Returns the vertex coordinates
-    QVector<float> vertexPosition() const { return mVertexPosition; }
+    [[nodiscard]] QVector<float> vertexPosition() const { return mVertexPosition; }
 
     //! Returns the vertex normal coordinates
-    QVector<float> normals() const { return mNormals; }
+    [[nodiscard]] QVector<float> normals() const { return mNormals; }
 
     //! Returns the vertex texture coordinates
-    QVector<float> texturesUV() const { return mTexturesUV; }
+    [[nodiscard]] QVector<float> texturesUV() const { return mTexturesUV; }
 
     //! Returns the vertex indexes
-    QVector<unsigned int> indexes() const { return mIndexes; }
+    [[nodiscard]] QVector<unsigned int> indexes() const { return mIndexes; }
 
   private:
     //! Sets positions coordinates and does the translation, rotation and scaling

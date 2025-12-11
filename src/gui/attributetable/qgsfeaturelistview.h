@@ -100,7 +100,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \see QgsExpression
      */
-    const QString displayExpression() const;
+    [[nodiscard]] const QString displayExpression() const;
 
     /**
      * Returns a detailed message about errors while parsing a QgsExpression.

@@ -47,11 +47,11 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
                     const QString &description,
                     const QVector< QgsStacLink > &links );
 
-    Qgis::StacObjectType type() const override;
-    QString toHtml() const override;
+    [[nodiscard]] Qgis::StacObjectType type() const override;
+    [[nodiscard]] QString toHtml() const override;
 
     //! Returns a short descriptive one-line title for the Catalog.
-    QString title() const;
+    [[nodiscard]] QString title() const;
 
     //! Sets a short descriptive one-line \a title for the Catalog.
     void setTitle( const QString &title );
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
      * Returns a Detailed multi-line description to fully explain the Catalog.
      * CommonMark 0.29 syntax may be used for rich text representation.
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Sets a detailed multi-line \a description to fully explain the Catalog.
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
     void addConformanceClass( const QString &conformanceClass );
 
     //! Checks if the catalog is a STAC API conforming to the specified \a conformanceClass
-    bool conformsTo( const QString &conformanceClass ) const;
+    [[nodiscard]] bool conformsTo( const QString &conformanceClass ) const;
 
   protected:
     QString mTitle;

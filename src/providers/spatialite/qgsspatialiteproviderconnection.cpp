@@ -655,7 +655,7 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
     {
       // Release the resources
       GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
-      mHDS.release();
+      ( void ) mHDS.release();
     }
   }
   return row;

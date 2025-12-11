@@ -45,7 +45,7 @@ class GUI_EXPORT QgsRasterAttributeTableAddRowDialog : public QDialog, private U
     /**
      * Returns TRUE if the desired insertion position for the new row is after the currently selected row, FALSE if the insertion point is before.
      */
-    bool insertAfter() const;
+    [[nodiscard]] bool insertAfter() const;
 };
 
 #endif // QGSRASTERATTRIBUTETABLEADDROWDIALOG_H

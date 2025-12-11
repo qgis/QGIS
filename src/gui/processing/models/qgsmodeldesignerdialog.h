@@ -41,8 +41,8 @@ class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
     Q_OBJECT
   public:
     explicit QgsModelerToolboxModel( QObject *parent = nullptr );
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    Qt::DropActions supportedDragActions() const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::DropActions supportedDragActions() const override;
 };
 
 #endif
@@ -262,7 +262,7 @@ class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
 
   public:
     QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
-    QList<QgsProcessingModelChildDependency> value() const { return mValue; }
+    [[nodiscard]] QList<QgsProcessingModelChildDependency> value() const { return mValue; }
     void setValue( const QList<QgsProcessingModelChildDependency> &value );
   private slots:
 

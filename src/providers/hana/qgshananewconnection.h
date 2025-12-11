@@ -48,8 +48,8 @@ class QgsHanaNewConnection : public QDialog, private Ui::QgsHanaNewConnectionBas
     void accept() override;
 
   private:
-    QgsHanaConnectionType getCurrentConnectionType() const;
-    QString getDatabaseName() const;
+    [[nodiscard]] QgsHanaConnectionType getCurrentConnectionType() const;
+    [[nodiscard]] QString getDatabaseName() const;
     void resizeWidgets();
 
     void btnConnect_clicked();

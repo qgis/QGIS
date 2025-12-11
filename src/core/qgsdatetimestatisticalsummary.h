@@ -57,7 +57,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * are always calculated (e.g., count).
      * \see setStatistics
      */
-    Qgis::DateTimeStatistics statistics() const { return mStatistics; }
+    [[nodiscard]] Qgis::DateTimeStatistics statistics() const { return mStatistics; }
 
     /**
      * Sets flags which specify which statistics will be calculated. Some statistics
@@ -107,42 +107,42 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * \param stat statistic to return
      * \returns calculated value of statistic
      */
-    QVariant statistic( Qgis::DateTimeStatistic stat ) const;
+    [[nodiscard]] QVariant statistic( Qgis::DateTimeStatistic stat ) const;
 
     /**
      * Returns the calculated count of values.
      */
-    int count() const { return mCount; }
+    [[nodiscard]] int count() const { return mCount; }
 
     /**
      * Returns the number of distinct datetime values.
      */
-    int countDistinct() const { return mValues.count(); }
+    [[nodiscard]] int countDistinct() const { return mValues.count(); }
 
     /**
      * Returns the set of distinct datetime values.
      */
-    QSet< QDateTime > distinctValues() const { return mValues; }
+    [[nodiscard]] QSet< QDateTime > distinctValues() const { return mValues; }
 
     /**
      * Returns the number of missing (null) datetime values.
      */
-    int countMissing() const { return mCountMissing; }
+    [[nodiscard]] int countMissing() const { return mCountMissing; }
 
     /**
      * Returns the minimum (earliest) non-null datetime value.
      */
-    QDateTime min() const { return mMin; }
+    [[nodiscard]] QDateTime min() const { return mMin; }
 
     /**
      * Returns the maximum (latest) non-null datetime value.
      */
-    QDateTime max() const { return mMax; }
+    [[nodiscard]] QDateTime max() const { return mMax; }
 
     /**
      * Returns the range (interval between earliest and latest non-null datetime values).
      */
-    QgsInterval range() const;
+    [[nodiscard]] QgsInterval range() const;
 
     /**
      * Returns the friendly display name for a statistic

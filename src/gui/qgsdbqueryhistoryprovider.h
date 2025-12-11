@@ -76,7 +76,7 @@ class GUI_EXPORT QgsDatabaseQueryHistoryProvider : public QgsAbstractHistoryProv
   public:
     QgsDatabaseQueryHistoryProvider();
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
     QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) override SIP_FACTORY;
     void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) override;

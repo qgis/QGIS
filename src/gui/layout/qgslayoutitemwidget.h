@@ -84,10 +84,10 @@ class GUI_EXPORT QgsLayoutConfigObject : public QObject
     /**
      * Returns the current layout context coverage layer (if set).
      */
-    QgsVectorLayer *coverageLayer() const;
+    [[nodiscard]] QgsVectorLayer *coverageLayer() const;
 
     //! Returns the atlas for the layout, if available
-    QgsLayoutAtlas *layoutAtlas() const;
+    [[nodiscard]] QgsLayoutAtlas *layoutAtlas() const;
 
     /**
      * Links a new layout \a object to this QgsLayoutConfigObject. The object must be the same type as the existing
@@ -181,7 +181,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget : public QgsPanelWidget
     /**
      * Returns the current layout context coverage layer (if set).
      */
-    QgsVectorLayer *coverageLayer() const;
+    [[nodiscard]] QgsVectorLayer *coverageLayer() const;
 
     /**
      * Attempts to update the widget to show the properties
@@ -195,7 +195,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget : public QgsPanelWidget
     virtual bool setNewItem( QgsLayoutItem *item );
 
     //! Returns the atlas for the layout (if available)
-    QgsLayoutAtlas *layoutAtlas() const;
+    [[nodiscard]] QgsLayoutAtlas *layoutAtlas() const;
 
   private:
     QgsLayoutConfigObject *mConfigObject = nullptr;
@@ -220,7 +220,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget : public QWidget, private Ui::Qgs
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
 
     //! Returns the position mode
-    QgsLayoutItem::ReferencePoint positionMode() const;
+    [[nodiscard]] QgsLayoutItem::ReferencePoint positionMode() const;
 
     //! Determines if the background of the group box shall be shown
     void showBackgroundGroup( bool showGroup );

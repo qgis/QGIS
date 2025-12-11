@@ -48,13 +48,13 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     QgsDecorationItem( QObject *parent = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
-    bool enabled() const { return mEnabled; }
+    [[nodiscard]] bool enabled() const { return mEnabled; }
 
     /**
      * Returns the current placement for the item.
      * \see setPlacement()
      */
-    Placement placement() const { return mPlacement; }
+    [[nodiscard]] Placement placement() const { return mPlacement; }
 
     /**
      * Sets the placement of the item.

@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAttributeEditorSpacerElement : public QgsAttributeEditorEle
     /**
      * Returns TRUE if the spacer element will contain an horizontal line.
      */
-    bool drawLine() const;
+    [[nodiscard]] bool drawLine() const;
 
     /**
      * Sets a flag to define if the spacer element will contain an horizontal line.
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsAttributeEditorSpacerElement : public QgsAttributeEditorEle
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
-    QString typeIdentifier() const override;
+    [[nodiscard]] QString typeIdentifier() const override;
     bool mDrawLine = false;
 };
 

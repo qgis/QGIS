@@ -77,7 +77,7 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      * \see setBearingFormat()
      * \see bearingFormatChanged()
      */
-    const QgsBearingNumericFormat *bearingFormat() const;
+    [[nodiscard]] const QgsBearingNumericFormat *bearingFormat() const;
 
     /**
      * Sets the project geographic coordinate \a format, which controls how geographic coordinates associated with the project are displayed.
@@ -97,14 +97,14 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      * \see setGeographicCoordinateFormat()
      * \see geographicCoordinateFormatChanged()
      */
-    const QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() const;
+    [[nodiscard]] const QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() const;
 
     /**
      * Returns default coordinate type for the project.
      * \see setCoordinateType()
      * \since QGIS 3.28
      */
-    Qgis::CoordinateDisplayType coordinateType() const { return mCoordinateType; }
+    [[nodiscard]] Qgis::CoordinateDisplayType coordinateType() const { return mCoordinateType; }
 
     /**
      * Sets the default coordinate \a type for the project.
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      * \see coordinateAxisOrderChanged()
      * \since QGIS 3.28
      */
-    Qgis::CoordinateOrder coordinateAxisOrder() const { return mCoordinateAxisOrder; }
+    [[nodiscard]] Qgis::CoordinateOrder coordinateAxisOrder() const { return mCoordinateAxisOrder; }
 
     /**
      * Sets the default coordinate axis \a order to use when displaying coordinates for the project.
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      * \see setCoordinateCustomCrs()
      * \since QGIS 3.28
      */
-    QgsCoordinateReferenceSystem coordinateCustomCrs() const { return mCoordinateCustomCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem coordinateCustomCrs() const { return mCoordinateCustomCrs; }
 
     /**
      * Sets the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      * \note if not parented to a project object, an invalid CRS will be returned.
      * \since QGIS 3.28
      */
-    QgsCoordinateReferenceSystem coordinateCrs() const { return mCoordinateCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem coordinateCrs() const { return mCoordinateCrs; }
 
     /**
      * Reads the settings's state from a DOM element.

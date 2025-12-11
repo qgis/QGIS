@@ -40,12 +40,12 @@ class CORE_EXPORT QgsAbstractBabelFormat
     /**
      * Returns the format's name.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the format's capabilities.
      */
-    Qgis::BabelFormatCapabilities capabilities() const;
+    [[nodiscard]] Qgis::BabelFormatCapabilities capabilities() const;
 
     /**
      * Generates a command for importing data into a GPS format using babel.
@@ -58,11 +58,12 @@ class CORE_EXPORT QgsAbstractBabelFormat
      *
      * Returns an empty list if the format does not support imports (see capabilities()).
      */
-    virtual QStringList importCommand( const QString &babel,
-                                       Qgis::GpsFeatureType featureType,
-                                       const QString &input,
-                                       const QString &output,
-                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+    [[nodiscard]] virtual QStringList importCommand(
+      const QString &babel,
+      Qgis::GpsFeatureType featureType,
+      const QString &input,
+      const QString &output,
+      Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
     /**
      * Generates a command for exporting GPS data into a different format using babel.
@@ -75,11 +76,11 @@ class CORE_EXPORT QgsAbstractBabelFormat
      *
      * Returns an empty list if the format does not support exports (see capabilities()).
      */
-    virtual QStringList exportCommand( const QString &babel,
-                                       Qgis::GpsFeatureType featureType,
-                                       const QString &input,
-                                       const QString &output,
-                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+    [[nodiscard]] virtual QStringList exportCommand( const QString &babel,
+        Qgis::GpsFeatureType featureType,
+        const QString &input,
+        const QString &output,
+        Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
   protected:
 
@@ -130,18 +131,15 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
     /**
      * Returns the friendly description for the format.
      */
-    QString description() const { return mDescription; }
+    [[nodiscard]] QString description() const { return mDescription; }
 
     /**
      * Returns the list of known extensions for the format, e.g. "csv", "txt".
      */
-    QStringList extensions() const { return mExtensions; }
+    [[nodiscard]] QStringList extensions() const { return mExtensions; }
 
-    QStringList importCommand( const QString &babel,
-                               Qgis::GpsFeatureType featureType,
-                               const QString &input,
-                               const QString &output,
-                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+    [[nodiscard]] QStringList importCommand( const QString &babel, Qgis::GpsFeatureType featureType, const QString &input, const QString &output, Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+
   private:
     QString mDescription;
     QStringList mExtensions;

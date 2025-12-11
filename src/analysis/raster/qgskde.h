@@ -133,19 +133,19 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
   private:
     //! Calculate the value given to a point width a given distance for a specified kernel shape
-    double calculateKernelValue( double distance, double bandwidth, KernelShape shape, OutputValues outputType ) const;
+    [[nodiscard]] double calculateKernelValue( double distance, double bandwidth, KernelShape shape, OutputValues outputType ) const;
     //! Uniform kernel function
-    double uniformKernel( double distance, double bandwidth, OutputValues outputType ) const;
+    [[nodiscard]] double uniformKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Quartic kernel function
-    double quarticKernel( double distance, double bandwidth, OutputValues outputType ) const;
+    [[nodiscard]] double quarticKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Triweight kernel function
-    double triweightKernel( double distance, double bandwidth, OutputValues outputType ) const;
+    [[nodiscard]] double triweightKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Epanechnikov kernel function
-    double epanechnikovKernel( double distance, double bandwidth, OutputValues outputType ) const;
+    [[nodiscard]] double epanechnikovKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Triangular kernel function
-    double triangularKernel( double distance, double bandwidth, OutputValues outputType ) const;
+    [[nodiscard]] double triangularKernel( double distance, double bandwidth, OutputValues outputType ) const;
 
-    QgsRectangle calculateBounds() const;
+    [[nodiscard]] QgsRectangle calculateBounds() const;
 
     QgsFeatureSource *mSource = nullptr;
 
@@ -169,7 +169,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     //! Creates a new raster layer and initializes it to the no data value
     bool createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const;
-    int radiusSizeInPixels( double radius ) const;
+    [[nodiscard]] int radiusSizeInPixels( double radius ) const;
 
 #ifdef SIP_RUN
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );

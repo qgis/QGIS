@@ -57,19 +57,19 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
      */
     QgsRecentCoordinateReferenceSystemsModel( QObject *parent SIP_TRANSFERTHIS = nullptr, int subclassColumnCount SIP_PYARGREMOVE = 1 );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
     /**
      * Returns the CRS for the corresponding \a index.
      *
      * Returns an invalid CRS if the index is not valid.
      */
-    QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
 
   private slots:
 
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel : public QSortFil
      * Returns the underlying source model.
      * \note Not available in Python bindings
      */
-    const QgsRecentCoordinateReferenceSystemsModel *recentCoordinateReferenceSystemsModel() const SIP_SKIP;
+    [[nodiscard]] const QgsRecentCoordinateReferenceSystemsModel *recentCoordinateReferenceSystemsModel() const SIP_SKIP;
 
     /**
      * Set \a filters that affect how CRS are filtered.
@@ -130,16 +130,16 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel : public QSortFil
      * Returns any filters that affect how CRS are filtered.
      * \see setFilters()
      */
-    QgsCoordinateReferenceSystemProxyModel::Filters filters() const { return mFilters; }
+    [[nodiscard]] QgsCoordinateReferenceSystemProxyModel::Filters filters() const { return mFilters; }
 
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
      * Returns the CRS for the corresponding \a index.
      *
      * Returns an invalid CRS if the index is not valid.
      */
-    QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
 
   private:
     QgsRecentCoordinateReferenceSystemsModel *mModel = nullptr;

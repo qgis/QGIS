@@ -116,14 +116,14 @@ class QgsAttributes : public QVector<QVariant>
      * excluded from the map.
      * \note not available in Python bindings
      */
-    CORE_EXPORT QgsAttributeMap toMap() const SIP_SKIP;
+    [[nodiscard]] CORE_EXPORT QgsAttributeMap toMap() const SIP_SKIP;
 
     /**
      * Returns TRUE if the attribute at the specified index is an unset value.
      *
      * \see QgsUnsetAttributeValue
      */
-    bool isUnsetValue( int index ) const
+    [[nodiscard]] bool isUnsetValue( int index ) const
     {
       if ( index < 0 || index >= size() )
         return false;

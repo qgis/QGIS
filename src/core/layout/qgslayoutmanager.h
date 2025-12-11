@@ -90,18 +90,18 @@ class CORE_EXPORT QgsLayoutManager : public QgsAbstractProjectStoredObjectManage
     /**
      * Returns a list of all layouts contained in the manager.
      */
-    QList< QgsMasterLayoutInterface * > layouts() const;
+    [[nodiscard]] QList< QgsMasterLayoutInterface * > layouts() const;
 
     /**
      * Returns a list of all print layouts contained in the manager.
      */
-    QList< QgsPrintLayout * > printLayouts() const;
+    [[nodiscard]] QList< QgsPrintLayout * > printLayouts() const;
 
     /**
      * Returns the layout with a matching name, or NULLPTR if no matching layouts
      * were found.
      */
-    QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
+    [[nodiscard]] QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 
     /**
      * Reads the manager's state from a DOM element, restoring all layouts
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLayoutManager : public QgsAbstractProjectStoredObjectManage
      * Generates a unique title for a new layout of the specified \a type, which does not
      * clash with any already contained by the manager.
      */
-    QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
+    [[nodiscard]] QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
 
     /**
      * Accepts the specified style entity \a visitor, causing it to visit all style entities associated

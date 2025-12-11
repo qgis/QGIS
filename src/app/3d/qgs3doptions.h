@@ -36,7 +36,7 @@ class Qgs3DOptionsWidget : public QgsOptionsPageWidget, private Ui::Qgs3DOptions
      * Constructor for Qgs3DOptionsWidget with the specified \a parent widget.
      */
     Qgs3DOptionsWidget( QWidget *parent );
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     void apply() override;
 };
 
@@ -48,9 +48,9 @@ class Qgs3DOptionsFactory : public QgsOptionsWidgetFactory
   public:
     Qgs3DOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QString pagePositionHint() const override;
+    [[nodiscard]] QString pagePositionHint() const override;
 };
 
 

@@ -82,10 +82,10 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
      *
      * \see setLayer()
      */
-    QgsAnnotationLayer *layer() const;
+    [[nodiscard]] QgsAnnotationLayer *layer() const;
 
-    QString type() const override;
-    QgsAnnotationLayer3DRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsAnnotationLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -97,7 +97,7 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
      *
      * \see setAltitudeClamping()
      */
-    Qgis::AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    [[nodiscard]] Qgis::AltitudeClamping altitudeClamping() const { return mAltClamping; }
 
     /**
      * Sets the altitude \a clamping method, which determines the vertical position of annotations.
@@ -111,7 +111,7 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
      *
      * \see setZOffset()
      */
-    double zOffset() const { return mZOffset; }
+    [[nodiscard]] double zOffset() const { return mZOffset; }
 
     /**
      * Sets the z \a offset, which is a fixed offset amount which will be added to z values for the annotations.
@@ -125,7 +125,7 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
      *
      * \see setShowCalloutLines()
      */
-    bool showCalloutLines() const;
+    [[nodiscard]] bool showCalloutLines() const;
 
     /**
      * Sets whether callout lines are shown, vertically joining the annotations to the terrain.
@@ -150,7 +150,7 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
      * \see setCalloutLineColor()
      * \note Not available in Python bindings
      */
-    SIP_SKIP QColor calloutLineColor() const;
+    SIP_SKIP [[nodiscard]] QColor calloutLineColor() const;
 
     /**
      * Sets the callout line \a width.
@@ -166,14 +166,14 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
      * \see setCalloutLineWidth()
      * \note Not available in Python bindings
      */
-    SIP_SKIP double calloutLineWidth() const;
+    SIP_SKIP [[nodiscard]] double calloutLineWidth() const;
 
     /**
      * Returns the text format to use for rendering text annotations in 3D.
      *
      * \see setTextFormat()
      */
-    QgsTextFormat textFormat() const;
+    [[nodiscard]] QgsTextFormat textFormat() const;
 
     /**
      * Sets the text \a format to use for rendering text annotations in 3D.

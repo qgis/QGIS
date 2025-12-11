@@ -85,11 +85,11 @@ class CORE_EXPORT QgsDatabaseTableModel : public QAbstractItemModel
     explicit QgsDatabaseTableModel( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER, const QString &schema = QString(), QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     // QAbstractItemModel interface
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
 
     /**
      * Sets whether an optional empty table ("not set") option is present in the model.
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsDatabaseTableModel : public QAbstractItemModel
      * Returns TRUE if the model allows the empty table ("not set") choice.
      * \see setAllowEmptyTable()
      */
-    bool allowEmptyTable() const { return mAllowEmpty; }
+    [[nodiscard]] bool allowEmptyTable() const { return mAllowEmpty; }
 
   public slots:
 

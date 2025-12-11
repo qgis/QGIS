@@ -86,7 +86,7 @@ class TestQgsGrassCommand
       : command( c )
     {}
 
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
     Command command = AddFeature;
     // some commands (in case of multiple commands making single change) must not be verified
     bool verify = true;

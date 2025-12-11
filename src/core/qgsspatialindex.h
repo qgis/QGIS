@@ -190,7 +190,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * geometry features it is necessary to manually test the returned features for exact geometry intersection
      * when required.
      */
-    QList<QgsFeatureId> intersects( const QgsRectangle &rectangle ) const;
+    [[nodiscard]] QList<QgsFeatureId> intersects( const QgsRectangle &rectangle ) const;
 
     /**
      * Returns nearest neighbors to a \a point. The number of neighbors returned is specified
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * then the nearest neighbor test is performed based on the feature bounding boxes ONLY, so for non-point
      * geometry features this method is not guaranteed to return the actual closest neighbors.
      */
-    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors = 1, double maxDistance = 0 ) const;
+    [[nodiscard]] QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors = 1, double maxDistance = 0 ) const;
 
     /**
      * Returns nearest neighbors to a \a geometry. The number of neighbors returned is specified
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 3.8
      */
-    QList<QgsFeatureId> nearestNeighbor( const QgsGeometry &geometry, int neighbors = 1, double maxDistance = 0 ) const;
+    [[nodiscard]] QList<QgsFeatureId> nearestNeighbor( const QgsGeometry &geometry, int neighbors = 1, double maxDistance = 0 ) const;
 
 #ifndef SIP_RUN
 
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 3.6
      */
-    QgsGeometry geometry( QgsFeatureId id ) const;
+    [[nodiscard]] QgsGeometry geometry( QgsFeatureId id ) const;
 
 #else
 
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     /* debugging */
 
     //! Gets reference count - just for debugging!
-    QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
+    [[nodiscard]] QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 
   private:
 

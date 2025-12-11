@@ -77,32 +77,32 @@ class CORE_EXPORT sqlite3_statement_unique_ptr : public std::unique_ptr< sqlite3
     /**
      * Returns the name of \a column.
      */
-    QString columnName( int column ) const;
+    [[nodiscard]] QString columnName( int column ) const;
 
     /**
      * Returns the column value from the current statement row as a string.
      */
-    QString columnAsText( int column ) const;
+    [[nodiscard]] QString columnAsText( int column ) const;
 
     /**
      * Returns the column value from the current statement row as raw byte array.
      */
-    QByteArray columnAsBlob( int column ) const;
+    [[nodiscard]] QByteArray columnAsBlob( int column ) const;
 
     /**
      * Gets column value from the current statement row as a long long integer (64 bits).
      */
-    qlonglong columnAsInt64( int column ) const;
+    [[nodiscard]] qlonglong columnAsInt64( int column ) const;
 
     /**
      * Gets column value from the current statement row as a double.
      */
-    double columnAsDouble( int column ) const;
+    [[nodiscard]] double columnAsDouble( int column ) const;
 
     /**
      * Gets the number of columns that this statement returns.
      */
-    int columnCount() const;
+    [[nodiscard]] int columnCount() const;
 };
 
 
@@ -134,7 +134,7 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
     /**
      * Returns the most recent error message encountered by the database.
      */
-    QString errorMessage() const;
+    [[nodiscard]] QString errorMessage() const;
 
     /**
      * Prepares a \a sql statement, returning the result. The \a resultCode

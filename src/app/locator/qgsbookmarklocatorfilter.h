@@ -27,12 +27,12 @@ class APP_EXPORT QgsBookmarkLocatorFilter : public QgsLocatorFilter
 
   public:
     QgsBookmarkLocatorFilter( QObject *parent = nullptr );
-    QgsBookmarkLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "bookmarks" ); }
-    QString displayName() const override { return tr( "Spatial Bookmarks" ); }
-    Priority priority() const override { return Highest; }
-    QString prefix() const override { return QStringLiteral( "b" ); }
-    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+    [[nodiscard]] QgsBookmarkLocatorFilter *clone() const override;
+    [[nodiscard]] QString name() const override { return QStringLiteral( "bookmarks" ); }
+    [[nodiscard]] QString displayName() const override { return tr( "Spatial Bookmarks" ); }
+    [[nodiscard]] Priority priority() const override { return Highest; }
+    [[nodiscard]] QString prefix() const override { return QStringLiteral( "b" ); }
+    [[nodiscard]] QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;

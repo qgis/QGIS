@@ -175,7 +175,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.36
      */
-    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
+    [[nodiscard]] virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
 
     /**
      * Performs fuzzy distance comparison between this geometry and \a other using an \a epsilon.
@@ -190,12 +190,12 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.36
      */
-    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
+    [[nodiscard]] virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
 
     /**
      * Clones the geometry by performing a deep copy
      */
-    virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
 
     /**
      * Comparator for sorting of geometry.
@@ -212,14 +212,14 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns the minimal bounding box for the geometry
      */
-    virtual QgsRectangle boundingBox() const;
+    [[nodiscard]] virtual QgsRectangle boundingBox() const;
 
     /**
      * Returns the 3D bounding box for the geometry.
      *
      * \since QGIS 3.34
      */
-    virtual QgsBox3D boundingBox3D() const = 0;
+    [[nodiscard]] virtual QgsBox3D boundingBox3D() const = 0;
 
     //mm-sql interface
 
@@ -227,34 +227,34 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
      * 1 for a linestring and 2 for a polygon.
      */
-    virtual int dimension() const = 0;
+    [[nodiscard]] virtual int dimension() const = 0;
 
     /**
      * Returns a unique string representing the geometry type.
      * \see wkbType
      * \see wktTypeStr
      */
-    virtual QString geometryType() const = 0;
+    [[nodiscard]] virtual QString geometryType() const = 0;
 
     /**
      * Returns the WKB type of the geometry.
      * \see geometryType
      * \see wktTypeStr
      */
-    inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
+    [[nodiscard]] inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
 
     /**
      * Returns the WKT type string of the geometry.
      * \see geometryType
      * \see wkbType
      */
-    QString wktTypeStr() const;
+    [[nodiscard]] QString wktTypeStr() const;
 
     /**
      * Returns TRUE if the geometry is 3D and contains a z-value.
      * \see isMeasure
      */
-    bool is3D() const SIP_HOLDGIL
+    [[nodiscard]] bool is3D() const SIP_HOLDGIL
     {
       return QgsWkbTypes::hasZ( mWkbType );
     }
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns TRUE if the geometry contains m values.
      * \see is3D
      */
-    bool isMeasure() const SIP_HOLDGIL
+    [[nodiscard]] bool isMeasure() const SIP_HOLDGIL
     {
       return QgsWkbTypes::hasM( mWkbType );
     }
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
      * \returns boundary for geometry. May be NULLPTR for some geometry types.
      */
-    virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
 
     /**
      * Reorganizes the geometry into a normalized form (or "canonical" form).
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.16
      */
-    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
+    [[nodiscard]] virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 
     /**
      * Returns a WKB representation of the geometry.
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asGml3
      * \see asJson()
      */
-    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
+    [[nodiscard]] virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 
     /**
      * Returns a WKT representation of the geometry.
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asGml3()
      * \see asJson()
      */
-    virtual QString asWkt( int precision = 17 ) const = 0;
+    [[nodiscard]] virtual QString asWkt( int precision = 17 ) const = 0;
 
     /**
      * Returns a GML2 representation of the geometry.
@@ -392,13 +392,13 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
+    [[nodiscard]] virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
 
     /**
      * Returns a KML representation of the geometry.
      * \since QGIS 3.12
      */
-    virtual QString asKml( int precision = 17 ) const = 0;
+    [[nodiscard]] virtual QString asKml( int precision = 17 ) const = 0;
 
 
     //render pipeline
@@ -438,7 +438,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.16
      */
-    virtual QPainterPath asQPainterPath() const = 0;
+    [[nodiscard]] virtual QPainterPath asQPainterPath() const = 0;
 
     /**
      * Returns the vertex number corresponding to a vertex \a id.
@@ -449,7 +449,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns -1 if a corresponding vertex could not be found.
      *
      */
-    virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
+    [[nodiscard]] virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
 
     /**
      * Returns next vertex id and coordinates
@@ -469,17 +469,17 @@ class CORE_EXPORT QgsAbstractGeometry
      * Retrieves the sequence of geometries, rings and nodes.
      * \returns coordinate sequence
      */
-    virtual QgsCoordinateSequence coordinateSequence() const = 0;
+    [[nodiscard]] virtual QgsCoordinateSequence coordinateSequence() const = 0;
 
     /**
      * Returns the number of nodes contained in the geometry
      */
-    virtual int nCoordinates() const;
+    [[nodiscard]] virtual int nCoordinates() const;
 
     /**
      * Returns the point corresponding to a specified vertex id
      */
-    virtual QgsPoint vertexAt( QgsVertexId id ) const = 0;
+    [[nodiscard]] virtual QgsPoint vertexAt( QgsVertexId id ) const = 0;
 
     /**
      * Searches for the closest segment of the geometry to a given point.
@@ -540,7 +540,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see area()
      * \see perimeter()
      */
-    virtual double length() const;
+    [[nodiscard]] virtual double length() const;
 
     /**
      * Returns the planar, 2-dimensional perimeter of the geometry.
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see area()
      * \see length()
      */
-    virtual double perimeter() const;
+    [[nodiscard]] virtual double perimeter() const;
 
     /**
      * Returns the planar, 2-dimensional area of the geometry.
@@ -568,7 +568,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see length()
      * \see perimeter()
      */
-    virtual double area() const;
+    [[nodiscard]] virtual double area() const;
 
     /**
      * Returns the length of the segment of the geometry which begins at \a startVertex.
@@ -577,20 +577,20 @@ class CORE_EXPORT QgsAbstractGeometry
      * returned by this method are calculated using strictly Cartesian mathematics.
      *
      */
-    virtual double segmentLength( QgsVertexId startVertex ) const = 0;
+    [[nodiscard]] virtual double segmentLength( QgsVertexId startVertex ) const = 0;
 
     //! Returns the centroid of the geometry
-    virtual QgsPoint centroid() const;
+    [[nodiscard]] virtual QgsPoint centroid() const;
 
     /**
      * Returns TRUE if the geometry is empty
      */
-    virtual bool isEmpty() const;
+    [[nodiscard]] virtual bool isEmpty() const;
 
     /**
      * Returns TRUE if the geometry contains curved segments
      */
-    virtual bool hasCurvedSegments() const;
+    [[nodiscard]] virtual bool hasCurvedSegments() const;
 
     /**
      * Returns TRUE if the bounding box of this geometry intersects with a \a rectangle.
@@ -600,7 +600,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.20
      */
-    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const SIP_HOLDGIL;
+    [[nodiscard]] virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the bounding box of this geometry intersects with a \a box3d.
@@ -610,7 +610,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.34
      */
-    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const SIP_HOLDGIL;
+    [[nodiscard]] virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const SIP_HOLDGIL;
 
     /**
      * Returns a version of the geometry without curves. Caller takes ownership of
@@ -618,7 +618,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
     /**
      * Returns the geometry converted to the more generic curve type.
@@ -626,7 +626,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygon -> QgsMultiSurface
      * \returns the converted geometry. Caller takes ownership
     */
-    virtual QgsAbstractGeometry *toCurveType() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractGeometry *toCurveType() const = 0 SIP_FACTORY;
 
     /**
      * Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
@@ -650,7 +650,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
      * \param removeRedundantPoints if TRUE, then points which are redundant (e.g. they represent mid points on a straight line segment) will be skipped (since QGIS 3.38)
      */
-    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const = 0 SIP_FACTORY;
 
     /**
      * Simplifies the geometry by applying the Douglas Peucker simplification by distance
@@ -664,7 +664,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.38
     */
-    virtual QgsAbstractGeometry *simplifyByDistance( double tolerance ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractGeometry *simplifyByDistance( double tolerance ) const = 0 SIP_FACTORY;
 
     /**
      * Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a
@@ -694,24 +694,24 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param vertex the vertex id
      * \returns rotation in radians, clockwise from north
      */
-    virtual double vertexAngle( QgsVertexId vertex ) const = 0;
+    [[nodiscard]] virtual double vertexAngle( QgsVertexId vertex ) const = 0;
 
     /**
      * Returns the number of vertices of which this geometry is built.
      */
-    virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
+    [[nodiscard]] virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
 
     /**
      * Returns the number of rings of which this geometry is built.
      */
-    virtual int ringCount( int part = 0 ) const = 0;
+    [[nodiscard]] virtual int ringCount( int part = 0 ) const = 0;
 
     /**
      * Returns count of parts contained in the geometry.
      * \see vertexCount
      * \see ringCount
      */
-    virtual int partCount() const = 0;
+    [[nodiscard]] virtual int partCount() const = 0;
 
     /**
      * Adds a z-dimension to the geometry, initialized to a preset value.
@@ -779,7 +779,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.20
      */
-    virtual const QgsAbstractGeometry *simplifiedTypeRef() const SIP_HOLDGIL;
+    [[nodiscard]] virtual const QgsAbstractGeometry *simplifiedTypeRef() const SIP_HOLDGIL;
 
     /**
      * Checks validity of the geometry, and returns TRUE if the geometry is valid.
@@ -870,7 +870,7 @@ class CORE_EXPORT QgsAbstractGeometry
         QgsAbstractGeometry *operator*() const;
 
         //! Returns the part number of the current item.
-        int partNumber() const;
+        [[nodiscard]] int partNumber() const;
 
         bool operator==( part_iterator other ) const;
         bool operator!=( part_iterator other ) const { return !( *this == other ); }
@@ -906,7 +906,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note Not available in Python bindings
      * \since QGIS 3.6
      */
-    QgsGeometryConstPartIterator parts() const;
+    [[nodiscard]] QgsGeometryConstPartIterator parts() const;
 
     /**
      * \ingroup core
@@ -940,7 +940,7 @@ class CORE_EXPORT QgsAbstractGeometry
         const QgsAbstractGeometry *operator*() const;
 
         //! Returns the part number of the current item.
-        int partNumber() const;
+        [[nodiscard]] int partNumber() const;
 
         bool operator==( const_part_iterator other ) const;
         bool operator!=( const_part_iterator other ) const { return !( *this == other ); }
@@ -953,7 +953,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.6
      */
-    const_part_iterator const_parts_begin() const
+    [[nodiscard]] const_part_iterator const_parts_begin() const
     {
       return const_part_iterator( this, 0 );
     }
@@ -965,7 +965,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.6
      */
-    const_part_iterator const_parts_end() const;
+    [[nodiscard]] const_part_iterator const_parts_end() const;
 
 
     /**
@@ -1014,7 +1014,7 @@ class CORE_EXPORT QgsAbstractGeometry
         QgsPoint operator*() const;
 
         //! Returns vertex ID of the current item.
-        QgsVertexId vertexId() const;
+        [[nodiscard]] QgsVertexId vertexId() const;
 
         bool operator==( const vertex_iterator &other ) const;
         bool operator!=( const vertex_iterator &other ) const { return !( *this == other ); }
@@ -1027,7 +1027,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see vertices()
      *
      */
-    vertex_iterator vertices_begin() const
+    [[nodiscard]] vertex_iterator vertices_begin() const
     {
       return vertex_iterator( this, 0 );
     }
@@ -1039,7 +1039,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see vertices()
      *
      */
-    vertex_iterator vertices_end() const
+    [[nodiscard]] vertex_iterator vertices_end() const
     {
       return vertex_iterator( this, childCount() );
     }
@@ -1103,14 +1103,14 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \see parts()
      */
-    QgsVertexIterator vertices() const;
+    [[nodiscard]] QgsVertexIterator vertices() const;
 
     /**
      * Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
      * To create it, the geometry is default constructed and then the WKB is changed.
      * \see clone()
      */
-    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
   protected:
 
@@ -1120,7 +1120,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.20
      */
-    int sortIndex() const;
+    [[nodiscard]] int sortIndex() const;
 
     /**
      * Compares to an \a other geometry of the same class, and returns a integer
@@ -1138,25 +1138,25 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)
      * \note used for vertex_iterator implementation
      */
-    virtual bool hasChildGeometries() const;
+    [[nodiscard]] virtual bool hasChildGeometries() const;
 
     /**
      * Returns number of child geometries (for geometries with child geometries) or child points (for geometries without child geometries - i.e. curve / point)
      * \note used for vertex_iterator implementation
      */
-    virtual int childCount() const { return 0; }
+    [[nodiscard]] virtual int childCount() const { return 0; }
 
     /**
      * Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
      * \note used for vertex_iterator implementation
      */
-    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
+    [[nodiscard]] virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
 
     /**
      * Returns point at index (for geometries without child geometries - i.e. curve / point)
      * \note used for vertex_iterator implementation
      */
-    virtual QgsPoint childPoint( int index ) const;
+    [[nodiscard]] virtual QgsPoint childPoint( int index ) const;
 
   protected:
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
@@ -1170,7 +1170,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
      * if a more efficient bounding box calculation is available.
      */
-    virtual QgsRectangle calculateBoundingBox() const;
+    [[nodiscard]] virtual QgsRectangle calculateBoundingBox() const;
 
     /**
      * Calculates the minimal 3D bounding box for the geometry.
@@ -1178,7 +1178,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.34
      */
-    virtual QgsBox3D calculateBoundingBox3D() const;
+    [[nodiscard]] virtual QgsBox3D calculateBoundingBox3D() const;
 
     /**
      * Clears any cached parameters associated with the geometry, e.g., bounding boxes
@@ -1226,7 +1226,7 @@ class CORE_EXPORT QgsVertexIterator
     }
 
     //! Find out whether there are more vertices
-    bool hasNext() const
+    [[nodiscard]] bool hasNext() const
     {
       return g && g->vertices_end() != i;
     }
@@ -1275,7 +1275,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     }
 
     //! Find out whether there are more parts
-    bool hasNext() const SIP_HOLDGIL
+    [[nodiscard]] bool hasNext() const SIP_HOLDGIL
     {
       return g && g->parts_end() != i;
     }
@@ -1325,7 +1325,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     }
 
     //! Find out whether there are more parts
-    bool hasNext() const SIP_HOLDGIL
+    [[nodiscard]] bool hasNext() const SIP_HOLDGIL
     {
       return g && g->const_parts_end() != i;
     }

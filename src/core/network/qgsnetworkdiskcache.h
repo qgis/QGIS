@@ -54,13 +54,13 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
   public:
 
     //! \see QNetworkDiskCache::cacheDirectory
-    QString cacheDirectory() const;
+    [[nodiscard]] QString cacheDirectory() const;
 
     //! \see QNetworkDiskCache::setCacheDirectory
     void setCacheDirectory( const QString &cacheDir );
 
     //! \see QNetworkDiskCache::maximumCacheSize()
-    qint64 maximumCacheSize() const;
+    [[nodiscard]] qint64 maximumCacheSize() const;
 
     //! \see QNetworkDiskCache::setMaximumCacheSize()
     void setMaximumCacheSize( qint64 size );
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
     bool remove( const QUrl &url ) override;
 
     //! \see QNetworkDiskCache::cacheSize()
-    qint64 cacheSize() const override;
+    [[nodiscard]] qint64 cacheSize() const override;
 
     //! \see QNetworkDiskCache::prepare()
     QIODevice *prepare( const QNetworkCacheMetaData &metaData ) override;
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
     void insert( QIODevice *device ) override;
 
     //! \see QNetworkDiskCache::fileMetaData()
-    QNetworkCacheMetaData fileMetaData( const QString &fileName ) const;
+    [[nodiscard]] QNetworkCacheMetaData fileMetaData( const QString &fileName ) const;
 
     /**
      * Returns a smart cache size, in bytes, based on available free space

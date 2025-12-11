@@ -70,7 +70,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" ) );
 
     //! Returns TRUE if current project is offline
-    bool isOfflineProject() const;
+    [[nodiscard]] bool isOfflineProject() const;
 
 
     /**
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     int sqlQueryInt( sqlite3 *db, const QString &sql, int defaultValue );
     QString sqlQueryStr( sqlite3 *db, const QString &sql, QString &defaultValue );
     QList<int> sqlQueryInts( sqlite3 *db, const QString &sql );
-    QString sqlEscape( QString value ) const;
+    [[nodiscard]] QString sqlEscape( QString value ) const;
 
     QList<QgsField> sqlQueryAttributesAdded( sqlite3 *db, const QString &sql );
     QgsFeatureIds sqlQueryFeaturesRemoved( sqlite3 *db, const QString &sql );

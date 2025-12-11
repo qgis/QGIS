@@ -43,16 +43,16 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     {}
 
     void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
-    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
-    QString name() const override { return mName; }
-    QString displayName() const override { return mDisplayName.isEmpty() ? mName : mDisplayName; }
-    QString group() const override { return mGroup; }
-    QString groupId() const override { return mGroup; }
-    QString shortDescription() const override { return mShortDescription; }
-    QStringList tags() const override { return mTags; }
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
+    [[nodiscard]] QString name() const override { return mName; }
+    [[nodiscard]] QString displayName() const override { return mDisplayName.isEmpty() ? mName : mDisplayName; }
+    [[nodiscard]] QString group() const override { return mGroup; }
+    [[nodiscard]] QString groupId() const override { return mGroup; }
+    [[nodiscard]] QString shortDescription() const override { return mShortDescription; }
+    [[nodiscard]] QStringList tags() const override { return mTags; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
-    DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( mName, mGroup, mFlags, mTags.join( ',' ), mShortDescription, mDisplayName ); }
+    [[nodiscard]] DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( mName, mGroup, mFlags, mTags.join( ',' ), mShortDescription, mDisplayName ); }
 
     QString mName;
     QString mDisplayName;
@@ -76,11 +76,11 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
       qDeleteAll( mAlgs );
     }
 
-    QString id() const override { return mId; }
-    bool isActive() const override { return mActive; }
+    [[nodiscard]] QString id() const override { return mId; }
+    [[nodiscard]] bool isActive() const override { return mActive; }
 
-    QString name() const override { return mName; }
-    QString longName() const override { return QStringLiteral( "long name %1" ).arg( mName ); }
+    [[nodiscard]] QString name() const override { return mName; }
+    [[nodiscard]] QString longName() const override { return QStringLiteral( "long name %1" ).arg( mName ); }
     bool mActive = true;
 
   protected:

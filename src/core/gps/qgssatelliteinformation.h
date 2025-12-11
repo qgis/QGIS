@@ -92,7 +92,7 @@ class CORE_EXPORT QgsSatelliteInfo
      *
      * \since QGIS 3.30
      */
-    Qgis::GnssConstellation constellation() const { return mConstellation; }
+    [[nodiscard]] Qgis::GnssConstellation constellation() const { return mConstellation; }
 
     bool operator==( const QgsSatelliteInfo &other ) const
     {

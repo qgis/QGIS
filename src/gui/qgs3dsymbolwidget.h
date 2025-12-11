@@ -57,7 +57,7 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QWidget
     /**
      * Returns the symbol type handled by the widget.
      */
-    virtual QString symbolType() const = 0;
+    [[nodiscard]] virtual QString symbolType() const = 0;
 
   signals:
 
@@ -88,12 +88,12 @@ class GUI_EXPORT Qgs3DSymbolDialog : public QDialog
      *
      * Caller takes ownership of the returned symbol.
      */
-    QgsAbstract3DSymbol *symbol() const SIP_FACTORY;
+    [[nodiscard]] QgsAbstract3DSymbol *symbol() const SIP_FACTORY;
 
     /**
      * Returns a reference to the dialog's button box.
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   private:
     Qgs3DSymbolWidget *mWidget = nullptr;

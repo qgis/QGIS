@@ -54,7 +54,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
      * \see maximumScale()
      * \see setMinimumScale()
      */
-    double minimumScale() const;
+    [[nodiscard]] double minimumScale() const;
 
     /**
      * Returns the selected maximum scale (i.e. most "zoomed in" scale), or 0 if maximum scale is not set.
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
      * \see minimumScale()
      * \see setMaximumScale()
      */
-    double maximumScale() const;
+    [[nodiscard]] double maximumScale() const;
 
     /**
      * Call to reload the preset scales from the current project and apply them to the 2 scales combo boxes.

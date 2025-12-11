@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLayoutItemRenderContext
      *
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
+    [[nodiscard]] const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the current view zoom (scale factor). It can be
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsLayoutItemRenderContext
      * of 2.0 indicates that the view is zoomed in 200%, so rendered items must be
      * scaled by 50% in order to have a constant visible size.
      */
-    double viewScaleFactor() const { return mViewScaleFactor; }
+    [[nodiscard]] double viewScaleFactor() const { return mViewScaleFactor; }
 
   private:
 

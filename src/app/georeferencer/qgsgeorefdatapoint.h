@@ -52,7 +52,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
      *
      * \see setSourcePoint()
      */
-    QgsPointXY sourcePoint() const { return mGcpPoint.sourcePoint(); }
+    [[nodiscard]] QgsPointXY sourcePoint() const { return mGcpPoint.sourcePoint(); }
 
     /**
      * Sets the source coordinates.
@@ -68,7 +68,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
      *
      * \see setDestinationPoint()
      */
-    QgsPointXY destinationPoint() const { return mGcpPoint.destinationPoint(); }
+    [[nodiscard]] QgsPointXY destinationPoint() const { return mGcpPoint.destinationPoint(); }
 
     /**
      * Sets the destination coordinates.
@@ -87,14 +87,14 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     /**
      * Returns the destinationPoint() transformed to the given target CRS.
      */
-    QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
+    [[nodiscard]] QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 
     /**
      * Returns TRUE if the point is currently enabled.
      *
      * \see setEnabled()
      */
-    bool isEnabled() const { return mGcpPoint.isEnabled(); }
+    [[nodiscard]] bool isEnabled() const { return mGcpPoint.isEnabled(); }
 
     /**
      * Sets whether the point is currently enabled.
@@ -103,19 +103,19 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
      */
     void setEnabled( bool enabled );
 
-    bool isHovered() const { return mHovered; }
+    [[nodiscard]] bool isHovered() const { return mHovered; }
 
     void setHovered( bool hovered );
 
-    int id() const { return mId; }
+    [[nodiscard]] int id() const { return mId; }
     void setId( int id );
 
     bool contains( const QgsPointXY &p, QgsGcpPoint::PointType type, double &distance );
 
-    QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
-    QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
+    [[nodiscard]] QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
+    [[nodiscard]] QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
 
-    QPointF residual() const { return mResidual; }
+    [[nodiscard]] QPointF residual() const { return mResidual; }
     void setResidual( QPointF r );
 
     /**
@@ -123,9 +123,9 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
      *
      * \see setDestinationCrs()
      */
-    QgsCoordinateReferenceSystem destinationPointCrs() const { return mGcpPoint.destinationPointCrs(); }
+    [[nodiscard]] QgsCoordinateReferenceSystem destinationPointCrs() const { return mGcpPoint.destinationPointCrs(); }
 
-    QgsGcpPoint point() const { return mGcpPoint; }
+    [[nodiscard]] QgsGcpPoint point() const { return mGcpPoint; }
 
   public slots:
     void moveTo( QgsPointXY p, QgsGcpPoint::PointType type );

@@ -74,14 +74,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Returns the labeling settings. May return NULLPTR.
          */
-        QgsPalLayerSettings *settings() const { return mSettings.get(); }
+        [[nodiscard]] QgsPalLayerSettings *settings() const { return mSettings.get(); }
 
         /**
          * Determines if scale based labeling is active
          *
          * \returns TRUE if scale based labeling is active
          */
-        bool dependsOnScale() const { return !qgsDoubleNear( mMinimumScale, 0.0 ) || !qgsDoubleNear( mMaximumScale, 0 ); }
+        [[nodiscard]] bool dependsOnScale() const { return !qgsDoubleNear( mMinimumScale, 0.0 ) || !qgsDoubleNear( mMaximumScale, 0 ); }
 
         /**
          * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the label rule will be active.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * \see minimumScale()
          * \see setMaximumScale()
          */
-        double maximumScale() const { return mMaximumScale; }
+        [[nodiscard]] double maximumScale() const { return mMaximumScale; }
 
         /**
          * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the label rule will be active.
@@ -99,37 +99,37 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * \see maximumScale()
          * \see setMinimumScale()
          */
-        double minimumScale() const { return mMinimumScale; }
+        [[nodiscard]] double minimumScale() const { return mMinimumScale; }
 
         /**
          * A filter that will check if this rule applies
          * \returns An expression
          */
-        QString filterExpression() const { return mFilterExp; }
+        [[nodiscard]] QString filterExpression() const { return mFilterExp; }
 
         /**
          * A human readable description for this rule
          *
          * \returns Description
          */
-        QString description() const { return mDescription; }
+        [[nodiscard]] QString description() const { return mDescription; }
 
         /**
          * Returns if this rule is active
          *
          * \returns TRUE if the rule is active
          */
-        bool active() const { return mIsActive; }
+        [[nodiscard]] bool active() const { return mIsActive; }
 
         /**
          * Check if this rule is an ELSE rule
          *
          * \returns TRUE if this rule is an else rule
          */
-        bool isElse() const { return mElseRule; }
+        [[nodiscard]] bool isElse() const { return mElseRule; }
 
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
-        QString ruleKey() const { return mRuleKey; }
+        [[nodiscard]] QString ruleKey() const { return mRuleKey; }
 
         //! Sets new settings (or NULLPTR). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns A list of rules
          */
-        const QgsRuleBasedLabeling::RuleList &children() const { return mChildren; }
+        [[nodiscard]] const QgsRuleBasedLabeling::RuleList &children() const { return mChildren; }
 
         /**
          * Returns all children rules of this rule
@@ -203,14 +203,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns A list of descendant rules
          */
-        QgsRuleBasedLabeling::RuleList descendants() const;
+        [[nodiscard]] QgsRuleBasedLabeling::RuleList descendants() const;
 
         /**
          * The parent rule
          *
          * \returns Parent rule
          */
-        const QgsRuleBasedLabeling::Rule *parent() const SIP_SKIP { return mParent; }
+        [[nodiscard]] const QgsRuleBasedLabeling::Rule *parent() const SIP_SKIP { return mParent; }
 
         /**
          * The parent rule
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void removeChildAt( int i );
 
         //! Try to find a rule given its unique key
-        const QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) const;
+        [[nodiscard]] const QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) const;
 
         /**
          * Find a labeling rule thanks to its key.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * \param resetRuleKey TRUE if this rule and its children rule key need to be reset to new unique ones.
          * \returns new instance
          */
-        QgsRuleBasedLabeling::Rule *clone( bool resetRuleKey = true ) const SIP_FACTORY;
+        [[nodiscard]] QgsRuleBasedLabeling::Rule *clone( bool resetRuleKey = true ) const SIP_FACTORY;
 
         // load / save
 
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Returns TRUE if this rule or any of its children requires advanced composition effects
          * to render.
          */
-        bool requiresAdvancedEffects() const;
+        [[nodiscard]] bool requiresAdvancedEffects() const;
 
         /**
          * Returns TRUE if this rule or any of its children requires a non-default composition mode.
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \since QGIS 3.44
          */
-        bool hasNonDefaultCompositionMode() const;
+        [[nodiscard]] bool hasNonDefaultCompositionMode() const;
 
         /**
          * Accepts the specified symbology \a visitor, causing it to visit all child rules associated
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns If the rule will be evaluated at this scale
          */
-        bool isScaleOK( double scale ) const;
+        [[nodiscard]] bool isScaleOK( double scale ) const;
 
         /**
          * Initialize filters. Automatically called by setFilterExpression.
@@ -380,20 +380,20 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     ~QgsRuleBasedLabeling() override;
 
     QgsRuleBasedLabeling::Rule *rootRule();
-    const Rule *rootRule() const SIP_SKIP;
+    [[nodiscard]] const Rule *rootRule() const SIP_SKIP;
 
     //! Create the instance from a DOM element with saved configuration
     static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     // implementation of parent interface
 
-    QString type() const override;
-    QgsRuleBasedLabeling *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsRuleBasedLabeling *clone() const override SIP_FACTORY;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     //! \note not available in Python bindings
     QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
-    QStringList subProviders() const override;
-    QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    [[nodiscard]] QStringList subProviders() const override;
+    [[nodiscard]] QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
@@ -404,8 +404,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
      *
      */
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
-    bool requiresAdvancedEffects() const override;
-    bool hasNonDefaultCompositionMode() const override;
+    [[nodiscard]] bool requiresAdvancedEffects() const override;
+    [[nodiscard]] bool hasNonDefaultCompositionMode() const override;
     Q_DECL_DEPRECATED void toSld( QDomNode &parent, const QVariantMap &properties ) const override SIP_DEPRECATED;
     bool toSld( QDomNode &parent, QgsSldExportContext &context ) const override;
     void multiplyOpacity( double opacityFactor ) override;

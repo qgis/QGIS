@@ -65,50 +65,50 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     /**
      * Returns the total number of characters.
      */
-    int count() const { return static_cast< int >( mCharacterWidths.size() ); }
+    [[nodiscard]] int count() const { return static_cast< int >( mCharacterWidths.size() ); }
 
     /**
      * Returns the width of the character at the specified position.
      */
-    double characterWidth( int position ) const { return mCharacterWidths[position]; }
+    [[nodiscard]] double characterWidth( int position ) const { return mCharacterWidths[position]; }
 
     /**
      * Returns the character height of the character at the specified position (actually font metrics height, not individual character height).
      *
      * \since QGIS 3.28
      */
-    double characterHeight( int position ) const { return mCharacterHeights[position]; }
+    [[nodiscard]] double characterHeight( int position ) const { return mCharacterHeights[position]; }
 
     /**
      * Returns the descent of the character at the specified position.
      *
      * \since QGIS 3.28
      */
-    double characterDescent( int position ) const { return mCharacterDescents[position]; }
+    [[nodiscard]] double characterDescent( int position ) const { return mCharacterDescents[position]; }
 
     /**
      * Returns the maximum height of any character found in the text.
      *
      * \since QGIS 3.28
      */
-    double maximumCharacterHeight() const { return mMaximumCharacterHeight; }
+    [[nodiscard]] double maximumCharacterHeight() const { return mMaximumCharacterHeight; }
 
     /**
      * Returns the maximum descent of any character found in the text.
      *
      * \since QGIS 3.28
      */
-    double maximumCharacterDescent() const { return mMaximumCharacterDescent; }
+    [[nodiscard]] double maximumCharacterDescent() const { return mMaximumCharacterDescent; }
 
     /**
      * Returns the list of graphemes contained in the text.
      */
-    QStringList graphemes() const { return mGraphemes; }
+    [[nodiscard]] QStringList graphemes() const { return mGraphemes; }
 
     /**
      * Returns the grapheme at the specified \a index.
      */
-    QString grapheme( int index ) const { return mGraphemes.at( index ); }
+    [[nodiscard]] QString grapheme( int index ) const { return mGraphemes.at( index ); }
 
     /**
      * Sets the character \a formats associated with the text graphemes().
@@ -118,12 +118,12 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     /**
      * Returns the number of grapheme formats available.
      */
-    int graphemeFormatCount() const { return mGraphemeFormats.count(); }
+    [[nodiscard]] int graphemeFormatCount() const { return mGraphemeFormats.count(); }
 
     /**
      * Returns the character format for the grapheme at the specified \a index.
      */
-    QgsTextCharacterFormat graphemeFormat( int index ) const { return mGraphemeFormats.value( index ); }
+    [[nodiscard]] QgsTextCharacterFormat graphemeFormat( int index ) const { return mGraphemeFormats.value( index ); }
 
   private:
 

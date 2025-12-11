@@ -71,11 +71,11 @@ class GUI_EXPORT QgsAttributeActionDialog : public QWidget, private Ui::QgsAttri
 
     void init( const QgsActionManager &action, const QgsAttributeTableConfig &attributeTableConfig );
 
-    QList<QgsAction> actions() const;
+    [[nodiscard]] QList<QgsAction> actions() const;
 
-    bool showWidgetInAttributeTable() const;
+    [[nodiscard]] bool showWidgetInAttributeTable() const;
 
-    QgsAttributeTableConfig::ActionWidgetStyle attributeTableWidgetStyle() const;
+    [[nodiscard]] QgsAttributeTableConfig::ActionWidgetStyle attributeTableWidgetStyle() const;
 
   private slots:
     void moveUp();
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsAttributeActionDialog : public QWidget, private Ui::QgsAttri
     void insertRow( int row, const QgsAction &action );
     void insertRow( int row, Qgis::AttributeActionType type, const QString &name, const QString &actionText, const QString &iconPath, bool capture, const QString &shortTitle, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable = false );
     void swapRows( int row1, int row2 );
-    QgsAction rowToAction( int row ) const;
+    [[nodiscard]] QgsAction rowToAction( int row ) const;
 
     QString textForType( Qgis::AttributeActionType type );
 

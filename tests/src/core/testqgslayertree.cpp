@@ -81,12 +81,12 @@ class TestQgsLayerTree : public QObject
 
     void testRendererLegend( QgsFeatureRenderer *renderer );
 
-    bool childVisiblity( int childIndex ) const
+    [[nodiscard]] bool childVisiblity( int childIndex ) const
     {
       return mRoot->children().at( childIndex )->isVisible();
     }
 
-    bool visibilityChecked( int childIndex ) const
+    [[nodiscard]] bool visibilityChecked( int childIndex ) const
     {
       return mRoot->children().at( childIndex )->itemVisibilityChecked();
     }

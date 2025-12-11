@@ -51,9 +51,9 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 
     virtual ~QgsSymbolLayerAbstractMetadata() = default;
 
-    QString name() const { return mName; }
-    QString visibleName() const { return mVisibleName; }
-    Qgis::SymbolType type() const { return mType; }
+    [[nodiscard]] QString name() const { return mName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] Qgis::SymbolType type() const { return mType; }
 
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) = 0 SIP_FACTORY;
@@ -126,13 +126,13 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     {}
 
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    [[nodiscard]] QgsSymbolLayerCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    [[nodiscard]] QgsSymbolLayerWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const SIP_SKIP { return mCreateFromSldFunc; }
+    [[nodiscard]] QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const SIP_SKIP { return mCreateFromSldFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerPathResolverFunc pathResolverFunction() const SIP_SKIP { return mPathResolverFunc; }
+    [[nodiscard]] QgsSymbolLayerPathResolverFunc pathResolverFunction() const SIP_SKIP { return mPathResolverFunc; }
 
     //! \note not available in Python bindings
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QgsSymbolLayerRegistry &operator=( const QgsSymbolLayerRegistry &rh ) = delete;
 
     //! Returns metadata for specified symbol layer. Returns NULLPTR if not found
-    QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
+    [[nodiscard]] QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 
     //! Registers a new symbol layer type. Takes ownership of the metadata instance.
     bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata SIP_TRANSFER );
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     bool removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
 
     //! create a new instance of symbol layer given symbol layer name and properties
-    std::unique_ptr< QgsSymbolLayer > createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
+    [[nodiscard]] std::unique_ptr< QgsSymbolLayer > createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
     std::unique_ptr< QgsSymbolLayer > createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;

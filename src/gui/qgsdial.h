@@ -45,7 +45,7 @@ class GUI_EXPORT QgsDial : public QDial
     void setMaximum( const QVariant &max );
     void setSingleStep( const QVariant &step );
     void setValue( const QVariant &value );
-    QVariant variantValue() const;
+    [[nodiscard]] QVariant variantValue() const;
 
   signals:
     void valueChanged( const QVariant & );

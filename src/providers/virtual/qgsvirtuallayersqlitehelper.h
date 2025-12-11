@@ -43,7 +43,7 @@ class QgsScopedSqlite
     ~QgsScopedSqlite();
 
     bool interrupt();
-    sqlite3 *get() const;
+    [[nodiscard]] sqlite3 *get() const;
     sqlite3 *release();
     void reset( sqlite3 *db );
 
@@ -69,21 +69,21 @@ namespace Sqlite
 
       void reset();
 
-      int columnCount() const;
+      [[nodiscard]] int columnCount() const;
 
-      QString columnName( int i ) const;
+      [[nodiscard]] QString columnName( int i ) const;
 
-      int columnType( int i ) const;
+      [[nodiscard]] int columnType( int i ) const;
 
-      int columnInt( int i ) const;
+      [[nodiscard]] int columnInt( int i ) const;
 
-      long long columnInt64( int i ) const;
+      [[nodiscard]] long long columnInt64( int i ) const;
 
-      double columnDouble( int i ) const;
+      [[nodiscard]] double columnDouble( int i ) const;
 
-      QString columnText( int i ) const;
+      [[nodiscard]] QString columnText( int i ) const;
 
-      QByteArray columnBlob( int i ) const;
+      [[nodiscard]] QByteArray columnBlob( int i ) const;
 
       sqlite3_stmt *stmt();
 

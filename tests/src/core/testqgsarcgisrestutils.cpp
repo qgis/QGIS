@@ -68,7 +68,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testParsePolylineZM();
 
   private:
-    QVariantMap jsonStringToMap( const QString &string ) const;
+    [[nodiscard]] QVariantMap jsonStringToMap( const QString &string ) const;
 };
 
 

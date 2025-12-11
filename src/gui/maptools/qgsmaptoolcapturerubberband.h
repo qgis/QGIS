@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
      * Returns if the curve defined by the rubber band is complete :
      * has more than 2 points for circular string and more than 1 point for linear string
      */
-    bool curveIsComplete() const;
+    [[nodiscard]] bool curveIsComplete() const;
 
     /**
      * Resets the rubber band with the specified geometry type
@@ -73,16 +73,16 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
     int pointsCount();
 
     //! Returns the type of the curve (linear string or circular string)
-    Qgis::WkbType stringType() const;
+    [[nodiscard]] Qgis::WkbType stringType() const;
 
     //! Sets the type of the curve (linear string or circular string)
     void setStringType( Qgis::WkbType type );
 
     //! Returns the last point of the rubber band
-    QgsPoint lastPoint() const;
+    [[nodiscard]] QgsPoint lastPoint() const;
 
     //! Returns the point of the rubber band at position from end
-    QgsPoint pointFromEnd( int posFromEnd ) const;
+    [[nodiscard]] QgsPoint pointFromEnd( int posFromEnd ) const;
 
     //! Removes the last point of the rrubber band
     void removeLastPoint();

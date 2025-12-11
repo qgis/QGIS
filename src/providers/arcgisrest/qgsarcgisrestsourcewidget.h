@@ -31,18 +31,18 @@ class QgsArcGisRestSourceWidget : public QgsProviderSourceWidget, private Ui::Qg
     QgsArcGisRestSourceWidget( const QString &providerKey, QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri ) override;
-    QString sourceUri() const override;
+    [[nodiscard]] QString sourceUri() const override;
 
     void setUsername( const QString &username );
     void setPassword( const QString &password );
     void setAuthCfg( const QString &id );
 
-    QString username() const;
-    QString password() const;
-    QString authcfg() const;
+    [[nodiscard]] QString username() const;
+    [[nodiscard]] QString password() const;
+    [[nodiscard]] QString authcfg() const;
 
     void setReferer( const QString &referer );
-    QString referer() const;
+    [[nodiscard]] QString referer() const;
 
   private:
     const QString mProviderKey;

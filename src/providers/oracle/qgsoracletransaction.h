@@ -37,7 +37,7 @@ class QgsOracleTransaction : public QgsTransaction
 
     bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
 
-    QgsOracleConn *connection() const { return mConn; }
+    [[nodiscard]] QgsOracleConn *connection() const { return mConn; }
 
   private:
     QgsOracleConn *mConn = nullptr;

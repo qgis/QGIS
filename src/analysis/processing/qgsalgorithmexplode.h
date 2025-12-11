@@ -32,26 +32,26 @@ class QgsExplodeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
     QgsExplodeAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
-    QList<int> inputLayerTypes() const override;
-    Qgis::ProcessingSourceType outputLayerType() const override;
-    QgsExplodeAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
+    [[nodiscard]] QList<int> inputLayerTypes() const override;
+    [[nodiscard]] Qgis::ProcessingSourceType outputLayerType() const override;
+    [[nodiscard]] QgsExplodeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QString outputName() const override;
-    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
+    [[nodiscard]] QString outputName() const override;
+    [[nodiscard]] Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-    QgsFeatureSink::SinkFlags sinkFlags() const override;
+    [[nodiscard]] Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
+    [[nodiscard]] QgsFeatureSink::SinkFlags sinkFlags() const override;
 
-    std::vector<QgsGeometry> extractAsParts( const QgsGeometry &geometry ) const;
+    [[nodiscard]] std::vector<QgsGeometry> extractAsParts( const QgsGeometry &geometry ) const;
     std::vector<QgsGeometry> curveAsSingleSegments( const QgsCurve *curve, bool useCompoundCurves = false ) const;
 };
 

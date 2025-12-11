@@ -136,22 +136,22 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     /**
      * Returns the connection name.
      */
-    QString connectionName() const;
+    [[nodiscard]] QString connectionName() const;
 
     /**
      * Returns connection info string.
      */
-    QString connectionInfo() const;
+    [[nodiscard]] QString connectionInfo() const;
 
     /**
      * Returns a string representing the service type, e.g. "WMS".
      */
-    QString service() const;
+    [[nodiscard]] QString service() const;
 
     /**
      * Returns the connection uri.
      */
-    QgsDataSourceUri uri() const;
+    [[nodiscard]] QgsDataSourceUri uri() const;
 
     /**
      * Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri \a uri.

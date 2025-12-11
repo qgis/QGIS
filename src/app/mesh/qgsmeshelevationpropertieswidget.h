@@ -31,17 +31,17 @@ class QgsMeshGroupFixedElevationRangeModel : public QAbstractItemModel
 
   public:
     QgsMeshGroupFixedElevationRangeModel( QObject *parent );
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
     void setLayerData( QgsMeshLayer *layer, const QMap<int, QgsDoubleRange> &ranges );
-    QMap<int, QgsDoubleRange> rangeData() const { return mRanges; }
+    [[nodiscard]] QMap<int, QgsDoubleRange> rangeData() const { return mRanges; }
 
   private:
     int mGroupCount = 0;
@@ -79,7 +79,7 @@ class QgsMeshElevationPropertiesWidget : public QgsMapLayerConfigWidget, private
     void calculateRangeByExpression( bool isUpper );
 
   private:
-    QgsExpressionContext createExpressionContextForGroup( int group ) const;
+    [[nodiscard]] QgsExpressionContext createExpressionContextForGroup( int group ) const;
 
     QgsMeshLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
@@ -96,10 +96,10 @@ class QgsMeshElevationPropertiesWidgetFactory : public QObject, public QgsMapLay
     explicit QgsMeshElevationPropertiesWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-    bool supportLayerPropertiesDialog() const override;
-    bool supportsStyleDock() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportsStyleDock() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
-    QString layerPropertiesPagePositionHint() const override;
+    [[nodiscard]] QString layerPropertiesPagePositionHint() const override;
 };
 
 

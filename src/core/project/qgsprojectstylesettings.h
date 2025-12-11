@@ -64,7 +64,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \returns a symbol pointer or NULLPTR if there is no default set
      * \note the symbol ownership is transferred to the caller
      */
-    QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const SIP_FACTORY;
+    [[nodiscard]] QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const SIP_FACTORY;
 
     /**
      * Sets the project default symbol for a given type.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \returns a color ramp pointer or NULLPTR if there is no default set
      * \note the color ramp ownership is transferred to the caller
      */
-    QgsColorRamp *defaultColorRamp() const SIP_FACTORY;
+    [[nodiscard]] QgsColorRamp *defaultColorRamp() const SIP_FACTORY;
 
     /**
      * Sets the project default color ramp.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * Returns the project default text format.
      * \note if no default is defined, the returned format will be invalid
      */
-    QgsTextFormat defaultTextFormat() const;
+    [[nodiscard]] QgsTextFormat defaultTextFormat() const;
 
     /**
      * Sets the project default text format.
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     /**
      * Returns whether the default symbol fill color is randomized.
      */
-    bool randomizeDefaultSymbolColor() const { return mRandomizeDefaultSymbolColor; }
+    [[nodiscard]] bool randomizeDefaultSymbolColor() const { return mRandomizeDefaultSymbolColor; }
 
     /**
      * Sets whether the default symbol fill color is randomized.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     /**
      * Returns the default symbol opacity.
      */
-    double defaultSymbolOpacity() const { return mDefaultSymbolOpacity; }
+    [[nodiscard]] double defaultSymbolOpacity() const { return mDefaultSymbolOpacity; }
 
     /**
      * Sets the default symbol opacity.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \see setColorModel()
      * \since QGIS 3.40
      */
-    Qgis::ColorModel colorModel() const;
+    [[nodiscard]] Qgis::ColorModel colorModel() const;
 
     /**
      * Set the project's current color space to \a colorSpace. \a colorSpace must be a valid RGB or CMYK color space.
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \see setColorSpace()
      * \since QGIS 3.40
      */
-    QColorSpace colorSpace() const;
+    [[nodiscard]] QColorSpace colorSpace() const;
 
     /**
      * Reads the settings's state from a DOM element.
@@ -231,14 +231,14 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \see addStyleDatabasePath()
      * \see setStyleDatabasePaths()
      */
-    QStringList styleDatabasePaths() const { return mStyleDatabases; }
+    [[nodiscard]] QStringList styleDatabasePaths() const { return mStyleDatabases; }
 
     /**
      * Returns a list of all the styles associated with the project.
      *
      * \see styleDatabasePaths()
      */
-    QList< QgsStyle * > styles() const;
+    [[nodiscard]] QList< QgsStyle * > styles() const;
 
     /**
      * Returns a reference to the style database associated with the project with matching file \a path.
@@ -396,14 +396,14 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
      */
     explicit QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * Returns the style at the corresponding \a index.
      * \see indexFromStyle()
      */
-    QgsStyle *styleFromIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsStyle *styleFromIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the model index corresponding to a \a style.
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
      *
      * \see setShowDefaultStyle()
      */
-    bool showDefaultStyle() const { return mShowDefault; }
+    [[nodiscard]] bool showDefaultStyle() const { return mShowDefault; }
 
   private slots:
     void styleDatabaseAboutToBeAdded( const QString &path );
@@ -471,14 +471,14 @@ class CORE_EXPORT QgsProjectStyleDatabaseProxyModel : public QSortFilterProxyMod
      */
     QgsProjectStyleDatabaseProxyModel( QgsProjectStyleDatabaseModel *model, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
      * Returns the current filters used for filtering available style.
      *
      * \see setFilters()
      */
-    QgsProjectStyleDatabaseProxyModel::Filters filters() const;
+    [[nodiscard]] QgsProjectStyleDatabaseProxyModel::Filters filters() const;
 
     /**
      * Sets the current \a filters used for filtering available styles.

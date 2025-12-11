@@ -57,7 +57,7 @@ class GUI_EXPORT QgsProjectStorageGuiRegistry
     QgsProjectStorageGuiProvider *projectStorageFromUri( const QString &uri );
 
     //! Returns a list of registered project storage implementations
-    QList<QgsProjectStorageGuiProvider *> projectStorages() const;
+    [[nodiscard]] QList<QgsProjectStorageGuiProvider *> projectStorages() const;
 
     //! Registers a storage backend and takes ownership of it
     void registerProjectStorage( QgsProjectStorageGuiProvider *storage SIP_TRANSFER );

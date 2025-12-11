@@ -56,10 +56,10 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
      */
     QgsProjectStoredObjectManagerModelBase( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   protected slots:
 
@@ -81,10 +81,10 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     virtual void objectAddedInternal( const QString & ) {}
     virtual void objectRemovedInternal( const QString & ) {}
 
-    virtual int rowCountInternal( const QModelIndex & ) const { return 0; }
-    virtual QVariant dataInternal( const QModelIndex &, int ) const { return QVariant(); }
+    [[nodiscard]] virtual int rowCountInternal( const QModelIndex & ) const { return 0; }
+    [[nodiscard]] virtual QVariant dataInternal( const QModelIndex &, int ) const { return QVariant(); }
     virtual bool setDataInternal( const QModelIndex &, const QVariant &, int = Qt::EditRole ) { return false; }
-    virtual Qt::ItemFlags flagsInternal( const QModelIndex & ) const { return Qt::ItemFlags();}
+    [[nodiscard]] virtual Qt::ItemFlags flagsInternal( const QModelIndex & ) const { return Qt::ItemFlags();}
 #endif
 ///@endcond
 };
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredOb
      * Returns the object at the corresponding \a index.
      * \see indexFromObject()
      */
-    T *objectFromIndex( const QModelIndex &index ) const;
+    [[nodiscard]] T *objectFromIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the model index corresponding to an \a object.
@@ -131,15 +131,15 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredOb
      * Returns TRUE if the model allows the empty object ("not set") choice.
      * \see setAllowEmptyObject()
      */
-    bool allowEmptyObject() const { return mAllowEmpty; }
+    [[nodiscard]] bool allowEmptyObject() const { return mAllowEmpty; }
 
   protected:
 
 ///@cond PRIVATE
-    int rowCountInternal( const QModelIndex &parent ) const override;
-    QVariant dataInternal( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCountInternal( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant dataInternal( const QModelIndex &index, int role ) const override;
     bool setDataInternal( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flagsInternal( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flagsInternal( const QModelIndex &index ) const override;
 
     void objectAboutToBeAddedInternal( const QString &name ) override;
     void objectAboutToBeRemovedInternal( const QString &name ) override;
@@ -179,15 +179,15 @@ class CORE_EXPORT QgsProjectStoredObjectManagerProxyModelBase : public QSortFilt
      * Constructor for QgsProjectStoredObjectManagerProxyModelBase.
      */
     explicit QgsProjectStoredObjectManagerProxyModelBase( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
      * Returns the current filter string, if set.
      *
      * \see setFilterString()
      */
-    QString filterString() const { return mFilterString; }
+    [[nodiscard]] QString filterString() const { return mFilterString; }
 
   public slots:
 
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerProxyModelBase : public QSortFilt
      *
      * Subclasses should override this method instead of filterAcceptsRow().
      */
-    virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
+    [[nodiscard]] virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
 
     //! Filter string
     QString mFilterString;
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerProxyModel : public QgsProjectSto
 
   protected:
 
-    bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
 
 };
 

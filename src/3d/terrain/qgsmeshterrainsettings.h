@@ -46,13 +46,13 @@ class _3D_EXPORT QgsMeshTerrainSettings : public QgsAbstractTerrainSettings
 
     QgsMeshTerrainSettings();
     ~QgsMeshTerrainSettings() override;
-    QgsMeshTerrainSettings *clone() const final SIP_FACTORY;
-    QString type() const final;
+    [[nodiscard]] QgsMeshTerrainSettings *clone() const final SIP_FACTORY;
+    [[nodiscard]] QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     void resolveReferences( const QgsProject *project ) final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
-    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
+    [[nodiscard]] std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
 
     /**
      * Sets the mesh \a layer with elevation model to be used for terrain generation.
@@ -65,14 +65,14 @@ class _3D_EXPORT QgsMeshTerrainSettings : public QgsAbstractTerrainSettings
      *
      * \see setLayer()
      */
-    QgsMeshLayer *layer() const;
+    [[nodiscard]] QgsMeshLayer *layer() const;
 
     /**
      * Returns the symbol used to render the mesh as terrain.
      *
      * \see setSymbol()
      */
-    QgsMesh3DSymbol *symbol() const;
+    [[nodiscard]] QgsMesh3DSymbol *symbol() const;
 
     /**
      * Sets the symbol used to render the mesh as terrain.

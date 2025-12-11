@@ -62,21 +62,21 @@ class CORE_EXPORT QgsPdfRenderer
     /**
      * Returns the file path of the associated PDF file.
      */
-    QString path() const { return mPath; }
+    [[nodiscard]] QString path() const { return mPath; }
 
     /**
      * Returns the number of pages in the PDF.
      *
      * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
      */
-    int pageCount() const SIP_THROW( QgsNotSupportedException );
+    [[nodiscard]] int pageCount() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns the media box for the specified page. Units are in PDF points.
      *
      * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
      */
-    QRectF pageMediaBox( int pageNumber ) const SIP_THROW( QgsNotSupportedException );
+    [[nodiscard]] QRectF pageMediaBox( int pageNumber ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Renders the PDF from the specified \a path to a \a painter.

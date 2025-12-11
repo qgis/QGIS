@@ -53,7 +53,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     /**
      * Returns the current displayed state of the button.
      */
-    State state() const { return mState; }
+    [[nodiscard]] State state() const { return mState; }
 
     /**
      * Sets the field associated with this button. This is used to customize the widget menu

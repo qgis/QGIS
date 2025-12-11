@@ -72,17 +72,17 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     /**
      * Returns the schema name
      */
-    QString schema() const;
+    [[nodiscard]] QString schema() const;
 
     /**
      * Returns the table name
      */
-    QString tableName() const;
+    [[nodiscard]] QString tableName() const;
 
     /**
      * Returns the connection URI
      */
-    QString connectionUri() const;
+    [[nodiscard]] QString connectionUri() const;
 
     /**
      * Creates and returns a (possibly NULLPTR) layer from the connection URI and schema/table information
@@ -93,14 +93,14 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      * Returns the (possibly NULLPTR) properties of the table this fields belong to.
      * \since QGIS 3.16
      */
-    QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
+    [[nodiscard]] QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
 
     /**
      * Returns TRUE if the connection supports renaming fields.
      *
      * \since QGIS 3.28
      */
-    bool canRenameFields() const { return mCanRename; }
+    [[nodiscard]] bool canRenameFields() const { return mCanRename; }
 
   private:
 
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
      *
      * \since QGIS 3.26
      */
-    QgsField field() const { return mField; }
+    [[nodiscard]] QgsField field() const { return mField; }
 
     bool equal( const QgsDataItem *other ) override;
 

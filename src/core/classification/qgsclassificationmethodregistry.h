@@ -53,10 +53,10 @@ class CORE_EXPORT QgsClassificationMethodRegistry
     std::unique_ptr< QgsClassificationMethod > method( const QString &id );
 
     //! Returns a map <name, id> of all registered methods.
-    QMap<QString, QString> methodNames() const;
+    [[nodiscard]] QMap<QString, QString> methodNames() const;
 
     //! Returns the icon for a given method id
-    QIcon icon( const QString &id ) const;
+    [[nodiscard]] QIcon icon( const QString &id ) const;
 
   private:
 

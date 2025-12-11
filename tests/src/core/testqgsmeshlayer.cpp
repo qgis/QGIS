@@ -57,7 +57,7 @@ class TestQgsMeshLayer : public QgsTest
     QgsMeshLayer *mMemory1DLayer = nullptr;
     QgsMeshLayer *mMdal1DLayer = nullptr;
     QgsMeshLayer *mMdal3DLayer = nullptr;
-    QString readFile( const QString &fname ) const;
+    [[nodiscard]] QString readFile( const QString &fname ) const;
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

@@ -70,7 +70,7 @@ class CORE_EXPORT QgsElevationProfileManagerModel : public QgsProjectStoredObjec
      * Returns the profile at the corresponding \a index.
      * \see indexFromProfile()
      */
-    QgsElevationProfile *profileFromIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsElevationProfile *profileFromIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the model index corresponding to a \a profile.

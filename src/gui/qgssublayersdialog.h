@@ -137,17 +137,17 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     /**
      * If we should display the add to group checkbox
      */
-    bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
+    [[nodiscard]] bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
 
     /**
      * If we should add layers in a group
      */
-    bool addToGroupCheckbox() const { return mCbxAddToGroup->isChecked(); }
+    [[nodiscard]] bool addToGroupCheckbox() const { return mCbxAddToGroup->isChecked(); }
 
     /**
      * Returns column with count or -1
      */
-    int countColumn() const { return mShowCount ? 2 : -1; }
+    [[nodiscard]] int countColumn() const { return mShowCount ? 2 : -1; }
 
   public slots:
     int exec() override;

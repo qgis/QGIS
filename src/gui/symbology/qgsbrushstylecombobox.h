@@ -33,7 +33,7 @@ class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox
   public:
     QgsBrushStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qt::BrushStyle brushStyle() const;
+    [[nodiscard]] Qt::BrushStyle brushStyle() const;
 
     void setBrushStyle( Qt::BrushStyle style );
 

@@ -68,7 +68,7 @@ class CORE_EXPORT QgsProjectStorage
      *
      * \since QGIS 3.22
      */
-    virtual bool isSupportedUri( const QString &uri ) const;
+    [[nodiscard]] virtual bool isSupportedUri( const QString &uri ) const;
 
     //! Returns list of all projects for given URI (specific to each storage backend)
     virtual QStringList listProjects( const QString &uri ) = 0;

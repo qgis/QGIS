@@ -63,15 +63,15 @@ class _3D_EXPORT QgsMeshLayer3DRenderer : public QgsAbstract3DRenderer
     //! Sets vector layer associated with the renderer
     void setLayer( QgsMeshLayer *layer );
     //! Returns mesh layer associated with the renderer
-    QgsMeshLayer *layer() const;
+    [[nodiscard]] QgsMeshLayer *layer() const;
 
     //! Sets 3D symbol associated with the renderer
     void setSymbol( QgsMesh3DSymbol *symbol SIP_TRANSFER );
     //! Returns 3D symbol associated with the renderer
-    const QgsMesh3DSymbol *symbol() const;
+    [[nodiscard]] const QgsMesh3DSymbol *symbol() const;
 
-    QString type() const override { return "mesh"; }
-    QgsMeshLayer3DRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override { return "mesh"; }
+    [[nodiscard]] QgsMeshLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

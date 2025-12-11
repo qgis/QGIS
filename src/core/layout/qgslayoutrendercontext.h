@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setFlag()
      * \see testFlag()
      */
-    Qgis::LayoutRenderFlags flags() const;
+    [[nodiscard]] Qgis::LayoutRenderFlags flags() const;
 
     /**
      * Check whether a particular rendering \a flag is enabled for the layout.
@@ -77,12 +77,12 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setFlag()
      * \see flags()
      */
-    bool testFlag( Qgis::LayoutRenderFlag flag ) const;
+    [[nodiscard]] bool testFlag( Qgis::LayoutRenderFlag flag ) const;
 
     /**
      * Returns the combination of render context flags matched to the layout context's settings.
      */
-    Qgis::RenderContextFlags renderContextFlags() const;
+    [[nodiscard]] Qgis::RenderContextFlags renderContextFlags() const;
 
     /**
      * Returns the policy controlling when rasterization of content during renders is permitted.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setRasterizedRenderingPolicy()
      * \since QGIS 3.44
      */
-    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+    [[nodiscard]] Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
 
     /**
      * Sets the \a policy controlling when rasterization of content during renders is permitted.
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * Returns the \a dpi for outputting the layout.
      * \see setDpi()
      */
-    double dpi() const;
+    [[nodiscard]] double dpi() const;
 
     /**
      * Sets color that is used for drawing of selected vector features
@@ -125,13 +125,13 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setSelectionColor()
      * \since QGIS 3.4
      */
-    QColor selectionColor() const { return mSelectionColor; }
+    [[nodiscard]] QColor selectionColor() const { return mSelectionColor; }
 
     /**
      * Returns the layout measurement converter to be used in the layout. This converter is used
      * for translating between other measurement units and the layout's native unit.
      */
-    SIP_SKIP const QgsLayoutMeasurementConverter &measurementConverter() const { return mMeasurementConverter; }
+    SIP_SKIP [[nodiscard]] const QgsLayoutMeasurementConverter &measurementConverter() const { return mMeasurementConverter; }
 
     /**
      * Returns the layout measurement converter to be used in the layout. This converter is used
@@ -144,13 +144,13 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * i.e. it is being rendered inside a QGraphicsView widget as opposed to a destination
      * device (such as an image).
      */
-    bool isPreviewRender() const { return mIsPreviewRender; }
+    [[nodiscard]] bool isPreviewRender() const { return mIsPreviewRender; }
 
     /**
      * Returns TRUE if the page grid should be drawn.
      * \see setGridVisible()
      */
-    bool gridVisible() const;
+    [[nodiscard]] bool gridVisible() const;
 
     /**
      * Sets whether the page grid should be \a visible.
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * Returns TRUE if the item bounding boxes should be drawn.
      * \see setBoundingBoxesVisible()
      */
-    bool boundingBoxesVisible() const;
+    [[nodiscard]] bool boundingBoxesVisible() const;
 
     /**
      * Sets whether the item bounding boxes should be \a visible.
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * whether they will be rendered in layout exports.
      * \see setPagesVisible()
      */
-    bool pagesVisible() const { return mPagesVisible; }
+    [[nodiscard]] bool pagesVisible() const { return mPagesVisible; }
 
     /**
      * Sets the current item \a layer to draw while exporting. QgsLayoutItem subclasses
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    Qgis::TextRenderFormat textRenderFormat() const
+    [[nodiscard]] Qgis::TextRenderFormat textRenderFormat() const
     {
       return mTextRenderFormat;
     }
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setSimplifyMethod()
      * \since QGIS 3.10
      */
-    const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
+    [[nodiscard]] const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
      * Returns a reference to the mask render settings, which control how masks
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setMaskSettings()
      * \since QGIS 3.38
      */
-    const QgsMaskRenderSettings &maskSettings() const SIP_SKIP { return mMaskRenderSettings; }
+    [[nodiscard]] const QgsMaskRenderSettings &maskSettings() const SIP_SKIP { return mMaskRenderSettings; }
 
     /**
      * Returns a reference to the mask render settings, which control how masks
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setExportThemes()
      * \since QGIS 3.10
      */
-    QStringList exportThemes() const;
+    [[nodiscard]] QStringList exportThemes() const;
 
     /**
      * Sets a list of map \a themes to use during the export.
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setPredefinedScales()
      * \since QGIS 3.10
      */
-    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
+    [[nodiscard]] QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /**
      * Returns the (possibly NULLPTR) feature filter provider.
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      *
      * \since QGIS 3.18
      */
-    QgsFeatureFilterProvider *featureFilterProvider() const;
+    [[nodiscard]] QgsFeatureFilterProvider *featureFilterProvider() const;
 
     /**
      * Sets feature filter provider to \a featureFilterProvider.

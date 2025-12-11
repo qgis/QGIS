@@ -42,8 +42,8 @@ class QgsVirtualLayerSourceWidget : public QWidget
     void setBrowserModel( QgsBrowserModel *model );
 
     void setSource( const QString &source, const QString &provider );
-    QString source() const;
-    QString provider() const;
+    [[nodiscard]] QString source() const;
+    [[nodiscard]] QString provider() const;
 
   signals:
 

@@ -170,10 +170,10 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
 class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "gdal" ); }
-    QString text() const override { return QObject::tr( "Raster" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "gdal" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "Raster" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 20; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsGdalSourceSelect( parent, fl, widgetMode );

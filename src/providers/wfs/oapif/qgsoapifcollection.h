@@ -84,16 +84,16 @@ class QgsOapifCollectionsRequest : public QgsBaseNetworkRequest
     };
 
     //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+    [[nodiscard]] ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
     //! Returns collections description.
-    const std::vector<QgsOapifCollection> &collections() const { return mCollections; }
+    [[nodiscard]] const std::vector<QgsOapifCollection> &collections() const { return mCollections; }
 
     //! Return the url of the next page (extension to the spec)
-    const QString &nextUrl() const { return mNextUrl; }
+    [[nodiscard]] const QString &nextUrl() const { return mNextUrl; }
 
     //! Return the set of media type for feature formats
-    const QSet<QString> &featureFormats() const { return mFeatureFormats; }
+    [[nodiscard]] const QSet<QString> &featureFormats() const { return mFeatureFormats; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred
@@ -137,10 +137,10 @@ class QgsOapifCollectionRequest : public QgsBaseNetworkRequest
     };
 
     //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+    [[nodiscard]] ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
     //! Returns collection description.
-    const QgsOapifCollection &collection() const { return mCollection; }
+    [[nodiscard]] const QgsOapifCollection &collection() const { return mCollection; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */

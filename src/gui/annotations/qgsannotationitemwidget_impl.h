@@ -149,7 +149,7 @@ class QgsAnnotationRectangleTextItemWidget : public QgsAnnotationItemBaseWidget,
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 
@@ -211,7 +211,7 @@ class QgsAnnotationPictureItemWidget : public QgsAnnotationItemBaseWidget, priva
     void updateItem( QgsAnnotationItem *item ) override;
     void setDockMode( bool dockMode ) override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
   public slots:
 
     void focusDefaultWidget() override;
@@ -230,7 +230,7 @@ class QgsAnnotationPictureItemWidget : public QgsAnnotationItemBaseWidget, priva
     void setLockAspectRatio( bool locked );
 
   private:
-    double pictureAspectRatio() const;
+    [[nodiscard]] double pictureAspectRatio() const;
 
     bool mBlockChangedSignal = false;
     bool mUpdateItemPosition = false;

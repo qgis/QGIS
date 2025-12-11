@@ -39,7 +39,7 @@ class CORE_EXPORT QgsDartMeasurement
 
     QgsDartMeasurement( const QString &name, Type type, const QString &value );
 
-    const QString toString() const;
+    [[nodiscard]] const QString toString() const;
 
     void send() const;
 

@@ -99,7 +99,7 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
      * \see setCurrentLayout()
      * \see layoutSet()
      */
-    SIP_SKIP const QgsLayout *currentLayout() const;
+    SIP_SKIP [[nodiscard]] const QgsLayout *currentLayout() const;
 
     /**
      * Sets the current \a layout to edit in the view.
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
      * Returns TRUE if a preview effect is being used to alter the view's appearance.
      * \see setPreviewModeEnabled()
      */
-    bool previewModeEnabled() const;
+    [[nodiscard]] bool previewModeEnabled() const;
 
     /**
      * Sets the preview \a mode which should be used to modify the view's appearance. Preview modes are only used
@@ -157,7 +157,7 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
      * \see setPreviewMode()
      * \see previewModeEnabled()
      */
-    QgsPreviewEffect::PreviewMode previewMode() const;
+    [[nodiscard]] QgsPreviewEffect::PreviewMode previewMode() const;
 
     /**
      * Scales the view in a safe way, by limiting the acceptable range
@@ -192,7 +192,7 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
     * Returns the provider for context menus. Returned value may be NULLPTR if no provider is set.
     * \see setMenuProvider()
     */
-    QgsLayoutViewMenuProvider *menuProvider() const;
+    [[nodiscard]] QgsLayoutViewMenuProvider *menuProvider() const;
 
     /**
      * Returns the page visible in the view. This method
@@ -200,19 +200,19 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
      * page.
      * \see pageChanged()
      */
-    int currentPage() const { return mCurrentPage; }
+    [[nodiscard]] int currentPage() const { return mCurrentPage; }
 
     /**
      * Returns a list of page items which are currently visible in the view.
      * \see visiblePageNumbers()
      */
-    QList<QgsLayoutItemPage *> visiblePages() const;
+    [[nodiscard]] QList<QgsLayoutItemPage *> visiblePages() const;
 
     /**
      * Returns a list of page numbers for pages which are currently visible in the view.
      * \see visiblePages()
      */
-    QList<int> visiblePageNumbers() const;
+    [[nodiscard]] QList<int> visiblePageNumbers() const;
 
     /**
      * Aligns all selected items using the specified \a alignment.
@@ -274,7 +274,7 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
      * Returns TRUE if the current clipboard contains layout items.
      * \see pasteItems()
      */
-    bool hasItemsInClipboard() const;
+    [[nodiscard]] bool hasItemsInClipboard() const;
 
     /**
      * Returns the delta (in layout coordinates) by which to move items
@@ -582,7 +582,7 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
     friend class TestQgsLayoutView;
     friend class QgsLayoutMouseHandles;
 
-    QGraphicsLineItem *createSnapLine() const;
+    [[nodiscard]] QGraphicsLineItem *createSnapLine() const;
 };
 
 

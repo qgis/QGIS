@@ -51,8 +51,8 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     //! Constructor: does not take ownership of the layer tree nor canvas
     QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QgsLayerTree *rootGroup() const { return mRoot; }
-    QgsMapCanvas *mapCanvas() const { return mCanvas; }
+    [[nodiscard]] QgsLayerTree *rootGroup() const { return mRoot; }
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
     /**
      * Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
@@ -75,14 +75,14 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     /**
      * Returns associated overview canvas (may be NULLPTR)
      */
-    QgsMapOverviewCanvas *overviewCanvas() const { return mOverviewCanvas; }
+    [[nodiscard]] QgsMapOverviewCanvas *overviewCanvas() const { return mOverviewCanvas; }
 
     /**
      * if enabled, will automatically set full canvas extent and destination CRS + map units
      * when first layer(s) are added
      */
     void setAutoSetupOnFirstLayer( bool enabled ) { mAutoSetupOnFirstLayer = enabled; }
-    bool autoSetupOnFirstLayer() const { return mAutoSetupOnFirstLayer; }
+    [[nodiscard]] bool autoSetupOnFirstLayer() const { return mAutoSetupOnFirstLayer; }
 
     //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.
     Q_INVOKABLE void setCanvasLayers();

@@ -105,7 +105,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
       BoundsRole
     };
 
-    bool gridShiftTransformation( const QString &itemText ) const;
+    [[nodiscard]] bool gridShiftTransformation( const QString &itemText ) const;
 
     void setOKButtonEnabled();
 
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      *
      * \see defaultDatumTransform()
      */
-    bool shouldAskUserForSelection() const;
+    [[nodiscard]] bool shouldAskUserForSelection() const;
 
     /**
      * Returns the default transform (or only available transform). This represents the transform which
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      * \see shouldAskUserForSelection()
      * \see applyDefaultTransform()
      */
-    TransformInfo defaultDatumTransform() const;
+    [[nodiscard]] TransformInfo defaultDatumTransform() const;
 
     /**
      * Applies the defaultDatumTransform(), adding it to the current QgsProject instance.

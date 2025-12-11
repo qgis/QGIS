@@ -41,7 +41,7 @@ class CORE_EXPORT QgsObjectCustomProperties
     /**
      * Returns a list of all stored keys.
      */
-    QStringList keys() const;
+    [[nodiscard]] QStringList keys() const;
 
     /**
      * Add an entry to the store with the specified \a key.
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsObjectCustomProperties
      *
      * If the \a key is not present in the properties, the \a defaultValue will be returned.
      */
-    QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+    [[nodiscard]] QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
     /**
      * Removes a \a key (entry) from the store.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsObjectCustomProperties
      *
      * \since QGIS 3.14
      */
-    bool contains( const QString &key ) const;
+    [[nodiscard]] bool contains( const QString &key ) const;
 
     /**
      * Read store contents from an XML node.

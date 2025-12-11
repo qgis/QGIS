@@ -82,7 +82,7 @@ class GUI_EXPORT QgsFloatingWidget : public QWidget
      * fixed in the same relative position whenever the widget's parent is resized or moved.
      * \see setAnchorPoint()
      */
-    AnchorPoint anchorPoint() const { return mFloatAnchorPoint; }
+    [[nodiscard]] AnchorPoint anchorPoint() const { return mFloatAnchorPoint; }
 
     /**
      * Sets the floating widget's anchor point, which corresponds to the point on the widget which should remain
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsFloatingWidget : public QWidget
      * to this anchor widget whenever the widget's parent is resized or moved.
      * \see setAnchorWidgetPoint()
      */
-    AnchorPoint anchorWidgetPoint() const { return mAnchorWidgetAnchorPoint; }
+    [[nodiscard]] AnchorPoint anchorWidgetPoint() const { return mAnchorWidgetAnchorPoint; }
 
     /**
      * Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which

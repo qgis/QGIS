@@ -123,7 +123,7 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
      * Returns TRUE if undo commands are currently blocked.
      * \see blockCommands()
      */
-    bool isBlocked() const;
+    [[nodiscard]] bool isBlocked() const;
 
     /**
      * Manually pushes a \a command to the stack, and takes ownership of the command.

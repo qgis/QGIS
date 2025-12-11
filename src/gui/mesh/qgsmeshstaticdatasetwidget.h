@@ -46,8 +46,8 @@ class QgsMeshDatasetListModel : public QAbstractListModel
     //! Sets the dataset group
     void setDatasetGroup( int group );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
   private:
     QgsMeshLayer *mLayer = nullptr;

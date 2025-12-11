@@ -65,14 +65,14 @@ class CORE_EXPORT QgsRasterResampler
      * Gets a descriptive type identifier for this raster resampler.
      * Needs to be implemented by subclasses.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Gets a deep copy of this object.
      * Needs to be reimplemented by subclasses.
      * Ownership is transferred to the caller.
      */
-    virtual QgsRasterResampler *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsRasterResampler *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the optional tile buffer size in pixels. This represents
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsRasterResampler
      *
      * \since QGIS 3.10.1
      */
-    virtual int tileBufferPixels() const { return 0; }
+    [[nodiscard]] virtual int tileBufferPixels() const { return 0; }
 };
 
 

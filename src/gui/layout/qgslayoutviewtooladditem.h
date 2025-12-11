@@ -39,7 +39,7 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
      * Returns the item metadata id for items created by the tool.
      * \see setItemMetadataId()
      */
-    int itemMetadataId() const;
+    [[nodiscard]] int itemMetadataId() const;
 
     /**
      * Sets the item metadata \a metadataId for items created by the tool.
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
      *\see setCustomProperties()
      * \since QGIS 3.18
      */
-    QVariantMap customProperties() const;
+    [[nodiscard]] QVariantMap customProperties() const;
 
     /**
      * Sets custom \a properties for the tool.

@@ -62,7 +62,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionLineEdit : public QWidge
      * Returns the current expression shown in the widget.
      * \see setExpression()
      */
-    QString expression() const;
+    [[nodiscard]] QString expression() const;
 
   signals:
 

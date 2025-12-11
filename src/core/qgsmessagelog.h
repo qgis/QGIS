@@ -159,7 +159,7 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
      * \param level the log level of the message
      * \since QGIS 3.4
      */
-    QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
+    [[nodiscard]] QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
 
   public slots:
 

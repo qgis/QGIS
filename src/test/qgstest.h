@@ -190,7 +190,7 @@ class TEST_EXPORT QgsTest : public QObject
     /**
      * Returns the full path to the test data with the given file path.
      */
-    QString testDataPath( const QString &filePath ) const
+    [[nodiscard]] QString testDataPath( const QString &filePath ) const
     {
       return mTestDataDir.filePath( filePath.startsWith( '/' ) ? filePath.mid( 1 ) : filePath );
     }

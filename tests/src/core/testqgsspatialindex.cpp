@@ -181,7 +181,7 @@ class TestQgsSpatialIndex : public QObject
       QBENCHMARK
       {
         for ( int i = 0; i < 100; ++i )
-          index.intersects( QgsRectangle( i / 10, i % 10, i / 10 + 1, i % 10 + 1 ) );
+          ( void ) index.intersects( QgsRectangle( i / 10, i % 10, i / 10 + 1, i % 10 + 1 ) );
       }
     }
 

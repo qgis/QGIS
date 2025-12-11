@@ -8349,7 +8349,7 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
 
     QVariant convert( int idx, const QVariant &value ) override;
 
-    QgisAppFieldValueConverter *clone() const override;
+    [[nodiscard]] QgisAppFieldValueConverter *clone() const override;
 
   private:
     QPointer<QgsVectorLayer> mLayer;

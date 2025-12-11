@@ -63,19 +63,19 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     /**
      * Returns the unique item type code for the layout item class.
      */
-    int type() const { return mType; }
+    [[nodiscard]] int type() const { return mType; }
 
     /**
      * Returns a translated, user visible name for the layout item class.
      * \see visiblePluralName()
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns a translated, user visible name for plurals of the layout item class (e.g. "Labels" for a "Label" item).
      * \since QGIS 3.10
      */
-    QString visiblePluralName() const { return mVisibleNamePlural; }
+    [[nodiscard]] QString visiblePluralName() const { return mVisibleNamePlural; }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -152,12 +152,12 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
     /**
      * Returns the classes' item creation function.
      */
-    QgsLayoutItemCreateFunc createFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsLayoutItemCreateFunc createFunction() const { return mCreateFunc; }
 
     /**
      * Returns the classes' path resolver function.
      */
-    QgsLayoutItemPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
+    [[nodiscard]] QgsLayoutItemPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
 
     QgsLayoutItem *createItem( QgsLayout *layout ) override { return mCreateFunc ? mCreateFunc( layout ) : nullptr; }
 
@@ -202,17 +202,17 @@ class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
     /**
      * Returns the unique item type code for the layout multiframe class.
      */
-    int type() const { return mType; }
+    [[nodiscard]] int type() const { return mType; }
 
     /**
      * Returns an icon representing the layout multiframe type.
      */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+    [[nodiscard]] virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
 
     /**
      * Returns a translated, user visible name for the layout multiframe class.
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -286,12 +286,12 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
     /**
      * Returns the classes' multiframe creation function.
      */
-    QgsLayoutMultiFrameCreateFunc createFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsLayoutMultiFrameCreateFunc createFunction() const { return mCreateFunc; }
 
     /**
      * Returns the classes' path resolver function.
      */
-    QgsLayoutMultiFramePathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
+    [[nodiscard]] QgsLayoutMultiFramePathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
 
     QgsLayoutMultiFrame *createMultiFrame( QgsLayout *layout ) override { return mCreateFunc ? mCreateFunc( layout ) : nullptr; }
 
@@ -401,14 +401,14 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      * a corresponding type was not found in the registry.
      * \see multiFrameMetadata()
      */
-    QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
+    [[nodiscard]] QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
 
     /**
      * Returns the metadata for the specified multiframe \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      * \see itemMetadata()
      */
-    QgsLayoutMultiFrameAbstractMetadata *multiFrameMetadata( int type ) const;
+    [[nodiscard]] QgsLayoutMultiFrameAbstractMetadata *multiFrameMetadata( int type ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -491,7 +491,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     /**
      * Returns a map of available item types to translated name.
      */
-    QMap< int, QString> itemTypes() const;
+    [[nodiscard]] QMap< int, QString> itemTypes() const;
 
   signals:
 

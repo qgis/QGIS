@@ -98,7 +98,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
          * Returns the item's type.
          * \see setType()
          */
-        QString type() const;
+        [[nodiscard]] QString type() const;
 
         /**
          * Sets the item's \a type.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
          * Returns the item's name.
          * \see setName()
          */
-        QString name() const;
+        [[nodiscard]] QString name() const;
 
         /**
          * Sets the item's \a name.
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
          * Returns the item's description.
          * \see setDescription()
          */
-        QString description() const;
+        [[nodiscard]] QString description() const;
 
         /**
          * Sets the item's \a description.
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
          * Returns the item's URI.
          * \see setUri()
          */
-        QString uri() const;
+        [[nodiscard]] QString uri() const;
 
         /**
          * Set the item's \a uri.
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
          * Returns the item's icon.
          * \see setIcon()
          */
-        QIcon icon() const;
+        [[nodiscard]] QIcon icon() const;
 
         /**
          * Sets the item's \a icon.
@@ -192,30 +192,30 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
      *
      * \see setSublayerDetails()
      */
-    QList< QgsProviderSublayerDetails > sublayerDetails() const;
+    [[nodiscard]] QList< QgsProviderSublayerDetails > sublayerDetails() const;
 
     /**
      * Returns the sublayer corresponding to the given \a index.
      */
-    QgsProviderSublayerDetails indexToSublayer( const QModelIndex &index ) const;
+    [[nodiscard]] QgsProviderSublayerDetails indexToSublayer( const QModelIndex &index ) const;
 
     /**
      * Returns the non layer item corresponding to the given \a index.
      */
-    QgsProviderSublayerModel::NonLayerItem indexToNonLayerItem( const QModelIndex &index ) const;
+    [[nodiscard]] QgsProviderSublayerModel::NonLayerItem indexToNonLayerItem( const QModelIndex &index ) const;
 
     /**
      * Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
      */
     void addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item );
 
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex &parent ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     ///@cond PRIVATE
 
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
      * Returns node for given index. Returns root node for invalid index.
      * \note Not available in Python bindings
      */
-    QgsProviderSublayerModelNode *index2node( const QModelIndex &index ) const SIP_SKIP;
+    [[nodiscard]] QgsProviderSublayerModelNode *index2node( const QModelIndex &index ) const SIP_SKIP;
     ///@endcond
 
   protected:
@@ -259,12 +259,12 @@ class CORE_EXPORT QgsProviderSublayerModelNode
     /**
      * Returns the node's data for the specified model \a role.
      */
-    virtual QVariant data( int role = Qt::DisplayRole, int column = 0 ) const = 0;
+    [[nodiscard]] virtual QVariant data( int role = Qt::DisplayRole, int column = 0 ) const = 0;
 
     /**
      * Returns the number of child nodes owned by this node.
      */
-    virtual int childCount() const = 0;
+    [[nodiscard]] virtual int childCount() const = 0;
 
   protected:
 
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
     /**
      * Returns the group's name
      */
-    QString name() const { return mGroupTitle; }
+    [[nodiscard]] QString name() const { return mGroupTitle; }
 
     /**
      * Adds a \a child node to this node.
@@ -315,17 +315,17 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
     /**
      * Finds a child group with the specified name, or NULLPTR.
      */
-    QgsProviderSublayerModelGroup *findGroup( const QString &name ) const;
+    [[nodiscard]] QgsProviderSublayerModelGroup *findGroup( const QString &name ) const;
 
     /**
      * Finds a nested child group by \a path.
      */
-    QgsProviderSublayerModelGroup *findGroupForPath( const QStringList &path ) const;
+    [[nodiscard]] QgsProviderSublayerModelGroup *findGroupForPath( const QStringList &path ) const;
 
     QgsProviderSublayerModelSublayerNode *findSublayer( const QgsProviderSublayerDetails &sublayer );
 
-    int childCount() const final { return mChildren.size(); }
-    QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
+    [[nodiscard]] int childCount() const final { return mChildren.size(); }
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
 
     void populateFromSublayers( const QList<QgsProviderSublayerDetails> &sublayers );
 
@@ -343,9 +343,9 @@ class CORE_EXPORT QgsProviderSublayerModelSublayerNode : public QgsProviderSubla
   public:
 
     QgsProviderSublayerModelSublayerNode( const QgsProviderSublayerDetails &sublayer );
-    int childCount() const final { return 0; }
-    QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
-    QgsProviderSublayerDetails sublayer() const { return mSublayer; }
+    [[nodiscard]] int childCount() const final { return 0; }
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
+    [[nodiscard]] QgsProviderSublayerDetails sublayer() const { return mSublayer; }
 
   private:
     QgsProviderSublayerDetails mSublayer;
@@ -357,10 +357,10 @@ class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderS
   public:
 
     QgsProviderSublayerModelNonLayerItemNode( const QgsProviderSublayerModel::NonLayerItem &item );
-    int childCount() const final { return 0; }
-    QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
+    [[nodiscard]] int childCount() const final { return 0; }
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
 
-    QgsProviderSublayerModel::NonLayerItem item() const { return mItem; }
+    [[nodiscard]] QgsProviderSublayerModel::NonLayerItem item() const { return mItem; }
 
   private:
     QgsProviderSublayerModel::NonLayerItem mItem;
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
      *
      * \see setFilterString()
      */
-    QString filterString() const;
+    [[nodiscard]] QString filterString() const;
 
     /**
      * Sets the \a filter string used for filtering items in the model.
@@ -407,7 +407,7 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
      *
      * \see setIncludeSystemTables()
      */
-    bool includeSystemTables() const;
+    [[nodiscard]] bool includeSystemTables() const;
 
     /**
      * Sets whether system and internal tables will be shown in the model.
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
      * \see setIncludeEmptyLayers()
      * \since QGIS 3.28
      */
-    bool includeEmptyLayers() const;
+    [[nodiscard]] bool includeEmptyLayers() const;
 
     /**
      * Sets whether empty tables will be shown in the model.
@@ -433,8 +433,8 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
     void setIncludeEmptyLayers( bool include );
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
-    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
 
   private:
 

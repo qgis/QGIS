@@ -117,7 +117,7 @@ class CORE_EXPORT QgsMeshCalcNode
     ~QgsMeshCalcNode();
 
     //! Returns type of node
-    Type type() const;
+    [[nodiscard]] Type type() const;
 
     //! Sets left node. This node takes ownership of the node
     void setLeft( QgsMeshCalcNode *left );
@@ -134,13 +134,13 @@ class CORE_EXPORT QgsMeshCalcNode
     bool calculate( const QgsMeshCalcUtils &dsu, QgsMeshMemoryDatasetGroup &result, bool isAggregate = false ) const;
 
     //! Returns all dataset group names used in formula
-    QStringList usedDatasetGroupNames() const;
+    [[nodiscard]] QStringList usedDatasetGroupNames() const;
 
     //! Returns dataset group names used in formula involved in aggregate function
-    QStringList aggregatedUsedDatasetGroupNames() const;
+    [[nodiscard]] QStringList aggregatedUsedDatasetGroupNames() const;
 
     //! Returns dataset group names used in formula not involved in aggregate function
-    QStringList notAggregatedUsedDatasetGroupNames() const;
+    [[nodiscard]] QStringList notAggregatedUsedDatasetGroupNames() const;
 
     /**
      * Parses string to calculation node. Caller takes responsibility to delete the node
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsMeshCalcNode
      * Returns whether the calculation will leads to a non temporal dataset group result
      * \returns TRUE if the result will be non temporal
      */
-    bool isNonTemporal() const;
+    [[nodiscard]] bool isNonTemporal() const;
 
   private:
     Q_DISABLE_COPY( QgsMeshCalcNode )

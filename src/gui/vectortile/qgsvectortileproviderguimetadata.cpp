@@ -25,10 +25,10 @@
 class QgsVectorTileSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "vectortile" ); }
-    QString text() const override { return QObject::tr( "Vector Tile" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 50; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVectorTileLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "vectortile" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "Vector Tile" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 50; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVectorTileLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsVectorTileSourceSelect( parent, fl, widgetMode );

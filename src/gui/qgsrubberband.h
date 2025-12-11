@@ -156,7 +156,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current fill color.
      */
-    QColor fillColor() const { return mBrush.color(); }
+    [[nodiscard]] QColor fillColor() const { return mBrush.color(); }
 
     /**
      * Sets the stroke color for the rubberband
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current stroke color.
      */
-    QColor strokeColor() const { return mPen.color(); }
+    [[nodiscard]] QColor strokeColor() const { return mPen.color(); }
 
     /**
      * Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current secondary stroke color.
      */
-    QColor secondaryStrokeColor() const { return mSecondaryPen.color(); }
+    [[nodiscard]] QColor secondaryStrokeColor() const { return mSecondaryPen.color(); }
 
     /**
      * Sets the width of the line. Stroke width for polygon.
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current width of the line or stroke width for polygon.
      */
-    int width() const { return mPen.width(); }
+    [[nodiscard]] int width() const { return mPen.width(); }
 
     /**
      * Sets the icon type to highlight point geometries.
@@ -211,7 +211,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current icon type to highlight point geometries.
      */
-    IconType icon() const { return mIconType; }
+    [[nodiscard]] IconType icon() const { return mIconType; }
 
     /**
      * Sets the size of the point icons
@@ -221,7 +221,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current icon size of the point icons.
      */
-    double iconSize() const { return mIconSize; }
+    [[nodiscard]] double iconSize() const { return mIconSize; }
 
     /**
      * Sets the style of the line
@@ -291,7 +291,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
      *  \returns number of vertices
      */
-    int partSize( int geometryIndex ) const;
+    [[nodiscard]] int partSize( int geometryIndex ) const;
 
     /**
      * Sets this rubber band to \a geom.
@@ -366,13 +366,13 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Returns number of geometries
      *  \returns number of geometries
      */
-    int size() const;
+    [[nodiscard]] int size() const;
 
     /**
      * Returns count of vertices in all lists of mPoint
      *  \returns The total number of vertices
      */
-    int numberOfVertices() const;
+    [[nodiscard]] int numberOfVertices() const;
 
     // TODO QGIS 4: rename i to geometryIndex, j to vertexIndex
     // TODO QGIS 4: reorder parameters to geom, ring, ring
@@ -383,13 +383,13 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *  \param j   The vertex index within ring ringIndex
      *  \param ringIndex   The ring index within geometry i
      */
-    const QgsPointXY *getPoint( int i, int j = 0, int ringIndex = 0 ) const;
+    [[nodiscard]] const QgsPointXY *getPoint( int i, int j = 0, int ringIndex = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry
      *  \returns A geometry object which reflects the current state of the rubberband.
      */
-    QgsGeometry asGeometry() const;
+    [[nodiscard]] QgsGeometry asGeometry() const;
 
     void updatePosition() override;
 
@@ -399,7 +399,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * \see setSymbol()
      * \since QGIS 3.20
      */
-    QgsSymbol *symbol() const;
+    [[nodiscard]] QgsSymbol *symbol() const;
 
     /**
      * Sets the \a symbol used for rendering the rubberband.

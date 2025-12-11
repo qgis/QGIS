@@ -32,7 +32,7 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 
     void setConnection( const QgsXyzConnection &conn );
 
-    QgsXyzConnection connection() const;
+    [[nodiscard]] QgsXyzConnection connection() const;
 
     QgsXyzSourceWidget *sourceWidget() { return mSourceWidget; }
 

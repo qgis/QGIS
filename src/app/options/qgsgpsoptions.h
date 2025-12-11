@@ -36,7 +36,7 @@ class APP_EXPORT QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::
      * Constructor for QgsGpsOptionsWidget with the specified \a parent widget.
      */
     QgsGpsOptionsWidget( QWidget *parent );
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     void apply() override;
 
   private slots:
@@ -62,9 +62,9 @@ class QgsGpsOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsGpsOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QString pagePositionHint() const override;
+    [[nodiscard]] QString pagePositionHint() const override;
 };
 
 

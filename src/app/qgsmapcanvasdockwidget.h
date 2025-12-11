@@ -60,7 +60,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
     QgsMapCanvas *mapCanvas();
 
     void setCanvasName( const QString &name );
-    QString canvasName() const { return mCanvasName; }
+    [[nodiscard]] QString canvasName() const { return mCanvasName; }
 
     /**
      * Sets whether the view center should be synchronized with the main canvas center.
@@ -72,13 +72,13 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
      * Returns TRUE if the view extent is synchronized with the main canvas extent.
      * \see setViewCenterSynchronized()
      */
-    bool isViewCenterSynchronized() const;
+    [[nodiscard]] bool isViewCenterSynchronized() const;
 
     /**
      * Returns TRUE if the view is synchronized with the selection on the main canvas.
      * \see setAutoZoomToSelected()
      */
-    bool isAutoZoomToSelected() const;
+    [[nodiscard]] bool isAutoZoomToSelected() const;
 
     /**
      * Sets whether the view is synchronized with the selection on the main canvas.
@@ -96,7 +96,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
      * Returns TRUE if the cursor position marker is visible.
      * \see setCursorMarkerVisible()
      */
-    bool isCursorMarkerVisible() const;
+    [[nodiscard]] bool isCursorMarkerVisible() const;
 
     /**
      * Sets whether the main canvas extent is visible.
@@ -108,14 +108,14 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
      * Returns TRUE if the main canvas extent is visible.
      * \see setMainCanvasExtentVisible()
      */
-    bool isMainCanvasExtentVisible() const;
+    [[nodiscard]] bool isMainCanvasExtentVisible() const;
 
     /**
      * Returns the scaling factor for main canvas scale to view scale.
      * \see setScaleFactor()
      * \see isViewScaleSynchronized()
      */
-    double scaleFactor() const;
+    [[nodiscard]] double scaleFactor() const;
 
     /**
      * Sets the scaling \a factor for main canvas scale to view scale.
@@ -136,7 +136,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
      * \see setViewScaleSynchronized()
      * \see scaleFactor()
      */
-    bool isViewScaleSynchronized() const;
+    [[nodiscard]] bool isViewScaleSynchronized() const;
 
     /**
      * Sets whether labels should be rendered in the view.
@@ -148,7 +148,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
      * Returns whether labels are rendered in the view.
      * \see setLabelsVisible()
      */
-    bool labelsVisible() const;
+    [[nodiscard]] bool labelsVisible() const;
 
   signals:
 

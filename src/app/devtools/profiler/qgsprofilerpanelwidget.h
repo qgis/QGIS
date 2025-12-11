@@ -35,7 +35,7 @@ class QgsProfilerProxyModel : public QSortFilterProxyModel
     void setGroup( const QString &group );
 
   protected:
-    bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
 
   private:
     QString mGroup;

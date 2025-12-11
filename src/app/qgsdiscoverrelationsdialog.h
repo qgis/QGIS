@@ -40,7 +40,7 @@ class APP_EXPORT QgsDiscoverRelationsDialog : public QDialog, private Ui::QgsDis
     /**
      * Gets the selected relations.
      */
-    QList<QgsRelation> relations() const;
+    [[nodiscard]] QList<QgsRelation> relations() const;
 
   private slots:
     void onSelectionChanged();

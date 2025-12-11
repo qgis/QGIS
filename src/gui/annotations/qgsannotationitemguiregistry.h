@@ -66,27 +66,27 @@ class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
     /**
      * Returns the unique item type code for the annotation item class.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns item flags.
      */
-    Qgis::AnnotationItemGuiFlags flags() const { return mFlags; }
+    [[nodiscard]] Qgis::AnnotationItemGuiFlags flags() const { return mFlags; }
 
     /**
      * Returns the item group ID, if set.
      */
-    QString groupId() const { return mGroupId; }
+    [[nodiscard]] QString groupId() const { return mGroupId; }
 
     /**
      * Returns a translated, user visible name identifying the corresponding annotation item.
      */
-    QString visibleName() const { return mName; }
+    [[nodiscard]] QString visibleName() const { return mName; }
 
     /**
      * Returns an icon representing creation of the annotation item type.
      */
-    virtual QIcon creationIcon() const;
+    [[nodiscard]] virtual QIcon creationIcon() const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      * Returns the classes' configuration widget creation function.
      * \see setWidgetFunction()
      */
-    QgsAnnotationItemWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    [[nodiscard]] QgsAnnotationItemWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /**
      * Sets the classes' configuration widget creation \a function.
@@ -188,7 +188,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      * Returns the classes' create new item map tool creation function.
      * \see setCreateMapToolFunction()
      */
-    QgsCreateAnnotationItemMapToolFunc createMapToolFunction() const { return mCreateMapToolFunc; }
+    [[nodiscard]] QgsCreateAnnotationItemMapToolFunc createMapToolFunction() const { return mCreateMapToolFunc; }
 
     /**
      * Sets the classes' create new item map tool creation \a function.
@@ -200,7 +200,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      * Returns the classes' item creation function.
      * \see setItemCreationFunction()
      */
-    QgsAnnotationItemCreateFunc itemCreationFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsAnnotationItemCreateFunc itemCreationFunction() const { return mCreateFunc; }
 
     /**
      * Sets the classes' item creation \a function.
@@ -212,7 +212,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      * Returns the classes' item added to layer function.
      * \see setItemAddedToLayerFunction()
      */
-    QgsAnnotationItemAddedToLayerFunc itemAddToLayerFunction() const { return mAddedToLayerFunc; }
+    [[nodiscard]] QgsAnnotationItemAddedToLayerFunc itemAddToLayerFunction() const { return mAddedToLayerFunc; }
 
     /**
      * Sets the classes' item creation \a function.
@@ -220,7 +220,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      */
     void setItemAddedToLayerFunction( const QgsAnnotationItemAddedToLayerFunc &function ) { mAddedToLayerFunc = function; }
 
-    QIcon creationIcon() const override;
+    [[nodiscard]] QIcon creationIcon() const override;
     QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) override;
 
     QgsAnnotationItem *createItem() override;
@@ -313,7 +313,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
      * Returns the metadata for the specified item \a metadataId. Returns NULLPTR if
      * a corresponding \a metadataId was not found in the registry.
      */
-    QgsAnnotationItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
+    [[nodiscard]] QgsAnnotationItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
 
     /**
      * Returns the GUI item metadata ID which corresponds to the specified annotation item \a type.
@@ -323,7 +323,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
      *
      * Returns -1 if no matching metadata is found in the GUI registry.
      */
-    int metadataIdForItemType( const QString &type ) const;
+    [[nodiscard]] int metadataIdForItemType( const QString &type ) const;
 
     /**
      * Registers the gui metadata for a new annotation item type. Takes ownership of the metadata instance.
@@ -345,7 +345,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
      * Returns a reference to the item group with matching \a id.
      * \see addItemGroup()
      */
-    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id ) const;
+    [[nodiscard]] const QgsAnnotationItemGuiGroup &itemGroup( const QString &id ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -365,7 +365,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
     /**
      * Creates a new instance of an annotation item given the item metadata \a metadataId.
      */
-    QgsAnnotationItem *createItem( int metadataId ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsAnnotationItem *createItem( int metadataId ) const SIP_TRANSFERBACK;
 
     /**
      * Called when a newly created item of the associated metadata \a metadataId has been added to a \a layer.
@@ -398,7 +398,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
     /**
      * Returns a list of available item metadata ids handled by the registry.
      */
-    QList<int> itemMetadataIds() const;
+    [[nodiscard]] QList<int> itemMetadataIds() const;
 
     /**
      * Populates the registry with default items.

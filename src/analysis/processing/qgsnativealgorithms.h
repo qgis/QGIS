@@ -37,13 +37,13 @@ class ANALYSIS_EXPORT QgsNativeAlgorithms : public QgsProcessingProvider
      */
     QgsNativeAlgorithms( QObject *parent = nullptr );
 
-    QIcon icon() const override;
-    QString svgIconPath() const override;
-    QString id() const override;
-    QString helpId() const override;
-    QString name() const override;
-    bool supportsNonFileBasedOutput() const override;
-    Qgis::ProcessingProviderFlags flags() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QString svgIconPath() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString helpId() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] bool supportsNonFileBasedOutput() const override;
+    [[nodiscard]] Qgis::ProcessingProviderFlags flags() const override;
 
   protected:
     void loadAlgorithms() override;

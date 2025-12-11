@@ -60,14 +60,14 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
      * Returns the message bar associated with the widget.
      * \see setMessageBar()
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Returns the current file source.
      * \see setSource()
      * \see sourceChanged()
      */
-    QString source() const;
+    [[nodiscard]] QString source() const;
 
     /**
      * Sets a specific settings \a key to use when storing the last
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
      * Returns the property override tool button
      * \since QGIS 3.16
      */
-    QgsPropertyOverrideButton *propertyOverrideToolButton() const { return mPropertyOverrideButton; }
+    [[nodiscard]] QgsPropertyOverrideButton *propertyOverrideToolButton() const { return mPropertyOverrideButton; }
 
     /**
      * Sets the visibility of the property override tool button
@@ -110,37 +110,37 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     /**
      * Returns the widget's file filter string.
      */
-    virtual QString fileFilter() const = 0; // cppcheck-suppress pureVirtualCall
+    [[nodiscard]] virtual QString fileFilter() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the select file dialog.
      */
-    virtual QString selectFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
+    [[nodiscard]] virtual QString selectFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the file from URL dialog.
      */
-    virtual QString fileFromUrlTitle() const = 0; // cppcheck-suppress pureVirtualCall
+    [[nodiscard]] virtual QString fileFromUrlTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated descriptive text to use for the file from URL dialog.
      */
-    virtual QString fileFromUrlText() const = 0; // cppcheck-suppress pureVirtualCall
+    [[nodiscard]] virtual QString fileFromUrlText() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the embed file dialog.
      */
-    virtual QString embedFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
+    [[nodiscard]] virtual QString embedFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the extract file dialog.
      */
-    virtual QString extractFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
+    [[nodiscard]] virtual QString extractFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the default settings key to use for the widget's settings.
      */
-    virtual QString defaultSettingsKey() const = 0; // cppcheck-suppress pureVirtualCall
+    [[nodiscard]] virtual QString defaultSettingsKey() const = 0; // cppcheck-suppress pureVirtualCall
 
 ///@endcond
 #endif
@@ -169,8 +169,8 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     QString mBase64;
     QgsMessageBar *mMessageBar = nullptr;
 
-    QString defaultPath() const;
-    QString settingsKey() const;
+    [[nodiscard]] QString defaultPath() const;
+    [[nodiscard]] QString settingsKey() const;
 };
 
 
@@ -222,13 +222,13 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
 
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    QString fileFilter() const override;
-    QString selectFileTitle() const override;
-    QString fileFromUrlTitle() const override;
-    QString fileFromUrlText() const override;
-    QString embedFileTitle() const override;
-    QString extractFileTitle() const override;
-    QString defaultSettingsKey() const override;
+    [[nodiscard]] QString fileFilter() const override;
+    [[nodiscard]] QString selectFileTitle() const override;
+    [[nodiscard]] QString fileFromUrlTitle() const override;
+    [[nodiscard]] QString fileFromUrlText() const override;
+    [[nodiscard]] QString embedFileTitle() const override;
+    [[nodiscard]] QString extractFileTitle() const override;
+    [[nodiscard]] QString defaultSettingsKey() const override;
     ///@endcond
 #endif
 };

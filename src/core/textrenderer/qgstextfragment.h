@@ -57,7 +57,7 @@ class CORE_EXPORT QgsTextFragment
      *
      * \see setText()
      */
-    QString text() const;
+    [[nodiscard]] QString text() const;
 
     /**
      * Sets the \a text content of the fragment.
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsTextFragment
      *
      * \since QGIS 3.38
      */
-    bool isTab() const { return mText == '\t'; }
+    [[nodiscard]] bool isTab() const { return mText == '\t'; }
 
     /**
      * Returns TRUE if the fragment consists of just whitespace characters, and does not
@@ -79,14 +79,14 @@ class CORE_EXPORT QgsTextFragment
      *
      * \since QGIS 3.38
      */
-    bool isWhitespace() const { return isTab() || mText.trimmed().isEmpty(); }
+    [[nodiscard]] bool isWhitespace() const { return isTab() || mText.trimmed().isEmpty(); }
 
     /**
      * Returns the character formatting for the fragment.
      *
      * \see setCharacterFormat()
      */
-    const QgsTextCharacterFormat &characterFormat() const { return mCharFormat; }
+    [[nodiscard]] const QgsTextCharacterFormat &characterFormat() const { return mCharFormat; }
 
     /**
      * Sets the character \a format for the fragment.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsTextFragment
      *
      * \since QGIS 3.40
      */
-    bool isImage() const;
+    [[nodiscard]] bool isImage() const;
 
     /**
      * Returns the horizontal advance associated with this fragment, when rendered using
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsTextFragment
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      */
-    double horizontalAdvance( const QFont &font, const QgsRenderContext &context, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
+    [[nodiscard]] double horizontalAdvance( const QFont &font, const QgsRenderContext &context, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
 
     /**
      * Applies a \a capitalization style to the fragment's text.

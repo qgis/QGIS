@@ -414,10 +414,10 @@ class QgsOgcUtilsExprToFilter
     QDomElement expressionNodeToOgcFilter( const QgsExpressionNode *node, QgsExpression *expression, const QgsExpressionContext *context );
 
     //! Returns whether the gml: namespace is used
-    bool GMLNamespaceUsed() const { return mGMLUsed; }
+    [[nodiscard]] bool GMLNamespaceUsed() const { return mGMLUsed; }
 
     //! Returns the error message.
-    QString errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] QString errorMessage() const { return mErrorMessage; }
 
   private:
     QDomDocument &mDoc;
@@ -473,7 +473,7 @@ class QgsOgcUtilsExpressionFromFilter
      * Returns the underlying error message, or an empty string in case of no
      * error.
      */
-    QString errorMessage() const;
+    [[nodiscard]] QString errorMessage() const;
 
     /**
      * Returns an expression node from a WFS filter embedded in a document with
@@ -554,10 +554,10 @@ class QgsOgcUtilsSQLStatementToFilter
     QDomElement toOgcFilter( const QgsSQLStatement::Node *node );
 
     //! Returns whether the gml: namespace is used
-    bool GMLNamespaceUsed() const { return mGMLUsed; }
+    [[nodiscard]] bool GMLNamespaceUsed() const { return mGMLUsed; }
 
     //! Returns the error message.
-    QString errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] QString errorMessage() const { return mErrorMessage; }
 
   private:
     QDomDocument &mDoc;

@@ -38,20 +38,20 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
     //! QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandColorDataRenderer &operator=( const QgsSingleBandColorDataRenderer & ) = delete;
 
-    QgsSingleBandColorDataRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsSingleBandColorDataRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     bool setInput( QgsRasterInterface *input ) override;
-    int inputBand() const override;
+    [[nodiscard]] int inputBand() const override;
     bool setInputBand( int band ) override;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    QList<int> usesBands() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
 
   private:
 #ifdef SIP_RUN

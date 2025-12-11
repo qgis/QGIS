@@ -49,8 +49,7 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      */
     explicit QgsCombinedStyleModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     /**
      * Adds a style to the model.
@@ -82,7 +81,7 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      *
      * \see addStyle()
      */
-    QList< QgsStyle * > styles() const;
+    [[nodiscard]] QList< QgsStyle * > styles() const;
 
     /**
      * Adds an additional icon \a size to generate for Qt::DecorationRole data.

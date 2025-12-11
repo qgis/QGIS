@@ -58,9 +58,9 @@ class QgsMssqlGeometryParser
     int mSRSId = 0;
 
   protected:
-    QgsPoint readCoordinates( int iPoint ) const;
+    [[nodiscard]] QgsPoint readCoordinates( int iPoint ) const;
     void readCoordinates( int iPoint, int iNextPoint, double *x, double *y, double *z, double *m ) const;
-    const QgsPointSequence readPointSequence( int iPoint, int iNextPoint ) const;
+    [[nodiscard]] const QgsPointSequence readPointSequence( int iPoint, int iNextPoint ) const;
     std::unique_ptr<QgsPoint> readPoint( int iShape );
     std::unique_ptr<QgsMultiPoint> readMultiPoint( int iShape );
     std::unique_ptr<QgsLineString> readLineString( int iPoint, int iNextPoint );
@@ -77,7 +77,7 @@ class QgsMssqlGeometryParser
   public:
     QgsMssqlGeometryParser();
     std::unique_ptr<QgsAbstractGeometry> parseSqlGeometry( unsigned char *pszInput, int nLen );
-    int GetSRSId() const { return mSRSId; }
+    [[nodiscard]] int GetSRSId() const { return mSRSId; }
     void DumpMemoryToLog( const char *pszMsg, unsigned char *pszInput, int nLen );
     /* sql geo type */
     bool mIsGeography = false;

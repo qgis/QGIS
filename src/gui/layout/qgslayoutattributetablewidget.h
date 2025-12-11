@@ -45,7 +45,7 @@ class GUI_EXPORT QgsLayoutAttributeTableWidget : public QgsLayoutItemBaseWidget,
 
     void setReportTypeString( const QString &string ) override;
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   protected:
     bool setNewItem( QgsLayoutItem *item ) override;

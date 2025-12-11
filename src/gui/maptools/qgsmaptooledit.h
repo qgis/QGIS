@@ -36,7 +36,7 @@ class GUI_EXPORT QgsMapToolEdit : public QgsMapTool
   public:
     QgsMapToolEdit( QgsMapCanvas *canvas );
 
-    Flags flags() const override { return QgsMapTool::EditTool; }
+    [[nodiscard]] Flags flags() const override { return QgsMapTool::EditTool; }
 
     /**
      * Returns default Z value.
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsMapToolEdit : public QgsMapTool
      *   \param geometryType
      *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
      */
-    QgsGeometryRubberBand *createGeometryRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) const SIP_FACTORY;
+    [[nodiscard]] QgsGeometryRubberBand *createGeometryRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) const SIP_FACTORY;
 
   private slots:
     //! Vector layers' editingStopped SIGNAL will eventually trigger a clean

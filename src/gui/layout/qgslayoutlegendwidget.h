@@ -87,7 +87,7 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     //! Returns the legend item associated to this widget
     QgsLayoutItemLegend *legend() { return mLegend; }
     void setReportTypeString( const QString &string ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
   public slots:
     //! Reset a layer node to the default settings
     void resetLayerNodeToDefaults();
@@ -267,13 +267,13 @@ class GUI_EXPORT QgsLayoutLegendMapFilteringModel : public QSortFilterProxyModel
     //! constructor
     explicit QgsLayoutLegendMapFilteringModel( QgsLayoutItemLegend *legend, QgsLayoutModel *layoutModel, QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QgsLayoutModel *mLayoutModel = nullptr;

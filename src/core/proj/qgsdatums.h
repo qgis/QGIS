@@ -38,27 +38,27 @@ class CORE_EXPORT QgsDatumEnsembleMember
     /**
      * Returns the name of the member.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns the scope of operation, from EPSG registry database.
      */
-    QString scope() const { return mScope; }
+    [[nodiscard]] QString scope() const { return mScope; }
 
     /**
      * Remarks for operation, from EPSG registry database.
      */
-    QString remarks() const { return mRemarks; }
+    [[nodiscard]] QString remarks() const { return mRemarks; }
 
     /**
      * Authority name, e.g. EPSG.
      */
-    QString authority() const { return mAuthority; }
+    [[nodiscard]] QString authority() const { return mAuthority; }
 
     /**
      * Authority code, e.g. "8447" (for EPSG:8447).
      */
-    QString code() const { return mCode; }
+    [[nodiscard]] QString code() const { return mCode; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -99,42 +99,42 @@ class CORE_EXPORT QgsDatumEnsemble
      * Returns TRUE if the datum ensemble is a valid object, or FALSE if it is a null/invalid
      * object.
      */
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     /**
      * Display name of datum ensemble.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Positional accuracy (in meters).
      */
-    double accuracy() const { return mAccuracy; }
+    [[nodiscard]] double accuracy() const { return mAccuracy; }
 
     /**
      * Authority name, e.g. EPSG.
      */
-    QString authority() const { return mAuthority; }
+    [[nodiscard]] QString authority() const { return mAuthority; }
 
     /**
      * Identification code, e.g. "8447" (For EPSG:8447).
      */
-    QString code() const { return mCode; }
+    [[nodiscard]] QString code() const { return mCode; }
 
     /**
      * Scope of ensemble, from EPSG registry database.
      */
-    QString scope() const { return mScope; }
+    [[nodiscard]] QString scope() const { return mScope; }
 
     /**
     * Remarks for ensemble, from EPSG registry database.
     */
-    QString remarks() const { return mRemarks; }
+    [[nodiscard]] QString remarks() const { return mRemarks; }
 
     /**
      * Contains a list of members of the ensemble.
      */
-    QList< QgsDatumEnsembleMember > members() const { return mMembers; }
+    [[nodiscard]] QList< QgsDatumEnsembleMember > members() const { return mMembers; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

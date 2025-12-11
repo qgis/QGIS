@@ -54,13 +54,13 @@ class CORE_DEPRECATED_EXPORT QgsSettingsEntryGroup SIP_DEPRECATED
     QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid ) SIP_SKIP;
 
     //! Returns if the group is valid (if settings share the same base key)
-    bool isValid() const {return mIsValid;}
+    [[nodiscard]] bool isValid() const {return mIsValid;}
 
     //! Returns the base key for the given \a dynamicKeyPartList
-    QString baseKey( const QStringList &dynamicKeyPartList = QStringList() ) const;
+    [[nodiscard]] QString baseKey( const QStringList &dynamicKeyPartList = QStringList() ) const;
 
     //! Returns all the settings
-    const QList<const QgsSettingsEntryBase *> settings() const {return mSettings;}
+    [[nodiscard]] const QList<const QgsSettingsEntryBase *> settings() const {return mSettings;}
 
     /**
      * Removes all the settings at the base key for the given \a dynamicKeyPartList
@@ -81,7 +81,7 @@ class CORE_DEPRECATED_EXPORT QgsSettingsEntryGroup SIP_DEPRECATED
     void removeAllChildrenSettings( const QStringList &dynamicKeyPartList ) const;
 
   private:
-    bool hasDynamicKey() const;
+    [[nodiscard]] bool hasDynamicKey() const;
 
     QList<const QgsSettingsEntryBase *> mSettings;
     QString mDefinitionBaseKey;

@@ -186,7 +186,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #endif // !SIP_RUN
 
   public:
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    [[nodiscard]] bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
     {
       return fuzzyHelper(
                epsilon,
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       } );
     }
 
-    bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    [[nodiscard]] bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
     {
       return fuzzyHelper(
                epsilon,
@@ -259,28 +259,28 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see setX()
      * \see rx()
      */
-    double x() const SIP_HOLDGIL { return mX; }
+    [[nodiscard]] double x() const SIP_HOLDGIL { return mX; }
 
     /**
      * Returns the point's y-coordinate.
      * \see setY()
      * \see ry()
      */
-    double y() const SIP_HOLDGIL { return mY; }
+    [[nodiscard]] double y() const SIP_HOLDGIL { return mY; }
 
     /**
      * Returns the point's z-coordinate.
      * \see setZ()
      * \see rz()
      */
-    double z() const SIP_HOLDGIL { return mZ; }
+    [[nodiscard]] double z() const SIP_HOLDGIL { return mZ; }
 
     /**
      * Returns the point's m value.
      * \see setM()
      * \see rm()
      */
-    double m() const SIP_HOLDGIL { return mM; }
+    [[nodiscard]] double m() const SIP_HOLDGIL { return mM; }
 
     /**
      * Returns a reference to the x-coordinate of this point.
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /**
      * Returns the point as a QPointF.
      */
-    QPointF toQPointF() const SIP_HOLDGIL
+    [[nodiscard]] QPointF toQPointF() const SIP_HOLDGIL
     {
       return QPointF( mX, mY );
     }
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \see distanceSquared()
     */
-    double distance( double x, double y ) const SIP_HOLDGIL
+    [[nodiscard]] double distance( double x, double y ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
     }
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \see distanceSquared()
     */
-    double distance( const QgsPoint &other ) const SIP_HOLDGIL
+    [[nodiscard]] double distance( const QgsPoint &other ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
     }
@@ -406,7 +406,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
     */
-    double distanceSquared( double x, double y ) const SIP_HOLDGIL
+    [[nodiscard]] double distanceSquared( double x, double y ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
     }
@@ -417,7 +417,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
     */
-    double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
+    [[nodiscard]] double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
     }
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \see distanceSquared3D()
     */
-    double distance3D( double x, double y, double z ) const SIP_HOLDGIL
+    [[nodiscard]] double distance3D( double x, double y, double z ) const SIP_HOLDGIL
     {
       if ( is3D() || !std::isnan( z ) )
       {
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \see distanceSquared3D()
     */
-    double distance3D( const QgsPoint &other ) const SIP_HOLDGIL
+    [[nodiscard]] double distance3D( const QgsPoint &other ) const SIP_HOLDGIL
     {
       if ( is3D() || other.is3D() )
       {
@@ -458,7 +458,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * distances where the extra expense of calling distance3D() is not required.
      * \see distance3D()
     */
-    double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL
+    [[nodiscard]] double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL
     {
       if ( is3D() || !std::isnan( z ) )
       {
@@ -473,7 +473,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * distances where the extra expense of calling distance3D() is not required.
      * \see distance3D()
     */
-    double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL
+    [[nodiscard]] double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL
     {
       if ( is3D() || other.is3D() )
       {
@@ -485,13 +485,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /**
      * Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)
      */
-    double azimuth( const QgsPoint &other ) const SIP_HOLDGIL;
+    [[nodiscard]] double azimuth( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Calculates Cartesian inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
      * Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
      */
-    double inclination( const QgsPoint &other ) const SIP_HOLDGIL;
+    [[nodiscard]] double inclination( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns a new point which corresponds to this point projected by a specified distance
@@ -522,7 +522,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *   # pr is a 3D point: 'PointZ (1 2 3)'
      * \endcode
      */
-    QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const SIP_HOLDGIL;
+    [[nodiscard]] QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const SIP_HOLDGIL;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.
@@ -551,32 +551,32 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     //implementation of inherited methods
     void normalize() final SIP_HOLDGIL;
-    bool isEmpty() const override SIP_HOLDGIL;
-    QgsBox3D boundingBox3D() const override SIP_HOLDGIL;
-    QString geometryType() const override SIP_HOLDGIL;
-    int dimension() const override SIP_HOLDGIL;
-    QgsPoint *clone() const override SIP_FACTORY;
-    QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
-    QgsPoint *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
+    [[nodiscard]] bool isEmpty() const override SIP_HOLDGIL;
+    [[nodiscard]] QgsBox3D boundingBox3D() const override SIP_HOLDGIL;
+    [[nodiscard]] QString geometryType() const override SIP_HOLDGIL;
+    [[nodiscard]] int dimension() const override SIP_HOLDGIL;
+    [[nodiscard]] QgsPoint *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
+    [[nodiscard]] QgsPoint *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
-    int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QString asWkt( int precision = 17 ) const override;
+    [[nodiscard]] int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
+    [[nodiscard]] QByteArray asWkb( QgsAbstractGeometry::WkbFlags = QgsAbstractGeometry::WkbFlags() ) const override;
+    [[nodiscard]] QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
-    QString asKml( int precision = 17 ) const override;
+    [[nodiscard]] json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    [[nodiscard]] QString asKml( int precision = 17 ) const override;
     void draw( QPainter &p ) const override;
-    QPainterPath asQPainterPath() const override;
+    [[nodiscard]] QPainterPath asQPainterPath() const override;
     void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
-    QgsCoordinateSequence coordinateSequence() const override;
-    int nCoordinates() const override SIP_HOLDGIL;
-    int vertexNumberFromVertexId( QgsVertexId id ) const override;
-    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    [[nodiscard]] QgsCoordinateSequence coordinateSequence() const override;
+    [[nodiscard]] int nCoordinates() const override SIP_HOLDGIL;
+    [[nodiscard]] int vertexNumberFromVertexId( QgsVertexId id ) const override;
+    [[nodiscard]] QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override SIP_HOLDGIL;
 
     //low-level editing
@@ -593,16 +593,16 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \param vertex the vertex id
      * \returns 0.0
     */
-    double vertexAngle( QgsVertexId vertex ) const override;
+    [[nodiscard]] double vertexAngle( QgsVertexId vertex ) const override;
 
-    int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override;
-    int ringCount( int /*part*/ = 0 ) const override;
-    int partCount() const override;
-    QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
-    QgsPoint *toCurveType() const override SIP_FACTORY;
-    double segmentLength( QgsVertexId startVertex ) const override;
-    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
-    bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
+    [[nodiscard]] int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override;
+    [[nodiscard]] int ringCount( int /*part*/ = 0 ) const override;
+    [[nodiscard]] int partCount() const override;
+    [[nodiscard]] QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
+    [[nodiscard]] QgsPoint *toCurveType() const override SIP_FACTORY;
+    [[nodiscard]] double segmentLength( QgsVertexId startVertex ) const override;
+    [[nodiscard]] bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
+    [[nodiscard]] bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -649,7 +649,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 #endif
 
-    QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
+    [[nodiscard]] QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -662,8 +662,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
-    int childCount() const override;
-    QgsPoint childPoint( int index ) const override;
+    [[nodiscard]] int childCount() const override;
+    [[nodiscard]] QgsPoint childPoint( int index ) const override;
 
   private:
     double mX;

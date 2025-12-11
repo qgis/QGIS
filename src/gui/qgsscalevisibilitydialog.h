@@ -48,7 +48,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     /**
      * Returns TRUE if scale based visibility is enabled.
      */
-    bool hasScaleVisibility() const;
+    [[nodiscard]] bool hasScaleVisibility() const;
 
     /**
      * Returns the selected minimum scale, or 0 if minimum scale is not set.
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
      * \see maximumScale()
      * \see setMinimumScale()
      */
-    double minimumScale() const;
+    [[nodiscard]] double minimumScale() const;
 
     /**
      * Returns the selected maximum scale, or 0 if maximum scale is not set.
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
      * \see minimumScale()
      * \see setMaximumScale()
      */
-    double maximumScale() const;
+    [[nodiscard]] double maximumScale() const;
 
   public slots:
 

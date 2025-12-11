@@ -85,7 +85,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Returns whether the widget is showing a clear button.
      * \see setShowClearButton()
      */
-    bool showClearButton() const { return mShowClearButton; }
+    [[nodiscard]] bool showClearButton() const { return mShowClearButton; }
 
     /**
      * Sets if the widget will allow entry of simple expressions, which are
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * evaluated and then discarded.
      * \returns TRUE if spin box allows expression entry
      */
-    bool expressionsEnabled() const { return mExpressionsEnabled; }
+    [[nodiscard]] bool expressionsEnabled() const { return mExpressionsEnabled; }
 
     //! Sets the current value to the value defined by the clear value.
     void clear() override;
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Returns the value used when clear() is called.
      * \see setClearValue()
      */
-    double clearValue() const;
+    [[nodiscard]] double clearValue() const;
 
     /**
      * Returns TRUE if the value is equal to the clear value.
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      *
      * \since QGIS 3.42
      */
-    bool isCleared() const;
+    [[nodiscard]] bool isCleared() const;
 
     /**
      * Set alignment in the embedded line edit widget
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     void setSpecialValueText( const QString &txt );
 
-    double valueFromText( const QString &text ) const override;
+    [[nodiscard]] double valueFromText( const QString &text ) const override;
     QValidator::State validate( QString &input, int &pos ) const override;
     void paintEvent( QPaintEvent *e ) override;
     void stepBy( int steps ) override;
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      *
      * \since QGIS 3.42
      */
-    int editingTimeoutInterval() const;
+    [[nodiscard]] int editingTimeoutInterval() const;
 
   public slots:
 
@@ -218,8 +218,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     void onLastEditTimeout();
 
   private:
-    int frameWidth() const;
-    bool shouldShowClearForValue( double value ) const;
+    [[nodiscard]] int frameWidth() const;
+    [[nodiscard]] bool shouldShowClearForValue( double value ) const;
 
     QgsSpinBoxLineEdit *mLineEdit = nullptr;
 
@@ -232,7 +232,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     QTimer *mLastEditTimer = nullptr;
     double mLastEditTimeoutValue = std::numeric_limits<double>::quiet_NaN();
 
-    QString stripped( const QString &originalText ) const;
+    [[nodiscard]] QString stripped( const QString &originalText ) const;
 
     friend class TestQgsRangeWidgetWrapper;
 };

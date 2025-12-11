@@ -141,7 +141,7 @@ class LayoutItemHider
       }
     }
 
-    QList< QGraphicsItem * > itemsToIterate() const { return mItemsToIterate; }
+    [[nodiscard]] QList< QGraphicsItem * > itemsToIterate() const { return mItemsToIterate; }
 
     LayoutItemHider( const LayoutItemHider &other ) = delete;
     LayoutItemHider &operator=( const LayoutItemHider &other ) = delete;

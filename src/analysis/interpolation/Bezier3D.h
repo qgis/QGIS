@@ -54,13 +54,13 @@ class ANALYSIS_EXPORT Bezier3D : public ParametricLine
     //! Do not use this method, since a Bezier curve does not consist of other curves
     void remove( int i ) override;
     //! Returns a control point
-    const QgsPoint *getControlPoint( int number ) const override;
+    [[nodiscard]] const QgsPoint *getControlPoint( int number ) const override;
     //! Returns a pointer to the control polygon
-    const QVector<QgsPoint *> *getControlPoly() const override;
+    [[nodiscard]] const QVector<QgsPoint *> *getControlPoly() const override;
     //! Returns the degree of the curve
-    int getDegree() const override;
+    [[nodiscard]] int getDegree() const override;
     //! Returns the parent
-    ParametricLine *getParent() const override;
+    [[nodiscard]] ParametricLine *getParent() const override;
     //! Sets the parent
     void setParent( ParametricLine *par ) override;
     //! Sets the control polygon

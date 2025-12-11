@@ -29,10 +29,10 @@ class CORE_EXPORT QgsClassificationQuantile : public QgsClassificationMethod
   public:
     QgsClassificationQuantile();
 
-    QString name() const override;
-    QString id() const override;
-    std::unique_ptr< QgsClassificationMethod > clone() const override;
-    QIcon icon() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] std::unique_ptr< QgsClassificationMethod > clone() const override;
+    [[nodiscard]] QIcon icon() const override;
 
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum,

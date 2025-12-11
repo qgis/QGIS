@@ -87,14 +87,14 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \returns current widget color
      * \see setColor
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Returns the color component which the widget controls
      * \returns color component for widget
      * \see setComponent
      */
-    ColorComponent component() const { return mComponent; }
+    [[nodiscard]] ColorComponent component() const { return mComponent; }
 
     /**
      * Returns the current value of the widget's color component
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \see component
      * \since QGIS 3.40
      */
-    float componentValueF() const;
+    [[nodiscard]] float componentValueF() const;
 
     /**
      * Create an icon for dragging colors
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * Returns the range of valid values for the color widget's component
      * \returns maximum value allowed for color component, or -1 if widget has multiple components
      */
-    int componentRange() const;
+    [[nodiscard]] int componentRange() const;
 
     /**
      * Returns the range of valid values a color component
@@ -224,7 +224,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \see hue()
      * \since QGIS 3.40
      */
-    float componentValueF( ColorComponent component ) const;
+    [[nodiscard]] float componentValueF( ColorComponent component ) const;
 
     /**
      * Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
@@ -240,7 +240,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \returns explicitly set hue for widget in the range 0-1.0
      * \since QGIS 3.40
      */
-    float hueF() const;
+    [[nodiscard]] float hueF() const;
 
     /**
      * Alters a color by modifying the value of a specific color component
@@ -265,7 +265,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /**
      * Returns color widget type of color, either RGB, HSV, CMYK, or Invalid if this component value is Multiple or Alpha
      */
-    QColor::Spec colorSpec() const;
+    [[nodiscard]] QColor::Spec colorSpec() const;
 
     /**
      * Returns \a component type of color, either RGB, HSV, CMYK, or Invalid if \a component value is Multiple or Alpha
@@ -332,7 +332,7 @@ class GUI_EXPORT QgsColorWidgetAction : public QWidgetAction
      * action's color widget.
      * \see setDismissOnColorSelection
      */
-    bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
+    [[nodiscard]] bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
 
   signals:
 
@@ -387,7 +387,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
     ~QgsColorWheel() override;
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
   public slots:
@@ -483,7 +483,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
 
     ~QgsColorBox() override;
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
     void setComponent( ColorComponent component ) override;
@@ -518,33 +518,33 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      * Returns the range of permissible values along the x axis
      * \returns maximum color component value for x axis
      */
-    float valueRangeX() const;
+    [[nodiscard]] float valueRangeX() const;
 
     /**
      * Returns the range of permissible values along the y axis
      * \returns maximum color component value for y axis
      */
-    float valueRangeY() const;
+    [[nodiscard]] float valueRangeY() const;
 
     /**
      * Returns the color component which varies along the y axis
      */
-    QgsColorWidget::ColorComponent yComponent() const;
+    [[nodiscard]] QgsColorWidget::ColorComponent yComponent() const;
 
     /**
      * Returns the value of the color component which varies along the y axis
      */
-    float yComponentValue() const;
+    [[nodiscard]] float yComponentValue() const;
 
     /**
      * Returns the color component which varies along the x axis
      */
-    QgsColorWidget::ColorComponent xComponent() const;
+    [[nodiscard]] QgsColorWidget::ColorComponent xComponent() const;
 
     /**
      * Returns the value of the color component which varies along the x axis
      */
-    float xComponentValue() const;
+    [[nodiscard]] float xComponentValue() const;
 
     /**
      * Updates the widget's color based on a point within the widget
@@ -585,7 +585,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      */
     QgsColorRampWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, ColorComponent component = QgsColorWidget::Red, Orientation orientation = QgsColorRampWidget::Horizontal );
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
     /**
@@ -600,7 +600,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \returns orientation for the ramp
      * \see setOrientation
      */
-    Orientation orientation() const { return mOrientation; }
+    [[nodiscard]] Orientation orientation() const { return mOrientation; }
 
     /**
      * Sets the margin between the edge of the widget and the ramp
@@ -614,7 +614,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \returns margin around the ramp
      * \see setInteriorMargin
      */
-    int interiorMargin() const { return mMargin; }
+    [[nodiscard]] int interiorMargin() const { return mMargin; }
 
     /**
      * Sets whether the ramp should be drawn within a frame
@@ -628,7 +628,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \returns TRUE if a frame is drawn around the ramp
      * \see setShowFrame
      */
-    bool showFrame() const { return mShowFrame; }
+    [[nodiscard]] bool showFrame() const { return mShowFrame; }
 
     /**
      * Sets the size for drawing the triangular markers on the ramp
@@ -723,7 +723,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * \returns display value of color component
      * \see convertDisplayToReal
      */
-    float convertRealToDisplay( float realValue ) const;
+    [[nodiscard]] float convertRealToDisplay( float realValue ) const;
 
     /**
      * Converts the display value of a color component to a real value.
@@ -731,7 +731,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * \returns real value of color component in the range 0.0-1.0
      * \see convertRealToDisplay
      */
-    float convertDisplayToReal( float displayValue ) const;
+    [[nodiscard]] float convertDisplayToReal( float displayValue ) const;
 
   private slots:
 
@@ -844,7 +844,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     QgsColorPreviewWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void paintEvent( QPaintEvent *event ) override;
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     /**
      * Returns the secondary color for the widget
@@ -853,7 +853,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * \see color
      * \see setColor2
      */
-    QColor color2() const { return mColor2; }
+    [[nodiscard]] QColor color2() const { return mColor2; }
 
   public slots:
 

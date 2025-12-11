@@ -50,7 +50,7 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget : public QgsLayoutItemBaseWidge
     explicit QgsLayoutElevationProfileWidget( QgsLayoutItemElevationProfile *profile );
     ~QgsLayoutElevationProfileWidget() override;
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
     void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
     void setReportTypeString( const QString &string ) override;
 

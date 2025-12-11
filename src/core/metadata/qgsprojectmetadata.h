@@ -56,13 +56,13 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
 
     QgsProjectMetadata() = default;
 
-    QgsProjectMetadata *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProjectMetadata *clone() const override SIP_FACTORY;
 
     /**
      * Returns the project author string.
      * \see setAuthor()
      */
-    QString author() const;
+    [[nodiscard]] QString author() const;
 
     /**
      * Sets the project \a author string
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
      * Returns the project's creation date/timestamp.
      * \see setCreationDateTime()
      */
-    QDateTime creationDateTime() const;
+    [[nodiscard]] QDateTime creationDateTime() const;
 
     /**
      * Sets the project's creation date/timestamp.

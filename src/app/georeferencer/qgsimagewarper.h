@@ -106,7 +106,7 @@ class APP_EXPORT QgsImageWarper
     //! \brief GDAL progress callback, used to display warping progress via a QProgressDialog
     static int CPL_STDCALL updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg );
 
-    GDALResampleAlg toGDALResampleAlg( ResamplingMethod method ) const;
+    [[nodiscard]] GDALResampleAlg toGDALResampleAlg( ResamplingMethod method ) const;
 };
 
 

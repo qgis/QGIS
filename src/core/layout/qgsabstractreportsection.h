@@ -82,17 +82,17 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     /**
      * Returns the section subclass type.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Returns a user-visible, translated description of the section.
      */
-    virtual QString description() const = 0;
+    [[nodiscard]] virtual QString description() const = 0;
 
     /**
      * Returns an icon representing the section.
      */
-    virtual QIcon icon() const = 0;
+    [[nodiscard]] virtual QIcon icon() const = 0;
 
     /**
      * Clones the report section. Ownership of the returned section is
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * Subclasses should call copyCommonProperties() in their clone()
      * implementations.
      */
-    virtual QgsAbstractReportSection *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractReportSection *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the parent report section.
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     QgsProject *project();
 
     // TODO - how to handle this?
-    int count() const override { return -1; }
+    [[nodiscard]] int count() const override { return -1; }
 
     QString filePath( const QString &baseFilePath, const QString &extension ) override;
     QgsLayout *layout() override;
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * \see header()
      * \see setHeader()
      */
-    bool headerEnabled() const { return mHeaderEnabled; }
+    [[nodiscard]] bool headerEnabled() const { return mHeaderEnabled; }
 
     /**
      * Sets whether the header for the section is \a enabled.
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * \see footer()
      * \see setFooter()
      */
-    bool footerEnabled() const { return mFooterEnabled; }
+    [[nodiscard]] bool footerEnabled() const { return mFooterEnabled; }
 
     /**
      * Sets whether the footer for the section is \a enabled.
@@ -226,12 +226,12 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * sections form the body of the report section.
      * \see children()
      */
-    int childCount() const { return mChildren.count(); }
+    [[nodiscard]] int childCount() const { return mChildren.count(); }
 
     /**
      * Returns the row number of the section within it's parent section.
      */
-    int row() const;
+    [[nodiscard]] int row() const;
 
     /**
      * Returns all child sections for this report section. The child
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * \see insertChild()
      * \see removeChild()
      */
-    QList< QgsAbstractReportSection * > childSections() const { return mChildren; }
+    [[nodiscard]] QList< QgsAbstractReportSection * > childSections() const { return mChildren; }
 
     /**
      * Returns the child section at the specified \a index.
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * Returns the current context for this section.
      * \see setContext()
      */
-    const QgsReportSectionContext &context() const { return mContext; }
+    [[nodiscard]] const QgsReportSectionContext &context() const { return mContext; }
 
     /**
      * Stores the section state in a DOM element.

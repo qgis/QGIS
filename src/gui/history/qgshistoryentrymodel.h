@@ -60,17 +60,17 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     ~QgsHistoryEntryModel() override;
     // Implementation of virtual functions from QAbstractItemModel
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const final;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const final;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const final;
-    QModelIndex parent( const QModelIndex &child ) const final;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const final;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const final;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const final;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const final;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns node for given index. Returns root node for invalid index.
      */
-    QgsHistoryEntryNode *index2node( const QModelIndex &index ) const;
+    [[nodiscard]] QgsHistoryEntryNode *index2node( const QModelIndex &index ) const;
 
   private slots:
 

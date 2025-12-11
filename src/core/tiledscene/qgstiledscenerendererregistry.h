@@ -63,19 +63,19 @@ class CORE_EXPORT QgsTiledSceneRendererAbstractMetadata
      * Returns the unique name of the renderer. This value is not translated.
      * \see visibleName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns a friendly display name of the renderer. This value is translated.
      * \see name()
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns an icon representing the renderer.
      * \see setIcon()
      */
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
     /**
      * Sets an \a icon representing the renderer.
@@ -148,9 +148,9 @@ class CORE_EXPORT QgsTiledSceneRendererMetadata : public QgsTiledSceneRendererAb
 #endif
 
     //! \note not available in Python bindings
-    QgsTiledSceneRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    [[nodiscard]] QgsTiledSceneRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsTiledSceneRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    [[nodiscard]] QgsTiledSceneRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
 
     //! \note not available in Python bindings
     void setWidgetFunction( QgsTiledSceneRendererWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsTiledSceneRendererRegistry
     /**
      * Returns a list of available renderers.
      */
-    QStringList renderersList() const;
+    [[nodiscard]] QStringList renderersList() const;
 
     /**
      * Returns a new default tiled scene renderer for a specified \a layer.

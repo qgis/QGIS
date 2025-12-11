@@ -63,11 +63,11 @@ class CORE_EXPORT QgsMatrix4x4
     }
 
     //! Returns pointer to the matrix data (stored in column-major order)
-    const double *constData() const SIP_SKIP { return *m; }
+    [[nodiscard]] const double *constData() const SIP_SKIP { return *m; }
     //! Returns pointer to the matrix data (stored in column-major order)
     double *data() SIP_SKIP { return *m; }
     //! Returns matrix data (in column-major order)
-    QList< double > dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
+    [[nodiscard]] QList< double > dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
 
     /**
      * Multiplies this matrix by another that translates coordinates by the components of a \a vector.
@@ -75,13 +75,13 @@ class CORE_EXPORT QgsMatrix4x4
     void translate( const QgsVector3D &vector );
 
     //! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
-    QgsVector3D map( const QgsVector3D &vector ) const SIP_HOLDGIL
+    [[nodiscard]] QgsVector3D map( const QgsVector3D &vector ) const SIP_HOLDGIL
     {
       return *this * vector;
     }
 
     //! Returns whether this matrix is an identity matrix
-    bool isIdentity() const SIP_HOLDGIL;
+    [[nodiscard]] bool isIdentity() const SIP_HOLDGIL;
     //! Sets matrix to be identity matrix
     void setToIdentity() SIP_HOLDGIL;
 

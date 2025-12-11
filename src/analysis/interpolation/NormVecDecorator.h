@@ -60,13 +60,13 @@ class ANALYSIS_EXPORT NormVecDecorator : public TriDecorator
     //! This method adds the functionality of estimating normals at the data points. Return TRUE in the case of success and FALSE otherwise
     bool estimateFirstDerivatives( QgsFeedback *feedback = nullptr );
     //! Returns a pointer to the normal vector for the point with the number n
-    Vector3D *getNormal( int n ) const;
+    [[nodiscard]] Vector3D *getNormal( int n ) const;
     //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normally taken from 'mNormVec', except if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns FALSE, if something went wrong and TRUE otherwise
     bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, Vector3D *v1 SIP_OUT, QgsPoint &p2 SIP_OUT, Vector3D *v2 SIP_OUT, QgsPoint &p3 SIP_OUT, Vector3D *v3 SIP_OUT ) SIP_PYNAME( getTriangleVertices );
     //! This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
     bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, int &ptn1 SIP_OUT, Vector3D *v1 SIP_OUT, PointState *state1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &ptn2 SIP_OUT, Vector3D *v2 SIP_OUT, PointState *state2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &ptn3 SIP_OUT, Vector3D *v3 SIP_OUT, PointState *state3 SIP_OUT );
     //! Returns the state of the point with the number 'pointno'
-    PointState getState( int pointno ) const;
+    [[nodiscard]] PointState getState( int pointno ) const;
     //! Sets an interpolator
     void setTriangleInterpolator( TriangleInterpolator *inter ) override;
     //! Swaps the edge which is closest to the point with x and y coordinates (if this is possible) and forces recalculation of the concerned normals (if alreadyestimated is TRUE)

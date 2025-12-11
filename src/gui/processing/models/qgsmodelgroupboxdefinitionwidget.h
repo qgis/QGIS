@@ -54,7 +54,7 @@ class GUI_EXPORT QgsModelGroupBoxDefinitionDialog : public QDialog
     /**
      * Returns a new instance of the group box, using the current settings defined in the dialog.
      */
-    QgsProcessingModelGroupBox groupBox() const;
+    [[nodiscard]] QgsProcessingModelGroupBox groupBox() const;
 
   private:
     QTextEdit *mCommentEdit = nullptr;

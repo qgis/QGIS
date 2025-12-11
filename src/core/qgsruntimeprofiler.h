@@ -84,17 +84,17 @@ class CORE_EXPORT QgsRuntimeProfilerNode
      *
      * This will contain node IDs if set, otherwise node names.
      */
-    QStringList fullParentPath() const;
+    [[nodiscard]] QStringList fullParentPath() const;
 
     /**
      * Returns the node's data for the specified model \a role.
      */
-    QVariant data( int role = Qt::DisplayRole ) const;
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const;
 
     /**
      * Returns the number of child nodes owned by this node.
      */
-    int childCount() const { return mChildren.size(); }
+    [[nodiscard]] int childCount() const { return mChildren.size(); }
 
     /**
      * Adds a \a child node to this node.
@@ -150,13 +150,13 @@ class CORE_EXPORT QgsRuntimeProfilerNode
      *
      * If the node is still running then 0 will be returned.
      */
-    double elapsed() const;
+    [[nodiscard]] double elapsed() const;
 
     /**
      * Returns the total elapsed time in seconds for all children
      * of this node with matching \a group.
      */
-    double totalElapsedTimeForChildren( const QString &group ) const;
+    [[nodiscard]] double totalElapsedTimeForChildren( const QString &group ) const;
 
   private:
     std::deque< std::unique_ptr< QgsRuntimeProfilerNode > > mChildren;
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      * Returns a list of all child groups with the specified \a parent.
      * \since QGIS 3.14
      */
-    QStringList childGroups( const QString &parent = QString(), const QString &group = "startup" ) const;
+    [[nodiscard]] QStringList childGroups( const QString &parent = QString(), const QString &group = "startup" ) const;
 
     /**
      * \brief Start a profile event with the given name.
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      * Returns the profile time for the specified \a name.
      * \since QGIS 3.14
      */
-    double profileTime( const QString &name, const QString &group = "startup" ) const;
+    [[nodiscard]] double profileTime( const QString &name, const QString &group = "startup" ) const;
 
     /**
      * \brief clear Clear all profile data.
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     /**
      * Returns the set of known groups.
      */
-    QSet< QString > groups() const { return mGroups; }
+    [[nodiscard]] QSet< QString > groups() const { return mGroups; }
 
     /**
      * Returns TRUE if the specified \a group is currently being logged,
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      *
      * \since QGIS 3.14
      */
-    bool groupIsActive( const QString &group ) const;
+    [[nodiscard]] bool groupIsActive( const QString &group ) const;
 
     /**
      * Returns the translated name of a standard profile \a group.
@@ -283,12 +283,12 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
 
     // Implementation of virtual functions from QAbstractItemModel
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     /**
      * Returns the model as a multi-line text string.
@@ -323,8 +323,8 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     bool mInitialized = false;
     void setupConnections();
 
-    QgsRuntimeProfilerNode *pathToNode( const QString &group, const QString &path ) const;
-    QgsRuntimeProfilerNode *pathToNode( const QString &group, const QStringList &path ) const;
+    [[nodiscard]] QgsRuntimeProfilerNode *pathToNode( const QString &group, const QString &path ) const;
+    [[nodiscard]] QgsRuntimeProfilerNode *pathToNode( const QString &group, const QStringList &path ) const;
     QModelIndex node2index( QgsRuntimeProfilerNode *node ) const;
     QModelIndex indexOfParentNode( QgsRuntimeProfilerNode *parentNode ) const;
     void extractModelAsText( QStringList &lines, const QString &group, const QModelIndex &parent = QModelIndex(), int level = 0 );
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     /**
      * Returns node for given index. Returns root node for invalid index.
      */
-    QgsRuntimeProfilerNode *index2node( const QModelIndex &index ) const;
+    [[nodiscard]] QgsRuntimeProfilerNode *index2node( const QModelIndex &index ) const;
 
     QMap< QString, QStack< QgsRuntimeProfilerNode * > > mCurrentStack;
     std::unique_ptr< QgsRuntimeProfilerNode > mRootNode;

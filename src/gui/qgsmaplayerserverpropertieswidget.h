@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapLayerServerPropertiesWidget : public QWidget, private Ui:
      * Returns TRUE if widget display a WFS title widget
      * \see setHasWfsTitle()
      */
-    bool hasWfsTitle() const;
+    [[nodiscard]] bool hasWfsTitle() const;
 
     /**
      * Saves the settings to the server properties.

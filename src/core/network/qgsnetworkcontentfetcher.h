@@ -77,13 +77,13 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      *
      * \since QGIS 3.28
      */
-    QString contentDispositionFilename() const;
+    [[nodiscard]] QString contentDispositionFilename() const;
 
     /**
      * Returns the fetched content as a string
      * \returns string containing network content
      */
-    QString contentAsString() const;
+    [[nodiscard]] QString contentAsString() const;
 
     /**
      * Cancels any ongoing request.
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      *
      * \since QGIS 3.10
      */
-    bool wasCanceled() const;
+    [[nodiscard]] bool wasCanceled() const;
 
   signals:
 

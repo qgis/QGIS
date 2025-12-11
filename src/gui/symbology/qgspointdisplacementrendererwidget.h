@@ -42,7 +42,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget : public QgsRendererWidget, 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private:
     std::unique_ptr<QgsPointDisplacementRenderer> mRenderer;

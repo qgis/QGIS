@@ -44,7 +44,7 @@ class CORE_EXPORT QgsUnsetAttributeValue
     /**
      * Returns the original data provider's default value clause.
      */
-    QString defaultValueClause() const { return mDefaultValueClause; }
+    [[nodiscard]] QString defaultValueClause() const { return mDefaultValueClause; }
 
     /**
      * QgsUnsetAttributeValues are always considered equal to each other, regardless of what the original provider's default value clause was.

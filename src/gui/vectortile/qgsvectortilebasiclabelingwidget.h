@@ -118,11 +118,11 @@ class QgsVectorTileBasicLabelingListModel : public QAbstractListModel
 
     QgsVectorTileBasicLabelingListModel( QgsVectorTileBasicLabeling *r, QObject *parent = nullptr );
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
@@ -130,9 +130,9 @@ class QgsVectorTileBasicLabelingListModel : public QAbstractListModel
     void insertStyle( int row, const QgsVectorTileBasicLabelingStyle &style );
 
     // drag'n'drop support
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
   private:
@@ -149,7 +149,7 @@ class QgsVectorTileBasicLabelingProxyModel : public QSortFilterProxyModel
     void setFilterVisible( bool enabled );
     void setFilterString( const QString &string );
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     bool mFilterVisible = false;

@@ -151,7 +151,7 @@ class GUI_EXPORT QgsLayoutMapGridWidget : public QgsLayoutItemBaseWidget, privat
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled, bool ticksRotationEnabled );
 
     //! Is there some predefined scales, globally or as project's options ?
-    bool hasPredefinedScales() const;
+    [[nodiscard]] bool hasPredefinedScales() const;
 };
 
 #endif //QGSLAYOUTMAPGRIDWIDGET_H

@@ -109,7 +109,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     /**
      * Returns the list of features which fall within the specified \a rectangle.
      */
-    QList<QgsSpatialIndexKDBushData> intersects( const QgsRectangle &rectangle ) const;
+    [[nodiscard]] QList<QgsSpatialIndexKDBushData> intersects( const QgsRectangle &rectangle ) const;
 
     /**
      * Calls a \a visitor function for all features which fall within the specified \a rectangle.
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      * Returns the list of features which are within the given search \a radius
      * of \a point.
      */
-    QList<QgsSpatialIndexKDBushData> within( const QgsPointXY &point, double radius ) const;
+    [[nodiscard]] QList<QgsSpatialIndexKDBushData> within( const QgsPointXY &point, double radius ) const;
 
     /**
      * Calls a \a visitor function for all features which are within the given search \a radius
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     /**
      * Returns the size of the index, i.e. the number of points contained within the index.
      */
-    qgssize size() const;
+    [[nodiscard]] qgssize size() const;
 
   private:
 

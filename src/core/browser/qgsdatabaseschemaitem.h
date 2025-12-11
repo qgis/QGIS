@@ -54,7 +54,7 @@ class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
     % End
 #endif
 
-    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+    [[nodiscard]] QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
 };
 

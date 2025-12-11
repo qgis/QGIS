@@ -83,19 +83,19 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      *
      * \see frameDuration()
      */
-    double framesPerSecond() const { return mFramesPerSecond; }
+    [[nodiscard]] double framesPerSecond() const { return mFramesPerSecond; }
 
     /**
      * Returns the duration of each frame, in micro-seconds.
      *
      * \see framesPerSecond()
      */
-    qint64 frameDuration() const { return mFrameDurationUs; }
+    [[nodiscard]] qint64 frameDuration() const { return mFrameDurationUs; }
 
     /**
      * Returns the output video frame size.
      */
-    QSize size() const { return mSize; }
+    [[nodiscard]] QSize size() const { return mSize; }
 
     /**
      * Sets the list of input image \a files.
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      *
      * \see setInputFiles()
      */
-    QStringList inputFiles() const;
+    [[nodiscard]] QStringList inputFiles() const;
 
 #ifndef SIP_RUN
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      *
      * \see error()
      */
-    QString errorString() const;
+    [[nodiscard]] QString errorString() const;
 
   public slots:
 

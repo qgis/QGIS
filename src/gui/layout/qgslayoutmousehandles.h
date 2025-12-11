@@ -68,7 +68,7 @@ class GUI_EXPORT QgsLayoutMouseHandles : public QgsGraphicsViewMouseHandles
   protected:
     void setViewportCursor( Qt::CursorShape cursor ) override;
     QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) override;
-    QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
+    [[nodiscard]] QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
     bool itemIsLocked( QGraphicsItem *item ) override;
     bool itemIsGroupMember( QGraphicsItem *item ) override;
     QRectF itemRect( QGraphicsItem *item ) const override;

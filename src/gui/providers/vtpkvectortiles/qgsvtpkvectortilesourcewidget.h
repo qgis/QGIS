@@ -34,7 +34,7 @@ class QgsVtpkVectorTileSourceWidget : public QgsProviderSourceWidget
     QgsVtpkVectorTileSourceWidget( QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri ) override;
-    QString sourceUri() const override;
+    [[nodiscard]] QString sourceUri() const override;
 
   private slots:
 
