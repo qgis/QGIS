@@ -449,6 +449,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     void setLayerOrder( const QStringList &layers ) override;
     void setSubLayerVisibility( const QString &name, bool vis ) override;
     QDateTime timestamp() const override;
+
+    using QgsMapLayer::accept;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**

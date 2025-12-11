@@ -54,6 +54,7 @@ class QgsGPXProvider final : public QgsVectorDataProvider
     Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsFields fields() const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;

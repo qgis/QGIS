@@ -406,6 +406,7 @@ Ownership of ``symbol`` is transferred to the rubberband.
 %End
 
   protected:
+
     virtual void paint( QPainter *p );
 
 %Docstring

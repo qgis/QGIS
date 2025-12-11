@@ -68,6 +68,8 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QString connectionUri() const { return mConnectionUri; }
     bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
 
+    using QgsDataCollectionItem::refresh;
+
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );
 
@@ -109,6 +111,8 @@ class QgsMssqlSchemaItem : public QgsDatabaseSchemaItem
     QVector<QgsDataItem *> createChildren() override;
 
     QgsMssqlLayerItem *addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh );
+
+    using QgsDatabaseSchemaItem::refresh;
     void refresh() override; // do not refresh directly (call parent)
     void addLayers( QgsDataItem *newLayers );
 
