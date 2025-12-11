@@ -18273,6 +18273,7 @@ QgsTessellator.zMaximum: src/core/qgstessellator.h#L214
 QgsTessellator.zMinimum: src/core/qgstessellator.h#L208
 QgsTessellator: src/core/qgstessellator.h#L39
 QgsTestUtils.compareDomElements: src/core/qgstestutils.h#L45
+QgsTestUtils.sanitizeFakeHttpEndpoint: src/core/qgstestutils.h#L50
 QgsTestUtils.testProviderIteratorThreadSafety: src/core/qgstestutils.h#L38
 QgsTestUtils: src/core/qgstestutils.h#L28
 QgsTextAnnotation.clone: src/core/annotations/qgstextannotation.h#L42
