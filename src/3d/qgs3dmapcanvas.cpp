@@ -442,7 +442,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
       band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
     }
     mHighlights[layer] = QObjectUniquePtr<Qt3DCore::QEntity>( band );
-    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
+    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightParameters );
   }
   if ( QgsRubberBand3D *band = dynamic_cast<QgsRubberBand3D *>( mHighlights[layer].get() ) )
   {
@@ -450,7 +450,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
   }
 }
 
-void Qgs3DMapCanvas::updateHighlightSizes()
+void Qgs3DMapCanvas::updateHighlightParameters()
 {
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
