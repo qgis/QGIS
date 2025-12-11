@@ -3195,7 +3195,7 @@ void TestQgsGeometry::chamferFillet()
 
   g = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) );
   QCOMPARE( g.lastError(), "" );
-  g.chamfer( 1, 0.5, 0.5 );
+  g.chamfer( 0, 0.5, 0.5 );
   QCOMPARE( g.lastError(), "Operation 'Chamfer' needs curve geometry." );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
@@ -3206,7 +3206,7 @@ void TestQgsGeometry::chamferFillet()
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 5, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Vertex index out of range. -1 must be in (0, 2). Requested vertex: 5 was resolved as: [part: -1, ring: -1, vertex: -1]" );
+  QCOMPARE( g.lastError(), "Invalid vertex index" );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
