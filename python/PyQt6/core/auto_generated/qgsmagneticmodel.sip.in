@@ -48,7 +48,7 @@ Returns the name of the default magnetic model used by GeographicLib.
 .. seealso:: :py:func:`defaultFilePath`
 %End
 
-    QgsMagneticModel( const QString &name, const QString &path = QString(), int nMax = -1, int mMax = -1 );
+    QgsMagneticModel( const QString &name, const QString &path = QString(), int maxDegree = -1, int maxOrder = -1 );
 %Docstring
 Constructor for QgsMagneticModel.
 
@@ -64,16 +64,18 @@ If not, then :py:func:`~QgsMagneticModel.isValid` will return ``False``
 and a descriptive error can be retrieved by
 :py:func:`~QgsMagneticModel.error`.
 
-If ``nMax`` ≥ 0 and ``mMax`` < 0, then ``mMax`` is set to ``nMax``.
-After the model is loaded, the maximum degree and order of the model can
-be found by the :py:func:`~QgsMagneticModel.degree` and
+If ``maxDegree`` ≥ 0 and ``maxOrder`` < 0, then ``maxOrder`` is set to
+``maxDegree``. After the model is loaded, the maximum degree and order
+of the model can be found by the :py:func:`~QgsMagneticModel.degree` and
 :py:func:`~QgsMagneticModel.order` methods.
 
 :param name: the name of the model.
 :param path: optional directory for data file. If not specified then
              :py:func:`~QgsMagneticModel.defaultFilePath` is used.
-:param nMax: if nonnegative, truncate the degree of the model this value
-:param mMax: if nonnegative, truncate the order of the model this value
+:param maxDegree: if nonnegative, truncate the degree of the model this
+                  value
+:param maxOrder: if nonnegative, truncate the order of the model this
+                 value
 %End
     ~QgsMagneticModel();
 
