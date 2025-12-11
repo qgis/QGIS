@@ -485,20 +485,26 @@ void QgsRubberBand3D::updateMarkerMaterial()
 {
   if ( mMarkerEnabled )
   {
-    mMarkerMaterial = new QgsPoint3DBillboardMaterial();
-    mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol.get(), Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
-    mMarkerEntity->addComponent( mMarkerMaterial );
+    if ( !mMarkerMaterial )
+    {
+      mMarkerMaterial = new QgsPoint3DBillboardMaterial();
+      mMarkerEntity->addComponent( mMarkerMaterial );
+      //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
+      QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] {
+        mMarkerMaterial->setViewportSize( mEngine->size() );
+      } );
+    }
 
-    //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
-    QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] {
-      mMarkerMaterial->setViewportSize( mEngine->size() );
-    } );
+    mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol.get(), Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
     mMarkerMaterial->setViewportSize( mEngine->size() );
   }
-  else
+  else if ( !mMarkerEnabled && mMarkerMaterial )
   {
     mMarkerEntity->removeComponent( mMarkerMaterial );
     QObject::disconnect( mEngine, nullptr, mMarkerMaterial, nullptr );
+    mMarkerMaterial->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
+    mMarkerMaterial->deleteLater();
+    mMarkerMaterial = nullptr;
   }
 }
 /// @endcond
