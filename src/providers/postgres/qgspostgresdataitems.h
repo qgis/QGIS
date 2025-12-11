@@ -142,6 +142,7 @@ class QgsPGProjectItem : public QgsProjectItem
     */
     QString connectionName() const { return mConnectionName; }
 
+    using QgsProjectItem::refresh;
     void refresh() override;
 
   private:
