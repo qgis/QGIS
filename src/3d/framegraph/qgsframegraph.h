@@ -85,6 +85,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns entity for all rubber bands (to show them always on top)
     Qt3DCore::QEntity *rubberBandsRootEntity() { return mRubberBandsRootEntity; }
 
+    //! Returns entity for all highlights (to show them always on top)
+    Qt3DCore::QEntity *highlightsRootEntity() { return mHighlightsRootEntity; }
+
     //! Returns the render capture object used to take an image of the scene
     Qt3DRender::QRenderCapture *renderCapture();
 
@@ -222,6 +225,8 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      */
     void updateEyeDomeSettings( const Qgs3DMapSettings &settings );
 
+    Qt3DRender::QLayer *highlightsLayer() const { return mHighlightsLayer; }
+
     static const QString FORWARD_RENDERVIEW;
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
@@ -256,10 +261,12 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DCore::QEntity *mRootEntity = nullptr;
 
     Qt3DRender::QLayer *mRubberBandsLayer = nullptr;
+    Qt3DRender::QLayer *mHighlightsLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
 
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
+    Qt3DCore::QEntity *mHighlightsRootEntity = nullptr;
 
     //! shadow texture debugging
     QgsDebugTextureEntity *mShadowTextureDebugging = nullptr;
@@ -273,6 +280,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();
     Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
+    Qt3DRender::QFrameGraphNode *constructHighlightsPass();
 
     Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing();
     Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
