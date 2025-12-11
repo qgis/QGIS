@@ -2639,7 +2639,7 @@ if (WITH_COPC)
 endif()
 
 if (WITH_GEOGRAPHICLIB)
-  target_include_directories(qgis_core PUBLIC
+  target_include_directories(qgis_core PRIVATE
      ${GeographicLib_INCLUDE_DIR})
 endif()
 
