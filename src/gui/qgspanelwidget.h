@@ -15,10 +15,11 @@
 #ifndef QGSPANELWIDGET_H
 #define QGSPANELWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
+
 #include <QKeyEvent>
 #include <QStack>
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QMenu;
 

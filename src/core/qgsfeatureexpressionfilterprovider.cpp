@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsfeatureexpressionfilterprovider.h"
+
+#include "qgsexpression.h"
 #include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpression.h"
 
 void QgsFeatureExpressionFilterProvider::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const
 {

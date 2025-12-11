@@ -19,13 +19,14 @@
 #ifndef QGSORIENTEDBOX3D_H
 #define QGSORIENTEDBOX3D_H
 
+#include <limits>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsvector3d.h"
 
 #include <QList>
-#include <limits>
 
 class QgsBox3D;
 class QgsCoordinateTransform;

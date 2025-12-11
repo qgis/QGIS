@@ -14,15 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drenderer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgspainteffect.h"
+
+#include <memory>
+
 #include "qgseffectstack.h"
-#include "qgsgloweffect.h"
-#include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsgloweffect.h"
+#include "qgspainteffect.h"
+#include "qgsproperty.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 
 #define ROOF_EXPRESSION \
   "translate(" \
@@ -65,7 +68,7 @@
 Qgs25DRenderer::Qgs25DRenderer()
   : QgsFeatureRenderer( QStringLiteral( "25dRenderer" ) )
 {
-  mSymbol.reset( new QgsFillSymbol() );
+  mSymbol = std::make_unique<QgsFillSymbol>( );
 
   mSymbol->deleteSymbolLayer( 0 ); // We never asked for the default layer
 

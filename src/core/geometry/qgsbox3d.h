@@ -19,11 +19,10 @@
 #define QGSBOX3D_H
 
 #include "qgis_core.h"
+#include "qgspoint.h"
 #include "qgsrectangle.h"
 
 #include <QVector3D>
-
-#include "qgspoint.h"
 
 class QgsVector3D;
 

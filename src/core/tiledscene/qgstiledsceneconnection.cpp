@@ -19,7 +19,6 @@
 #include "qgshttpheaders.h"
 #include "qgssettingsentryimpl.h"
 
-
 #include <QFileInfo>
 
 ///@cond PRIVATE

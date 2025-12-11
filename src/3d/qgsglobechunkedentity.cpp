@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsglobechunkedentity.h"
-#include "moc_qgsglobechunkedentity.cpp"
 
 #include <QByteArray>
 #include <QImage>
+
+#include "moc_qgsglobechunkedentity.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
@@ -41,6 +42,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTextureImage>
+#include <memory>
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
@@ -481,7 +483,7 @@ QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
 
   connectToLayersRepaintRequest();
 
-  mUpdateJobFactory.reset( new QgsGlobeMapUpdateJobFactory( mapSettings ) );
+  mUpdateJobFactory = std::make_unique<QgsGlobeMapUpdateJobFactory>( mapSettings );
 }
 
 QgsGlobeEntity::~QgsGlobeEntity()

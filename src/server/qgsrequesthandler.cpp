@@ -17,19 +17,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsrequesthandler.h"
+
+#include "qgis.h"
 #include "qgsmessagelog.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
+
 #include <QByteArray>
 #include <QDomDocument>
 #include <QUrl>
 #include <QUrlQuery>
 
 QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response )
-  : mExceptionRaised( false )
-  , mRequest( request )
+  : mRequest( request )
   , mResponse( response )
 {
 }

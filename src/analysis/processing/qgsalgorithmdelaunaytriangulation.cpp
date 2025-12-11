@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdelaunaytriangulation.h"
-#include "qgsspatialindex.h"
-#include "qgsmultipoint.h"
+
 #include "qgsattributes.h"
+#include "qgsmultipoint.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsSymbolsListWidget : QWidget
 {
 %Docstring(signature="appended")

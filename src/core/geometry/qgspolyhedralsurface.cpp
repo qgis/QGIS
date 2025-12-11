@@ -16,24 +16,26 @@
  ***************************************************************************/
 
 #include "qgspolyhedralsurface.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscurve.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeos.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
 #include "qgspolygon.h"
 #include "qgsvertexid.h"
 #include "qgswkbptr.h"
-#include "qgsmultilinestring.h"
-#include "qgsgeos.h"
 
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsPolyhedralSurface::QgsPolyhedralSurface()
 {
@@ -151,7 +153,7 @@ bool QgsPolyhedralSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatPolygonType = QgsWkbTypes::flatType( polygonType );
     if ( flatPolygonType == Qgis::WkbType::Polygon )
     {
-      currentPatch.reset( new QgsPolygon() );
+      currentPatch = std::make_unique<QgsPolygon>( );
     }
     else
     {

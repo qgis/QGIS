@@ -16,17 +16,21 @@
  ***************************************************************************/
 
 #include "qgsplottoolzoom.h"
-#include "moc_qgsplottoolzoom.cpp"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsplotmouseevent.h"
 #include "qgsplotcanvas.h"
+#include "qgsplotmouseevent.h"
 #include "qgsplotrubberband.h"
+
+#include "moc_qgsplottoolzoom.cpp"
 
 QgsPlotToolZoom::QgsPlotToolZoom( QgsPlotCanvas *canvas )
   : QgsPlotTool( canvas, tr( "Zoom" ) )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
-  mRubberBand.reset( new QgsPlotRectangularRubberBand( canvas ) );
+  mRubberBand = std::make_unique<QgsPlotRectangularRubberBand>( canvas );
   mRubberBand->setBrush( QBrush( QColor( 70, 50, 255, 25 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 70, 50, 255, 100 ) ), 0 ) );
 }

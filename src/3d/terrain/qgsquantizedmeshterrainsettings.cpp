@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshterrainsettings.h"
-#include "qgstiledscenelayer.h"
-#include "qgsquantizedmeshterraingenerator.h"
+
 #include "qgs3drendercontext.h"
+#include "qgsquantizedmeshterraingenerator.h"
+#include "qgstiledscenelayer.h"
 
 QgsAbstractTerrainSettings *QgsQuantizedMeshTerrainSettings::create()
 {

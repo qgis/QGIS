@@ -15,20 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QQueue>
-#include <QFileInfo>
-#include <QApplication>
-#include <QThread>
-
 #include "qgspointcloudlayerexporter.h"
-#include "moc_qgspointcloudlayerexporter.cpp"
+
+#include "qgsgeos.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgsrectangle.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsgeos.h"
+
+#include <QApplication>
+#include <QFileInfo>
+#include <QQueue>
+#include <QThread>
+
+#include "moc_qgspointcloudlayerexporter.cpp"
 
 #ifdef HAVE_PDAL_QGIS
+#include <memory>
 #include <pdal/StageFactory.hpp>
 #include <pdal/io/BufferReader.hpp>
 #include <pdal/Dimension.hpp>
@@ -86,7 +89,7 @@ bool QgsPointCloudLayerExporter::setFormat( const ExportFormat format )
 
 void QgsPointCloudLayerExporter::setFilterGeometry( const QgsAbstractGeometry *geometry )
 {
-  mFilterGeometryEngine.reset( new QgsGeos( geometry ) );
+  mFilterGeometryEngine = std::make_unique<QgsGeos>( geometry );
   mFilterGeometryEngine->prepareGeometry();
 }
 
@@ -580,7 +583,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
     mTable.layout()->registerDim( pdal::Dimension::Id::Infrared );
   }
 
-  mView.reset( new pdal::PointView( mTable ) );
+  mView = std::make_shared<pdal::PointView>( mTable );
 }
 
 void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )

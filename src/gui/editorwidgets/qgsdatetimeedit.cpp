@@ -13,6 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdatetimeedit.h"
+
+#include "qgsapplication.h"
+#include "qgsvariantutils.h"
+
 #include <QAction>
 #include <QCalendarWidget>
 #include <QLineEdit>
@@ -20,13 +25,7 @@
 #include <QStyle>
 #include <QStyleOptionSpinBox>
 
-
-#include "qgsdatetimeedit.h"
 #include "moc_qgsdatetimeedit.cpp"
-
-#include "qgsapplication.h"
-#include "qgsvariantutils.h"
-
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
@@ -190,7 +189,9 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
 {
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
-    QAbstractSpinBox::focusOutEvent( event );
+    // should this be QDateTimeEdit::focusOutEvent?? It was always QAbstractSpinBox,
+    // and there's no clue if that was intentional...
+    QAbstractSpinBox::focusOutEvent( event ); // clazy:exclude=skipped-base-method
     if ( lineEdit()->text() != mNullRepresentation )
     {
       displayNull();
@@ -207,7 +208,9 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
 {
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
-    QAbstractSpinBox::focusInEvent( event );
+    // should this be QDateTimeEdit::focusOutEvent?? It was always QAbstractSpinBox,
+    // and there's no clue if that was intentional...
+    QAbstractSpinBox::focusInEvent( event ); // clazy:exclude=skipped-base-method
 
     displayCurrentDate();
   }

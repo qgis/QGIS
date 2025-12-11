@@ -15,11 +15,12 @@
 #ifndef QGSPIEDIAGRAM_H
 #define QGSPIEDIAGRAM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsdiagram.h"
-#include <QPen>
+
 #include <QBrush>
+#include <QPen>
 
 class QPainter;
 class QPointF;

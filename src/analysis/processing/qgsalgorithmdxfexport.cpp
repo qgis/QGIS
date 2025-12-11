@@ -15,8 +15,8 @@
 
 #include "qgsalgorithmdxfexport.h"
 
-#include "qgsprocessingparameterdxflayers.h"
 #include "qgsdxfexport.h"
+#include "qgsprocessingparameterdxflayers.h"
 
 ///@cond PRIVATE
 

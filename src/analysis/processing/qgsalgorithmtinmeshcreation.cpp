@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtinmeshcreation.h"
+
+#include "qgis.h"
 #include "qgsfileutils.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshtriangulation.h"
+#include "qgsprocessingparametertininputlayers.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsprocessingparametertininputlayers.h"
-#include "qgsmeshtriangulation.h"
-#include "qgsmeshlayer.h"
-#include "qgis.h"
 
 ///@cond PRIVATE
 

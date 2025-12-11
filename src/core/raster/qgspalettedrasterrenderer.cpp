@@ -16,25 +16,27 @@
  ***************************************************************************/
 
 #include "qgspalettedrasterrenderer.h"
-#include "qgsrastertransparency.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsmessagelog.h"
-#include "qgsrasteriterator.h"
-#include "qgslayertreemodellegendnode.h"
+
+#include <memory>
+#include <set>
+
 #include "qgscolorrampimpl.h"
+#include "qgslayertreemodellegendnode.h"
+#include "qgsmessagelog.h"
 #include "qgsrasterattributetable.h"
+#include "qgsrasteriterator.h"
+#include "qgsrastertransparency.h"
 #include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 
 #include <QColor>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
-#include <QVector>
-#include <memory>
-#include <set>
 #include <QRegularExpression>
 #include <QTextStream>
+#include <QVector>
 
 const int QgsPalettedRasterRenderer::MAX_FLOAT_CLASSES = 65536;
 

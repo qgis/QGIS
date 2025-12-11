@@ -14,12 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetableaddcolumndialog.h"
-#include "moc_qgsrasterattributetableaddcolumndialog.cpp"
-#include "qgsrasterattributetable.h"
+
 #include "qgsgui.h"
+#include "qgsrasterattributetable.h"
 
 #include <QPushButton>
 
+#include "moc_qgsrasterattributetableaddcolumndialog.cpp"
 
 QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( QgsRasterAttributeTable *attributeTable, QWidget *parent )
   : QDialog( parent )

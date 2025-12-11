@@ -18,9 +18,9 @@
 #define QGMDALSOURCESELECT_H
 
 #include "ui_qgsmdalsourceselectbase.h"
-#include "qgsabstractdatasourcewidget.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
+#include "qgsabstractdatasourcewidget.h"
 
 /**
  * \class QgsMdalSourceSelect

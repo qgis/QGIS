@@ -19,11 +19,11 @@
 #define QGSAGGREGATECALCULATOR_H
 
 #include "qgis_core.h"
-#include "qgsstatisticalsummary.h"
-#include "qgsfeaturerequest.h"
-#include <QVariant>
 #include "qgsfeatureid.h"
+#include "qgsfeaturerequest.h"
+#include "qgsstatisticalsummary.h"
 
+#include <QVariant>
 
 class QgsFeatureIterator;
 class QgsExpression;

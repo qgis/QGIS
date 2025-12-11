@@ -17,15 +17,17 @@
  ***************************************************************************/
 
 #include "qgscesiumutils.h"
-#include "nlohmann/json.hpp"
-#include "qgsjsonutils.h"
-#include "qgsmatrix4x4.h"
-#include "qgssphere.h"
-#include "qgsorientedbox3d.h"
-#include "qgslogger.h"
 
-#include <QtCore/QBuffer>
+#include <nlohmann/json.hpp>
+
+#include "qgsjsonutils.h"
+#include "qgslogger.h"
+#include "qgsmatrix4x4.h"
+#include "qgsorientedbox3d.h"
+#include "qgssphere.h"
+
 #include <QIODevice>
+#include <QtCore/QBuffer>
 
 QgsBox3D QgsCesiumUtils::parseRegion( const json &region )
 {

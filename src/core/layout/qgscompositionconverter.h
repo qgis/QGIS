@@ -17,10 +17,10 @@
 #define QGSCOMPOSITIONCONVERTER_H
 
 
+#include "qgis_sip.h"
+
 #include <QDomDocument>
 #include <QDomElement>
-
-#include "qgis_sip.h"
 
 #define SIP_NO_FILE
 

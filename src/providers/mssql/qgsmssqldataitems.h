@@ -19,13 +19,14 @@
 #ifndef QGSMSSQLDATAITEMS_H
 #define QGSMSSQLDATAITEMS_H
 
+#include "qgsconfig.h"
+
 #include "qgsconnectionsitem.h"
+#include "qgsdatabaseschemaitem.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
-#include "qgsmssqltablemodel.h"
-#include "qgsdatabaseschemaitem.h"
 #include "qgslayeritem.h"
-#include "qgsconfig.h"
+#include "qgsmssqltablemodel.h"
 
 class QgsMssqlGeomColumnTypeThread;
 
@@ -88,9 +89,9 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QString mDatabase;
     QString mUsername;
     QString mPassword;
-    bool mUseGeometryColumns;
-    bool mUseEstimatedMetadata;
-    bool mAllowGeometrylessTables;
+    bool mUseGeometryColumns = false;
+    bool mUseEstimatedMetadata = false;
+    bool mAllowGeometrylessTables = true;
     QgsMssqlGeomColumnTypeThread *mColumnTypeThread = nullptr;
     QVariantMap mSchemaSettings;
     bool mSchemasFilteringEnabled = false;

@@ -11,6 +11,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgspointcloudstatistics.h"
+%End
+
 struct QgsPointCloudAttributeStatistics
 {
   double minimum;

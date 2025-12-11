@@ -19,8 +19,8 @@
 #define QGSVECTORFILEWRITERTASK_H
 
 #include "qgis_core.h"
-#include "qgsvectorfilewriter.h"
 #include "qgstaskmanager.h"
+#include "qgsvectorfilewriter.h"
 
 /**
  * \class QgsVectorFileWriterTask

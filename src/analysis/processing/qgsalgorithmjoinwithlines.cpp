@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmjoinwithlines.h"
+
+#include "qgsdistancearea.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
-#include "qgsdistancearea.h"
 
 ///@cond PRIVATE
 

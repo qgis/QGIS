@@ -16,13 +16,14 @@
 #ifndef QGSFIELD_H
 #define QGSFIELD_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QSharedDataPointer>
 #include <QString>
 #include <QVariant>
 #include <QVector>
-#include <QSharedDataPointer>
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgis.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 

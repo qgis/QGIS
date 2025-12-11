@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsaabb.h"
+#include "qgstest.h"
 
 /**
  * \ingroup UnitTests

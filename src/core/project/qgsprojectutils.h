@@ -17,9 +17,9 @@
 #ifndef QGSPROJECTUTILS_H
 #define QGSPROJECTUTILS_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsproject.h"
 
 #include <QList>

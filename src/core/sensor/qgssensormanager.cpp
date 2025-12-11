@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgssensormanager.h"
-#include "moc_qgssensormanager.cpp"
 
 #include "qgsapplication.h"
 #include "qgssensorregistry.h"
+
+#include "moc_qgssensormanager.cpp"
 
 QgsSensorManager::QgsSensorManager( QObject *parent )
   : QObject( parent )

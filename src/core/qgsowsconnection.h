@@ -26,9 +26,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgssettingstree.h"
 
-#include <QStringList>
 #include <QPushButton>
-
+#include <QStringList>
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;
@@ -110,6 +109,8 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryString *settingsMaxNumFeatures;
     static const QgsSettingsEntryString *settingsPagesize;
     static const QgsSettingsEntryString *settingsPagingEnabled;
+    static const QgsSettingsEntryString *settingsDefaultFeatureFormat;
+    static const QgsSettingsEntryStringList *settingsAvailableFeatureFormats;
     static const QgsSettingsEntryString *settingsWfsFeatureMode;
     static const QgsSettingsEntryBool *settingsWfsForceInitialGetFeature;
     static const QgsSettingsEntryString *settingsDefaultImageFormat;

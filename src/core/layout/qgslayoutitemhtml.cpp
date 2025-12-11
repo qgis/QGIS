@@ -14,33 +14,35 @@
  ***************************************************************************/
 
 #include "qgslayoutitemhtml.h"
-#include "moc_qgslayoutitemhtml.cpp"
-#include "qgslayoutframe.h"
-#include "qgslayout.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsmessagelog.h"
-#include "qgsexpression.h"
-#include "qgslogger.h"
-#include "qgsnetworkcontentfetcher.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
+
 #include "qgsdistancearea.h"
+#include "qgsexpression.h"
 #include "qgsjsonutils.h"
-#include "qgsmapsettings.h"
-#include "qgswebpage.h"
-#include "qgswebframe.h"
+#include "qgslayout.h"
+#include "qgslayoutframe.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
-#include "qgslayoutreportcontext.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetcher.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgswebframe.h"
+#include "qgswebpage.h"
 
+#include <QAbstractTextDocumentLayout>
 #include <QCoreApplication>
-#include <QPainter>
 #include <QImage>
 #include <QNetworkReply>
+#include <QPainter>
 #include <QThread>
 #include <QUrl>
-#include <QAbstractTextDocumentLayout>
+
+#include "moc_qgslayoutitemhtml.cpp"
 
 // clazy:excludeall=lambda-in-connect
 

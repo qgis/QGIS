@@ -16,13 +16,12 @@
 #ifndef QGSSCALEWIDGET_H
 #define QGSSCALEWIDGET_H
 
-#include <QWidget>
-#include <QToolButton>
-
-
-#include "qgsscalecombobox.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsscalecombobox.h"
+
+#include <QToolButton>
+#include <QWidget>
 
 class QgsMapCanvas;
 

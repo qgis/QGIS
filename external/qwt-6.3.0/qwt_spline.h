@@ -194,7 +194,7 @@ class QWT_EXPORT QwtSplineInterpolating : public QwtSpline
 {
   public:
     QwtSplineInterpolating();
-    virtual ~QwtSplineInterpolating();
+    ~QwtSplineInterpolating() override;
 
     virtual QPolygonF equidistantPolygon( const QPolygonF&,
         double distance, bool withNodes ) const;
@@ -217,7 +217,7 @@ class QWT_EXPORT QwtSplineG1 : public QwtSplineInterpolating
 {
   public:
     QwtSplineG1();
-    virtual ~QwtSplineG1();
+    ~QwtSplineG1() override;
 };
 
 /*!
@@ -236,7 +236,7 @@ class QWT_EXPORT QwtSplineC1 : public QwtSplineG1
 {
   public:
     QwtSplineC1();
-    virtual ~QwtSplineC1();
+    ~QwtSplineC1() override;
 
     virtual QPainterPath painterPath( const QPolygonF& ) const QWT_OVERRIDE;
     virtual QVector< QLineF > bezierControlLines( const QPolygonF& ) const QWT_OVERRIDE;
@@ -293,7 +293,7 @@ class QWT_EXPORT QwtSplineC2 : public QwtSplineC1
     };
 
     QwtSplineC2();
-    virtual ~QwtSplineC2();
+    ~QwtSplineC2() override;
 
     virtual QPainterPath painterPath( const QPolygonF& ) const QWT_OVERRIDE;
     virtual QVector< QLineF > bezierControlLines( const QPolygonF& ) const QWT_OVERRIDE;

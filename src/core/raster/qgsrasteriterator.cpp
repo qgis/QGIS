@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasteriterator.h"
-#include "qgsrasterinterface.h"
+
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels )
   : mInput( input )

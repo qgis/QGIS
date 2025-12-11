@@ -53,7 +53,7 @@ class QWT_EXPORT QwtSimpleCompassRose : public QwtCompassRose
 {
   public:
     QwtSimpleCompassRose( int numThorns = 8, int numThornLevels = -1 );
-    virtual ~QwtSimpleCompassRose();
+    ~QwtSimpleCompassRose() override;
 
     void setWidth( double );
     double width() const;

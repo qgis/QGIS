@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgseditorwidgetautoconf.h"
+
 #include "qgseditorwidgetregistry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsgui.h"
+#include "qgsvectordataprovider.h"
 
 /**
  * \ingroup gui

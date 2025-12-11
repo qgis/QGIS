@@ -14,8 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QByteArray>
-#include <QtConcurrentRun>
+#include "qgsgrassimport.h"
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -24,10 +23,12 @@
 #include "qgsgeometry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasteriterator.h"
-#include "qgsgrassimport.h"
-#include "moc_qgsgrassimport.cpp"
 
+#include <QByteArray>
 #include <QFileInfo>
+#include <QtConcurrentRun>
+
+#include "moc_qgsgrassimport.cpp"
 
 extern "C"
 {
@@ -53,9 +54,6 @@ QgsGrassImportIcon::QgsGrassImportIcon()
 QgsGrassImportProgress::QgsGrassImportProgress( QProcess *process, QObject *parent )
   : QObject( parent )
   , mProcess( process )
-  , mProgressMin( 0 )
-  , mProgressMax( 0 )
-  , mProgressValue( 0 )
 {
   connect( mProcess, &QProcess::readyReadStandardError, this, &QgsGrassImportProgress::onReadyReadStandardError );
 }
@@ -126,7 +124,7 @@ void QgsGrassImportProgress::setValue( int value )
 //------------------------------ QgsGrassImport ------------------------------------
 QgsGrassImport::QgsGrassImport( const QgsGrassObject &grassObject )
   : mGrassObject( grassObject )
-  , mCanceled( false )
+
 {
   // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
   // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and

@@ -15,15 +15,16 @@
  ***************************************************************************/
 
 #include "qgsauthmasterpassresetdialog.h"
-#include "moc_qgsauthmasterpassresetdialog.cpp"
+
+#include "qgsapplication.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgshelp.h"
 
 #include <QLineEdit>
 #include <QPushButton>
 
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthmasterpassresetdialog.cpp"
 
 QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   : QDialog( parent )
@@ -41,6 +42,9 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
     connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
     connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
     connect( leMasterPassNew2, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+      QgsHelp::openHelp( QStringLiteral( "auth_system/auth_overview.html#master-password" ) );
+    } );
 
     if ( QgsApplication::authManager()->sqliteDatabasePath().isEmpty() )
     {

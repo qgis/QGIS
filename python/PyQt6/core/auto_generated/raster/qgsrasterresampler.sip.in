@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterResampler
 {
 %Docstring(signature="appended")

@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsdbimportvectorlayerdialog.h"
-#include "moc_qgsdbimportvectorlayerdialog.cpp"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsdatabaseschemacombobox.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
-#include "qgsmapcanvas.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsdatabaseschemacombobox.h"
-#include "qgsproviderregistry.h"
-#include <QPushButton>
+
 #include <QItemSelectionModel>
 #include <QMenu>
+#include <QPushButton>
+
+#include "moc_qgsdbimportvectorlayerdialog.cpp"
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )

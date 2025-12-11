@@ -13,10 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswcsprovider.h"
 #include "qgsproviderguimetadata.h"
-
 #include "qgsprovidersourcewidgetprovider.h"
+#include "qgswcsprovider.h"
 
 class QgsWcsProviderGuiMetadata : public QgsProviderGuiMetadata
 {

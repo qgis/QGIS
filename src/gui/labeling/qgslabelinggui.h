@@ -18,10 +18,10 @@
 #ifndef QGSLABELINGGUI_H
 #define QGSLABELINGGUI_H
 
-#include "qgspallabeling.h"
-#include "qgstextformatwidget.h"
-#include "qgspropertyoverridebutton.h"
 #include "qgis_gui.h"
+#include "qgspallabeling.h"
+#include "qgspropertyoverridebutton.h"
+#include "qgstextformatwidget.h"
 
 class QDialogButtonBox;
 

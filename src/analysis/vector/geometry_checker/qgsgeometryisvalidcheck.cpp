@@ -14,10 +14,10 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include "qgsgeometryisvalidcheck.h"
-#include "qgssettingsregistrycore.h"
+
 #include "qgsgeometryvalidator.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgssettingsregistrycore.h"
 
 QgsGeometryIsValidCheck::QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsSingleGeometryCheck( context, configuration )

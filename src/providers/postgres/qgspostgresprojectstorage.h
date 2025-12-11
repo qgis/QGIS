@@ -16,10 +16,9 @@
 #define QGSPOSTGRESPROJECTSTORAGE_H
 
 #include "qgsconfig.h"
-#include "qgsprojectstorage.h"
 
 #include "qgsdatasourceuri.h"
-
+#include "qgsprojectstorage.h"
 
 //! Stores information parsed from postgres project URI
 typedef struct

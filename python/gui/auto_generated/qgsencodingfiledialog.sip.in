@@ -9,6 +9,7 @@
 
 
 
+
 class QgsEncodingFileDialog : QFileDialog
 {
 %Docstring(signature="appended")

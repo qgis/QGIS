@@ -18,17 +18,17 @@
 #ifndef QGSPROCESSINGCONTEXT_H
 #define QGSPROCESSINGCONTEXT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsproject.h"
+#include "qgis_core.h"
 #include "qgsexpressioncontext.h"
 #include "qgsprocessingfeedback.h"
-#include "qgsprocessingutils.h"
-#include "qgsprocessingmodelresult.h"
 #include "qgsprocessingmodelconfig.h"
+#include "qgsprocessingmodelresult.h"
+#include "qgsprocessingutils.h"
+#include "qgsproject.h"
 
-#include <QThread>
 #include <QPointer>
+#include <QThread>
 
 class QgsProcessingLayerPostProcessorInterface;
 

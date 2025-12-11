@@ -16,16 +16,14 @@
 #ifndef QGSABSTRACTLAYERMETADATAPROVIDER_H
 #define QGSABSTRACTLAYERMETADATAPROVIDER_H
 
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
-
-#include "qgslayermetadata.h"
-#include "qgsrectangle.h"
-#include "qgspolygon.h"
+#include "qgis_core.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgslayermetadata.h"
+#include "qgspolygon.h"
+#include "qgsrectangle.h"
 
+#include <QObject>
 
 class QgsFeedback;
 

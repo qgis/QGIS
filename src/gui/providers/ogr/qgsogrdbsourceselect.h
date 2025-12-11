@@ -18,11 +18,11 @@
 #ifndef QGSGOGRDBSOURCESELECT_H
 #define QGSGOGRDBSOURCESELECT_H
 
+#include "qgis_sip.h"
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsabstractdbsourceselect.h"
 #include "qgsproviderregistry.h"
-#include "qgis_sip.h"
 
 class QPushButton;
 class QgsOgrDbTableModel;

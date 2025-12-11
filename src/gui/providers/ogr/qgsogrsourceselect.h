@@ -27,14 +27,16 @@
 #ifndef QGSOGRSOURCESELECT_H
 #define QGSOGRSOURCESELECT_H
 
-#include <QDialog>
+#include "ui_qgsogrsourceselectbase.h"
+
 #include <vector>
 
-#include "ui_qgsogrsourceselectbase.h"
-#include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsabstractdatasourcewidget.h"
+#include "qgsproviderregistry.h"
+
+#include <QDialog>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

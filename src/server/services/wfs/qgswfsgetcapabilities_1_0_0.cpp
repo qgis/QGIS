@@ -19,14 +19,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswfsgetcapabilities_1_0_0.h"
 
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsproject.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgswfsutils.h"
 
 namespace QgsWfs
 {

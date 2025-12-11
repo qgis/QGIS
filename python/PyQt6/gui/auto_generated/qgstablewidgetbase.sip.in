@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsTableWidgetBase : QWidget
 {
 %Docstring(signature="appended")

@@ -17,16 +17,16 @@
 #ifndef QGSGRASSMODULEPARAM_H
 #define QGSGRASSMODULEPARAM_H
 
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfields.h"
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
-
-#include "qgis.h"
-#include "qgsfields.h"
-#include "qgscoordinatereferencesystem.h"
 
 class QDomNode;
 class QDomElement;
@@ -138,7 +138,7 @@ class QgsGrassModuleParam
     QString mKey;
 
     //! Multiple values
-    bool mMultiple;
+    bool mMultiple = false;
 
     //! Optional option id used by other options which depend on this
     QString mId;
@@ -150,13 +150,13 @@ class QgsGrassModuleParam
     QString mToolTip;
 
     //! Hidden option or displayed
-    bool mHidden;
+    bool mHidden = false;
 
     //! Predefined answer from config
     QString mAnswer;
 
     //! Is it required
-    bool mRequired;
+    bool mRequired = false;
 
     bool mDirect;
 
@@ -313,16 +313,16 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
 
   private:
     //! Control type
-    ControlType mControlType;
+    ControlType mControlType = NoControl;
 
     //! Value type
-    ValueType mValueType;
+    ValueType mValueType = String;
 
     //! Output type
-    OutputType mOutputType;
+    OutputType mOutputType = None;
 
     //! If have defined value limits
-    bool mHaveLimits;
+    bool mHaveLimits = false;
     double mMin, mMax;
 
     //! Combobox
@@ -335,7 +335,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QList<QgsGrassModuleCheckBox *> mCheckBoxes;
 
     //! True if this option is GRASS output
-    bool mIsOutput;
+    bool mIsOutput = false;
 
     //! Output element
     QString mOutputElement;
@@ -344,7 +344,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QValidator *mValidator = nullptr;
 
     //! Uses region
-    bool mUsesRegion;
+    bool mUsesRegion = false;
 };
 /********************** QgsGrassModuleFlag ************************/
 
@@ -604,7 +604,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
 
   private:
     //! File type (New, Old)
-    int mType;
+    int mType = Old;
 
     //! Optionally split file to dir and file path
     QString mFileOption;

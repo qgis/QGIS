@@ -14,21 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsauthoauth2config.h"
 #include "qgstest.h"
 
-#include <QtTest/QTest>
 #include <QApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QObject>
+#include <QSignalSpy>
 #include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
-#include <QSignalSpy>
+#include <QtTest/QTest>
 
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
-#include "qgsauthoauth2config.h"
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif

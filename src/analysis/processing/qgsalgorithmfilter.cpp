@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfilter.h"
+
 #include "qgsapplication.h"
 
 ///@cond PRIVATE

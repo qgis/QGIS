@@ -18,10 +18,10 @@
 #ifndef QGSPASSWORDLINEEDIT_H
 #define QGSPASSWORDLINEEDIT_H
 
-#include <QLineEdit>
-#include <QAction>
-
 #include "qgis_gui.h"
+
+#include <QAction>
+#include <QLineEdit>
 
 /**
  * \class QgsPasswordLineEdit

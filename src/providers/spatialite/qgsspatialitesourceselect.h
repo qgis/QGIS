@@ -17,16 +17,16 @@
 #ifndef QGSSPATIALITESOURCESELECT_H
 #define QGSSPATIALITESOURCESELECT_H
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdbsourceselect.h"
 
-#include <QThread>
-#include <QMap>
-#include <QList>
-#include <QPair>
-#include <QIcon>
 #include <QFileDialog>
+#include <QIcon>
+#include <QList>
+#include <QMap>
+#include <QPair>
+#include <QThread>
 
 class QgsSpatiaLiteTableModel;
 class QTableWidgetItem;

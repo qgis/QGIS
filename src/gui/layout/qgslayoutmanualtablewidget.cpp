@@ -16,18 +16,19 @@
  ***************************************************************************/
 
 #include "qgslayoutmanualtablewidget.h"
-#include "moc_qgslayoutmanualtablewidget.cpp"
-#include "qgslayoutatlas.h"
-#include "qgslayout.h"
-#include "qgslayoutreportcontext.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemmanualtable.h"
-#include "qgslayouttablecolumn.h"
-#include "qgsguiutils.h"
-#include "qgslayouttablebackgroundcolorsdialog.h"
 
+#include "qgsguiutils.h"
+#include "qgslayout.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemmanualtable.h"
+#include "qgslayoutitemwidget.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayouttablebackgroundcolorsdialog.h"
+#include "qgslayouttablecolumn.h"
+#include "qgsprintlayout.h"
+
+#include "moc_qgslayoutmanualtablewidget.cpp"
 
 QPointer<QgsTableEditorDialog> QgsLayoutManualTableWidget::sEditorDialog = nullptr;
 

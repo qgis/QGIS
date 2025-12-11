@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgspointcloudclassifiedrendererwidget.h"
-#include "moc_qgspointcloudclassifiedrendererwidget.cpp"
-#include "qgscontrastenhancement.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudclassifiedrenderer.h"
-#include "qgsdoublevalidator.h"
-#include "qgsstyle.h"
-#include "qgsguiutils.h"
-#include "qgscompoundcolorwidget.h"
-#include "qgscolordialog.h"
-#include "qgsapplication.h"
-#include "qgscolorschemeregistry.h"
-#include "qgspointcloudrendererregistry.h"
 
-#include <QMimeData>
+#include "qgsapplication.h"
+#include "qgscolordialog.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscompoundcolorwidget.h"
+#include "qgscontrastenhancement.h"
+#include "qgsdoublevalidator.h"
+#include "qgsguiutils.h"
+#include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudrendererregistry.h"
+#include "qgsstyle.h"
+
 #include <QInputDialog>
+#include <QMimeData>
+
+#include "moc_qgspointcloudclassifiedrendererwidget.cpp"
 
 ///@cond PRIVATE
 

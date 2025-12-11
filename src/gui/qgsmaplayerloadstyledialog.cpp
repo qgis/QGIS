@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaplayerloadstyledialog.h"
+
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgslogger.h"
+#include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgssettings.h"
+
 #include <QMessageBox>
 #include <QVector>
 
-#include "qgsmaplayerloadstyledialog.h"
 #include "moc_qgsmaplayerloadstyledialog.cpp"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgslayerpropertiesdialog.h"
-#include "qgsmaplayerstylecategoriesmodel.h"
-#include "qgshelp.h"
-#include "qgsapplication.h"
-#include "qgsgui.h"
 
 QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )

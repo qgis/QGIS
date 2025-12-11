@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsrasterinterface.h"
+#include "qgstest.h"
+#include "qgswmscapabilities.h"
+
 #include <QFile>
 #include <QObject>
-#include <qgsrasterinterface.h>
-#include "qgstest.h"
-#include <qgswmscapabilities.h>
-#include <qgsapplication.h>
 
 /**
  * \ingroup UnitTests

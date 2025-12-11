@@ -16,11 +16,12 @@
 #ifndef QGSLAYOUTVIEWTOOLTEMPORARYKEYZOOM_H
 #define QGSLAYOUTVIEWTOOLTEMPORARYKEYZOOM_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgslayoutviewtoolzoom.h"
-#include "qgslayoutviewrubberband.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgslayoutviewtoolzoom.h"
 
 /**
  * \ingroup gui

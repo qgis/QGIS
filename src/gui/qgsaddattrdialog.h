@@ -22,8 +22,10 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsaddattrdialogbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+
 #include <QSet>
 
 class QgsVectorLayer;

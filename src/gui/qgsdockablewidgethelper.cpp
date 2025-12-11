@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsdockablewidgethelper.h"
-#include "moc_qgsdockablewidgethelper.cpp"
 
-#include "qgsdockwidget.h"
 #include "qgsapplication.h"
+#include "qgsdockwidget.h"
 
-#include <QLayout>
 #include <QAction>
+#include <QLayout>
 #include <QUuid>
+
+#include "moc_qgsdockablewidgethelper.cpp"
 
 ///@cond PRIVATE
 

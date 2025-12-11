@@ -15,8 +15,8 @@
  ***************************************************************************/
 #include "qgsvaluemapfieldformatter.h"
 
-#include "qgsvectorlayer.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
 
 const QString QgsValueMapFieldFormatter::NULL_VALUE = QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
 

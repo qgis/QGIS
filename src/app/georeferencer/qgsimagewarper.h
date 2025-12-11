@@ -15,9 +15,6 @@
 #ifndef QGSIMAGEWARPER_H
 #define QGSIMAGEWARPER_H
 
-#include <QCoreApplication>
-#include <QString>
-
 #include <gdalwarper.h>
 #include <vector>
 
@@ -25,6 +22,9 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsogrutils.h"
 #include "qgstaskmanager.h"
+
+#include <QCoreApplication>
+#include <QString>
 
 class QgsGeorefTransform;
 class QgsFeedback;

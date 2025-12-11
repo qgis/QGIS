@@ -26,7 +26,7 @@ class QWT_EXPORT QwtSplineCurveFitter : public QwtCurveFitter
 {
   public:
     QwtSplineCurveFitter();
-    virtual ~QwtSplineCurveFitter();
+    ~QwtSplineCurveFitter() override;
 
     void setSpline( QwtSpline* );
 

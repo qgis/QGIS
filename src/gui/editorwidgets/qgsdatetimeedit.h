@@ -16,9 +16,10 @@
 #ifndef QGSDATETIMEEDIT_H
 #define QGSDATETIMEEDIT_H
 
-#include <QDateTimeEdit>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QDateTimeEdit>
 
 /**
  * \ingroup gui

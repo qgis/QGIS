@@ -15,7 +15,6 @@
 
 
 
-
 class QgsProjectionSelectionTreeWidget : QWidget
 {
 %Docstring(signature="appended")

@@ -16,18 +16,18 @@
 #ifndef QGSGPSLOGGER_H
 #define QGSGPSLOGGER_H
 
-#include "qgis_core.h"
+#include "info.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsdistancearea.h"
 #include "qgswkbtypes.h"
 
+#include <QDateTime>
 #include <QObject>
 #include <QPointer>
-#include <QDateTime>
-#include "info.h"
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;

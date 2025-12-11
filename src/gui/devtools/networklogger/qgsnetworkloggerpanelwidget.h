@@ -17,9 +17,11 @@
 
 #define SIP_NO_FILE
 
+#include "ui_qgsnetworkloggerpanelbase.h"
+
 #include "qgis_gui.h"
 #include "qgsdevtoolwidget.h"
-#include "ui_qgsnetworkloggerpanelbase.h"
+
 #include <QTreeView>
 
 class QgsNetworkLogger;

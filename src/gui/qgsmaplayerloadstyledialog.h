@@ -20,9 +20,10 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsvectorlayerloadstyledialog.h"
+
 #include "qgis_gui.h"
-#include "qgsvectorlayerproperties.h"
 #include "qgsmaplayer.h"
+#include "qgsvectorlayerproperties.h"
 
 class QgsMapLayerStyleCategoriesModel;
 

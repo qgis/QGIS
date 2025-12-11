@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgswfstransactionrequest.h"
-#include "moc_qgswfstransactionrequest.cpp"
+
 #include "qgslogger.h"
+
+#include "moc_qgswfstransactionrequest.cpp"
 
 QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

@@ -14,56 +14,53 @@
  ***************************************************************************/
 
 #include "qgs3dmapcanvaswidget.h"
-#include "moc_qgs3dmapcanvaswidget.cpp"
-
-#include <QProgressBar>
-#include <QToolBar>
-#include <QAction>
-#include <QShortcut>
-#include <QWidget>
-#include <QActionGroup>
 
 #include "qgisapp.h"
-#include "qgs3dmapcanvas.h"
-#include "qgs3dmapconfigwidget.h"
-#include "qgs3dmapscene.h"
-#include "qgscameracontroller.h"
-#include "qgshelp.h"
-#include "qgsidentifyresultsdialog.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptoolextent.h"
-#include "qgsmaptoolidentifyaction.h"
-#include "qgsmessagebar.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsmapthemecollection.h"
-#include "qgsshortcutsmanager.h"
-
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
+#include "qgs3ddebugwidget.h"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapconfigwidget.h"
+#include "qgs3dmapexportsettings.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
-#include "qgs3dnavigationwidget.h"
-#include "qgs3ddebugwidget.h"
-#include "qgs3dutils.h"
-
-#include "qgsmap3dexportwidget.h"
-#include "qgs3dmapexportsettings.h"
 #include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
-
+#include "qgs3dnavigationwidget.h"
+#include "qgs3dutils.h"
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgsdockablewidgethelper.h"
 #include "qgsflatterrainsettings.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsidentifyresultsdialog.h"
+#include "qgsmap3dexportwidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapthemecollection.h"
 #include "qgsmaptoolclippingplanes.h"
-#include "qgsrubberband.h"
+#include "qgsmaptoolextent.h"
+#include "qgsmaptoolidentifyaction.h"
+#include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudquerybuilder.h"
+#include "qgsrubberband.h"
+#include "qgssettings.h"
+#include "qgsshortcutsmanager.h"
 
-#include "qgsannotationlayer.h"
+#include <QAction>
+#include <QActionGroup>
+#include <QProgressBar>
+#include <QShortcut>
+#include <QToolBar>
+#include <QWidget>
+
+#include "moc_qgs3dmapcanvaswidget.cpp"
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )

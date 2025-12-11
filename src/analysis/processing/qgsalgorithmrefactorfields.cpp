@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrefactorfields.h"
+
 #include "qgsprocessingparameterfieldmap.h"
 
 ///@cond PRIVATE

@@ -9,7 +9,6 @@
 
 
 
-
 // this is needed for the "convert to subclass" code below to compile
 %ModuleHeaderCode
 #include "qgsannotationlayer3drenderer.h"
@@ -136,6 +135,7 @@ to the terrain.
 
 .. seealso:: :py:func:`showCalloutLines`
 %End
+
 
 
 

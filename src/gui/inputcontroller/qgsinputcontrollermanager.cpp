@@ -13,14 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsinputcontrollermanager.h"
-#include "moc_qgsinputcontrollermanager.cpp"
+
 #include "qgs2dmapcontroller.h"
 #include "qgs3dmapcontroller.h"
-#include "qgsconfig.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+
+#include "moc_qgsinputcontrollermanager.cpp"
 
 #ifdef HAVE_QTGAMEPAD
 #include "qgs2dgamepadcontroller.h"

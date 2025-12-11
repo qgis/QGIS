@@ -16,17 +16,21 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemdelegate.h"
-#include "moc_qgsdetaileditemdelegate.cpp"
-#include "qgsdetaileditemwidget.h"
+
 #include "qgsdetaileditemdata.h"
+#include "qgsdetaileditemwidget.h"
 #include "qgsrendercontext.h"
-#include <QPainter>
+
+#include <QCheckBox>
 #include <QFont>
 #include <QFontMetrics>
-#include <QStyleOptionViewItem>
-#include <QModelIndex>
-#include <QCheckBox>
 #include <QLinearGradient>
+#include <QModelIndex>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+
+#include "moc_qgsdetaileditemdelegate.cpp"
+
 QgsDetailedItemDelegate::QgsDetailedItemDelegate( QObject *parent )
   : QAbstractItemDelegate( parent )
   , mpWidget( new QgsDetailedItemWidget() )

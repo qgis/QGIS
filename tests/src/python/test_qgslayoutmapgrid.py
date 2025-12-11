@@ -1123,7 +1123,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         symbol[0].setDataDefinedProperty(
             QgsSymbolLayer.Property.StrokeColor,
             QgsProperty.fromExpression(
-                "case when @grid_axis='x' and @grid_number % 5000 = 0 then 'red' when @grid_axis='y' and @grid_number %4000 = 0 then 'green' end"
+                "case when @grid_axis = 'x' and @grid_index = 1 then 'blue' when @grid_axis = 'x' and @grid_index=@grid_count then 'purple' when @grid_axis = 'y' and @grid_index = 1 then 'orange' when @grid_axis = 'y' and @grid_index=@grid_count then 'cyan' when @grid_axis='x' and @grid_number % 5000 = 0 then 'red' when @grid_axis='y' and @grid_number %4000 = 0 then 'green' end"
             ),
         )
 
@@ -1179,7 +1179,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         symbol[0].setDataDefinedProperty(
             QgsSymbolLayer.Property.StrokeColor,
             QgsProperty.fromExpression(
-                "case when @grid_axis='x' and @grid_number % 2 = 0 then 'red' when @grid_axis='y' and @grid_number %3 = 0 then 'green' end"
+                "case when @grid_axis = 'x' and @grid_index = 1 then 'blue' when @grid_axis = 'x' and @grid_index=@grid_count then 'purple' when @grid_axis = 'y' and @grid_index = 1 then 'orange' when @grid_axis = 'y' and @grid_index=@grid_count then 'cyan' when @grid_axis='x' and @grid_number % 2 = 0 then 'red' when @grid_axis='y' and @grid_number %3 = 0 then 'green' end"
             ),
         )
 

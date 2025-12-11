@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgslabelingenginerulewidget.h"
-#include "moc_qgslabelingenginerulewidget.cpp"
-#include "qgslabelingenginerule_impl.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgslabelingenginerule_impl.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+#include "moc_qgslabelingenginerulewidget.cpp"
 
 //
 // QgsLabelingEngineRuleDialog

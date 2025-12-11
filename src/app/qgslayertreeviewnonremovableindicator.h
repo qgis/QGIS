@@ -16,10 +16,11 @@
 #ifndef QGSLAYERTREEVIEWNONREMOVABLEINDICATOR_H
 #define QGSLAYERTREEVIEWNONREMOVABLEINDICATOR_H
 
+#include <memory>
+
 #include "qgslayertreeviewindicatorprovider.h"
 
 #include <QSet>
-#include <memory>
 
 class QgsLayerTreeViewNonRemovableIndicatorProvider : public QgsLayerTreeViewIndicatorProvider
 {

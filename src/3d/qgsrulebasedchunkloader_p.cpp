@@ -14,27 +14,26 @@
  ***************************************************************************/
 
 #include "qgsrulebasedchunkloader_p.h"
-#include "moc_qgsrulebasedchunkloader_p.cpp"
-#include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgschunknode.h"
+#include "qgseventtracing.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "qgschunknode.h"
-#include "qgseventtracing.h"
-
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
-
 #include "qgsrulebased3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfeature3dhandler_p.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerchunkloader_p.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
-#include <QtConcurrent>
 #include <Qt3DCore/QTransform>
+#include <QtConcurrent>
+
+#include "moc_qgsrulebasedchunkloader_p.cpp"
 
 ///@cond PRIVATE
 

@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgstableeditordialog.h"
-#include "moc_qgstableeditordialog.cpp"
-#include "qgstableeditorwidget.h"
-#include "qgsmessagebar.h"
-#include "qgsgui.h"
+
 #include "qgsdockwidget.h"
-#include "qgspanelwidgetstack.h"
-#include "qgstableeditorformattingwidget.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
+#include "qgsgui.h"
 #include "qgslayout.h"
-#include "qgslayoutreportcontext.h"
 #include "qgslayoutitemmanualtable.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayouttablecolumn.h"
+#include "qgsmessagebar.h"
+#include "qgspanelwidgetstack.h"
+#include "qgssettings.h"
+#include "qgstableeditorformattingwidget.h"
+#include "qgstableeditorwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QClipboard>
 #include <QMessageBox>
+
+#include "moc_qgstableeditordialog.cpp"
 
 QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   : QMainWindow( parent )

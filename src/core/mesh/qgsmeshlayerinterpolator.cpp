@@ -17,21 +17,21 @@
 
 ///@cond PRIVATE
 
-#include <memory>
-#include <limits>
-
 #include "qgsmeshlayerinterpolator.h"
 
+#include <limits>
+#include <memory>
+
 #include "qgis.h"
-#include "qgsrasterinterface.h"
-#include "qgsmaptopixel.h"
-#include "qgspointxy.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshlayer.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsrendercontext.h"
 #include "qgselevationmap.h"
+#include "qgsmaptopixel.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerutils.h"
+#include "qgspointxy.h"
+#include "qgsrasterinterface.h"
+#include "qgsrendercontext.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
   const QgsTriangularMesh &m,

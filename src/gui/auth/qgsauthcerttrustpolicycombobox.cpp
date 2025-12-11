@@ -15,16 +15,16 @@
  ***************************************************************************/
 
 #include "qgsauthcerttrustpolicycombobox.h"
-#include "moc_qgsauthcerttrustpolicycombobox.cpp"
 
-#include <QLineEdit>
-
+#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
 
+#include <QLineEdit>
+
+#include "moc_qgsauthcerttrustpolicycombobox.cpp"
 
 QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent, QgsAuthCertUtils::CertTrustPolicy policy, QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
   : QComboBox( parent )

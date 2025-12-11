@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAttributeTypeLoadDialog : QDialog
 {
 %Docstring(signature="appended")

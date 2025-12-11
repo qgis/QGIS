@@ -17,9 +17,12 @@
  ***************************************************************************/
 
 #include "qgsunitselectionwidget.h"
-#include "moc_qgsunitselectionwidget.cpp"
+
 #include "qgshelp.h"
+
 #include <QDialogButtonBox>
+
+#include "moc_qgsunitselectionwidget.cpp"
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   : QgsPanelWidget( parent )

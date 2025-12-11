@@ -15,43 +15,45 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspluginmanager.h"
+
 #include <cmath>
 
-#include <QApplication>
-#include <QFileDialog>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QLibrary>
-#include <QStandardItem>
-#include <QPushButton>
-#include <QRegExp>
-#include <QSortFilterProxyModel>
-#include <QActionGroup>
-#include <QTextStream>
-#include <QTimer>
-#include <QDesktopServices>
-#include <QRegularExpression>
-#include <QUrl>
-#include <QCheckBox>
-#include <QPalette>
-
-#include "qgsmessagelog.h"
-
 #include "qgis.h"
+#include "qgisplugin.h"
 #include "qgsapplication.h"
+#include "qgshelp.h"
+#include "qgslogger.h"
 #include "qgsmessagebar.h"
-#include "qgsproviderregistry.h"
+#include "qgsmessagelog.h"
+#include "qgspluginitemdelegate.h"
 #include "qgspluginregistry.h"
 #include "qgspluginsortfilterproxymodel.h"
+#include "qgsproviderregistry.h"
 #include "qgspythonrunner.h"
-#include "qgspluginmanager.h"
-#include "moc_qgspluginmanager.cpp"
-#include "qgisplugin.h"
-#include "qgslogger.h"
-#include "qgspluginitemdelegate.h"
-#include "qgsvariantutils.h"
 #include "qgssettings.h"
-#include "qgshelp.h"
+#include "qgsvariantutils.h"
+
+#include <QActionGroup>
+#include <QApplication>
+#include <QCheckBox>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QLibrary>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPalette>
+#include <QPushButton>
+#include <QRegExp>
+#include <QRegularExpression>
+#include <QSortFilterProxyModel>
+#include <QStandardItem>
+#include <QTextStream>
+#include <QTimer>
+#include <QUrl>
+
+#include "moc_qgspluginmanager.cpp"
+
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
 #endif

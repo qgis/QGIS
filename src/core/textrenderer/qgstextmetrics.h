@@ -16,11 +16,12 @@
 #ifndef QGSTEXTMETRICS_H
 #define QGSTEXTMETRICS_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgstextcharacterformat.h"
-#include <QVector>
+
 #include <QStringList>
+#include <QVector>
 
 #define SIP_NO_FILE
 

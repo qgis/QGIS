@@ -13,11 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -30,8 +25,10 @@
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsrasterlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-
 
 class TestQgs3DExporter : public QgsTest
 {

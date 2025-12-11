@@ -16,8 +16,9 @@
 #ifndef QGSPOINT3DSYMBOLWIDGET_H
 #define QGSPOINT3DSYMBOLWIDGET_H
 
-#include "qgs3dsymbolwidget.h"
 #include "ui_point3dsymbolwidget.h"
+
+#include "qgs3dsymbolwidget.h"
 
 class QgsPoint3DSymbol;
 

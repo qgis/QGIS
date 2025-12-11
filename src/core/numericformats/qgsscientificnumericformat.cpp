@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include "qgsscientificnumericformat.h"
-#include "qgis.h"
 
+#include "qgis.h"
 
 QgsScientificNumericFormat::QgsScientificNumericFormat()
 {

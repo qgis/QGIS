@@ -16,29 +16,31 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestsourceselect.h"
-#include "moc_qgsarcgisrestsourceselect.cpp"
-#include "qgsowsconnection.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsproject.h"
+
+#include "qgsafsprovider.h"
+#include "qgsarcgisrestdataitems.h"
+#include "qgsbrowserguimodel.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgsexception.h"
 #include "qgsmapcanvas.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsbrowserguimodel.h"
-#include "qgsarcgisrestdataitems.h"
 #include "qgsnewarcgisrestconnection.h"
-#include "qgsafsprovider.h"
+#include "qgsowsconnection.h"
+#include "qgsproject.h"
 
 #include <QButtonGroup>
+#include <QFileDialog>
+#include <QImageReader>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QRadioButton>
-#include <QImageReader>
+
+#include "moc_qgsarcgisrestsourceselect.cpp"
 
 //
 // QgsArcGisRestBrowserProxyModel

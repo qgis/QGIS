@@ -18,8 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsapplication.h"
 #include "qgsabstractsensor.h"
+#include "qgsapplication.h"
 
 /**
  * \ingroup core

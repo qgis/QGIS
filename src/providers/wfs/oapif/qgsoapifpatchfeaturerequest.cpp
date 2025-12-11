@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include "qgsjsonutils.h"
 
 #include "qgsoapifpatchfeaturerequest.h"
 #include "moc_qgsoapifpatchfeaturerequest.cpp"
-#include "qgsoapifprovider.h"
+#include "qgsoapifshareddata.h"
 
 QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )

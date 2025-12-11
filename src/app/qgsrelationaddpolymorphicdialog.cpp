@@ -13,20 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrelationaddpolymorphicdialog.h"
+
+#include "qgsfieldcombobox.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgshelp.h"
+#include "qgsmaplayercombobox.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsvectorlayer.h"
+
+#include <QComboBox>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QToolButton>
-#include <QComboBox>
 
-#include "qgsrelationaddpolymorphicdialog.h"
 #include "moc_qgsrelationaddpolymorphicdialog.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsmaplayercombobox.h"
-#include "qgsfieldcombobox.h"
-#include "qgshelp.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
-#include "qgsfieldexpressionwidget.h"
 
 QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDialog, QWidget *parent )
   : QDialog( parent )

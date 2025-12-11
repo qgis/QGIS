@@ -18,25 +18,24 @@
 #ifndef QGSPOINTCLOUDINDEX_H
 #define QGSPOINTCLOUDINDEX_H
 
-#include <QString>
-#include <QHash>
-#include <QStringList>
-#include <QVector>
-#include <QList>
-#include <QMutex>
-#include <QCache>
-#include <QByteArray>
-
 #include "qgis_core.h"
-#include "qgspointcloudstatistics.h"
-#include "qgsrectangle.h"
-#include "qgsbox3d.h"
 #include "qgis_sip.h"
-#include "qgspointcloudblock.h"
+#include "qgsbox3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudrequest.h"
+#include "qgspointcloudstatistics.h"
+#include "qgsrectangle.h"
 
+#include <QByteArray>
+#include <QCache>
+#include <QHash>
+#include <QList>
+#include <QMutex>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;

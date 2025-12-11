@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrasterrendererutils.h"
+
 #include "qgis.h"
+
 #include <QFile>
-#include <QTextStream>
 #include <QRegularExpression>
+#include <QTextStream>
 
 bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items, Qgis::ShaderInterpolationMethod &type, QStringList &errors )
 {

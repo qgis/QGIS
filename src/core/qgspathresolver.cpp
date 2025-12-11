@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgspathresolver.h"
-#include "qgslocalizeddatapathregistry.h"
 
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsgdalutils.h"
+#include "qgslocalizeddatapathregistry.h"
+
 #include <QDir>
 #include <QFileInfo>
 #include <QUrl>

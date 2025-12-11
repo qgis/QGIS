@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgspasswordlineedit.h"
-#include "moc_qgspasswordlineedit.cpp"
+
 #include "qgsapplication.h"
+
+#include "moc_qgspasswordlineedit.cpp"
 
 QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent, bool passwordVisible )
   : QLineEdit( parent )

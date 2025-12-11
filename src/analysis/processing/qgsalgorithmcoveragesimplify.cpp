@@ -17,9 +17,9 @@
 
 
 #include "qgsalgorithmcoveragesimplify.h"
+
 #include "qgsgeometrycollection.h"
 #include "qgsgeos.h"
-
 
 ///@cond PRIVATE
 

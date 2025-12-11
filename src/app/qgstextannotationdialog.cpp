@@ -16,20 +16,22 @@
  ***************************************************************************/
 
 #include "qgstextannotationdialog.h"
-#include "moc_qgstextannotationdialog.cpp"
-#include "qgsannotationwidget.h"
-#include "qgstextannotation.h"
-#include "qgsmapcanvasannotationitem.h"
+
 #include "qgsannotationmanager.h"
-#include "qgsproject.h"
+#include "qgsannotationwidget.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsfillsymbol.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
-#include "qgsfontutils.h"
+#include "qgstextannotation.h"
 
 #include <QColorDialog>
 #include <QGraphicsScene>
+
+#include "moc_qgstextannotationdialog.cpp"
 
 QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

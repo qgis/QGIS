@@ -12,19 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfontutils.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettings.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgspallabeling.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include <QMimeData>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QMimeData>
-
-#include "qgspallabeling.h"
-#include "qgsfontutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsmapsettings.h"
-#include "qgsmaprenderersequentialjob.h"
 
 class TestQgsPalLabeling : public QgsTest
 {

@@ -20,9 +20,11 @@
 #ifndef QGSWMSLAYERINFOS_H
 #define QGSWMSLAYERINFOS_H
 
-#include "qgsrectangle.h"
 #include "qgsmaplayerserverproperties.h"
+#include "qgsrectangle.h"
 
+class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
 class QgsServerInterface;
 class QgsProject;
 

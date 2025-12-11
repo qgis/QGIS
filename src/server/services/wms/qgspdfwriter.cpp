@@ -14,13 +14,13 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspdfwriter.h"
+
 #include "qgsapplication.h"
 #include "qgsmaprenderertask.h"
 #include "qgsmapsettings.h"
 #include "qgsmodule.h"
-#include "qgspdfwriter.h"
 #include "qgswmsrenderer.h"
-
 
 namespace QgsWms
 {

@@ -18,13 +18,12 @@
 #ifndef QGSPOINTCLOUDRENDERER_H
 #define QGSPOINTCLOUDRENDERER_H
 
-#include "qgsrendercontext.h"
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgsrendercontext.h"
 #include "qgsstyle.h"
+#include "qgsvector3d.h"
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;

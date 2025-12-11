@@ -15,17 +15,16 @@
 #ifndef QGSUSERPROFILEMANAGER_H
 #define QGSUSERPROFILEMANAGER_H
 
-#include <QSettings>
-#include <QFileSystemWatcher>
-
+#include <memory>
 
 #include "qgis.h"
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgserror.h"
 #include "qgsuserprofile.h"
 
-#include <memory>
+#include <QFileSystemWatcher>
+#include <QSettings>
 
 /**
  * \ingroup core

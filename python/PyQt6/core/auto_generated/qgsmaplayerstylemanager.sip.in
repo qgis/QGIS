@@ -11,7 +11,6 @@
 
 
 
-
 class QgsMapLayerStyleManager : QObject
 {
 %Docstring(signature="appended")

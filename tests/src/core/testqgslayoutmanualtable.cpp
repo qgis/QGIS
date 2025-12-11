@@ -16,18 +16,18 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
-#include "qgslayoutitemmanualtable.h"
-#include "qgslayouttablecolumn.h"
-#include "qgslayoutframe.h"
-#include "qgsproject.h"
-#include "qgsreadwritecontext.h"
-#include "qgsprintlayout.h"
 #include "qgscurrencynumericformat.h"
 #include "qgsfontutils.h"
+#include "qgslayout.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemmanualtable.h"
+#include "qgslayouttablecolumn.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+#include "qgstest.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsLayoutManualTable : public QgsTest
 {

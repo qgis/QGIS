@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexporttospreadsheet.h"
+
+#include "qgsapplication.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
 
 ///@cond PRIVATE
 

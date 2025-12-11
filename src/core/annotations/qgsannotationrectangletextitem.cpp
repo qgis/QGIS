@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsannotationrectangletextitem.h"
+
+#include "qgscalloutsregistry.h"
 #include "qgsgeometry.h"
+#include "qgslinesymbollayer.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
-#include "qgslinesymbollayer.h"
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
-#include "qgscalloutsregistry.h"
 
 QgsAnnotationRectangleTextItem::QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds )
   : QgsAnnotationRectItem( bounds )

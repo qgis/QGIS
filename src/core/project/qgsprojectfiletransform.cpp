@@ -17,27 +17,29 @@
 
 
 #include "qgsprojectfiletransform.h"
-#include "qgsmasksymbollayer.h"
-#include "qgsprojectversion.h"
+
+#include <cstdlib>
+
 #include "qgslogger.h"
-#include "qgsrasterlayer.h"
-#include "qgsreadwritecontext.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
+#include "qgsmasksymbollayer.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsprojectproperty.h"
+#include "qgsprojectversion.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
-#include "qgsxmlutils.h"
+#include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgssymbollayerreference.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsxmlutils.h"
 
-#include <QTextStream>
 #include <QDomDocument>
 #include <QRegularExpression>
-#include <cstdlib>
+#include <QTextStream>
 
 typedef QgsProjectVersion PFV;
 

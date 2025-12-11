@@ -154,7 +154,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         return "edit_features"
 
     def displayName(self):
-        return self.tr("Edit Selected Features")
+        return self.tr("Edit Features In-Place")
 
     def priority(self):
         return QgsLocatorFilter.Priority.Low

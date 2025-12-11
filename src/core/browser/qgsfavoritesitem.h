@@ -17,10 +17,9 @@
 #ifndef QGSFAVORITESITEM_H
 #define QGSFAVORITESITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdirectoryitem.h"
 

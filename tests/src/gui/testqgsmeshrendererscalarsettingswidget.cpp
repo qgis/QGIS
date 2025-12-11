@@ -12,14 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshrendererscalarsettingswidget.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
-
-#include "qgsapplication.h"
-#include "qgsmeshlayer.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgsmeshrendererscalarsettingswidget.h"
 
 /**
  * \ingroup UnitTests

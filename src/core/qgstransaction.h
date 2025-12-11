@@ -18,14 +18,13 @@
 #ifndef QGSTRANSACTION_H
 #define QGSTRANSACTION_H
 
-#include <QSet>
-#include "qgis_sip.h"
-#include <QString>
-#include <QObject>
-#include <QStack>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QObject>
+#include <QSet>
+#include <QStack>
+#include <QString>
 
 class QgsVectorDataProvider;
 class QgsVectorLayer;
@@ -190,9 +189,9 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     QgsTransaction( const QString &connString ) SIP_SKIP;
 
     QString mConnString;
-    bool mTransactionActive;
+    bool mTransactionActive = false;
     QStack< QString > mSavepoints;
-    bool mLastSavePointIsDirty;
+    bool mLastSavePointIsDirty = true;
 
   private slots:
     void onLayerDeleted();

@@ -15,11 +15,12 @@
 #ifndef QGSGUIUTILS_H
 #define QGSGUIUTILS_H
 
-#include <QPair>
-#include <QWidget>
-#include <QStringList>
-#include "qgis_gui.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QPair>
+#include <QStringList>
+#include <QWidget>
 
 #define SIP_NO_FILE
 

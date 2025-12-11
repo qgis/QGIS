@@ -17,14 +17,14 @@
 #ifndef QGSTEXTBUFFERSETTINGS_H
 #define QGSTEXTBUFFERSETTINGS_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgsmapunitscale.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmapunitscale.h"
 
-#include <QSharedData>
-#include <QPainter>
 #include <QDomElement>
+#include <QPainter>
+#include <QSharedData>
 
 class QgsReadWriteContext;
 class QgsTextBufferSettingsPrivate;

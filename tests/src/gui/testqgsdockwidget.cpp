@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 
+#include "qgsdockwidget.h"
 #include "qgstest.h"
 
-#include "qgsdockwidget.h"
+#include <QAction>
 #include <QApplication>
 #include <QMainWindow>
-#include <QAction>
 #include <QSignalSpy>
 
 class TestQgsDockWidget : public QObject

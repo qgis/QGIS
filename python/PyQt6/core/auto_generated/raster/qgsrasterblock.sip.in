@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsRasterBlock
 {
 %Docstring(signature="appended")

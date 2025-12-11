@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalexportrastertin.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
@@ -29,7 +29,7 @@ QString QgsPdalExportRasterTinAlgorithm::name() const
 
 QString QgsPdalExportRasterTinAlgorithm::displayName() const
 {
-  return QObject::tr( "Export to raster (using triangulation)" );
+  return QObject::tr( "Export point cloud to raster (using triangulation)" );
 }
 
 QString QgsPdalExportRasterTinAlgorithm::group() const

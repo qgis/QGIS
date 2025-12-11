@@ -14,9 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmtsutils.h"
-#include "qgswmtsparameters.h"
 #include "qgswmtsgetfeatureinfo.h"
+
+#include "qgswmtsparameters.h"
+#include "qgswmtsutils.h"
 
 namespace QgsWmts
 {

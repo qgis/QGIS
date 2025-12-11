@@ -14,17 +14,17 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-#include <QObject>
-#include <QDialog>
-#include <QSignalSpy>
-#include <QTemporaryDir>
-
+#include "qgsabstractproviderconnection.h"
+#include "qgsdataitem.h"
 #include "qgsnewdatabasetablenamewidget.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractproviderconnection.h"
-#include "qgsdataitem.h"
+#include "qgstest.h"
+
+#include <QDialog>
+#include <QObject>
+#include <QSignalSpy>
+#include <QTemporaryDir>
 
 class TestQgsNewDatabaseTableNameWidget : public QObject
 {

@@ -15,17 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
+#include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgscategorizedsymbolrendererwidget.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsfeature.h"
-#include "qgsvectordataprovider.h"
 #include "qgssymbol.h"
-
-#include <memory>
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsCategorizedRendererWidget : public QObject
 {

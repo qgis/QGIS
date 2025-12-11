@@ -27,17 +27,18 @@
  *
  */
 
-#include "pal.h"
 #include "layer.h"
-#include "internalexception.h"
-#include "feature.h"
-#include "geomfunction.h"
-#include "util.h"
-#include "qgslabelingengine.h"
-#include "qgslogger.h"
 
 #include <cmath>
 #include <vector>
+
+#include "feature.h"
+#include "geomfunction.h"
+#include "internalexception.h"
+#include "pal.h"
+#include "qgslabelingengine.h"
+#include "qgslogger.h"
+#include "util.h"
 
 using namespace pal;
 

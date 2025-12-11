@@ -18,9 +18,10 @@
 #ifndef QGSPDALPROVIDER_H
 #define QGSPDALPROVIDER_H
 
+#include <memory>
+
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-#include <memory>
 
 class QgsPdalIndexingTask;
 
@@ -30,7 +31,7 @@ class QgsPdalProvider : public QgsPointCloudDataProvider
   public:
     QgsPdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~QgsPdalProvider();
+    ~QgsPdalProvider() override;
     Qgis::DataProviderFlags flags() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsRectangle extent() const override;

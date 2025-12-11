@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslabelfeature.h"
+
 #include "feature.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"

@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryduplicatecheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
+#include "qgsgeometry.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
-#include "qgsgeometryduplicatecheck.h"
 #include "qgsspatialindex.h"
-#include "qgsgeometry.h"
-#include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 
 QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )

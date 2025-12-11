@@ -13,11 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmasksymbollayerwidget.h"
-#include "moc_qgsmasksymbollayerwidget.cpp"
-#include <QVBoxLayout>
-#include "qgsmasksymbollayer.h"
 
+#include "qgsmasksymbollayer.h"
 #include "qgsvectorlayer.h"
+
+#include <QVBoxLayout>
+
+#include "moc_qgsmasksymbollayerwidget.cpp"
 
 QgsMaskMarkerSymbolLayerWidget::QgsMaskMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

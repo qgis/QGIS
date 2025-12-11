@@ -15,20 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "rulesDialog.h"
+
 #include <set>
+
+#include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgshelp.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "topolTest.h"
 
 #include <QDebug>
 #include <QTableWidgetItem>
 
-#include "qgsvectorlayer.h"
-#include "qgsmaplayer.h"
-#include "qgisinterface.h"
-#include "qgsproject.h"
-#include "qgsapplication.h"
-#include "qgshelp.h"
-#include "rulesDialog.h"
 #include "moc_rulesDialog.cpp"
-#include "topolTest.h"
 
 rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent )
   : QDialog( parent ), Ui::rulesDialog()

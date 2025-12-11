@@ -16,8 +16,8 @@
 #ifndef QGSSYMBOL_H
 #define QGSSYMBOL_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgspropertycollection.h"
 #include "qgsrendercontext.h"
 #include "qgsscreenproperties.h"
