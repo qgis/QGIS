@@ -4544,7 +4544,11 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   int modifiedPart = -1;
   int modifiedRing = -1;
   QgsVertexId vertexId;
-  vertexIdFromVertexNr( vertexIndex, vertexId );
+  if ( !vertexIdFromVertexNr( vertexIndex, vertexId ) )
+  {
+    mLastError = QStringLiteral( "Invalid vertex index" );
+    return QgsGeometry();
+  }
   int resolvedVertexIndex = vertexId.vertex;
   QgsMultiLineString *inputMultiLine = nullptr;
   QgsMultiPolygon *inputMultiPoly = nullptr;

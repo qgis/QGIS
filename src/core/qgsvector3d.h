@@ -92,6 +92,19 @@ class CORE_EXPORT QgsVector3D
       return QgsVector3D( mX + other.mX, mY + other.mY, mZ + other.mZ );
     }
 
+    /**
+     * Adds another vector to this vector in place.
+     *
+     * \since QGIS 4.0
+     */
+    QgsVector3D &operator+=( const QgsVector3D &other ) SIP_HOLDGIL
+    {
+      mX += other.mX;
+      mY += other.mY;
+      mZ += other.mZ;
+      return *this;
+    }
+
     //! Returns difference of two vectors
     QgsVector3D operator-( const QgsVector3D &other ) const SIP_HOLDGIL
     {

@@ -99,6 +99,12 @@ class TestQgsVector3D(QgisTestCase):
         self.assertAlmostEqual(vector3.y(), 1.7)
         self.assertAlmostEqual(vector3.z(), -1.4)
 
+        vector4 = QgsVector3D(3, -2.5, 3.4)
+        vector4 += QgsVector3D(-5, -2.1, 3.1)
+        self.assertAlmostEqual(vector4.x(), -2.0)
+        self.assertAlmostEqual(vector4.y(), -4.6)
+        self.assertAlmostEqual(vector4.z(), 6.5)
+
     def testIsNull(self):
         vector = QgsVector3D()
         self.assertTrue(vector.isNull())

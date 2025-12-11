@@ -480,7 +480,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   if ( QgsVariantUtils::isNull( v ) )
   {
-    v.convert( d->type );
+    ( void )v.convert( d->type );
     return true;
   }
 

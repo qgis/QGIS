@@ -815,9 +815,12 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         if ( def->flags() & Qgis::ProcessingParameterFlag::Advanced )
           hasAdvancedParams = true;
 
-        const QString importString = QgsApplication::processingRegistry()->parameterType( def->type() )->pythonImportString();
-        if ( !importString.isEmpty() && !importLines.contains( importString ) )
-          importLines << importString;
+        if ( const QgsProcessingParameterType *type = QgsApplication::processingRegistry()->parameterType( def->type() ) )
+        {
+          const QString importString = type->pythonImportString();
+          if ( !importString.isEmpty() && !importLines.contains( importString ) )
+            importLines << importString;
+        }
       }
 
       if ( hasAdvancedParams )
