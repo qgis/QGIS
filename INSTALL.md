@@ -131,6 +131,7 @@ Optional dependencies:
 * for qgis mapserver - FastCGI
 * for oracle provider - Oracle OCI library
 * for SFCGAL support - SFCGAL >= 2.0
+* for magnetic model support - GeographicLib
 
 Indirect dependencies:
 
