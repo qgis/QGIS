@@ -244,7 +244,12 @@ void QgsRubberBand3D::setColor( const QColor color )
   if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
     if ( mPolygonMaterial )
+    {
       mPolygonEntity->removeComponent( mPolygonMaterial );
+      mPolygonMaterial->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
+      mPolygonMaterial->deleteLater();
+      mPolygonMaterial = nullptr;
+    }
 
     if ( mPolygonFillEnabled )
     {
@@ -497,8 +502,11 @@ void QgsRubberBand3D::updateMarkerMaterial()
   }
   else
   {
-    mMarkerEntity->removeComponent( mMarkerMaterial );
     QObject::disconnect( mEngine, nullptr, mMarkerMaterial, nullptr );
+    mMarkerEntity->removeComponent( mMarkerMaterial );
+    mMarkerMaterial->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
+    mMarkerMaterial->deleteLater();
+    mMarkerMaterial = nullptr;
   }
 }
 /// @endcond
