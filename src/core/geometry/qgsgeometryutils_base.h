@@ -607,9 +607,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static double maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
-                                   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
-                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
+    static double maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY, double epsilon = 1e-8 ) SIP_HOLDGIL;
 
     /**
      * Creates a chamfer (angled corner) between two line segments.
