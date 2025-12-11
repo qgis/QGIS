@@ -206,7 +206,7 @@ void QgsProcessingFieldMapPanelWidget::loadLayerFields()
   {
     if ( mAppendFieldsCheckBox->isChecked() )
     {
-      mFieldsView->appendDestinationFields( vl->fields() );
+      mFieldsView->appendFields( vl->fields() );
     }
     else
     {

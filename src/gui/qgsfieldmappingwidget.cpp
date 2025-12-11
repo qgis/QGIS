@@ -122,9 +122,9 @@ void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFi
   model()->setDestinationFields( destinationFields, expressions );
 }
 
-void QgsFieldMappingWidget::appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
+void QgsFieldMappingWidget::appendFields( const QgsFields &fields, const QMap<QString, QString> &expressions )
 {
-  model()->appendDestinationFields( destinationFields, expressions );
+  model()->appendDestinationFields( fields, expressions );
 }
 
 void QgsFieldMappingWidget::setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes )

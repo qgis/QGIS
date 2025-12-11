@@ -119,13 +119,13 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     /**
-     * Appends destination fields from \a destinationFields to the existing fields in the underlying model,
-     * initial values for the expressions can be optionally specified through
+     * Appends \a fields to the existing destination fields in the underlying model.
+     * Initial values for the expressions can be optionally specified through
      * \a expressions which is a map from the original field name to the
      * corresponding expression.
-     * \since QGIS 3.42
+     * \since QGIS 4.0
      */
-    void appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    void appendFields( const QgsFields &fields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     /**
      * Sets the list of \a nativeTypes supported by a data provider.
