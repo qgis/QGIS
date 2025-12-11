@@ -1730,6 +1730,17 @@ The development version
       SubScript,
     };
 
+    enum class CurvedTextFlag /BaseType=IntFlag/
+    {
+      TruncateStringWhenLineIsTooShort,
+      UseBaselinePlacement,
+      UprightCharactersOnly,
+      ExtendLineToFitText,
+    };
+
+    typedef QFlags<Qgis::CurvedTextFlag> CurvedTextFlags;
+
+
     enum class VectorSimplificationAlgorithm /BaseType=IntEnum/
       {
       Distance,
@@ -3473,6 +3484,17 @@ The development version
       Sort,
     };
 
+    enum class ExtrusionFace /BaseType=IntFlag/
+    {
+      NoFace,
+      Walls,
+      Roof,
+      Floor
+    };
+
+    typedef QFlags<Qgis::ExtrusionFace> ExtrusionFaces;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3780,6 +3802,10 @@ QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCa
 QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
 
 QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Qgis::MapLayerLegendFlag> f2);
+
+QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::CurvedTextFlag> f2);
+
+QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::ExtrusionFace> f2);
 
 
 

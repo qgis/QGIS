@@ -343,7 +343,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
      * Returns a reference to the item group with matching \a id.
      * \see addItemGroup()
      */
-    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id );
+    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not

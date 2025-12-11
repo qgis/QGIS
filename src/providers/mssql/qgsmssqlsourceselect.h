@@ -70,9 +70,9 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables();
+    QStringList selectedTables() const;
     //! Connection info (database, host, user, password)
-    QString connectionInfo();
+    QString connectionInfo() const;
 
     void reset() override;
 
@@ -109,8 +109,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     void cmbConnections_activated( int );
     void setLayerType( const QgsMssqlLayerProperty &layerProperty );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    //!Sets a new regular expression to the model
-    void setSearchExpression( const QString &regexp );
 
     void columnThreadFinished();
 

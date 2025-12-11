@@ -1070,7 +1070,7 @@ void QgsWMSSourceSelect::updateButtons()
 }
 
 
-QString QgsWMSSourceSelect::connName()
+QString QgsWMSSourceSelect::connName() const
 {
   return mConnName;
 }

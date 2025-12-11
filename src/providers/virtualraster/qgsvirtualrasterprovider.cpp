@@ -362,7 +362,7 @@ Qgis::RasterInterfaceCapabilities QgsVirtualRasterProvider::capabilities() const
   return capability;
 }
 
-QString QgsVirtualRasterProvider::formulaString()
+QString QgsVirtualRasterProvider::formulaString() const
 {
   return mFormulaString;
 }

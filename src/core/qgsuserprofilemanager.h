@@ -80,7 +80,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Returns the path to the root profiles location.
      * \return The root path to the profiles folder.
      */
-    QString rootLocation() { return mRootProfilePath; }
+    QString rootLocation() const { return mRootProfilePath; }
 
     /**
      * Sets whether the manager should watch for the creation of new user profiles and emit

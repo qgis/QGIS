@@ -214,12 +214,6 @@ Returns the path to the contributors file. Contributors are people who
 have submitted patches but don't have commit access.
 %End
 
-    static QString developersMapFilePath();
-%Docstring
-Returns the path to the developers map file. The developers map was
-created by using leaflet framework, it shows the contributors.json file.
-%End
-
     static QString sponsorsFilePath();
 %Docstring
 Returns the path to the sponsors file.

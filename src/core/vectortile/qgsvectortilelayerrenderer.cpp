@@ -29,6 +29,7 @@
 #include "qgstextrenderer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgsthreadingutils.h"
 
 #include <QElapsedTimer>
 #include <QThread>
@@ -73,6 +74,8 @@ QgsVectorTileLayerRenderer::~QgsVectorTileLayerRenderer() = default;
 
 bool QgsVectorTileLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {

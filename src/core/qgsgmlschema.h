@@ -167,7 +167,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QDomElement domElement( const QDomElement &element, const QString &path, const QString &attr, const QString &attrVal );
 
     //! Strip namespace from element name
-    QString stripNS( const QString &name );
+    static QString stripNS( const QString &name );
 
     /**
      * Find GML base type for complex type of given name

@@ -40,7 +40,7 @@ class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
     //! Adds a 'Cancel All' button for the user to click
     void addCancelAll();
     //! Returns TRUE if the user clicked 'Cancel All'
-    bool cancelAll();
+    bool cancelAll() const;
 
   public slots:
     void saveUsedEncoding();

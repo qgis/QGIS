@@ -131,7 +131,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the SpatiaLite
     //   (following the PostgreSQL provider example)
-    bool supportsNativeTransform()
+    bool supportsNativeTransform() const
     {
       return false;
     }

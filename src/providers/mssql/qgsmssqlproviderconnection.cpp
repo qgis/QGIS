@@ -96,6 +96,7 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::Schemas,
     Capability::Spatial,
     Capability::TableExists,
+    Capability::RenameField,
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
     Capability::AddField,
@@ -574,6 +575,12 @@ QgsFields QgsMssqlProviderConnection::fields( const QString &schema, const QStri
   }
 
   return details.attributeFields;
+}
+
+void QgsMssqlProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const
+{
+  executeSqlPrivate( QStringLiteral( "EXECUTE sp_rename '%1.%2.%3', %4, 'COLUMN'" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( tableName ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedValue( newName ) ) );
 }
 
 QStringList QgsMssqlProviderConnection::schemas() const

@@ -79,7 +79,13 @@ QColor QgsVectorLayerSelectionProperties::selectionColor() const
 
 void QgsVectorLayerSelectionProperties::setSelectionColor( const QColor &color )
 {
+  if ( mSelectionColor == color )
+  {
+    return;
+  }
+
   mSelectionColor = color;
+  emit selectionColorChanged();
 }
 
 QgsSymbol *QgsVectorLayerSelectionProperties::selectionSymbol() const
@@ -90,6 +96,7 @@ QgsSymbol *QgsVectorLayerSelectionProperties::selectionSymbol() const
 void QgsVectorLayerSelectionProperties::setSelectionSymbol( QgsSymbol *symbol )
 {
   mSelectionSymbol.reset( symbol );
+  emit selectionSymbolChanged();
 }
 
 Qgis::SelectionRenderingMode QgsVectorLayerSelectionProperties::selectionRenderingMode() const
@@ -99,5 +106,11 @@ Qgis::SelectionRenderingMode QgsVectorLayerSelectionProperties::selectionRenderi
 
 void QgsVectorLayerSelectionProperties::setSelectionRenderingMode( Qgis::SelectionRenderingMode mode )
 {
+  if ( mSelectionRenderingMode == mode )
+  {
+    return;
+  }
+
   mSelectionRenderingMode = mode;
+  emit selectionRenderingModeChanged();
 }

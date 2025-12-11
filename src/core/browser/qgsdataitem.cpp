@@ -388,11 +388,11 @@ void QgsDataItem::setProviderKey( const QString &value )
   mProviderKey = value;
 }
 
-int QgsDataItem::rowCount()
+int QgsDataItem::rowCount() const
 {
   return mChildren.size();
 }
-bool QgsDataItem::hasChildren()
+bool QgsDataItem::hasChildren() const
 {
   return ( state() == Qgis::BrowserItemState::Populated ? !mChildren.isEmpty() : true );
 }

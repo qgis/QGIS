@@ -285,7 +285,7 @@ void QgsImageOperation::adjustHueSaturation( QImage &image, const double saturat
   runPixelOperation( image, operation, feedback );
 }
 
-void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, const int x, const int y )
+void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, const int x, const int y ) const
 {
   Q_UNUSED( x )
   Q_UNUSED( y )
@@ -363,7 +363,7 @@ void QgsImageOperation::multiplyOpacity( QImage &image, const double factor, Qgs
   }
 }
 
-void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, const int x, const int y )
+void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, const int x, const int y ) const
 {
   Q_UNUSED( x )
   Q_UNUSED( y )

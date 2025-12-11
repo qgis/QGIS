@@ -10,7 +10,6 @@ try:
     QgsApplication.uiThemes = staticmethod(QgsApplication.uiThemes)
     QgsApplication.authorsFilePath = staticmethod(QgsApplication.authorsFilePath)
     QgsApplication.contributorsFilePath = staticmethod(QgsApplication.contributorsFilePath)
-    QgsApplication.developersMapFilePath = staticmethod(QgsApplication.developersMapFilePath)
     QgsApplication.sponsorsFilePath = staticmethod(QgsApplication.sponsorsFilePath)
     QgsApplication.donorsFilePath = staticmethod(QgsApplication.donorsFilePath)
     QgsApplication.serverResourcesPath = staticmethod(QgsApplication.serverResourcesPath)
