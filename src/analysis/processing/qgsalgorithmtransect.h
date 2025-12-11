@@ -46,9 +46,6 @@ class QgsTransectAlgorithm : public QgsTransectAlgorithmBase
     QString shortHelpString() const override;
     QgsTransectAlgorithm *createInstance() const override SIP_FACTORY;
 
-  protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
   private:
     /**
      * Returns the transect of the point \a point with \a length, \a orientation and \a angle.
