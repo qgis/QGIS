@@ -75,15 +75,15 @@ class CORE_EXPORT QgsMagneticModel
      * The associated file must exist and point to a valid magnetic model file. If not, then isValid() will return FALSE and a descriptive
      * error can be retrieved by error().
      *
-     * If \a nMax ≥ 0 and \a mMax < 0, then \a mMax is set to \a nMax. After the model is loaded, the maximum degree and
+     * If \a maxDegree ≥ 0 and \a maxOrder < 0, then \a maxOrder is set to \a maxDegree. After the model is loaded, the maximum degree and
      * order of the model can be found by the degree() and order() methods.
      *
      * \param name the name of the model.
      * \param path optional directory for data file. If not specified then defaultFilePath() is used.
-     * \param nMax if nonnegative, truncate the degree of the model this value
-     * \param mMax if nonnegative, truncate the order of the model this value
+     * \param maxDegree if nonnegative, truncate the degree of the model this value
+     * \param maxOrder if nonnegative, truncate the order of the model this value
      */
-    QgsMagneticModel( const QString &name, const QString &path = QString(), int nMax = -1, int mMax = -1 );
+    QgsMagneticModel( const QString &name, const QString &path = QString(), int maxDegree = -1, int maxOrder = -1 );
     ~QgsMagneticModel();
 
     QgsMagneticModel( const QgsMagneticModel &other ) = delete;
