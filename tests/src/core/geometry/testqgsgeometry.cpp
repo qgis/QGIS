@@ -2356,7 +2356,8 @@ void TestQgsGeometry::boundingBox()
   QCOMPARE( geomTest.boundingBox(), nullRect );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(-1 -2, 4 5)" ) );
-  QCOMPARE( geomTest.boundingBox3D(), QgsRectangle( -1, -2, 4, 5 ) );
+  QCOMPARE( geomTest.boundingBox(), QgsRectangle( -1, -2, 4, 5 ) );
+  QCOMPARE( geomTest.boundingBox3D(), QgsBox3D( QgsRectangle( -1, -2, 4, 5 ) ) );
 }
 
 void TestQgsGeometry::boundingBox3D()
