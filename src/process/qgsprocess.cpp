@@ -1377,6 +1377,6 @@ void QgsProcessingExec::addProviderInformation( QVariantMap &providerJson, QgsPr
   providerJson.insert( QStringLiteral( "supported_output_vector_extensions" ), provider->supportedOutputVectorLayerExtensions() );
   providerJson.insert( QStringLiteral( "supported_output_table_extensions" ), provider->supportedOutputTableExtensions() );
   providerJson.insert( QStringLiteral( "default_vector_file_extension" ), provider->defaultVectorFileExtension() );
-  providerJson.insert( QStringLiteral( "default_raster_file_extension" ), provider->defaultRasterFileExtension() );
+  providerJson.insert( QStringLiteral( "default_raster_file_format" ), provider->defaultRasterFileFormat() );
   providerJson.insert( QStringLiteral( "supports_non_file_based_output" ), provider->supportsNonFileBasedOutput() );
 }

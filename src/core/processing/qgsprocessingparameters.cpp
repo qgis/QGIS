@@ -7122,20 +7122,30 @@ QgsProcessingOutputDefinition *QgsProcessingParameterRasterDestination::toOutput
   return new QgsProcessingOutputRasterLayer( name(), description() );
 }
 
-QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
+QString QgsProcessingParameterRasterDestination::defaultFileFormat() const
 {
   if ( auto *lOriginalProvider = originalProvider() )
   {
-    return lOriginalProvider->defaultRasterFileExtension();
+    return lOriginalProvider->defaultRasterFileFormat();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
-    return p->defaultRasterFileExtension();
+    return p->defaultRasterFileFormat();
   }
   else
   {
-    return QgsProcessingUtils::defaultRasterExtension();
+    return QgsProcessingUtils::defaultRasterFormat();
   }
+}
+
+QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
+{
+  QString format = defaultFileFormat();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( format );
+  if ( !extensions.isEmpty() )
+    return extensions[0];
+
+  return QStringLiteral( "tif" );
 }
 
 QString QgsProcessingParameterRasterDestination::createFileFilter() const

@@ -130,7 +130,7 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 
     QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
     {
-      return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), QStringLiteral( "mig" ) );
+      return QList<QPair<QString, QString>>() << QPair<QString, QString>( QStringLiteral( "XYZ" ), QStringLiteral( "xyz" ) );
     }
 
     void loadAlgorithms() override
@@ -1816,10 +1816,10 @@ void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
   QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( static_cast<const QgsProcessingDestinationParameter *>( alg.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
   Q_NOWARN_DEPRECATED_PUSH
-  QCOMPARE( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->supportedOutputRasterLayerExtensions(), QStringList() << QStringLiteral( "mig" ) );
+  QCOMPARE( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->supportedOutputRasterLayerExtensions(), QStringList() << QStringLiteral( "xyz" ) );
   Q_NOWARN_DEPRECATED_POP
-  QCOMPARE( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->defaultFileExtension(), QStringLiteral( "mig" ) );
-  QVERIFY( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->generateTemporaryDestination().endsWith( QLatin1String( ".mig" ) ) );
+  QCOMPARE( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->defaultFileExtension(), QStringLiteral( "xyz" ) );
+  QVERIFY( static_cast<const QgsProcessingParameterRasterDestination *>( alg.destinationParameterDefinitions().at( 0 ) )->generateTemporaryDestination().endsWith( QLatin1String( ".xyz" ) ) );
   QVERIFY( !static_cast<const QgsProcessingDestinationParameter *>( alg.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
 
   QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "my_output_2" ) );

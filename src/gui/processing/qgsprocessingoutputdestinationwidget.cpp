@@ -385,6 +385,8 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
 
   QString lastExtPath;
   QString lastExt;
+  QString lastFormatPath;
+  QString lastFormat;
   if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() || mParameter->type() == QgsProcessingParameterVectorDestination::typeName() )
   {
     lastExtPath = QStringLiteral( "/Processing/LastVectorOutputExt" );
@@ -392,8 +394,10 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   }
   else if ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
-    lastExtPath = QStringLiteral( "/Processing/LastRasterOutputExt" );
-    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+    const QgsProcessingParameterRasterDestination *dest = dynamic_cast<const QgsProcessingParameterRasterDestination *>( mParameter );
+    Q_ASSERT( dest );
+    lastFormatPath = QStringLiteral( "/Processing/LastRasterOutputFormat" );
+    lastFormat = settings.value( lastFormatPath, dest->defaultFileFormat() ).toString();
   }
   else if ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName() )
   {
@@ -411,7 +415,12 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   QString lastFilter;
   for ( const QString &f : filters )
   {
-    if ( f.contains( QStringLiteral( "*.%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
+    if ( !lastFormat.isEmpty() && f.contains( lastFormat, Qt::CaseInsensitive ) )
+    {
+      lastFilter = f;
+      break;
+    }
+    else if ( !lastExt.isEmpty() && f.contains( QStringLiteral( "*.%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
     {
       lastFilter = f;
       break;
@@ -443,7 +452,9 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
 
     leText->setText( filename );
     settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), QFileInfo( filename ).path() );
-    if ( !lastExtPath.isEmpty() )
+    if ( !lastFormatPath.isEmpty() && !mFormat.isEmpty() )
+      settings.setValue( lastFormatPath, mFormat );
+    else if ( !lastExtPath.isEmpty() )
       settings.setValue( lastExtPath, QFileInfo( filename ).suffix().toLower() );
 
     emit skipOutputChanged( false );

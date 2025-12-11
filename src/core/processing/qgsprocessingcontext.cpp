@@ -28,7 +28,7 @@
 
 QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
-  , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterExtension() )
+  , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterFormat() )
 {
   auto callback = [this]( const QgsFeature & feature )
   {

@@ -3815,6 +3815,15 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
+
+    /**
+     * Returns the default file format for destination file paths
+     * associated with this parameter.
+     *
+     * \since QGIS 3.40
+     */
+    QString defaultFileFormat() const;
+
     QString createFileFilter() const override;
 
     /**

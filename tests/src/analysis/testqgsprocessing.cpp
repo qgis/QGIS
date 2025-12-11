@@ -249,7 +249,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster2" );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
       QVERIFY( addParameter( rasterParam ) );
-      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "pcx" ) );
+      QCOMPARE( rasterParam->defaultFileFormat(), QStringLiteral( "next-gen-format" ) );
 
       // test parameterAsOutputRasterFormat()
       QVariantMap parameters;
@@ -523,9 +523,9 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
       return "xshp"; // shape-X. Just like shapefiles, but to the max!
     }
 
-    QString defaultRasterFileExtension() const override
+    QString defaultRasterFileFormat() const override
     {
-      return "pcx"; // next-gen raster storage
+      return "next-gen-format";
     }
 
     bool supportsNonFileBasedOutput() const override
@@ -621,8 +621,8 @@ class DummyProvider3 : public QgsProcessingProvider // clazy:exclude=missing-qob
     QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
     {
       return QList<QPair<QString, QString>>()
-             << QPair<QString, QString>( QString(), QStringLiteral( "mig" ) )
-             << QPair<QString, QString>( QString(), QStringLiteral( "sdat" ) );
+             << QPair<QString, QString>( QStringLiteral( "XYZ" ), QStringLiteral( "xyz" ) )
+             << QPair<QString, QString>( QStringLiteral( "BMP" ), QStringLiteral( "bmp" ) );
     }
 
     QStringList supportedOutputPointCloudLayerExtensions() const override
@@ -8614,9 +8614,9 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.tif", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.TIF", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.tif" ), def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( "d:/test.mig", def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( "d:/test.MIG", def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIG" ), def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.xyz", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.XYZ", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.XYZ" ), def.get(), context, error ) );
 
   // test layers to load on completion
   def = std::make_unique<QgsProcessingParameterRasterDestination>( "x", QStringLiteral( "desc" ), QStringLiteral( "default.tif" ), true );
@@ -13170,30 +13170,32 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   const DummyProvider3 provider;
   // default implementation should return first supported format for provider
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
-  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "xyz" ) );
 
   // a default context should use reasonable defaults
   const QgsProcessingContext context;
   QCOMPARE( context.preferredVectorFormat(), QStringLiteral( "gpkg" ) );
-  QCOMPARE( context.preferredRasterFormat(), QStringLiteral( "tif" ) );
+  QCOMPARE( context.preferredRasterFormat(), QStringLiteral( "GTiff" ) );
 
   // unless the user has set a default format, which IS supported by that provider
   QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QStringLiteral( "tab" ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QStringLiteral( "sdat" ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerFormat->setValue( QStringLiteral( "BMP" ) );
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
-  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
+  QCOMPARE( provider.defaultRasterFileFormat(), QStringLiteral( "BMP" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "bmp" ) );
 
   // context should respect these as preferred formats
   const QgsProcessingContext context2;
   QCOMPARE( context2.preferredVectorFormat(), QStringLiteral( "tab" ) );
-  QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "sdat" ) );
+  QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "BMP" ) );
 
   // but if default is not supported by provider, we use a supported format
   QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QStringLiteral( "gpkg" ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QStringLiteral( "ecw" ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerFormat->setValue( QStringLiteral( "ECW" ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
-  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+  QCOMPARE( provider.defaultRasterFileFormat(), QStringLiteral( "XYZ" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "xyz" ) );
 }
 
 void TestQgsProcessing::supportedExtensions()

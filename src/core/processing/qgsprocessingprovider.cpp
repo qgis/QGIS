@@ -319,25 +319,39 @@ QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) co
   }
 }
 
-QString QgsProcessingProvider::defaultRasterFileExtension() const
+QString QgsProcessingProvider::defaultRasterFileFormat() const
 {
-  const QString userDefault = QgsProcessingUtils::defaultRasterExtension();
+  const QString userDefault = QgsProcessingUtils::defaultRasterFormat();
 
-  const QStringList supportedExtensions = supportedOutputRasterLayerExtensions();
-  if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
+  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
   {
-    // user set default is supported by provider, use that
-    return userDefault;
+    if ( formatAndExt.first.compare( userDefault, Qt::CaseInsensitive ) == 0 )
+    {
+      // user set default is supported by provider, use that
+      return userDefault;
+    }
   }
-  else if ( !supportedExtensions.empty() )
+
+  if ( !formatAndExtensions.empty() )
   {
-    return supportedExtensions.at( 0 );
+    return formatAndExtensions.at( 0 ).first;
   }
   else
   {
     // who knows? provider says it has no file support at all...
-    return QStringLiteral( "tif" );
+    return QStringLiteral( "GTiff" );
   }
+}
+
+QString QgsProcessingProvider::defaultRasterFileExtension() const
+{
+  QString format = defaultRasterFileFormat();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( format );
+  if ( !extensions.isEmpty() )
+    return extensions[0];
+
+  return QStringLiteral( "tif" );
 }
 
 QString QgsProcessingProvider::defaultPointCloudFileExtension() const
