@@ -29,6 +29,7 @@ from qgis.core import (
     QgsGeometry,
     QgsRectangle,
     QgsSettings,
+    QgsTestUtils,
     QgsVectorLayer,
     QgsWkbTypes,
 )
@@ -39,37 +40,7 @@ from providertestbase import ProviderTestCase
 
 
 def sanitize(endpoint, query_params):
-    # Implement the logic of QgsBaseNetworkRequest::sendGET()
-    # Note query_params can actually contain subpaths, so create the full url
-    # by concatenating boths, and then figure out things...
-
-    url = endpoint + query_params
-    # For REST API using URL subpaths, normalize the subpaths
-    afterEndpointStartPos = url.find("fake_qgis_http_endpoint") + len(
-        "fake_qgis_http_endpoint"
-    )
-    afterEndpointStart = url[afterEndpointStartPos:]
-    afterEndpointStart = afterEndpointStart.replace("/", "_")
-    url = url[0:afterEndpointStartPos] + afterEndpointStart
-    posQuotationMark = url.find("?")
-    endpoint = url[0:posQuotationMark]
-    query_params = url[posQuotationMark:]
-
-    if len(endpoint + query_params) > 256:
-        ret = endpoint + hashlib.md5(query_params.encode()).hexdigest()
-        # print('Before: ' + endpoint + query_params)
-        # print('After:  ' + ret)
-        return ret
-    ret = endpoint + query_params.replace("?", "_").replace("&", "_").replace(
-        "<", "_"
-    ).replace(">", "_").replace('"', "_").replace("'", "_").replace(" ", "_").replace(
-        ":", "_"
-    ).replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
-    return ret
+    return QgsTestUtils.sanitizeFakeHttpEndpoint(f"{endpoint}{query_params}")
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
