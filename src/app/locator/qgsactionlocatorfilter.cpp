@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgsactionlocatorfilter.h"
-#include "moc_qgsactionlocatorfilter.cpp"
 
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
 
+#include "moc_qgsactionlocatorfilter.cpp"
 
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )

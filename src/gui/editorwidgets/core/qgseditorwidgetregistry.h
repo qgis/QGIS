@@ -16,13 +16,14 @@
 #ifndef QGSEDITORWIDGETREGISTRY_H
 #define QGSEDITORWIDGETREGISTRY_H
 
-#include <QObject>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QMap>
-#include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetautoconf.h"
-#include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
+
+#include <QMap>
+#include <QObject>
 
 class QgsMapLayer;
 class QDomNode;
@@ -139,7 +140,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param widgetId The widget type to get the icon for
      *
      * \returns An icon
-     * 
+     *
      * \since QGIS 4.0
      */
     QIcon icon( const QString &widgetId );

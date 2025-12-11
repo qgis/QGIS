@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProjectVersion
 {
 %Docstring(signature="appended")

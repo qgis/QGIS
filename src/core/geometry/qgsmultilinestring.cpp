@@ -14,13 +14,15 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultilinestring.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsabstractgeometry.h"
 #include "qgscurve.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmulticurve.h"
 
-#include <nlohmann/json.hpp>
 #include <QJsonObject>
 
 QgsMultiLineString::QgsMultiLineString()

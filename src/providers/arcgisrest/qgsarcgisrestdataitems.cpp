@@ -13,13 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsarcgisrestdataitems.h"
-#include "moc_qgsarcgisrestdataitems.cpp"
+
+#include "qgsarcgisportalutils.h"
+#include "qgsarcgisrestquery.h"
+#include "qgsarcgisrestutils.h"
 #include "qgslogger.h"
 #include "qgsowsconnection.h"
-#include "qgsarcgisrestutils.h"
-#include "qgsarcgisrestquery.h"
-#include "qgsarcgisportalutils.h"
 #include "qgssettingsentryimpl.h"
+
+#include "moc_qgsarcgisrestdataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsarcgisrestsourceselect.h"

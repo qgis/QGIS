@@ -14,15 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshistoryentrymodel.h"
-#include "moc_qgshistoryentrymodel.cpp"
-#include "qgshistoryentrynode.h"
-#include "qgshistoryproviderregistry.h"
+
+#include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshistoryentry.h"
+#include "qgshistoryentrynode.h"
 #include "qgshistoryprovider.h"
-#include "qgsapplication.h"
+#include "qgshistoryproviderregistry.h"
 
 #include <QIcon>
+
+#include "moc_qgshistoryentrymodel.cpp"
 
 ///@cond PRIVATE
 class QgsHistoryEntryRootNode : public QgsHistoryEntryGroup

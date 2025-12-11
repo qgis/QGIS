@@ -16,9 +16,10 @@
 #ifndef QGSEDITORWIDGETWRAPPER_H
 #define QGSEDITORWIDGETWRAPPER_H
 
-#include <QObject>
 #include "qgis_sip.h"
+
 #include <QMap>
+#include <QObject>
 #include <QVariant>
 
 class QgsVectorLayer;
@@ -386,10 +387,10 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Boolean storing the current validity of the constraint for this widget.
      */
-    bool mValidConstraint;
+    bool mValidConstraint = true;
 
     //! True if widget is blocking feature commits
-    bool mIsBlockingCommit;
+    bool mIsBlockingCommit = false;
 
     //! Contains the string explanation of why a constraint check failed
     QString mConstraintFailureReason;

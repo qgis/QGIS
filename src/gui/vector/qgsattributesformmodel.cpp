@@ -13,23 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsactionmanager.h"
 #include "qgsattributesformmodel.h"
-#include "moc_qgsattributesformmodel.cpp"
-#include "qgsgui.h"
-#include "qgseditorwidgetregistry.h"
+
+#include "qgsactionmanager.h"
+#include "qgsapplication.h"
 #include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorrelation.h"
-#include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorhtmlelement.h"
-#include "qgsattributeeditortextelement.h"
+#include "qgsattributeeditorqmlelement.h"
+#include "qgsattributeeditorrelation.h"
 #include "qgsattributeeditorspacerelement.h"
+#include "qgsattributeeditortextelement.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 
 #include <QMimeData>
 
+#include "moc_qgsattributesformmodel.cpp"
 
 QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {

@@ -16,13 +16,13 @@
  ***************************************************************************/
 
 #include "qgstooltipcombobox.h"
-#include "moc_qgstooltipcombobox.cpp"
 
 #include <QEvent>
 #include <QHelpEvent>
 #include <QPoint>
 #include <QToolTip>
 
+#include "moc_qgstooltipcombobox.cpp"
 
 QgsToolTipComboBox::QgsToolTipComboBox( QWidget *parent )
   : QComboBox( parent )

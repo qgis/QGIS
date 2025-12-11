@@ -14,35 +14,36 @@
  ***************************************************************************/
 
 #include "qgsmarkersymbollayer.h"
-#include "qgssymbollayerutils.h"
 
+#include <cmath>
+#include <memory>
+
+#include "qgscolorutils.h"
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontmanager.h"
 #include "qgsfontutils.h"
 #include "qgsimagecache.h"
 #include "qgsimageoperation.h"
-#include "qgsrendercontext.h"
 #include "qgslogger.h"
-#include "qgssvgcache.h"
-#include "qgsunittypes.h"
-#include "qgssymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsfontmanager.h"
-#include "qgscolorutils.h"
 #include "qgspainting.h"
+#include "qgsrendercontext.h"
 #include "qgssldexportcontext.h"
+#include "qgssvgcache.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
+#include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QFileInfo>
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QPainter>
 #include <QSvgRenderer>
-#include <QFileInfo>
-#include <QDir>
-#include <QDomDocument>
-#include <QDomElement>
 #include <QUrlQuery>
-
-#include <cmath>
 
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
 
@@ -3752,7 +3753,7 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   // if a non zero, but small pixel size results, round up to 2 pixels so that a "dot" is at least visible
   // (if we set a <=1 pixel size here Qt will reset the font to a default size, leading to much too large symbols)
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
-  mFontMetrics.reset( new QFontMetrics( mFont ) );
+  mFontMetrics = std::make_unique<QFontMetrics>( mFont );
   mChrWidth = mFontMetrics->horizontalAdvance( mString );
   switch ( mVerticalAnchorPoint )
   {
@@ -3979,7 +3980,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FontFamily ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FontStyle ) )
   {
-    mFontMetrics.reset( new QFontMetrics( mFont ) );
+    mFontMetrics = std::make_unique<QFontMetrics>( mFont );
   }
 
   QPointF chrOffset = mChrOffset;
@@ -4145,7 +4146,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   ( void )characterToRender( context, chrOffset, chrWidth );
 
   if ( !mFontMetrics )
-    mFontMetrics.reset( new QFontMetrics( mFont ) );
+    mFontMetrics = std::make_unique<QFontMetrics>( mFont );
 
   double scaledSize = calculateSize( context );
   if ( !qgsDoubleNear( scaledSize, mOrigSize ) )

@@ -18,12 +18,13 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
 #include "qgsconfig.h"
 
+#include "qgis_core.h"
 #include "qgsfeedback.h"
 
 #include <QThread>
+
 #if defined( QGISDEBUG ) || defined( AGGRESSIVE_SAFE_MODE )
 #include <QDebug>
 #include <QMutex>
@@ -31,6 +32,11 @@
 #include <QSemaphore>
 #include <QCoreApplication>
 #include <memory>
+
+
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+#include <sys/prctl.h>
+#endif
 
 #ifdef __clang_analyzer__
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS \
@@ -269,6 +275,71 @@ class CORE_EXPORT QgsThreadingUtils
     static QSet< QString > sEmittedWarnings;
     //! Mutex protecting sEmittedWarnings
     static QMutex sEmittedWarningMutex;
+#endif
+};
+
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for setting the current thread name.
+ *
+ * Temporarily overrides the current thread name.
+ *
+ * \warning This class is not supported on all platforms.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 4.0
+ */
+class QgsScopedThreadName
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedThreadName.
+     */
+    QgsScopedThreadName( const QString &name )
+    {
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+      mOldName = getCurrentThreadName();
+      setCurrentThreadName( name );
+#endif
+    }
+
+    /**
+     * Restores the thread name back to its original state.
+     */
+    ~QgsScopedThreadName()
+    {
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+      setCurrentThreadName( mOldName );
+#endif
+    }
+
+  private:
+
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+    QString mOldName;
+
+    static QString getCurrentThreadName()
+    {
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+      char name[16];
+      prctl( PR_GET_NAME, name, 0, 0, 0 );
+      return QString( name );
+#else
+      return QString();
+#endif
+    }
+
+    static void setCurrentThreadName( const QString &name )
+    {
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+      prctl( PR_SET_NAME, name.toLocal8Bit().constData(), 0, 0, 0 );
+#else
+      ( void )name;
+#endif
+    }
 #endif
 };
 

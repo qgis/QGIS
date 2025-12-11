@@ -22,8 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsplot.h"
 #include "qgstaskmanager.h"
-#include <qgsvectorlayerfeatureiterator.h>
-
+#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup core
@@ -60,7 +59,7 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
   public:
 
     QgsVectorLayerAbstractPlotDataGatherer() = default;
-    virtual ~QgsVectorLayerAbstractPlotDataGatherer() = default;
+    ~QgsVectorLayerAbstractPlotDataGatherer() override = default;
 
     //! Returns the plot data.
     virtual QgsPlotData data() const = 0;

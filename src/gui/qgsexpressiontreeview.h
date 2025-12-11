@@ -16,16 +16,15 @@
 #ifndef QGSEXPRESSIONTREEVIEW_H
 #define QGSEXPRESSIONTREEVIEW_H
 
-#include <QTreeView>
-#include <QStandardItemModel>
-#include <QSortFilterProxyModel>
-#include <QPointer>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 
+#include <QPointer>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QTreeView>
 
 class QgsVectorLayer;
 

@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsannotationlayer3drendererwidget.h"
-#include "moc_qgsannotationlayer3drendererwidget.cpp"
 
-#include "qgsapplication.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationlayer3drenderer.h"
+#include "qgsapplication.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
+
+#include "moc_qgsannotationlayer3drendererwidget.cpp"
 
 QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

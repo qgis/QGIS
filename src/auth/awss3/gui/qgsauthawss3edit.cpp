@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthawss3edit.h"
-#include "moc_qgsauthawss3edit.cpp"
 #include "ui_qgsauthawss3edit.h"
+#include "qgsauthawss3edit.h"
 
+#include "moc_qgsauthawss3edit.cpp"
 
 QgsAuthAwsS3Edit::QgsAuthAwsS3Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

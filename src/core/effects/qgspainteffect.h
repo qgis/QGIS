@@ -17,12 +17,13 @@
 #ifndef QGSPAINTEFFECT_H
 #define QGSPAINTEFFECT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include <QPainter>
+
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainter>
 #include <QPicture>
 
 class QgsRenderContext;

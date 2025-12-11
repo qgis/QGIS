@@ -15,13 +15,13 @@
  ***************************************************************************/
 #include "qgsrelationreferencefieldformatter.h"
 
-#include "qgsmessagelog.h"
-#include "qgsrelation.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsmessagelog.h"
 #include "qgsproject.h"
+#include "qgsrelation.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
 
 QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
 {

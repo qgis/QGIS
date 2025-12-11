@@ -16,12 +16,14 @@
 #ifndef QGSPRESETCOLORRAMPDIALOG_H
 #define QGSPRESETCOLORRAMPDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgscolorrampimpl.h"
 #include "ui_qgspresetcolorrampwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorrampimpl.h"
+#include "qgspanelwidget.h"
+
+#include <QDialog>
 
 class QDialogButtonBox;
 

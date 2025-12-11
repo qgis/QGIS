@@ -16,7 +16,7 @@ import sys
 import tempfile
 from urllib.parse import quote
 
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, Qt
+from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, Qt, QUrl
 from qgis.PyQt.QtTest import QTest
 from qgis.core import QgsSettings, QgsOwsConnection, QgsDataItemProviderRegistry, Qgis
 from qgis.gui import QgsGui
@@ -250,10 +250,10 @@ class TestPyQgsWMSProviderGUI(QgisTestCase):
         QTest.mouseClick(buttonAdd, Qt.MouseButton.LeftButton)
         self.assertEqual(
             self.addWmsLayer_uri,
-            "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&"
-            + "format=image/jpeg"  # <--- actual test !
+            "contextualWMSLegend=0&crs=EPSG%3A4326&dpiMode=7&featureCount=10&"
+            + "format=image%2Fjpeg"  # <--- actual test !
             + "&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url="
-            + url,
+            + bytes(QUrl.toPercentEncoding(url)).decode(),
         )
         self.assertEqual(
             self.addWmsLayer_layer_name,
@@ -292,10 +292,10 @@ class TestPyQgsWMSProviderGUI(QgisTestCase):
         QTest.mouseClick(buttonAdd, Qt.MouseButton.LeftButton)
         self.assertEqual(
             self.addWmsLayer_uri,
-            "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&"
-            + "format=image/webp"  # <--- actual test !
+            "contextualWMSLegend=0&crs=EPSG%3A4326&dpiMode=7&featureCount=10&"
+            + "format=image%2Fwebp"  # <--- actual test !
             + "&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url="
-            + url,
+            + bytes(QUrl.toPercentEncoding(url)).decode(),
         )
 
         # This should also have changed the global last used format default
@@ -318,7 +318,7 @@ class TestPyQgsWMSProviderGUI(QgisTestCase):
         self.assertEqual(
             layer_item.name(), "Bebauungsplaene Rasterbilder auf grauer Basiskarte"
         )
-        self.assertIn("format=image/jpeg", layer_item.uri())
+        self.assertIn("format=image%2Fjpeg", layer_item.uri())
 
     def slotAddWmsLayer(self, uri, layer_name):
         self.addWmsLayer_uri = uri

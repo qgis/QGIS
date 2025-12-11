@@ -18,9 +18,10 @@
 #ifndef QGSMAPTOOLROTATELABEL_H
 #define QGSMAPTOOLROTATELABEL_H
 
-#include "qgsmaptoollabel.h"
 #include "qgis_app.h"
+#include "qgsmaptoollabel.h"
 #include "qobjectuniqueptr.h"
+
 class QgsPointRotationItem;
 
 class APP_EXPORT QgsMapToolRotateLabel : public QgsMapToolLabel

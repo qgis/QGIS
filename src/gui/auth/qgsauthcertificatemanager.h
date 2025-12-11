@@ -18,12 +18,12 @@
 #define QGSAUTHCERTIFICATEMANAGER_H
 
 #include "ui_qgsauthcertificatemanager.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 
-#include <QWidget>
 #include <QDialog>
-#include "qgis_gui.h"
-
+#include <QWidget>
 
 /**
  * \ingroup gui

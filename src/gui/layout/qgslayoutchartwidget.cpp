@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutchartwidget.h"
-#include "moc_qgslayoutchartwidget.cpp"
+
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgslayout.h"
@@ -25,6 +25,7 @@
 #include "qgsplotregistry.h"
 #include "qgsplotwidget.h"
 
+#include "moc_qgslayoutchartwidget.cpp"
 
 QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
   : QgsLayoutItemBaseWidget( nullptr, chartItem )

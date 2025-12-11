@@ -60,7 +60,7 @@ class QWT_EXPORT QwtPlotAbstractBarChart : public QwtPlotSeriesItem
     };
 
     explicit QwtPlotAbstractBarChart( const QwtText& title );
-    virtual ~QwtPlotAbstractBarChart();
+    ~QwtPlotAbstractBarChart() override;
 
     void setLayoutPolicy( LayoutPolicy );
     LayoutPolicy layoutPolicy() const;

@@ -17,28 +17,29 @@ email                : a.furieri@lqt.it
  ***************************************************************************/
 
 #include "qgsspatialitesourceselect.h"
-#include "moc_qgsspatialitesourceselect.cpp"
-#include "qgsspatialiteconnection.h"
 
-#include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
-#include "qgsvectorlayer.h"
-#include "qgssettings.h"
-#include "qgsproviderregistry.h"
-#include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsproject.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgsspatialiteconnection.h"
 #include "qgsspatialiteproviderconnection.h"
 #include "qgsspatialitetablemodel.h"
-#include "qgshelp.h"
+#include "qgsvectorlayer.h"
 
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTextStream>
-#include <QTableWidgetItem>
-#include <QHeaderView>
-#include <QStringList>
 #include <QPushButton>
+#include <QStringList>
+#include <QTableWidgetItem>
+#include <QTextStream>
+
+#include "moc_qgsspatialitesourceselect.cpp"
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )

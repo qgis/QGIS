@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstextblock.h"
+
 #include "qgstextfragment.h"
 
 #include <QSizeF>

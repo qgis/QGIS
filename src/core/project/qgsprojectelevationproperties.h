@@ -17,10 +17,12 @@
 #ifndef QGSPROJECTELEVATIONPROPERTIES_H
 #define QGSPROJECTELEVATIONPROPERTIES_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsrange.h"
 #include "qgsunittypes.h"
-#include <memory>
+
 #include <QObject>
 
 class QDomElement;

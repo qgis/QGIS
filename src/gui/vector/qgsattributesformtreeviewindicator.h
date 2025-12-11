@@ -24,7 +24,6 @@
 #include <QIcon>
 #include <QObject>
 
-
 /**
  * \brief Indicator that can be used in an Attributes Form tree view to display icons next to field items.
  *
@@ -52,6 +51,7 @@ class GUI_EXPORT QgsAttributesFormTreeViewIndicator : public QObject
     void setToolTip( const QString &tip );
 
   signals:
+
     /**
      * Emitted when the indicator changes state (e.g. icon).
      */

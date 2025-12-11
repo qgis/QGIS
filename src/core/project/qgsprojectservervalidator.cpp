@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 
+#include "qgsprojectservervalidator.h"
+
 #include "qgsapplication.h"
 #include "qgslayertreelayer.h"
-#include "qgsprojectservervalidator.h"
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>

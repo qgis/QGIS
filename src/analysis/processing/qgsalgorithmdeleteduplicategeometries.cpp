@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdeleteduplicategeometries.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsgeometryengine.h"
 #include "qgsspatialindex.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

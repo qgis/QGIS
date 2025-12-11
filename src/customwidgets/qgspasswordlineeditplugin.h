@@ -17,11 +17,11 @@
 #define QGSPASSWORDLINEEDITPLUGIN_H
 
 
+#include "qgis_customwidgets.h"
+
 #include <QtGlobal>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#include "qgis_customwidgets.h"
-
 
 class CUSTOMWIDGETS_EXPORT QgsPasswordLineEditPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

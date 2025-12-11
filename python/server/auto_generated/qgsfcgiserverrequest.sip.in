@@ -9,7 +9,6 @@
 
 
 
-
 class QgsFcgiServerRequest : QgsServerRequest
 {
 %Docstring(signature="appended")

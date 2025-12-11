@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsactionmenu.h"
-#include "moc_qgsactionmenu.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsmaplayeractioncontextgenerator.h"
-#include "qgsmaplayeraction.h"
-#include "qgsmaplayeractionregistry.h"
+
 #include "qgsactionmanager.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
+#include "qgsmaplayeraction.h"
+#include "qgsmaplayeractioncontextgenerator.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsactionmenu.cpp"
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent )
   : QMenu( parent )

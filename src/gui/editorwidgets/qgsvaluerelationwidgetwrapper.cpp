@@ -14,29 +14,31 @@
  ***************************************************************************/
 
 #include "qgsvaluerelationwidgetwrapper.h"
-#include "moc_qgsvaluerelationwidgetwrapper.cpp"
-
-#include "qgis.h"
-#include "qgsfields.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsfilterlineedit.h"
-#include "qgsvaluerelationfieldformatter.h"
-#include "qgsattributeform.h"
-#include "qgspostgresstringutils.h"
-
-#include <QComboBox>
-#include <QLineEdit>
-#include <QStringListModel>
-#include <QCompleter>
-#include <QTimer>
-#include <QVBoxLayout>
-#include <QHeaderView>
-#include <QKeyEvent>
-#include <QStandardItemModel>
-#include <QMenu>
 
 #include <nlohmann/json.hpp>
+
+#include "qgis.h"
+#include "qgsattributeform.h"
+#include "qgsfields.h"
+#include "qgsfilterlineedit.h"
+#include "qgspostgresstringutils.h"
+#include "qgsproject.h"
+#include "qgsvaluerelationfieldformatter.h"
+#include "qgsvectorlayer.h"
+
+#include <QComboBox>
+#include <QCompleter>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <QMenu>
+#include <QStandardItemModel>
+#include <QStringListModel>
+#include <QTimer>
+#include <QVBoxLayout>
+
+#include "moc_qgsvaluerelationwidgetwrapper.cpp"
+
 using namespace nlohmann;
 
 ///@cond PRIVATE

@@ -17,10 +17,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfeature.h"
-#include "qgspointlocator.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
 #include "qgsmeshdataprovider.h"
+#include "qgspointlocator.h"
 
 #include <QString>
 #include <QVariantMap>

@@ -14,23 +14,24 @@
  ***************************************************************************/
 
 #include "qgsmapthemes.h"
-#include "moc_qgsmapthemes.cpp"
-#include "qgsmapthemecollection.h"
 
+#include "qgisapp.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeview.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmapthemecollection.h"
+#include "qgsnewnamedialog.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
-#include "qgsnewnamedialog.h"
-#include "qgshelp.h"
 
 #include <QMessageBox>
+
+#include "moc_qgsmapthemes.cpp"
 
 QgsMapThemes *QgsMapThemes::sInstance;
 

@@ -16,19 +16,20 @@
  ***************************************************************************/
 
 #include "qgslinuxnative.h"
-#include "moc_qgslinuxnative.cpp"
 
 #include <QCoreApplication>
-#include <QUrl>
-#include <QString>
+#include <QDBusArgument>
 #include <QDBusConnection>
 #include <QDBusInterface>
-#include <QDBusArgument>
 #include <QDBusMetaType>
 #include <QFile>
-#include <QtDebug>
 #include <QImage>
 #include <QProcess>
+#include <QString>
+#include <QUrl>
+#include <QtDebug>
+
+#include "moc_qgslinuxnative.cpp"
 
 QgsNative::Capabilities QgsLinuxNative::capabilities() const
 {

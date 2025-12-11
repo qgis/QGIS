@@ -15,35 +15,36 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsoracleprovider.h"
+
+#include "qgsapplication.h"
+#include "qgscompoundcurve.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscurve.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgscurve.h"
-#include "qgscompoundcurve.h"
-#include "qgspolygon.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
-#include "qgsmessagelog.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgsprojectstorageguiprovider.h"
-#include "qgsprojectstorageregistry.h"
-#include "qgsvectorlayer.h"
-#include "qgsthreadingutils.h"
-
-#include "qgsoracleprovider.h"
-#include "moc_qgsoracleprovider.cpp"
+#include "qgsoracleconnpool.h"
 #include "qgsoracledataitems.h"
 #include "qgsoraclefeatureiterator.h"
-#include "qgsoracleconnpool.h"
-#include "qgsoracletransaction.h"
-#include "qgsoracleproviderconnection.h"
-#include "qgsapplication.h"
-#include "qgsoracleprojectstoragedialog.h"
 #include "qgsoracleprojectstorage.h"
+#include "qgsoracleprojectstoragedialog.h"
+#include "qgsoracleproviderconnection.h"
+#include "qgsoracletransaction.h"
+#include "qgspolygon.h"
+#include "qgsprojectstorageguiprovider.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsrectangle.h"
+#include "qgsthreadingutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsoracleprovider.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
@@ -65,15 +66,7 @@ const QString ORACLE_DESCRIPTION = "Oracle data provider";
 
 QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
-  , mValid( false )
-  , mIsQuery( false )
-  , mPrimaryKeyType( PktUnknown )
-  , mFeaturesCounted( -1 )
-  , mDetectedGeomType( Qgis::WkbType::Unknown )
-  , mRequestedGeomType( Qgis::WkbType::Unknown )
-  , mHasSpatialIndex( false )
   , mSpatialIndexName( QString() )
-  , mOracleVersion( -1 )
   , mShared( new QgsOracleSharedData )
 {
   static int geomMetaType = -1;

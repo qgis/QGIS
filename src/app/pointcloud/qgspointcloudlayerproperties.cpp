@@ -14,25 +14,27 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerproperties.h"
-#include "moc_qgspointcloudlayerproperties.cpp"
-#include "qgshelp.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgspointcloudlayer.h"
-#include "qgsgui.h"
-#include "qgsapplication.h"
-#include "qgsmetadatawidget.h"
-#include "qgsmaplayerconfigwidget.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgspointcloudattributemodel.h"
-#include "qgsdatumtransformdialog.h"
-#include "qgspointcloudquerybuilder.h"
-#include "qgsmaplayerlegend.h"
 
+#include "qgsapplication.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerlegend.h"
+#include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmetadatawidget.h"
+#include "qgspointcloudattributemodel.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudquerybuilder.h"
+
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QDesktopServices>
 #include <QUrl>
+
+#include "moc_qgspointcloudlayerproperties.cpp"
 
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "PointCloudLayerProperties" ), parent, flags )

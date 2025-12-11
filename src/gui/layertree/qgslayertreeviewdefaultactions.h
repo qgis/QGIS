@@ -16,9 +16,10 @@
 #ifndef QGSLAYERTREEVIEWDEFAULTACTIONS_H
 #define QGSLAYERTREEVIEWDEFAULTACTIONS_H
 
-#include <QObject>
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QObject>
 
 class QAction;
 

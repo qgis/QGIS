@@ -13,40 +13,42 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdualview.h"
+
+#include "qgsactionmanager.h"
+#include "qgsactionmenu.h"
+#include "qgsapplication.h"
+#include "qgsattributetablemodel.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsfieldconditionalformatwidget.h"
+#include "qgsgui.h"
+#include "qgsifeatureselectionmanager.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvasutils.h"
+#include "qgsmaplayeraction.h"
+#include "qgsmessagebar.h"
+#include "qgsorganizetablecolumnsdialog.h"
+#include "qgsscrollarea.h"
+#include "qgssettings.h"
+#include "qgsshortcutsmanager.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayereditbuffer.h"
+
 #include <QClipboard>
 #include <QDialog>
+#include <QGroupBox>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QGroupBox>
-#include <QInputDialog>
-#include <QTimer>
 #include <QShortcut>
+#include <QTimer>
 
-#include "qgsapplication.h"
-#include "qgsactionmanager.h"
-#include "qgsattributetablemodel.h"
-#include "qgsdualview.h"
 #include "moc_qgsdualview.cpp"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsifeatureselectionmanager.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayeraction.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayercache.h"
-#include "qgsorganizetablecolumnsdialog.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgssettings.h"
-#include "qgsscrollarea.h"
-#include "qgsgui.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsshortcutsmanager.h"
-#include "qgsfieldconditionalformatwidget.h"
-#include "qgsmapcanvasutils.h"
-#include "qgsmessagebar.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgsactionmenu.h"
 
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-table-splitter-state" ), QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of conditional formatting splitter's layout so it could be restored when opening attribute table view." ) );
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::attributeEditorSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-editor-splitter-state" ), QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of attribute editor splitter's layout so it could be restored when opening attribute editor view." ) );
@@ -172,7 +174,14 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   //mTableView->resizeColumnsToContents();
 
   if ( showFirstFeature && mFeatureListModel->rowCount() > 0 )
+  {
     mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
+  }
+  else
+  {
+    // Set attribute table config to allow for proper sorting ordering in feature list view
+    setAttributeTableConfig( mLayer->attributeTableConfig() );
+  }
 }
 
 void QgsDualView::initAttributeForm( const QgsFeature &feature )
@@ -847,12 +856,43 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
     return;
   }
 
-  QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content" ) );
-  menu->addAction( copyContentAction );
-  connect( copyContentAction, &QAction::triggered, this, [masterIndex, this] {
-    const QVariant var = mMasterModel->data( masterIndex, Qt::DisplayRole );
-    QApplication::clipboard()->setText( var.toString() );
-  } );
+  const QVariant displayValue = mMasterModel->data( masterIndex, Qt::DisplayRole );
+
+  if ( displayValue.isValid() )
+  {
+    // get values for preview in menu
+    QString previewDisplayValue = displayValue.toString();
+    if ( previewDisplayValue.length() > 12 )
+    {
+      previewDisplayValue.truncate( 12 );
+      previewDisplayValue.append( QStringLiteral( "…" ) );
+    }
+
+
+    QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content (%1)" ).arg( previewDisplayValue ) );
+    menu->addAction( copyContentAction );
+    connect( copyContentAction, &QAction::triggered, this, [displayValue] {
+      QApplication::clipboard()->setText( displayValue.toString() );
+    } );
+  }
+
+  const QVariant rawValue = mMasterModel->data( masterIndex, Qt::EditRole );
+  if ( rawValue.isValid() )
+  {
+    // get values for preview in menu
+    QString previewRawValue = rawValue.toString();
+    if ( previewRawValue.length() > 12 )
+    {
+      previewRawValue.truncate( 12 );
+      previewRawValue.append( QStringLiteral( "…" ) );
+    }
+
+    QAction *copyRawContentAction = menu->addAction( tr( "Copy Raw Value (%1)" ).arg( previewRawValue ) );
+    menu->addAction( copyRawContentAction );
+    connect( copyRawContentAction, &QAction::triggered, this, [rawValue] {
+      QApplication::clipboard()->setText( rawValue.toString() );
+    } );
+  }
 
   QgsVectorLayer *vl = mFilterModel->layer();
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();

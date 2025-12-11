@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgslayouttablebackgroundcolorsdialog.h"
-#include "moc_qgslayouttablebackgroundcolorsdialog.cpp"
-#include "qgslayouttable.h"
-#include "qgslayout.h"
-#include "qgssettings.h"
-#include "qgshelp.h"
+
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslayout.h"
+#include "qgslayouttable.h"
+#include "qgssettings.h"
 
 #include <QCheckBox>
 #include <QPushButton>
+
+#include "moc_qgslayouttablebackgroundcolorsdialog.cpp"
 
 QgsLayoutTableBackgroundColorsDialog::QgsLayoutTableBackgroundColorsDialog( QgsLayoutTable *table, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

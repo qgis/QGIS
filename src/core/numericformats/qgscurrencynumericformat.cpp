@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include "qgscurrencynumericformat.h"
-#include "qgis.h"
 
+#include "qgis.h"
 
 QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
   : mPrefix( QStringLiteral( "$" ) )

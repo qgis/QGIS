@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "TriDecorator.h"
+
 #include "qgslogger.h"
 
 void TriDecorator::addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType )

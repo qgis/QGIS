@@ -15,9 +15,9 @@
 #ifndef QGSSENSORTHINGSFEATUREITERATOR_H
 #define QGSSENSORTHINGSFEATUREITERATOR_H
 
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureiterator.h"
 #include "qgssensorthingsshareddata.h"
-#include "qgscoordinatetransform.h"
 
 #define SIP_NO_FILE
 

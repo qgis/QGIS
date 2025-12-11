@@ -19,7 +19,6 @@
 
 #include "qgsvectortilelabeling.h"
 
-
 class QgsPalLayerSettings;
 
 /**

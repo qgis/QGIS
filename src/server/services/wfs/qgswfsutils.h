@@ -24,10 +24,10 @@
 #ifndef QGSWFSUTILS_H
 #define QGSWFSUTILS_H
 
-#include "qgsmodule.h"
 #include "qgsfeaturerequest.h"
-#include "qgswfsserviceexception.h"
+#include "qgsmodule.h"
 #include "qgsserversettings.h"
+#include "qgswfsserviceexception.h"
 
 class QgsMapLayer;
 

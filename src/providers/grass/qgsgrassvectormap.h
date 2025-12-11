@@ -17,13 +17,12 @@
 #ifndef QGSGRASSVECTORMAP_H
 #define QGSGRASSVECTORMAP_H
 
-#include <QDateTime>
-#include <QObject>
-
 #include "qgsabstractgeometry.h"
-
 #include "qgsgrass.h"
 #include "qgsgrassvectormaplayer.h"
+
+#include <QDateTime>
+#include <QObject>
 
 class QgsGrassUndoCommand;
 
@@ -183,15 +182,15 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     QgsGrassObject mGrassObject;
     // true if map is open, once the map is closed, valid is set to false and no more used
-    bool mValid;
+    bool mValid = false;
     // Indicates if map is open, it may be open but invalid
-    bool mOpen;
+    bool mOpen = false;
     // Vector temporally disabled. Necessary for GRASS Tools on Windows
-    bool mFrozen;
+    bool mFrozen = false;
     // true if the map is opened in update mode
-    bool mIsEdited;
+    bool mIsEdited = false;
     // version, increased by each closeEdit() and updateMap()
-    int mVersion;
+    int mVersion = 0;
     // last modified time of the vector directory, when the map was opened
     QDateTime mLastModified;
     // last modified time of the vector 'dbln' file, when the map was opened
@@ -201,11 +200,11 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // map header
     struct Map_info *mMap = nullptr;
     // Is 3D, has z coordinates
-    bool mIs3d;
+    bool mIs3d = false;
     // Vector layers
     QList<QgsGrassVectorMapLayer *> mLayers;
     // Number of lines in vector before editing started
-    int mOldNumLines;
+    int mOldNumLines = 0;
     // Original line ids of rewritten GRASS lines (new lid -> old lid)
     QHash<int, int> mOldLids;
     // Current line ids for old line ids (old lid -> new lid)

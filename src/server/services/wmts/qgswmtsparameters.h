@@ -18,12 +18,12 @@
 #ifndef QGSWMTSPARAMETERS_H
 #define QGSWMTSPARAMETERS_H
 
-#include <QMap>
-#include <QObject>
-#include <QMetaEnum>
-
 #include "qgsprojectversion.h"
 #include "qgsserverparameters.h"
+
+#include <QMap>
+#include <QMetaEnum>
+#include <QObject>
 
 namespace QgsWmts
 {
@@ -110,7 +110,7 @@ namespace QgsWmts
       /**
        * Default destructor for QgsWmtsParameter.
        */
-      virtual ~QgsWmtsParameter() = default;
+      ~QgsWmtsParameter() override = default;
 
       /**
        * Converts the parameter into an integer.
@@ -177,7 +177,7 @@ namespace QgsWmts
       /**
        * Default destructor for QgsWmtsParameters.
        */
-      virtual ~QgsWmtsParameters() = default;
+      ~QgsWmtsParameters() override = default;
 
       /**
        * Dumps parameters.

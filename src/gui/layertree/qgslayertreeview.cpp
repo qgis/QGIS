@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgslayertreeview.h"
-#include "moc_qgslayertreeview.cpp"
 
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgslayertreemodel.h"
@@ -25,14 +25,14 @@
 #include "qgsmaplayer.h"
 #include "qgsmessagebar.h"
 
-#include "qgsgui.h"
-
 #include <QApplication>
-#include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QMenu>
 #include <QMimeData>
 #include <QScrollBar>
+
+#include "moc_qgslayertreeview.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -86,6 +86,13 @@ void QgsLayerTreeViewBase::mouseDoubleClickEvent( QMouseEvent *event )
 
 void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
 {
+  if ( mLayerTreeModel )
+  {
+    disconnect( mLayerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeViewBase::onExpandedChanged );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::modelReset, this, &QgsLayerTreeViewBase::onModelReset );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::dataChanged, this, &QgsLayerTreeViewBase::onDataChanged );
+  }
+
   mLayerTreeModel = model;
 
   mLayerTreeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );

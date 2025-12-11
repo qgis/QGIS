@@ -18,8 +18,8 @@
 #ifndef QGSPROCESSINGMODELGROUPBOX_H
 #define QGSPROCESSINGMODELGROUPBOX_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingparameters.h"
 

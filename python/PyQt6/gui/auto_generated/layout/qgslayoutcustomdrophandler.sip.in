@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutCustomDropHandler : QObject
 {
 %Docstring(signature="appended")

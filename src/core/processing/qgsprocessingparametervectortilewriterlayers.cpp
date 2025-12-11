@@ -17,7 +17,6 @@
 
 #include "qgsvectorlayer.h"
 
-
 QgsProcessingParameterVectorTileWriterLayers::QgsProcessingParameterVectorTileWriterLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
 {

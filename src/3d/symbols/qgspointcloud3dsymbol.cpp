@@ -15,8 +15,8 @@
 
 #include "qgspointcloud3dsymbol.h"
 
-#include "qgscolorutils.h"
 #include "qgscolorramptexture.h"
+#include "qgscolorutils.h"
 #include "qgsmaterial.h"
 
 #include <Qt3DRender/QParameter>

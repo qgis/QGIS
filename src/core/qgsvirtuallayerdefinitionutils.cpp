@@ -15,10 +15,11 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerdefinitionutils.h"
+
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgsvectordataprovider.h"
-#include "qgsproject.h"
 #include "qgsvirtuallayerdefinition.h"
 
 QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer *layer )

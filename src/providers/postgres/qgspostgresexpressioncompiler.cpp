@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgspostgresexpressioncompiler.h"
+
+#include "qgsexpressionnodeimpl.h"
 #include "qgsexpressionutils.h"
 #include "qgssqlexpressioncompiler.h"
-#include "qgsexpressionnodeimpl.h"
 
 QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )

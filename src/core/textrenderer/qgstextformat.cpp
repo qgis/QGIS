@@ -13,25 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstextformat.h"
-#include "qgstextrenderer_p.h"
-#include "qgstextrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsfontutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgspainting.h"
-#include "qgstextrendererutils.h"
-#include "qgspallabeling.h"
 #include "qgsconfig.h"
-#include "qgsfontmanager.h"
+#include "qgstextformat.h"
+
 #include "qgsapplication.h"
-#include "qgsunittypes.h"
 #include "qgscolorutils.h"
+#include "qgsfontmanager.h"
+#include "qgsfontutils.h"
+#include "qgspainting.h"
+#include "qgspallabeling.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
+#include "qgstextrenderer_p.h"
+#include "qgstextrendererutils.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
 
 #include <QFontDatabase>
 #include <QMimeData>
-#include <QWidget>
 #include <QScreen>
+#include <QWidget>
 
 QgsTextFormat::QgsTextFormat()
 {

@@ -16,10 +16,9 @@
 #ifndef QGSXYZCONNECTION_H
 #define QGSXYZCONNECTION_H
 
-#include <QStringList>
-
 #include "qgshttpheaders.h"
 
+#include <QStringList>
 
 struct QgsXyzConnection
 {

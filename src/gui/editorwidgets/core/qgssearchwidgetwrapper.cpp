@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgssearchwidgetwrapper.h"
-#include "moc_qgssearchwidgetwrapper.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfields.h"
+
 #include "qgsapplication.h"
+#include "qgsfields.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QWidget>
+
+#include "moc_qgssearchwidgetwrapper.cpp"
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilterFlags()
 {

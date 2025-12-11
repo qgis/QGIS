@@ -18,12 +18,13 @@
 #define QGSLAYOUTITEM_H
 
 #include "qgis_core.h"
-#include "qgslayoutobject.h"
-#include "qgslayoutsize.h"
-#include "qgslayoutpoint.h"
-#include "qgsrendercontext.h"
-#include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
+#include "qgslayoutobject.h"
+#include "qgslayoutpoint.h"
+#include "qgslayoutsize.h"
+#include "qgslayoutundocommand.h"
+#include "qgsrendercontext.h"
+
 #include <QGraphicsRectItem>
 #include <QIcon>
 #include <QPainter>

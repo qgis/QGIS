@@ -9,7 +9,6 @@
 
 
 
-
 %ModuleHeaderCode
 #include "qgsabstractlayermetadataprovider.h"
 %End

@@ -17,9 +17,9 @@
 
 #include "qgsalgorithmpdalfilter.h"
 
-#include "qgsrunprocess.h"
-#include "qgspointcloudlayer.h"
 #include "qgspointcloudexpression.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
@@ -30,7 +30,7 @@ QString QgsPdalFilterAlgorithm::name() const
 
 QString QgsPdalFilterAlgorithm::displayName() const
 {
-  return QObject::tr( "Filter" );
+  return QObject::tr( "Filter point cloud" );
 }
 
 QString QgsPdalFilterAlgorithm::group() const
@@ -51,6 +51,11 @@ QStringList QgsPdalFilterAlgorithm::tags() const
 QString QgsPdalFilterAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm extracts point from the input point cloud which match PDAL expression and/or are inside of a cropping rectangle." );
+}
+
+QString QgsPdalFilterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Extracts points from the input point cloud which match specific conditions." );
 }
 
 QgsPdalFilterAlgorithm *QgsPdalFilterAlgorithm::createInstance() const

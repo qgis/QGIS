@@ -10,6 +10,7 @@
 
 
 
+
 class QgsNewHttpConnection : QDialog
 {
 %Docstring(signature="appended")
@@ -115,6 +116,8 @@ Returns the invert axis orientation checkbox status.
 
 .. versionadded:: 4.0
 %End
+
+
 
 
 

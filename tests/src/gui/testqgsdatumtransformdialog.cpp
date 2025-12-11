@@ -14,11 +14,10 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-
 #include "qgsdatumtransformdialog.h"
-#include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgstest.h"
 
 class TestQgsDatumTransformDialog : public QObject
 {

@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsvectortileprovidermetadata.h"
-#include "moc_qgsvectortileprovidermetadata.cpp"
 
-#include "qgsvectortileconnection.h"
-#include "qgsvectortiledataitems.h"
 #include "qgsapplication.h"
 #include "qgsreadwritecontext.h"
+#include "qgsvectortileconnection.h"
+#include "qgsvectortiledataitems.h"
 
 #include <QUrl>
+
+#include "moc_qgsvectortileprovidermetadata.cpp"
 
 ///@cond PRIVATE
 
@@ -147,7 +148,7 @@ QString QgsVectorTileProviderMetadata::absoluteToRelativeUri( const QString &uri
       // relative path will become "file:./x.txt"
       const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
       dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString( QUrl::DecodeReserved ) );
       return dsUri.encodedUri();
     }
   }
@@ -176,7 +177,7 @@ QString QgsVectorTileProviderMetadata::relativeToAbsoluteUri( const QString &uri
     {
       const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
       dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString( QUrl::DecodeReserved ) );
       return dsUri.encodedUri();
     }
   }

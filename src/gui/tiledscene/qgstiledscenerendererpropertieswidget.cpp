@@ -13,20 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenerendererpropertieswidget.h"
-#include "moc_qgstiledscenerendererpropertieswidget.cpp"
 
 #include "qgis.h"
-#include "qgstiledscenerendererregistry.h"
 #include "qgsapplication.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgstiledscenerendererwidget.h"
-#include "qgstiledscenelayer.h"
-#include "qgstiledscenerenderer.h"
-#include "qgstiledscenetexturerendererwidget.h"
-#include "qgstiledscenewireframerendererwidget.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgstiledscenelayer.h"
+#include "qgstiledscenerenderer.h"
+#include "qgstiledscenerendererregistry.h"
+#include "qgstiledscenerendererwidget.h"
+#include "qgstiledscenetexturerendererwidget.h"
+#include "qgstiledscenewireframerendererwidget.h"
+
+#include "moc_qgstiledscenerendererpropertieswidget.cpp"
 
 static bool initTiledSceneRenderer( const QString &name, QgsTiledSceneRendererWidgetFunc f, const QString &iconName = QString() )
 {

@@ -16,13 +16,13 @@
 #ifndef QGSHISTORYENTRY_H
 #define QGSHISTORYENTRY_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
+#include <QDateTime>
 #include <QMap>
 #include <QString>
-#include <QDateTime>
 #include <QVariant>
 
 /**

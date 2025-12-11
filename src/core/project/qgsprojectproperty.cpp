@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsprojectproperty.h"
-#include "qgslogger.h"
+
 #include "qgis.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
 
 #include <QDomDocument>

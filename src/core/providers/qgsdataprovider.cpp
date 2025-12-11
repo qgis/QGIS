@@ -13,11 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMutexLocker>
 #include "qgsdataprovider.h"
-#include "moc_qgsdataprovider.cpp"
+
 #include "qgsdataprovidertemporalcapabilities.h"
 #include "qgsthreadingutils.h"
+
+#include <QMutexLocker>
+
+#include "moc_qgsdataprovider.cpp"
 
 #define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
 

@@ -22,7 +22,6 @@
 
 #include "qgsserverrequest.h"
 
-
 /**
  * \ingroup server
  * \class QgsFcgiServerRequest

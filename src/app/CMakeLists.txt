@@ -27,6 +27,7 @@ set(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscustomization.cpp
   qgsdatumtransformtablewidget.cpp
+  qgscontributorsmapcanvas.cpp
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
@@ -305,6 +306,17 @@ set(QGIS_APP_SRCS
 
   vector/qgsvectorelevationpropertieswidget.cpp
 )
+
+set(APP_DWG_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND APP_DWG_COMPILE_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND APP_DWG_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (APP_DWG_COMPILE_OPTIONS)
+  set_source_files_properties(dwg/qgsdwgimportdialog.cpp dwg/qgsdwgimporter.cpp PROPERTIES COMPILE_OPTIONS "${APP_DWG_COMPILE_OPTIONS}")
+endif()
 
 if (WITH_SPATIALITE)
   set(QGIS_APP_SRCS

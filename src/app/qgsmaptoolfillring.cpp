@@ -15,20 +15,22 @@
  ***************************************************************************/
 
 #include "qgsmaptoolfillring.h"
-#include "moc_qgsmaptoolfillring.cpp"
-#include "qgsgeometry.h"
-#include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsattributedialog.h"
-#include "qgisapp.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsmapmouseevent.h"
-#include "qgscurvepolygon.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryimpl.h"
 
 #include <limits>
+
+#include "qgisapp.h"
+#include "qgsattributedialog.h"
+#include "qgscurvepolygon.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+
+#include "moc_qgsmaptoolfillring.cpp"
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )

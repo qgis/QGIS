@@ -15,14 +15,16 @@
 #ifndef QGSDBQUERYLOGGERNODE_H
 #define QGSDBQUERYLOGGERNODE_H
 
-#include <QElapsedTimer>
-#include <QVariant>
-#include <QColor>
-#include <QUrl>
-#include <memory>
 #include <deque>
+#include <memory>
+
 #include "devtools/qgsdevtoolsmodelnode.h"
 #include "qgsdbquerylog.h"
+
+#include <QColor>
+#include <QElapsedTimer>
+#include <QUrl>
+#include <QVariant>
 
 class QAction;
 
@@ -35,7 +37,7 @@ class QgsDatabaseQueryLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
     QgsDatabaseQueryLoggerRootNode();
-    QVariant data( int role = Qt::DisplayRole ) const override final;
+    QVariant data( int role = Qt::DisplayRole ) const final;
 
     /**
      * Removes a \a row from the root group.
@@ -77,7 +79,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
      */
     QgsDatabaseQueryLoggerQueryGroup( const QgsDatabaseQueryLogEntry &query );
     QVariant data( int role = Qt::DisplayRole ) const override;
-    QList<QAction *> actions( QObject *parent ) override final;
+    QList<QAction *> actions( QObject *parent ) final;
     QVariant toVariant() const override;
 
     /**

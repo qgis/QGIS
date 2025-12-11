@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDir>
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgszonalstatistics.h"
 #include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgszonalstatistics.h"
+
+#include <QDir>
 
 /**
  * \ingroup UnitTests

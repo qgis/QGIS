@@ -18,12 +18,12 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgsdxfexport.h"
-
 #include "ui_qgsprocessingdxflayerdetailswidgetbase.h"
+
+#include "qgsdxfexport.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 class QLineEdit;
 class QToolButton;

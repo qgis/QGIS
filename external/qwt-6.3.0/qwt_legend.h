@@ -34,7 +34,7 @@ class QWT_EXPORT QwtLegend : public QwtAbstractLegend
 
   public:
     explicit QwtLegend( QWidget* parent = NULL );
-    virtual ~QwtLegend();
+    ~QwtLegend() override;
 
     void setMaxColumns( uint numColums );
     uint maxColumns() const;

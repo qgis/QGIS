@@ -15,8 +15,8 @@
 #ifndef QGSBROWSERMODEL_H
 #define QGSBROWSERMODEL_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 #include <QAbstractItemModel>
 #include <QIcon>

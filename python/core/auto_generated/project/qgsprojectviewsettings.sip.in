@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProjectViewSettings : QObject
 {
 %Docstring(signature="appended")

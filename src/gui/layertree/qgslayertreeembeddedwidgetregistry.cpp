@@ -17,7 +17,6 @@
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
 
-
 QgsLayerTreeEmbeddedWidgetRegistry::QgsLayerTreeEmbeddedWidgetRegistry()
 {
   // populate with default implementations

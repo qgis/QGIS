@@ -14,20 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cstring>
 #include "qgspostgresrasterprovider.h"
-#include "moc_qgspostgresrasterprovider.cpp"
-#include "qgspostgresprovidermetadatautils.h"
-#include "qgsmessagelog.h"
-#include "qgsrectangle.h"
-#include "qgspolygon.h"
-#include "qgsgdalutils.h"
-#include "qgsstringutils.h"
+
+#include <cstring>
+
 #include "qgsapplication.h"
-#include "qgsraster.h"
+#include "qgsgdalutils.h"
+#include "qgsmessagelog.h"
+#include "qgspolygon.h"
+#include "qgspostgresprovidermetadatautils.h"
 #include "qgspostgresutils.h"
+#include "qgsraster.h"
+#include "qgsrectangle.h"
+#include "qgsstringutils.h"
 
 #include <QRegularExpression>
+
+#include "moc_qgspostgresrasterprovider.cpp"
 
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = QStringLiteral( "postgresraster" );
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION = QStringLiteral( "Postgres raster provider" );

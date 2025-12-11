@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrandomextract.h"
-#include <random>
+
 #include <functional>
+#include <random>
 
 ///@cond PRIVATE
 

@@ -16,38 +16,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileInfo>
-#include <QString>
-#include <QMenu>
-#include <QDialog>
+#include "qgisappinterface.h"
+
+#include "qgisapp.h"
+#include "qgisappstylesheet.h"
+#include "qgsappgpsdigitizing.h"
+#include "qgsapplayertreeviewmenuprovider.h"
+#include "qgsappmaptools.h"
+#include "qgsattributedialog.h"
+#include "qgsattributetabledialog.h"
+#include "qgsfeatureaction.h"
+#include "qgsgui.h"
+#include "qgslayertreeview.h"
+#include "qgslayoutdesignerdialog.h"
+#include "qgslocator.h"
+#include "qgslocatorwidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmessagebar.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsshortcutsmanager.h"
+#include "qgsvectordataprovider.h"
+
 #include <QAbstractButton>
+#include <QDialog>
+#include <QFileInfo>
+#include <QMenu>
 #include <QSignalMapper>
+#include <QString>
 #include <QTimer>
 #include <QUiLoader>
 
-#include "qgisappinterface.h"
 #include "moc_qgisappinterface.cpp"
-#include "qgisappstylesheet.h"
-#include "qgisapp.h"
-#include "qgsapplayertreeviewmenuprovider.h"
-#include "qgsgui.h"
-#include "qgsmaplayer.h"
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgslayertreeview.h"
-#include "qgslayoutdesignerdialog.h"
-#include "qgsshortcutsmanager.h"
-#include "qgsattributedialog.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfeatureaction.h"
-#include "qgsattributetabledialog.h"
-#include "qgslocatorwidget.h"
-#include "qgslocator.h"
-#include "qgsmessagebar.h"
-#include "qgsappmaptools.h"
-#include "qgspointcloudlayer.h"
-#include "qgsappgpsdigitizing.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )

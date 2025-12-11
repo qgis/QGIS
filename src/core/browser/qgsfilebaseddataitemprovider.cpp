@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgsfilebaseddataitemprovider.h"
-#include "moc_qgsfilebaseddataitemprovider.cpp"
+
 #include "qgsdataprovider.h"
-#include "qgsproviderregistry.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsogrproviderutils.h"
-#include "qgsstyle.h"
-#include "qgsgeopackagedataitems.h"
-#include "qgsprovidersublayerdetails.h"
-#include "qgsfieldsitem.h"
 #include "qgsfielddomainsitem.h"
-#include "qgsrelationshipsitem.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidermetadata.h"
+#include "qgsfieldsitem.h"
 #include "qgsgdalutils.h"
+#include "qgsgeopackagedataitems.h"
+#include "qgslogger.h"
+#include "qgsogrproviderutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+#include "qgsrelationshipsitem.h"
+#include "qgssettings.h"
+#include "qgsstyle.h"
+
 #include <QUrlQuery>
+
+#include "moc_qgsfilebaseddataitemprovider.cpp"
 
 //
 // QgsProviderSublayerItem

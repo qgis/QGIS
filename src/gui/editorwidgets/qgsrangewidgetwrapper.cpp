@@ -13,22 +13,44 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrangewidgetwrapper.h"
+
+#include "qgsapplication.h"
+#include "qgsdial.h"
+#include "qgsdoublespinbox.h"
+#include "qgsslider.h"
+#include "qgsspinbox.h"
+#include "qgsvectorlayer.h"
+
 #include <QSettings>
 
-#include "qgsrangewidgetwrapper.h"
 #include "moc_qgsrangewidgetwrapper.cpp"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
-#include "qgsvectorlayer.h"
-#include "qgsdial.h"
-#include "qgsslider.h"
-#include "qgsapplication.h"
-
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
 {
+}
+
+int QgsRangeWidgetWrapper::defaultFieldPrecision( const QgsField &field )
+{
+  constexpr int DEFAULT_PRECISION_DOUBLE = 4;
+  const int fieldPrecision = field.precision();
+  switch ( field.type() )
+  {
+    case QMetaType::Type::Float:
+    case QMetaType::Type::Double:
+      return fieldPrecision > 0 ? fieldPrecision : DEFAULT_PRECISION_DOUBLE;
+
+    // we use the double spin box for long long fields in order to get sufficient range of min/max values
+    case QMetaType::Type::LongLong:
+      return 0;
+
+    default:
+      break;
+  }
+
+  return fieldPrecision;
 }
 
 QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
@@ -102,9 +124,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     const double maxval = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
 
     const QgsField field = layer()->fields().at( fieldIdx() );
-    // we use the double spin box for long long fields in order to get sufficient range of min/max values
-    const int precisionval = field.type() == QMetaType::Type::LongLong ? 0 : ( precision.isValid() ? precision.toInt() : field.precision() );
-
+    const int precisionval = precision.isValid() ? precision.toInt() : defaultFieldPrecision( field );
     mDoubleSpinBox->setDecimals( precisionval );
 
     QgsDoubleSpinBox *qgsWidget = qobject_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );

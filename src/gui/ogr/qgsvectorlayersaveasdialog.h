@@ -19,9 +19,11 @@
 #define QGSVECTORLAYERSAVEASDIALOG_H
 
 #include "ui_qgsvectorlayersaveasdialogbase.h"
-#include <QDialog>
-#include "qgsvectorfilewriter.h"
+
 #include "qgis_gui.h"
+#include "qgsvectorfilewriter.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 

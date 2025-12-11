@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 #include "qgshttpheaders.h"
+
 #include "qgssettings.h"
 
-
 #include <QDir>
+#include <QDomElement>
 #include <QNetworkRequest>
 #include <QUrlQuery>
-#include <QDomElement>
 
 //
 // QgsHttpHeaders
@@ -73,7 +73,7 @@ bool QgsHttpHeaders::updateUrlQuery( QUrlQuery &uri ) const
 {
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
-    uri.addQueryItem( QgsHttpHeaders::PARAM_PREFIX + ite.key().toUtf8(), ite.value().toString().toUtf8() );
+    uri.addQueryItem( QgsHttpHeaders::PARAM_PREFIX + ite.key().toUtf8(), QUrl::toPercentEncoding( ite.value().toString() ) );
   }
   return true;
 }

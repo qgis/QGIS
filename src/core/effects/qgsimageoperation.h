@@ -18,13 +18,14 @@
 #ifndef QGSIMAGEOPERATION_H
 #define QGSIMAGEOPERATION_H
 
-#include <QImage>
-#include "qgis_sip.h"
-#include <QColor>
+#include <cmath>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfeedback.h"
-#include <cmath>
+
+#include <QColor>
+#include <QImage>
 
 class QgsColorRamp;
 class QgsFeedback;

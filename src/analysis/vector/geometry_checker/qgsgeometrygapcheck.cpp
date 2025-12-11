@@ -13,20 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrygapcheck.h"
+
+#include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
-#include "qgsgeometrygapcheck.h"
-#include "moc_qgsgeometrygapcheck.cpp"
-#include "qgsfeaturepool.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsfeedback.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgspolygon.h"
-#include "qgscurve.h"
+
+#include "moc_qgsgeometrygapcheck.cpp"
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )

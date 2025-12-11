@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewdefaultactions.h"
-#include "moc_qgslayertreeviewdefaultactions.cpp"
-#include "qgsguiutils.h"
+
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
@@ -25,6 +25,8 @@
 #include "qgsvectorlayer.h"
 
 #include <QAction>
+
+#include "moc_qgslayertreeviewdefaultactions.cpp"
 
 QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view )
   : QObject( view )

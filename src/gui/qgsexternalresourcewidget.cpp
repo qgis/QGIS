@@ -15,26 +15,29 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidget.h"
-#include "moc_qgsexternalresourcewidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgsexternalstorage.h"
+#include "qgsexternalstoragefilewidget.h"
+#include "qgsmediawidget.h"
+#include "qgsmessagebar.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgspixmaplabel.h"
 #include "qgsproject.h"
-#include "qgsapplication.h"
-#include "qgsmediawidget.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgstaskmanager.h"
-#include "qgsexternalstorage.h"
-#include "qgsmessagebar.h"
-#include "qgsexternalstoragefilewidget.h"
 
 #include <QDir>
 #include <QGridLayout>
-#include <QVariant>
-#include <QSettings>
 #include <QImageReader>
-#include <QToolButton>
-#include <QMimeType>
 #include <QMimeDatabase>
+#include <QMimeType>
 #include <QMovie>
+#include <QSettings>
+#include <QToolButton>
+#include <QVariant>
+
+#include "moc_qgsexternalresourcewidget.cpp"
+
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
 #endif

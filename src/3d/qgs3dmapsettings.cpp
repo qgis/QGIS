@@ -14,28 +14,28 @@
  ***************************************************************************/
 
 #include "qgs3dmapsettings.h"
-#include "moc_qgs3dmapsettings.cpp"
 
 #include "qgs3d.h"
-#include "qgs3dutils.h"
-#include "qgsprojectviewsettings.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgslightsource.h"
-#include "qgscolorutils.h"
-#include "qgsrasterlayer.h"
-#include "qgspointlightsettings.h"
-#include "qgsdirectionallightsettings.h"
 #include "qgs3drendercontext.h"
-#include "qgsthreadingutils.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgsflatterrainsettings.h"
 #include "qgs3dterrainregistry.h"
+#include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgscolorutils.h"
+#include "qgsdirectionallightsettings.h"
+#include "qgsflatterrainsettings.h"
+#include "qgslightsource.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgspointlightsettings.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsrasterlayer.h"
+#include "qgsterrainprovider.h"
+#include "qgsthreadingutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 
+#include "moc_qgs3dmapsettings.cpp"
 
 Qgs3DMapSettings::Qgs3DMapSettings()
   : QObject( nullptr )

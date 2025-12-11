@@ -14,20 +14,18 @@
  ***************************************************************************/
 
 #include "qgslayertreeregistrybridge.h"
-#include "moc_qgslayertreeregistrybridge.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
-#include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
+
+#include "moc_qgslayertreeregistrybridge.cpp"
 
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent )
   : QObject( parent )
   , mRoot( root )
   , mProject( project )
-  , mRegistryRemovingLayers( false )
-  , mEnabled( true )
-  , mNewLayersVisible( true )
   , mInsertionPointGroup( root )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );

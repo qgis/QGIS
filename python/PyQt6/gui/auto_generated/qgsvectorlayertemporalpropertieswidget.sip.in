@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorLayerTemporalPropertiesWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")

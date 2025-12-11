@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgssublayersdialog.h"
-#include "moc_qgssublayersdialog.cpp"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsproviderregistry.h"
 
-#include <QTableWidgetItem>
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+
 #include <QPushButton>
+#include <QTableWidgetItem>
+
+#include "moc_qgssublayersdialog.cpp"
 
 //! @cond
 class SubLayerItem : public QTreeWidgetItem

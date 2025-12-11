@@ -16,11 +16,12 @@
 #ifndef QGSRELATIONREFERENCECONFIGDLGBASE_H
 #define QGSRELATIONREFERENCECONFIGDLGBASE_H
 
-#include <QListWidget>
-
 #include "ui_qgsrelationreferenceconfigdlgbase.h"
-#include "qgseditorconfigwidget.h"
+
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
+
+#include <QListWidget>
 
 SIP_NO_FILE
 

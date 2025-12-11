@@ -18,14 +18,14 @@
 #ifndef QGSCHECKABLECOMBOBOX_H
 #define QGSCHECKABLECOMBOBOX_H
 
+#include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QComboBox>
 #include <QMenu>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
-
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgis.h"
 
 class QEvent;
 

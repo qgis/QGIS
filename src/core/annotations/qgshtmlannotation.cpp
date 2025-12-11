@@ -16,28 +16,30 @@
  ***************************************************************************/
 
 #include "qgshtmlannotation.h"
-#include "moc_qgshtmlannotation.cpp"
+
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgswebpage.h"
-#include "qgswebframe.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsproject.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
+#include "qgswebframe.h"
+#include "qgswebpage.h"
 
-#include <QDomElement>
 #include <QDir>
+#include <QDomElement>
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QSettings>
-#include <QWidget>
 #include <QTextStream>
+#include <QWidget>
+
+#include "moc_qgshtmlannotation.cpp"
 
 QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
   : QgsAnnotation( parent )

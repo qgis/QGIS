@@ -13,23 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeaturelistview.h"
+
+#include "qgsactionmenu.h"
+#include "qgsattributetablemodel.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsfeaturelistviewdelegate.h"
+#include "qgsfeatureselectionmodel.h"
+#include "qgslogger.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayerselectionmanager.h"
+
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QSet>
 #include <QSettings>
 
-#include "qgsattributetablemodel.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsfeaturelistviewdelegate.h"
-#include "qgsfeaturelistview.h"
 #include "moc_qgsfeaturelistview.cpp"
-#include "qgsfeatureselectionmodel.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerselectionmanager.h"
-#include "qgsvectorlayercache.h"
-#include "qgsactionmenu.h"
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )

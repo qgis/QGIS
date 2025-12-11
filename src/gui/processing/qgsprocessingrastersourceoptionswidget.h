@@ -18,9 +18,10 @@
 #ifndef QGSPROCESSINGRASTERSOURCEOPTIONSWIDGET_H
 #define QGSPROCESSINGRASTERSOURCEOPTIONSWIDGET_H
 
+#include "ui_qgsprocessingrastersourceoptionsbase.h"
+
 #include "qgis.h"
 #include "qgspanelwidget.h"
-#include "ui_qgsprocessingrastersourceoptionsbase.h"
 
 #define SIP_NO_FILE
 

@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsbrowserproxymodel.h"
-#include "moc_qgsbrowserproxymodel.cpp"
+
 #include "qgsbrowsermodel.h"
-#include "qgslayeritem.h"
 #include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
 
 #include <QRegularExpression>
+
+#include "moc_qgsbrowserproxymodel.cpp"
 
 QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

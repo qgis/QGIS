@@ -10,7 +10,6 @@
 
 
 
-
 class QgsBilinearRasterResampler: QgsRasterResamplerV2
 {
 %Docstring(signature="appended")

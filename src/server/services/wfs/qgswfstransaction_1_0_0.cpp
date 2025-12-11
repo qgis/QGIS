@@ -21,21 +21,22 @@
  ***************************************************************************/
 
 
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
-#include "qgsserverfeatureid.h"
-#include "qgsfields.h"
+#include "qgswfstransaction_1_0_0.h"
+
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgsfilterrestorer.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
+#include "qgsogcutils.h"
 #include "qgsproject.h"
-#include "qgsfeatureiterator.h"
+#include "qgsserverfeatureid.h"
+#include "qgsserverprojectutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsfilterrestorer.h"
-#include "qgsogcutils.h"
-#include "qgswfstransaction_1_0_0.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgswfsutils.h"
 
 #include <QRegularExpression>
 

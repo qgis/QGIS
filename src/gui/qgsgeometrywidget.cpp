@@ -14,18 +14,21 @@
 ***************************************************************************/
 
 #include "qgsgeometrywidget.h"
-#include "moc_qgsgeometrywidget.cpp"
+
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
-#include "qgsjsonutils.h"
 #include "qgsguiutils.h"
+#include "qgsjsonutils.h"
 #include "qgsprojectionselectiondialog.h"
-#include <QLineEdit>
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QMenu>
+
 #include <QAction>
 #include <QClipboard>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QMenu>
+#include <QToolButton>
+
+#include "moc_qgsgeometrywidget.cpp"
 
 QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
   : QWidget( parent )

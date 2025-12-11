@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmeshlayer3drendererwidget.h"
-#include "moc_qgsmeshlayer3drendererwidget.cpp"
+
+#include <memory>
 
 #include "qgsmesh3dsymbol.h"
 #include "qgsmesh3dsymbolwidget.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsvscrollarea.h"
-#include "qgsmeshlayer.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
+
+#include "moc_qgsmeshlayer3drendererwidget.cpp"
 
 QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -68,7 +71,7 @@ QgsMeshLayer3DRenderer *QgsMeshLayer3DRendererWidget::renderer()
 {
   std::unique_ptr<QgsMesh3DSymbol> sym = mWidgetMesh->symbol();
   sym->setEnabled( mChkEnabled->isChecked() );
-  mRenderer.reset( new QgsMeshLayer3DRenderer( sym.release() ) );
+  mRenderer = std::make_unique<QgsMeshLayer3DRenderer>( sym.release() );
   mRenderer->setLayer( qobject_cast<QgsMeshLayer *>( mLayer ) );
   return mRenderer.get();
 }

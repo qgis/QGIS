@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdirectionallightsettings.h"
-#include "qgssymbollayerutils.h"
+
 #include "qgscolorutils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
-#include <Qt3DRender/QDirectionalLight>
 #include <Qt3DCore/QEntity>
+#include <Qt3DRender/QDirectionalLight>
 
 Qgis::LightSourceType QgsDirectionalLightSettings::type() const
 {

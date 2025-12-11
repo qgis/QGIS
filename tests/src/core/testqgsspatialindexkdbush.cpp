@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindexkdbush.h"
+#include "qgsspatialindexkdbush_p.h"
+#include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsspatialindexkdbush_p.h"
+
+#include <QObject>
+#include <QString>
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {

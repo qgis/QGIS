@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgspluginitemdelegate.h"
-#include "moc_qgspluginitemdelegate.cpp"
-#include "qgsrendercontext.h"
-#include <QPainter>
-#include <QFont>
-#include <QStyleOptionViewItem>
-#include <QModelIndex>
-#include <QApplication>
-#include "qgspluginsortfilterproxymodel.h"
 
+#include "qgspluginsortfilterproxymodel.h"
+#include "qgsrendercontext.h"
+
+#include <QApplication>
+#include <QFont>
+#include <QModelIndex>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+
+#include "moc_qgspluginitemdelegate.cpp"
 
 QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent ) {}

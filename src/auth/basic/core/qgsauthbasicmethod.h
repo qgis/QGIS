@@ -17,12 +17,12 @@
 #ifndef QGSAUTHBASICMETHOD_H
 #define QGSAUTHBASICMETHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
+
+#include <QMutex>
+#include <QObject>
 
 class QWidget;
 

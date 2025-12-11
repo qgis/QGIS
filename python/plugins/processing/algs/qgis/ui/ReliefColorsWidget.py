@@ -267,8 +267,11 @@ class ReliefColorsWidgetWrapper(WidgetWrapper):
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name == self.param.parent:
-                self.setLayer(wrapper.value())
+            if (
+                wrapper.parameterDefinition().name()
+                == self.parameterDefinition().parent
+            ):
+                self.setLayer(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.parentValueChanged)
                 break
 

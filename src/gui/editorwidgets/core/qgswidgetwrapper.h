@@ -16,8 +16,8 @@
 #ifndef QGSWIDGETWRAPPER_H
 #define QGSWIDGETWRAPPER_H
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 #include <QVariant>
 
 class QgsVectorLayer;
@@ -275,7 +275,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     QWidget *mWidget = nullptr;
     QWidget *mParent = nullptr;
     QgsVectorLayer *mLayer = nullptr;
-    bool mInitialized;
+    bool mInitialized = false;
 };
 
 // We'll use this class inside a QVariant in the widgets properties

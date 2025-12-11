@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvectorlayer3dpropertieswidget.h"
-#include "moc_qgsvectorlayer3dpropertieswidget.cpp"
 
 #include "qgsabstractvectorlayer3drenderer.h"
+
+#include "moc_qgsvectorlayer3dpropertieswidget.cpp"
 
 QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *parent )
   : QWidget( parent )

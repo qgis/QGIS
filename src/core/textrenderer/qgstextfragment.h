@@ -16,10 +16,10 @@
 #ifndef QGSTEXTFRAGMENT_H
 #define QGSTEXTFRAGMENT_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgstextcharacterformat.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgstextcharacterformat.h"
 
 class QTextFragment;
 

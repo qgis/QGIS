@@ -20,10 +20,10 @@
 
 #define SIP_NO_FILE
 
-#include <QString>
-#include <QObject>
-
 #include "qgis_core.h"
+
+#include <QObject>
+#include <QString>
 
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;

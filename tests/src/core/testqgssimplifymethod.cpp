@@ -12,16 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QLocale>
-
 #include <memory>
 
 #include "qgssimplifymethod.h"
+#include "qgstest.h"
+
+#include <QLocale>
+#include <QObject>
+#include <QString>
+#include <QStringList>
 
 class TestQgsSimplifyMethod : public QObject
 {

@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometrymissingvertex.h"
+
 #include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsgeometrymissingvertexcheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsgeometrycheckerror.h"
 #include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE

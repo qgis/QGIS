@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsvectortileloader.h"
-#include "moc_qgsvectortileloader.cpp"
-#include "qgslogger.h"
-#include "qgsvectortileutils.h"
+
 #include "qgsapplication.h"
-#include "qgsvectortiledataprovider.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 #include "qgstiledownloadmanager.h"
+#include "qgsvectortiledataprovider.h"
+#include "qgsvectortileutils.h"
 
 #include <QEventLoop>
 
+#include "moc_qgsvectortileloader.cpp"
 
 QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage )
   : mEventLoop( new QEventLoop )

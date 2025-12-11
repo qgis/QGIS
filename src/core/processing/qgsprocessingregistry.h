@@ -18,9 +18,10 @@
 #ifndef QGSPROCESSINGREGISTRY_H
 #define QGSPROCESSINGREGISTRY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprocessingprovider.h"
+
 #include <QMap>
 
 class QgsProcessingParameterType;

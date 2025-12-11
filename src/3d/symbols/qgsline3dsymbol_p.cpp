@@ -15,13 +15,14 @@
 
 #include "qgsline3dsymbol_p.h"
 
+#include "qgs3dmapsettings.h"
 #include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgslinematerial_p.h"
 #include "qgslinevertexdata_p.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
-#include "qgs3dmapsettings.h"
+
 //#include "qgsterraingenerator.h"
 #include "qgs3dutils.h"
 
@@ -104,8 +105,24 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
 
   const float textureRotation = texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0;
   const bool requiresTextureCoordinates = texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false;
-  mLineDataNormal.tessellator.reset( new QgsTessellator( mChunkOrigin.x(), mChunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
-  mLineDataSelected.tessellator.reset( new QgsTessellator( mChunkOrigin.x(), mChunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
+
+  auto lineDataNormalTessellator = std::make_unique<QgsTessellator>();
+  lineDataNormalTessellator->setOrigin( mChunkOrigin );
+  lineDataNormalTessellator->setAddNormals( true );
+  lineDataNormalTessellator->setAddTextureUVs( requiresTextureCoordinates );
+  lineDataNormalTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
+  lineDataNormalTessellator->setTextureRotation( textureRotation );
+
+  mLineDataNormal.tessellator = std::move( lineDataNormalTessellator );
+
+  auto lineDataSelectedTessellator = std::make_unique<QgsTessellator>();
+  lineDataSelectedTessellator->setOrigin( mChunkOrigin );
+  lineDataSelectedTessellator->setAddNormals( true );
+  lineDataSelectedTessellator->setAddTextureUVs( requiresTextureCoordinates );
+  lineDataSelectedTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
+  lineDataSelectedTessellator->setTextureRotation( textureRotation );
+
+  mLineDataSelected.tessellator = std::move( lineDataSelectedTessellator );
 
   mLineDataNormal.tessellator->setOutputZUp( true );
   mLineDataSelected.tessellator->setOutputZUp( true );

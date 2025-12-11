@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgspointcloudattributebyramprendererwidget.h"
-#include "moc_qgspointcloudattributebyramprendererwidget.cpp"
+
 #include "qgscontrastenhancement.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudattributebyramprenderer.h"
 #include "qgsdoublevalidator.h"
-#include "qgsstyle.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsstyle.h"
+
+#include "moc_qgspointcloudattributebyramprendererwidget.cpp"
 
 ///@cond PRIVATE
 
