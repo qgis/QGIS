@@ -372,9 +372,17 @@ void TestQgsPoint::equality()
 
   QVERIFY( QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 1 / 3.0 ) != QgsPoint( Qgis::WkbType::PointZ, 2 / 3.0, 1 / 3.0 ) );
 
+  /*
+   * gcc12 throws an "ambiguous overload" error when there are
+   * multiple possible choices due to inheritance.  Downcast pt1 to
+   * reduce the search space.  This problem does not occur in actual
+   * code -- only in tests.  Accept a workaround because the point is
+   * to test the code, not verify that the compiler is pedantically
+   * correct.
+   */
   QgsLineString ls;
-  QVERIFY( pt1 != ls );
-  QVERIFY( !( pt1 == ls ) );
+  QVERIFY( ( const QgsAbstractGeometry& ) pt1 != ls );
+  QVERIFY( !( ( const QgsAbstractGeometry& ) pt1 == ls ) );
 }
 
 void TestQgsPoint::operators()

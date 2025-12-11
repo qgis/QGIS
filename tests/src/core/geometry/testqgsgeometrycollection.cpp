@@ -195,8 +195,8 @@ void TestQgsGeometryCollection::geometryCollection()
   QVERIFY( !( emptyCollection == c11 ) );
   QVERIFY( emptyCollection != c11 );
   QgsPoint notCollection;
-  QVERIFY( !( emptyCollection == notCollection ) );
-  QVERIFY( emptyCollection != notCollection );
+  QVERIFY( !( ( const QgsAbstractGeometry& ) emptyCollection == notCollection ) );
+  QVERIFY( ( const QgsAbstractGeometry& ) emptyCollection != notCollection );
   QgsMultiPoint mp;
   QgsMultiLineString ml;
   QVERIFY( mp != ml );
