@@ -139,6 +139,9 @@ class VectorLayerScatterplot(QgisAlgorithm):
     def shortDescription(self):
         return self.tr("Creates a simple X - Y scatter plot for a vector layer.")
 
+    def shortHelpString(self):
+        return self.tr("This algorithm creates a simple X - Y scatter plot for a vector layer.")
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

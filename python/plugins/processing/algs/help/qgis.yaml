@@ -1,12 +1,6 @@
 qgis:advancedpythonfieldcalculator: >
   This algorithm adds a new attribute to a vector layer, with values resulting from applying an expression to each feature. The expression is defined as a Python function.
 
-qgis:barplot: >
-  This algorithm creates a bar plot from a category and a layer field.
-
-qgis:boxplot: >
-  This algorithm creates a box plot from a category and a layer field.
-
 qgis:concavehull: >
   This algorithm computes the concave hull of the features in an input layer.
 
@@ -38,18 +32,8 @@ qgis:generatepointspixelcentroidsalongline: >
   This algorithm generates a point vector layer from an input raster and line layer.
   The points correspond to the pixel centroids that intersect the line layer.
 
-qgis:heatmapkerneldensityestimation: >
-  Creates a density (heatmap) raster of an input point vector layer using kernel density estimation. Heatmaps allow easy identification of hotspots and clustering of points.
-
-  The density is calculated based on the number of points in a location, with larger numbers of clustered points resulting in larger values.
-
 qgis:hypsometriccurves: >
   This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.
-
-qgis:idwinterpolation: >
-  Generates an Inverse Distance Weighted (IDW) interpolation of a point vector layer.
-
-  Sample points are weighted during interpolation such that the influence of one point relative to another declines with distance from the unknown point you want to create.
 
 qgis:knearestconcavehull: >
   This algorithm generates a concave hull polygon from a set of points. If the input layer is a line or polygon layer, it will use the nodes.
@@ -66,14 +50,8 @@ qgis:linestopolygons: >
 qgis:listuniquevalues: >
   This algorithm generates a report with information about the unique values found in a given attribute (or attributes) of a vector layer.
 
-qgis:meanandstandarddeviationplot: >
-  This algorithm creates a box plot with mean and standard deviation values.
-
 qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
-
-qgis:polarplot: >
-  This algorithm generates a polar plot based on the value of an input vector layer.
 
 qgis:polygonstolines: >
   This algorithm takes a polygon layer and creates a line layer, with lines representing the rings of the polygons in the input layer.
@@ -130,19 +108,11 @@ qgis:rastercalculator: >
 
   When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, if using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
 
-qgis:rasterlayerhistogram: >
-  This algorithm generates a histogram with the values of a raster layer.
-
-  The raster layer must have a single band.
-
 qgis:regularpoints: >
   This algorithm creates a point layer with a given number of regular points, all of them within a given extent.
 
 qgis:relief: >
   This algorithm creates a shaded relief layer from digital elevation data.
-
-qgis:scatter3dplot: >
-  This algorithm creates a 3D scatter plot for a vector layer.
 
 qgis:selectbyattribute: >
   This algorithm creates a selection in a vector layer. The criteria for selected features is defined based on the values of an attribute from the input layer.
@@ -164,35 +134,5 @@ qgis:statisticsbycategories: >
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
-qgis:tininterpolation: >
-  Generates a Triangulated Irregular Network (TIN) interpolation of a point vector layer.
-
-  With the TIN method you can create a surface formed by triangles of nearest neighbor points.
-  To do this, circumcircles around selected sample points are created and their intersections are connected to a network of non overlapping and as compact as possible triangles.
-  The resulting surfaces are not smooth.
-
-  The algorithm creates both the raster layer of the interpolated values and the vector line layer with the triangulation boundaries.
-
-qgis:topologicalcoloring: >
-  This algorithm assigns a color index to polygon features in such a way that no adjacent polygons share the same color index, whilst minimizing the number of colors required.
-
-  An optional minimum distance between features assigned the same color can be set to prevent nearby (but non-touching) features from being assigned equal colors.
-
-  The algorithm allows choice of method to use when assigning colors. The default method attempts to assign colors so that the count of features assigned to each individual color index is balanced.
-
-  The 'by assigned area' mode instead assigns colors so that the total area of features assigned to each color is balanced. This mode can be useful to help avoid large features resulting in one of the colors appearing more dominant on a colored map.
-
-  The 'by distance between colors' mode will assign colors in order to maximize the distance between features of the same color. This mode helps to create a more uniform distribution of colors across a map.
-
-  A minimum number of colors can be specified if desired. The color index is saved to a new attribute named color_id.
-
 qgis:variabledistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.
-
-qgis:vectorlayerhistogram: >
-  This algorithm generates a histogram with the values of the attribute of a vector layer.
-
-  The attribute to use for computing the histogram must be a numeric attribute.
-
-qgis:vectorlayerscatterplot: >
-  This algorithm creates a simple X - Y scatter plot for a vector layer.
