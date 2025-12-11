@@ -79,7 +79,7 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 def sanitize(endpoint, x):
-    return QgsTestUtils.sanitizesFakeHttpEndpoint(f"{endpoint}{x}")
+    return QgsTestUtils.sanitizeFakeHttpEndpoint(f"{endpoint}{x}")
 
 
 class MessageLogger(QObject):

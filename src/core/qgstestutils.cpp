@@ -153,7 +153,7 @@ bool QgsTestUtils::compareDomElements( const QDomElement &element1, const QDomEl
   return true;
 }
 
-QString QgsTestUtils::sanitizesFakeHttpEndpoint( const QString &urlString )
+QString QgsTestUtils::sanitizeFakeHttpEndpoint( const QString &urlString )
 {
   QString modifiedUrlString = urlString;
 

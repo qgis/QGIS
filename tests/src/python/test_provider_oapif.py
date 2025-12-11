@@ -40,7 +40,7 @@ from providertestbase import ProviderTestCase
 
 
 def sanitize(endpoint, query_params):
-    return QgsTestUtils.sanitizesFakeHttpEndpoint(f"{endpoint}{query_params}")
+    return QgsTestUtils.sanitizeFakeHttpEndpoint(f"{endpoint}{query_params}")
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):

@@ -165,7 +165,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     const auto posQuotationMark = modifiedUrlString.indexOf( '?' );
     if ( posQuotationMark > 0 )
     {
-      modifiedUrlString = QgsTestUtils::sanitizesFakeHttpEndpoint( modifiedUrlString );
+      modifiedUrlString = QgsTestUtils::sanitizeFakeHttpEndpoint( modifiedUrlString );
     }
     QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 4 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );

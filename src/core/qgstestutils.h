@@ -47,7 +47,7 @@ class CORE_EXPORT QgsTestUtils
     /**
      * Sanitizes fake_qgis_http_endpoint URLs
      */
-    static QString sanitizesFakeHttpEndpoint( const QString &urlString );
+    static QString sanitizeFakeHttpEndpoint( const QString &urlString );
 };
 
 ///@endcond
