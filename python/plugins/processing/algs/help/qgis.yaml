@@ -1,9 +1,0 @@
-qgis:concavehull: >
-  This algorithm computes the concave hull of the features in an input layer.
-
-qgis:listuniquevalues: >
-  This algorithm generates a report with information about the unique values found in a given attribute (or attributes) of a vector layer.
-
-qgis:polygonstolines: >
-  This algorithm takes a polygon layer and creates a line layer, with lines representing the rings of the polygons in the input layer.
-
