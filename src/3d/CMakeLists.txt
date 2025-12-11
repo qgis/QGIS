@@ -71,6 +71,7 @@ set(QGIS_3D_SRCS
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsglobematerial.cpp
   materials/qgsgoochmaterialsettings.cpp
+  materials/qgshighlightmaterial.cpp
   materials/qgsmaterial.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsmetalroughmaterial.cpp
@@ -196,6 +197,7 @@ set(QGIS_3D_HDRS
   materials/qgsabstractmaterialsettings.h
   materials/qgsglobematerial.h
   materials/qgsgoochmaterialsettings.h
+  materials/qgshighlightmaterial.h
   materials/qgsmaterial.h
   materials/qgsmaterialregistry.h
   materials/qgsmetalroughmaterial.h
