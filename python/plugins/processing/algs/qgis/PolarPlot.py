@@ -111,8 +111,7 @@ class PolarPlot(QgisAlgorithm):
             go.Barpolar(
                 r=values,
                 theta=np.degrees(
-                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values))
-                ),
+                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values))),
             )
         ]
 
