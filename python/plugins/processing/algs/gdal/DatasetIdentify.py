@@ -56,20 +56,22 @@ class DatasetIdentify(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterBoolean(
                 self.RECURSIVE,
-                self.tr(
-                    "Perform recursive exploration of the input folder and its subfolders"
-                ),
+                self.tr("Perform recursive exploration of the input folder"),
                 defaultValue=True,
             )
         )
 
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.DETAILS,
-                self.tr("Add some details about identified datasets in the output"),
-                defaultValue=True,
+        detailsParam = QgsProcessingParameterBoolean(
+            self.DETAILS,
+            self.tr("Add details about identified datasets in the output"),
+            defaultValue=True,
+        )
+        detailsParam.setHelp(
+            self.tr(
+                "Reports if the file is a Cloud Optimized GeoTIFF (COG), the list of files that compose the dataset, if it has georeferencing (has_geotransform and has_crs fields) and overviews"
             )
         )
+        self.addParameter(detailsParam)
 
         self.addParameter(
             QgsProcessingParameterVectorDestination(
@@ -80,7 +82,7 @@ class DatasetIdentify(GdalAlgorithm):
         )
 
     def name(self):
-        return "DatasetIdentify"
+        return "dataset_identify"
 
     def displayName(self):
         return self.tr("Dataset identification")
@@ -118,7 +120,13 @@ class DatasetIdentify(GdalAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "The algorithm reports the name of GDAL drivers that can open "
+            "This algorithm reports the name of GDAL drivers that can open "
             "files contained in a folder, with optional additional details, "
-            "and write the result into an output vector layer.\n"
+            "and write the result into an output vector layer."
+        )
+
+    def shortDescription(self):
+        return self.tr(
+            "Reports the name of GDAL drivers that can open files contained in a folder, "
+            "with optional details."
         )
