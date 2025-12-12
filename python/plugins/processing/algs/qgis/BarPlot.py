@@ -108,7 +108,9 @@ class BarPlot(QgisAlgorithm):
         return self.tr("Creates a bar plot from a category and a layer field.")
 
     def shortHelpString(self):
-        return self.tr("This algorithm creates a bar plot from a category and a layer field.")
+        return self.tr(
+            "This algorithm creates a bar plot from a category and a layer field."
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         try:

@@ -122,7 +122,9 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
         return self.tr("Creates a 3D scatter plot for a vector layer.")
 
     def shortHelpString(self):
-        return self.tr("This algorithm creates a 3D scatter plot for a vector layer.")
+        return self.tr(
+            "This algorithm creates a 3D scatter plot for a vector layer."
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         try:
