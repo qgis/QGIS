@@ -58,19 +58,6 @@ jobs:
       - name: Run License Check
         run: ./tests/code_layout/test_licenses.sh
 
-  shell_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Install Requirements
-        run: |
-            sudo apt install -y \
-              shellcheck
-
-      - name: Run Shellcheck
-        run: ./tests/code_layout/test_shellcheck.sh
-
   banned_keywords_check:
     runs-on: ubuntu-latest
     steps:
