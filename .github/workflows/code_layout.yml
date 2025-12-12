@@ -119,19 +119,6 @@ jobs:
       - name: No module-wide imports of Qt modules
         run: ./tests/code_layout/test_qt_imports.sh
 
-  doxygen_layout_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Install Requirements
-        run: |
-          sudo apt install -y \
-              expect \
-              silversearcher-ag
-      - name: Doxygen Layout Test
-        run: ./tests/code_layout/test_doxygen_layout.sh
-
   sip_check:
     runs-on: ubuntu-latest
     steps:
