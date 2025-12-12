@@ -728,8 +728,9 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
             )
         finally:
             QgsProject.instance().removeMapLayer(bad.id())
-    
+
     def test_refLayers(self):
+
         l1 = QgsVectorLayer(
             QUrl.fromLocalFile(
                 os.path.join(self.testDataDir, "delimitedtext/test.csv")
