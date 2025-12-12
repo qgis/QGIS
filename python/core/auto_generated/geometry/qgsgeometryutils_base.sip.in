@@ -57,6 +57,16 @@ Returns the squared 2D distance between (``x1``, ``y1``) and (``x2``,
 Returns the 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).
 %End
 
+    static double sqrDistance2D( QPointF point1, QPointF point2 ) /HoldGIL/;
+%Docstring
+Returns the squared 2D distance between ``point1`` and ``point2``
+%End
+
+    static double distance2D( QPointF point1, QPointF point2 ) /HoldGIL/;
+%Docstring
+Returns the 2D distance between ``point1`` and ``point2``
+%End
+
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX /Out/, double &minDistY /Out/, double epsilon ) /HoldGIL/;
 %Docstring
 Returns the squared distance between a point and a line.
