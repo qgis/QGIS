@@ -31,6 +31,7 @@ RUN  apt-get update \
     'libdraco4|libdraco8' \
     libexiv2-28 \
     'libfcgi0ldbl|libfcgi0t64' \
+    libgeographiclib26 \
     libgsl28 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
     libqca-qt6-plugins \
@@ -192,6 +193,7 @@ RUN  apt-get update \
     libexiv2-dev \
     libexpat1-dev \
     libfcgi-dev \
+    libgeographiclib-dev \
     libgeos-dev \
     libgsl-dev \
     libpq-dev \

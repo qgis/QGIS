@@ -20,6 +20,7 @@ RUN dnf -y --refresh install \
     gdal \
     gdal-devel \
     gdal-python-tools \
+    GeographicLib-devel \
     geos-devel \
     gpsbabel \
     grass \
@@ -94,6 +95,9 @@ RUN dnf -y --refresh install \
     SFCGAL-devel \
     blend2d-devel
 
+
+# download wmm2025 magnetic field model for testing
+RUN geographiclib-get-magnetic wmm2025
 
 # Oracle : client side
 RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-basic-linux.x64-21.16.0.0.0dbru.zip > instantclient-basic-linux.x64-21.16.0.0.0dbru.zip

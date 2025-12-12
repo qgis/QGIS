@@ -175,6 +175,10 @@
 #include <SFCGAL/version.h>
 #endif
 
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
+
 #ifdef HAVE_GEOREFERENCER
 #include "georeferencer/qgsgeorefmainwindow.h"
 #endif
@@ -5574,6 +5578,15 @@ QString QgisApp::getVersionString()
   }
 #else
   versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SFCGAL version" ), tr( "No support" ) );
+#endif
+  versionString += QLatin1String( "</td></tr><tr>" );
+
+  // GeographicLib version
+#ifdef WITH_GEOGRAPHICLIB
+  const QString geographicLibVersionRunning = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH );
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), geographicLibVersionRunning );
+#else
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), tr( "No support" ) );
 #endif
   versionString += QLatin1String( "</td></tr><tr>" );
 
