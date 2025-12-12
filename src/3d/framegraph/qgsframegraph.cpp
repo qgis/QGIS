@@ -17,12 +17,31 @@
 
 #include "qgs3dutils.h"
 #include "qgsabstractrenderview.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgsdebugtextureentity.h"
+#include "qgsdebugtexturerenderview.h"
+#include "qgsdepthrenderview.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsforwardrenderview.h"
 #include "qgsframegraphutils.h"
 #include "qgspostprocessingentity.h"
 #include "qgsshadowrenderview.h"
 
-#include "moc_qgsframegraph.cpp"
+#include <Qt3DRender/QAbstractTexture>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QStencilMask>
+#include <Qt3DRender/QStencilOperation>
+#include <Qt3DRender/QStencilOperationArguments>
+#include <Qt3DRender/QStencilTest>
+#include <Qt3DRender/QStencilTestArguments>
+#include <Qt3DRender/QTechnique>
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
@@ -42,28 +61,7 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #endif
 
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QColorMask>
-#include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QNoDepthMask>
-#include <Qt3DRender/QBlendEquationArguments>
-#include <Qt3DRender/QAbstractTexture>
-#include <Qt3DRender/QNoDraw>
-#include <Qt3DRender/QStencilTest>
-#include <Qt3DRender/QStencilTestArguments>
-#include <Qt3DRender/QStencilMask>
-#include <Qt3DRender/QStencilOperation>
-#include <Qt3DRender/QStencilOperationArguments>
-#include "qgsshadowrenderview.h"
-#include "qgsforwardrenderview.h"
-#include "qgsdepthrenderview.h"
-#include "qgsdepthentity.h"
-#include "qgsdebugtexturerenderview.h"
-#include "qgsdebugtextureentity.h"
-#include "qgsambientocclusionrenderview.h"
+#include "moc_qgsframegraph.cpp"
 
 const QString QgsFrameGraph::FORWARD_RENDERVIEW = "forward";
 const QString QgsFrameGraph::SHADOW_RENDERVIEW = "shadow";
