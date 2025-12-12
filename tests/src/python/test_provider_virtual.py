@@ -704,6 +704,31 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         # check that it does not crash
         print(sum([f.id() for f in l2.getFeatures()]))
 
+    def test_refLayer_invalid_provider(self):
+        bad = QgsVectorLayer(
+            "Point?field=id:integer",
+            "bad",
+            "bogus",
+            QgsVectorLayer.LayerOptions(False),
+        )
+        self.assertFalse(bad.isValid())
+        QgsProject.instance().addMapLayer(bad)
+
+        try:
+            vl = QgsVectorLayer(
+                f"?layer_ref={bad.id()}",
+                "vtab",
+                "virtual",
+                QgsVectorLayer.LayerOptions(False),
+            )
+            self.assertFalse(vl.isValid())
+            self.assertIn(
+                f"Layer {bad.id()} is invalid",
+                vl.dataProvider().error().message(),
+            )
+        finally:
+            QgsProject.instance().removeMapLayer(bad.id())
+    
     def test_refLayers(self):
         l1 = QgsVectorLayer(
             QUrl.fromLocalFile(
