@@ -21,7 +21,6 @@ the canvas.
 #include "qgsmapcanvassnappingutils.h"
 %End
   public:
-
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
 %Docstring
 Construct map canvas snapping utils object

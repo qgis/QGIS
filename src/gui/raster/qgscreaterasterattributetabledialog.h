@@ -42,7 +42,6 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsCreateRasterAttributeTableDialog.
      * \param rasterLayer the raster layer, must be suitable for creating a new raster attribute table

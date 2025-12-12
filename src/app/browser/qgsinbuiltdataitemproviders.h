@@ -265,7 +265,6 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void openSqlDialogGeneric( const QString &connectionUri, const QString &provider, const QString &query );
 
   private:
-
     /**
      * Move table to target schema.
      *

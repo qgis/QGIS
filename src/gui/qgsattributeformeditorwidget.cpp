@@ -38,9 +38,6 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   , mEditorWidget( editorWidget )
   , mForm( form )
   , mMultiEditButton( new QgsMultiEditToolButton() )
-  , mBlockValueUpdate( false )
-  , mIsMixed( false )
-  , mIsChanged( false )
 {
   mRememberLastValueButton = new QToolButton();
   mRememberLastValueButton->setAutoRaise( true );

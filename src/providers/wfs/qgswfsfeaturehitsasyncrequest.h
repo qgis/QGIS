@@ -44,7 +44,7 @@ class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest
     QString errorMessageWithReason( const QString &reason ) override;
 
   private:
-    int mNumberMatched;
+    int mNumberMatched = -1;
 };
 
 #endif

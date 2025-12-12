@@ -24,7 +24,6 @@ but rather accessed through :py:func:`QgsGui.mapLayerActionRegistry()`.
 #include "qgsmaplayeractionregistry.h"
 %End
   public:
-
     QgsMapLayerActionRegistry( QObject *parent = 0 );
 %Docstring
 Constructor for QgsMapLayerActionRegistry.

@@ -45,8 +45,6 @@ class SelectedOnlyFilter : public QgsPointLocator::MatchFilter
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mPressedFid( 0 )
-  , mPressedPartNum( 0 )
 {
   mToolName = tr( "Delete part" );
 }

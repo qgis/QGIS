@@ -38,7 +38,6 @@ typedef void unloadHook_t( QgsServiceModule * );
 class QgsServiceNativeModuleEntry
 {
   public:
-
     /**
      * Constructor for QgsServiceNativeModuleEntry.
      * \param location Relative path of the module

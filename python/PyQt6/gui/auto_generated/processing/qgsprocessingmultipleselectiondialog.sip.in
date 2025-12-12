@@ -94,7 +94,7 @@ Emitted when the selection changes in the widget.
 %End
 
   protected:
-    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
 %Docstring
 Adds a new option to the widget.
 

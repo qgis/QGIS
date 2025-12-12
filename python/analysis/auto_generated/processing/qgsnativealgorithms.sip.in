@@ -19,7 +19,6 @@ Native c++ processing algorithm provider.
 #include "qgsnativealgorithms.h"
 %End
   public:
-
     QgsNativeAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for QgsNativeAlgorithms.

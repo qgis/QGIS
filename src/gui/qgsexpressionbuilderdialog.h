@@ -100,7 +100,6 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     void allowEvalErrorsChanged();
 
   protected:
-
     /**
      * Is called when the dialog get accepted or rejected
      * Used to save geometry

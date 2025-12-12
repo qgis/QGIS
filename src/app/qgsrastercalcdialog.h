@@ -30,7 +30,6 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for raster calculator dialog
      * \param rasterLayer main raster layer, will be used for default extent and projection

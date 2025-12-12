@@ -37,7 +37,6 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */
@@ -45,18 +44,17 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
 
     struct Result
     {
-        Result()
-          : operationResult( Qgis::GeometryOperationResult::NothingHappened ), geometryHasChanged( false ) {}
+        Result() = default;
 
         /**
        * The result of an avoid intersection operation
        */
-        Qgis::GeometryOperationResult operationResult;
+        Qgis::GeometryOperationResult operationResult = Qgis::GeometryOperationResult::NothingHappened;
 
         /**
        * True if the geometry has changed during the avoid intersection operation
        */
-        bool geometryHasChanged;
+        bool geometryHasChanged = false;
     };
 
     /**

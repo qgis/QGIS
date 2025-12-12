@@ -195,7 +195,7 @@ class QgsGrassModuleInputComboBox : public QComboBox
     QgsGrassModuleInputProxy *mProxy = nullptr;
     QgsGrassModuleInputTreeView *mTreeView = nullptr;
     // Skip next hidePopup
-    bool mSkipHide;
+    bool mSkipHide = false;
 };
 
 class QgsGrassModuleInputSelectedDelegate : public QStyledItemDelegate
@@ -241,7 +241,6 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
@@ -298,7 +297,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
   private:
     //! Input type
-    QgsGrassObject::Type mType;
+    QgsGrassObject::Type mType = QgsGrassObject::Vector;
 
     // Module options
     QgsGrassModuleStandardOptions *mModuleStandardOptions = nullptr;
@@ -347,10 +346,10 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     //! The input map will be updated -> must be from current mapset
     // TODO
-    bool mUpdate;
+    bool mUpdate = false;
 
     //! Uses region
-    bool mUsesRegion;
+    bool mUsesRegion = false;
 
     QgsGrassModuleInput( const QgsGrassModuleInput & ) = delete;
     QgsGrassModuleInput &operator=( const QgsGrassModuleInput & ) = delete;

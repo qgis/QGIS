@@ -59,7 +59,6 @@ QgsGml::QgsGml(
   const QgsFields &fields )
   : mParser( typeName, geometryAttribute, fields )
   , mTypeName( typeName )
-  , mFinished( false )
 {
   const int index = mTypeName.indexOf( ':' );
   if ( index != -1 && index < mTypeName.length() )

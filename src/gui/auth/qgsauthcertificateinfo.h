@@ -114,9 +114,9 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     QBrush mDefaultItemForeground;
 
     bool mManageTrust;
-    bool mTrustCacheRebuilt;
-    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
-    QgsAuthCertUtils::CertTrustPolicy mCurrentTrustPolicy;
+    bool mTrustCacheRebuilt = false;
+    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy = QgsAuthCertUtils::DefaultTrust;
+    QgsAuthCertUtils::CertTrustPolicy mCurrentTrustPolicy = QgsAuthCertUtils::DefaultTrust;
 
     QTreeWidgetItem *mSecGeneral = nullptr;
     QTreeWidgetItem *mSecDetails = nullptr;
@@ -142,7 +142,6 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
      * \param cert Certificate object

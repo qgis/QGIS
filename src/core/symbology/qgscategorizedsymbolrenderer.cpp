@@ -41,6 +41,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QDomDocument>
@@ -1050,122 +1051,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
 
 QString QgsCategorizedSymbolRenderer::displayString( const QVariant &v, int precision )
 {
-
-  auto _displayString = [ ]( const QVariant & v, int precision ) -> QString
-  {
-
-    if ( QgsVariantUtils::isNull( v ) )
-    {
-      return QgsApplication::nullRepresentation();
-    }
-
-    const bool isNumeric {v.userType() == QMetaType::Type::Double || v.userType() == QMetaType::Type::Int || v.userType() == QMetaType::Type::UInt || v.userType() == QMetaType::Type::LongLong || v.userType() == QMetaType::Type::ULongLong};
-
-    // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
-    if ( v.userType() == QMetaType::Type::Double )
-    {
-      // if value doesn't contain a double (a default value expression for instance),
-      // apply no transformation
-      bool ok;
-      v.toDouble( &ok );
-      if ( !ok )
-        return v.toString();
-
-      // Locales with decimal point != '.' or that require group separator: use QLocale
-      if ( QLocale().decimalPoint() != '.' ||
-           !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
-      {
-        if ( precision > 0 )
-        {
-          if ( -1 < v.toDouble() && v.toDouble() < 1 )
-          {
-            return QLocale().toString( v.toDouble(), 'g', precision );
-          }
-          else
-          {
-            return QLocale().toString( v.toDouble(), 'f', precision );
-          }
-        }
-        else
-        {
-          // Precision is not set, let's guess it from the
-          // standard conversion to string
-          const QString s( v.toString() );
-          const int dotPosition( s.indexOf( '.' ) );
-          int precision;
-          if ( dotPosition < 0 && s.indexOf( 'e' ) < 0 )
-          {
-            precision = 0;
-            return QLocale().toString( v.toDouble(), 'f', precision );
-          }
-          else
-          {
-            if ( dotPosition < 0 ) precision = 0;
-            else precision = s.length() - dotPosition - 1;
-
-            if ( -1 < v.toDouble() && v.toDouble() < 1 )
-            {
-              return QLocale().toString( v.toDouble(), 'g', precision );
-            }
-            else
-            {
-              return QLocale().toString( v.toDouble(), 'f', precision );
-            }
-          }
-        }
-      }
-      // Default for doubles with precision
-      else if ( precision > 0 )
-      {
-        if ( -1 < v.toDouble() && v.toDouble() < 1 )
-        {
-          return QString::number( v.toDouble(), 'g', precision );
-        }
-        else
-        {
-          return QString::number( v.toDouble(), 'f', precision );
-        }
-      }
-    }
-    // Other numeric types than doubles
-    else if ( isNumeric &&
-              !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
-    {
-      bool ok;
-      const qlonglong converted( v.toLongLong( &ok ) );
-      if ( ok )
-        return QLocale().toString( converted );
-    }
-    else if ( v.userType() == QMetaType::Type::QByteArray )
-    {
-      return QObject::tr( "BLOB" );
-    }
-
-    // Fallback if special rules do not apply
-    return v.toString();
-  };
-
-  if ( v.userType() == QMetaType::Type::QStringList || v.userType() == QMetaType::Type::QVariantList )
-  {
-    // Note that this code is never hit because the joining of lists (merged categories) happens
-    // in data(); I'm leaving this here anyway because it is tested and it may be useful for
-    // other purposes in the future.
-    QString result;
-    const QVariantList list = v.toList();
-    for ( const QVariant &var : list )
-    {
-      if ( !result.isEmpty() )
-      {
-        result.append( ';' );
-      }
-      result.append( _displayString( var, precision ) );
-    }
-    return result;
-  }
-  else
-  {
-    return _displayString( v, precision );
-  }
+  return QgsVariantUtils::displayString( v, precision );
 }
 
 QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
@@ -1672,7 +1558,7 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
       if ( !QgsVariantUtils::isNull( value ) )
       {
         const int fieldIdx = fields.lookupField( attributeName );
-        QString categoryName = displayString( value );
+        QString categoryName = QgsVariantUtils::displayString( value );
         if ( fieldIdx != -1 )
         {
           const QgsField field = fields.at( fieldIdx );

@@ -24,7 +24,6 @@ Shows a user-friendly assistant guiding users through the creation of
 #include "qgspropertyassistantwidget.h"
 %End
   public:
-
     QgsPropertyAssistantWidget( QWidget *parent /TransferThis/ = 0, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty(), const QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsPropertyAssistantWidget. Aside from a ``parent``

@@ -22,7 +22,6 @@ An interface for objects which block interactions with a
 #include "qgsmapcanvasinteractionblocker.h"
 %End
   public:
-
     enum class Interaction /BaseType=IntFlag/
     {
       MapPanOnSingleClick,

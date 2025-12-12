@@ -34,7 +34,6 @@ snapping.
       sipType = 0;
 %End
   public:
-
     QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event );
 %Docstring
 Creates a new QgsMapMouseEvent. Should only be required to be called

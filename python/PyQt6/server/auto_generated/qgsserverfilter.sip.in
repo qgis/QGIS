@@ -23,7 +23,6 @@ Defines I/O filters for QGIS Server and implemented in plugins.
 #include "qgsserverfilter.h"
 %End
   public:
-
     QgsServerFilter( QgsServerInterface *serverInterface );
 %Docstring
 Constructor :py:class:`QgsServerInterface` passed to plugins

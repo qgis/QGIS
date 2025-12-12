@@ -41,7 +41,6 @@ class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * \brief returns a singleton instance of this class
      */

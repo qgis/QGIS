@@ -35,18 +35,17 @@
 #include <qglobal.h>
 #include <qstringliteral.h>
 
-QgsPointCloudNodeId::QgsPointCloudNodeId():
-  mD( -1 ),
-  mX( 0 ),
-  mY( 0 ),
-  mZ( 0 )
+QgsPointCloudNodeId::QgsPointCloudNodeId()
+  : mX( 0 )
+  , mY( 0 )
+  , mZ( 0 )
 {}
 
-QgsPointCloudNodeId::QgsPointCloudNodeId( int _d, int _x, int _y, int _z ):
-  mD( _d ),
-  mX( _x ),
-  mY( _y ),
-  mZ( _z )
+QgsPointCloudNodeId::QgsPointCloudNodeId( int _d, int _x, int _y, int _z )
+  : mD( _d )
+  , mX( _x )
+  , mY( _y )
+  , mZ( _z )
 {}
 
 QgsPointCloudNodeId QgsPointCloudNodeId::parentNode() const

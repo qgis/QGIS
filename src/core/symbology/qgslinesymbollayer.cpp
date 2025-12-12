@@ -1193,10 +1193,6 @@ class MyLine
 {
   public:
     MyLine( QPointF p1, QPointF p2 )
-      : mVertical( false )
-      , mIncreasing( false )
-      , mT( 0.0 )
-      , mLength( 0.0 )
     {
       if ( p1 == p2 )
         return; // invalid
@@ -1246,10 +1242,10 @@ class MyLine
     double length() const { return mLength; }
 
   protected:
-    bool mVertical;
-    bool mIncreasing;
-    double mT;
-    double mLength;
+    bool mVertical = false;
+    bool mIncreasing = false;
+    double mT = 0.0;
+    double mLength = 0.0;
 };
 
 ///@endcond

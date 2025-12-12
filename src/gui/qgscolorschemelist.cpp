@@ -310,7 +310,6 @@ QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString 
   , mScheme( scheme )
   , mContext( context )
   , mBaseColor( baseColor )
-  , mIsDirty( false )
 {
   if ( scheme )
   {

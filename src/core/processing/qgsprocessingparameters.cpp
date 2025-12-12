@@ -40,6 +40,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 #include "qgsvariantutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -68,7 +69,6 @@ bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
   geometryCheck = static_cast< Qgis::InvalidGeometryCheck >( map.value( QStringLiteral( "geometry_check" ), static_cast< int >( Qgis::InvalidGeometryCheck::AbortOnInvalid ) ).toInt() );
   return true;
 }
-
 
 //
 // QgsProcessingRasterLayerDefinition
@@ -3071,6 +3071,73 @@ QgsProcessingParameterDefinition *QgsProcessingParameterBoolean::clone() const
   return new QgsProcessingParameterBoolean( *this );
 }
 
+QColor QgsProcessingParameterDefinition::modelColor() const
+{
+  QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( type() );
+  if ( paramType )
+  {
+    return paramType->modelColor();
+  }
+
+  return QgsProcessingParameterType::defaultModelColor();
+}
+
+QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  if ( value.userType() == qMetaTypeId<QgsPointXY>() )
+  {
+    const QgsPointXY r = value.value<QgsPointXY>();
+    return QStringLiteral( "%1, %2" ).arg( qgsDoubleToString( r.x(), 4 ),
+                                           qgsDoubleToString( r.y(), 4 ) );
+  }
+
+  else if ( value.userType() == qMetaTypeId<QgsReferencedPointXY>() )
+  {
+    const QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
+    return QStringLiteral( "%1, %2 [%3]" ).arg(
+             qgsDoubleToString( r.x(), 4 ),
+             qgsDoubleToString( r.y(), 4 ),
+             r.crs().authid()
+           );
+  }
+
+  else if ( value.userType() == qMetaTypeId<QgsRectangle>() )
+  {
+    const QgsGeometry g = QgsGeometry::fromRect( value.value<QgsRectangle>() );
+    return QgsWkbTypes::geometryDisplayString( g.type() );
+  }
+
+  else if ( value.userType() == qMetaTypeId<QgsReferencedRectangle>() )
+  {
+    const QgsReferencedGeometry g = QgsReferencedGeometry::fromReferencedRect( value.value<QgsReferencedRectangle>() );
+    if ( !g.isNull() )
+    {
+
+      return QStringLiteral( "%1 [%2]" ).arg( QgsWkbTypes::geometryDisplayString( g.type() ), g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+    }
+    return QgsWkbTypes::geometryDisplayString( g.type() );
+  }
+
+  else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == Qgis::PropertyType::Static )
+    {
+      return fromVar.sink.staticValue().toString();
+    }
+    else
+    {
+      return fromVar.sink.asExpression();
+    }
+  }
+
+  return value.toString();
+}
+
+
 QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val, QgsProcessingContext & ) const
 {
   if ( !val.isValid() )
@@ -3229,6 +3296,21 @@ QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QStr
 {
   return new QgsProcessingParameterCrs( name, description, definition.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
 }
+
+
+QString QgsProcessingParameterCrs::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  QgsCoordinateReferenceSystem crs( value.toString() );
+  if ( crs.isValid() )
+    return crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString );
+
+  return QObject::tr( "Invalid CRS" );
+}
+
+
 
 QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, const QList<int> &types )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
@@ -3662,7 +3744,8 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
     return QStringLiteral( "'%1, %3, %2, %4 [%5]'" ).arg( qgsDoubleToString( r.xMinimum() ),
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
-           qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+           qgsDoubleToString( r.yMaximum() ),
+           r.crs().authid() );
   }
   else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
   {
@@ -3811,6 +3894,7 @@ QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const 
 {
   return new QgsProcessingParameterPoint( name, description, definition, isOptional );
 }
+
 
 QgsProcessingParameterGeometry::QgsProcessingParameterGeometry( const QString &name, const QString &description,
     const QVariant &defaultValue, bool optional, const QList<int> &geometryTypes, bool allowMultipart )
@@ -4081,6 +4165,45 @@ bool QgsProcessingParameterGeometry::fromVariantMap( const QVariantMap &map )
 QgsProcessingParameterGeometry *QgsProcessingParameterGeometry::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterGeometry( name, description, definition, isOptional );
+}
+
+QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  if ( value.isValid() )
+  {
+
+    if ( value.userType() == qMetaTypeId< QgsGeometry>() )
+    {
+      const QgsGeometry g = value.value<QgsGeometry>();
+      return QgsWkbTypes::geometryDisplayString( g.type() );
+    }
+
+    else if ( value.userType() == qMetaTypeId<QgsReferencedGeometry>() )
+    {
+      const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
+      if ( !g.isNull() )
+      {
+        return QStringLiteral( "%1 [%2]" ).arg( QgsWkbTypes::geometryDisplayString( g.type() ), g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+      }
+      return QgsWkbTypes::geometryDisplayString( g.type() );
+    }
+
+    else if ( value.userType() == QMetaType::QString )
+    {
+      // In the case of a WKT-(string) encoded geometry, the type of geometry is going to be displayed
+      // rather than the possibly very long WKT payload
+      QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
+      if ( !g.isNull() )
+      {
+        return QgsWkbTypes::geometryDisplayString( g.type() );
+      }
+    }
+  }
+
+  return QObject::tr( "Invalid geometry" );
 }
 
 QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Qgis::ProcessingFileParameterBehavior behavior, const QString &extension, const QVariant &defaultValue, bool optional, const QString &fileFilter )
@@ -5399,6 +5522,14 @@ QString QgsProcessingParameterEnum::asPythonString( const QgsProcessing::PythonO
     }
   }
   return QString();
+}
+
+QString QgsProcessingParameterEnum::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  return options().value( value.toInt() );
 }
 
 QStringList QgsProcessingParameterEnum::options() const
@@ -7865,6 +7996,14 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
 }
 
 
+QString QgsProcessingParameterDistance::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
+}
+
 
 //
 // QgsProcessingParameterArea
@@ -7947,6 +8086,14 @@ bool QgsProcessingParameterArea::fromVariantMap( const QVariantMap &map )
 }
 
 
+QString QgsProcessingParameterArea::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
+}
+
 
 //
 // QgsProcessingParameterVolume
@@ -8028,6 +8175,13 @@ bool QgsProcessingParameterVolume::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
+QString QgsProcessingParameterVolume::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
+}
 
 //
 // QgsProcessingParameterDuration
@@ -8083,6 +8237,14 @@ bool QgsProcessingParameterDuration::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterNumber::fromVariantMap( map );
   mDefaultUnit = static_cast< Qgis::TemporalUnit>( map.value( QStringLiteral( "default_unit" ), static_cast< int >( Qgis::TemporalUnit::Days ) ).toInt() );
   return true;
+}
+
+QString QgsProcessingParameterDuration::userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
 }
 
 
@@ -8942,6 +9104,40 @@ QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( 
 }
 
 
+QString QgsProcessingParameterDateTime:: userFriendlyString( const QVariant &value ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  if ( value.userType() == QMetaType::Type::QDateTime )
+  {
+    const QDateTime dt = value.toDateTime();
+    if ( !dt.isValid() )
+      return QObject::tr( "Invalid datetime" );
+    else
+      return dt.toString( Qt::ISODate );
+  }
+
+  else if ( value.userType() == QMetaType::Type::QDate )
+  {
+    const QDate dt = value.toDate();
+    if ( !dt.isValid() )
+      return QObject::tr( "Invalid date" );
+    else
+      return dt.toString( Qt::ISODate );
+  }
+
+  else if ( value.userType() == QMetaType::Type::QTime )
+  {
+    const QTime dt = value.toTime();
+    if ( !dt.isValid() )
+      return QObject::tr( "Invalid time" );
+    else
+      return dt.toString( Qt::ISODate );
+  }
+
+  return value.toString();
+}
 
 //
 // QgsProcessingParameterProviderConnection

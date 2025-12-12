@@ -40,7 +40,6 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsJsonEditWrapper.
      *

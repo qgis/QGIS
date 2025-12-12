@@ -117,7 +117,6 @@ class QgsWcsCapabilities : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for the provider.
      *

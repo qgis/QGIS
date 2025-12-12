@@ -44,7 +44,6 @@ namespace QgsWfs
   class Service : public QgsService
   {
     public:
-
       /**
        * Constructor for WFS service.
        * \param version Version of the WFS service. (since QGIS 3.22.12)

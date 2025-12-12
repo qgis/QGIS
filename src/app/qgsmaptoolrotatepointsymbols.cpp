@@ -29,10 +29,6 @@
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
-  , mCurrentMouseAzimut( 0.0 )
-  , mCurrentRotationFeature( 0.0 )
-  , mRotating( false )
-  , mCtrlPressed( false )
 {}
 
 QgsMapToolRotatePointSymbols::~QgsMapToolRotatePointSymbols()

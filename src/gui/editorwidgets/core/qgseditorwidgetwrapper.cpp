@@ -29,8 +29,6 @@
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
   , mFieldIdx( fieldIdx )
-  , mValidConstraint( true )
-  , mIsBlockingCommit( false )
 {
 }
 

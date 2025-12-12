@@ -119,7 +119,6 @@ class SERVER_EXPORT QgsOgcServiceException
 class SERVER_EXPORT QgsBadRequestException : public QgsOgcServiceException
 {
   public:
-
     /**
      * Constructor for QgsBadRequestException (HTTP error code 400).
      * \param code Error code name

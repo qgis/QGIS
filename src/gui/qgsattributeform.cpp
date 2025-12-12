@@ -82,15 +82,9 @@ int QgsAttributeForm::sFormCounter = 0;
 QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget *parent )
   : QWidget( parent )
   , mLayer( vl )
-  , mOwnsMessageBar( true )
   , mContext( context )
   , mFormNr( sFormCounter++ )
-  , mIsSaving( false )
-  , mPreventFeatureRefresh( false )
-  , mIsSettingMultiEditFeatures( false )
-  , mUnsavedMultiEditChanges( false )
   , mEditCommandMessage( tr( "Attributes changed" ) )
-  , mMode( QgsAttributeEditorContext::SingleEditMode )
 {
   init();
   initPython();

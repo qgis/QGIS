@@ -54,7 +54,6 @@
 
 QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r )
   : mR( r )
-  , mMinimalPreviewInterval( 250 )
 {
   setRenderPartialOutput( r->renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput ) );
 }

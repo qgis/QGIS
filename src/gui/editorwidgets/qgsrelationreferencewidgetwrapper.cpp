@@ -28,7 +28,7 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
   , mCanvas( canvas )
   , mMessageBar( messageBar )
-  , mIndeterminateState( false )
+
 {
 }
 

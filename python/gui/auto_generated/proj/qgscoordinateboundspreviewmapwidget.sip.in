@@ -22,7 +22,6 @@ interactive map.
 #include "qgscoordinateboundspreviewmapwidget.h"
 %End
   public:
-
     QgsCoordinateBoundsPreviewMapWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCoordinateBoundsPreviewMapWidget.

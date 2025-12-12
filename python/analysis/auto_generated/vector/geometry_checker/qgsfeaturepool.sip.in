@@ -26,7 +26,6 @@ A feature pool is based on a vector layer and caches features.
 #include "qgsfeaturepool.h"
 %End
   public:
-
     QgsFeaturePool( QgsVectorLayer *layer );
 %Docstring
 Creates a new feature pool for ``layer``.
@@ -110,7 +109,6 @@ it can directly be run on the background thread.
 %End
 
   protected:
-
     void insertFeature( const QgsFeature &feature, bool skipLock = false );
 %Docstring
 Inserts a feature into the cache and the spatial index. To be used by

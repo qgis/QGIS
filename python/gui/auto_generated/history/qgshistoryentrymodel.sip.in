@@ -24,7 +24,6 @@ structure.
 #include "qgshistoryentrymodel.h"
 %End
   public:
-
     QgsHistoryEntryModel( const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = 0, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsHistoryEntryModel, with the specified ``parent``

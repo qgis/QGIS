@@ -86,6 +86,13 @@ void QgsLayerTreeViewBase::mouseDoubleClickEvent( QMouseEvent *event )
 
 void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
 {
+  if ( mLayerTreeModel )
+  {
+    disconnect( mLayerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeViewBase::onExpandedChanged );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::modelReset, this, &QgsLayerTreeViewBase::onModelReset );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::dataChanged, this, &QgsLayerTreeViewBase::onDataChanged );
+  }
+
   mLayerTreeModel = model;
 
   mLayerTreeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );

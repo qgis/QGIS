@@ -19,7 +19,6 @@ A dialog for configuring a WMS group.
 #include "qgsgroupwmsdatadialog.h"
 %End
   public:
-
     QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor

@@ -20,10 +20,10 @@
 
 #include <memory>
 
+#include "qgsabstractmaterialsettings.h"
+
 #include <QWidget>
 
-class QgsAbstractMaterialSettings;
-enum class QgsMaterialSettingsRenderingTechnique;
 class QgsVectorLayer;
 
 //! Widget for configuration of material settings
@@ -58,7 +58,7 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
     QgsVectorLayer *mLayer = nullptr;
 
     std::unique_ptr<QgsAbstractMaterialSettings> mCurrentSettings;
-    QgsMaterialSettingsRenderingTechnique mTechnique;
+    QgsMaterialSettingsRenderingTechnique mTechnique = QgsMaterialSettingsRenderingTechnique::Triangles;
 };
 
 #endif // QGSMATERIALWIDGET_H

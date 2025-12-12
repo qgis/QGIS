@@ -27,7 +27,7 @@
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
   : mNodeType( t )
   , mChecked( checked )
-  , mExpanded( true )
+
 {
 }
 

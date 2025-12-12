@@ -144,7 +144,6 @@ class QgsSqliteHandle
     QgsSqliteHandle( spatialite_database_unique_ptr &&database, const QString &dbPath, bool shared )
       : ref( shared ? 1 : -1 )
       , mDbPath( dbPath )
-      , mIsValid( true )
     {
       mDatabase = std::move( database );
     }
@@ -189,7 +188,7 @@ class QgsSqliteHandle
     int ref;
     spatialite_database_unique_ptr mDatabase;
     QString mDbPath;
-    bool mIsValid;
+    bool mIsValid = true;
 
     static QMap<QString, QgsSqliteHandle *> sHandles;
     static QMutex sHandleMutex;

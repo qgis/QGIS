@@ -29,7 +29,6 @@
 
 QgsMapToolShapeCircularStringAbstract::QgsMapToolShapeCircularStringAbstract( const QString &id, QgsMapToolCapture *parentTool )
   : QgsMapToolShapeAbstract( id, parentTool )
-  , mShowCenterPointRubberBand( false )
 {}
 
 QgsMapToolShapeCircularStringAbstract::~QgsMapToolShapeCircularStringAbstract()

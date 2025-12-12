@@ -66,8 +66,6 @@ void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
   : QgsMapRendererAbstractCustomPainterJob( settings )
   , mPainter( painter )
-  , mActive( false )
-  , mRenderSynchronously( false )
 {
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER construct" ), 5 );
 }

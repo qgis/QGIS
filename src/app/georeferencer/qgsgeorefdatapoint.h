@@ -32,7 +32,6 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGeorefDataPoint
      * \param srcCanvas
@@ -141,7 +140,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
 
     QgsGcpPoint mGcpPoint;
 
-    int mId;
+    int mId = -1;
     QPointF mResidual;
 
     QgsGeorefDataPoint &operator=( const QgsGeorefDataPoint & ) = delete;

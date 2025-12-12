@@ -33,44 +33,6 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-HAS_AG=false
-if command -v ag > /dev/null; then
-  HAS_AG=true
-fi
-
-HAS_UNBUFFER=false
-if command -v unbuffer > /dev/null; then
-  HAS_UNBUFFER=true
-fi
-
-# Run spell checker if requirements are met
-if test "$HAS_AG" != "true"; then
-  echo "WARNING: the ag(1) executable was not found, spell checker could not run" >&2
-elif test "$HAS_UNBUFFER" != "true"; then
-  echo "WARNING: the unbuffer(1) executable was not found, spell checker could not run" >&2
-else
-  "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
-fi
-
-# Run doxygen layout test if requirements are met
-if test "$HAS_AG" != "true"; then
-  echo "WARNING: the ag(1) executable was not found, doxygen layout checker could not run" >&2
-elif test "$HAS_UNBUFFER" != "true"; then
-  echo "WARNING: the unbuffer(1) executable was not found, doxygen layout checker could not run" >&2
-else
-  "${TOPLEVEL}"/tests/code_layout/test_doxygen_layout.sh $MODIFIED
-fi
-
-MODIFIED_SHELLFILES=$(echo "${MODIFIED}" | grep '\.sh$' || true)
-if [ -n "$MODIFIED_SHELLFILES" ]; then
-  # Run shell checker if requirements are met
-  if command -v shellcheck > /dev/null; then
-    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh "${MODIFIED_SHELLFILES}"
-  else
-    echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
-  fi
-fi
-
 for f in $MODIFIED; do
   case "$f" in
   *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.mm)

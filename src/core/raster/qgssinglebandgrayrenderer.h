@@ -121,7 +121,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 #endif
 
     int mGrayBand;
-    Gradient mGradient;
+    Gradient mGradient = BlackToWhite;
     std::unique_ptr< QgsContrastEnhancement > mContrastEnhancement;
     std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
 };

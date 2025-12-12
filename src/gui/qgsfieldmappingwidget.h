@@ -41,7 +41,6 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a QgsFieldMappingWidget from a set of \a sourceFields
      * and \a destinationFields, initial values for the expressions can be

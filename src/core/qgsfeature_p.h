@@ -43,7 +43,6 @@ class QgsFeaturePrivate : public QSharedData
 
     explicit QgsFeaturePrivate( QgsFeatureId id )
       : fid( id )
-      , valid( false )
     {
     }
 
@@ -72,7 +71,7 @@ class QgsFeaturePrivate : public QSharedData
     QgsGeometry geometry;
 
     //! Flag to indicate if this feature is valid
-    bool valid;
+    bool valid = false;
 
     //! Optional field map for name-based attribute lookups
     QgsFields fields;

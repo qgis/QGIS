@@ -866,6 +866,8 @@ void QgsExpression::buildVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used for calculations within the attribute table the row number will respect the original order of features from the underlying data source." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used from the field calculator the row numbering starts at 1, otherwise (e.g. from Processing tools) the row numbering starts from 0." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "grid_count" ), QCoreApplication::translate( "variable_help", "Total number of visible grid lines for the current grid axis." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "grid_index" ), QCoreApplication::translate( "variable_help", "The index of the grid line currently being drawn (starting at 1 for the first grid line). The index is specific to the current grid axis." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
 
   // map canvas item variables
@@ -1069,7 +1071,11 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   else if ( value.userType() == qMetaTypeId< QTimeZone>() )
   {
     const QTimeZone tz = value.value<QTimeZone>();
+#if QT_FEATURE_timezone > 0
     return startToken + tr( "time zone: %1" ).arg( tz.isValid() ? tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) : tr( "invalid" ) ) + endToken;
+#else
+    QgsDebugError( QStringLiteral( "Qt is built without Qt timezone support, timezone preview not available" ) );
+#endif
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {

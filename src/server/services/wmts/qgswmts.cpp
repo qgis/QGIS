@@ -36,7 +36,6 @@ namespace QgsWmts
   class Service : public QgsService
   {
     public:
-
       /**
        * Constructor for WMTS service.
        * \param serverIface Interface for plugins.

@@ -56,7 +56,7 @@ QString QgsArrowInferSchemaOptions::geometryColumnName() const
 }
 
 QgsArrowSchema::QgsArrowSchema()
-  : mGeometryColumnIndex( -1 ) {}
+{}
 
 QgsArrowSchema::QgsArrowSchema( const QgsArrowSchema &other )
 {

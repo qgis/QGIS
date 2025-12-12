@@ -85,7 +85,6 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsinformation.cpp
   gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
-  gps/qgsqtlocationconnection.cpp
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
@@ -1038,6 +1037,13 @@ set(QGIS_CORE_SRCS
   qgsuserprofilemanager.cpp
 )
 
+if(WITH_QTPOSITIONING)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    gps/qgsqtlocationconnection.cpp)
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    gps/qgsqtlocationconnection.h)
+endif()
+
 if (WITH_INTERNAL_POLY2TRI)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
@@ -1551,7 +1557,6 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsinformation.h
   gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
-  gps/qgsqtlocationconnection.h
   gps/qgsgpsconnectionregistry.h
   gps/qgssatelliteinformation.h
   gps/qgsvectorlayergpslogger.h
@@ -2156,6 +2161,17 @@ set(QGIS_CORE_HDRS
   vectortile/qgsxyzvectortiledataprovider.h
 )
 
+set(QPDF_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND QPDF_COMPILE_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND QPDF_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (QPDF_COMPILE_OPTIONS)
+  set_source_files_properties(pdf/qgspdfrenderer.cpp PROPERTIES COMPILE_OPTIONS "${QPDF_COMPILE_OPTIONS}")
+endif()
+
 if(WITH_AUTH)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     auth/qgsauthcertutils.cpp
@@ -2339,7 +2355,7 @@ if (WITH_EPT OR WITH_COPC)
       ${CMAKE_SOURCE_DIR}/external/lazperf/
     )
 
-    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    set(LAZPERF_SRCS
       ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
       ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
       ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
@@ -2356,6 +2372,20 @@ if (WITH_EPT OR WITH_COPC)
       ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
       ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
     )
+
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${LAZPERF_SRCS})
+
+    set(LAZPERF_COMPILE_OPTIONS)
+    if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+      list(APPEND LAZPERF_COMPILE_OPTIONS "-Wno-suggest-override")
+    endif()
+    if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+      list(APPEND LAZPERF_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+    endif()
+    if (LAZPERF_COMPILE_OPTIONS)
+      set_source_files_properties(${LAZPERF_SRCS} PROPERTIES COMPILE_OPTIONS "${LAZPERF_COMPILE_OPTIONS}")
+    endif()
+
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2429,8 +2459,19 @@ if(WITH_INTERNAL_SPATIALINDEX)
   check_function_exists(memcpy HAVE_MEMCPY)
   check_function_exists(bcopy HAVE_BCOPY)
 
+  set(SIDX_COMPILE_OPTIONS)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_OPTIONS "-Wno-type-limits;-Wno-extra;-Wno-overloaded-virtual")
+    list(APPEND SIDX_COMPILE_OPTIONS "-Wno-type-limits" "-Wno-extra" "-Wno-overloaded-virtual")
+  endif()
+
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND SIDX_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND SIDX_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (SIDX_COMPILE_OPTIONS)
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_OPTIONS "${SIDX_COMPILE_OPTIONS}")
   endif()
 
   if(HAVE_SRAND48)
@@ -2650,8 +2691,7 @@ if (NOT WITH_INTERNAL_POLY2TRI)
 endif()
 
 if(HAVE_OPENCL)
-  target_link_libraries(qgis_core ${OpenCL_LIBRARY})
-  target_include_directories(qgis_core PUBLIC ${OpenCL_INCLUDE_DIRS})
+  target_link_libraries(qgis_core OpenCL::OpenCL)
 endif()
 
 if(WITH_INTERNAL_NLOHMANN_JSON)
@@ -2690,7 +2730,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
-  ${QT_VERSION_BASE}::Positioning
   ${QT_VERSION_BASE}::Multimedia
   ${OPTIONAL_QTWEBKIT}
   GEOS::geos_c
@@ -2703,6 +2742,12 @@ target_link_libraries(qgis_core
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
+
+if(WITH_QTPOSITIONING)
+  target_link_libraries(qgis_core
+    ${QT_VERSION_BASE}::Positioning
+  )
+endif()
 
 if(WITH_EXIV2)
   target_link_libraries(qgis_core

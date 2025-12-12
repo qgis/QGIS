@@ -31,7 +31,6 @@ subclassing and overriding the :py:func:`~value` method.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum class Type
     {
       String,

@@ -268,12 +268,12 @@ class QgsOracleConn : public QObject
     bool execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     //! reference count
-    int mRef;
+    int mRef = 1;
 
     QString mCurrentUser;
 
     //! has spatial
-    int mHasSpatial;
+    int mHasSpatial = -1;
 
     QSqlDatabase mDatabase;
     QSqlQuery mQuery;

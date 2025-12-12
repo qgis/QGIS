@@ -40,7 +40,6 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
     Q_OBJECT
 
   public:
-
     /**
      * Possible modes for calculating a QgsStackedWidget's size
      */
@@ -75,7 +74,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
     QSize minimumSizeHint() const override;
 
   private:
-    SizeMode mSizeMode;
+    SizeMode mSizeMode = SizeMode::ConsiderAllPages; //#spellok
 };
 
 #endif // QGSSTACKEDWIDGET_H

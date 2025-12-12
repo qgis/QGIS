@@ -25,7 +25,6 @@ to ensure responsive interaction with the widget.
 #include "qgsfieldvalueslineedit.h"
 %End
   public:
-
     QgsFieldValuesLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldValuesLineEdit

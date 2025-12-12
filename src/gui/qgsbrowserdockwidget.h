@@ -32,7 +32,6 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-
     /**
       * Constructor for QgsBrowserDockWidget
       * \param name name of the widget

@@ -50,7 +50,6 @@ class QgsOAuth2Factory : public QThread
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new QgsO2 object, ensuring that it is correctly created on the
      * QgsOAuth2Factory thread instance.

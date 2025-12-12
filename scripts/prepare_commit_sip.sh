@@ -32,20 +32,11 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-if ! type -p colordiff >/dev/null; then
-  colordiff()
-  {
-    cat "$@"
-  }
-fi
-
 REV=$(git log -n1 --pretty=%H)
 
-FILES_CHANGED=0
-
 # verify SIP files
-SIPIFYDIFF=sipify.$REV.diff
-true > "$SIPIFYDIFF"
+
+FILES_CHANGED=0
 
 for root_dir in python python/PyQt6; do
 
@@ -63,32 +54,33 @@ for root_dir in python python/PyQt6; do
       if grep -Fq "$sip_file" "${TOPLEVEL}"/$root_dir/"${module}"/"${module}"_auto.sip; then
         sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
         m=$root_dir/$sip_file.$REV.prepare
+
+        py_out=$root_dir/"${module}"/auto_additions/"${pyfile}"
+        py_m=$py_out.$REV.prepare
+
         if [ ! -f $root_dir/"$sip_file" ]; then
           touch $root_dir/"$sip_file"
+          FILES_CHANGED=$((FILES_CHANGED+1))
         fi
         cp $root_dir/"$sip_file" "$m"
-        "${TOPLEVEL}"/scripts/sipify.py $IS_QT6 -sip_output $m -python_output $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
-        # only replace sip files if they have changed
-        if ! diff -u $root_dir/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
-          echo "$root_dir/$sip_file is not up to date"
+        "${TOPLEVEL}"/scripts/sipify.py $IS_QT6 -sip_output $m -python_output "$py_m" "$f"
+        # only replace sip files if they have changed or are not staged for commit
+        if ! cmp -s $root_dir/"$sip_file" "$m" || ! git ls-files --error-unmatch "$root_dir/$sip_file" > /dev/null 2>&1; then
+          echo "$root_dir/$sip_file is not up to date or is not staged for commit"
           cp "$m" $root_dir/"$sip_file"
+          FILES_CHANGED=$((FILES_CHANGED+1))
         fi
         rm "$m"
+
+        if ! cmp -s "$py_out" "$py_m" || ! git ls-files --error-unmatch "$py_out" > /dev/null 2>&1; then
+          echo "$py_out is not up to date or is not staged for commit"
+          cp "$py_m" "$py_out"
+          FILES_CHANGED=$((FILES_CHANGED+1))
+        fi
+        rm "$py_m"
       fi
     fi
   done
 done
-if [[ -s "$SIPIFYDIFF" ]]; then
-  if tty -s; then
-    # review astyle changes
-    colordiff <"$SIPIFYDIFF" | less -r
-    rm "$SIPIFYDIFF"
-  else
-    echo "Files changed (see $ASTYLEDIFF)"
-  fi
-  FILES_CHANGED=1
-else
-  rm "$SIPIFYDIFF"
-fi
 
 exit $FILES_CHANGED

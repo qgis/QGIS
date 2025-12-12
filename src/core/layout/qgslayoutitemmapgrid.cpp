@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfontutils.h"
 #include "qgsgeometry.h"
 #include "qgslayout.h"
@@ -491,13 +492,45 @@ void QgsLayoutItemMapGrid::drawGridCrsTransform( QgsRenderContext &context, doub
   //draw lines
   if ( !calculateLinesOnly )
   {
+    int countLongitudeLines = 0;
+    int countLatitudeLines = 0;
+    for ( const GridLine &line : mGridLines )
+    {
+      switch ( line.coordinateType )
+      {
+        case Longitude:
+          countLongitudeLines++;
+          break;
+        case Latitude:
+          countLatitudeLines++;
+          break;
+      }
+    }
+
+    int latitudeLineIndex = 0;
+    int longitudeLineIndex = 0;
     if ( mGridStyle == QgsLayoutItemMapGrid::Solid )
     {
       QList< GridLine >::const_iterator gridIt = mGridLines.constBegin();
       for ( ; gridIt != mGridLines.constEnd(); ++gridIt )
       {
+        switch ( gridIt->coordinateType )
+        {
+          case Longitude:
+            longitudeLineIndex++;
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLongitudeLines, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), longitudeLineIndex, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "x" ), true ) );
+            break;
+
+          case Latitude:
+            latitudeLineIndex++;
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLatitudeLines, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), latitudeLineIndex, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "y" ), true ) );
+            break;
+        }
         context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), gridIt->coordinate );
-        context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), gridIt->coordinateType == QgsLayoutItemMapGrid::AnnotationCoordinate::Longitude ? "x" : "y" );
         drawGridLine( scalePolygon( gridIt->line, dotsPerMM ), context );
       }
     }
@@ -708,6 +741,24 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
   QList< GridLine >::const_iterator vIt = mGridLines.constBegin();
   QList< GridLine >::const_iterator hIt = mGridLines.constBegin();
 
+  int countLongitudeLines = 0;
+  int countLatitudeLines = 0;
+  for ( const GridLine &line : mGridLines )
+  {
+    switch ( line.coordinateType )
+    {
+      case Longitude:
+        countLongitudeLines++;
+        break;
+      case Latitude:
+        countLatitudeLines++;
+        break;
+    }
+  }
+
+  int latitudeLineIndex = 0;
+  int longitudeLineIndex = 0;
+
   //simple approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsLayoutItemMapGrid::Solid )
   {
@@ -720,6 +771,9 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
         continue;
       line = QLineF( vIt->line.first() * dotsPerMM, vIt->line.last() * dotsPerMM );
 
+      longitudeLineIndex++;
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLongitudeLines, true ) );
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), longitudeLineIndex, true ) );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), vIt->coordinate );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "x" );
 
@@ -732,6 +786,9 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
         continue;
       line = QLineF( hIt->line.first() * dotsPerMM, hIt->line.last() * dotsPerMM );
 
+      latitudeLineIndex++;
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLatitudeLines, true ) );
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), latitudeLineIndex, true ) );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), hIt->coordinate );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "y" );
 
@@ -1209,11 +1266,89 @@ void QgsLayoutItemMapGrid::drawGridFrameLine( QPainter *p, GridExtension *extens
 void QgsLayoutItemMapGrid::drawCoordinateAnnotations( QgsRenderContext &context, QgsExpressionContext &expressionContext,
     GridExtension *extension ) const
 {
+  if ( mGridLines.empty() )
+    return;
+
   QString currentAnnotationString;
   QList< GridLine >::const_iterator it = mGridLines.constBegin();
+
+  QgsExpressionContextScope *gridScope = new QgsExpressionContextScope();
+  QgsExpressionContextScopePopper scopePopper( expressionContext, gridScope );
+
+  bool geographic = false;
+  if ( mCRS.isValid() )
+  {
+    geographic = mCRS.isGeographic();
+  }
+  else if ( mMap && mMap->layout() )
+  {
+    geographic = mMap->crs().isGeographic();
+  }
+
+  const bool forceWrap = ( geographic && it->coordinateType == QgsLayoutItemMapGrid::Longitude &&
+                           ( mGridAnnotationFormat == QgsLayoutItemMapGrid::Decimal || mGridAnnotationFormat == QgsLayoutItemMapGrid::DecimalWithSuffix ) );
+
+  int countLongitudeLines = 0;
+  int countLatitudeLines = 0;
+  for ( const GridLine &line : mGridLines )
+  {
+    switch ( line.coordinateType )
+    {
+      case Longitude:
+        countLongitudeLines++;
+        break;
+      case Latitude:
+        countLatitudeLines++;
+        break;
+    }
+  }
+
+  int latitudeLineIndex = 0;
+  int longitudeLineIndex = 0;
   for ( ; it != mGridLines.constEnd(); ++it )
   {
-    currentAnnotationString = gridAnnotationString( it->coordinate, it->coordinateType, expressionContext );
+    double value = it->coordinate;
+    switch ( it->coordinateType )
+    {
+      case Longitude:
+        longitudeLineIndex++;
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLongitudeLines, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), longitudeLineIndex, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "x" ), true ) );
+        break;
+
+      case Latitude:
+        latitudeLineIndex++;
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLatitudeLines, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), latitudeLineIndex, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "y" ), true ) );
+        break;
+    }
+
+    if ( forceWrap )
+    {
+      // wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
+      const double wrappedX = std::fmod( value, 360.0 );
+      if ( wrappedX > 180.0 )
+      {
+        value = wrappedX - 360.0;
+      }
+      else if ( wrappedX < -180.0 )
+      {
+        value = wrappedX + 360.0;
+      }
+    }
+
+    gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), value, true ) );
+
+    if ( mDrawAnnotationProperty )
+    {
+      bool ok = false;
+      const bool display = mDrawAnnotationProperty->valueAsBool( expressionContext, true, &ok );
+      if ( ok && !display )
+        continue;
+    }
+    currentAnnotationString = gridAnnotationString( it->coordinate, it->coordinateType, expressionContext, geographic );
     drawCoordinateAnnotation( context, it->startAnnotation, currentAnnotationString, it->coordinateType, extension );
     drawCoordinateAnnotation( context, it->endAnnotation, currentAnnotationString, it->coordinateType, extension );
   }
@@ -1400,33 +1535,9 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   QgsTextRenderer::drawText( QPointF( 0, 0 ), 0, Qgis::TextHorizontalAlignment::Left, annotationString.split( '\n' ), context, mAnnotationFormat );
 }
 
-QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemMapGrid::AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const
+QString QgsLayoutItemMapGrid::gridAnnotationString( const double value, QgsLayoutItemMapGrid::AnnotationCoordinate coord, QgsExpressionContext &expressionContext, bool isGeographic ) const
 {
   //check if we are using degrees (ie, geographic crs)
-  bool geographic = false;
-  if ( mCRS.isValid() )
-  {
-    geographic = mCRS.isGeographic();
-  }
-  else if ( mMap && mMap->layout() )
-  {
-    geographic = mMap->crs().isGeographic();
-  }
-
-  if ( geographic && coord == QgsLayoutItemMapGrid::Longitude &&
-       ( mGridAnnotationFormat == QgsLayoutItemMapGrid::Decimal || mGridAnnotationFormat == QgsLayoutItemMapGrid::DecimalWithSuffix ) )
-  {
-    // wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
-    const double wrappedX = std::fmod( value, 360.0 );
-    if ( wrappedX > 180.0 )
-    {
-      value = wrappedX - 360.0;
-    }
-    else if ( wrappedX < -180.0 )
-    {
-      value = wrappedX + 360.0;
-    }
-  }
 
   if ( mGridAnnotationFormat == QgsLayoutItemMapGrid::Decimal )
   {
@@ -1440,7 +1551,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
     if ( coord == QgsLayoutItemMapGrid::Longitude )
     {
       //don't use E/W suffixes if ambiguous (e.g., 180 degrees)
-      if ( !geographic || ( coordRounded != 180.0 && coordRounded != 0.0 ) )
+      if ( !isGeographic || ( coordRounded != 180.0 && coordRounded != 0.0 ) )
       {
         hemisphere = value < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
       }
@@ -1448,12 +1559,12 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
     else
     {
       //don't use N/S suffixes if ambiguous (e.g., 0 degrees)
-      if ( !geographic || coordRounded != 0.0 )
+      if ( !isGeographic || coordRounded != 0.0 )
       {
         hemisphere = value < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
       }
     }
-    if ( geographic )
+    if ( isGeographic )
     {
       //insert degree symbol for geographic coordinates
       return QString::number( std::fabs( value ), 'f', mGridAnnotationPrecision ) + QChar( 176 ) + hemisphere;
@@ -1465,8 +1576,6 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   }
   else if ( mGridAnnotationFormat == CustomFormat )
   {
-    expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), value, true ) );
-    expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), coord == QgsLayoutItemMapGrid::Longitude ? "x" : "y", true ) );
     if ( !mGridAnnotationExpression )
     {
       mGridAnnotationExpression = std::make_unique<QgsExpression>( mGridAnnotationExpressionString );
@@ -1951,6 +2060,20 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
                     || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridOffsetY );
 
   mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::DataDefinedProperty::MapGridEnabled, context, enabled() );
+
+  // suppress false positive clang tidy warning
+  // NOLINTBEGIN(bugprone-branch-clone)
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) )
+  {
+    mDrawAnnotationProperty.reset( new QgsProperty( mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) ) );
+    mDrawAnnotationProperty->prepare( context );
+  }
+  else
+  {
+    mDrawAnnotationProperty.reset();
+  }
+  // NOLINTEND(bugprone-branch-clone)
+
   switch ( mGridUnit )
   {
     case MapUnit:

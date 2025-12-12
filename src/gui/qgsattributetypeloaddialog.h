@@ -83,7 +83,6 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog : public QDialog, private Ui::QgsAtt
     void previewButtonPushed();
 
   private:
-
     /**
      * Function to transfer data from layer to value map used in editing
      */

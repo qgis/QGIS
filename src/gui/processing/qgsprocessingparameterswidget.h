@@ -40,7 +40,6 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingParametersWidget, for the specified \a algorithm.
      */

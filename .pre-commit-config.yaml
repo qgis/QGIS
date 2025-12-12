@@ -7,7 +7,36 @@ exclude: |
 fail_fast: false
 
 repos:
-  # MUST run first, before clang-format
+  - repo: local
+    hooks:
+      - id: spell_check
+        name: spell_check
+        entry: ./scripts/prepare_commit_spell_check.sh
+        language: system
+        always_run: true
+        pass_filenames: true
+        verbose: true
+
+  - repo: local
+    hooks:
+      - id: doxygen_test
+        name: doxygen_test
+        entry: ./scripts/prepare_commit_doxygen_test.sh
+        language: system
+        always_run: true
+        pass_filenames: true
+        verbose: true
+
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: shellcheck
+        entry: ./scripts/prepare_commit_shellcheck.sh
+        language: system
+        always_run: true
+        pass_filenames: true
+        verbose: true
+
   - repo: local
     hooks:
       - id: prepare_commit
@@ -16,6 +45,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: true
+        verbose: true
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v19.1.6
@@ -29,23 +59,27 @@ repos:
             src/core/.*|
             tests/code_layout/sipify/sipifyheader.h
         )$
+      verbose: true
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.19.1
     hooks:
       - id: pyupgrade
         args: [--py39-plus]
+        verbose: true
 
   - repo: https://github.com/psf/black
     rev: 24.10.0
     hooks:
       - id: black
+        verbose: true
 
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
+        verbose: true
 
   # MUST run last
   - repo: local
@@ -56,3 +90,4 @@ repos:
         language: system
         always_run: true
         pass_filenames: true
+        verbose: true

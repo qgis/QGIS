@@ -257,8 +257,8 @@ class CORE_EXPORT QgsSymbolRenderContext
     Qgis::SymbolRenderHints mRenderHints;
     const QgsFeature *mFeature; //current feature
     QgsFields mFields;
-    int mGeometryPartCount;
-    int mGeometryPartNum;
+    int mGeometryPartCount = 0;
+    int mGeometryPartNum = 0;
     Qgis::GeometryType mOriginalGeometryType = Qgis::GeometryType::Unknown;
     std::unique_ptr< QgsLegendPatchShape > mPatchShape;
 };

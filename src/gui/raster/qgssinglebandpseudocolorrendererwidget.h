@@ -41,7 +41,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget : public QgsRasterRender
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSingleBandPseudoColorRendererWidget.
      * \param layer associated raster layer
@@ -98,7 +97,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget : public QgsRasterRender
     double lineEditValue( const QLineEdit *lineEdit ) const;
 
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
-    int mMinMaxOrigin;
+    int mMinMaxOrigin = 0;
 
     void minMaxModified();
 

@@ -36,7 +36,6 @@ class QgsMssqlDatabase;
 class QgsMssqlConnection
 {
   public:
-
     /**
      * Returns true if the connection with matching \a name should
      * only look in the geometry_columns metadata table when scanning for tables.

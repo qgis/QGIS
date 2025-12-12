@@ -336,6 +336,7 @@ bool QgsMapRendererTask::run()
           {
             QString creationDateString;
             const QDateTime creationDateTime = mGeospatialPdfExportDetails.creationDateTime;
+#if QT_FEATURE_timezone > 0
             if ( creationDateTime.isValid() )
             {
               creationDateString = QStringLiteral( "D:%1" ).arg( mGeospatialPdfExportDetails.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
@@ -349,6 +350,9 @@ bool QgsMapRendererTask::run()
                 creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
               }
             }
+#else
+            QgsDebugError( QStringLiteral( "Qt is built without timezone support, skipping timezone for pdf export" ) );
+#endif
             GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
             GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeospatialPdfExportDetails.author.toUtf8().constData(), nullptr );

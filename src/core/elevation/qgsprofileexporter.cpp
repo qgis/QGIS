@@ -123,7 +123,10 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
       featuresToAdd << out;
     }
 
-    outputLayer->dataProvider()->addFeatures( featuresToAdd, QgsFeatureSink::FastInsert );
+    if ( !outputLayer->dataProvider()->addFeatures( featuresToAdd, QgsFeatureSink::FastInsert ) )
+    {
+      QgsDebugError( QStringLiteral( "Error exporting feature: %1" ).arg( outputLayer->dataProvider()->lastError() ) );
+    }
     res << outputLayer.release();
   }
   return res;

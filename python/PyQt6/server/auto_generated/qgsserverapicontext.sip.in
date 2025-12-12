@@ -28,7 +28,6 @@ be passed along the request handlers chain.
 #include "qgsserverapicontext.h"
 %End
   public:
-
     QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface );
 %Docstring
 QgsServerApiContext constructor

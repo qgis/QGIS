@@ -27,7 +27,6 @@ QGraphicsView subclass representing the model designer.
 #include "qgsmodelgraphicsview.h"
 %End
   public:
-
     QgsModelGraphicsView( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsModelGraphicsView, with the specified ``parent``

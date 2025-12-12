@@ -87,7 +87,7 @@ class QgsPalettedRendererClassGatherer : public QThread
     QgsPalettedRasterRenderer::ClassData mClasses;
     QgsRasterBlockFeedback *mFeedback = nullptr;
     QMutex mFeedbackMutex;
-    bool mWasCanceled;
+    bool mWasCanceled = false;
 };
 
 class QgsPalettedRendererModel : public QAbstractItemModel
@@ -175,7 +175,6 @@ class GUI_EXPORT QgsPalettedRendererWidget : public QgsRasterRendererWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSingleBandPseudoColorRendererWidget.
      * \param layer associated raster layer

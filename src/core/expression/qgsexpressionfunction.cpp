@@ -1365,6 +1365,8 @@ static QVariant fcnTimeZoneFromId( const QVariantList &values, const QgsExpressi
   const QString timeZoneId = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
 
   QTimeZone tz;
+
+#if QT_FEATURE_timezone > 0
   if ( !timeZoneId.isEmpty() )
   {
     tz = QTimeZone( timeZoneId.toUtf8() );
@@ -1375,21 +1377,31 @@ static QVariant fcnTimeZoneFromId( const QVariantList &values, const QgsExpressi
     parent->setEvalErrorString( QObject::tr( "'%1' is not a valid time zone ID" ).arg( timeZoneId ) );
     return QVariant();
   }
+
+#else
+  parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnTimeZoneFromId" ) );
+#endif
   return QVariant::fromValue( tz );
 }
 
 static QVariant fcnGetTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+#if QT_FEATURE_timezone > 0
   const QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
   if ( datetime.isValid() )
   {
     return QVariant::fromValue( datetime.timeZone() );
   }
   return QVariant();
+#else
+  parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnGetTimeZone" ) );
+  return QVariant();
+#endif
 }
 
 static QVariant fcnSetTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+#if QT_FEATURE_timezone > 0
   QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
   const QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( values.at( 1 ), parent );
   if ( datetime.isValid() && tz.isValid() )
@@ -1398,10 +1410,15 @@ static QVariant fcnSetTimeZone( const QVariantList &values, const QgsExpressionC
     return QVariant::fromValue( datetime );
   }
   return QVariant();
+#else
+  parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnSetTimeZone" ) );
+  return QVariant();
+#endif
 }
 
 static QVariant fcnConvertTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+#if QT_FEATURE_timezone > 0
   const QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
   const QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( values.at( 1 ), parent );
   if ( datetime.isValid() && tz.isValid() )
@@ -1409,16 +1426,25 @@ static QVariant fcnConvertTimeZone( const QVariantList &values, const QgsExpress
     return QVariant::fromValue( datetime.toTimeZone( tz ) );
   }
   return QVariant();
+#else
+  parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnConvertTimeZone" ) );
+  return QVariant();
+#endif
 }
 
 static QVariant fcnTimeZoneToId( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+#if QT_FEATURE_timezone > 0
   const QTimeZone timeZone = QgsExpressionUtils::getTimeZoneValue( values.at( 0 ), parent );
   if ( timeZone.isValid() )
   {
     return QString( timeZone.id() );
   }
   return QVariant();
+#else
+  parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnTimeZoneToId" ) );
+  return QVariant();
+#endif
 }
 
 static QVariant fcnMakeInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -7237,7 +7263,7 @@ static QVariant fcnArraySum( const QVariantList &values, const QgsExpressionCont
 static QVariant convertToSameType( const QVariant &value, QMetaType::Type type )
 {
   QVariant result = value;
-  result.convert( static_cast<int>( type ) );
+  ( void )result.convert( static_cast<int>( type ) );
   return result;
 }
 

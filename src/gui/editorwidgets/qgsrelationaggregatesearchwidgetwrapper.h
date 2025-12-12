@@ -37,7 +37,6 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */

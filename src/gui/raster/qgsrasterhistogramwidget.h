@@ -42,7 +42,6 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterHistogramWidget, for the specified raster \a layer.
      */

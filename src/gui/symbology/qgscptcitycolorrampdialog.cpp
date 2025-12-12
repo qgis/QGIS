@@ -42,7 +42,6 @@
 QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent )
   : QDialog( parent )
   , mRamp( ramp )
-  , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );

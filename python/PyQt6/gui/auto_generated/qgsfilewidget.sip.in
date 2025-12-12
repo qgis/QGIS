@@ -26,7 +26,6 @@ A widget for selecting a file or a folder.
       sipType = NULL;
 %End
   public:
-
     enum StorageMode /BaseType=IntEnum/
     {
       GetFile,
@@ -269,7 +268,6 @@ Emitted whenever the current file or directory ``path`` is changed.
 %End
 
   protected:
-
     virtual void updateLayout();
 %Docstring
 Update buttons visibility

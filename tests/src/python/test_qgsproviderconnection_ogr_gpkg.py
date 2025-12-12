@@ -17,6 +17,7 @@ from osgeo import gdal  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.core import (
     Qgis,
+    QgsGeometry,
     QgsAbstractDatabaseProviderConnection,
     QgsCodedFieldDomain,
     QgsCodedValue,
@@ -413,8 +414,11 @@ class TestPyQgsProviderConnectionGpkg(
         results = conn.executeSql(sql)
         self.assertEqual(results[0][:2], [8, "Sülfeld"])
         self.assertEqual(results[1][:2], [16, "Steimker Berg"])
-        self.assertEqual(results[0][2][:20], "Polygon ((612694.674")
-        self.assertEqual(results[1][2][:20], "Polygon ((622042.427")
+        g = QgsGeometry()
+        g.fromWkb(results[0][2])
+        self.assertIn("POLYGON ((612694", g.asWkt().upper())
+        g.fromWkb(results[1][2])
+        self.assertIn("POLYGON ((622042.427", g.asWkt().upper())
 
         sql = "SELECT name, st_astext(geom) FROM cdb_lines WHERE name LIKE 'S%' LIMIT 2"
         results = conn.executeSql(sql)
@@ -464,6 +468,8 @@ class TestPyQgsProviderConnectionGpkg(
         self.assertEqual(
             fields.names(), ["fid", "id", "typ", "name3", "ortsrat", "id_long", "geom"]
         )
+        # Restore
+        conn.renameField("", "cdb_lines", "name3", "name")
 
     def test_searchLayerMetadata_buggy_extent(self):
         """Test fix for https://github.com/qgis/QGIS/issues/56203"""
@@ -716,6 +722,101 @@ class TestPyQgsProviderConnectionGpkg(
             str(e.exception),
             "Could not delete field domain: Domain does not exist",
         )
+
+    def test_select_geometry(self):
+        """Test complex queries and multiple geometries retrieval"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        # This would be a SQL parser error, test the fallback path
+        sql = "SELECT HasSpatialIndex('cdb_lines', 'geom')"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["HasSpatialIndex"])
+        results = exec_results.rows()
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0], [1])
+
+        sql = "SELECT ST_StartPoint(ST_ExteriorRing(geom)) AS start_point, geom FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["start_point", "geom"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        self.assertEqual(len(results[0]), 2)
+        g_start = QgsGeometry()
+        g_start.fromWkb(results[0][0])
+        g = QgsGeometry()
+        g.fromWkb(results[0][1])
+        self.assertTrue(g_start.asWkt().upper().startswith("POINT (625971"))
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+
+        # Swapping the order of selected fields
+        sql = "SELECT geom, ST_StartPoint(ST_ExteriorRing(geom)) AS start_point FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["geom", "start_point"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        self.assertEqual(len(results[0]), 2)
+        g = QgsGeometry()
+        g.fromWkb(results[0][0])
+        g_start = QgsGeometry()
+        g_start.fromWkb(results[0][1])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+        self.assertTrue(g_start.asWkt().upper().startswith("POINT (625971"))
+
+        # Fields as reported by SQLite: fid, geom, id, typ, name, ortsrat, id_long
+        # but Qgis internal OGR does not expose the geometry as a normal field
+        # so we have it appended at the end of the field list
+        # (fid, id, typ, name, ortsrat, id_long, geom)
+        sql = "SELECT * FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(
+            exec_results.columns(),
+            ["fid", "id", "typ", "name", "ortsrat", "id_long", "geom"],
+        )
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        self.assertEqual(results[0][0], 1)  # fid
+        self.assertEqual(results[0][1], 1)  # id
+        self.assertEqual(results[0][2], "Ortsteil")
+        self.assertEqual(results[0][3], "Neindorf")
+        self.assertEqual(results[0][4], "Almke/Neindorf")
+        self.assertEqual(results[0][5], None)
+        g = QgsGeometry()
+        g.fromWkb(results[0][6])  # geom
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+
+        sql = "SELECT geom, name FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["geom", "name"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        g = QgsGeometry()
+        g.fromWkb(results[0][0])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+        self.assertEqual(results[0][1], "Neindorf")
+
+        sql = "SELECT name, geom FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["name", "geom"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        g = QgsGeometry()
+        g.fromWkb(results[0][1])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+        self.assertEqual(results[0][0], "Neindorf")
+
+        sql = "SELECT name, geom, fid FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["name", "geom", "fid"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+
+        self.assertEqual(results[0][2], 1)  # fid
+        self.assertEqual(results[0][0], "Neindorf")
+        g = QgsGeometry()
+        g.fromWkb(results[0][1])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
 
 
 if __name__ == "__main__":

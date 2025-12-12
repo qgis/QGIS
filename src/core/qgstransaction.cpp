@@ -60,8 +60,6 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
 
 QgsTransaction::QgsTransaction( const QString &connString )
   : mConnString( connString )
-  , mTransactionActive( false )
-  , mLastSavePointIsDirty( true )
 {
 }
 

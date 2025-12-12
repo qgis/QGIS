@@ -1132,7 +1132,7 @@ class FunctionThread : public QThread
     Q_OBJECT
   public:
     FunctionThread( const std::function<bool()> &f )
-      : m_f( f ), m_result( false ) {}
+      : m_f( f ) {}
     bool getResult() const
     {
       return m_result;
@@ -1140,7 +1140,7 @@ class FunctionThread : public QThread
 
   private:
     std::function<bool()> m_f;
-    bool m_result;
+    bool m_result = false;
 
     void run() override
     {
