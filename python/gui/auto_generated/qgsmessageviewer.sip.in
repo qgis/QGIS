@@ -22,7 +22,7 @@ A generic message view for displaying QGIS messages.
   public:
     QgsMessageViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
 
-    virtual void setMessage( const QString &message, MessageType msgType );
+    virtual void setMessage( const QString &message, Qgis::StringFormat msgType );
 
 
     virtual void appendMessage( const QString &message );
