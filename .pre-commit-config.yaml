@@ -56,8 +56,7 @@ repos:
       types_or: [c++, c, c#]
       exclude: |
         (?x)^(
-            src/core/.*|
-            tests/code_layout/sipify/sipifyheader.h
+            src/core/.*
         )$
       verbose: true
 
