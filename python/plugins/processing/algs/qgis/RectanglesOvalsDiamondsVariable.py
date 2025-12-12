@@ -128,6 +128,18 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
     def displayName(self):
         return self.tr("Rectangles, ovals, diamonds (variable)")
 
+    def shortDescription(self):
+        return self.tr(
+            "Creates rectangle, oval or diamond-shaped polygons from the input point layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates rectangle, oval or diamond-shaped polygons "
+            "from the input point layer using specified width, height and (optional) rotation values. "
+            "Multipart inputs should be promoted to singleparts first."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

@@ -71,6 +71,15 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
     def displayName(self):
         return self.tr("Lines to polygons")
 
+    def shortDescription(self):
+        return self.tr("Generates polygons using the lines from an input line layer.")
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm generates a polygon layer using as polygon rings the lines from an input line layer.\n"
+            "The attribute table of the output layer is the same as the one of the input line layer."
+        )
+
     def outputName(self):
         return self.tr("Polygons")
 

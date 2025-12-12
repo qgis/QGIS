@@ -99,6 +99,18 @@ class PointsDisplacement(QgisAlgorithm):
     def displayName(self):
         return self.tr("Points displacement")
 
+    def shortDescription(self):
+        return self.tr(
+            "Offsets nearby point features by moving nearby points "
+            "by a preset amount to minimize overlapping features."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm offsets nearby point features by moving nearby points "
+            "by a preset amount to minimize overlapping features."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
