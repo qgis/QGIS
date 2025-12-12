@@ -17,18 +17,20 @@
  ***************************************************************************/
 
 #include "qgsgdalcredentialoptionswidget.h"
-#include "moc_qgsgdalcredentialoptionswidget.cpp"
-#include "qgsgdalguiutils.h"
-#include "qgsapplication.h"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
 
-#include <gdal.h>
 #include <cpl_minixml.h>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QHoverEvent>
+#include <gdal.h>
 
+#include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgsgdalguiutils.h"
+#include "qgsspinbox.h"
+
+#include <QComboBox>
+#include <QHoverEvent>
+#include <QLineEdit>
+
+#include "moc_qgsgdalcredentialoptionswidget.cpp"
 
 //
 // QgsGdalCredentialOptionsModel

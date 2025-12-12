@@ -18,23 +18,23 @@
 #ifndef QGSNETWORKACCESSMANAGER_H
 #define QGSNETWORKACCESSMANAGER_H
 
-#include <QList>
-#include "qgsnetworkreply.h"
+#include <memory>
+
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QStringList>
+#include "qgsnetworkreply.h"
+
+#include <QList>
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
-#include <QMutex>
-#include <QWaitCondition>
 #include <QSemaphore>
-#include <memory>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
+#include <QStringList>
+#include <QWaitCondition>
 
 class QgsFeedback;
 class QgsSettingsEntryInteger;
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
 
   private:
 
-    QNetworkAccessManager::Operation mOperation;
+    QNetworkAccessManager::Operation mOperation = QNetworkAccessManager::Operation::UnknownOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
     int mRequestId = 0;

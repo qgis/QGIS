@@ -13,14 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsappcoordinateoperationhandlers.h"
-#include "moc_qgsappcoordinateoperationhandlers.cpp"
-#include "qgscoordinatetransform.h"
+
 #include "qgisapp.h"
+#include "qgscoordinatetransform.h"
+#include "qgsinstallgridshiftdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageoutput.h"
 #include "qgsproject.h"
-#include "qgsinstallgridshiftdialog.h"
+
+#include "moc_qgsappcoordinateoperationhandlers.cpp"
 
 //
 // QgsAppMissingRequiredGridHandler

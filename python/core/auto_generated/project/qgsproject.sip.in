@@ -14,7 +14,6 @@
 
 
 
-
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")
@@ -2270,14 +2269,30 @@ Emitted when a layer was added to the registry.
 
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 %Docstring
-Emitted, when a layer was added to the registry and the legend. Layers
-can also be private layers, which are signalled by
+Emitted when ``layers`` were added to the registry and the legend.
+
+Layers can also be private layers, which are signalled by
 :py:func:`~QgsProject.layersAdded` and
 :py:func:`~QgsProject.layerWasAdded` but will not be advertised by this
 signal.
 
 :param layers: List of :py:class:`QgsMapLayer` which were added to the
                legend.
+
+.. seealso:: :py:func:`layersAddedWithoutLegend`
+%End
+
+    void layersAddedWithoutLegend( const QList<QgsMapLayer *> &layers );
+%Docstring
+Emitted when ``layers`` were added to the registry without adding to the
+legend.
+
+:param layers: List of :py:class:`QgsMapLayer` which were added to the
+               project but not the legend.
+
+.. seealso:: :py:func:`legendLayersAdded`
+
+.. versionadded:: 4.0
 %End
 
     void isDirtyChanged( bool dirty );

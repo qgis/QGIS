@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmhttprequest.h"
-#include "moc_qgsalgorithmhttprequest.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgis.h"
 
+#include "qgis.h"
 #include "qgsblockingnetworkrequest.h"
-#include <QUrl>
-#include <QNetworkRequest>
+#include "qgsprocessingparameters.h"
+
 #include <QDesktopServices>
-#include <QUrlQuery>
 #include <QMimeDatabase>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QUrlQuery>
+
+#include "moc_qgsalgorithmhttprequest.cpp"
 
 ///@cond PRIVATE
 
@@ -168,7 +170,10 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( !outputFile.isEmpty() )
     {
       QFile tempFile( outputFile );
-      tempFile.open( QIODevice::WriteOnly );
+      if ( !tempFile.open( QIODevice::WriteOnly ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not open %1 for writing" ).arg( outputFile ) );
+      }
       tempFile.write( resultData );
       tempFile.close();
 

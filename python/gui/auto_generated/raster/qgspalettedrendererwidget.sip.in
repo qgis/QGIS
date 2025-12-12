@@ -12,6 +12,7 @@
 
 
 
+
 class QgsPalettedRendererWidget : QgsRasterRendererWidget
 {
 %Docstring(signature="appended")

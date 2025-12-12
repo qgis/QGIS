@@ -17,6 +17,7 @@
 #define QGSAPPDBUTILS_H
 
 #include "qgis.h"
+
 #include <QDialog>
 
 class QgsDatabaseQueryHistoryWidget;

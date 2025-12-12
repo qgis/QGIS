@@ -14,21 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassprovidermodule.h"
+
+#include "qgsapplication.h"
+#include "qgsdataitemprovider.h"
+#include "qgsgrass.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassvector.h"
+#include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsmimedatautils.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterprojector.h"
-#include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgsdataitemprovider.h"
-#include "qgsgrassprovidermodule.h"
+
 #include "moc_qgsgrassprovidermodule.cpp"
-#include "qgsgrassprovider.h"
-#include "qgsgrass.h"
-#include "qgsgrassvector.h"
-#include "qgsproject.h"
-#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"
@@ -382,7 +384,6 @@ QList<QgsGrassImport *> QgsGrassMapsetItem::sImports;
 QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem *parent, const QString &dirPath, const QString &path )
   : QgsDirectoryItem( parent, QString(), dirPath, path )
   , QgsGrassObjectItemBase( QgsGrassObject() )
-  , mRefreshLater( false )
 {
   QDir dir( mDirPath );
   mName = dir.dirName();

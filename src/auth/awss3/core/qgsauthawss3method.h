@@ -16,13 +16,12 @@
 #ifndef QGSAUTHAWSS3METHOD_H
 #define QGSAUTHAWSS3METHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthAwsS3Method : public QgsAuthMethod
 {

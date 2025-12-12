@@ -16,10 +16,10 @@
 #ifndef QGSOAPIFDELETEFEATUREREQUEST_H
 #define QGSOAPIFDELETEFEATUREREQUEST_H
 
-#include <QObject>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+
+#include <QObject>
 
 //! Manages the Delete Feature request
 class QgsOapifDeleteFeatureRequest : public QgsBaseNetworkRequest

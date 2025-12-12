@@ -20,11 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QPair>
-
 #include "qgsrasterinterface.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsrectangle.h"
+
+#include <QPair>
 
 class QDomElement;
 

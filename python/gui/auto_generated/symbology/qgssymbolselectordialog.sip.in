@@ -16,7 +16,6 @@
 
 
 
-
 class QgsSymbolSelectorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

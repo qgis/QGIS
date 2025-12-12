@@ -15,31 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
-
 #include "qgscolorrampshaderwidget.h"
-#include "moc_qgscolorrampshaderwidget.cpp"
-#include "qgsrasterdataprovider.h"
-#include "qgstreewidgetitem.h"
-#include "qgssettings.h"
+
+#include "qgscolordialog.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
-#include "qgscolordialog.h"
-#include "qgsrasterrendererutils.h"
+#include "qgscolorramplegendnodewidget.h"
 #include "qgsfileutils.h"
 #include "qgsguiutils.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
-#include "qgscolorramplegendnodewidget.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterrendererutils.h"
+#include "qgssettings.h"
+#include "qgstreewidgetitem.h"
 
 #include <QCursor>
-#include <QPushButton>
-#include <QInputDialog>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QTextStream>
 #include <QTreeView>
 
+#include "moc_qgscolorrampshaderwidget.cpp"
 
 QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   : QWidget( parent )
@@ -62,8 +61,8 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mLegendSettingsButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::showLegendSettings );
 
   contextMenu = new QMenu( tr( "Options" ), this );
-  contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
-  contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
+  contextMenu->addAction( tr( "Change Color…" ), this, &QgsColorRampShaderWidget::changeColor );
+  contextMenu->addAction( tr( "Change Opacity…" ), this, &QgsColorRampShaderWidget::changeOpacity );
 
   mColormapTreeWidget->setItemDelegateForColumn( ColorColumn, new QgsColorSwatchDelegate( this ) );
   mValueDelegate = new QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::UnknownDataType, this );

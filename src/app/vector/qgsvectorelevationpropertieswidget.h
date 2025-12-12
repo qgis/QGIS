@@ -16,11 +16,11 @@
 #ifndef QGSVECTORELEVATIONPROPERTIESWIDGET_H
 #define QGSVECTORELEVATIONPROPERTIESWIDGET_H
 
+#include "ui_qgsvectorelevationpropertieswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerelevationproperties.h"
-
-#include "ui_qgsvectorelevationpropertieswidgetbase.h"
 
 class QgsVectorLayer;
 class QgsPropertyOverrideButton;

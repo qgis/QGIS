@@ -14,17 +14,16 @@
  ***************************************************************************/
 
 #include "qgswmsdataitems.h"
-#include "moc_qgswmsdataitems.cpp"
-
-#include "qgslogger.h"
 
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgsxyzconnection.h"
-#include "qgsproject.h"
 
+#include "moc_qgswmsdataitems.cpp"
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
@@ -86,6 +85,24 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     children.append( new QgsErrorItem( this, tr( "Failed to parse capabilities" ), mPath + "/error" ) );
     return children;
   }
+
+  const QString defaultImageFormat = QgsOwsConnection::settingsDefaultImageFormat->value( { QStringLiteral( "wms" ), name() } );
+
+  // Make sure the format is in the capabilities formats, otherwise use first available
+  int imageFormatIndex { 0 };
+  const QStringList supportedFormats { caps.supportedImageEncodings() };
+  for ( int i = 0; i < supportedFormats.size(); ++i )
+  {
+    const QString &format = supportedFormats.at( i );
+    if ( format.contains( defaultImageFormat, Qt::CaseInsensitive ) )
+    {
+      imageFormatIndex = i;
+      break;
+    }
+  }
+
+  if ( !supportedFormats.empty() )
+    uri.setParam( QStringLiteral( "format" ), supportedFormats.at( imageFormatIndex ) );
 
   int layerIndex { 0 };
 
@@ -443,33 +460,6 @@ QString QgsWMSItemBase::createUri( bool withStyle )
     mDataSourceUri.setParam( QLatin1String( "allowTemporalUpdates" ), QLatin1String( "true" ) );
   }
 
-  QString format;
-  bool first = true;
-  const QString defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  const QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
-  QStringList supportedFormats;
-  supportedFormats.reserve( formats.size() );
-  for ( const QgsWmsSupportedFormat &f : formats )
-  {
-    supportedFormats.append( f.format );
-  }
-
-  for ( const QString &f : mCapabilitiesProperty.capability.request.getMap.format )
-  {
-    if ( !supportedFormats.contains( f ) )
-    {
-      QgsDebugError( QStringLiteral( "encoding %1 not supported." ).arg( f ) );
-      continue;
-    }
-
-    if ( first || f == defaultEncoding )
-    {
-      format = f;
-      first = false;
-    }
-  }
-  mDataSourceUri.setParam( QStringLiteral( "format" ), format );
-
   const QString projectCrs = QgsProject::instance()->crs().authid();
   QString crs;
   // if project CRS is supported then use it, otherwise use first available CRS
@@ -514,7 +504,6 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
   , QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
 {
   mIconName = QStringLiteral( "mIconWms.svg" );
-  // For collection items we want the default style (empty) so let's strip it
   mUri = createUri( /* withStyle */ false );
 
   int layerIndex { 0 };

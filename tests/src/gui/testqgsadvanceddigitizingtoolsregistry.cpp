@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsadvanceddigitizingtools.h"
 #include "qgsadvanceddigitizingtoolsregistry.h"
+#include "qgstest.h"
+
 #include <QSignalSpy>
 
 class TestQgsAdvancedDigitizingToolsRegistry : public QObject

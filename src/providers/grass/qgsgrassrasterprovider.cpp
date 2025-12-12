@@ -15,30 +15,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
+#include "qgsgrassrasterprovider.h"
+
 #include <limits>
 
-#include "qgslogger.h"
-#include "qgsgrass.h"
-#include "qgsrasteridentifyresult.h"
-#include "qgsgrassrasterprovider.h"
-#include "moc_qgsgrassrasterprovider.cpp"
-#include "qgsconfig.h"
-
 #include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
-#include "qgshtmlutils.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsgrass.h"
+#include "qgshtmlutils.h"
+#include "qgslogger.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrasteridentifyresult.h"
+#include "qgsrectangle.h"
 
-#include <QImage>
-#include <QSettings>
 #include <QColor>
-#include <QMessageBox>
 #include <QDir>
-#include <QFileInfo>
 #include <QFile>
+#include <QFileInfo>
 #include <QHash>
+#include <QImage>
+#include <QMessageBox>
+#include <QSettings>
+
+#include "moc_qgsgrassrasterprovider.cpp"
 
 #define ERR( message ) QGS_ERROR_MESSAGE( message, "GRASS provider" )
 #define QGS_ERROR( message ) QgsError( message, "GRASS provider" )

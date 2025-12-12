@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmbatchgeocode.h"
 #include "qgsalgorithmbatchnominatimgeocode.h"
+
+#include "qgsalgorithmbatchgeocode.h"
 #include "qgsgeocoder.h"
-#include "qgsgeocoderresult.h"
 #include "qgsgeocodercontext.h"
+#include "qgsgeocoderresult.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

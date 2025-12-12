@@ -209,7 +209,7 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     QString mUuid;
 
     //! True if item is to be displayed on map
-    bool mEnabled;
+    bool mEnabled = true;
 
     StackingPosition mStackingPosition = StackBelowMapLabels;
 

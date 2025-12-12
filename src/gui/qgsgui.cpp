@@ -16,20 +16,23 @@
  ***************************************************************************/
 
 
-#include <QScreen>
-#include <QMessageBox>
-
 #include "qgsgui.h"
-#include "moc_qgsgui.cpp"
+
+#include "callouts/qgscalloutwidget.h"
+#include "qgsadvanceddigitizingtoolsregistry.h"
+#include "qgsannotationitemguiregistry.h"
+#include "qgscalloutsregistry.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
+#include "qgslayoutitemguiregistry.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgssourceselectproviderregistry.h"
-#include "qgslayoutitemguiregistry.h"
-#include "qgsannotationitemguiregistry.h"
-#include "qgsadvanceddigitizingtoolsregistry.h"
-#include "qgscalloutsregistry.h"
-#include "callouts/qgscalloutwidget.h"
+
+#include <QMessageBox>
+#include <QScreen>
+
+#include "moc_qgsgui.cpp"
+
 #ifdef Q_OS_MACOS
 #include "qgsmacnative.h"
 #elif defined( Q_OS_WIN )

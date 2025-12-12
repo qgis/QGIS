@@ -16,11 +16,11 @@
 #ifndef QGSMESSAGELOG_H
 #define QGSMESSAGELOG_H
 
-#include <QString>
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
+#include <QObject>
+#include <QString>
 
 /**
  * \ingroup core

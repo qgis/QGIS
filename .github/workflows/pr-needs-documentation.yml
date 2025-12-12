@@ -25,8 +25,8 @@ jobs:
     steps:
 
       - name: Create comment about documentation
-        if: github.event.label.name == 'Needs Documentation'
-        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        if: github.event.pull_request.merged == false && github.event.label.name == 'Needs Documentation'
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Create comment about changelog
         if: github.event.label.name == 'Changelog'
-        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -160,7 +160,7 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           issue-number: ${{ github.event.pull_request.number }}

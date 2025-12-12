@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsprojectmetadata.h"
+
 #include "qgstranslationcontext.h"
 
-#include <QDomNode>
 #include <QDomDocument>
+#include <QDomNode>
 
 bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )
 {

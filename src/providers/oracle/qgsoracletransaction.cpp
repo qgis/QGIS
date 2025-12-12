@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsoracletransaction.h"
+
 #include "moc_qgsoracletransaction.cpp"
+
 ///@cond PRIVATE
 
 #include "qgslogger.h"

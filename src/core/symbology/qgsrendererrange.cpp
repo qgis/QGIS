@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgsrendererrange.h"
+
 #include "qgsclassificationmethod.h"
-#include "qgssymbol.h"
 #include "qgssldexportcontext.h"
+#include "qgssymbol.h"
 
 #include <QLocale>
 #include <QUuid>
-
 
 QgsRendererRange::QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol, bool render, const QString &uuid )
   : mLowerValue( range.lowerBound() )

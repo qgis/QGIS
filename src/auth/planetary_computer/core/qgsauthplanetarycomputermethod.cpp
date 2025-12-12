@@ -15,16 +15,17 @@
  ***************************************************************************/
 
 #include "qgsauthplanetarycomputermethod.h"
-#include "moc_qgsauthplanetarycomputermethod.cpp"
-
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgsauthmethodregistry.h"
-#include "qgsnetworkaccessmanager.h"
 
 #include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsauthmethodregistry.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+
+#include "moc_qgsauthplanetarycomputermethod.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsauthplanetarycomputeredit.h"

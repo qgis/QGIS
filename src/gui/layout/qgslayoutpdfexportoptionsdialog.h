@@ -21,10 +21,12 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QDialog>
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgspdfexportoptions.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 class QgsGeospatialPdfLayerTreeModel;
 class QgsGeospatialPdfLayerFilteredTreeModel;

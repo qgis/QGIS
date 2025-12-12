@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgslayertreeembeddedconfigwidget.h"
-#include "moc_qgslayertreeembeddedconfigwidget.cpp"
 
-#include "qgsmaplayer.h"
-#include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsgui.h"
-#include <QStringListModel>
+#include "qgslayertreeembeddedwidgetregistry.h"
+#include "qgsmaplayer.h"
+
 #include <QStandardItemModel>
+#include <QStringListModel>
+
+#include "moc_qgslayertreeembeddedconfigwidget.cpp"
 
 QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget *parent )
   : QWidget( parent )

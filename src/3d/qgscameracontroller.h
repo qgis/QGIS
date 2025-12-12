@@ -20,9 +20,9 @@
 #include "qgscamerapose.h"
 #include "qgscoordinatetransform.h"
 
+#include <QImage>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
-#include <QImage>
 
 #ifndef SIP_RUN
 namespace Qt3DInput
@@ -465,7 +465,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
-    double mDragDepth;
+    double mDragDepth = 0;
 
     bool mZoomPointCalculated = false;
     QVector3D mZoomPoint;

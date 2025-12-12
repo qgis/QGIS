@@ -17,29 +17,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslogger.h"
 #include "qgswcscapabilities.h"
-#include "moc_qgswcscapabilities.cpp"
-#include "qgsowsconnection.h"
 
 #include <cmath>
 
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmessageoutput.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsowsconnection.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsmessageoutput.h"
-#include "qgsmessagelog.h"
-#include "qgsapplication.h"
 
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QSet>
 #include <QEventLoop>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QSet>
+
+#include "moc_qgswcscapabilities.cpp"
 
 #ifdef _MSC_VER
 #include <float.h>

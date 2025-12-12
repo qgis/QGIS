@@ -14,27 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QCoreApplication>
 #include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QEventLoop>
 #include <QFile>
 #include <QFileInfo>
 #include <QMutexLocker>
 #include <QObject>
+#include <QRandomGenerator>
+#include <QRegularExpression>
 #include <QSet>
 #include <QSqlDatabase>
+#include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QTextStream>
 #include <QTime>
 #include <QTimer>
 #include <QVariant>
-#include <QSqlDriver>
-#include <QDomElement>
-#include <QDomDocument>
-#include <QRegularExpression>
-#include <QCoreApplication>
-#include <QRandomGenerator>
-
 #include <QtCrypto>
 
 #ifndef QT_NO_SSL
@@ -1494,7 +1493,7 @@ bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename
   while ( !configuration.isNull() )
   {
     QgsAuthMethodConfig authMethodConfig;
-    authMethodConfig.readXml( configuration );
+    ( void )authMethodConfig.readXml( configuration );
     storeAuthenticationConfig( authMethodConfig, overwrite );
 
     configuration = configuration.nextSiblingElement();

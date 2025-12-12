@@ -16,12 +16,14 @@
 #ifndef QGsLIMITEDRANDOMCOLORRAMPDIALOG_H
 #define QGsLIMITEDRANDOMCOLORRAMPDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgscolorrampimpl.h"
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorrampimpl.h"
+#include "qgspanelwidget.h"
+
+#include <QDialog>
 
 class QDialogButtonBox;
 

@@ -37,7 +37,7 @@ class QWT_EXPORT QwtPolarMarker : public QwtPolarItem
 {
   public:
     explicit QwtPolarMarker();
-    virtual ~QwtPolarMarker();
+    ~QwtPolarMarker() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

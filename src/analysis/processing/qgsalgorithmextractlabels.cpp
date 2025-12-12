@@ -14,25 +14,25 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextractlabels.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsprocessingparameters.h"
-#include "qgsmapthemecollection.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "qgsnullpainterdevice.h"
-#include "qgslabelsink.h"
-#include "qgslayertree.h"
-#include "qgsvectorlayer.h"
-#include "qgsscalecalculator.h"
-#include "qgstextlabelfeature.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgsprocessingfeedback.h"
+
+#include <cmath>
 
 #include "pal/feature.h"
 #include "pal/labelposition.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslabelsink.h"
+#include "qgslayertree.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapthemecollection.h"
+#include "qgsnullpainterdevice.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgsprocessingfeedback.h"
+#include "qgsprocessingparameters.h"
+#include "qgsscalecalculator.h"
+#include "qgstextlabelfeature.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
-
-#include <cmath>
 
 ///@cond PRIVATE
 

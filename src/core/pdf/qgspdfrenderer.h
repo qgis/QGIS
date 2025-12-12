@@ -18,11 +18,14 @@
 #ifndef QGSPDFRENDERER_H
 #define QGSPDFRENDERER_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgsconfig.h"
-#include <QString>
+
 #include <memory>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QString>
 
 #ifdef HAVE_PDF4QT
 #endif

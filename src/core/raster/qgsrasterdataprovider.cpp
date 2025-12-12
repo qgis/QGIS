@@ -15,22 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
-#include "moc_qgsrasterdataprovider.cpp"
-#include "qgsrasteridentifyresult.h"
+
 #include "qgslogger.h"
 #include "qgspoint.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsthreadingutils.h"
 
-#include <QTime>
-#include <QMap>
 #include <QByteArray>
-#include <QVariant>
-
+#include <QMap>
+#include <QSet>
+#include <QTime>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QSet>
+#include <QVariant>
+
+#include "moc_qgsrasterdataprovider.cpp"
 
 #define ERR(message) QgsError(message, "Raster provider")
 

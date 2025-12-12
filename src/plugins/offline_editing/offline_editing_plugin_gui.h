@@ -19,12 +19,12 @@
 #ifndef QGS_OFFLINE_EDITING_PLUGIN_GUI_H
 #define QGS_OFFLINE_EDITING_PLUGIN_GUI_H
 
-#include <QDialog>
-
 #include "ui_offline_editing_plugin_guibase.h"
 
-#include "qgsofflineediting.h"
 #include "qgslayertreemodel.h"
+#include "qgsofflineediting.h"
+
+#include <QDialog>
 
 class QgsSelectLayerTreeModel : public QgsLayerTreeModel
 {
@@ -43,9 +43,9 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QgsOfflineEditingPluginGui( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsOfflineEditingPluginGui() override;
 
-    QString offlineDataPath();
-    QString offlineDbFile();
-    QStringList selectedLayerIds();
+    QString offlineDataPath() const;
+    QString offlineDbFile() const;
+    QStringList selectedLayerIds() const;
     bool onlySelected() const;
     QgsOfflineEditing::ContainerType dbContainerType() const;
 

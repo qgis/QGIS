@@ -39,7 +39,7 @@ class QWT_EXPORT QwtWeedingCurveFitter : public QwtCurveFitter
 {
   public:
     explicit QwtWeedingCurveFitter( double tolerance = 1.0 );
-    virtual ~QwtWeedingCurveFitter();
+    ~QwtWeedingCurveFitter() override;
 
     void setTolerance( double );
     double tolerance() const;

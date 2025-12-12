@@ -19,10 +19,9 @@
 #define QGSACTIVELAYERFEATURESLOCATORFILTERS_H
 
 #include "qgis_app.h"
-#include "qgslocatorfilter.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"
-
+#include "qgslocatorfilter.h"
 
 class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
 {

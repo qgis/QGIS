@@ -16,14 +16,14 @@
 #ifndef QGSSETTINGSENTRY_H
 #define QGSSETTINGSENTRY_H
 
-#include <QString>
-#include <QColor>
 #include <limits>
 
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QColor>
+#include <QString>
 
 class QgsSettingsTreeNode;
 
@@ -419,7 +419,7 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
     {}
 
 
-    virtual Qgis::SettingsType settingsType() const override = 0;
+    Qgis::SettingsType settingsType() const override = 0;
 
     /**
      * Returns settings value.

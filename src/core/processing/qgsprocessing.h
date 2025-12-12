@@ -18,10 +18,11 @@
 #ifndef QGSPROCESSING_H
 #define QGSPROCESSING_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+
 #include <QString>
 
 //

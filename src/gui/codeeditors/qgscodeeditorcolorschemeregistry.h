@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgscodeeditorcolorscheme.h"
+
 #include <QList>
 
 /**

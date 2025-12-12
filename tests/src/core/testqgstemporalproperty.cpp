@@ -15,9 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
 #include "qgsrange.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 //qgis includes...
 #include <qgstemporalproperty.h>

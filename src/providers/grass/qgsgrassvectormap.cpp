@@ -14,19 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassvectormap.h"
+
+#include "qgsgrass.h"
+#include "qgsgrassundocommand.h"
+#include "qgsgrassvectormaplayer.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgspoint.h"
-
-#include "qgslogger.h"
-#include "qgsgrass.h"
-#include "qgsgrassvectormap.h"
 #include "moc_qgsgrassvectormap.cpp"
-#include "qgsgrassvectormaplayer.h"
-#include "qgsgrassundocommand.h"
 
 extern "C"
 {
@@ -42,13 +43,6 @@ extern "C"
 
 QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
   : mGrassObject( grassObject )
-  , mValid( false )
-  , mOpen( false )
-  , mFrozen( false )
-  , mIsEdited( false )
-  , mVersion( 0 )
-  , mIs3d( false )
-  , mOldNumLines( 0 )
 {
   QgsDebugMsgLevel( "grassObject = " + grassObject.toString(), 2 );
   openMap();
@@ -521,7 +515,7 @@ int QgsGrassVectorMap::numAreas()
   return ( Vect_get_num_areas( mMap ) );
 }
 
-QString QgsGrassVectorMap::toString()
+QString QgsGrassVectorMap::toString() const
 {
   return mGrassObject.mapsetPath() + "/" + mGrassObject.name();
 }

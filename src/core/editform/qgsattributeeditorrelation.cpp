@@ -14,9 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeeditorrelation.h"
-#include "moc_qgsattributeeditorrelation.cpp"
+
 #include "qgsrelationmanager.h"
 #include "qgsxmlutils.h"
+
+#include "moc_qgsattributeeditorrelation.cpp"
 
 bool QgsAttributeEditorRelation::init( QgsRelationManager *relationManager )
 {

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributesformtreeviewindicator.h"
+
 #include "moc_qgsattributesformtreeviewindicator.cpp"
 
 QgsAttributesFormTreeViewIndicator::QgsAttributesFormTreeViewIndicator( QObject *parent )

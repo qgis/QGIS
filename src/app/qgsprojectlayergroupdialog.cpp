@@ -13,22 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectlayergroupdialog.h"
-#include "moc_qgsprojectlayergroupdialog.cpp"
-#include "qgsproject.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsziputils.h"
-#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsprojectlayergroupdialog.cpp"
 
 QgsEmbeddedLayerTreeModel::QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )

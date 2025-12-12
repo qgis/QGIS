@@ -18,13 +18,13 @@
 #ifndef QGSIMAGECACHE_H
 #define QGSIMAGECACHE_H
 
-#include "qgsabstractcontentcache.h"
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsabstractcontentcache.h"
 
 #include <QElapsedTimer>
-#include <QSize>
 #include <QImage>
+#include <QSize>
 
 class QTemporaryDir;
 

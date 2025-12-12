@@ -13,17 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserdockwidget.h"
-#include "moc_qgsbrowserdockwidget.cpp"
-#include "qgsbrowserdockwidget_p.h"
-#include "qgsbrowserwidget.h"
-#include "qgsbrowserproxymodel.h"
-#include "qgsbrowserguimodel.h"
-#include "qgsdirectoryitem.h"
-#include "qgsprojectitem.h"
-#include "qgslayeritem.h"
 
-#include <QVBoxLayout>
+#include "qgsbrowserdockwidget_p.h"
+#include "qgsbrowserguimodel.h"
+#include "qgsbrowserproxymodel.h"
+#include "qgsbrowserwidget.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
+#include "qgsprojectitem.h"
+
 #include <QFileDialog>
+#include <QVBoxLayout>
+
+#include "moc_qgsbrowserdockwidget.cpp"
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )

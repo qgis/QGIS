@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseventtracing.h"
 #include "qgspointcloudlayereditutils.h"
-#include "qgslazdecoder.h"
+
+#include "lazperf/readers.hpp"
+#include "lazperf/writers.hpp"
 #include "qgscopcpointcloudindex.h"
+#include "qgseventtracing.h"
+#include "qgslazdecoder.h"
+
 #include <QMutex>
-
-#include <lazperf/readers.hpp>
-#include <lazperf/writers.hpp>
-
 
 static void updatePoint( char *pointBuffer, int pointFormat, const QString &attributeName, double newValue )
 {

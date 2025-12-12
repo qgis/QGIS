@@ -16,10 +16,10 @@
 #ifndef QGSATTRIBUTEFORMEDITORWIDGET_H
 #define QGSATTRIBUTEFORMEDITORWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgseditorwidgetwrapper.h"
+#include "qgis_sip.h"
 #include "qgsattributeformwidget.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsEditorWidgetWrapper;
 class QgsMultiEditToolButton;
@@ -29,6 +29,8 @@ class QStackedWidget;
 class QgsAttributeEditorContext;
 class QLabel;
 class QgsAggregateToolButton;
+
+class QToolButton;
 
 /**
  * \ingroup gui
@@ -88,6 +90,13 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     void setConstraintResultVisible( bool editable );
 
     /**
+     * Sets whether the widget value will be remembered for potential reuse when
+     * creating new features
+     * \since QGIS 4.0
+     */
+    void setRememberLastValue( bool remember );
+
+    /**
      * Returns the editor widget wrapper
      * \since QGIS 3.10
      */
@@ -123,6 +132,14 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      */
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
 
+    /**
+     * Emitted when the widget's remember last value toggle changes
+     * \param index the field index
+     * \param remember the value is TRUE when the last value should be remembered
+     * \since QGIS 4.0
+     */
+    void rememberLastValueChanged( int index, bool remember );
+
   private slots:
 
     //! Triggered when editor widget's value changes
@@ -142,15 +159,18 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     QgsAttributeForm *mForm = nullptr;
     QLabel *mConstraintResultLabel = nullptr;
 
+    QToolButton *mRememberLastValueButton = nullptr;
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
     QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
     QVariantList mPreviousAdditionalValues;
-    bool mBlockValueUpdate;
-    bool mIsMixed;
-    bool mIsChanged;
+    bool mBlockValueUpdate = false;
+    bool mIsMixed = false;
+    bool mIsChanged = false;
+    bool mIsConstraintResultVisible = false;
 
     void updateWidgets() final;
+    void updateRememberWidget();
 
     friend class TestQgsAttributeForm;
 };

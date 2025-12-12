@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsgeometry.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
 #include <QString>
-
-#include <qgsapplication.h>
-#include <qgsgeometry.h>
-#include <qgsfeaturerequest.h>
-#include "qgsfeatureiterator.h"
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
 
 Q_DECLARE_METATYPE( QgsFeatureRequest )
 

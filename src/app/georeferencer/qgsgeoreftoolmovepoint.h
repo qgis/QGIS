@@ -31,7 +31,7 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    bool isCanvas( QgsMapCanvas * );
+    bool isCanvas( QgsMapCanvas * ) const;
 
     QgsPointXY startPoint() const { return mStartPointMapCoords; }
     void setStartPoint( const QgsPointXY &startPoint ) { mStartPointMapCoords = startPoint; }

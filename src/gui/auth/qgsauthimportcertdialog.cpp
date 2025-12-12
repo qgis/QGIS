@@ -15,21 +15,21 @@
  ***************************************************************************/
 
 #include "qgsauthimportcertdialog.h"
-#include "moc_qgsauthimportcertdialog.cpp"
+
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QPushButton>
-
 #include <QtCrypto>
 
-#include "qgssettings.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthimportcertdialog.cpp"
 
 QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImportCertDialog::CertFilter filter, QgsAuthImportCertDialog::CertInput input )
   : QDialog( parent )
@@ -52,7 +52,9 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImport
 
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+      QgsHelp::openHelp( QStringLiteral( "auth_system/auth_workflows.html#authentication-authorities" ) );
+    } );
     connect( teCertText, &QPlainTextEdit::textChanged, this, &QgsAuthImportCertDialog::validateCertificates );
 
     connect( radioImportFile, &QAbstractButton::toggled, this, &QgsAuthImportCertDialog::updateGui );

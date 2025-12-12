@@ -16,13 +16,13 @@
  ***************************************************************************/
 
 #include "qgscolorscheme.h"
-#include "qgscolorschemeregistry.h"
 
-#include "qgsproject.h"
-#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
-#include "qgssettings.h"
+#include "qgscolorschemeregistry.h"
 #include "qgscolorutils.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 
 #include <QDir>
 #include <QRegularExpression>

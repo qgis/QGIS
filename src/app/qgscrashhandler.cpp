@@ -14,18 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include <iostream>
 #include "qgscrashhandler.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
 
 #include <gdal.h>
+#include <iostream>
 
-#include <QTextStream>
-#include <QProcess>
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+
 #include <QDir>
+#include <QProcess>
 #include <QStandardPaths>
+#include <QTextStream>
 #include <QUuid>
 
 QString QgsCrashHandler::sPythonCrashLogFile;

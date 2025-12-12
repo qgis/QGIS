@@ -17,8 +17,8 @@
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
-#include "qgswkbtypes.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 class TestQgsProcessingFixGeometry : public QgsTest
 {
@@ -565,45 +565,45 @@ void TestQgsProcessingFixGeometry::fixSelfIntersectionAlg_data()
   QTest::addColumn<int>( "method" );
   QTest::addColumn<int>( "expectedOutputFeatureCount" );
 
-  QTest::newRow( "(lines) Split feature into a multi-object feature" )
+  QTest::newRow( "(lines) Split feature into a multi-part feature" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "line layer" ), QStringLiteral( "ogr" ) )
     << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=lines_to_split" ), QStringLiteral( "lines to split" ), QStringLiteral( "ogr" ) )
     << ( QStringList()
-         << "Split feature into a multi-object feature"
-         << "Split feature into a multi-object feature"
+         << "Split feature into a multi-part feature"
+         << "Split feature into a multi-part feature"
          << "Error is obsolete" )
     << 0
     << 9;
 
-  QTest::newRow( "(lines) Split feature into multiple single-object features" )
+  QTest::newRow( "(lines) Split feature into multiple single-part features" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "line layer" ), QStringLiteral( "ogr" ) )
     << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=lines_to_split" ), QStringLiteral( "lines to split" ), QStringLiteral( "ogr" ) )
     << ( QStringList()
-         << "Split feature into multiple single-object features"
-         << "Split feature into multiple single-object features"
+         << "Split feature into multiple single-part features"
+         << "Split feature into multiple single-part features"
          << "Error is obsolete" )
     << 1
     << 11;
 
-  QTest::newRow( "(polygons) Split feature into a multi-object feature" )
+  QTest::newRow( "(polygons) Split feature into a multi-part feature" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon_line layer" ), QStringLiteral( "ogr" ) )
     << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=polygons_to_split" ), QStringLiteral( "polygons to split" ), QStringLiteral( "ogr" ) )
     << ( QStringList()
-         << "Split feature into a multi-object feature"
-         << "Split feature into a multi-object feature" )
+         << "Split feature into a multi-part feature"
+         << "Split feature into a multi-part feature" )
     << 0
     << 25;
 
-  QTest::newRow( "(lines) Split feature into multiple single-object features" )
+  QTest::newRow( "(lines) Split feature into multiple single-part features" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon layer" ), QStringLiteral( "ogr" ) )
     << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=polygons_to_split" ), QStringLiteral( "polygons to split" ), QStringLiteral( "ogr" ) )
     << ( QStringList()
-         << "Split feature into multiple single-object features"
-         << "Split feature into multiple single-object features" )
+         << "Split feature into multiple single-part features"
+         << "Split feature into multiple single-part features" )
     << 1
     << 27;
 
-  // QTest::newRow( "Split feature into multiple single-object features" )
+  // QTest::newRow( "Split feature into multiple single-part features" )
   //   << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygon layer" ), QStringLiteral( "ogr" ) )
   //   << new QgsVectorLayer( mDataDir.absoluteFilePath( "split_self_intersections.gpkg|layername=polygons_to_split" ), QStringLiteral( "polygons to split" ), QStringLiteral( "ogr" ) )
   //   << ( QStringList() << "" )

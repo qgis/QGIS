@@ -102,6 +102,13 @@ Ownership of ``domain`` is transferred to the item.
 Returns the associated field domain.
 %End
 
+    QString connectionUri() const;
+%Docstring
+Returns the connection URI.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 

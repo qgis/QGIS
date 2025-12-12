@@ -14,114 +14,115 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "moc_qgsapplication.cpp"
+
+#include "gps/qgsgpsconnectionregistry.h"
+#include "layout/qgspagesizeregistry.h"
+#include "processing/models/qgsprocessingmodelchilddependency.h"
+#include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "processing/qgsprocessingregistry.h"
+#include "qgs3drendererregistry.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgsactionscoperegistry.h"
+#include "qgsannotationitemregistry.h"
+#include "qgsannotationregistry.h"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
-#include "qgslocalizeddatapathregistry.h"
+#include "qgsbabelformatregistry.h"
+#include "qgsbookmarkmanager.h"
+#include "qgscalloutsregistry.h"
+#include "qgsclassificationmethodregistry.h"
+#include "qgscolorrampimpl.h"
+#include "qgscolorschemeregistry.h"
+#include "qgsconnectionregistry.h"
+#include "qgscoordinatereferencesystemregistry.h"
 #include "qgsdataitemproviderregistry.h"
+#include "qgsdatetimefieldformatter.h"
+#include "qgsdbquerylog.h"
 #include "qgsexception.h"
+#include "qgsexpression.h"
+#include "qgsexternalstorageregistry.h"
+#include "qgsfeaturestore.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfontmanager.h"
 #include "qgsgeometry.h"
-#include "qgsannotationitemregistry.h"
+#include "qgsgpsconnection.h"
+#include "qgsimagecache.h"
+#include "qgsinterval.h"
+#include "qgslabelingengineruleregistry.h"
 #include "qgslayermetadataproviderregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslocalizeddatapathregistry.h"
+#include "qgslocator.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetcherregistry.h"
 #include "qgsnetworkreply.h"
-#include "qgsproviderregistry.h"
-#include "qgsexpression.h"
-#include "qgsactionscoperegistry.h"
-#include "qgsruntimeprofiler.h"
-#include "qgstaskmanager.h"
+#include "qgsnewsfeedparser.h"
 #include "qgsnumericformatregistry.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsscalebarrendererregistry.h"
-#include "qgslabelingengineruleregistry.h"
-#include "qgssvgcache.h"
-#include "qgsimagecache.h"
-#include "qgssourcecache.h"
-#include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
-#include "qgsprojectstorageregistry.h"
-#include "qgsexternalstorageregistry.h"
-#include "qgsrasterrendererregistry.h"
-#include "qgsrendererregistry.h"
-#include "qgspointcloudrendererregistry.h"
-#include "qgscoordinatereferencesystemregistry.h"
-#include "qgssymbollayerregistry.h"
-#include "qgssymbollayerutils.h"
-#include "qgscalloutsregistry.h"
 #include "qgsplotregistry.h"
 #include "qgspluginlayerregistry.h"
-#include "qgsclassificationmethodregistry.h"
-#include "qgsmessagelog.h"
-#include "qgsannotationregistry.h"
+#include "qgspointcloudrendererregistry.h"
+#include "qgsprofilesourceregistry.h"
+#include "qgsproject.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsprojutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsreadwritelocker.h"
+#include "qgsrecentstylehandler.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsremappingproxyfeaturesink.h"
+#include "qgsrendererregistry.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsscalebarrendererregistry.h"
+#include "qgssensorregistry.h"
+#include "qgssensorthingsutils.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssourcecache.h"
+#include "qgssqliteutils.h"
+#include "qgsstyle.h"
+#include "qgsstylemodel.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerregistry.h"
+#include "qgssymbollayerutils.h"
+#include "qgstaskmanager.h"
 #include "qgstiledownloadmanager.h"
 #include "qgstiledscenerendererregistry.h"
 #include "qgsunittypes.h"
+#include "qgsunsetattributevalue.h"
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
-#include "qgsreferencedgeometry.h"
-#include "qgs3drendererregistry.h"
-#include "qgs3dsymbolregistry.h"
-#include "qgslayoutrendercontext.h"
-#include "qgssqliteutils.h"
-#include "qgsstyle.h"
-#include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
-#include "qgsnewsfeedparser.h"
-#include "qgsbookmarkmanager.h"
-#include "qgsstylemodel.h"
-#include "qgsconnectionregistry.h"
-#include "qgsremappingproxyfeaturesink.h"
-#include "qgsmeshlayer.h"
-#include "qgsfeaturestore.h"
-#include "qgslocator.h"
-#include "qgsreadwritelocker.h"
-#include "qgsbabelformatregistry.h"
-#include "qgsdbquerylog.h"
-#include "qgsfontmanager.h"
-#include "qgsunsetattributevalue.h"
-#include "qgscolorrampimpl.h"
-#include "qgsinterval.h"
-#include "qgsgpsconnection.h"
-#include "qgssensorregistry.h"
-#include "qgssensorthingsutils.h"
-#include "qgsprofilesourceregistry.h"
 
-#include "gps/qgsgpsconnectionregistry.h"
-#include "processing/qgsprocessingregistry.h"
-#include "processing/models/qgsprocessingmodelchildparametersource.h"
-#include "processing/models/qgsprocessingmodelchilddependency.h"
-
-#include "layout/qgspagesizeregistry.h"
-#include "qgsrecentstylehandler.h"
-#include "qgsdatetimefieldformatter.h"
-
+#include <QAuthenticator>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QFileOpenEvent>
+#include <QIcon>
+#include <QLibraryInfo>
+#include <QLocale>
 #include <QMessageBox>
 #include <QPalette>
+#include <QPixmap>
 #include <QProcess>
 #include <QProcessEnvironment>
-#include <QIcon>
-#include <QPixmap>
-#include <QThreadPool>
-#include <QLocale>
-#include <QStyle>
-#include <QLibraryInfo>
-#include <QStandardPaths>
-#include <QRegularExpression>
-#include <QTextStream>
-#include <QScreen>
-#include <QAuthenticator>
 #include <QRecursiveMutex>
+#include <QRegularExpression>
+#include <QScreen>
+#include <QStandardPaths>
+#include <QStyle>
+#include <QTextStream>
+#include <QThreadPool>
+
+#include "moc_qgsapplication.cpp"
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QImageReader>
 #endif
@@ -279,7 +280,14 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   if ( platformName != QLatin1String( "desktop" ) )
   {
     mApplicationMembers = std::make_unique<ApplicationMembers>();
-    mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
   else
   {
@@ -363,7 +371,14 @@ void QgsApplication::init( QString profileFolder )
   if ( platform() == QLatin1String( "desktop" ) )
   {
     instance()->mApplicationMembers = std::make_unique<ApplicationMembers>();
-    instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
 
   if ( profileFolder.isEmpty() )
@@ -380,9 +395,8 @@ void QgsApplication::init( QString profileFolder )
     // This doesn't get this hit for QGIS Desktop because we setup the profile via main
     QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profileFolder );
     QgsUserProfileManager manager( rootProfileFolder );
-    QgsUserProfile *profile = manager.getProfile();
+    std::unique_ptr< QgsUserProfile > profile = manager.getProfile();
     profileFolder = profile->folder();
-    delete profile;
   }
 
   *sProfilePath() = profileFolder;
@@ -630,7 +644,16 @@ void QgsApplication::installTranslators()
 QgsApplication::~QgsApplication()
 {
   if ( mApplicationMembers )
-    mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+  {
+    try
+    {
+      mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "An error occurred while performing backwards compatibility for settings: %1" ).arg( e.what() ) );
+    }
+  }
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
@@ -1230,10 +1253,6 @@ QString QgsApplication::authorsFilePath()
 QString QgsApplication::contributorsFilePath()
 {
   return pkgDataPath() + QStringLiteral( "/doc/CONTRIBUTORS" );
-}
-QString QgsApplication::developersMapFilePath()
-{
-  return pkgDataPath() + QStringLiteral( "/doc/developersmap.html" );
 }
 
 QString QgsApplication::sponsorsFilePath()
@@ -2993,7 +3012,6 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mFieldFormatterRegistry.reset();
   mGpsConnectionRegistry.reset();
   mGpsBabelFormatRegistry.reset();
-  mMessageLog.reset();
   mPaintEffectRegistry.reset();
   mPluginLayerRegistry.reset();
   mProcessingRegistry.reset();
@@ -3027,6 +3045,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mLocalizedDataPathRegistry.reset();
   mCrsRegistry.reset();
   mQueryLogger.reset();
+  mMessageLog.reset();
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

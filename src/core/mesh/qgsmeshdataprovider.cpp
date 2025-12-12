@@ -15,11 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsmeshdataprovider.h"
-#include "moc_qgsmeshdataprovider.cpp"
+
+#include "qgis.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsthreadingutils.h"
+
+#include "moc_qgsmeshdataprovider.cpp"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
     Qgis::DataProviderReadFlags flags )

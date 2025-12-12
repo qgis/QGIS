@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorRampLegendNodeSettings
 {
 %Docstring(signature="appended")

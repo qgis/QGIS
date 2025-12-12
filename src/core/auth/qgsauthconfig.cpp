@@ -15,17 +15,16 @@
  ***************************************************************************/
 
 #include "qgsauthconfig.h"
+
 #include "qgsauthcertutils.h"
-#include "qgsxmlutils.h"
 #include "qgslogger.h"
+#include "qgsxmlutils.h"
 
-#include <QtCrypto>
-
+#include <QCryptographicHash>
 #include <QFile>
 #include <QObject>
-#include <QCryptographicHash>
 #include <QUrl>
-
+#include <QtCrypto>
 
 //////////////////////////////////////////////
 // QgsAuthMethodConfig

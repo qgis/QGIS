@@ -15,19 +15,20 @@
 
 #include "qgsfontutils.h"
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgis.h"
 
 #include <QApplication>
 #include <QFile>
 #include <QFont>
 #include <QFontDatabase>
 #include <QFontInfo>
-#include <QStringList>
 #include <QMimeData>
-#include <memory>
+#include <QStringList>
 
 bool QgsFontUtils::fontMatchOnSystem( const QFont &f )
 {

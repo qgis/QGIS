@@ -2718,8 +2718,7 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsSymbol *subSymbol();
 
-    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ ) ${SIP_FINAL};
-
+    bool setSubSymbol( QgsSymbol *symbol /Transfer/ ) final;
 
     virtual void setOutputUnit( Qgis::RenderUnit unit );
 
@@ -2920,8 +2919,7 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsSymbol *subSymbol();
 
-    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ ) ${SIP_FINAL};
-
+    bool setSubSymbol( QgsSymbol *symbol /Transfer/ ) final;
     virtual void setOutputUnit( Qgis::RenderUnit unit );
 
     virtual Qgis::RenderUnit outputUnit() const;

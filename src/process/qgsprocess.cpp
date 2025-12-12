@@ -15,12 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscommandlineutils.h"
 #include "qgsprocess.h"
-#include "moc_qgsprocess.cpp"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingalgorithm.h"
+
+#include "qgscommandlineutils.h"
 #include "qgsnativealgorithms.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingregistry.h"
+
+#include "moc_qgsprocess.cpp"
+
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"
 #endif

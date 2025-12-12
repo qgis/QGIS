@@ -13,54 +13,55 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColor>
-#include <QImage>
-#include <QPainter>
-#include <QSize>
-#include <QSvgGenerator>
-#include <QPicture>
+#include "qgssymbol.h"
 
 #include <cmath>
 #include <map>
+#include <memory>
 #include <random>
 
-#include "qgssymbol.h"
-#include "qgspolyhedralsurface.h"
-#include "qgsrectangle.h"
-#include "qgssymbollayer.h"
-
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
-#include "qgslogger.h"
-#include "qgsrendercontext.h" // for bigSymbolPreview
-#include "qgsproject.h"
-#include "qgsprojectstylesettings.h"
-#include "qgsstyle.h"
-#include "qgspainteffect.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsmultipoint.h"
-#include "qgsgeometrycollection.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsclipper.h"
-#include "qgsproperty.h"
-#include "qgscolorschemeregistry.h"
 #include "qgsapplication.h"
+#include "qgsclipper.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscolorutils.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgslegendpatchshape.h"
-#include "qgsgeos.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
+#include "qgsfeature.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
-#include "qgscolorutils.h"
-#include "qgsunittypes.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsgeometrypaintdevice.h"
+#include "qgsgeos.h"
+#include "qgslegendpatchshape.h"
+#include "qgslinestring.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmultipoint.h"
+#include "qgspainteffect.h"
 #include "qgspainting.h"
+#include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsproperty.h"
+#include "qgsrectangle.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgssldexportcontext.h"
+#include "qgsstyle.h"
+#include "qgssymbollayer.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
+#include <QColor>
+#include <QImage>
+#include <QPainter>
+#include <QPicture>
+#include <QSize>
+#include <QSvgGenerator>
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -959,7 +960,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
 
   const Qgis::SymbolRenderHints renderHints = QgsSymbol::renderHints();
 
-  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, renderHints, nullptr, fields ) );
+  mSymbolRenderContext = std::make_unique<QgsSymbolRenderContext>( context, Qgis::RenderUnit::Unknown, mOpacity, false, renderHints, nullptr, fields );
 
   // Why do we need a copy here ? Is it to make sure the symbol layer rendering does not mess with the symbol render context ?
   // Or is there another profound reason ?
@@ -1084,7 +1085,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   std::unique_ptr< QgsRenderContext > tempContext;
   if ( !context )
   {
-    tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( painter ) ) );
+    tempContext = std::make_unique<QgsRenderContext>( QgsRenderContext::fromQPainter( painter ) );
     context = tempContext.get();
     context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   }
@@ -1830,7 +1831,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case Qgis::WkbType::MultiLineString:
       case Qgis::WkbType::GeometryCollection:
       {
-        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
+        const QgsGeometryCollection *geomCollection = qgis::down_cast<const QgsGeometryCollection *>( processedGeometry );
 
         const unsigned int num = geomCollection->numGeometries();
         for ( unsigned int i = 0; i < num; ++i )
@@ -2267,7 +2268,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         z = 0.0;
         if ( ct.isValid() )
         {
-          ct.transformInPlace( x, y, z );
+          try
+          {
+            ct.transformInPlace( x, y, z );
+          }
+          catch ( QgsCsException & )
+          {
+            continue;
+          }
         }
         mapPoint.setX( x );
         mapPoint.setY( y );

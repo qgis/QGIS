@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerjoinbuffer.h"
-#include "moc_qgsvectorlayerjoinbuffer.cpp"
 
+#include "qgsauxiliarystorage.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
-#include "qgsauxiliarystorage.h"
 
 #include <QDomElement>
+
+#include "moc_qgsvectorlayerjoinbuffer.cpp"
 
 QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer *layer )
   : mLayer( layer )
@@ -94,7 +95,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
   }
 
   //cache joined layer to virtual memory if specified by user
-  if ( joinInfo.isUsingMemoryCache() )
+  if ( mLayer && joinInfo.isUsingMemoryCache() )
   {
     cacheJoinLayer( mVectorJoins.last() );
   }

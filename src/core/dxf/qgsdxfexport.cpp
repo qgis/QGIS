@@ -27,34 +27,33 @@
 // AutoCAD 2014: http://images.autodesk.com/adsk/files/autocad_2014_pdf_dxf_reference_enu.pdf
 
 #include "qgsdxfexport.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
-#include "qgscompoundcurve.h"
-#include "qgscircularstring.h"
-#include "qgslinestring.h"
-#include "qgspointxy.h"
-#include "qgsproject.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfeatureiterator.h"
-#include "qgslinesymbollayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsunittypes.h"
-#include "qgstextlabelfeature.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsdxfexport_p.h"
-#include "qgssymbol.h"
-#include "qgsvariantutils.h"
-
-#include "qgswkbtypes.h"
-#include "qgspoint.h"
-#include "qgsgeos.h"
 
 #include "pal/feature.h"
 #include "pal/labelposition.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsdxfexport_p.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgspointxy.h"
+#include "qgsproject.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextlabelfeature.h"
+#include "qgsunittypes.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 #include <QIODevice>
 #include <QTextCodec>
@@ -270,7 +269,9 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
       const QgsRectangle extentRect = mMapSettings.mapToLayerCoordinates( vl, mExtent );
       request.setFilterRect( extentRect );
     }
-    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( request ) : vl->getFeatures( request );
+    // cppcheck-suppress accessMoved
+    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( std::move( request ) ) : vl->getFeatures( std::move( request ) );
+    // cppcheck-suppress accessMoved
     QgsFeature feature;
     if ( featureIt.nextFeature( feature ) )
     {
@@ -771,7 +772,17 @@ void QgsDxfExport::writeEntities()
     QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
     QgsCoordinateTransform extentTransform = ct;
     extentTransform.setBallparkTransformsAreAppropriate( true );
-    request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
+
+    try
+    {
+      request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming DXF layer extent: %1" ).arg( e.what() ) );
+      continue;
+    }
+
     if ( mFlags & FlagOnlySelectedFeatures )
     {
       request.setFilterFids( job->selectedFeatureIds );
@@ -2648,7 +2659,16 @@ void QgsDxfExport::createDDBlockInfo()
         QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setExpressionContext( job->renderContext.expressionContext() );
         QgsCoordinateTransform extentTransform = ct;
         extentTransform.setBallparkTransformsAreAppropriate( true );
-        request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+        try
+        {
+          request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugError( QStringLiteral( "Could not transform extent to layer extent: %1" ).arg( e.what() ) );
+          continue;
+        }
+
         QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
         QHash <uint, QPair<int, DataDefinedBlockInfo> > blockSymbolMap; //symbolHash/occurrences/block Text

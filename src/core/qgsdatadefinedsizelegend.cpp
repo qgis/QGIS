@@ -15,18 +15,18 @@
 
 #include "qgsdatadefinedsizelegend.h"
 
+#include "qgscolorutils.h"
+#include "qgsfontutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertytransformer.h"
 #include "qgssymbollayerutils.h"
-#include "qgsxmlutils.h"
-#include "qgslinesymbollayer.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfontutils.h"
-#include "qgscolorutils.h"
+#include "qgsxmlutils.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {

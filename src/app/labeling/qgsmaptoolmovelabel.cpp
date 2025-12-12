@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmovelabel.h"
-#include "moc_qgsmaptoolmovelabel.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
+
 #include "qgisapp.h"
-#include "qgsmessagebar.h"
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgscallout.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgsrubberband.h"
 #include "qgsstatusbar.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include "moc_qgsmaptoolmovelabel.cpp"
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -473,14 +475,14 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           double lineAnchorPercent = 0.0;
           if ( feature.geometry().type() == Qgis::GeometryType::Polygon )
           {
-            QgsGeometry boundary( feature.geometry().constGet()->boundary() );
+            const QgsGeometry boundary( feature.geometry().constGet()->boundary() );
             const double boundaryLength = boundary.length();
-            lineAnchorPercent = boundaryLength > 0 ? boundary.lineLocatePoint( releaseCoordsGeometry ) / boundary.length() : 0.5;
+            lineAnchorPercent = boundaryLength > 0 ? boundary.lineLocatePoint( releaseCoordsGeometry ) / boundaryLength : 0.5;
           }
           else
           {
             const double length = feature.geometry().length();
-            lineAnchorPercent = length > 0 ? feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / feature.geometry().length() : 0.5;
+            lineAnchorPercent = length > 0 ? feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / length : 0.5;
           }
 
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );

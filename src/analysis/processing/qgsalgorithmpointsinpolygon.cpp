@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpointsinpolygon.h"
-#include "qgsprocessing.h"
-#include "qgsgeometryengine.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsapplication.h"
+#include "qgsgeometryengine.h"
+#include "qgsprocessing.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

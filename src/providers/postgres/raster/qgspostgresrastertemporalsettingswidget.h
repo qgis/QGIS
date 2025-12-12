@@ -19,6 +19,7 @@
 #define QGSPOSTGRESRASTERTEMPORALSETTINGSWIDGET_H
 
 #include "ui_qgspostgresrastertemporalsettingswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 

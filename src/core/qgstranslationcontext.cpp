@@ -15,12 +15,12 @@
  ***************************************************************************/
 #include "qgstranslationcontext.h"
 
-#include <QDir>
-#include <QTextStream>
-#include <QDomElement>
-#include <QDomDocument>
-
 #include "qgssettings.h"
+
+#include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QTextStream>
 
 QgsProject *QgsTranslationContext::project() const
 {
@@ -87,7 +87,11 @@ void QgsTranslationContext::writeTsFile( const QString &locale ) const
 
   //write file
   QFile tsFile( fileName() );
-  tsFile.open( QIODevice::WriteOnly );
+  if ( !tsFile.open( QIODevice::WriteOnly ) )
+  {
+    QgsDebugError( QStringLiteral( "Can't open file %1" ).arg( fileName() ) );
+    return;
+  }
   QTextStream stream( &tsFile );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );

@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgslayoutitemwidget.h"
-#include "moc_qgslayoutitemwidget.cpp"
-#include "qgspropertyoverridebutton.h"
+
+#include "qgsexpressioncontextutils.h"
+#include "qgsfilterlineedit.h"
+#include "qgsfontbutton.h"
 #include "qgslayout.h"
-#include "qgsproject.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutmultiframe.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsprintlayout.h"
-#include "qgslayoutatlas.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgslayoutframe.h"
+#include "qgsproject.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssymbolbutton.h"
-#include "qgsfontbutton.h"
-#include "qgslayoutdesignerinterface.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutmultiframe.h"
-#include "qgsfilterlineedit.h"
+
 #include <QButtonGroup>
+
+#include "moc_qgslayoutitemwidget.cpp"
 
 //
 // QgsLayoutConfigObject

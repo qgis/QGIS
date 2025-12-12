@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsprojectviewsettings.h"
-#include "moc_qgsprojectviewsettings.cpp"
-#include "qgis.h"
-#include "qgsproject.h"
-#include "qgsmaplayerutils.h"
-#include "qgscoordinatetransform.h"
-#include <QDomElement>
-#include "qgsmessagelog.h"
 
+#include "qgis.h"
+#include "qgscoordinatetransform.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+
+#include <QDomElement>
+
+#include "moc_qgsprojectviewsettings.cpp"
 
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
-  , mRestoreProjectExtentOnProjectLoad( false )
 {
 
 }
@@ -94,7 +95,15 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
   {
     QgsCoordinateTransform ct( mPresetFullExtent.crs(), mProject->crs(), mProject->transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
-    return QgsReferencedRectangle( ct.transformBoundingBox( mPresetFullExtent ), mProject->crs() );
+    try
+    {
+      return QgsReferencedRectangle( ct.transformBoundingBox( mPresetFullExtent ), mProject->crs() );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Transform error encountered while determining project extent: %1" ).arg( e.what() ) );
+      return QgsReferencedRectangle();
+    }
   }
   else
   {
@@ -222,7 +231,10 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
   QDomElement element = doc.createElement( QStringLiteral( "ProjectViewSettings" ) );
   element.setAttribute( QStringLiteral( "UseProjectScales" ), mUseProjectScales ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
-  element.setAttribute( QStringLiteral( "LoadProjectExtent" ), mRestoreProjectExtentOnProjectLoad ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( mRestoreProjectExtentOnProjectLoad )
+  {
+    element.setAttribute( QStringLiteral( "LoadProjectExtent" ), QStringLiteral( "1" ) );
+  }
 
   element.setAttribute( QStringLiteral( "rotation" ), qgsDoubleToString( mDefaultRotation ) );
 

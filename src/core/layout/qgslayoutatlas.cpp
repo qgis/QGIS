@@ -14,21 +14,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgslayoutatlas.h"
+
 #include <algorithm>
 #include <stdexcept>
+
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgslayout.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgsmessagelog.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
 #include <QtAlgorithms>
 
-#include "qgslayoutatlas.h"
 #include "moc_qgslayoutatlas.cpp"
-#include "qgslayout.h"
-#include "qgsmessagelog.h"
-#include "qgsfeaturerequest.h"
-#include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsvariantutils.h"
-#include "qgslayoutreportcontext.h"
-#include "qgslayoutrendercontext.h"
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )

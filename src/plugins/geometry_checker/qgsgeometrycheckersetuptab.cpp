@@ -15,22 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
-#include "moc_qgsgeometrycheckersetuptab.cpp"
+
+#include "qgisinterface.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturepool.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheckfactory.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeaturepool.h"
-#include "qgsvectordataproviderfeaturepool.h"
-
-#include "qgsfeatureiterator.h"
-#include "qgisinterface.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsvectordataprovider.h"
 #include "qgsiconutils.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QAction>
 #include <QEventLoop>
@@ -39,6 +38,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QtConcurrentMap>
+
+#include "moc_qgsgeometrycheckersetuptab.cpp"
 
 static const int LayerIdRole = Qt::UserRole + 1;
 

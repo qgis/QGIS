@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "qgsextentbufferdialog.h"
-#include "moc_qgsextentbufferdialog.cpp"
-#include "qdialogbuttonbox.h"
+
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
@@ -26,6 +25,10 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
+
+#include <qdialogbuttonbox.h>
+
+#include "moc_qgsextentbufferdialog.cpp"
 
 QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer *layer, QWidget *parent )
   : QgsPanelWidget( parent ), mSymbol( symbol ), mLayer( layer )

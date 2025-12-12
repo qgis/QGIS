@@ -16,12 +16,12 @@
 #ifndef QGSINPUTCONTROLLER_H
 #define QGSINPUTCONTROLLER_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 
 class QgsAbstract2DMapController;
 class QgsAbstract3DMapController;

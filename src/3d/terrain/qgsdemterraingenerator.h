@@ -17,7 +17,6 @@
 #define QGSDEMTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
 #include "qgsterraingenerator.h"
 
 class QgsRasterLayer;

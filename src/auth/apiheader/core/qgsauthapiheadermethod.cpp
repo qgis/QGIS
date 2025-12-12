@@ -15,12 +15,13 @@
  ***************************************************************************/
 
 #include "qgsauthapiheadermethod.h"
-#include "moc_qgsauthapiheadermethod.cpp"
 
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
 #include "qgsmessagelog.h"
+
+#include "moc_qgsauthapiheadermethod.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsauthapiheaderedit.h"

@@ -18,10 +18,11 @@
 
 #include "ui_widget_symbolslist.h"
 
-#include "qgssymbolwidgetcontext.h"
-#include "qgsstylemodel.h"
-#include <QWidget>
 #include "qgis_gui.h"
+#include "qgsstylemodel.h"
+#include "qgssymbolwidgetcontext.h"
+
+#include <QWidget>
 
 class QgsSymbol;
 class QgsStyle;

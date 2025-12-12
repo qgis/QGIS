@@ -17,11 +17,10 @@
 
 #include "qgslazinfo.h"
 
-#include "qgslogger.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgssetrequestinitiator_p.h"
-
 #include "lazperf/vlr.hpp"
+#include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
+#include "qgssetrequestinitiator_p.h"
 
 // QgsLazInfo
 

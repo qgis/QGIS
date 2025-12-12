@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometryselfintersection.h"
+
 #include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsgeometrycheckerror.h"
 #include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE

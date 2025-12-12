@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLADDPART_H
 #define QGSMAPTOOLADDPART_H
 
-#include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_app.h"
+#include "qgsmaptoolcapturelayergeometry.h"
 
 class QgsCurvePolygon;
 

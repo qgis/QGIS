@@ -21,12 +21,12 @@
 
 class QgsServerInterface;
 class QgsProject;
-class QgsWmsRequest;
 class QgsServerResponse;
 class QDomDocument;
 
 namespace QgsWms
 {
+  class QgsWmsRequest;
 
   /**
    * Output GetStyles response

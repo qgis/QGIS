@@ -13,38 +13,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMenu>
-#include <QEvent>
-#include <QCoreApplication>
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <cmath>
+#include <memory>
 
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "moc_qgsadvanceddigitizingdockwidget.cpp"
-#include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
+#include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingtoolsregistry.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscadutils.h"
 #include "qgsexpression.h"
+#include "qgsfocuswatcher.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptooledit.h"
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qgsmessagebaritem.h"
-#include "qgsfocuswatcher.h"
-#include "qgssettings.h"
-#include "qgssnappingutils.h"
-#include "qgsproject.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmaptooledit.h"
 #include "qgsmeshlayer.h"
-#include "qgsunittypes.h"
+#include "qgsmessagebaritem.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgssnappingutils.h"
+#include "qgsunittypes.h"
 #include "qgsuserinputwidget.h"
 
 #include <QActionGroup>
+#include <QCoreApplication>
+#include <QEvent>
+#include <QMenu>
 
+#include "moc_qgsadvanceddigitizingdockwidget.cpp"
 
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( QStringLiteral( "cad-snapping-prioritize-feature" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-record-construction-guides" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) );
@@ -63,27 +64,27 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this );
 
-  mAngleConstraint.reset( new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton ) );
+  mAngleConstraint = std::make_unique<CadConstraint>( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton );
   mAngleConstraint->setCadConstraintType( Qgis::CadConstraintType::Angle );
   mAngleConstraint->setMapCanvas( mMapCanvas );
-  mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
+  mDistanceConstraint = std::make_unique<CadConstraint>( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton );
   mDistanceConstraint->setCadConstraintType( Qgis::CadConstraintType::Distance );
   mDistanceConstraint->setMapCanvas( mMapCanvas );
-  mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
+  mXConstraint = std::make_unique<CadConstraint>( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton );
   mXConstraint->setCadConstraintType( Qgis::CadConstraintType::XCoordinate );
   mXConstraint->setMapCanvas( mMapCanvas );
-  mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
+  mYConstraint = std::make_unique<CadConstraint>( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton );
   mYConstraint->setCadConstraintType( Qgis::CadConstraintType::YCoordinate );
   mYConstraint->setMapCanvas( mMapCanvas );
-  mZConstraint.reset( new CadConstraint( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton ) );
+  mZConstraint = std::make_unique<CadConstraint>( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton );
   mZConstraint->setCadConstraintType( Qgis::CadConstraintType::ZValue );
   mZConstraint->setMapCanvas( mMapCanvas );
-  mMConstraint.reset( new CadConstraint( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton ) );
+  mMConstraint = std::make_unique<CadConstraint>( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton );
   mMConstraint->setCadConstraintType( Qgis::CadConstraintType::MValue );
   mMConstraint->setMapCanvas( mMapCanvas );
 
-  mLineExtensionConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
-  mXyVertexConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
+  mLineExtensionConstraint = std::make_unique<CadConstraint>( new QLineEdit(), new QToolButton() );
+  mXyVertexConstraint = std::make_unique<CadConstraint>( new QLineEdit(), new QToolButton() );
   mXyVertexConstraint->setMapCanvas( mMapCanvas );
 
   mBetweenLineConstraint = Qgis::BetweenLineConstraint::NoConstraint;
@@ -2227,13 +2228,13 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
         QgsFeature feature;
         QgsGeometry geom( mConstructionGuideLine.clone() );
         feature.setGeometry( geom );
-        mConstructionGuidesLayer->dataProvider()->addFeature( feature );
+        ( void ) mConstructionGuidesLayer->dataProvider()->addFeature( feature );
         mConstructionGuideId = feature.id();
       }
       else if ( mConstructionGuideLine.numPoints() > 2 )
       {
         QgsGeometry geom( mConstructionGuideLine.clone() );
-        mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
+        ( void ) mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
       }
     }
     else
@@ -2243,7 +2244,7 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
         mConstructionGuideLine.addVertex( pt );
 
         QgsGeometry geom( mConstructionGuideLine.clone() );
-        mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
+        ( void ) mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
         mConstructionGuideLine.clear();
       }
     }

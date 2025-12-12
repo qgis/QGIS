@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelGraphicsView : QGraphicsView
 {
 %Docstring(signature="appended")
@@ -90,6 +91,13 @@ Starts a single undo command
 Ends a single undo command
 %End
 
+    void abortCommand();
+%Docstring
+Aborts pending undo command
+
+.. versionadded:: 4.0
+%End
+
 
     enum ClipboardOperation /BaseType=IntEnum/
     {
@@ -134,6 +142,7 @@ Pastes items from clipboard, using the specified ``mode``.
 %End
 
   public slots:
+
     void snapSelected();
 %Docstring
 Snaps the selected items to the grid.
@@ -184,6 +193,13 @@ Emitted when an undo command is started in the view.
     void commandEnded();
 %Docstring
 Emitted when an undo command in the view has ended.
+%End
+
+    void commandAborted();
+%Docstring
+Emitted when an undo command in the view was aborted.
+
+.. versionadded:: 4.0
 %End
 
     void deleteSelectedItems();

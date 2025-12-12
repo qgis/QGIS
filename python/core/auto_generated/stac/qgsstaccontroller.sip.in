@@ -10,6 +10,7 @@
 
 
 
+
 class QgsStacController : QObject
 {
 %Docstring(signature="appended")

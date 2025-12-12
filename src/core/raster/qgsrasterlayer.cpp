@@ -14,14 +14,25 @@ email                : tim at linfiniti.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsrasterlayer.h"
+
+#include <cmath>
+#include <cstdio>
+#include <limits>
+#include <typeinfo>
+
 #include "qgsapplication.h"
+#include "qgsbilinearrasterresampler.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscubicrasterresampler.h"
 #include "qgsdatasourceuri.h"
+#include "qgsgdalprovider.h"
 #include "qgshuesaturationfilter.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
@@ -33,41 +44,30 @@ email                : tim at linfiniti.com
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
-#include "qgsrasterlayer.h"
-#include "moc_qgsrasterlayer.cpp"
+#include "qgsrasterlabeling.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayerprofilegenerator.h"
 #include "qgsrasterlayerrenderer.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsrastershader.h"
 #include "qgsreadwritecontext.h"
-#include "qgsxmlutils.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssinglebandgrayrenderer.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgssettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgdalprovider.h"
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
-#include "qgsrasterlayertemporalproperties.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsmaplayerfactory.h"
-#include "qgsrasterpipe.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsrasterlayerprofilegenerator.h"
-#include "qgsthreadingutils.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
-#include "qgsrasterlabeling.h"
+#include "qgssinglebandgrayrenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssldexportcontext.h"
-
-#include <cmath>
-#include <cstdio>
-#include <limits>
-#include <typeinfo>
+#include "qgssymbollayerutils.h"
+#include "qgsthreadingutils.h"
+#include "qgsxmlutils.h"
 
 #include <QApplication>
 #include <QCursor>
@@ -87,6 +87,8 @@ email                : tim at linfiniti.com
 #include <QRegularExpression>
 #include <QSlider>
 #include <QUrl>
+
+#include "moc_qgsrasterlayer.cpp"
 
 const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( QStringLiteral( "default-oversampling" ), QgsSettingsTree::sTreeRaster, 2.0 );
 const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( QStringLiteral( "default-early-resampling" ), QgsSettingsTree::sTreeRaster, false );
@@ -759,14 +761,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // data provider has been deleted by the pipe
     mDataProvider = nullptr;
-    appendError( ERR( tr( "Could not insert provider into layer pipe (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
+    appendError( ERR( tr( "Could not insert provider into layer pipe (provider: %1, URI: %2)" ).arg( mProviderKey, mDataSource ) ) );
     return;
   }
 
   if ( !mDataProvider->isValid() )
   {
     setError( mDataProvider->error() );
-    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
+    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2)" ).arg( mProviderKey, mDataSource ) ) );
     return;
   }
 
@@ -2289,9 +2291,15 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
     const QDomElement legendElem = layer_node.firstChildElement( QStringLiteral( "legend" ) );
-    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    QgsMapLayerLegend *rasterLegend = legend();
+    if ( rasterLegend && !legendElem.isNull() )
     {
-      l->readXml( legendElem, context );
+      rasterLegend->readXml( legendElem, context );
+    }
+    else if ( rasterLegend )
+    {
+      // Temporary fix for #63346 because legend was not saved if empty
+      rasterLegend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, false );
     }
   }
 

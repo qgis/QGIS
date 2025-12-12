@@ -462,7 +462,7 @@ void TestQgsRasterCalculator::calcWithLayers()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -521,7 +521,7 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -777,7 +777,7 @@ void TestQgsRasterCalculator::errors()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -878,7 +878,7 @@ void TestQgsRasterCalculator::testOutputCrsFromRasterEntries()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -919,7 +919,7 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
 #endif
 
     QTemporaryFile tmpFile;
-    tmpFile.open(); // fileName is not available until open
+    QVERIFY( tmpFile.open() ); // fileName is not available until open
     QString tmpName = tmpFile.fileName();
     tmpFile.close();
     QgsRasterCalculator rc( formula, tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
@@ -981,7 +981,7 @@ void TestQgsRasterCalculator::testStatistics()
   entry1.ref = QStringLiteral( "landsat@1" );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -1042,7 +1042,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -1148,7 +1148,7 @@ void TestQgsRasterCalculator::testCreationOptions()
 
   QTemporaryFile tmpFile;
   tmpFile.setFileTemplate( "rc-XXXXXX.tif" );
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -1178,7 +1178,7 @@ void TestQgsRasterCalculator::testNoDataValue()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 

@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaggregate.h"
-#include "qgsprocessingparameteraggregate.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsprocessingparameteraggregate.h"
 
 ///@cond PRIVATE
 

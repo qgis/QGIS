@@ -17,16 +17,16 @@
 #ifndef QGSSPATIALITESOURCESELECT_H
 #define QGSSPATIALITESOURCESELECT_H
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdbsourceselect.h"
 
-#include <QThread>
-#include <QMap>
-#include <QList>
-#include <QPair>
-#include <QIcon>
 #include <QFileDialog>
+#include <QIcon>
+#include <QList>
+#include <QMap>
+#include <QPair>
+#include <QThread>
 
 class QgsSpatiaLiteTableModel;
 class QTableWidgetItem;
@@ -55,7 +55,7 @@ class QgsSpatiaLiteSourceSelect : public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables();
+    QStringList selectedTables() const;
     //! Connection info (DB-path)
     QString connectionInfo();
     // Store the selected database
@@ -83,8 +83,6 @@ class QgsSpatiaLiteSourceSelect : public QgsAbstractDbSourceSelect
     void cmbConnections_activated( int );
     void setLayerType( const QString &table, const QString &column, const QString &type );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    //!Sets a new regular expression to the model
-    void setSearchExpression( const QString &regexp );
     void showHelp();
     bool configureFromUri( const QString &uri ) override;
 

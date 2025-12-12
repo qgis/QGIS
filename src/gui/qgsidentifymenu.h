@@ -16,13 +16,13 @@
 #ifndef QGSIDENTIFYMENU_H
 #define QGSIDENTIFYMENU_H
 
-#include <QMenu>
-
-#include "qgsmaplayeractionregistry.h"
-#include "qgsmaptoolidentify.h"
-#include "qgsexpressioncontext.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsexpressioncontext.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsmaptoolidentify.h"
+
+#include <QMenu>
 
 #ifndef SIP_RUN
 /// \cond PRIVATE
@@ -181,6 +181,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     Q_DECL_DEPRECATED static void styleHighlight( QgsHighlight *highlight ) SIP_DEPRECATED;
 
   signals:
+
     /**
      * Emitted when a \a message should be shown to the user in the application message bar.
      *
@@ -221,12 +222,12 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsHighlight *> mRubberBands;
-    bool mAllowMultipleReturn;
-    bool mExecWithSingleResult;
-    bool mShowFeatureActions;
-    bool mResultsIfExternalAction;
-    int mMaxLayerDisplay;
-    int mMaxFeatureDisplay;
+    bool mAllowMultipleReturn = true;
+    bool mExecWithSingleResult = false;
+    bool mShowFeatureActions = false;
+    bool mResultsIfExternalAction = false;
+    int mMaxLayerDisplay = 10;
+    int mMaxFeatureDisplay = 10;
 
     QgsExpressionContextScope mExpressionContextScope;
 

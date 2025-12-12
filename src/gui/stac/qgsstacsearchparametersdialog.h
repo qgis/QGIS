@@ -19,6 +19,7 @@
 ///@cond PRIVATE
 #include "qgsrange.h"
 #include "qgsstaccollectionlist.h"
+
 #define SIP_NO_FILE
 
 #include "ui_qgsstacsearchparametersdialog.h"
@@ -36,7 +37,7 @@ class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchP
 
   public:
     QgsStacSearchParametersDialog( QgsStacController *stac, QgsMapCanvas *canvas, QWidget *parent = nullptr );
-    ~QgsStacSearchParametersDialog();
+    ~QgsStacSearchParametersDialog() override;
 
     void accept() override;
     void reject() override;

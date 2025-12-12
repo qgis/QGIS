@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooleditnodes.h"
-#include "moc_qgslayoutviewtooleditnodes.cpp"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslayoutview.h"
+
 #include "qgslayout.h"
 #include "qgslayoutitemnodeitem.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
+
+#include "moc_qgslayoutviewtooleditnodes.cpp"
 
 QgsLayoutViewToolEditNodes::QgsLayoutViewToolEditNodes( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Select" ) )

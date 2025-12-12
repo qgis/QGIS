@@ -16,10 +16,11 @@
 #ifndef QGSCODEEDITORSQL_H
 #define QGSCODEEDITORSQL_H
 
-#include "qgscodeeditor.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscodeeditor.h"
 #include "qgsfeature.h"
+
 #include <Qsci/qscilexersql.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
 
     Qgis::ScriptLanguage language() const override;
 
-    virtual ~QgsCodeEditorSQL();
+    ~QgsCodeEditorSQL() override;
 
     /**
      * Set field names to be added to the lexer API.

@@ -17,12 +17,13 @@
 
 #define SIP_NO_FILE
 
-#include "qgslabelfeature.h"
-#include "qgstextdocument.h"
-#include "qgstextmetrics.h"
-#include "qgstextdocumentmetrics.h"
-#include "qgspallabeling.h"
 #include <optional>
+
+#include "qgslabelfeature.h"
+#include "qgspallabeling.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
+#include "qgstextmetrics.h"
 
 class QgsTextCharacterFormat;
 

@@ -19,19 +19,20 @@
 #define QGSDXFEXPORTDIALOG_H
 
 #include "ui_qgsdxfexportdialogbase.h"
+
+#include "qgsdxfexport.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgsdxfexport.h"
-#include "qgssettingstree.h"
-#include "qgssettingsentryimpl.h"
-#include "qgsxmlutils.h"
-#include "qgsvectorlayerref.h"
 #include "qgsmessagebar.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgsvectorlayerref.h"
+#include "qgsxmlutils.h"
 
+#include <QItemDelegate>
 #include <QList>
 #include <QPair>
 #include <QSet>
-#include <QItemDelegate>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;

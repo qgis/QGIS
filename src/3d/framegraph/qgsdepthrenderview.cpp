@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgsdepthrenderview.h"
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QLayerFilter>
-#include <Qt3DRender/QLayer>
-#include <Qt3DRender/QRenderTargetSelector>
-#include <Qt3DRender/QRenderTarget>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QClearBuffers>
-#include <Qt3DRender/qsubtreeenabler.h>
-#include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QRenderStateSet>
-#include <Qt3DRender/QDepthTest>
-#include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QRenderCapture>
+
 #include "qgsdepthentity.h"
 
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QRenderTarget>
+#include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/qsubtreeenabler.h>
 
 QgsDepthRenderView::QgsDepthRenderView( const QString &viewName, QSize size, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity )
   : QgsAbstractRenderView( viewName )

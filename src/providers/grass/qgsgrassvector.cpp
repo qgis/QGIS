@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileInfo>
-
-#include "qgslogger.h"
+#include "qgsgrassvector.h"
 
 #include "qgsgrass.h"
+#include "qgslogger.h"
 
-#include "qgsgrassvector.h"
+#include <QFileInfo>
+
 #include "moc_qgsgrassvector.cpp"
 
 extern "C"

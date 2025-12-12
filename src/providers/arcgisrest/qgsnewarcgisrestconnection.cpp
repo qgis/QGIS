@@ -15,20 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewarcgisrestconnection.h"
-#include "moc_qgsnewarcgisrestconnection.cpp"
-#include "qgsauthsettingswidget.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsowsconnection.h"
+
 #include "fromencodedcomponenthelper.h"
+#include "qgsauthsettingswidget.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QMessageBox>
-#include <QUrl>
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsnewarcgisrestconnection.cpp"
 
 QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *parent, const QString &connectionName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

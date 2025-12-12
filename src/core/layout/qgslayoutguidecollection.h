@@ -16,16 +16,18 @@
 #ifndef QGSLAYOUTGUIDECOLLECTION_H
 #define QGSLAYOUTGUIDECOLLECTION_H
 
+#include <memory>
+
 #include "qgis_core.h"
+#include "qgslayoutitempage.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
-#include "qgslayoutitempage.h"
 #include "qgslayoutserializableobject.h"
-#include <QPen>
+
 #include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include <QGraphicsLineItem>
-#include <memory>
+#include <QPen>
+#include <QSortFilterProxyModel>
 
 class QgsLayout;
 class QgsLayoutPageCollection;

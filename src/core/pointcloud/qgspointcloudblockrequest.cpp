@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudblockrequest.h"
+
 #include "moc_qgspointcloudblockrequest.cpp"
 
 //
@@ -45,7 +46,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsPointCloudBlockRequest::takeBlock()
   return std::move( mBlock );
 }
 
-QString QgsPointCloudBlockRequest::errorStr()
+QString QgsPointCloudBlockRequest::errorStr() const
 {
   return mErrorStr;
 }

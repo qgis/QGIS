@@ -15,6 +15,7 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsprovidersqlquerybuilder.h"
+
 #include "qgssqliteutils.h"
 
 QgsProviderSqlQueryBuilder::~QgsProviderSqlQueryBuilder() = default;

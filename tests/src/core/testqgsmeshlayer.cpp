@@ -15,7 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 
@@ -118,6 +121,8 @@ class TestQgsMeshLayer : public QgsTest
     void testHaveSameParentQuantity();
 
     void testMinimumMaximumActiveScalarDataset();
+
+    void testClone();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1067,8 +1072,8 @@ void TestQgsMeshLayer::test_reload()
   auto copyToTemporaryFile = []( QFile &fileTocopy, QTemporaryFile &tempFile ) {
     QDataStream streamToCopy( &fileTocopy );
     QDataStream streamTemporaryFile( &tempFile );
-    tempFile.open();
-    fileTocopy.open( QIODevice::ReadOnly );
+    QVERIFY( tempFile.open() );
+    QVERIFY( fileTocopy.open( QIODevice::ReadOnly ) );
 
     while ( !streamToCopy.atEnd() )
     {
@@ -1148,8 +1153,8 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   auto copyToTemporaryFile = []( QFile &fileTocopy, QTemporaryFile &tempFile ) {
     QDataStream streamToCopy( &fileTocopy );
     QDataStream streamTemporaryFile( &tempFile );
-    tempFile.open();
-    fileTocopy.open( QIODevice::ReadOnly );
+    QVERIFY( tempFile.open() );
+    QVERIFY( fileTocopy.open( QIODevice::ReadOnly ) );
 
     while ( !streamToCopy.atEnd() )
     {
@@ -2168,7 +2173,7 @@ void TestQgsMeshLayer::keepDatasetIndexConsistency()
   QVERIFY( QFile::copy( uri_2, uri ) );
 
   // create a new mesh layer from XML
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
 
@@ -2185,7 +2190,7 @@ void TestQgsMeshLayer::keepDatasetIndexConsistency()
 
   QFile::remove( uri );
   QVERIFY( QFile::copy( uri_1, uri ) );
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
 
@@ -2421,7 +2426,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
   QVERIFY( QFile::copy( uri_2, uri ) );
 
   // create a new mesh layer from XML
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
   QDateTime referenceTime2 = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime();
@@ -2434,7 +2439,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
 
   QFile::remove( uri );
   QVERIFY( QFile::copy( uri_1, uri ) );
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
 
@@ -2637,6 +2642,40 @@ void TestQgsMeshLayer::testRemoveDatasets()
 
   // cannot remove by name - does not exist
   QCOMPARE( layer.removeDatasets( "Non Existing Dataset Group" ), false );
+}
+
+void TestQgsMeshLayer::testClone()
+{
+  // layer
+  QgsMeshLayer layer(
+    testDataPath( "mesh/several_parts.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" )
+  );
+  QVERIFY( layer.isValid() );
+
+  // add additional dataset
+  bool added = layer.addDatasets( testDataPath( "mesh/several_parts_data.dat" ) );
+  QVERIFY( added );
+
+  //set settings
+  int groupIndex = 0;
+  QgsMeshRendererSettings rendererSettings = layer.rendererSettings();
+  QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::WholeMesh );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  // clone layer
+  QgsMeshLayer *layerClone = layer.clone();
+
+  // compare numver of dataset groups
+  QCOMPARE( layer.datasetGroupCount(), layerClone->datasetGroupCount() );
+
+  // compare renderer settings
+  QCOMPARE( scalarRendererSettings.limits(), layerClone->rendererSettings().scalarSettings( groupIndex ).limits() );
+  QCOMPARE( scalarRendererSettings.extent(), layerClone->rendererSettings().scalarSettings( groupIndex ).extent() );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

@@ -14,26 +14,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
-#include "qgsmessagebar.h"
 #include "qgsmeasuredialog.h"
-#include "moc_qgsmeasuredialog.cpp"
-#include "qgsmeasuretool.h"
-#include "qgsdistancearea.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
+
+#include "qgisapp.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsunittypes.h"
+#include "qgsdistancearea.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmeasuretool.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
-#include "qgsgui.h"
+#include "qgsunittypes.h"
 
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QLocale>
 #include <QPushButton>
 
+#include "moc_qgsmeasuredialog.cpp"
 
 const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( QStringLiteral( "clipboard-header" ), QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the clipboard along the coordinates, distances" ) );
 
@@ -738,7 +739,16 @@ void QgsMeasureDialog::updateUi()
       firstPoint = false;
     }
 
-    mTotal = mDa.measureLine( mTool->points() );
+    try
+    {
+      mTotal = mDa.measureLine( mTool->points() );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Coordinate transform error while calculating line length: %1" ).arg( e.what() ) );
+      mTotal = 0;
+    }
+
     mTable->show(); // Show the table with items
     mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Maximum );
     editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );

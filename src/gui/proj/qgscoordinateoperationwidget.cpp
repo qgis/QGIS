@@ -16,23 +16,25 @@
  ***************************************************************************/
 
 #include "qgscoordinateoperationwidget.h"
-#include "moc_qgscoordinateoperationwidget.cpp"
+
+#include <proj.h>
+
 #include "qgscoordinatetransform.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsinstallgridshiftdialog.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "qgsprojutils.h"
+#include "qgssettings.h"
 
 #include <QDir>
 #include <QPushButton>
 #include <QRegularExpression>
 
-#include "qgsprojutils.h"
-#include <proj.h>
+#include "moc_qgscoordinateoperationwidget.cpp"
 
 QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   : QWidget( parent )

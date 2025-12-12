@@ -16,13 +16,16 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
-#include "moc_qgstaskmanager.cpp"
-#include "qgsproject.h"
-#include "qgsmaplayerlistutils_p.h"
+
 #include <mutex>
+
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsproject.h"
+
 #include <QStack>
 #include <QtConcurrentRun>
 
+#include "moc_qgstaskmanager.cpp"
 
 //
 // QgsTask

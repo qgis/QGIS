@@ -16,11 +16,12 @@
 #ifndef QGSVECTORTILEBASICLABELINGWIDGET_H
 #define QGSVECTORTILEBASICLABELINGWIDGET_H
 
-#include "qgsmaplayerconfigwidget.h"
-
 #include "ui_qgsvectortilebasiclabelingwidget.h"
 
 #include <memory>
+
+#include "qgsmaplayerconfigwidget.h"
+
 #include <QSortFilterProxyModel>
 
 ///@cond PRIVATE

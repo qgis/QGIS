@@ -17,11 +17,11 @@
 #define QGSFEATURELISTCOMBOBOXPLUGIN_H
 
 
+#include "qgis_customwidgets.h"
+
 #include <QtGlobal>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#include "qgis_customwidgets.h"
-
 
 class CUSTOMWIDGETS_EXPORT QgsFeatureListComboBoxPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

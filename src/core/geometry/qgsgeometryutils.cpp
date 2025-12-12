@@ -15,27 +15,25 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometryutils.h"
 
-#include "qgscurve.h"
-#include "qgscurvepolygon.h"
-#include "qgsgeometrycollection.h"
 #include <limits>
-#include "qgslinestring.h"
-#include "qgswkbptr.h"
+#include <memory>
+#include <nlohmann/json.hpp>
 
-#include "qgspoint.h"
-#include "qgslinestring.h"
+#include "qgsabstractgeometry.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurve.h"
-#include "qgsabstractgeometry.h"
-#include "qgsvertexid.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
 #include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgsvertexid.h"
+#include "qgswkbptr.h"
 
-#include <memory>
+#include <QRegularExpression>
 #include <QStringList>
 #include <QVector>
-#include <QRegularExpression>
-#include <nlohmann/json.hpp>
 
 QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {
@@ -1740,4 +1738,16 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
   }
 
   throw QgsInvalidArgumentException( "While generating output: curse is not a QgsLineString nor a QgsCompoundCurve." );
+}
+
+bool QgsGeometryUtils::pointsAreCollinear( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon )
+{
+  if ( pt1.is3D() )
+  {
+    return QgsGeometryUtilsBase::points3DAreCollinear( pt1.x(), pt1.y(), pt1.z(), pt2.x(), pt2.y(), pt2.z(), pt3.x(), pt3.y(), pt3.z(), epsilon );
+  }
+  else
+  {
+    return QgsGeometryUtilsBase::pointsAreCollinear( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pt3.x(), pt3.y(), epsilon );
+  }
 }

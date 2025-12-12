@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLIDENTIFYFEATURE_H
 #define QGSMAPTOOLIDENTIFYFEATURE_H
 
-#include "qgsmaptoolidentify.h"
 #include "qgis_gui.h"
+#include "qgsmaptoolidentify.h"
 
 /**
  * \ingroup gui

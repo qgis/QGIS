@@ -12,13 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
+
 #include <QFile>
-#include <QTextStream>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <qgsapplication.h>
+#include <QTextStream>
+
 //header for class being tested
 #include <qgshttpheaders.h>
 #include <qgspoint.h>
@@ -187,11 +189,14 @@ void TestQgsHttpheaders::createQgsOwsConnection()
 
   QgsOwsConnection ows( "service", "name" );
   QCOMPARE( ows.connectionInfo(), ",authcfg=,referer=http://test.com" );
-  QCOMPARE( ows.uri().encodedUri(), "url&http-header:other_http_header=value&http-header:referer=http://test.com" );
+  if ( ows.uri().encodedUri().startsWith( "url=" ) )
+    QCOMPARE( ows.uri().encodedUri(), "url=&http-header:other_http_header=value&http-header:referer=http%3A%2F%2Ftest.com" );
+  else
+    QCOMPARE( ows.uri().encodedUri(), "url&http-header:other_http_header=value&http-header:referer=http%3A%2F%2Ftest.com" );
 
   QgsDataSourceUri uri( QString( "https://www.ogc.org/?p1=v1" ) );
   QgsDataSourceUri uri2 = ows.addWmsWcsConnectionSettings( uri, "service", "name" );
-  QCOMPARE( uri2.encodedUri(), "https://www.ogc.org/?p1=v1&http-header:other_http_header=value&http-header:referer=http://test.com" );
+  QCOMPARE( uri2.encodedUri(), "https://www.ogc.org/?p1=v1&http-header:other_http_header=value&http-header:referer=http%3A%2F%2Ftest.com" );
 
   // check space separated string
   QCOMPARE( uri2.uri(), " https://www.ogc.org/?p1='v1' http-header:other_http_header='value' http-header:referer='http://test.com' referer='http://test.com'" );
@@ -199,7 +204,7 @@ void TestQgsHttpheaders::createQgsOwsConnection()
   QgsDataSourceUri uri3( uri2.uri() );
   QCOMPARE( uri3.httpHeader( QgsHttpHeaders::KEY_REFERER ), "http://test.com" );
   QCOMPARE( uri3.httpHeader( "other_http_header" ), "value" );
-  QCOMPARE( uri3.encodedUri(), "https://www.ogc.org/?p1=v1&referer=http://test.com&http-header:other_http_header=value&http-header:referer=http://test.com" );
+  QCOMPARE( uri3.encodedUri(), "https://www.ogc.org/?p1=v1&referer=http%3A%2F%2Ftest.com&http-header:other_http_header=value&http-header:referer=http%3A%2F%2Ftest.com" );
 }
 
 

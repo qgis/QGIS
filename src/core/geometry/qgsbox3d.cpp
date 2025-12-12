@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsbox3d.h"
-#include "moc_qgsbox3d.cpp"
-#include "qgspoint.h"
+
 #include "qgslogger.h"
+#include "qgspoint.h"
 #include "qgsvector3d.h"
+
+#include "moc_qgsbox3d.cpp"
 
 QgsBox3D::QgsBox3D( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax, bool normalize )
   : mBounds2d( xmin, ymin, xmax, ymax, false )

@@ -20,29 +20,30 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsattributesformproperties.h"
+
 #include "qgis_gui.h"
 #include "qgsaction.h"
 #include "qgsattributesformmodel.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsmessagebar.h"
 #include "qgspropertycollection.h"
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
-#include "qgsmessagebar.h"
 
-#include <QMimeData>
-#include <QPushButton>
-#include <QWidget>
-#include <QTreeView>
-#include <QSpinBox>
-#include <QDropEvent>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QFormLayout>
-#include <QPlainTextEdit>
 #include <QAction>
-#include <QMenu>
 #include <QClipboard>
+#include <QDropEvent>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QTreeView>
+#include <QWidget>
 
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
@@ -177,10 +178,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
     void setFormLayoutIndicatorProvidersEnabled( bool enabled );
 
-    QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
-    QgsAttributesFormLayoutModel *mFormLayoutModel;
-    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel;
-    QgsAttributesFormProxyModel *mFormLayoutProxyModel;
+    QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel = nullptr;
+    QgsAttributesFormLayoutModel *mFormLayoutModel = nullptr;
+    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel = nullptr;
+    QgsAttributesFormProxyModel *mFormLayoutProxyModel = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
 

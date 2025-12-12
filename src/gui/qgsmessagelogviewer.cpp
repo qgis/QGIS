@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgsmessagelogviewer.h"
-#include "moc_qgsmessagelogviewer.cpp"
+
+#include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
-#include "qgsapplication.h"
 
-#include <QFile>
 #include <QDateTime>
-#include <QTableWidget>
-#include <QToolButton>
-#include <QStatusBar>
-#include <QToolTip>
-#include <QPlainTextEdit>
-#include <QScrollBar>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QFile>
+#include <QPlainTextEdit>
+#include <QScrollBar>
+#include <QStatusBar>
+#include <QTableWidget>
+#include <QToolButton>
+#include <QToolTip>
+
+#include "moc_qgsmessagelogviewer.cpp"
 
 QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 // QGIS Specific includes
-#include "qgsmaplayer.h"
-#include "qgsapplication.h"
 #include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgsguiutils.h"
+#include "qgsmaplayer.h"
 
 // Qt Related Includes
 #include <QAction>

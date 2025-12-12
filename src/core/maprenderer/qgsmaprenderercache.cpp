@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsmaprenderercache.h"
-#include "moc_qgsmaprenderercache.cpp"
+
+#include <algorithm>
 
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils_p.h"
 
 #include <QImage>
 #include <QPainter>
-#include <algorithm>
+
+#include "moc_qgsmaprenderercache.cpp"
 
 QgsMapRendererCache::QgsMapRendererCache()
 {

@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsSubstitutionListWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

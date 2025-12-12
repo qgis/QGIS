@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgslistwidgetwrapper.h"
-#include "moc_qgslistwidgetwrapper.cpp"
-#include "qgslistwidget.h"
+
 #include "qgsattributeform.h"
+#include "qgslistwidget.h"
+
+#include "moc_qgslistwidgetwrapper.cpp"
 
 QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

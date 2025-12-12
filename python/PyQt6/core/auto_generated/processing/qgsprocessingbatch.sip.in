@@ -9,7 +9,6 @@
 
 
 
-
 class QgsProcessingBatchFeedback : QgsProcessingMultiStepFeedback
 {
 %Docstring(signature="appended")

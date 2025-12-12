@@ -15,15 +15,16 @@
 
 #include "qgsheatmaprenderer.h"
 
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
+#include <memory>
 
-#include "qgsfeature.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
+#include "qgscolorramplegendnode.h"
+#include "qgsfeature.h"
 #include "qgsrendercontext.h"
 #include "qgsstyleentityvisitor.h"
-#include "qgscolorramplegendnode.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -64,7 +65,7 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields
   mWeightAttrNum = fields.lookupField( mWeightExpressionString );
   if ( mWeightAttrNum == -1 )
   {
-    mWeightExpression.reset( new QgsExpression( mWeightExpressionString ) );
+    mWeightExpression = std::make_unique<QgsExpression>( mWeightExpressionString );
     mWeightExpression->prepare( &context.expressionContext() );
   }
 

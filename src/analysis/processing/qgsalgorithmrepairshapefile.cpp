@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrepairshapefile.h"
-#include "qgsvectorlayer.h"
+
+#include <cpl_conv.h>
+
 #include "qgsvectordataprovider.h"
-#include "cpl_conv.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

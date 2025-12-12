@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgspythonutils.h"
+#include "qgstest.h"
+
 #include <QApplication>
 #include <QObject>
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include "qgstest.h"
-
-#include <qgisapp.h>
-#include <qgsapplication.h>
-#include "qgspythonutils.h"
 
 /**
  * \ingroup UnitTests

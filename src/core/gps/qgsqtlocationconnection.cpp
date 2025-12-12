@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsqtlocationconnection.h"
-#include "moc_qgsqtlocationconnection.cpp"
+
 #include "qgslogger.h"
 
 #include <QLocalSocket>
-#include <QTimer>
 #include <QMetaType>
+#include <QTimer>
+
+#include "moc_qgsqtlocationconnection.cpp"
 
 QgsQtLocationConnection::QgsQtLocationConnection()
   : QgsGpsConnection( new QLocalSocket() )
@@ -33,7 +35,7 @@ QgsQtLocationConnection::QgsQtLocationConnection()
   startGPS();
 
   //HACK to signal the gpsinformationwidget that we have a QtLocationConnection
-  QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
+  QTimer::singleShot( 500, this, &QgsQtLocationConnection::broadcastConnectionAvailable );
 }
 
 //Needed to make connection detectable (half HACK)

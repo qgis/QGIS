@@ -14,14 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewvectortabledialog.h"
-#include "moc_qgsnewvectortabledialog.cpp"
-#include "qgslogger.h"
-#include "qgsgui.h"
+
 #include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgsiconutils.h"
-#include <QSpinBox>
+#include "qgslogger.h"
+
 #include <QMessageBox>
+#include <QSpinBox>
 #include <QTimer>
+
+#include "moc_qgsnewvectortabledialog.cpp"
 
 QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent )
   : QDialog( parent )

@@ -24,14 +24,14 @@
 #include "qgslogger.h"
 
 #include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QMap>
 #include <QMutex>
 #include <QSemaphore>
 #include <QStack>
+#include <QThread>
 #include <QTime>
 #include <QTimer>
-#include <QThread>
-#include <QElapsedTimer>
 
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 #define CONN_POOL_SPARE_CONNECTIONS          2    // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
@@ -216,11 +216,18 @@ class QgsConnectionPoolGroup
 
   protected:
 
-    void initTimer( QObject *parent )
+    /**
+     * Initializes the connection timeout handling.
+     *
+     * Should be called from subclasses within their constructors, passing themselves as the
+     * \a parent.
+     */
+    template<typename U>
+    void initTimer( U *parent )
     {
       expirationTimer = new QTimer( parent );
       expirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
-      QObject::connect( expirationTimer, SIGNAL( timeout() ), parent, SLOT( handleConnectionExpired() ) );
+      QObject::connect( expirationTimer, &QTimer::timeout, parent, &U::handleConnectionExpired );
 
       // just to make sure the object belongs to main thread and thus will get events
       if ( qApp )

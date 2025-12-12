@@ -14,16 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthconfigidedit.h"
-#include "moc_qgsauthconfigidedit.cpp"
 #include "ui_qgsauthconfigidedit.h"
+#include "qgsauthconfigidedit.h"
 
+#include "qgsapplication.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
-#include "qgsapplication.h"
 
 #include <QRegularExpression>
 
+#include "moc_qgsauthconfigidedit.cpp"
 
 QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
   : QWidget( parent )
@@ -42,7 +42,7 @@ QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcf
   updateValidityStyle( validate() );
 }
 
-const QString QgsAuthConfigIdEdit::configId()
+QString QgsAuthConfigIdEdit::configId()
 {
   if ( validate() )
   {

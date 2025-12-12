@@ -20,11 +20,11 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingalgorithm.h"
-#include "qgsmeshdataset.h"
 #include "qgsmeshdataprovider.h"
-#include "qgstriangularmesh.h"
+#include "qgsmeshdataset.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgstriangularmesh.h"
 
 ///@cond PRIVATE
 

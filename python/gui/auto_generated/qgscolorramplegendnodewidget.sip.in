@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsColorRampLegendNodeWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

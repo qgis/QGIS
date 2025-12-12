@@ -17,12 +17,11 @@
 #ifndef QGSMESSAGEOUTPUT_H
 #define QGSMESSAGEOUTPUT_H
 
-#include <QString>
-#include "qgis_sip.h"
-#include <QObject>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
+#include <QObject>
+#include <QString>
 
 class QgsMessageOutput;
 typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;

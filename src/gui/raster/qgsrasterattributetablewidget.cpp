@@ -14,21 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetablewidget.h"
-#include "moc_qgsrasterattributetablewidget.cpp"
-#include "qgsrasterattributetable.h"
-#include "qgsrasterlayer.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsmessagebar.h"
-#include "qgsrasterattributetableaddcolumndialog.h"
-#include "qgsrasterattributetableaddrowdialog.h"
 #include "qgscolorbutton.h"
 #include "qgsgradientcolorrampdialog.h"
+#include "qgsmessagebar.h"
+#include "qgsrasterattributetable.h"
+#include "qgsrasterattributetableaddcolumndialog.h"
+#include "qgsrasterattributetableaddrowdialog.h"
+#include "qgsrasterlayer.h"
 
-#include <QToolBar>
 #include <QAction>
-#include <QSortFilterProxyModel>
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QSortFilterProxyModel>
+#include <QToolBar>
+
+#include "moc_qgsrasterattributetablewidget.cpp"
 
 QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, QgsRasterLayer *rasterLayer, const int bandNumber )
   : QgsPanelWidget( parent )
@@ -134,7 +138,7 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
 
   if ( mAttributeTableBuffer )
   {
-    mModel.reset( new QgsRasterAttributeTableModel( mAttributeTableBuffer.get() ) );
+    mModel = std::make_unique<QgsRasterAttributeTableModel>( mAttributeTableBuffer.get() );
     mModel->setEditable( mEditable );
 
     connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) {
@@ -640,7 +644,6 @@ QString LocalizedDoubleDelegate::displayText( const QVariant &value, const QLoca
       return QLocale().toString( value.toDouble(), 'f', precision );
     }
   }
-  return QLocale().toString( value.toDouble(), 'f' );
 }
 
 ///@endcond private

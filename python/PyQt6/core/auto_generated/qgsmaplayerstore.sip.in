@@ -11,6 +11,7 @@
 
 
 
+
 class QgsMapLayerStore : QObject
 {
 %Docstring(signature="appended")

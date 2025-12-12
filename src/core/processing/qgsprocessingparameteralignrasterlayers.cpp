@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameteralignrasterlayers.h"
-#include "qgsrasterlayer.h"
-#include "qgis.h"
 
+#include "qgis.h"
+#include "qgsrasterlayer.h"
 
 QgsProcessingParameterAlignRasterLayers::QgsProcessingParameterAlignRasterLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
@@ -84,12 +84,9 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
         if ( !context )
           return true;
 
-        QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "inputFile" ) ).toString(), *context );
-        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Raster )
-          return false;
-
-        QgsRasterLayer *rasterLayer = static_cast<QgsRasterLayer *>( mapLayer );
-
+        QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer * >(
+                                        QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "inputFile" ) ).toString(), *context )
+                                      );
         if ( !rasterLayer )
           return false;
       }

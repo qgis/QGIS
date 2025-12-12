@@ -18,12 +18,11 @@
 #ifndef TOPOLTEST_H
 #define TOPOLTEST_H
 
-#include <QObject>
-
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
-
 #include "topolError.h"
+
+#include <QObject>
 
 class topolTest;
 class QgisInterface;
@@ -105,7 +104,7 @@ class topolTest : public QObject
     /**
      * Returns copy of the test map
      */
-    QMap<QString, TopologyRule> testMap() { return mTopologyRuleMap; }
+    QMap<QString, TopologyRule> testMap() const { return mTopologyRuleMap; }
 
     /**
      * Runs the test and returns all found errors

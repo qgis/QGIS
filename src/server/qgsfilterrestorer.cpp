@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsfilterrestorer.h"
+
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 

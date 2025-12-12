@@ -19,25 +19,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
-#include "qgsserverfeatureid.h"
-#include "qgsfields.h"
+#include "qgswfsgetfeature.h"
+
+#include <memory>
+
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdatetimefieldformatter.h"
 #include "qgsexpression.h"
-#include "qgsgeometry.h"
-#include "qgsmaplayer.h"
-#include "qgsfeatureiterator.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayer.h"
-#include "qgsfilterrestorer.h"
-#include "qgsproject.h"
-#include "qgsogcutils.h"
-#include "qgsjsonutils.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgsfilterrestorer.h"
+#include "qgsgeometry.h"
+#include "qgsjsonutils.h"
+#include "qgsmaplayer.h"
+#include "qgsogcutils.h"
+#include "qgsproject.h"
+#include "qgsserverfeatureid.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
+#include "qgswfsutils.h"
 #include "qgswkbtypes.h"
-
-#include "qgswfsgetfeature.h"
 
 #include <QRegularExpression>
 
@@ -665,9 +667,7 @@ namespace QgsWfs
         }
 
         query.serverFids = fidsMapIt.value();
-        QgsFeatureRequest featureRequest;
-
-        query.featureRequest = featureRequest;
+        query.featureRequest = QgsFeatureRequest();
         request.queries.append( query );
         ++fidsMapIt;
       }
@@ -1039,7 +1039,7 @@ namespace QgsWfs
     getFeatureQuery query;
     query.typeName = typeName;
     query.srsName = srsName;
-    query.featureRequest = featureRequest;
+    query.featureRequest = std::move( featureRequest );
     query.serverFids = serverFids;
     query.propertyList = propertyList;
     return query;
@@ -1167,7 +1167,7 @@ namespace QgsWfs
           {
             if ( exportGeom.transform( transform ) == Qgis::GeometryOperationResult::Success )
             {
-              transformedRect.reset( new QgsRectangle( exportGeom.boundingBox() ) );
+              transformedRect = std::make_unique<QgsRectangle>( exportGeom.boundingBox() );
               rect = transformedRect.get();
             }
           }

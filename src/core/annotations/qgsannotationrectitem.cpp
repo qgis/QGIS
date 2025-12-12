@@ -16,19 +16,20 @@
  ***************************************************************************/
 
 #include "qgsannotationrectitem.h"
-#include "qgsapplication.h"
-#include "qgsgeometry.h"
-#include "qgsrendercontext.h"
-#include "qgsannotationitemnode.h"
+
 #include "qgsannotationitemeditoperation.h"
-#include "qgspainting.h"
-#include "qgsfillsymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
+#include "qgsannotationitemnode.h"
+#include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometry.h"
 #include "qgslinestring.h"
+#include "qgslinesymbollayer.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
 QgsAnnotationRectItem::QgsAnnotationRectItem( const QgsRectangle &bounds )
@@ -358,7 +359,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
         switch ( mPlacementMode )
@@ -406,7 +407,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
       }
       else
       {
-        QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+        QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
       }
       break;

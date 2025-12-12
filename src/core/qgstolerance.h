@@ -16,10 +16,10 @@
 #ifndef QGSTOLERANCE_H
 #define QGSTOLERANCE_H
 
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
+#include <QObject>
 
 class QgsMapSettings;
 class QgsMapLayer;

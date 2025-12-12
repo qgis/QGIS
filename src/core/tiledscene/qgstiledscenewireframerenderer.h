@@ -18,9 +18,9 @@
 #ifndef QGSTILEDSCENEWIREFRAMERENDERER_H
 #define QGSTILEDSCENEWIREFRAMERENDERER_H
 
-#include "qgstiledscenerenderer.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgstiledscenerenderer.h"
 
 class QgsFillSymbol;
 class QgsLineSymbol;
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      * Constructor for QgsTiledSceneWireframeRenderer.
      */
     QgsTiledSceneWireframeRenderer();
-    ~QgsTiledSceneWireframeRenderer();
+    ~QgsTiledSceneWireframeRenderer() override;
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;

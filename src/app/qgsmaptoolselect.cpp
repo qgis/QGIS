@@ -15,21 +15,22 @@
 
 
 #include "qgsmaptoolselect.h"
-#include "moc_qgsmaptoolselect.cpp"
-#include "qgsmaptoolselectutils.h"
-#include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometry.h"
-#include "qgspointxy.h"
+
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolselectutils.h"
+#include "qgspointxy.h"
+#include "qgsvectorlayer.h"
 
-#include <QMouseEvent>
-#include <QMenu>
-#include <QRect>
 #include <QColor>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QRect>
 
+#include "moc_qgsmaptoolselect.cpp"
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

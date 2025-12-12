@@ -18,21 +18,20 @@
 #ifndef QGSCOPCPOINTCLOUDINDEX_H
 #define QGSCOPCPOINTCLOUDINDEX_H
 
-#include <QString>
-#include <QHash>
-#include <QStringList>
-#include <QVector>
-#include <QList>
-#include <QFile>
-
 #include <fstream>
 #include <optional>
 
+#include "lazperf/vlr.hpp"
+#include "qgslazinfo.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudstatistics.h"
 
-#include "qgslazinfo.h"
-#include "lazperf/vlr.hpp"
+#include <QFile>
+#include <QHash>
+#include <QList>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -44,7 +43,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
   public:
 
     explicit QgsCopcPointCloudIndex();
-    ~QgsCopcPointCloudIndex();
+    ~QgsCopcPointCloudIndex() override;
 
     void load( const QString &urlString, const QString &authcfg = QString() ) override;
 

@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+
 #include <QtGlobal>
 
 /**

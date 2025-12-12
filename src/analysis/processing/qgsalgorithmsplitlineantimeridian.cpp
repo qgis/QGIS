@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsplitlineantimeridian.h"
-#include "qgscurve.h"
-#include "qgslinestring.h"
+
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 

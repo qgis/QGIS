@@ -17,15 +17,15 @@
 #ifndef QGSMESSAGEBAR_H
 #define QGSMESSAGEBAR_H
 
-#include "qgsguiutils.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgsguiutils.h"
 
-#include <QString>
+#include <QColor>
 #include <QFrame>
 #include <QIcon>
-#include <QColor>
 #include <QList>
-#include "qgis_gui.h"
+#include <QString>
 
 class QWidget;
 class QGridLayout;

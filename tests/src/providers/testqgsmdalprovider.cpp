@@ -16,12 +16,13 @@
 #include <limits>
 
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
 
 //qgis includes...
 #include <qgis.h>

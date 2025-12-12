@@ -12,11 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsmapsettings.h"
 #include "qgsdecorationscalebar.h"
+#include "qgsmapsettings.h"
+#include "qgstest.h"
 
 class TestQgsDecorationScalebar : public QObject
 {

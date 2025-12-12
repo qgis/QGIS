@@ -54,6 +54,8 @@ ranges are sorted in ascending order.
 
       QgsInterval frameDuration;
 
+      bool temporalRangeCumulative;
+
       QString outputDirectory;
 
       QString fileNameTemplate;

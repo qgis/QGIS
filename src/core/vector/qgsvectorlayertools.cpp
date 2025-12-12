@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
-#include "moc_qgsvectorlayertools.cpp"
+
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
+#include "moc_qgsvectorlayertools.cpp"
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmjoinbyattribute.h"
+
 #include "qgsprocessingoutputs.h"
 
 ///@cond PRIVATE

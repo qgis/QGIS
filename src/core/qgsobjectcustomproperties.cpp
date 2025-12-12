@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgsobjectcustomproperties.h"
+
 #include "qgis.h"
 #include "qgsxmlutils.h"
 
 #include <QDomNode>
 #include <QStringList>
-
 
 QStringList QgsObjectCustomProperties::keys() const
 {

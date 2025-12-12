@@ -14,15 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-
-#include "qgsfeedback.h"
-#include "qgslogger.h"
-#include "qgsfields.h"
-#include "qgspoint.h"
-
 #include "NormVecDecorator.h"
 
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+
+#include <QApplication>
 
 NormVecDecorator::~NormVecDecorator()
 {

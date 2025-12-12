@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLUDialog : QDialog
 {
 %Docstring(signature="appended")

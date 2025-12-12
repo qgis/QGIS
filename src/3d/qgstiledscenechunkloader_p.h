@@ -27,13 +27,13 @@
 // version without notice, or even be removed.
 //
 
-#include "qgscoordinatetransform.h"
+#include "qgs3drendercontext.h"
 #include "qgschunkedentity.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenetile.h"
-#include "qgs3drendercontext.h"
 
 #include <QFutureWatcher>
 
@@ -58,9 +58,9 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
     QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset );
     void start() override;
 
-    ~QgsTiledSceneChunkLoader();
+    ~QgsTiledSceneChunkLoader() override;
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsTiledSceneChunkLoaderFactory &mFactory;
@@ -92,12 +92,12 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
       double zValueOffset
     );
 
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
-    virtual QgsChunkNode *createRootNode() const override;
-    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
-    virtual bool canCreateChildren( QgsChunkNode *node ) override;
-    virtual void prepareChildren( QgsChunkNode *node ) override;
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    void prepareChildren( QgsChunkNode *node ) override;
 
     QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const;
     void fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode );
@@ -130,7 +130,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
   public:
     explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
 
-    ~QgsTiledSceneLayerChunkedEntity();
+    ~QgsTiledSceneLayerChunkedEntity() override;
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 

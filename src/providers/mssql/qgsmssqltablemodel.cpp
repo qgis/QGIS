@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsmssqltablemodel.h"
-#include "moc_qgsmssqltablemodel.cpp"
-#include "qgsmssqlconnection.h"
-#include "qgslogger.h"
+
 #include "qgsdatasourceuri.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmssqlconnection.h"
 #include "qgsmssqlutils.h"
+
+#include "moc_qgsmssqltablemodel.cpp"
 
 QgsMssqlTableModel::QgsMssqlTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

@@ -20,10 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgslocatorfilter.h"
+
 #include <QAbstractListModel>
-#include <QTimer>
 #include <QSet>
 #include <QSortFilterProxyModel>
+#include <QTimer>
 
 class QgsLocator;
 class QgsLocatorModel;

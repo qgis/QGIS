@@ -13,25 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSignalSpy>
-
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
-#include <QPicture>
-#include <QPainter>
-#include <QtConcurrent>
-#include <QElapsedTimer>
-#include "qgsimagecache.h"
 #include "qgsapplication.h"
+#include "qgsimagecache.h"
+#include "qgsmessagelog.h"
 #include "qgsrenderchecker.h"
 #include "qgssettings.h"
-#include "qgsmessagelog.h"
+#include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QElapsedTimer>
+#include <QFileInfo>
+#include <QObject>
+#include <QPainter>
+#include <QPicture>
+#include <QSignalSpy>
+#include <QString>
+#include <QStringList>
+#include <QtConcurrent>
 
 /**
  * \ingroup UnitTests

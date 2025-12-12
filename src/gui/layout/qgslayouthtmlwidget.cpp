@@ -13,19 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayouthtmlwidget.h"
-#include "moc_qgslayouthtmlwidget.cpp"
+
+#include "qgscodeeditorcss.h"
+#include "qgscodeeditorhtml.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressionfinder.h"
+#include "qgslayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
-#include "qgslayout.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgscodeeditorhtml.h"
-#include "qgscodeeditorcss.h"
-#include "qgssettings.h"
 #include "qgslayoutundostack.h"
-#include "qgsexpressionfinder.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QUrl>
+
+#include "moc_qgslayouthtmlwidget.cpp"
 
 QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemHtml *>( frame->multiFrame() ) : nullptr )

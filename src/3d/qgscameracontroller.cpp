@@ -14,26 +14,28 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
-#include "moc_qgscameracontroller.cpp"
-#include "qgseventtracing.h"
-#include "qgsvector3d.h"
-#include "qgswindow3dengine.h"
-#include "qgs3dmapscene.h"
-#include "qgsterrainentity.h"
+
+#include <cmath>
+
 #include "qgis.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgseventtracing.h"
+#include "qgslogger.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycasthit.h"
+#include "qgsterrainentity.h"
+#include "qgsvector3d.h"
+#include "qgswindow3dengine.h"
 
 #include <QDomDocument>
-#include <Qt3DRender/QCamera>
-#include <Qt3DInput>
-#include <QStringLiteral>
 #include <QQuaternion>
-#include <cmath>
+#include <QStringLiteral>
+#include <Qt3DInput>
+#include <Qt3DRender/QCamera>
 
-#include "qgslogger.h"
+#include "moc_qgscameracontroller.cpp"
 
 QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   : Qt3DCore::QEntity( scene )
@@ -974,7 +976,6 @@ bool QgsCameraController::onKeyPressedTerrainNavigation( QKeyEvent *event )
     center.set( center.x(), center.y(), center.z() + tElev * 10 );
     mCameraPose.setCenterPoint( center );
     return true;
-    updateCameraFromPose();
   }
 
   return false;

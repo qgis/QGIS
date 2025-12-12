@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsdbrelationshipwidget.h"
-#include "moc_qgsdbrelationshipwidget.cpp"
-#include "qgsgui.h"
+
 #include "qgsdatabasetablemodel.h"
+#include "qgsgui.h"
 #include "qgsproviderregistry.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+
+#include "moc_qgsdbrelationshipwidget.cpp"
 
 //
 // QgsDbRelationWidget

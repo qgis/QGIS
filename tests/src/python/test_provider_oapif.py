@@ -17,7 +17,7 @@ import os
 import shutil
 import tempfile
 
-from osgeo import gdal
+from osgeo import gdal, ogr
 
 from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
@@ -29,6 +29,7 @@ from qgis.core import (
     QgsGeometry,
     QgsRectangle,
     QgsSettings,
+    QgsTestUtils,
     QgsVectorLayer,
     QgsWkbTypes,
 )
@@ -39,37 +40,7 @@ from providertestbase import ProviderTestCase
 
 
 def sanitize(endpoint, query_params):
-    # Implement the logic of QgsBaseNetworkRequest::sendGET()
-    # Note query_params can actually contain subpaths, so create the full url
-    # by concatenating boths, and then figure out things...
-
-    url = endpoint + query_params
-    # For REST API using URL subpaths, normalize the subpaths
-    afterEndpointStartPos = url.find("fake_qgis_http_endpoint") + len(
-        "fake_qgis_http_endpoint"
-    )
-    afterEndpointStart = url[afterEndpointStartPos:]
-    afterEndpointStart = afterEndpointStart.replace("/", "_")
-    url = url[0:afterEndpointStartPos] + afterEndpointStart
-    posQuotationMark = url.find("?")
-    endpoint = url[0:posQuotationMark]
-    query_params = url[posQuotationMark:]
-
-    if len(endpoint + query_params) > 256:
-        ret = endpoint + hashlib.md5(query_params.encode()).hexdigest()
-        # print('Before: ' + endpoint + query_params)
-        # print('After:  ' + ret)
-        return ret
-    ret = endpoint + query_params.replace("?", "_").replace("&", "_").replace(
-        "<", "_"
-    ).replace(">", "_").replace('"', "_").replace("'", "_").replace(" ", "_").replace(
-        ":", "_"
-    ).replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
-    return ret
+    return QgsTestUtils.sanitizeFakeHttpEndpoint(f"{endpoint}{query_params}")
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -501,7 +472,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -918,6 +891,15 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             sanitize(endpoint, "/collections/mycollection?" + ACCEPT_COLLECTION), "wb"
         ) as f:
             f.write(json.dumps(collection).encode("UTF-8"))
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4258&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
 
         vl = QgsVectorLayer(
             "url='http://"
@@ -1466,7 +1448,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
 
         filename = sanitize(
-            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            endpoint,
+            "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4258&"
+            + ACCEPT_ITEMS,
         )
         with open(filename, "wb") as f:
             f.write(json.dumps(items).encode("UTF-8"))
@@ -1891,7 +1875,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         # first items
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/2056&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -1914,6 +1900,15 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.sourceCrs().authid(), "EPSG:2056")
+
+        # first items
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
 
         # Test srsname parameter overrides default CRS
         vl = QgsVectorLayer(
@@ -1967,7 +1962,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         # first items
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/2056&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2071,6 +2068,70 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.featureCount(), 123456789012345)
+
+    def testZGeometries(self):
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        basetestpath = tempfile.mkdtemp().replace("\\", "/")
+        endpoint = basetestpath + "/fake_qgis_http_endpoint_testZGeometries"
+
+        create_landing_page_api_collection(
+            endpoint,
+            storageCrs="http://www.opengis.net/def/crs/EPSG/0/4979",
+            bbox=[1, 48, 0, 3, 50, 200],
+        )
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {"type": "Point", "coordinates": [49, 2, 100]},
+                }
+            ],
+        }
+
+        # first items
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4979&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        # Create test layer
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", "test", "OAPIF"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.PointZ)
+
+        source = vl.dataProvider()
+
+        app_log = QgsApplication.messageLog()
+        # signals should be emitted by application log
+        app_spy = QSignalSpy(app_log.messageReceived)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=1000&crs=http://www.opengis.net/def/crs/EPSG/0/4979&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        self.assertEqual(len(app_spy), 0, list(app_spy))
 
     def testFeatureInsertionDeletion(self):
 
@@ -2275,7 +2336,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2425,7 +2488,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2512,7 +2577,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -3078,6 +3145,115 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             QgsWkbTypes.Type.MultiPolygon,
             "MULTIPOLYGON (((2 49, 2 50, 3 50, 3 49, 2 49)))",
         )
+
+    def testFlatgeobufOutputFormat(self):
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testFlatgeobufOutputFormat"
+        )
+        collectionLinks = [
+            {
+                "type": "application/flatgeobuf",
+                "rel": "items",
+                "title": "Items in FlatGeoBuf forma",
+                "href": "http://" + endpoint + "/collections/mycollection/items?f=fgb",
+            }
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            collectionLinks=collectionLinks,
+        )
+
+        ds = gdal.GetDriverByName("FlatGeoBuf").Create(
+            "/vsimem/tmp.fgb", 0, 0, 0, gdal.GDT_Unknown
+        )
+        lyr = ds.CreateLayer("tmp")
+        lyr.CreateField(ogr.FieldDefn("id", ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f["id"] = "my_id"
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT (-70.5 66.5)"))
+        lyr.CreateFeature(f)
+        del ds
+
+        f = gdal.VSIFOpenL("/vsimem/tmp.fgb", "rb")
+        self.assertNotEqual(f, None)
+        length = gdal.VSIStatL("/vsimem/tmp.fgb").size
+        data = gdal.VSIFReadL(length, 1, f)
+        gdal.VSIFCloseL(f)
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=fgb&limit=10&Accept=application/flatgeobuf",
+            ),
+            "wb",
+        ) as f:
+            f.write(data)
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items?f=fgb&VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            f.write(b"HEAD, GET")
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' outputformat='application/flatgeobuf'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=fgb&limit=1000&Accept=application/flatgeobuf",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                (
+                    "OGC-NumberMatched: 2\r\nLink: <http://"
+                    + endpoint
+                    + '/collections/mycollection/items?f=fgb&offset=next_offset>; rel="next"; type="application/flatgeobuf"\r\n\r\n'
+                ).encode("utf-8")
+                + data
+            )
+
+        ds = gdal.GetDriverByName("FlatGeoBuf").Create(
+            "/vsimem/tmp.fgb", 0, 0, 0, gdal.GDT_Unknown
+        )
+        lyr = ds.CreateLayer("tmp")
+        lyr.CreateField(ogr.FieldDefn("id", ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f["id"] = "my_id2"
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT (-70.25 66.25)"))
+        lyr.CreateFeature(f)
+        del ds
+
+        f = gdal.VSIFOpenL("/vsimem/tmp.fgb", "rb")
+        self.assertNotEqual(f, None)
+        length = gdal.VSIStatL("/vsimem/tmp.fgb").size
+        data = gdal.VSIFReadL(length, 1, f)
+        gdal.VSIFCloseL(f)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=fgb&offset=next_offset&Accept=application/flatgeobuf",
+            ),
+            "wb",
+        ) as f:
+            f.write((b"\r\n") + data)
+
+        it = vl.getFeatures()
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.5 66.5)")
+
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.25 66.25)")
 
 
 if __name__ == "__main__":

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsplitvectorlayer.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsvariantutils.h"
+
 #include "qgsfileutils.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE
 

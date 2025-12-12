@@ -16,27 +16,30 @@
  ***************************************************************************/
 
 #include "qgslayoutitemelevationprofile.h"
-#include "moc_qgslayoutitemelevationprofile.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgslinesymbol.h"
-#include "qgsplot.h"
-#include "qgslayout.h"
-#include "qgsmessagelog.h"
-#include "qgsmaplayerlistutils_p.h"
+
+#include <memory>
+
 #include "qgscurve.h"
-#include "qgsprofilerequest.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgsprofilerenderer.h"
-#include "qgslayoututils.h"
-#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmessagelog.h"
+#include "qgsplot.h"
+#include "qgsprofilerenderer.h"
+#include "qgsprofilerequest.h"
 #include "qgsprofilesourceregistry.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgssymbollayerutils.h"
+#include "qgsterrainprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QTimer>
-#include <memory>
+
+#include "moc_qgslayoutitemelevationprofile.cpp"
 
 #define CACHE_SIZE_LIMIT 5000
 
@@ -1061,7 +1064,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   if ( w <= 0 || h <= 0 )
     return;
 
-  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
+  mCacheRenderingImage = std::make_unique<QImage>( w, h, QImage::Format_ARGB32 );
 
   // set DPI of the image
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
@@ -1076,7 +1079,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   }
 
   mCacheInvalidated = false;
-  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+  mPainter = std::make_unique<QPainter>( mCacheRenderingImage.get() );
 
   QList< QgsAbstractProfileSource *> sourcesToRender = sources();
   std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top

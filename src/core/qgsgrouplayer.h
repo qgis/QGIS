@@ -21,8 +21,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerref.h"
+#include "qgsmaplayerrenderer.h"
 
 class QgsGroupLayerDataProvider;
 class QgsPaintEffect;
