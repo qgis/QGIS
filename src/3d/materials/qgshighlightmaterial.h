@@ -21,16 +21,29 @@
 
 #define SIP_NO_FILE
 
+///@cond PRIVATE
+
+/**
+ * \ingroup qgis_3d
+ * \brief A single color material for highlighting features.
+ * Uses the highlight color and opacity defined in qgis settings Map/highlight
+ * \since QGIS 4.0
+ */
 class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsHighlightMaterial, with the specified \a parent node.
+     */
     explicit QgsHighlightMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsHighlightMaterial() override;
 
   private:
     void init();
 };
+
+///@endcond
 
 #endif // QGSHIGHLIGHTMATERIAL_H
