@@ -21,15 +21,16 @@
 
 #define SIP_NO_FILE
 
-#include <source_location>
 #include <SFCGAL/capi/sfcgal_c.h>
+#include <source_location>
 
+#include "qgis_core.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsvector3d.h"
-#include "qgis_core.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgslogger.h"
+
 #include <QtGui/qmatrix4x4.h>
 
 class QgsGeometry;
@@ -41,34 +42,34 @@ class QgsSfcgalGeometry;
 #define SFCGAL_VERSION SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
 
 /// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
-#define CHECK_NOT_NULL( ptr, defaultObj )                                              \
-  if ( !( ptr ) )                                                                      \
-  {                                                                                    \
-    sfcgal::errorHandler()->addText( QString( "Null pointer for '%1'" ).arg( #ptr ) ); \
-    return ( defaultObj );                                                             \
+#define CHECK_NOT_NULL( ptr, defaultObj )                                                                                \
+  if ( !( ptr ) )                                                                                                        \
+  {                                                                                                                      \
+    sfcgal::errorHandler()->addText( QString( "Null pointer for '%1'" ).arg( #ptr ), __FILE__, __FUNCTION__, __LINE__ ); \
+    return ( defaultObj );                                                                                               \
   }
 
 /// check if no error has been caught else add stacktrace entry and return the \a defaultObj
-#define CHECK_SUCCESS( errorMsg, defaultObj )                       \
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ) ) ) \
-  {                                                                 \
-    return ( defaultObj );                                          \
+#define CHECK_SUCCESS( errorMsg, defaultObj )                                                         \
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ), __FILE__, __FUNCTION__, __LINE__ ) ) \
+  {                                                                                                   \
+    return ( defaultObj );                                                                            \
   }
 
 /// check if no error has been caught else add stacktrace entry, log the stacktrace and return the \a defaultObj
-#define CHECK_SUCCESS_LOG( errorMsg, defaultObj )                   \
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ) ) ) \
-  {                                                                 \
-    QgsDebugError( sfcgal::errorHandler()->getFullText() );         \
-    return ( defaultObj );                                          \
+#define CHECK_SUCCESS_LOG( errorMsg, defaultObj )                                                     \
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ), __FILE__, __FUNCTION__, __LINE__ ) ) \
+  {                                                                                                   \
+    QgsDebugError( sfcgal::errorHandler()->getFullText() );                                           \
+    return ( defaultObj );                                                                            \
   }
 
 /// check if no error has been caught else add stacktrace entry, log the stacktrace and throw an exception
 #define THROW_ON_ERROR(errorMsg) \
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ) ) )    \
-  {                                                                    \
-    QgsDebugError( sfcgal::errorHandler()->getFullText() );            \
-    throw QgsSfcgalException( sfcgal::errorHandler()->getFullText() ); \
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ), __FILE__, __FUNCTION__, __LINE__ ) ) \
+  {                                                                                                   \
+    QgsDebugError( sfcgal::errorHandler()->getFullText() );                                           \
+    throw QgsSfcgalException( sfcgal::errorHandler()->getFullText() );                                \
   }
 
 
@@ -175,7 +176,7 @@ namespace sfcgal
       * - a stacktrace entry is added with caller location
       * - \a errorMsg will be updated with failure messages
       */
-      bool hasSucceedOrStack( QString *errorMsg = nullptr, const std::source_location &location = std::source_location::current() );
+      bool hasSucceedOrStack( QString *errorMsg = nullptr, const char *fromFile = nullptr, const char *fromFunc = nullptr, int fromLine = 0 );
 
       /**
        * Clears failure messages and also clear \a errorMsg content if not null.
@@ -192,7 +193,7 @@ namespace sfcgal
       QString getFullText() const;
 
       //! Adds \a msg to the failure message list.
-      void addText( const QString &msg, const std::source_location &location = std::source_location::current() );
+      void addText( const QString &msg, const char *fromFile = nullptr, const char *fromFunc = nullptr, int fromLine = 0 );
 
     private:
       QStringList errorMessages;

@@ -166,35 +166,35 @@ class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
 
-#include <QMainWindow>
-#include <QToolBar>
-#include <QAbstractSocket>
-#include <QPointer>
-#include <QSslError>
-#include <QDateTime>
-#include <QStackedWidget>
-
-#include "qgsauthmanager.h"
 #include "qgsconfig.h"
-#include "qgspointxy.h"
-#include "qgsmimedatautils.h"
-#include "qgsrecentprojectsitemsmodel.h"
-#include "qgsrasterminmaxorigin.h"
-#include "qgslayertreeregistrybridge.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsoptionswidgetfactory.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsmasterlayoutinterface.h"
-#include "qgsmaptoolselect.h"
-#include "qgsvectorlayersaveasdialog.h"
-#include "qgis.h"
 #include "ui_qgisapp.h"
+
+#include "qgis.h"
 #include "qgis_app.h"
 #include "qgsappdevtoolutils.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsauthmanager.h"
+#include "qgslayertreeregistrybridge.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsmaptoolselect.h"
+#include "qgsmasterlayoutinterface.h"
+#include "qgsmimedatautils.h"
 #include "qgsoptionsutils.h"
+#include "qgsoptionswidgetfactory.h"
+#include "qgspointxy.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgsrecentprojectsitemsmodel.h"
+#include "qgsvectorlayersaveasdialog.h"
 
+#include <QAbstractSocket>
+#include <QDateTime>
 #include <QGestureEvent>
+#include <QMainWindow>
+#include <QPointer>
+#include <QSslError>
+#include <QStackedWidget>
 #include <QTapAndHoldGesture>
+#include <QToolBar>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

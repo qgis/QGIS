@@ -15,14 +15,14 @@
  ***************************************************************************/
 #include "qgsmeshforcebypolylines.h"
 
-#include "qgsmesheditor.h"
-#include "qgsgeometryutils.h"
 #include "poly2tri.h"
-#include "qgsmultisurface.h"
-#include "qgsmulticurve.h"
-#include "qgscurvepolygon.h"
-#include "qgsmeshlayerutils.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometryutils.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmulticurve.h"
+#include "qgsmultisurface.h"
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
 {

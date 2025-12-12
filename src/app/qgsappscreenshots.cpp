@@ -14,30 +14,30 @@
  ***************************************************************************/
 
 
-#include <QMenu>
-#include <QWindow>
-#include <QScreen>
-#include <QImageWriter>
-#include <QIcon>
-#include <QImage>
-
 #include "qgsappscreenshots.h"
-#include "moc_qgsappscreenshots.cpp"
 
-#include "qgsvectorlayerproperties.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsmessagelog.h"
+#include "options/qgsoptions.h"
 #include "qgisapp.h"
-#include "qgsrendererpropertiesdialog.h"
 #include "qgs25drendererwidget.h"
 #include "qgsapplication.h"
-#include "options/qgsoptions.h"
 #include "qgsguiutils.h"
-#include "qgsvectorlayerjoininfo.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerproperties.h"
 
+#include <QIcon>
+#include <QImage>
+#include <QImageWriter>
+#include <QMenu>
+#include <QScreen>
+#include <QWindow>
+
+#include "moc_qgsappscreenshots.cpp"
 
 QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   : mSaveDirectory( saveDirectory )

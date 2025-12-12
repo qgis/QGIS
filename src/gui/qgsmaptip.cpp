@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 // QGIS includes
-#include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptool.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsexpression.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgswebview.h"
-#include "qgswebframe.h"
 #include "qgsapplication.h"
-#include "qgsrenderer.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgsrendercontext.h"
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapcanvasutils.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaptool.h"
+#include "qgsrasterlayer.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgswebframe.h"
+#include "qgswebview.h"
 
 // Qt includes
 #include <QPoint>

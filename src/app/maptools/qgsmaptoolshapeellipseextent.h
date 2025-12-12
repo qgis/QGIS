@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPEELLIPSEEXTENT_H
 #define QGSMAPTOOLSHAPEELLIPSEEXTENT_H
 
-#include "qgsmaptoolshapeellipseabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapeellipseabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeEllipseExtentMetadata : public QgsMapToolShapeMetadata

@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgsappgpssettingsmenu.h"
-#include "moc_qgsappgpssettingsmenu.cpp"
-#include "qgssettings.h"
+
 #include "qgisapp.h"
-#include "qgsfieldproxymodel.h"
-#include "qgsfieldmodel.h"
-#include "qgsfileutils.h"
+#include "qgsappgpslogging.h"
 #include "qgsapplication.h"
+#include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsfileutils.h"
 #include "qgsgpsmarker.h"
 #include "qgsproject.h"
 #include "qgsprojectgpssettings.h"
-#include "qgsappgpslogging.h"
+#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 
-
-#include <QRadioButton>
 #include <QButtonGroup>
-#include <QGridLayout>
 #include <QFileDialog>
+#include <QGridLayout>
+#include <QRadioButton>
+
+#include "moc_qgsappgpssettingsmenu.cpp"
 
 QgsGpsMapRotationAction::QgsGpsMapRotationAction( QWidget *parent )
   : QWidgetAction( parent )

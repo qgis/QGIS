@@ -14,29 +14,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthimportidentitydialog.h"
-#include "moc_qgsauthimportidentitydialog.cpp"
 #include "ui_qgsauthimportidentitydialog.h"
+#include "qgsauthimportidentitydialog.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthconfig.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgshelp.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QFile>
 #include <QFileDialog>
 #include <QPushButton>
 
-#include "qgssettings.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthconfig.h"
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthimportidentitydialog.cpp"
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent )
   : QDialog( parent )
-  , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
-  , mDisabled( false )
-
 {
   if ( QgsApplication::authManager()->isDisabled() )
   {
@@ -58,7 +56,9 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
     connect( btnPkiPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+      QgsHelp::openHelp( QStringLiteral( "auth_system/auth_workflows.html#authentication-identities" ) );
+    } );
     mIdentityType = identitytype;
 
     populateIdentityType();
@@ -100,6 +100,7 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
 
     cmbIdentityTypes->setCurrentIndex( 0 );
     stkwBundleType->setCurrentIndex( 0 );
+    stkwBundleType->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
   }
   // else switch stacked widget, and populate/connect according to that type and widget
 }

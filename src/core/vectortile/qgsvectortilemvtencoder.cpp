@@ -25,7 +25,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtutils.h"
 
-
 //! Helper class for writing of geometry commands
 struct MVTGeometryWriter
 {
@@ -232,9 +231,16 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
     }
 
     // clip
-    g = g.clipped( tileExtent );
-
-    f.setGeometry( g );
+    const QgsGeometry clippedToTile = g.clipped( tileExtent );
+    if ( clippedToTile.isEmpty() )
+    {
+      // this can often happen -- the transformation of the tile's bounding box to the layer's bounding box
+      // may have expanded the extent that we are using to filter features by, so we may have retrieved
+      // features that do NOT intersect with the tile extent after reprojection. In this case we must
+      // skip these features as empty geometries are not valid for vector tiles.
+      continue;
+    }
+    f.setGeometry( clippedToTile );
 
     addFeature( tileLayer, f );
   }

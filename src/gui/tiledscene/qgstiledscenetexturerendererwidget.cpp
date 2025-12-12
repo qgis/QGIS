@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgstiledscenetexturerendererwidget.h"
-#include "moc_qgstiledscenetexturerendererwidget.cpp"
+
+#include "qgsfillsymbol.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenetexturerenderer.h"
-#include "qgsfillsymbol.h"
+
+#include "moc_qgstiledscenetexturerendererwidget.cpp"
 
 ///@cond PRIVATE
 

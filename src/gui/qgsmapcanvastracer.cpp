@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvastracer.h"
-#include "moc_qgsmapcanvastracer.cpp"
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsproject.h"
+#include "qgsrendercontext.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
-#include "qgssnappingconfig.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsrendercontext.h"
 
 #include <QAction>
-
 #include <QGlobalStatic>
+
+#include "moc_qgsmapcanvastracer.cpp"
 
 typedef QHash<QgsMapCanvas *, QgsMapCanvasTracer *> TracerCanvasHash;
 Q_GLOBAL_STATIC( TracerCanvasHash, sTracers );

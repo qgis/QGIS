@@ -18,12 +18,12 @@
 #define QGSTERRAINPROVIDER_H
 
 #include "qgis_core.h"
-#include "qgsrange.h"
-#include "qgsunittypes.h"
 #include "qgsmaplayerref.h"
-#include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgsrange.h"
+#include "qgsrasterlayer.h"
 #include "qgstriangularmesh.h"
+#include "qgsunittypes.h"
 
 #include <QObject>
 

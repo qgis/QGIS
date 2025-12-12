@@ -20,8 +20,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsvectorlayerlabelprovider.h"
 #include "qgsrulebasedlabeling.h"
+#include "qgsvectorlayerlabelprovider.h"
 
 class QgsPalLayerSettings;
 class QgsRuleBasedLabeling;

@@ -1,0 +1,24 @@
+{
+  "name": "extract_minutes",
+  "type": "function",
+  "groups": ["Conversions"],
+  "description": "Extracts the integer number of minutes from a decimal degrees value. The degrees and seconds components are ignored. The extracted minutes values will be truncated towards zero (not rounded), and will always be a positive value.",
+  "arguments": [{
+    "arg": "value",
+    "description": "A decimal degrees value."
+  }],
+  "examples": [{
+    "expression": "extract_minutes(135.75)",
+    "returns": "45"
+  }, {
+    "expression": "extract_minutes(-135.75)",
+    "returns": "45"
+  }, {
+    "expression": "extract_minutes(-135.7568)",
+    "returns": "45"
+  }, {
+    "expression": "extract_minutes(-135.7568)",
+    "returns": "45"
+  }],
+  "tags": ["dms", "degrees", "minutes", "decimal", "latitude", "longitude", "coordinate"]
+}

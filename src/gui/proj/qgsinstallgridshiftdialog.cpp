@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsinstallgridshiftdialog.h"
-#include "moc_qgsinstallgridshiftdialog.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgssettings.h"
-#include "qgsapplication.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgsinstallgridshiftdialog.cpp"
 
 ///@cond PRIVATE
 

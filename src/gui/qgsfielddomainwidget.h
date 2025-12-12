@@ -15,14 +15,16 @@
 #ifndef QGSFIELDDOMAINWIDGET_H
 #define QGSFIELDDOMAINWIDGET_H
 
+#include "ui_qgscodedvaluedomainwidgetbase.h"
+#include "ui_qgsfielddomainwidgetbase.h"
+#include "ui_qgsglobdomainwidgetbase.h"
+#include "ui_qgsrangedomainwidgetbase.h"
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgsfielddomainwidgetbase.h"
-#include "ui_qgsrangedomainwidgetbase.h"
-#include "ui_qgsglobdomainwidgetbase.h"
-#include "ui_qgscodedvaluedomainwidgetbase.h"
-#include "qgis.h"
 #include "qgsfielddomain.h"
+
 #include <QAbstractTableModel>
 #include <QDialog>
 
@@ -49,7 +51,7 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
      */
     QgsAbstractFieldDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsAbstractFieldDomainWidget();
+    ~QgsAbstractFieldDomainWidget() override;
 
     /**
      * Sets the current field domain to show properties for in the widget.

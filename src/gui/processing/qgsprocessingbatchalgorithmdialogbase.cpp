@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgsprocessingbatchalgorithmdialogbase.h"
-#include "moc_qgsprocessingbatchalgorithmdialogbase.cpp"
+
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
+#include "qgsjsonutils.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingalgrunnertask.h"
 #include "qgsprocessingbatch.h"
 #include "qgsproxyprogresstask.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsjsonutils.h"
-#include "qgsprocessingalgrunnertask.h"
-#include "qgsapplication.h"
-#include <nlohmann/json.hpp>
+
+#include "moc_qgsprocessingbatchalgorithmdialogbase.cpp"
 
 ///@cond NOT_STABLE
 QgsProcessingBatchAlgorithmDialogBase::QgsProcessingBatchAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags )

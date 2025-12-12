@@ -15,11 +15,10 @@
 #ifndef QGSGPXFEATUREITERATOR_H
 #define QGSGPXFEATUREITERATOR_H
 
-#include "qgsfeatureiterator.h"
-
 #include "gpsdata.h"
-#include "qgsgpxprovider.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgpxprovider.h"
 
 class QgsGPXProvider;
 

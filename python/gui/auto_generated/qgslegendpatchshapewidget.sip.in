@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsLegendPatchShapeWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

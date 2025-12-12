@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgsvaliditycheckresultswidget.h"
-#include "moc_qgsvaliditycheckresultswidget.cpp"
-#include "qgsvaliditycheckregistry.h"
+
 #include "qgsapplication.h"
 #include "qgsfeedback.h"
 #include "qgsproxyprogresstask.h"
-#include <QProgressDialog>
+#include "qgsvaliditycheckregistry.h"
+
 #include <QDialogButtonBox>
+#include <QProgressDialog>
 #include <QPushButton>
+
+#include "moc_qgsvaliditycheckresultswidget.cpp"
 
 //
 // QgsValidityCheckResultsModel

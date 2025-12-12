@@ -16,14 +16,14 @@
 #ifndef QGSTEXTRENDERER_H
 #define QGSTEXTRENDERER_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgstextblock.h"
-#include "qgsmapunitscale.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmapunitscale.h"
+#include "qgstextblock.h"
 
-#include <QPicture>
 #include <QPainterPath>
+#include <QPicture>
 
 class QgsTextDocument;
 class QgsTextDocumentMetrics;

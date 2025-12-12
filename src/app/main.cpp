@@ -17,29 +17,30 @@
 
 
 //qt includes
+#include "qgsconfig.h"
+
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+
 #include <QBitmap>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QFont>
 #include <QFontDatabase>
-#include <QPixmap>
+#include <QImageReader>
 #include <QLocale>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QScreen>
 #include <QSplashScreen>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
 #include <QStyle>
 #include <QStyleFactory>
-#include <QImageReader>
-#include <QMessageBox>
-#include <QStandardPaths>
-#include <QScreen>
 #include <QSurfaceFormat>
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstdarg>
-#include "qgsconfig.h"
 
 #if !defined( Q_OS_WIN )
 #include "sigwatch.h"

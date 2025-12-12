@@ -15,8 +15,10 @@
 
 
 #include "qgslabelremoveduplicatesettingswidget.h"
-#include "moc_qgslabelremoveduplicatesettingswidget.cpp"
+
 #include "qgsexpressioncontextutils.h"
+
+#include "moc_qgslabelremoveduplicatesettingswidget.cpp"
 
 QgsLabelRemoveDuplicatesSettingsWidget::QgsLabelRemoveDuplicatesSettingsWidget( QWidget *parent, QgsMapLayer *layer )
   : QgsLabelSettingsWidgetBase( parent, layer )

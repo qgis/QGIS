@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include "qgstest.h"
 #include "qgspostgresstringutils.h"
+#include "qgstest.h"
+
+#include <QString>
 
 class TestQgsPostgresStringUtils : public QObject
 {

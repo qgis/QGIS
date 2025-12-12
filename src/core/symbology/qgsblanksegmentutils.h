@@ -18,8 +18,9 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QPair>
 
 class QgsRenderContext;

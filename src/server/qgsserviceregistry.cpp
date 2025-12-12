@@ -18,13 +18,13 @@
  ***************************************************************************/
 
 #include "qgsserviceregistry.h"
-#include "qgsservice.h"
-#include "qgsserverapi.h"
-#include "qgsmessagelog.h"
 
 #include <algorithm>
 #include <functional>
 
+#include "qgsmessagelog.h"
+#include "qgsserverapi.h"
+#include "qgsservice.h"
 
 namespace
 {

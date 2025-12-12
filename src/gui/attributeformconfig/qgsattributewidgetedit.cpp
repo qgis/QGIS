@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgsattributewidgetedit.h"
-#include "moc_qgsattributewidgetedit.cpp"
+
 #include "qgsattributesformproperties.h"
 #include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"
+
+#include "moc_qgsattributewidgetedit.cpp"
 
 QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QWidget *parent )
   : QgsCollapsibleGroupBox( parent )

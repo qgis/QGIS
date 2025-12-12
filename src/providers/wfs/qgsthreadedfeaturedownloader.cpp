@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsthreadedfeaturedownloader.h"
-#include "moc_qgsthreadedfeaturedownloader.cpp"
 
 #include "qgsapplication.h"
 #include "qgsbackgroundcachedshareddata.h"
@@ -22,6 +21,8 @@
 
 #include <QMutexLocker>
 #include <QThread>
+
+#include "moc_qgsthreadedfeaturedownloader.cpp"
 
 QgsThreadedFeatureDownloader::QgsThreadedFeatureDownloader( QgsBackgroundCachedSharedData *shared )
   : mShared( shared )

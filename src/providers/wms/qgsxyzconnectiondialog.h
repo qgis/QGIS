@@ -16,10 +16,9 @@
 #ifndef QGSXYZCONNECTIONDIALOG_H
 #define QGSXYZCONNECTIONDIALOG_H
 
-#include <QDialog>
-
 #include "ui_qgsxyzconnectiondialog.h"
 
+#include <QDialog>
 
 struct QgsXyzConnection;
 

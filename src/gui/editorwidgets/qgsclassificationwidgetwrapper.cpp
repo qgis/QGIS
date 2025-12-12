@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsclassificationwidgetwrapper.h"
-#include "moc_qgsclassificationwidgetwrapper.cpp"
 
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsclassificationwidgetwrapper.cpp"
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

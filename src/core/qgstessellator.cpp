@@ -15,22 +15,23 @@
 
 #include "qgstessellator.h"
 
+#include <algorithm>
+#include <unordered_set>
+
+#include "poly2tri.h"
 #include "qgis.h"
 #include "qgscurve.h"
-#include "qgsgeometryutils_base.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsmultipolygon.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
-#include "poly2tri.h"
 
-#include <QtDebug>
 #include <QMatrix4x4>
 #include <QVector3D>
+#include <QtDebug>
 #include <QtMath>
-#include <algorithm>
-#include <unordered_set>
 
 static std::pair<float, float> rotateCoords( float x, float y, float origin_x, float origin_y, float r )
 {

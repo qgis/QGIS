@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsfielddomain.h"
-#include "qgsvariantutils.h"
+
 #include <memory>
+
+#include "qgsvariantutils.h"
 
 //
 // QgsFieldDomain

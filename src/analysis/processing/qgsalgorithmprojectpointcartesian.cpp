@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmprojectpointcartesian.h"
+
 #include "qgsmultipoint.h"
 
 ///@cond PRIVATE

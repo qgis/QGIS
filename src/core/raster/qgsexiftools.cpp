@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsexiftools.h"
-#include "moc_qgsexiftools.cpp"
-#include "qgspoint.h"
+
 #include "qgslogger.h"
+#include "qgspoint.h"
+
+#include "moc_qgsexiftools.cpp"
 
 #ifdef HAVE_EXIV2
 #include <exiv2/exiv2.hpp>

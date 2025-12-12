@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgswfsfeaturehitsasyncrequest.h"
-#include "moc_qgswfsfeaturehitsasyncrequest.cpp"
 
 #include "qgsfields.h"
 #include "qgsgml.h"
 #include "qgsmessagelog.h"
 
+#include "moc_qgswfsfeaturehitsasyncrequest.cpp"
+
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
-  , mNumberMatched( -1 )
 {
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
 }

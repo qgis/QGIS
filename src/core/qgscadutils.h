@@ -17,11 +17,10 @@
 #ifndef QGSCADUTILS_H
 #define QGSCADUTILS_H
 
-#include <QQueue>
-
 #include "qgis_core.h"
 #include "qgspointlocator.h"
 
+#include <QQueue>
 
 class QgsSnappingUtils;
 

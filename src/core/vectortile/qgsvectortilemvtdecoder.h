@@ -20,14 +20,12 @@
 
 class QgsFeature;
 
-#include <QStringList>
-#include <QMap>
-
+#include "qgsvectortilematrixset.h"
+#include "qgsvectortilerenderer.h"
 #include "vector_tile.pb.h"
 
-#include "qgsvectortilerenderer.h"
-#include "qgsvectortilematrixset.h"
-
+#include <QMap>
+#include <QStringList>
 
 class QgsVectorTileRawData;
 

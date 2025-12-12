@@ -12,14 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshcalculatordialog.h"
 #include "qgsfeedback.h"
+#include "qgsmeshcalculatordialog.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QTemporaryFile>
 

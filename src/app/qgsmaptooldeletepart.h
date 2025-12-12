@@ -16,10 +16,10 @@
 #ifndef QGSMAPTOOLDELETEPART_H
 #define QGSMAPTOOLDELETEPART_H
 
-#include "qgsmaptooledit.h"
 #include "qgis_app.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
+#include "qgsmaptooledit.h"
 
 class QgsVertexMarker;
 
@@ -51,8 +51,8 @@ class APP_EXPORT QgsMapToolDeletePart : public QgsMapToolEdit
 
     //The feature and part where the mouse cursor was pressed
     //This is used to check whether we are still in the same part at cursor release
-    QgsFeatureId mPressedFid;
-    int mPressedPartNum;
+    QgsFeatureId mPressedFid = 0;
+    int mPressedPartNum = 0;
 };
 
 #endif

@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include "qgsfielddomainwidget.h"
-#include "moc_qgsfielddomainwidget.cpp"
+
 #include "qgsfielddomain.h"
-#include "qgsvariantutils.h"
 #include "qgsgui.h"
+#include "qgsvariantutils.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+#include "moc_qgsfielddomainwidget.cpp"
 
 //
 // QgsAbstractFieldDomainWidget

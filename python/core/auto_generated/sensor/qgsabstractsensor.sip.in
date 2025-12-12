@@ -62,7 +62,7 @@ An abstract base class for sensors.
 %Docstring
 Constructor for an abstract sensor, bound to the specified ``parent``.
 %End
-    virtual ~QgsAbstractSensor();
+    ~QgsAbstractSensor();
 
     QString id() const;
 %Docstring

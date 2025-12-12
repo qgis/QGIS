@@ -54,13 +54,6 @@ class PolarPlot(QgisAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterField(
-                self.NAME_FIELD,
-                self.tr("Category name field"),
-                parentLayerParameterName=self.INPUT,
-            )
-        )  # FIXME unused?
-        self.addParameter(
-            QgsProcessingParameterField(
                 self.VALUE_FIELD,
                 self.tr("Value field"),
                 parentLayerParameterName=self.INPUT,
@@ -117,9 +110,6 @@ class PolarPlot(QgisAlgorithm):
                 self.invalidSourceError(parameters, self.INPUT)
             )
 
-        namefieldname = self.parameterAsString(
-            parameters, self.NAME_FIELD, context
-        )  # NOQA  FIXME unused?
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)

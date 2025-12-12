@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 #include "qgssettingstreewidget.h"
-#include "moc_qgssettingstreewidget.cpp"
-#include "qgssettingstreemodel.h"
+
 #include "qgssettingstree.h"
+#include "qgssettingstreemodel.h"
 
 #include <QAction>
-#include <QTreeView>
 #include <QHBoxLayout>
+#include <QTreeView>
 #include <QVBoxLayout>
 
+#include "moc_qgssettingstreewidget.cpp"
 
 QgsSettingsTreeWidget::QgsSettingsTreeWidget( QWidget *parent )
   : QWidget( parent )

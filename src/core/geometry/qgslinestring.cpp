@@ -16,25 +16,26 @@
  ***************************************************************************/
 
 #include "qgslinestring.h"
+
+#include <cmath>
+#include <limits>
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsgeometrytransformer.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
-#include "qgswkbptr.h"
 #include "qgslinesegment.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsfeedback.h"
+#include "qgswkbptr.h"
 
-#include <nlohmann/json.hpp>
-#include <cmath>
-#include <memory>
-#include <QPainter>
-#include <limits>
 #include <QDomDocument>
 #include <QJsonObject>
-
-#include "qgsbox3d.h"
+#include <QPainter>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -1969,7 +1970,7 @@ void QgsLineString::transform( const QgsCoordinateTransform &ct, Qgis::Transform
   std::unique_ptr< double[] > dummyZ;
   if ( !hasZ || !transformZ )
   {
-    dummyZ.reset( new double[nPoints]() );
+    dummyZ = std::make_unique<double[]>( nPoints );
     zArray = dummyZ.get();
   }
   else

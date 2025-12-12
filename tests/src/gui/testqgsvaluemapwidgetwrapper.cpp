@@ -14,15 +14,14 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-
 #include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "editorwidgets/qgsvaluemapconfigdlg.h"
+#include "editorwidgets/qgsvaluemapwidgetwrapper.h"
 #include "qgsapplication.h"
 #include "qgseditorwidgetwrapper.h"
-#include "editorwidgets/qgsvaluemapwidgetwrapper.h"
-#include "qgsvaluemapfieldformatter.h"
-#include "editorwidgets/qgsvaluemapconfigdlg.h"
 #include "qgsgui.h"
+#include "qgstest.h"
+#include "qgsvaluemapfieldformatter.h"
 
 class TestQgsValueMapWidgetWrapper : public QObject
 {

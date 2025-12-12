@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameteralignrasterlayers.h"
-#include "qgsrasterlayer.h"
-#include "qgis.h"
 
+#include "qgis.h"
+#include "qgsrasterlayer.h"
 
 QgsProcessingParameterAlignRasterLayers::QgsProcessingParameterAlignRasterLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )

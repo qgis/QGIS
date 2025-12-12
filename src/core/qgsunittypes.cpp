@@ -15,8 +15,10 @@
  ***************************************************************************/
 
 #include "qgsunittypes.h"
-#include "moc_qgsunittypes.cpp"
+
 #include "qgis.h"
+
+#include "moc_qgsunittypes.cpp"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

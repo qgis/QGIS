@@ -8,6 +8,7 @@
 
 
 
+
 class QgsSingleItemModel: QAbstractItemModel
 {
 %Docstring(signature="appended")

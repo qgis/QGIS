@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsafsfeatureiterator.h"
-#include "qgsspatialindex.h"
-#include "qgsafsshareddata.h"
+
 #include "geometry/qgsgeometry.h"
-#include "qgsexception.h"
+#include "qgsafsshareddata.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsexception.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryengine.h"
+#include "qgsspatialindex.h"
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )

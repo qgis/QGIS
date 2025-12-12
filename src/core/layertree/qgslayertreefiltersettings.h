@@ -16,15 +16,16 @@
 #ifndef QGSLAYERTREEFILTERSETTINGS_H
 #define QGSLAYERTREEFILTERSETTINGS_H
 
-#include "qgis_core.h"
+#include <memory>
+
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 
-#include <QString>
 #include <QMap>
-#include <memory>
+#include <QString>
 
 class QgsMapSettings;
 class QgsLayerTree;

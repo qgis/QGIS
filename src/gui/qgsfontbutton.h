@@ -19,8 +19,8 @@
 #include "qgis_sip.h"
 #include "qgstextformat.h"
 
-#include <QToolButton>
 #include <QPointer>
+#include <QToolButton>
 
 class QgsExpressionContextGenerator;
 class QgsMapCanvas;

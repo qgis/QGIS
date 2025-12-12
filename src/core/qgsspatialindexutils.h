@@ -17,6 +17,7 @@
 #define QGSSPATIALINDEXUTILS_H
 
 #include "qgis_core.h"
+
 #define SIP_NO_FILE
 
 class QgsRectangle;

@@ -19,15 +19,16 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgswfscapabilities.h"
-#include "qgsoapiflandingpagerequest.h"
-#include "qgsoapifcollection.h"
-#include "qgsproviderregistry.h"
+
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsoapifcollection.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsproviderregistry.h"
+#include "qgswfscapabilities.h"
 
 #include <QItemDelegate>
-#include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QStandardItemModel>
 
 class QgsProjectionSelectionDialog;
 class QgsWfsGetCapabilitiesRequest;

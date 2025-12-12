@@ -14,45 +14,45 @@
  ***************************************************************************/
 
 #include "qgscategorizedsymbolrendererwidget.h"
-#include "moc_qgscategorizedsymbolrendererwidget.cpp"
-#include "qgspanelwidget.h"
 
 #include "qgscategorizedsymbolrenderer.h"
-
+#include "qgscolorrampbutton.h"
+#include "qgscolorrampimpl.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorrampimpl.h"
-#include "qgscolorrampbutton.h"
-#include "qgsstyle.h"
-#include "qgslogger.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgstemporalcontroller.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
-#include "qgsexpression.h"
-#include "qgsmapcanvas.h"
 #include "qgssettings.h"
-#include "qgsguiutils.h"
-#include "qgsmarkersymbol.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgstemporalcontroller.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QClipboard>
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QPen>
 #include <QPainter>
-#include <QFileDialog>
-#include <QClipboard>
+#include <QPen>
 #include <QPointer>
 #include <QScreen>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QUuid>
+
+#include "moc_qgscategorizedsymbolrendererwidget.cpp"
 
 ///@cond PRIVATE
 
@@ -168,7 +168,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
             const QVariantList list = category.value().toList();
             res.reserve( list.size() );
             for ( const QVariant &v : list )
-              res << QgsCategorizedSymbolRenderer::displayString( v );
+              res << QgsVariantUtils::displayString( v );
 
             if ( role == Qt::DisplayRole )
               return res.join( ';' );
@@ -181,7 +181,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
           }
           else
           {
-            return QgsCategorizedSymbolRenderer::displayString( category.value() );
+            return QgsVariantUtils::displayString( category.value() );
           }
         }
         case 2:

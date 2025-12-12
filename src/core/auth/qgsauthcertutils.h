@@ -18,14 +18,14 @@
 #ifndef QGSAUTHCERTUTILS_H
 #define QGSAUTHCERTUTILS_H
 
-#include <QFile>
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QtCrypto>
+#include "qgsauthconfig.h"
+
+#include <QFile>
 #include <QSslCertificate>
 #include <QSslError>
-
-#include "qgsauthconfig.h"
-#include "qgis_core.h"
+#include <QtCrypto>
 
 class QgsAuthConfigSslServer;
 

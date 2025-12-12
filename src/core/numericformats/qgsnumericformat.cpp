@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsnumericformat.h"
-#include "moc_qgsnumericformat.cpp"
-#include "qgsxmlutils.h"
+
 #include "qgsreadwritecontext.h"
+#include "qgsxmlutils.h"
 
 #include <QLocale>
+
+#include "moc_qgsnumericformat.cpp"
 
 QgsNumericFormatContext::QgsNumericFormatContext()
 {

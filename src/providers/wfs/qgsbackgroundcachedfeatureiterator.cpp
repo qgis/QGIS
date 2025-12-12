@@ -14,26 +14,29 @@
  ***************************************************************************/
 
 #include "qgsbackgroundcachedfeatureiterator.h"
-#include "moc_qgsbackgroundcachedfeatureiterator.cpp"
-#include "qgsbackgroundcachedfeaturesource.h"
-#include "qgsbackgroundcachedshareddata.h"
+
+#include <memory>
 
 #include "qgsapplication.h"
-#include "qgsfeedback.h"
+#include "qgsbackgroundcachedfeaturesource.h"
+#include "qgsbackgroundcachedshareddata.h"
 #include "qgsfeaturedownloader.h"
+#include "qgsfeedback.h"
+#include "qgsgeometryengine.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgswfsutils.h" // for isCompatibleType()
-#include "qgsgeometryengine.h"
 #include "qgsvectordataprovider.h"
+#include "qgswfsutils.h"
 
 #include <QDataStream>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QJsonDocument>
 #include <QMutex>
 #include <QTimer>
-#include <QElapsedTimer>
+
+#include "moc_qgsbackgroundcachedfeatureiterator.cpp"
 
 const QString QgsBackgroundCachedFeatureIterator::Constants::FIELD_GEN_COUNTER( QStringLiteral( "__qgis_gen_counter" ) );
 const QString QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID( QStringLiteral( "__qgis_unique_id" ) );
@@ -353,7 +356,7 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
 
   if ( !mWriterStream )
   {
-    mWriterStream.reset( new QDataStream( &mWriterByteArray, QIODevice::WriteOnly ) );
+    mWriterStream = std::make_unique<QDataStream>( &mWriterByteArray, QIODevice::WriteOnly );
   }
   const auto constList = list;
   const Qgis::WkbType expectedType { mShared->mWKBType };
@@ -373,7 +376,7 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
     ++mCounter;
     mWriterFilename = QDir( mShared->acquireCacheDirectory() ).filePath( QStringLiteral( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsgLevel( QStringLiteral( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ), 4 );
-    mWriterFile.reset( new QFile( mWriterFilename ) );
+    mWriterFile = std::make_unique<QFile>( mWriterFilename );
     if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QgsDebugError( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
@@ -508,19 +511,19 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       // Instantiates the reader stream from memory buffer if not empty
       if ( !mReaderByteArray.isEmpty() )
       {
-        mReaderStream.reset( new QDataStream( &mReaderByteArray, QIODevice::ReadOnly ) );
+        mReaderStream = std::make_unique<QDataStream>( &mReaderByteArray, QIODevice::ReadOnly );
       }
       // Otherwise from the on-disk file
       else if ( !mReaderFilename.isEmpty() )
       {
-        mReaderFile.reset( new QFile( mReaderFilename ) );
+        mReaderFile = std::make_unique<QFile>( mReaderFilename );
         if ( !mReaderFile->open( QIODevice::ReadOnly ) )
         {
           QgsDebugError( QStringLiteral( "Cannot open %1" ).arg( mReaderFilename ) );
           mReaderFile.reset();
           return false;
         }
-        mReaderStream.reset( new QDataStream( mReaderFile.get() ) );
+        mReaderStream = std::make_unique<QDataStream>( mReaderFile.get() );
       }
     }
 

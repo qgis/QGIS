@@ -84,7 +84,7 @@ class QWT_EXPORT QwtPlotRasterItem : public QwtPlotItem
 
     explicit QwtPlotRasterItem( const QString& title = QString() );
     explicit QwtPlotRasterItem( const QwtText& title );
-    virtual ~QwtPlotRasterItem();
+    ~QwtPlotRasterItem() override;
 
     void setPaintAttribute( PaintAttribute, bool on = true );
     bool testPaintAttribute( PaintAttribute ) const;

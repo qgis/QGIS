@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsarcgisportalutils.h"
+
 #include "qgsarcgisrestquery.h"
 #include "qgsfeedback.h"
 

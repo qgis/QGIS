@@ -15,9 +15,9 @@
 
 #include "qgsarrowiterator.h"
 
-#include <nanoarrow/nanoarrow.hpp>
 #include <nlohmann/json.hpp>
 
+#include "nanoarrow/nanoarrow.hpp"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 
@@ -56,7 +56,7 @@ QString QgsArrowInferSchemaOptions::geometryColumnName() const
 }
 
 QgsArrowSchema::QgsArrowSchema()
-  : mGeometryColumnIndex( -1 ) {}
+{}
 
 QgsArrowSchema::QgsArrowSchema( const QgsArrowSchema &other )
 {

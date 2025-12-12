@@ -16,15 +16,16 @@
 #ifndef QGSGEOMETRYPAINTDEVICE_H
 #define QGSGEOMETRYPAINTDEVICE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsgeometrycollection.h"
 #include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
 
-#include <QPainterPath>
 #include <QPaintDevice>
 #include <QPaintEngine>
-#include <memory>
+#include <QPainterPath>
 
 class QgsLineString;
 

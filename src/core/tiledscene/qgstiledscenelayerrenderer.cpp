@@ -17,24 +17,27 @@
 
 
 #include "qgstiledscenelayerrenderer.h"
+
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgscesiumutils.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsfeedback.h"
+#include "qgsgltfutils.h"
 #include "qgslogger.h"
+#include "qgsmapclippingutils.h"
 #include "qgsquantizedmeshtiles.h"
+#include "qgsrendercontext.h"
+#include "qgsruntimeprofiler.h"
+#include "qgstextrenderer.h"
+#include "qgsthreadingutils.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenelayer.h"
-#include "qgsfeedback.h"
-#include "qgsmapclippingutils.h"
-#include "qgsrendercontext.h"
+#include "qgstiledscenerenderer.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
-#include "qgstiledscenerenderer.h"
-#include "qgsgltfutils.h"
-#include "qgscesiumutils.h"
-#include "qgscurvepolygon.h"
-#include "qgstextrenderer.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
-#include "qgsthreadingutils.h"
 
 #include <QMatrix4x4>
 #include <qglobal.h>
@@ -495,7 +498,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
           *gltfLocalTransform = parentTransform * *gltfLocalTransform;
         else
         {
-          gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
+          gltfLocalTransform = std::make_unique<QMatrix4x4>( parentTransform );
         }
       }
 

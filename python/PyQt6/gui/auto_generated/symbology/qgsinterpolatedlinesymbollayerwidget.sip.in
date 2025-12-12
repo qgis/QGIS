@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsInterpolatedLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")

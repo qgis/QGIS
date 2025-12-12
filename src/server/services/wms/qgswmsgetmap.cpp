@@ -18,10 +18,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
 #include "qgswmsgetmap.h"
+
 #include "qgswmsrenderer.h"
 #include "qgswmsserviceexception.h"
+#include "qgswmsutils.h"
 
 #include <QImage>
 

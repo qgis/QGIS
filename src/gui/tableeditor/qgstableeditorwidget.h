@@ -19,12 +19,12 @@
 #define QGSTABLEEDITORWIDGET_H
 
 #include "qgis_gui.h"
-#include "qgstablecell.h"
 #include "qgsproperty.h"
-#include <QTableWidget>
+#include "qgstablecell.h"
+
 #include <QPlainTextEdit>
 #include <QStyledItemDelegate>
-
+#include <QTableWidget>
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

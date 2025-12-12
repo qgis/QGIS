@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsfontutils.h"
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapgrid.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfontutils.h"
-#include "qgsproject.h"
-#include <QObject>
-#include "qgstest.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsLayoutMapGrid : public QgsTest
 {
@@ -64,6 +65,8 @@ class TestQgsLayoutMapGrid : public QgsTest
     void lineBorderAnnotated();            //test line border frame with annotations
     void annotationFormats();              //various tests for annotation formats
     void descendingAnnotations();          //test descending annotation direction
+    void dataDefinedDrawAnnotation();
+    void dataDefinedDrawAnnotationCountAndIndex();
 };
 
 void TestQgsLayoutMapGrid::initTestCase()
@@ -1109,30 +1112,34 @@ void TestQgsLayoutMapGrid::annotationFormats()
   QgsExpressionContext expressionContext = gridGeographic.createExpressionContext();
 
   //normal e/w
-  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "90.0°E" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 90, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "90.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsLayoutItemMapGrid::Longitude, expressionContext, true ), QString( "90.0°E" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 90, QgsLayoutItemMapGrid::Longitude, expressionContext, false ), QString( "90.0E" ) );
 
   //0 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "0.0°" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "0.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Longitude, expressionContext, true ), QString( "0.0°" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsLayoutItemMapGrid::Longitude, expressionContext, false ), QString( "0.0E" ) );
 
   //180 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "180.0°" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 180, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "180.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsLayoutItemMapGrid::Longitude, expressionContext, true ), QString( "180.0°" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 180, QgsLayoutItemMapGrid::Longitude, expressionContext, false ), QString( "180.0E" ) );
 
   //normal n/s
-  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "45.0°N" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "45.0N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext, true ), QString( "45.0°N" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext, false ), QString( "45.0N" ) );
 
   //0 north/south
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "0.0°" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "0.0N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Latitude, expressionContext, true ), QString( "0.0°" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsLayoutItemMapGrid::Latitude, expressionContext, false ), QString( "0.0N" ) );
 
   //Custom format annotations
   gridProjected.setAnnotationFormat( QgsLayoutItemMapGrid::CustomFormat );
   gridProjected.setAnnotationExpression( QStringLiteral( "(@grid_number/10) || case when @grid_axis ='x' then 'a' else 'b' end" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "4.5b" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 35, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "3.5a" ) );
+  expressionContext.lastScope()->setVariable( QStringLiteral( "grid_number" ), 45 );
+  expressionContext.lastScope()->setVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "y" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext, false ), QString( "4.5b" ) );
+  expressionContext.lastScope()->setVariable( QStringLiteral( "grid_number" ), 35 );
+  expressionContext.lastScope()->setVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "x" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 35, QgsLayoutItemMapGrid::Longitude, expressionContext, false ), QString( "3.5a" ) );
 }
 
 void TestQgsLayoutMapGrid::descendingAnnotations()
@@ -1183,5 +1190,93 @@ void TestQgsLayoutMapGrid::descendingAnnotations()
 
   map->grid()->setAnnotationEnabled( false );
 }
+
+void TestQgsLayoutMapGrid::dataDefinedDrawAnnotation()
+{
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->grid()->setAnnotationEnabled( true );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Left );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Right );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Top );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Bottom );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Top );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
+
+  map->grid()->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation, QgsProperty::fromExpression( QStringLiteral( "case when @grid_axis = 'x' then @grid_number < 787000 when @grid_axis ='y' then @grid_number >= 3342000 end" ) ) );
+  map->grid()->refresh();
+  map->updateBoundingRect();
+
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_dd_draw_annotation" ), &l );
+}
+
+void TestQgsLayoutMapGrid::dataDefinedDrawAnnotationCountAndIndex()
+{
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->grid()->setAnnotationEnabled( true );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Left );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Right );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Top );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Bottom );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Top );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
+
+  map->grid()->setAnnotationFormat( QgsLayoutItemMapGrid::CustomFormat );
+  map->grid()->setAnnotationExpression( QStringLiteral( "@grid_index || '/' || @grid_count" ) );
+
+  map->grid()->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation, QgsProperty::fromExpression( QStringLiteral( "@grid_index > 1 and @grid_index < @grid_count" ) ) );
+  map->grid()->refresh();
+  map->updateBoundingRect();
+
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_grid_variables" ), &l );
+}
+
 QGSTEST_MAIN( TestQgsLayoutMapGrid )
 #include "testqgslayoutmapgrid.moc"

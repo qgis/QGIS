@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmaplayerelevationproperties.h"
-#include "moc_qgsmaplayerelevationproperties.cpp"
+
 #include <mutex>
 
+#include "moc_qgsmaplayerelevationproperties.cpp"
 
 QgsPropertiesDefinition QgsMapLayerElevationProperties::sPropertyDefinitions;
 

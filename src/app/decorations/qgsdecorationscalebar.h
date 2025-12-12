@@ -23,8 +23,8 @@ email                : sbr00pwb@users.sourceforge.net
 
 #include "qgis.h"
 #include "qgsdecorationitem.h"
-#include "qgsscalebarsettings.h"
 #include "qgsscalebarrenderer.h"
+#include "qgsscalebarsettings.h"
 
 class QPainter;
 

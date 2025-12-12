@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsideoptions.h"
-#include "moc_qgsideoptions.cpp"
+
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
-#include "qgis.h"
 
 #include <QDesktopServices>
 #include <QUrl>
+
+#include "moc_qgsideoptions.cpp"
 
 //
 // QgsIdeOptionsWidget

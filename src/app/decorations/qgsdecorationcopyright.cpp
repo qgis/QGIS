@@ -22,10 +22,9 @@ email                : tim@linfiniti.com
 // includes
 
 #include "qgsdecorationcopyright.h"
-#include "moc_qgsdecorationcopyright.cpp"
-#include "qgsdecorationcopyrightdialog.h"
 
 #include "qgisapp.h"
+#include "qgsdecorationcopyrightdialog.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgslogger.h"
@@ -34,11 +33,13 @@ email                : tim@linfiniti.com
 #include "qgssymbollayerutils.h"
 #include "qgstextrenderer.h"
 
-#include <QPainter>
-#include <QMenu>
 #include <QDate>
 #include <QDomDocument>
 #include <QFile>
+#include <QMenu>
+#include <QPainter>
+
+#include "moc_qgsdecorationcopyright.cpp"
 
 //non qt includes
 #include <cmath>

@@ -16,12 +16,11 @@
 #ifndef QGSFIELDCOMBOBOX_H
 #define QGSFIELDCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgsfieldproxymodel.h"
 #include "qgis_gui.h"
-
 #include "qgis_sip.h"
+#include "qgsfieldproxymodel.h"
+
+#include <QComboBox>
 
 class QgsMapLayer;
 class QgsVectorLayer;

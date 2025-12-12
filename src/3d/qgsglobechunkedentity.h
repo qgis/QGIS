@@ -81,7 +81,7 @@ class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
   public:
     QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSettings );
 
-    ~QgsGlobeChunkLoaderFactory();
+    ~QgsGlobeChunkLoaderFactory() override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
@@ -108,7 +108,7 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
 
   public:
     QgsGlobeEntity( Qgs3DMapSettings *mapSettings );
-    ~QgsGlobeEntity();
+    ~QgsGlobeEntity() override;
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 

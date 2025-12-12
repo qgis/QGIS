@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrelationwidgetregistry.h"
+
 #include "qgsrelationeditorwidget.h"
 
 QgsRelationWidgetRegistry::QgsRelationWidgetRegistry()

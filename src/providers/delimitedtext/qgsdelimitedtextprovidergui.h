@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdelimitedtextsourceselect.h"
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
-#include "qgsdelimitedtextsourceselect.h"
 
 class QgsDelimitedTextProviderGuiMetadata : public QgsProviderGuiMetadata
 {

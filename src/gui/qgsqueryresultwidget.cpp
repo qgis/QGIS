@@ -14,34 +14,36 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsqueryresultwidget.h"
-#include "moc_qgsqueryresultwidget.cpp"
+
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsexpressionutils.h"
-#include "qgscodeeditorsql.h"
-#include "qgsmessagelog.h"
-#include "qgsquerybuilder.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgsgui.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgshistoryentry.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+#include "qgscodeeditorsql.h"
 #include "qgscodeeditorwidget.h"
-#include "qgsfileutils.h"
-#include "qgshelp.h"
-#include "qgsstoredquerymanager.h"
-#include "qgsproject.h"
-#include "qgsnewnamedialog.h"
-#include "qgshistorywidget.h"
 #include "qgsdbqueryhistoryprovider.h"
+#include "qgsexpressionutils.h"
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgshistoryentry.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgshistorywidget.h"
+#include "qgsmessagelog.h"
+#include "qgsnewnamedialog.h"
+#include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsquerybuilder.h"
+#include "qgsstoredquerymanager.h"
+#include "qgsvectorlayer.h"
 
 #include <QClipboard>
 #include <QDialogButtonBox>
-#include <QShortcut>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QShortcut>
+
+#include "moc_qgsqueryresultwidget.cpp"
 
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeSqlQueries, QString(), QStringLiteral( "Last used folder for SQL source files" ) );

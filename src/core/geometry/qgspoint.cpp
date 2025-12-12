@@ -17,21 +17,24 @@
 
 
 #include "qgspoint.h"
-#include "moc_qgspoint.cpp"
-#include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
-#include "qgsgeometryutils.h"
-#include "qgswkbptr.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsbox3d.h"
 
 #include <cmath>
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
+#include "qgsbox3d.h"
+#include "qgscoordinatetransform.h"
+#include "qgsgeometrytransformer.h"
+#include "qgsgeometryutils.h"
+#include "qgswkbptr.h"
+
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <QRegularExpression>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <nlohmann/json.hpp>
+
+#include "moc_qgspoint.cpp"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

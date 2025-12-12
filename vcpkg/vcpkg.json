@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "4e73518faee954f3469342cd8c28389ea9a97de3",
+        "baseline": "1c3ef0209e78dceceeca3c4d18f93540a19c37bc",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -62,16 +62,8 @@
     "nlohmann-json",
     "o2",
     "opencl",
-    "pdal",
     "proj",
     "protobuf",
-    {
-      "name": "qca",
-      "default-features": false,
-      "features": [
-        "ossl"
-      ]
-    },
     {
       "name": "qtbase",
       "features": [
@@ -81,7 +73,6 @@
     "qtdeclarative",
     "qtimageformats",
     "qtkeychain-qt6",
-    "qtlocation",
     "qtquickcontrols2",
     "qtsvg",
     "qttools",
@@ -130,7 +121,9 @@
             "qt3d",
             "qt5compat",
             "qtcharts",
-            "qtdeclarative"
+            "qtdeclarative",
+            "qtpositioning",
+            "qtserialport"
           ]
         },
         "py-pysal",
@@ -145,7 +138,18 @@
         "python3"
       ]
     },
-
+    "auth": {
+      "description": "Determines whether the EXIV2 should be built",
+      "dependencies": [
+        {
+          "name": "qca",
+          "default-features": false,
+          "features": [
+            "ossl"
+          ]
+        }
+      ]
+    },
     "exiv2": {
       "description": "Determines whether EXIV2 should be built",
       "dependencies": [
@@ -175,6 +179,18 @@
       "description": "Build with oracle support",
       "dependencies": [
         "oracle-instantclient"
+      ]
+    },
+    "pdal": {
+      "description": "Build with pdal support",
+      "dependencies": [
+        "pdal"
+      ]
+    },
+    "qtpositioning": {
+      "description": "Determines whether QGIS should be built with support for QtPositioning",
+      "dependencies": [
+        "qtlocation"
       ]
     },
     "server": {

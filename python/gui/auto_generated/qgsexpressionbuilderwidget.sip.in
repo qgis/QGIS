@@ -12,7 +12,6 @@
 
 
 
-
 class QgsExpressionBuilderWidget : QWidget
 {
 %Docstring(signature="appended")

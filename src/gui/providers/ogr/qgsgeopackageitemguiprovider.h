@@ -18,9 +18,10 @@
 #ifndef QGSGEOPACKAGEITEMGUIPROVIDER_H
 #define QGSGEOPACKAGEITEMGUIPROVIDER_H
 
-#include <QObject>
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
+
+#include <QObject>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

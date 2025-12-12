@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsexternalresourcewidgetplugin.h"
-#include "moc_qgsexternalresourcewidgetplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsexternalresourcewidget.h"
 
+#include "moc_qgsexternalresourcewidgetplugin.cpp"
 
 QgsExternalResourceWidgetPlugin::QgsExternalResourceWidgetPlugin( QObject *parent )
   : QObject( parent )

@@ -15,6 +15,7 @@
 
 
 #include "qgstest.h"
+
 #include <QObject>
 
 //qgis includes...

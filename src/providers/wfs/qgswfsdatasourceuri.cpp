@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "QtGlobal"
+#include "qgswfsdatasourceuri.h"
 
 #include "qgsmessagelog.h"
 #include "qgswfsconstants.h"
-#include "qgswfsdatasourceuri.h"
 
 #include <QUrlQuery>
+#include <QtGlobal>
 
 QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   : mURI( uri )

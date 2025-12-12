@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgswfssubsetstringeditor.h"
-#include "moc_qgswfssubsetstringeditor.cpp"
+
+#include "qgssqlstatement.h"
 #include "qgswfsprovider.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
-#include "qgssqlstatement.h"
+
+#include "moc_qgswfssubsetstringeditor.cpp"
 
 QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer *layer, QgsWFSProvider *provider, QWidget *parent, Qt::WindowFlags fl )
 {

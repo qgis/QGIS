@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspluginlayer.h"
-#include "moc_qgspluginlayer.cpp"
+
 #include "qgsiconutils.h"
+
+#include "moc_qgspluginlayer.cpp"
 
 QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
   : QgsMapLayer( Qgis::LayerType::Plugin, layerName )

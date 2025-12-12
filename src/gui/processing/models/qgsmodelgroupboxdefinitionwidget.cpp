@@ -17,14 +17,16 @@
 
 
 #include "qgsmodelgroupboxdefinitionwidget.h"
-#include "moc_qgsmodelgroupboxdefinitionwidget.cpp"
 
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
-#include <QVBoxLayout>
-#include <QTextEdit>
+
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QTextEdit>
+#include <QVBoxLayout>
+
+#include "moc_qgsmodelgroupboxdefinitionwidget.cpp"
 
 QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent )
   : QDialog( parent )

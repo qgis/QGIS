@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmssqlutils.h"
-#include "qgsvariantutils.h"
-#include "qgslogger.h"
+
 #include "qgsfield.h"
+#include "qgslogger.h"
+#include "qgsvariantutils.h"
 #include "qgswkbtypes.h"
 
 QString QgsMssqlUtils::quotedValue( const QVariant &value )

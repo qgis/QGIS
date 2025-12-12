@@ -16,12 +16,12 @@
 #ifndef QGSVECTORSIMPLIFYMETHOD_H
 #define QGSVECTORSIMPLIFYMETHOD_H
 
-#include <QFlags>
-#include <QObject>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
+#include <QFlags>
+#include <QObject>
 
 /**
  * \ingroup core

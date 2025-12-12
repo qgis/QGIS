@@ -18,12 +18,13 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
 #include "qgsconfig.h"
 
+#include "qgis_core.h"
 #include "qgsfeedback.h"
 
 #include <QThread>
+
 #if defined( QGISDEBUG ) || defined( AGGRESSIVE_SAFE_MODE )
 #include <QDebug>
 #include <QMutex>

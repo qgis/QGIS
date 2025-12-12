@@ -14,11 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
 #include "qgsweakrelation.h"
+
 #include "qgslogger.h"
-#include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include <QApplication>
 
 QgsWeakRelation::QgsWeakRelation() = default;
 

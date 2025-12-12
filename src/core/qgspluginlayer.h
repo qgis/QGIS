@@ -16,8 +16,8 @@
 #define QGSPLUGINLAYER_H
 
 #include "qgis_core.h"
-#include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
+#include "qgsmaplayer.h"
 
 /**
  * \ingroup core

@@ -19,8 +19,8 @@
 #ifndef QGSVECTORLAYERSELECTIONPROPERTIES_H
 #define QGSVECTORLAYERSELECTIONPROPERTIES_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerselectionproperties.h"
 

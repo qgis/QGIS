@@ -14,31 +14,30 @@
  ***************************************************************************/
 
 #include "qgsesrii3sdataprovider.h"
-#include "moc_qgsesrii3sdataprovider.cpp"
+
+#include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 #include "qgsreadwritelocker.h"
-#include "qgsthreadingutils.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsziputils.h"
-
+#include "qgsthreadingutils.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayerdetails.h"
+#include "qgsziputils.h"
 
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QIcon>
 #include <QQuaternion>
 
-#include <nlohmann/json.hpp>
-
+#include "moc_qgsesrii3sdataprovider.cpp"
 
 #define I3S_PROVIDER_KEY QStringLiteral( "esrii3s" )
 #define I3S_PROVIDER_DESCRIPTION QStringLiteral( "ESRI I3S data provider" )

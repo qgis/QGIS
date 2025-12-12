@@ -18,14 +18,17 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-
 #include "qgscontrastenhancement.h"
+
+#include <memory>
+
+#include "qgscliptominmaxenhancement.h"
 #include "qgscontrastenhancementfunction.h"
 #include "qgslinearminmaxenhancement.h"
 #include "qgslinearminmaxenhancementwithclip.h"
-#include "qgscliptominmaxenhancement.h"
+#include "qgslogger.h"
 #include "qgsrasterblock.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -36,7 +39,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   , mRasterDataTypeRange( mMaximumValue - mMinimumValue )
   , mLookupTableOffset( mMinimumValue * -1 )
 {
-  mContrastEnhancementFunction.reset( new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue ) );
+  mContrastEnhancementFunction = std::make_unique<QgsContrastEnhancementFunction>( mRasterDataType, mMinimumValue, mMaximumValue );
 
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
@@ -155,19 +158,19 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
   switch ( algorithm )
   {
     case StretchToMinimumMaximum :
-      mContrastEnhancementFunction.reset( new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue ) );
+      mContrastEnhancementFunction = std::make_unique<QgsLinearMinMaxEnhancement>( mRasterDataType, mMinimumValue, mMaximumValue );
       break;
     case StretchAndClipToMinimumMaximum :
-      mContrastEnhancementFunction.reset( new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue ) );
+      mContrastEnhancementFunction = std::make_unique<QgsLinearMinMaxEnhancementWithClip>( mRasterDataType, mMinimumValue, mMaximumValue );
       break;
     case ClipToMinimumMaximum :
-      mContrastEnhancementFunction.reset( new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue ) );
+      mContrastEnhancementFunction = std::make_unique<QgsClipToMinMaxEnhancement>( mRasterDataType, mMinimumValue, mMaximumValue );
       break;
     case UserDefinedEnhancement :
       //Do nothing
       break;
     default:
-      mContrastEnhancementFunction.reset( new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue ) );
+      mContrastEnhancementFunction = std::make_unique<QgsContrastEnhancementFunction>( mRasterDataType, mMinimumValue, mMaximumValue );
       break;
   }
 

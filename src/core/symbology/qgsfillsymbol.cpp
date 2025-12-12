@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfillsymbol.h"
+
 #include "qgsfillsymbollayer.h"
 #include "qgspainteffect.h"
 

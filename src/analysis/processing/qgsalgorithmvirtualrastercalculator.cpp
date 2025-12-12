@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmvirtualrastercalculator.h"
+
 #include "qgsrasterdataprovider.h"
 
 ///@cond PRIVATE

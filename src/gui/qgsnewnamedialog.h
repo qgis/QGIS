@@ -20,8 +20,9 @@
 class QLabel;
 class QLineEdit;
 
-#include "qgsdialog.h"
 #include "qgis_gui.h"
+#include "qgsdialog.h"
+
 #include <QRegularExpression>
 
 /**

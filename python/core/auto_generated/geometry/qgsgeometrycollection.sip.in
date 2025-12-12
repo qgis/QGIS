@@ -11,7 +11,6 @@
 
 
 
-
 class QgsGeometryCollection: QgsAbstractGeometry
 {
 %Docstring(signature="appended")
@@ -274,6 +273,7 @@ Returns a geometry without curves. Caller takes ownership
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
 
     virtual QgsGeometryCollection *simplifyByDistance( double tolerance ) const /Factory/;
+
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 

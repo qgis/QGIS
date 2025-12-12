@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 {
 %Docstring(signature="appended")

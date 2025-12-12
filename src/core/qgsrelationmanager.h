@@ -17,13 +17,13 @@
 #define QGSRELATIONMANAGER_H
 
 #include "qgis_core.h"
+#include "qgspolymorphicrelation.h"
+#include "qgsrelation.h"
+
+#include <QDomDocument>
+#include <QDomNode>
 #include <QObject>
 #include <QPair>
-#include <QDomNode>
-#include <QDomDocument>
-
-#include "qgsrelation.h"
-#include "qgspolymorphicrelation.h"
 
 class QgsProject;
 class QgsVectorLayer;

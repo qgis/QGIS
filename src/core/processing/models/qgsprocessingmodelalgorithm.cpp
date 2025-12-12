@@ -16,24 +16,27 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelalgorithm.h"
-#include "moc_qgsprocessingmodelalgorithm.cpp"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingfeedback.h"
-#include "qgsprocessingutils.h"
+
 #include "qgis.h"
-#include "qgsxmlutils.h"
-#include "qgsexception.h"
-#include "qgsvectorlayer.h"
-#include "qgsstringutils.h"
 #include "qgsapplication.h"
-#include "qgsprocessingparametertype.h"
+#include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsprocessingmodelgroupbox.h"
 #include "qgsmessagelog.h"
+#include "qgsprocessingfeedback.h"
+#include "qgsprocessingmodelgroupbox.h"
+#include "qgsprocessingparametertype.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingutils.h"
+#include "qgsstringutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsxmlutils.h"
 
 #include <QFile>
-#include <QTextStream>
 #include <QRegularExpression>
+#include <QTextStream>
+
+#include "moc_qgsprocessingmodelalgorithm.cpp"
+
 ///@cond NOT_STABLE
 
 QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group, const QString &groupId )
@@ -812,9 +815,12 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         if ( def->flags() & Qgis::ProcessingParameterFlag::Advanced )
           hasAdvancedParams = true;
 
-        const QString importString = QgsApplication::processingRegistry()->parameterType( def->type() )->pythonImportString();
-        if ( !importString.isEmpty() && !importLines.contains( importString ) )
-          importLines << importString;
+        if ( const QgsProcessingParameterType *type = QgsApplication::processingRegistry()->parameterType( def->type() ) )
+        {
+          const QString importString = type->pythonImportString();
+          if ( !importString.isEmpty() && !importLines.contains( importString ) )
+            importLines << importString;
+        }
       }
 
       if ( hasAdvancedParams )

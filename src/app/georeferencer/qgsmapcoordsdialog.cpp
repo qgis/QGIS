@@ -12,19 +12,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QValidator>
-#include <QPushButton>
-
-#include "qgsmapcanvas.h"
-#include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
-#include "moc_qgsmapcoordsdialog.cpp"
-#include "qgssettings.h"
-#include "qgsmapmouseevent.h"
-#include "qgsgui.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsprojectionselectionwidget.h"
 #include "qgsgeorefdatapoint.h"
+#include "qgsgeorefvalidators.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgssettings.h"
+
+#include <QPushButton>
+#include <QValidator>
+
+#include "moc_qgsmapcoordsdialog.cpp"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataPoint *georefDataPoint, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
@@ -184,7 +188,7 @@ void QgsMapCoordsDialog::updateSourceCoordinates( const QgsPointXY &sourceCoordi
 QgsGeorefMapToolEmitPoint::QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 }
 
 void QgsGeorefMapToolEmitPoint::canvasMoveEvent( QgsMapMouseEvent *e )

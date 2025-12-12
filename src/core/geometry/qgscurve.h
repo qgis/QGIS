@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
 #include "qgsbox3d.h"
+
 #include <QPainterPath>
 
 class QgsLineString;

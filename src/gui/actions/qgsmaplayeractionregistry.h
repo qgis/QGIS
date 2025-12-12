@@ -16,14 +16,14 @@
 #ifndef QGSMAPLAYERACTIONREGISTRY_H
 #define QGSMAPLAYERACTIONREGISTRY_H
 
-#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsmaplayeractioncontext.h"
 
-#include <QObject>
 #include <QList>
 #include <QMap>
+#include <QObject>
 
 class QgsFeature;
 class QgsMapLayer;

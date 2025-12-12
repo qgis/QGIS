@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLPAN_H
 #define QGSMAPTOOLPAN_H
 
-#include "qgsmaptool.h"
 #include "qgis_gui.h"
+#include "qgsmaptool.h"
 
 class QgsMapCanvas;
 
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
 
   private:
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
     //! Flag to indicate a pinch gesture is taking place
     bool mPinching = false;
 

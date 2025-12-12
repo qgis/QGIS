@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgskeyvaluefieldformatter.h"
+
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
 

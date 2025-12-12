@@ -114,7 +114,7 @@ class QWT_EXPORT QwtWidgetOverlay : public QWidget
     };
 
     explicit QwtWidgetOverlay( QWidget* );
-    virtual ~QwtWidgetOverlay();
+    ~QwtWidgetOverlay() override;
 
     void setMaskMode( MaskMode );
     MaskMode maskMode() const;

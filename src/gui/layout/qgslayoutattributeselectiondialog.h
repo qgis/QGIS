@@ -21,16 +21,18 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QDialog>
-#include <QMap>
-#include <QSet>
-#include <QItemDelegate>
-#include <QAbstractTableModel>
-#include <QSortFilterProxyModel>
+#include "ui_qgslayoutattributeselectiondialogbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgslayoutattributeselectiondialogbase.h"
 #include "qgsexpressioncontextgenerator.h"
+
+#include <QAbstractTableModel>
+#include <QDialog>
+#include <QItemDelegate>
+#include <QMap>
+#include <QSet>
+#include <QSortFilterProxyModel>
 
 class QGridLayout;
 class QgsVectorLayer;

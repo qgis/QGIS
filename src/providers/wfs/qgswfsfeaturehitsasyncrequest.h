@@ -18,8 +18,8 @@
 #ifndef QGSWFSFEATUREHITSASYNCREQUEST_H
 #define QGSWFSFEATUREHITSASYNCREQUEST_H
 
-#include "qgswfsrequest.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgswfsrequest.h"
 
 //! Utility class to issue a GetFeature resultType=hits request
 class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest
@@ -44,7 +44,7 @@ class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest
     QString errorMessageWithReason( const QString &reason ) override;
 
   private:
-    int mNumberMatched;
+    int mNumberMatched = -1;
 };
 
 #endif

@@ -15,11 +15,13 @@
 #ifndef QGSPROJECTLAYERGROUPDIALOG_H
 #define QGSPROJECTLAYERGROUPDIALOG_H
 
-#include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
+
+#include "qgis_app.h"
 #include "qgshelp.h"
 #include "qgslayertreemodel.h"
-#include "qgis_app.h"
+
+#include <QDialog>
 
 class QDomElement;
 

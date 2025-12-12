@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsstylemodel.h"
-#include "moc_qgsstylemodel.cpp"
-#include "qgsstyle.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
-#include "qgssvgcache.h"
-#include "qgsimagecache.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgscombinedstylemodel.h"
 
-#include <QIcon>
+#include "qgsapplication.h"
+#include "qgscombinedstylemodel.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsimagecache.h"
+#include "qgsstyle.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
+
 #include <QBuffer>
 #include <QDir>
+#include <QIcon>
+
+#include "moc_qgsstylemodel.cpp"
 
 const double ICON_PADDING_FACTOR = 0.16;
 

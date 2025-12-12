@@ -17,7 +17,6 @@
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresutils.h"
-
 #include "qgsreadwritecontext.h"
 
 #include <QIODevice>

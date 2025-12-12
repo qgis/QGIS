@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsmeshrendereractivedatasetwidget.h"
-#include "moc_qgsmeshrendereractivedatasetwidget.cpp"
-
-#include <QDateTime>
-#include <QIcon>
 
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsmeshlayer.h"
-#include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmessagelog.h"
+
+#include <QDateTime>
+#include <QIcon>
+
+#include "moc_qgsmeshrendereractivedatasetwidget.cpp"
 
 QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget *parent )
   : QWidget( parent )

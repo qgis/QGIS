@@ -14,15 +14,18 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterial.h"
-#include "moc_qgsmetalroughmaterial.cpp"
+
 #include "qgs3dutils.h"
+
+#include <Qt3DRender/QAbstractTexture>
+#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgramBuilder>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
-#include <Qt3DRender/QAbstractTexture>
-#include <Qt3DRender/QShaderProgramBuilder>
-#include <Qt3DRender/QGraphicsApiFilter>
+
+#include "moc_qgsmetalroughmaterial.cpp"
 
 ///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )

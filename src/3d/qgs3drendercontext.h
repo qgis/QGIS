@@ -17,14 +17,14 @@
 #define QGS3DRENDERCONTEXT_H
 
 #include "qgis_3d.h"
-#include "qgsvector3d.h"
-#include "qgsrectangle.h"
-#include "qgsrange.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsexpressioncontext.h"
-#include "qgsabstractterrainsettings.h"
+#include "qgsrange.h"
+#include "qgsrectangle.h"
 #include "qgsterraingenerator.h"
+#include "qgsvector3d.h"
 
 #include <QColor>
 

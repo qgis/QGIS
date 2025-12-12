@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsannotationitemguiregistry.h"
-#include "moc_qgsannotationitemguiregistry.cpp"
-#include "qgsannotationitemregistry.h"
-#include "qgsannotationitem.h"
 
+#include "qgsannotationitem.h"
+#include "qgsannotationitemregistry.h"
 #include "qgsannotationitemwidget_impl.h"
 #include "qgscreateannotationitemmaptool_impl.h"
 
 #include <QImageReader>
+
+#include "moc_qgsannotationitemguiregistry.cpp"
 
 //
 // QgsAnnotationItemAbstractGuiMetadata

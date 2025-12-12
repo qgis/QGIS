@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgscodeeditordockwidget.h"
-#include "moc_qgscodeeditordockwidget.cpp"
+
 #include "qgsdockablewidgethelper.h"
+
+#include "moc_qgscodeeditordockwidget.cpp"
 
 QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &dockId, bool usePersistentWidget )
   : QWidget( nullptr )

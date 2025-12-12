@@ -50,7 +50,7 @@ class QWT_EXPORT QwtPlotScaleItem : public QwtPlotItem
         QwtScaleDraw::Alignment = QwtScaleDraw::BottomScale,
         const double pos = 0.0 );
 
-    virtual ~QwtPlotScaleItem();
+    ~QwtPlotScaleItem() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

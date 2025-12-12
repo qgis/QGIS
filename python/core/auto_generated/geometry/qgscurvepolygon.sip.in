@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCurvePolygon: QgsSurface
 {
 %Docstring(signature="appended")

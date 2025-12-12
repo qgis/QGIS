@@ -13,46 +13,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QJsonArray>
+#include <gdal.h>
 
+#include "diagram/qgspiediagram.h"
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsdiagramrenderer.h"
 #include "qgseffectstack.h"
+#include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsfontutils.h"
+#include "qgsgeometry.h"
 #include "qgsgloweffect.h"
+#include "qgsheatmaprenderer.h"
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
+#include "qgslayertreefilterproxymodel.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgslayertreefiltersettings.h"
+#include "qgslayertreeutils.h"
+#include "qgslegendrenderer.h"
+#include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmeshlayer.h"
 #include "qgspainteffect.h"
+#include "qgspalettedrasterrenderer.h"
 #include "qgsproject.h"
-#include "qgslayertreefilterproxymodel.h"
-#include "qgslegendrenderer.h"
+#include "qgspropertytransformer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrulebasedlabeling.h"
 #include "qgsshadoweffect.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgsvectorlayer.h"
+#include "qgstest.h"
 #include "qgsvectordataprovider.h"
-#include "qgsgeometry.h"
-#include "qgsdiagramrenderer.h"
-#include "qgspalettedrasterrenderer.h"
-#include "diagram/qgspiediagram.h"
-#include "qgspropertytransformer.h"
-#include "qgsrulebasedlabeling.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsheatmaprenderer.h"
-#include "qgsmeshlayer.h"
+#include "qgsvectorlayer.h"
 
-#include "gdal.h"
+#include <QJsonArray>
+#include <QObject>
 
 class TestRasterRenderer : public QgsPalettedRasterRenderer
 {
@@ -300,7 +300,7 @@ void TestQgsLegendRenderer::init()
   GDALDriverH hGTiffDrv = GDALGetDriverByName( "GTiff" );
   Q_ASSERT( hGTiffDrv );
   const char *tempFileName = "/vsimem/temp.tif";
-  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 2, 2, 1, GDT_Byte, NULL );
+  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 2, 2, 1, GDT_Byte, nullptr );
   Q_ASSERT( hDS );
   CPLErr eErr = GDALRasterIO( GDALGetRasterBand( hDS, 1 ), GF_Write, 0, 0, 2, 2, RASTER_ARRAY, 2, 2, GDT_Byte, 1, 2 );
   QVERIFY( eErr == CE_None );

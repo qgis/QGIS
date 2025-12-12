@@ -10,7 +10,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsPropertyCollectionStack.__virtual_methods__ = ['clear']
-    QgsPropertyCollectionStack.__overridden_methods__ = ['hasActiveProperties', 'hasDynamicProperties', 'isActive', 'property', 'value', 'referencedFields', 'prepare', 'propertyKeys', 'hasProperty', 'toVariant', 'loadVariant']
+    QgsPropertyCollectionStack.__overridden_methods__ = ['clear', 'hasActiveProperties', 'hasDynamicProperties', 'isActive', 'property', 'value', 'referencedFields', 'prepare', 'propertyKeys', 'hasProperty', 'toVariant', 'loadVariant']
 except (NameError, AttributeError):
     pass

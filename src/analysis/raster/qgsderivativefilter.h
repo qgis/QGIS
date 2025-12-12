@@ -18,8 +18,8 @@
 #ifndef QGSDERIVATIVEFILTER_H
 #define QGSDERIVATIVEFILTER_H
 
-#include "qgsninecellfilter.h"
 #include "qgis_analysis.h"
+#include "qgsninecellfilter.h"
 
 /**
  * \ingroup analysis

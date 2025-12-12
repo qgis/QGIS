@@ -16,18 +16,17 @@
 #ifndef QGSOAPIFPROVIDER_H
 #define QGSOAPIFPROVIDER_H
 
+#include <set>
+
 #include "qgis.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayermetadata.h"
 #include "qgsoapiffiltertranslationstate.h"
 #include "qgsoapifitemsrequest.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgswfsdatasourceuri.h"
-
-#include "qgsprovidermetadata.h"
-
-#include <set>
 
 class QgsOapifSharedData;
 

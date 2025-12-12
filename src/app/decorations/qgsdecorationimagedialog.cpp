@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsdecorationimagedialog.h"
-#include "moc_qgsdecorationimagedialog.cpp"
-#include "qgsdecorationimage.h"
-#include "qgsimagecache.h"
-#include "qgshelp.h"
-#include "qgssvgcache.h"
-#include "qgsgui.h"
 
-#include <QPainter>
 #include <cmath>
+
+#include "qgsdecorationimage.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsimagecache.h"
+#include "qgssvgcache.h"
+
 #include <QDialogButtonBox>
+#include <QPainter>
 #include <QPushButton>
 #include <QSvgRenderer>
+
+#include "moc_qgsdecorationimagedialog.cpp"
 
 QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QWidget *parent )
   : QDialog( parent )

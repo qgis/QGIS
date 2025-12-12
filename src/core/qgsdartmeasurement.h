@@ -16,9 +16,9 @@
 #ifndef QGSDARTMEASUREMENT_H
 #define QGSDARTMEASUREMENT_H
 
-#include <QString>
-
 #include "qgis_core.h"
+
+#include <QString>
 
 /**
  * \ingroup core

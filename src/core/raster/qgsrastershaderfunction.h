@@ -28,6 +28,7 @@ email                : ersts@amnh.org
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include <QColor>
 #include <QPair>
 

@@ -19,7 +19,7 @@ jobs:
       issues: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 200
 
@@ -31,12 +31,17 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
+      - name: Install deps
+        run: sudo apt-get install -y silversearcher-ag astyle flip
+
       - name: Run pre-commit
         run: |
             if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
+              git fetch origin ${{ github.event.pull_request.base.ref }}
               git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
-              MODIFIED_FILES=($(git diff --name-only origin/${{ github.event.pull_request.base.ref }} pr-head))
+              git checkout pr-head
+              MERGE_BASE=$(git merge-base origin/${{ github.event.pull_request.base.ref }} pr-head)
+              MODIFIED_FILES=($(git diff --name-only $MERGE_BASE pr-head))
             elif [ "${{ github.event_name }}" == "push" ]; then
               MODIFIED_FILES=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
             else
@@ -44,7 +49,7 @@ jobs:
               exit 1
             fi
             echo "Modified files: ${MODIFIED_FILES[@]}"
-            pre-commit run --files ${MODIFIED_FILES[@]} || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+            pre-commit run --files ${MODIFIED_FILES[@]} || (echo "Differences:" && git diff && echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Commit fixes
         if: failure()

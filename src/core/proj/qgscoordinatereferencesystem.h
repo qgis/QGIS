@@ -19,8 +19,9 @@
 #define QGSCOORDINATEREFERENCESYSTEM_H
 
 //Standard includes
-#include "qgis_core.h"
 #include <ostream>
+
+#include "qgis_core.h"
 
 //qt includes
 #include <QString>

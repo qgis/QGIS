@@ -18,8 +18,8 @@
 #define QGSPGTABLEMODEL_H
 
 #include "qgsabstractdbtablemodel.h"
-#include "qgswkbtypes.h"
 #include "qgspostgresconn.h"
+#include "qgswkbtypes.h"
 
 class QIcon;
 

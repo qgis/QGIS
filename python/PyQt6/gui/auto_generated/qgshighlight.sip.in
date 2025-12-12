@@ -9,6 +9,7 @@
 
 
 
+
 %ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgshighlight.h>
