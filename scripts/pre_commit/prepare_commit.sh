@@ -18,7 +18,7 @@ TOPLEVEL=$(git rev-parse --show-toplevel)
 
 set -e
 
-if ! type -p "${TOPLEVEL}"/astyle.sh >/dev/null; then
+if ! type -p "${TOPLEVEL}"/scripts/astyle.sh >/dev/null; then
   echo astyle.sh not found
   exit 1
 fi
@@ -46,7 +46,7 @@ for f in $MODIFIED; do
 
   # Run astyle only on src/core, others are handled by clang-format (see .pre-commit-config.yaml)
   if [[ $f =~ ^src/(core) ]]; then
-    "${TOPLEVEL}"/astyle.sh "$f"
+    "${TOPLEVEL}"/scripts/astyle.sh "$f"
   fi
 done
 
