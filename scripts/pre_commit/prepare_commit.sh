@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    prepare_commit_doxygen_test.sh
+#    prepare_commit.sh
 #    ---------------------
 #    Date                 : August 2008
 #    Copyright            : (C) 2008 by Juergen E. Fischer
@@ -16,9 +16,12 @@
 
 TOPLEVEL=$(git rev-parse --show-toplevel)
 
-PATH=$TOPLEVEL/scripts:$PATH:$PWD/scripts
-
 set -e
+
+if ! type -p "${TOPLEVEL}"/astyle.sh >/dev/null; then
+  echo astyle.sh not found
+  exit 1
+fi
 
 # capture files passed by pre-commit
 MODIFIED="$@"
@@ -28,33 +31,23 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-HAS_AG=false
-if command -v ag > /dev/null; then
-  HAS_AG=true
-fi
-
-HAS_UNBUFFER=false
-if command -v unbuffer > /dev/null; then
-  HAS_UNBUFFER=true
-fi
-
-# Run doxygen layout test if requirements are met
-
-MODIFIED_DOXYGEN_FILES=""
 for f in $MODIFIED; do
   case "$f" in
-    *.h|*.cpp)
-      MODIFIED_DOXYGEN_FILES="$MODIFIED_DOXYGEN_FILES $f"
-      ;;
+  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.mm)
+    ;;
+  *)
+    continue
+    ;;
   esac
-done
 
-if test "$HAS_AG" != "true"; then
-  echo "WARNING: the ag(1) executable was not found, doxygen layout checker could not run" >&2
-elif test "$HAS_UNBUFFER" != "true"; then
-  echo "WARNING: the unbuffer(1) executable was not found, doxygen layout checker could not run" >&2
-else
-  "${TOPLEVEL}"/tests/code_layout/test_doxygen_layout.sh $MODIFIED_DOXYGEN_FILES
-fi
+  # Run Python formatters
+  "${TOPLEVEL}"/scripts/sort_includes.py "$f"
+  "${TOPLEVEL}"/scripts/doxygen_space.py "$f"
+
+  # Run astyle only on src/core, others are handled by clang-format (see .pre-commit-config.yaml)
+  if [[ $f =~ ^src/(core) ]]; then
+    "${TOPLEVEL}"/astyle.sh "$f"
+  fi
+done
 
 exit 0
