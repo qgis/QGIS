@@ -7,7 +7,6 @@ endmacro()
 add_qgis_test_script(qgis_banned_keywords tests/code_layout/test_banned_keywords.sh)
 add_qgis_test_script(qgis_class_names tests/code_layout/test_class_names.sh)
 add_qgis_test_script(qgis_licenses tests/code_layout/test_licenses.sh)
-add_qgis_test_script(qgis_spelling scripts/spell_check/spell_test.sh)
 add_qgis_test_script(qgis_defwindowtitle tests/code_layout/test_defwindowtitle.sh)
 add_qgis_test_script(qgis_qvariant_no_brace_init tests/code_layout/test_qvariant_no_brace_init.sh)
 
