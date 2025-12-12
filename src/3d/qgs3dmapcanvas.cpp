@@ -551,11 +551,10 @@ void Qgs3DMapCanvas::updateHighlightSizes()
 void Qgs3DMapCanvas::clearHighlights()
 {
   // vector layer highlights
-  // for ( Qt3DCore::QEntity *e : std::as_const( mHighlightEntities ) )
-  // {
-  //   e->deleteLater();
-  // }
-  qDeleteAll( mHighlightEntities );
+  for ( Qt3DCore::QEntity *e : std::as_const( mHighlightEntities ) )
+  {
+    e->deleteLater();
+  }
   mHighlightEntities.clear();
 
   // point cloud layer highlights
