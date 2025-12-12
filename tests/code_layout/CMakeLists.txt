@@ -12,7 +12,6 @@ add_qgis_test_script(qgis_defwindowtitle tests/code_layout/test_defwindowtitle.s
 add_qgis_test_script(qgis_qvariant_no_brace_init tests/code_layout/test_qvariant_no_brace_init.sh)
 
 add_qgis_test_script(qgis_shellcheck tests/code_layout/test_shellcheck.sh)
-add_qgis_test_script(qgis_sipify tests/code_layout/sipify/test_sipify.sh)
 add_qgis_test_script(qgis_sip_include tests/code_layout/sipify/test_sip_include.sh)
 add_qgis_test_script(qgis_sip_uptodate tests/code_layout/sipify/test_sipfiles.sh)  # spellok
 

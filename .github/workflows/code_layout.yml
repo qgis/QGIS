@@ -169,8 +169,6 @@ jobs:
           pip install autopep8 nose2 mock termcolor pyyaml
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Sip Checks
-        run: ./tests/code_layout/sipify/test_sipify.sh
       - name: Sip Include Test
         run: ./tests/code_layout/sipify/test_sip_include.sh
       - name: Sip Files Up To Date
