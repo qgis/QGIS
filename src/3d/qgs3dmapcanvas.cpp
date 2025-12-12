@@ -13,6 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
+#include "qgsabstractvectorlayer3dhighlightfactory_p.h"
+
 #include <Qt3DCore/QAspectEngine>
 
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
@@ -35,8 +39,12 @@
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsrubberband3d.h"
+#include "qgsrulebased3dhighlightfactory_p.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayer3drenderer.h"
 #include "qgs3dutils.h"
 #include "qgsraycastcontext.h"
+#include "qobjectuniqueptr.h"
 
 #include "moc_qgs3dmapcanvas.cpp"
 
@@ -422,45 +430,111 @@ QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
 
 void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *layer )
 {
-  // we only support point clouds for now
-  if ( layer->type() != Qgis::LayerType::PointCloud )
+  // we only support point clouds and vectors for now
+  if ( layer->type() != Qgis::LayerType::PointCloud && layer->type() != Qgis::LayerType::Vector )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Qgs3DMapCanvas::highlightFeature does not support layer type '%1'" ).arg( qgsEnumValueToKey<Qgis::LayerType>( layer->type() ) ), 2 );
     return;
+  }
 
   const QgsGeometry geom = feature.geometry();
 
-  if ( !mHighlights.contains( layer ) )
+  if ( layer->type() == Qgis::LayerType::PointCloud )
   {
-    QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
-
-    const QgsSettings settings;
-    const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-    band->setColor( color );
-    band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
-    if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+    if ( !mHighlights.contains( layer ) )
     {
-      band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
+      QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
+
+      const QgsSettings settings;
+      const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+      band->setColor( color );
+      band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
+      if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+      {
+        band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
+      }
+      mHighlights[layer] = QObjectUniquePtr<Qt3DCore::QEntity>( band );
+      connect( layer, &QgsMapLayer::renderer3DChanged, this, [this, feature]() {
+        updateHighlightParameters( feature );
+      } );
     }
-    mHighlights[layer] = QObjectUniquePtr<Qt3DCore::QEntity>( band );
-    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightParameters );
+    if ( QgsRubberBand3D *band = dynamic_cast<QgsRubberBand3D *>( mHighlights[layer].get() ) )
+    {
+      band->addPoint( geom.vertexAt( 0 ) );
+    }
   }
-  if ( QgsRubberBand3D *band = dynamic_cast<QgsRubberBand3D *>( mHighlights[layer].get() ) )
+  else if ( layer->type() == Qgis::LayerType::Vector )
   {
-    band->addPoint( geom.vertexAt( 0 ) );
+    QgsVectorLayer *vLayer = dynamic_cast<QgsVectorLayer *>( layer );
+    if ( vLayer )
+    {
+      QgsGeometry highlightGeometry = geom;
+      QgsCoordinateTransform transform( layer->crs3D(), mMapSettings->crs(), QgsProject::instance()->transformContext() );
+      highlightGeometry.transform( transform );
+      QgsFeature highlightFeature = feature;
+      highlightFeature.setGeometry( highlightGeometry );
+
+      if ( !mHighlights.contains( layer ) )
+      {
+        Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity( mEngine->frameGraph()->highlightsRootEntity() );
+        rootEntity->setObjectName( QStringLiteral( "highlight feature %1" ).arg( QString::number( feature.id() ) ) );
+        mHighlights[layer] = QObjectUniquePtr<Qt3DCore::QEntity>( rootEntity );
+
+        connect( layer, &QgsMapLayer::renderer3DChanged, this, [this, highlightFeature]() {
+          updateHighlightParameters( highlightFeature );
+        } );
+      }
+      createVectorHighlight( layer, highlightFeature );
+    }
   }
 }
 
-void Qgs3DMapCanvas::updateHighlightParameters()
+void Qgs3DMapCanvas::updateHighlightParameters( const QgsFeature &feature )
 {
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
-    if ( QgsPointCloudLayer3DRenderer *rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+    if ( mHighlights.contains( layer ) )
     {
-      if ( mHighlights.contains( layer ) )
+      if ( QgsPointCloudLayer3DRenderer *rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
       {
-        if ( QgsRubberBand3D *band = dynamic_cast<QgsRubberBand3D *>( mHighlights[layer].get() ) )
-          band->setWidth( rnd->symbol()->pointSize() + 1 );
+        if ( mHighlights.contains( layer ) )
+        {
+          if ( QgsRubberBand3D *band = dynamic_cast<QgsRubberBand3D *>( mHighlights[layer].get() ) )
+          {
+            band->setWidth( rnd->symbol()->pointSize() + 1 );
+          }
+        }
+      }
+      else if ( layer->type() == Qgis::LayerType::Vector )
+      {
+        if ( mHighlights.contains( layer ) )
+        {
+          // delete previous highlight entities
+          for ( auto *entityChild : mHighlights[layer]->children() )
+          {
+            entityChild->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
+            entityChild->deleteLater();
+          }
+          // create new ones
+          createVectorHighlight( layer, feature );
+        }
       }
     }
+  }
+}
+
+void Qgs3DMapCanvas::createVectorHighlight( QgsMapLayer *layer, const QgsFeature &feature )
+{
+  if ( QgsAbstractVectorLayer3DRenderer *vectorRenderer = dynamic_cast<QgsAbstractVectorLayer3DRenderer *>( layer->renderer3D() ) )
+  {
+    std::unique_ptr<QgsAbstractVectorLayer3DHighlightFactory> highlightFactory = vectorRenderer->createHighlightFactory( mMapSettings );
+    const QgsSettings settings;
+    const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+
+    // The created entities are added to `mHighlights[layer].get()`.
+    // They will be automatically destroyed by clearHighlights() when the highlight is cleared
+    // or by updateHighlightParameters() when the highlight is updated.
+    highlightFactory->create( feature, mEngine, mHighlights[layer].get(), color, Qt::green );
   }
 }
 

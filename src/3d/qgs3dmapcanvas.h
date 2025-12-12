@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_3d.h"
+#include "qgsfeature.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
 #include "qobjectuniqueptr.h"
@@ -65,7 +66,6 @@ class QgsCameraController;
 class QgsTemporalController;
 class Qgs3DMapScene;
 class Qgs3DMapSettings;
-class QgsFeature;
 class QgsMapLayer;
 class QgsRubberBand3D;
 class QgsRayCastContext;
@@ -249,7 +249,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void captureDepthBuffer();
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
     void onNavigationModeChanged( Qgis::NavigationMode mode );
-    void updateHighlightParameters();
 
   protected:
     /**
@@ -263,6 +262,10 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void resizeEvent( QResizeEvent * ) override;
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
+
+  private:
+    void updateHighlightParameters( const QgsFeature &feature );
+    void createVectorHighlight( QgsMapLayer *layer, const QgsFeature &feature );
 
   private:
     Qt3DCore::QAspectEngine *m_aspectEngine;
