@@ -16,17 +16,17 @@
 #ifndef QGS3DSCENEEXPORTER_H
 #define QGS3DSCENEEXPORTER_H
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QPlaneGeometry>
-#include <Qt3DRender/QSceneLoader>
-#include <Qt3DRender/QMesh>
-#include <QMap>
-#include <QFile>
-#include <QVector3D>
-#include <QMatrix4x4>
-
 #include "qgs3dexportobject.h"
 #include "qgsfeatureid.h"
+
+#include <QFile>
+#include <QMap>
+#include <QMatrix4x4>
+#include <QVector3D>
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/QPlaneGeometry>
+#include <Qt3DRender/QMesh>
+#include <Qt3DRender/QSceneLoader>
 
 class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
@@ -62,7 +62,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
   public:
     Qgs3DSceneExporter() {}
 
-    ~Qgs3DSceneExporter()
+    ~Qgs3DSceneExporter() override
     {
       for ( Qgs3DExportObject *obj : mObjects )
         delete obj;

@@ -15,9 +15,9 @@
 #ifndef QGSSINGLESYMBOLRENDERERWIDGET_H
 #define QGSSINGLESYMBOLRENDERERWIDGET_H
 
-#include "qgsrendererwidget.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsrendererwidget.h"
 
 class QgsSingleSymbolRenderer;
 class QgsSymbolSelectorWidget;

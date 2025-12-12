@@ -21,9 +21,11 @@ class QDomElement;
 class QDomDocument;
 class QString;
 
+#include <list>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <list>
+
 #include <QVector>
 
 class QgsExpression;
@@ -419,7 +421,7 @@ class QgsOgcUtilsExprToFilter
 
   private:
     QDomDocument &mDoc;
-    bool mGMLUsed;
+    bool mGMLUsed = false;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
     QString mNamespacePrefix;
@@ -432,7 +434,7 @@ class QgsOgcUtilsExprToFilter
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
-    int mGeomId;
+    int mGeomId = 1;
 
     QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
     QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
@@ -559,7 +561,7 @@ class QgsOgcUtilsSQLStatementToFilter
 
   private:
     QDomDocument &mDoc;
-    bool mGMLUsed;
+    bool mGMLUsed = false;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
     const QList<QgsOgcUtils::LayerProperties> &mLayerProperties;
@@ -568,7 +570,7 @@ class QgsOgcUtilsSQLStatementToFilter
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
-    int mGeomId;
+    int mGeomId =  1 ;
     QString mCurrentSRSName;
     QMap<QString, QString> mMapTableAliasToNames;
     const QMap< QString, QString> &mMapUnprefixedTypenameToPrefixedTypename;

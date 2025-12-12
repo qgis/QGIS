@@ -16,13 +16,13 @@
 #ifndef QGSAABB_H
 #define QGSAABB_H
 
-#include "qgis_3d.h"
-
 #include <cmath>
+
+#include "qgis_3d.h"
+#include "qgsbox3d.h"
+
 #include <QList>
 #include <QVector3D>
-
-#include "qgsbox3d.h"
 
 #define SIP_NO_FILE
 

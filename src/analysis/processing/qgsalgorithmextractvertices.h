@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -57,7 +57,7 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    Qgis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
 };
 
 ///@endcond PRIVATE

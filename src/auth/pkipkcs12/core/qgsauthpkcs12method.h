@@ -17,13 +17,12 @@
 #ifndef QGSAUTHPKCS12METHOD_H
 #define QGSAUTHPKCS12METHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthPkcs12Method : public QgsAuthMethod
 {

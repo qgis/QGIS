@@ -1140,6 +1140,78 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         fields.append(QgsField("gml_name", QVariant.String))
         self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), "id")
 
+    def test_field_to_data_array(self):
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
+            "addfeat",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        attributes = [
+            ["my string", 30, 123123123123123, 15.6],
+            ["another string", 31, -456456456456456, 0.4],
+            [NULL, NULL, NULL, NULL],
+        ]
+        for a in attributes:
+            f = QgsFeature()
+            f.setAttributes(a)
+            self.assertTrue(pr.addFeatures([f]))
+
+        it = layer.getFeatures()
+        with self.assertRaises(KeyError):
+            array = QgsVectorLayerUtils.fieldToDataArray(
+                layer.fields(), "not_here", it, 0
+            )
+        with self.assertRaises(TypeError):
+            array = QgsVectorLayerUtils.fieldToDataArray(
+                layer.fields(), "fldtxt", it, 0
+            )
+
+        it = layer.getFeatures()
+        array = QgsVectorLayerUtils.fieldToDataArray(layer.fields(), "fldint", it, -99)
+        self.assertEqual(
+            array.data(), b"\x1e\x00\x00\x00\x1f\x00\x00\x00\x9d\xff\xff\xff"
+        )
+        it = layer.getFeatures()
+        array = QgsVectorLayerUtils.fieldToDataArray(layer.fields(), "fldint", it, -999)
+        self.assertEqual(
+            array.data(), b"\x1e\x00\x00\x00\x1f\x00\x00\x00\x19\xfc\xff\xff"
+        )
+
+        it = layer.getFeatures()
+        array = QgsVectorLayerUtils.fieldToDataArray(layer.fields(), "fldlong", it, -99)
+        self.assertEqual(
+            array.data(),
+            b"\xb3s\x04\xd6\xfao\x00\x00\xf8\xb6\x0e\xf3\xda`\xfe\xff\x9d\xff\xff\xff\xff\xff\xff\xff",
+        )
+        it = layer.getFeatures()
+        array = QgsVectorLayerUtils.fieldToDataArray(
+            layer.fields(), "fldlong", it, -999
+        )
+        self.assertEqual(
+            array.data(),
+            b"\xb3s\x04\xd6\xfao\x00\x00\xf8\xb6\x0e\xf3\xda`\xfe\xff\x19\xfc\xff\xff\xff\xff\xff\xff",
+        )
+
+        it = layer.getFeatures()
+        array = QgsVectorLayerUtils.fieldToDataArray(
+            layer.fields(), "flddouble", it, -99
+        )
+        self.assertEqual(
+            array.data(),
+            b"333333/@\x9a\x99\x99\x99\x99\x99\xd9?\x00\x00\x00\x00\x00\xc0X\xc0",
+        )
+        it = layer.getFeatures()
+        array = QgsVectorLayerUtils.fieldToDataArray(
+            layer.fields(), "flddouble", it, -999
+        )
+        self.assertEqual(
+            array.data(),
+            b"333333/@\x9a\x99\x99\x99\x99\x99\xd9?\x00\x00\x00\x00\x008\x8f\xc0",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

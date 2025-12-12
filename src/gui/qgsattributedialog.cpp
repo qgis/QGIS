@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsattributedialog.h"
-#include "moc_qgsattributedialog.cpp"
 
+#include "qgsactionmenu.h"
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
-#include "qgssettings.h"
-#include "qgsmessagebar.h"
-#include "qgsactionmenu.h"
 #include "qgsmaplayeractioncontext.h"
+#include "qgsmessagebar.h"
+#include "qgssettings.h"
+
+#include "moc_qgsattributedialog.cpp"
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )

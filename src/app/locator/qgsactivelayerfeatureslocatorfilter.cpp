@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgsactivelayerfeatureslocatorfilter.h"
-#include "moc_qgsactivelayerfeatureslocatorfilter.cpp"
+
+#include "qgisapp.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureaction.h"
 #include "qgsiconutils.h"
@@ -27,6 +27,7 @@
 
 #include <QSpinBox>
 
+#include "moc_qgsactivelayerfeatureslocatorfilter.cpp"
 
 QgsActiveLayerFeaturesLocatorFilter::QgsActiveLayerFeaturesLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

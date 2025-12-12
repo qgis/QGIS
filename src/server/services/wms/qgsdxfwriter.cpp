@@ -14,9 +14,12 @@ email                : david dot marteau at 3liz dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmodule.h"
 #include "qgsdxfwriter.h"
+
+#include <memory>
+
 #include "qgsdxfexport.h"
+#include "qgsmodule.h"
 #include "qgswmsrenderer.h"
 #include "qgswmsrestorer.h"
 
@@ -38,7 +41,7 @@ namespace QgsWms
 
     //Layer settings need to be kept until QgsDxfExport::writeToFile has finished
     auto restorer = std::make_unique<QgsWmsRestorer>( context );
-    restorer.reset( new QgsWmsRestorer( context ) );
+    restorer = std::make_unique<QgsWmsRestorer>( context );
 
     std::unique_ptr<QgsDxfExport> dxf = renderer.getDxf();
     response.setHeader( "Content-Type", "application/dxf" );

@@ -19,7 +19,6 @@
 
 #include "qgsvectortilelabeling.h"
 
-
 class QgsPalLayerSettings;
 
 /**
@@ -129,7 +128,7 @@ class CORE_EXPORT QgsVectorTileBasicLabelingStyle
   private:
     QString mStyleName;
     QString mLayerName;
-    Qgis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
     bool mEnabled = true;
     QString mExpression;
     int mMinZoomLevel = -1;

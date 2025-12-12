@@ -29,11 +29,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgschunkedentity.h"
-#include "qgschunkqueuejob.h"
-
 #include <memory>
 
+#include "qgschunkedentity.h"
+#include "qgschunkqueuejob.h"
 
 namespace Qt3DCore
 {
@@ -69,7 +68,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! Returns the terrain elevation offset (adjusts the terrain position up and down)
     float terrainElevationOffset() const;
 
-    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
   private slots:
     void onShowBoundingBoxesChanged();

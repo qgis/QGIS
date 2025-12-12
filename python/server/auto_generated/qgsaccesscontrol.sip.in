@@ -11,7 +11,6 @@
 
 
 
-
 class QgsAccessControl : QgsFeatureFilterProvider
 {
 %Docstring(signature="appended")

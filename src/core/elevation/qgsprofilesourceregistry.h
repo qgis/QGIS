@@ -21,6 +21,7 @@
 
 class QgsAbstractProfileSource;
 
+#include <QObject>
 #include <QList>
 
 
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
      */
     QgsProfileSourceRegistry();
 
-    ~QgsProfileSourceRegistry();
+    ~QgsProfileSourceRegistry() override;
 
     /**
      * Returns a list of registered profile sources.

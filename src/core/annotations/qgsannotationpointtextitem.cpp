@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsannotationpointtextitem.h"
-#include "qgstextrenderer.h"
-#include "qgsannotationitemnode.h"
+
 #include "qgsannotationitemeditoperation.h"
-#include "qgsrendercontext.h"
+#include "qgsannotationitemnode.h"
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
+#include "qgsrendercontext.h"
+#include "qgstextrenderer.h"
 
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()
@@ -243,7 +244,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().vertex == 0 )
       {
         mPoint = moveOperation->after();
@@ -285,7 +286,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::tran
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
     }
 

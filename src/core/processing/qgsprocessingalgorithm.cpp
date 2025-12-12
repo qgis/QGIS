@@ -16,20 +16,24 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithm.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsrectangle.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingutils.h"
 #include "qgsexception.h"
-#include "qgsmessagelog.h"
-#include "qgsvectorlayer.h"
-#include "qgsprocessingfeedback.h"
-#include "qgsmeshlayer.h"
-#include "qgspointcloudlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudlayer.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingfeedback.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingutils.h"
+#include "qgsrectangle.h"
+#include "qgsvectorlayer.h"
+
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
@@ -624,7 +628,7 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
     // we proceed safely...
 
     // So first we create a temporary local context with affinity for the current thread
-    mLocalContext.reset( new QgsProcessingContext() );
+    mLocalContext = std::make_unique<QgsProcessingContext>( );
     // copy across everything we can safely do from the passed context
     mLocalContext->copyThreadSafeSettings( context );
 
@@ -1049,10 +1053,21 @@ QString QgsProcessingAlgorithm::writeFeatureError( QgsFeatureSink *sink, const Q
 {
   Q_UNUSED( sink );
   Q_UNUSED( parameters );
-  if ( !name.isEmpty() )
-    return QObject::tr( "Could not write feature into %1" ).arg( name );
+  const QString lastError = sink->lastError();
+  if ( !lastError.isEmpty() )
+  {
+    if ( !name.isEmpty() )
+      return QObject::tr( "Could not write feature into %1: %2" ).arg( name, lastError );
+    else
+      return QObject::tr( "Could not write feature: %1" ).arg( lastError );
+  }
   else
-    return QObject::tr( "Could not write feature" );
+  {
+    if ( !name.isEmpty() )
+      return QObject::tr( "Could not write feature into %1" ).arg( name );
+    else
+      return QObject::tr( "Could not write feature" );
+  }
 }
 
 bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
@@ -1196,7 +1211,12 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     context.expressionContext().setFeature( f );
     const QgsFeatureList transformed = processFeature( f, context, feedback );
     for ( QgsFeature transformedFeature : transformed )
-      sink->addFeature( transformedFeature, QgsFeatureSink::FastInsert );
+    {
+      if ( !sink->addFeature( transformedFeature, QgsFeatureSink::FastInsert ) )
+      {
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
+      }
+    }
 
     feedback->setProgress( current * step );
     current++;

@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgssymbolanimationsettingswidget.h"
-#include "moc_qgssymbolanimationsettingswidget.cpp"
+
 #include "qgssymbol.h"
 
 #include <QDialogButtonBox>
+
+#include "moc_qgssymbolanimationsettingswidget.cpp"
 
 QgsSymbolAnimationSettingsWidget::QgsSymbolAnimationSettingsWidget( QWidget *parent )
   : QgsPanelWidget( parent )

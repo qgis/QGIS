@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgspoint3dsymbolwidget.h"
-#include "moc_qgspoint3dsymbolwidget.cpp"
-#include <QFileDialog>
-#include <QMessageBox>
-#include "qgslayoututils.h"
 
+#include "qgs3dutils.h"
+#include "qgsabstractmaterialsettings.h"
+#include "qgslayoututils.h"
+#include "qgsmarkersymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgssymbolbutton.h"
-#include "qgsmarkersymbol.h"
-#include "qgsabstractmaterialsettings.h"
-#include "qgs3dutils.h"
+
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include "moc_qgspoint3dsymbolwidget.cpp"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )

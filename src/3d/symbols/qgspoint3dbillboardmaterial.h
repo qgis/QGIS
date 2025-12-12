@@ -15,12 +15,12 @@
 #ifndef QGSPOINT3DBILLBOARDMATERIAL_H
 #define QGSPOINT3DBILLBOARDMATERIAL_H
 
+#include "qgis_3d.h"
+#include "qgsmaterial.h"
+
 #include <QObject>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
-
-#include "qgis_3d.h"
-#include "qgsmaterial.h"
 
 #define SIP_NO_FILE
 
@@ -49,8 +49,9 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
      */
     enum class Mode
     {
-      SingleTexture, //!< Use a single repeated texture for all billboards. Billboard positions should be set using QgsBillboardGeometry::setPositions().
-      AtlasTexture,  //!< Use a texture atlas, so each billboard has a different texture. Billboard positions and texture data should be set using QgsBillboardGeometry::setBillboardData().
+      SingleTexture,                //!< Use a single repeated texture for all billboards. Billboard positions should be set using QgsBillboardGeometry::setPositions().
+      AtlasTexture,                 //!< Use a texture atlas, so each billboard has a different texture. Billboard positions and texture data should be set using QgsBillboardGeometry::setBillboardData().
+      AtlasTextureWithPixelOffsets, //!< Use a texture atlas, so each billboard has a different texture. Billboards have pixel-sized offsets from their position. Billboard positions and texture data should be set using QgsBillboardGeometry::setBillboardData().
     };
 
     /**

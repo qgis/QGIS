@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsannotationlayer3drendererwidget.h"
-#include "moc_qgsannotationlayer3drendererwidget.cpp"
 
-#include "qgsapplication.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationlayer3drenderer.h"
+#include "qgsapplication.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
+
+#include "moc_qgsannotationlayer3drendererwidget.cpp"
 
 QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -31,10 +32,14 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
 
   setupUi( this );
 
-  mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ), QVariant::fromValue( RendererType::None ) );
+  mFontButton->setMode( QgsFontButton::ModeTextRenderer );
+
+  mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconRenderOnTerrain.svg" ) ), tr( "Render on Terrain Surface" ), QVariant::fromValue( RendererType::None ) );
   mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "3D Billboards" ), QVariant::fromValue( RendererType::Billboards ) );
   mComboRendererType->setCurrentIndex( mComboRendererType->findData( QVariant::fromValue( RendererType::None ) ) );
   mStackedWidget->setCurrentWidget( mPageNoRenderer );
+
+  mOffsetZSpinBox->setClearValue( 0 );
 
   connect( mComboRendererType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsAnnotationLayer3DRendererWidget::rendererTypeChanged );
 
@@ -55,6 +60,11 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
       emit widgetChanged();
   } );
 
+  connect( mFontButton, &QgsFontButton::changed, this, [this] {
+    if ( !mBlockChanges )
+      emit widgetChanged();
+  } );
+
   syncToLayer( layer );
 }
 
@@ -68,6 +78,7 @@ void QgsAnnotationLayer3DRendererWidget::setRenderer( const QgsAnnotationLayer3D
     mComboClamping->setCurrentIndex( mComboClamping->findData( QVariant::fromValue( renderer->altitudeClamping() ) ) );
     mOffsetZSpinBox->setValue( renderer->zOffset() );
     mCheckShowCallouts->setChecked( renderer->showCalloutLines() );
+    mFontButton->setTextFormat( renderer->textFormat() );
   }
   else
   {
@@ -90,6 +101,7 @@ std::unique_ptr< QgsAnnotationLayer3DRenderer > QgsAnnotationLayer3DRendererWidg
       renderer->setAltitudeClamping( mComboClamping->currentData().value< Qgis::AltitudeClamping >() );
       renderer->setZOffset( mOffsetZSpinBox->value() );
       renderer->setShowCalloutLines( mCheckShowCallouts->isChecked() );
+      renderer->setTextFormat( mFontButton->textFormat() );
       return renderer;
     }
   }

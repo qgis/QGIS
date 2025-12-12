@@ -15,14 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmodule.h"
-#include "qgsserverogcapi.h"
-#include "qgsserverfilter.h"
 #include "qgslandingpagehandlers.h"
 #include "qgslandingpageutils.h"
-#include "qgsserverstatichandler.h"
 #include "qgsmessagelog.h"
-
+#include "qgsmodule.h"
+#include "qgsserverfilter.h"
+#include "qgsserverogcapi.h"
+#include "qgsserverstatichandler.h"
 
 /**
  * Landing page API

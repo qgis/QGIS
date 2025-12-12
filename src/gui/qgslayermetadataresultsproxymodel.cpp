@@ -14,8 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataresultsproxymodel.h"
-#include "moc_qgslayermetadataresultsproxymodel.cpp"
+
 #include "qgsabstractlayermetadataprovider.h"
+
+#include "moc_qgslayermetadataresultsproxymodel.cpp"
 
 QgsLayerMetadataResultsProxyModel::QgsLayerMetadataResultsProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

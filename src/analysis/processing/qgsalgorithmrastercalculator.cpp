@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrastercalculator.h"
-#include "qgsrasterfilewriter.h"
+
 #include "qgsrastercalculator.h"
+#include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 

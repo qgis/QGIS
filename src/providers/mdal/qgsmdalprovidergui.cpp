@@ -14,12 +14,10 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
-
 #include "qgsmdalprovider.h"
 #include "qgsmdalsourceselect.h"
-
+#include "qgsproviderguimetadata.h"
+#include "qgssourceselectprovider.h"
 
 //! Provider for mdal mesh source select
 class QgsMdalMeshSourceSelectProvider : public QgsSourceSelectProvider

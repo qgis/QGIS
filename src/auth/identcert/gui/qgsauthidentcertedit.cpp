@@ -14,15 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthidentcertedit.h"
-#include "moc_qgsauthidentcertedit.cpp"
 #include "ui_qgsauthidentcertedit.h"
+#include "qgsauthidentcertedit.h"
 
 #include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include "moc_qgsauthidentcertedit.cpp"
 
 QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

@@ -16,13 +16,13 @@
 #ifndef QGSTEXTMASKSETTINGS_H
 #define QGSTEXTMASKSETTINGS_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmapunitscale.h"
 
-#include <QSharedDataPointer>
 #include <QDomElement>
+#include <QSharedDataPointer>
 
 class QgsTextMaskSettingsPrivate;
 class QgsPaintEffect;
@@ -54,7 +54,9 @@ class CORE_EXPORT QgsTextMaskSettings
     QgsTextMaskSettings();
 
     QgsTextMaskSettings( const QgsTextMaskSettings &other );
+    SIP_SKIP QgsTextMaskSettings( QgsTextMaskSettings &&other );
     QgsTextMaskSettings &operator=( const QgsTextMaskSettings &other );
+    QgsTextMaskSettings &operator=( QgsTextMaskSettings &&other );
 
     ~QgsTextMaskSettings();
 

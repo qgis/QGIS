@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
+  qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
   qgsglobechunkedentity.cpp
   qgsgltf3dutils.cpp
@@ -31,6 +32,9 @@ set(QGIS_3D_SRCS
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
+  qgsraycastcontext.cpp
+  qgsraycasthit.cpp
+  qgsraycastresult.cpp
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
@@ -160,6 +164,7 @@ set(QGIS_3D_HDRS
   qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsfonttextureatlasgenerator.h
   qgsgeotransform.h
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
@@ -167,6 +172,9 @@ set(QGIS_3D_HDRS
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
   qgsraycastingutils.h
+  qgsraycastcontext.h
+  qgsraycasthit.h
+  qgsraycastresult.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstiledscenechunkloader_p.h

@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgscodeeditorcss.h"
-#include "moc_qgscodeeditorcss.cpp"
 
-#include <QWidget>
-#include <QString>
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexercss.h>
 
+#include "moc_qgscodeeditorcss.cpp"
 
 QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )

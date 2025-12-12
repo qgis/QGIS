@@ -16,9 +16,9 @@
 #ifndef QGSFIELDDOMAIN_H
 #define QGSFIELDDOMAIN_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 /**
  * \ingroup core

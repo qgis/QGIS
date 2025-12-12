@@ -14,15 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QSignalSpy>
-#include <QTemporaryFile>
-
 #include "qgsdataitemguiprovider.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsgui.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+
+#include <QSignalSpy>
+#include <QTemporaryFile>
 
 /**
  * \ingroup UnitTests
@@ -82,7 +82,7 @@ void TestQgsOgrProviderGui::cleanupTestCase()
 void TestQgsOgrProviderGui::testGpkgDataItemRename()
 {
   QTemporaryFile tmpFile( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-XXXXXX.gpkg" ) ) );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.close();
   const QString fileName { tmpFile.fileName() };
   tmpFile.remove();

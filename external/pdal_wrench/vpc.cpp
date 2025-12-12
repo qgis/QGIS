@@ -496,7 +496,17 @@ void buildVpc(std::vector<std::string> args)
         }
 
         MetadataNode layout;
-        MetadataNode n = getReaderMetadata(inputFileAbsolute, &layout);
+        MetadataNode n;
+        try
+        {
+            n = getReaderMetadata(inputFileAbsolute, &layout);
+        }
+        catch (std::exception &e)
+        {
+            std::cerr << e.what() << std::endl;
+            return;
+        }
+
         point_count_t cnt = n.findChild("count").value<point_count_t>();
         BOX3D bbox(
                 n.findChild("minx").value<double>(),

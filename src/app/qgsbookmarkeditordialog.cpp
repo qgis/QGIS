@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsbookmarkeditordialog.h"
-#include "moc_qgsbookmarkeditordialog.cpp"
 
 #include "qgis.h"
 #include "qgisapp.h"
@@ -24,10 +23,12 @@
 #include "qgsextentgroupbox.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
 #include "qgshelp.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+
+#include "moc_qgsbookmarkeditordialog.cpp"
 
 QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( const QgsBookmark &bookmark, bool inProject, QWidget *parent, QgsMapCanvas *mapCanvas )
   : QDialog( parent )

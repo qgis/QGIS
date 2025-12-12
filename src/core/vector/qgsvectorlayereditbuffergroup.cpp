@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsvectorlayereditbuffergroup.h"
-#include "moc_qgsvectorlayereditbuffergroup.cpp"
 
 #include "qgsproject.h"
 #include "qgstransaction.h"
-#include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 
 #include <QQueue>
+
+#include "moc_qgsvectorlayereditbuffergroup.cpp"
 
 QgsVectorLayerEditBufferGroup::QgsVectorLayerEditBufferGroup( QObject *parent )
   : QObject( parent )

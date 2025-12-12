@@ -178,6 +178,7 @@ CMAKE_OPTS := \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DPEDANTIC=TRUE \
+	-DENABLE_UNITY_BUILDS=ON \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
@@ -238,17 +239,6 @@ ifneq (,$(filter $(DISTRIBUTION),trixie sid noble plucky questing))
 		-DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-$(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h -a -f /usr/lib/$(DEB_BUILD_MULTIARCH)/cmake/Qt53DExtras/Qt53DExtrasConfig.cmake)
-ifneq (0,$(.SHELLSTATUS))
-# Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
-	QT5_CMAKE_OPTS += \
-		-DQt53DExtras_DIR=$(realpath external/qt3dextra-headers/cmake/Qt53DExtras) \
-		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
-		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
-endif
-endif
-
 ifneq (,$(filter apidoc,$(CONTROL_EXPRESSIONS)))
 ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	QT5_CMAKE_OPTS += -DWITH_APIDOC=TRUE -DGENERATE_QHP=TRUE
@@ -268,9 +258,9 @@ else
 endif
 
 ifneq (,$(filter sfcgal,$(CONTROL_EXPRESSIONS)))
-	CMAKE_OPTS += -DWITH_SFCGAL=TRUE
+	QT6_CMAKE_OPTS += -DWITH_SFCGAL=TRUE
 else
-	CMAKE_OPTS += -DWITH_SFCGAL=FALSE
+	QT6_CMAKE_OPTS += -DWITH_SFCGAL=FALSE
 endif
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
@@ -432,11 +422,6 @@ ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
 	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt6 install
 endif
 
-	# replace leaflet and jquery urls
-	perl -i -p \
-		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
-		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
-
 	# remove extra license files
 	-find $(CURDIR)/debian/tmp/usr/share/qgis*/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis*/resources/cpt-city-qgis-min/README-qgis.txt
@@ -476,16 +461,17 @@ endif
 	install -d $(CURDIR)/debian/tmp/usr/share/mime/packages
 	install -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages/qgis.xml
 
+ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	# qgis binaries info
 	install -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
 	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process $(CURDIR)/debian/qgis/usr/bin/qgis_process.bin
 	install -m 755 -d $(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/qml/QgsQuick
 	install -m 755 \
 		$(CURDIR)/debian/tmp/usr/share/qgis/qml/QgsQuick/libqgis_quick_plugin.so \
 		$(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/qml/QgsQuick/libqgis_quick_plugin.so
+
 	$(RM) \
 		$(CURDIR)/debian/tmp/usr/bin/qgis \
 		$(CURDIR)/debian/tmp/usr/bin/qgis_process \
@@ -502,12 +488,16 @@ ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 endif
 ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis-qt6 $(CURDIR)/debian/qgis/usr/bin/qgis-qt6.bin
-	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process-qt6 $(CURDIR)/debian/qgis/usr/bin/qgis_process-qt6.bin
+	# qgis binaries info
+	install -m 755 -d $(CURDIR)/debian/qgis-qt6/usr/bin
+
+	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis-qt6 $(CURDIR)/debian/qgis-qt6/usr/bin/qgis-qt6.bin
+	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process-qt6 $(CURDIR)/debian/qgis-qt6/usr/bin/qgis_process-qt6.bin
 	install -m 755 -d $(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt6/qml/QgsQuick
 	install -m 755 \
 		$(CURDIR)/debian/tmp/usr/share/qgis-qt6/qml/QgsQuick/libqgis_quick_plugin-qt6.so \
 		$(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt6/qml/QgsQuick/libqgis_quick_plugin.so
+
 	$(RM) \
 		$(CURDIR)/debian/tmp/usr/bin/qgis-qt6 \
 		$(CURDIR)/debian/tmp/usr/bin/qgis_process-qt6
@@ -522,8 +512,8 @@ ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
 		-e "s#\{QGISPOSTFIX\}#-qt6#g" \
 		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 
-	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis-qt6
-	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process-qt6
+	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-qt6/usr/bin/qgis-qt6
+	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-qt6/usr/bin/qgis_process-qt6
 
 	sed -i \
 		-e "s#<binary>qgis</binary>#<binary>qgis-qt6</binary>#" \

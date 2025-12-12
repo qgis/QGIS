@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 {
 %Docstring(signature="appended")

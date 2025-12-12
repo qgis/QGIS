@@ -20,14 +20,15 @@
 #ifndef QGSWMSRENDERER_H
 #define QGSWMSRENDERER_H
 
+#include "qgseditformconfig.h"
+#include "qgsfeaturefilter.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayoutatlas.h"
+#include "qgsmaprendererjob.h"
 #include "qgsserversettings.h"
 #include "qgswmsparameters.h"
 #include "qgswmsrendercontext.h"
-#include "qgsfeaturefilter.h"
-#include "qgslayertreemodellegendnode.h"
-#include "qgseditformconfig.h"
-#include "qgsmaprendererjob.h"
+
 #include <QDomDocument>
 #include <QMap>
 #include <QString>

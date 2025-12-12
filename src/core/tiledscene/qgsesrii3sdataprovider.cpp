@@ -14,30 +14,30 @@
  ***************************************************************************/
 
 #include "qgsesrii3sdataprovider.h"
-#include "moc_qgsesrii3sdataprovider.cpp"
+
+#include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 #include "qgsreadwritelocker.h"
-#include "qgsthreadingutils.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsziputils.h"
-
+#include "qgsthreadingutils.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayerdetails.h"
+#include "qgsziputils.h"
 
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QIcon>
 #include <QQuaternion>
 
-#include <nlohmann/json.hpp>
-
+#include "moc_qgsesrii3sdataprovider.cpp"
 
 #define I3S_PROVIDER_KEY QStringLiteral( "esrii3s" )
 #define I3S_PROVIDER_DESCRIPTION QStringLiteral( "ESRI I3S data provider" )
@@ -145,15 +145,22 @@ QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
   : mRootUrl( rootUrl )
   , mTransformContext( transformContext )
 {
-  try
+  // "spatialReference" is not required, yet the spec does not say what should
+  // be the default - assuming global mode is the best we can do...
+  mGlobalMode = true;
+  if ( layerJson.contains( "spatialReference" ) && layerJson["spatialReference"].is_object() )
   {
-    mGlobalMode = layerJson["spatialReference"]["latestWkid"].get<int>() == 4326;
-  }
-  catch ( json::exception &error )
-  {
-    // "spatialReference" is not required, yet the spec does not say what should
-    // be the default - assuming global mode is the best we can do...
-    mGlobalMode = true;
+    const json spatialReferenceJson = layerJson["spatialReference"];
+    if ( spatialReferenceJson.contains( "latestWkid" ) && spatialReferenceJson["latestWkid"].is_number() )
+    {
+      int epsgCode = spatialReferenceJson["latestWkid"].get<int>();
+      mGlobalMode = epsgCode == 4326;
+    }
+    else if ( spatialReferenceJson.contains( "wkid" ) && spatialReferenceJson["wkid"].is_number() )
+    {
+      int epsgCode = spatialReferenceJson["wkid"].get<int>();
+      mGlobalMode = epsgCode == 4326;
+    }
   }
 
   if ( layerJson.contains( "textureSetDefinitions" ) )
@@ -399,12 +406,26 @@ bool QgsEsriI3STiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedb
 QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedback *feedback )
 {
   QUrl url( uri );
-  if ( url.isLocalFile() && QFile::exists( url.toLocalFile() ) )
+  if ( url.isLocalFile() )
   {
-    QFile file( url.toLocalFile() );
-    if ( file.open( QIODevice::ReadOnly ) )
+    const QString slpkPath = mRootUrl.toLocalFile();
+    if ( QFileInfo( slpkPath ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
     {
-      return file.readAll();
+      const QString fileInSlpk = uri.mid( mRootUrl.toString().length() + 1 );
+
+      QByteArray data;
+      if ( QgsZipUtils::extractFileFromZip( slpkPath, fileInSlpk, data ) )
+        return data;
+
+      return QByteArray();
+    }
+    else
+    {
+      QFile file( url.toLocalFile() );
+      if ( file.open( QIODevice::ReadOnly ) )
+      {
+        return file.readAll();
+      }
     }
   }
   else
@@ -438,6 +459,12 @@ bool QgsEsriI3STiledSceneIndex::fetchNodePage( int nodePage, QgsFeedback *feedba
     if ( !QgsZipUtils::decodeGzip( nodePageContentGzipped, nodePageContent ) )
     {
       QgsDebugError( QStringLiteral( "Failed to decompress node page content: " ) + uri );
+      return false;
+    }
+
+    if ( nodePageContent.isEmpty() )
+    {
+      QgsDebugError( QStringLiteral( "Failed to read node page content: " ) + uri );
       return false;
     }
   }
@@ -613,19 +640,21 @@ void QgsEsriI3SDataProviderSharedData::initialize(
   mLayerJson = layerJson;
 
   int epsgCode = 0;
-  try
+
+  // ESRI spatialReference https://developers.arcgis.com/web-map-specification/objects/spatialReference/
+  // defines latestWkid as optional, wkid as mandatory
+  // so we first check for latestWkid and use wkid as fallback
+  if ( layerJson.contains( "spatialReference" ) && layerJson["spatialReference"].is_object() )
   {
-    // "spatialReference" is not required in the spec, but it is unclear
-    // what would be the default value. Given that it is crucial to distinguish
-    // between "global" and "local" mode, we require its presence (haven't seen
-    // a dataset without spatial reference yet)
     const json spatialReferenceJson = layerJson["spatialReference"];
-    epsgCode = spatialReferenceJson["latestWkid"].get<int>();
-  }
-  catch ( const json::exception & )
-  {
-    mError = QObject::tr( "Missing 'spatialReference' attribute in metadata!" );
-    return;
+    if ( spatialReferenceJson.contains( "latestWkid" ) && spatialReferenceJson["latestWkid"].is_number() )
+    {
+      epsgCode = spatialReferenceJson["latestWkid"].get<int>();
+    }
+    else if ( spatialReferenceJson.contains( "wkid" ) && spatialReferenceJson["wkid"].is_number() )
+    {
+      epsgCode = spatialReferenceJson["wkid"].get<int>();
+    }
   }
 
   if ( epsgCode == 4326 )
@@ -685,7 +714,12 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
-  const QString sourcePath = dataSource.param( QStringLiteral( "url" ) );
+  QString sourcePath = dataSource.param( QStringLiteral( "url" ) );
+
+  if ( sourcePath.isEmpty() )
+  {
+    sourcePath = uri;
+  }
 
   QUrl rootUrl;
   if ( sourcePath.startsWith( QLatin1String( "http" ) ) || sourcePath.startsWith( QLatin1String( "file" ) ) )
@@ -702,12 +736,12 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   json layerJson;
   if ( sourcePath.startsWith( QLatin1String( "http" ) ) )
   {
-    if ( !loadFromRestService( sourcePath, layerJson, i3sVersion ) )
+    if ( !loadFromRestService( rootUrl.toString(), layerJson, i3sVersion ) )
       return;
   }
   else
   {
-    if ( !loadFromSlpk( sourcePath, layerJson, i3sVersion ) )
+    if ( !loadFromSlpk( rootUrl.toLocalFile(), layerJson, i3sVersion ) )
       return;
   }
 
@@ -789,20 +823,37 @@ bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &laye
 
 bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, QString &i3sVersion )
 {
-  // Extracted SLPK = SLPK content extracted to a single directory
-
-  // TODO: add true SLPK support (all data packaged in a single ZIP file)
-
-  QUrl rootUrl( uri );
-
-  QString metadataFile = rootUrl.toLocalFile() + "/metadata.json";
-  QFile fMetadata( metadataFile );
-  if ( !fMetadata.open( QIODevice::ReadOnly ) )
+  bool isExtracted;
+  if ( QFileInfo( uri ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
   {
-    appendError( QgsErrorMessage( tr( "Failed to read layer metadata: " ) + metadataFile, QStringLiteral( "I3S" ) ) );
-    return false;
+    isExtracted = false;
   }
-  QByteArray metadataContent = fMetadata.readAll();
+  else
+  {
+    isExtracted = true;
+  }
+
+  QByteArray metadataContent;
+  QString metadataFileName = QStringLiteral( "metadata.json" );
+  if ( isExtracted )  // if a directory, read directly as Extracted SLPK
+  {
+    const QString metadataDirPath = QDir( uri ).filePath( metadataFileName );
+    QFile fMetadata( metadataDirPath );
+    if ( !fMetadata.open( QIODevice::ReadOnly ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: %1" ).arg( metadataDirPath ), QStringLiteral( "I3S" ) ) );
+      return false;
+    }
+    metadataContent = fMetadata.readAll();
+  }
+  else  // SLPK
+  {
+    if ( !QgsZipUtils::extractFileFromZip( uri, metadataFileName, metadataContent ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read %1 in file: %2" ).arg( metadataFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+      return false;
+    }
+  }
 
   json metadataJson;
   try
@@ -811,31 +862,45 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   }
   catch ( const json::parse_error & )
   {
-    appendError( QgsErrorMessage( tr( "Unable to parse metadata JSON: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( metadataFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
     return false;
   }
 
   if ( !metadataJson.contains( "I3SVersion" ) )
   {
-    appendError( QgsErrorMessage( tr( "Missing I3S version: " ) + metadataFile, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Missing I3S version in %1 in: %2" ).arg( metadataFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
     return false;
   }
   i3sVersion = QString::fromStdString( metadataJson["I3SVersion"].get<std::string>() );
   if ( !checkI3SVersion( i3sVersion ) )
     return false;
 
-  QString sceneLayerFile = rootUrl.toLocalFile() + "/3dSceneLayer.json.gz";
-  QFile f( sceneLayerFile );
-  if ( !f.open( QIODevice::ReadOnly ) )
+  QByteArray sceneLayerContentGzipped;
+  const QString sceneLayerContentFileName = QStringLiteral( "3dSceneLayer.json.gz" );
+  if ( isExtracted )  // if a directory, read directly as Extracted SLPK
   {
-    appendError( QgsErrorMessage( tr( "Failed to read layer metadata: " ) + sceneLayerFile, QStringLiteral( "I3S" ) ) );
-    return false;
+    const QString sceneLayerContentDirPath = QDir( uri ).filePath( sceneLayerContentFileName );
+    QFile fSceneLayerContent( sceneLayerContentDirPath );
+    if ( !fSceneLayerContent.open( QIODevice::ReadOnly ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: %1" ).arg( sceneLayerContentDirPath ), QStringLiteral( "I3S" ) ) );
+      return false;
+    }
+    sceneLayerContentGzipped = fSceneLayerContent.readAll();
   }
-  QByteArray sceneLayerGzipped = f.readAll();
-  QByteArray sceneLayerContent;
-  if ( !QgsZipUtils::decodeGzip( sceneLayerGzipped, sceneLayerContent ) )
+  else  // SLPK
   {
-    appendError( QgsErrorMessage( tr( "Failed to decode layer metadata: " ) + sceneLayerFile, QStringLiteral( "I3S" ) ) );
+    if ( !QgsZipUtils::extractFileFromZip( uri, sceneLayerContentFileName, sceneLayerContentGzipped ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read %1 in file: %2" ).arg( sceneLayerContentFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
+      return false;
+    }
+  }
+
+  QByteArray sceneLayerContent;
+  if ( !QgsZipUtils::decodeGzip( sceneLayerContentGzipped, sceneLayerContent ) )
+  {
+    appendError( QgsErrorMessage( tr( "Failed to decompress %1 in: %2" ).arg( sceneLayerContentFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
     return false;
   }
 
@@ -845,7 +910,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   }
   catch ( const json::parse_error & )
   {
-    appendError( QgsErrorMessage( tr( "Unable to parse JSON: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( sceneLayerContentFileName ).arg( uri ), QStringLiteral( "I3S" ) ) );
     return false;
   }
 
@@ -1088,13 +1153,28 @@ QList<QgsProviderSublayerDetails> QgsEsriI3SProviderMetadata::querySublayers( co
 
 QVariantMap QgsEsriI3SProviderMetadata::decodeUri( const QString &uri ) const
 {
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( uri );
+  QgsDataSourceUri dsUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+  QString path = dsUri.param( QStringLiteral( "url" ) );
+  if ( path.isEmpty() && !uri.isEmpty() )
+  {
+    path = uri;
+  }
+  uriComponents.insert( QStringLiteral( "path" ), path );
 
   return uriComponents;
+}
+
+QList< Qgis::LayerType > QgsEsriI3SProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    return { Qgis::LayerType::TiledScene };
+
+  return {};
 }
 
 QString QgsEsriI3SProviderMetadata::encodeUri( const QVariantMap &parts ) const
@@ -1135,7 +1215,18 @@ QList<Qgis::LayerType> QgsEsriI3SProviderMetadata::supportedLayerTypes() const
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsEsriI3SProviderMetadata::capabilities() const
 {
-  return QgsProviderMetadata::ProviderMetadataCapabilities();
+  return ProviderMetadataCapability::PriorityForUri;
+}
+
+int QgsEsriI3SProviderMetadata::priorityForUri( const QString &uri ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    return 100;
+
+  return 0;
 }
 
 ///@endcond

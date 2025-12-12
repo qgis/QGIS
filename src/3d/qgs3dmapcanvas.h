@@ -16,10 +16,10 @@
 #ifndef QGS3DMAPCANVAS_H
 #define QGS3DMAPCANVAS_H
 
-#include "qgis_3d.h"
-
 #include "qgis.h"
+#include "qgis_3d.h"
 #include "qgsrange.h"
+#include "qgsraycastresult.h"
 
 #include <QtGui/QWindow>
 
@@ -67,6 +67,7 @@ class Qgs3DMapSettings;
 class QgsFeature;
 class QgsMapLayer;
 class QgsRubberBand3D;
+class QgsRayCastContext;
 
 
 /**
@@ -84,7 +85,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     Q_OBJECT
   public:
     Qgs3DMapCanvas();
-    ~Qgs3DMapCanvas();
+    ~Qgs3DMapCanvas() override;
 
     //! Returns access to the 3D scene configuration
     Qgs3DMapSettings *mapSettings() { return mMapSettings; }
@@ -108,6 +109,14 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * \since QGIS 4.0
      */
     Qgs3DMapTool *mapTool() const { return mMapTool; }
+
+    /**
+     * Casts a ray towards the 3d scene and returns information about the intersected 3d entities.
+     * \param screenPoint The ray starts from the current camera center and goes through this point (in pixel coordinates, originating at top left corner).
+     * \param context A context object defining parameters for the ray casting.
+     * \since QGIS 4.0
+     */
+    QgsRayCastResult castRay( const QPoint &screenPoint, QgsRayCastContext context );
 
     /**
      * Enables cross section mode for the 3D map canvas.
@@ -271,9 +280,9 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     // Scene
     Qt3DCore::QEntity *m_root;
-    Qt3DCore::QEntity *m_userRoot;
+    Qt3DCore::QEntity *m_userRoot = nullptr;
 
-    bool m_initialized;
+    bool m_initialized = false;
 
     QgsWindow3DEngine *mEngine = nullptr;
 

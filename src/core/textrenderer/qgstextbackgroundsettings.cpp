@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgstextbackgroundsettings.h"
-#include "qgstextrenderer_p.h"
-#include "qgsvectorlayer.h"
+
+#include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgsfillsymbollayer.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
-#include "qgsfillsymbollayer.h"
-#include "qgspainting.h"
+#include "qgstextrenderer_p.h"
 #include "qgstextrendererutils.h"
-#include "qgspainteffectregistry.h"
-#include "qgsapplication.h"
 #include "qgsunittypes.h"
-#include "qgscolorutils.h"
+#include "qgsvectorlayer.h"
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 {
@@ -49,9 +50,27 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSet
 
 }
 
+QgsTextBackgroundSettings::QgsTextBackgroundSettings( QgsTextBackgroundSettings &&other ) //NOLINT
+  : d( std::move( other.d ) )
+{
+
+}
+
 QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
+  return *this;
+}
+
+QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( QgsTextBackgroundSettings &&other )  //NOLINT
+{
+  if ( &other == this )
+    return *this;
+
+  d = std::move( other.d );
   return *this;
 }
 

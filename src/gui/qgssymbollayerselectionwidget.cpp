@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTreeWidget>
-#include <QVBoxLayout>
-#include <QPointer>
-#include <QScreen>
-
 #include "qgssymbollayerselectionwidget.h"
-#include "moc_qgssymbollayerselectionwidget.cpp"
+
+#include "qgsguiutils.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgsvectorlayer.h"
 #include "symbology/qgsrenderer.h"
-#include "qgsstyleentityvisitor.h"
 #include "symbology/qgssymbollayerutils.h"
-#include "qgsguiutils.h"
+
+#include <QPointer>
+#include <QScreen>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include "moc_qgssymbollayerselectionwidget.cpp"
 
 QgsSymbolLayerSelectionWidget::QgsSymbolLayerSelectionWidget( QWidget *parent )
   : QWidget( parent )

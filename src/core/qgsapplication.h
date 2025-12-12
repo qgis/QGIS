@@ -15,17 +15,19 @@
 #ifndef QGSAPPLICATION_H
 #define QGSAPPLICATION_H
 
-#include "qgis_core.h"
-#include <QApplication>
-#include <QEvent>
-#include <QStringList>
-#include <QColor>
+#include "qgsconfig.h"
 
 #include <memory>
+
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsconfig.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstranslationcontext.h"
+
+#include <QApplication>
+#include <QColor>
+#include <QEvent>
+#include <QStringList>
 
 class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;
@@ -291,13 +293,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * but don't have commit access.
     */
     static QString contributorsFilePath();
-
-    /**
-     * Returns the path to the developers map file.
-     * The developers map was created by using leaflet framework,
-     * it shows the contributors.json file.
-    */
-    static QString developersMapFilePath();
 
     //! Returns the path to the sponsors file.
     static QString sponsorsFilePath();
@@ -1047,6 +1042,34 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setCustomVariable( const QString &name, const QVariant &value );
 
     /**
+     * Returns the list of projects and folders that have been temporarily determined as trusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList temporarilyTrustedProjectsFolders();
+
+    /**
+     * Sets the list of projects and folders that have been temporarily determined as trusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static void setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders );
+
+    /**
+     * Returns the list of projects and folders that have been temporarily determined as untrusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList temporarilyUntrustedProjectsFolders();
+
+    /**
+     * Sets the list of projects and folders that have been temporarily determined as untrusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static void setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders );
+
+    /**
      * Scales an icon size to compensate for display pixel density, making the icon
      * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
      * displays.
@@ -1187,6 +1210,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.22
     */
     void installTranslators() SIP_SKIP;
+
+    QStringList mTemporarilyTrustedProjectFolders;
+    QStringList mTemporarilyUntrustedProjectFolders;
 
     friend class TestQgsApplication;
 };

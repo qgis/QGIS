@@ -17,10 +17,11 @@
 #ifndef QGSHANACONNECTIONPOOL_H
 #define QGSHANACONNECTIONPOOL_H
 
-#include "qgshanaconnection.h"
-#include "qgsconnectionpool.h"
-
 #include <memory>
+
+#include "qgsconnectionpool.h"
+#include "qgshanaconnection.h"
+
 #include <QMutex>
 
 inline QString qgsConnectionPool_ConnectionToName( QgsHanaConnection *c )
@@ -58,7 +59,7 @@ class QgsHanaConnectionPoolGroup
   public:
     explicit QgsHanaConnectionPoolGroup( const QString &name );
 
-  protected slots:
+  public slots:
     void handleConnectionExpired() { onConnectionExpired(); }
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }

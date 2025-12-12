@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsattributesformtreeviewindicatorprovider.h"
-#include "qgsfieldconstraints.h"
-#include "moc_qgsattributesformtreeviewindicatorprovider.cpp"
 
+#include "qgsapplication.h"
+#include "qgsfieldconstraints.h"
+
+#include "moc_qgsattributesformtreeviewindicatorprovider.cpp"
 
 QgsAttributesFormTreeViewIndicatorProvider::QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view )
   : QObject( view )
@@ -99,7 +100,7 @@ void QgsAttributesFormTreeViewIndicatorProvider::removeItemIndicator( QgsAttribu
   }
 }
 
-bool QgsAttributesFormTreeViewIndicatorProvider::isEnabled()
+bool QgsAttributesFormTreeViewIndicatorProvider::isEnabled() const
 {
   return mEnabled;
 }

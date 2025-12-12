@@ -9,7 +9,6 @@
 
 
 
-
 // this is needed for the "convert to subclass" code below to compile
 %ModuleHeaderCode
 #include "qgsannotationlayer3drenderer.h"
@@ -140,6 +139,21 @@ to the terrain.
 
 
 
+
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format to use for rendering text annotations in 3D.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` to use for rendering text annotations in 3D.
+
+.. seealso:: :py:func:`textFormat`
+%End
 
   private:
     QgsAnnotationLayer3DRenderer( const QgsAnnotationLayer3DRenderer & );

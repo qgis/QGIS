@@ -20,12 +20,13 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUAL_LAYER_SOURCE_SELECT_H
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
+
 #include "qgis.h"
-#include "qgshelp.h"
-#include "qgsguiutils.h"
-#include "qgsvirtuallayerdefinition.h"
-#include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsproviderregistry.h"
+#include "qgsvirtuallayerdefinition.h"
 
 class QgsVectorLayer;
 class QMainWindow;

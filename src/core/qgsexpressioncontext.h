@@ -17,15 +17,15 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QVariant>
-#include <QHash>
-#include <QString>
-#include <QStringList>
-#include <QSet>
-#include <QPointer>
-
 #include "qgsexpressionfunction.h"
 #include "qgsfeature.h"
+
+#include <QHash>
+#include <QPointer>
+#include <QSet>
+#include <QString>
+#include <QStringList>
+#include <QVariant>
 
 class QgsReadWriteContext;
 class QgsMapLayerStore;
@@ -161,8 +161,10 @@ class CORE_EXPORT QgsExpressionContextScope
     QgsExpressionContextScope( const QString &name = QString() );
 
     QgsExpressionContextScope( const QgsExpressionContextScope &other );
+    SIP_SKIP QgsExpressionContextScope( QgsExpressionContextScope &&other );
 
     QgsExpressionContextScope &operator=( const QgsExpressionContextScope &other );
+    QgsExpressionContextScope &operator=( QgsExpressionContextScope &&other );
 
     ~QgsExpressionContextScope();
 
@@ -481,6 +483,7 @@ class CORE_EXPORT QgsExpressionContext
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
     QgsExpressionContext( const QgsExpressionContext &other );
+    SIP_SKIP QgsExpressionContext( QgsExpressionContext &&other );
 
     QgsExpressionContext &operator=( const QgsExpressionContext &other ) SIP_SKIP;
 

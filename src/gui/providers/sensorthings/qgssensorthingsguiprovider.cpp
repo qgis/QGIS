@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingsguiprovider.h"
+
 ///@cond PRIVATE
 
 #include <QList>

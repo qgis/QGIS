@@ -18,11 +18,11 @@
 #ifndef QGSFEATUREFILTERPROVIDER_H
 #define QGSFEATUREFILTERPROVIDER_H
 
-#include <QtGlobal>
-#include <QStringList>
+#include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgis_core.h"
+#include <QStringList>
+#include <QtGlobal>
 
 class QString;
 class QgsVectorLayer;

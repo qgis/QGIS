@@ -17,11 +17,11 @@
 #define QGSLAYERTREENODE_H
 
 #include "qgis_core.h"
-#include <QObject>
-
+#include "qgis_sip.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsreadwritecontext.h"
-#include "qgis_sip.h"
+
+#include <QObject>
 
 class QDomElement;
 
@@ -115,6 +115,38 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     % MethodCode
     QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+
+    /**
+     * Returns the number of children contained in the node.
+     *
+     * \since QGIS 4.0
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->children().count();
+    % End
+
+    /**
+     * Returns the child node at the specified ``index``.
+     *
+     * \throws IndexError if no child with the specified ``index`` exists.
+     * \since QGIS 4.0
+     */
+    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsLayerTreeNode );
+    % MethodCode
+    const QList< QgsLayerTreeNode * > children = sipCpp->children();
+    const int count = children.count();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QgsLayerTreeNode *child = children.at( a0 );
+      sipRes = sipConvertFromType( child, sipType_QgsLayerTreeNode, NULL );
+    }
     % End
 #endif
 
@@ -290,7 +322,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! list of children - node is responsible for their deletion
     QList<QgsLayerTreeNode *> mChildren;
     //! whether the node should be shown in GUI as expanded
-    bool mExpanded;
+    bool mExpanded = true;
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
 

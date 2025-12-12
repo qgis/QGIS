@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsgltfutils.h"
 
+#include <memory>
+
 #include "qgsexception.h"
-#include "qgsmatrix4x4.h"
-#include "qgsconfig.h"
 #include "qgslogger.h"
+#include "qgsmatrix4x4.h"
 #include "qgstiledscenetile.h"
 #include "qgsziputils.h"
 
@@ -192,14 +194,14 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
   std::unique_ptr<QMatrix4x4> matrix;
   if ( !node.matrix.empty() )
   {
-    matrix.reset( new QMatrix4x4 );
+    matrix = std::make_unique<QMatrix4x4>( );
     float *mdata = matrix->data();
     for ( int i = 0; i < 16; ++i )
       mdata[i] = static_cast< float >( node.matrix[i] );
   }
   else if ( node.translation.size() || node.rotation.size() || node.scale.size() )
   {
-    matrix.reset( new QMatrix4x4 );
+    matrix = std::make_unique<QMatrix4x4>( );
     if ( node.scale.size() )
     {
       matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );
@@ -546,14 +548,14 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
 
     tinygltf::Buffer posBuffer;
     posBuffer.data = posData;
-    model.buffers.push_back( posBuffer );
+    model.buffers.emplace_back( std::move( posBuffer ) );
 
     tinygltf::BufferView posBufferView;
     posBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
     posBufferView.byteOffset = 0;
     posBufferView.byteLength = posData.size();
     posBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.push_back( posBufferView );
+    model.bufferViews.emplace_back( std::move( posBufferView ) );
 
     tinygltf::Accessor posAccessor;
     posAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
@@ -561,7 +563,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
     posAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
     posAccessor.count = dracoMesh->num_points();
     posAccessor.type = TINYGLTF_TYPE_VEC3;
-    model.accessors.push_back( posAccessor );
+    model.accessors.emplace_back( std::move( posAccessor ) );
 
     posAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
   }
@@ -588,14 +590,14 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
 
     tinygltf::Buffer normalBuffer;
     normalBuffer.data = normalData;
-    model.buffers.push_back( normalBuffer );
+    model.buffers.emplace_back( std::move( normalBuffer ) );
 
     tinygltf::BufferView normalBufferView;
     normalBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
     normalBufferView.byteOffset = 0;
     normalBufferView.byteLength = normalData.size();
     normalBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.push_back( normalBufferView );
+    model.bufferViews.emplace_back( std::move( normalBufferView ) );
 
     tinygltf::Accessor normalAccessor;
     normalAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
@@ -603,7 +605,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
     normalAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
     normalAccessor.count = dracoMesh->num_points();
     normalAccessor.type = TINYGLTF_TYPE_VEC3;
-    model.accessors.push_back( normalAccessor );
+    model.accessors.emplace_back( std::move( normalAccessor ) );
 
     normalAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
   }
@@ -665,14 +667,14 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
 
     tinygltf::Buffer uvBuffer;
     uvBuffer.data = uvData;
-    model.buffers.push_back( uvBuffer );
+    model.buffers.emplace_back( std::move( uvBuffer ) );
 
     tinygltf::BufferView uvBufferView;
     uvBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
     uvBufferView.byteOffset = 0;
     uvBufferView.byteLength = uvData.size();
     uvBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.push_back( uvBufferView );
+    model.bufferViews.emplace_back( std::move( uvBufferView ) ) ;
 
     tinygltf::Accessor uvAccessor;
     uvAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
@@ -680,7 +682,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
     uvAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
     uvAccessor.count = dracoMesh->num_points();
     uvAccessor.type = TINYGLTF_TYPE_VEC2;
-    model.accessors.push_back( uvAccessor );
+    model.accessors.emplace_back( std::move( uvAccessor ) );
 
     uvAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
   }
@@ -697,7 +699,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
 
   tinygltf::Buffer gltfIndexBuffer;
   gltfIndexBuffer.data = indexData;
-  model.buffers.push_back( gltfIndexBuffer );
+  model.buffers.emplace_back( std::move( gltfIndexBuffer ) );
 
   tinygltf::BufferView indexBufferView;
   indexBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
@@ -713,7 +715,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
   indicesAccessor.count = dracoMesh->num_faces() * 3;
   indicesAccessor.type = TINYGLTF_TYPE_SCALAR;
   indicesAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
-  model.accessors.push_back( indicesAccessor );
+  model.accessors.emplace_back( std::move( indicesAccessor ) );
 
   indicesAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
 
@@ -736,16 +738,16 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
     primitive.attributes["TEXCOORD_0"] = uvAccessorIndex;
 
   tinygltf::Mesh tiny_mesh;
-  tiny_mesh.primitives.push_back( primitive );
-  model.meshes.push_back( tiny_mesh );
+  tiny_mesh.primitives.emplace_back( std::move( primitive ) );
+  model.meshes.emplace_back( std::move( tiny_mesh ) );
 
   tinygltf::Node node;
   node.mesh = 0;
-  model.nodes.push_back( node );
+  model.nodes.emplace_back( std::move( node ) );
 
   tinygltf::Scene scene;
   scene.nodes.push_back( 0 );
-  model.scenes.push_back( scene );
+  model.scenes.emplace_back( std::move( scene ) );
 
   model.defaultScene = 0;
   model.asset.version = "2.0";
@@ -780,11 +782,11 @@ int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tin
 
     tinygltf::Image img;
     img.uri = baseColorTextureUri.toStdString();   // file:/// or http:// ... will be fetched by QGIS
-    model.images.push_back( img );
+    model.images.emplace_back( std::move( img ) );
 
     tinygltf::Texture tex;
     tex.source = static_cast<int>( model.images.size() ) - 1;
-    model.textures.push_back( tex );
+    model.textures.emplace_back( std::move( tex ) );
 
     material.pbrMetallicRoughness.baseColorTexture.index = static_cast<int>( model.textures.size() ) - 1;
   }
@@ -795,7 +797,7 @@ int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tin
   }
 
   // add the new material to the model
-  model.materials.push_back( material );
+  model.materials.emplace_back( std::move( material ) );
 
   return static_cast<int>( model.materials.size() ) - 1;
 }

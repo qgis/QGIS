@@ -15,10 +15,8 @@
 
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
-
-#include "qgsspatialitesourceselect.h"
 #include "qgsspatialiteprovider.h"
-
+#include "qgsspatialitesourceselect.h"
 
 class QgsSpatiaLiteProviderGuiMetadata : public QgsProviderGuiMetadata
 {

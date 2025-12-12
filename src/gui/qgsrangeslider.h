@@ -19,8 +19,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-#include <QWidget>
 #include <QStyleOptionSlider>
+#include <QWidget>
 
 /**
  * \ingroup gui

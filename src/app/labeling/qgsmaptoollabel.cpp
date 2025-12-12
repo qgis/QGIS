@@ -16,28 +16,30 @@
  ***************************************************************************/
 
 #include "qgsmaptoollabel.h"
-#include "moc_qgsmaptoollabel.cpp"
+
+#include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsauxiliarystorage.h"
+#include "qgsdiagramrenderer.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfontutils.h"
+#include "qgslabelingresults.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsreferencedgeometry.h"
 #include "qgsrubberband.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsstatusbar.h"
+#include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsdiagramrenderer.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsauxiliarystorage.h"
-#include "qgstextrenderer.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
-#include "qgsstatusbar.h"
-#include "qgslabelingresults.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgssettingsentryimpl.h"
-#include "qgsfontutils.h"
 
 #include <QMouseEvent>
+
+#include "moc_qgsmaptoollabel.cpp"
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
@@ -547,7 +549,7 @@ QFont QgsMapToolLabel::currentLabelFont()
   return font;
 }
 
-bool QgsMapToolLabel::currentLabelPreserveRotation()
+bool QgsMapToolLabel::currentLabelPreserveRotation() const
 {
   if ( mCurrentLabel.valid )
   {

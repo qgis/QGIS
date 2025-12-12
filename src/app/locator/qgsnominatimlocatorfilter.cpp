@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgsnominatimlocatorfilter.h"
-#include "moc_qgsnominatimlocatorfilter.cpp"
+
+#include "qgisapp.h"
 #include "qgsgeocoder.h"
 #include "qgslocatorfilter.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsnominatimgeocoder.h"
 #include "qgssettings.h"
-#include "qgsmessagebaritem.h"
-#include "qgsmessagebar.h"
-#include "qgisapp.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QDesktopServices>
 #include <QPushButton>
+
+#include "moc_qgsnominatimlocatorfilter.cpp"
 
 const QgsSettingsEntryString *QgsNominatimLocatorFilter::settingCountryCodes = new QgsSettingsEntryString( QStringLiteral( "country-codes" ), sTreeAppLocatorFilters, QString(), QStringLiteral( "Country codes" ) );
 

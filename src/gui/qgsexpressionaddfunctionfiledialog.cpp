@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsexpressionaddfunctionfiledialog.h"
-#include "moc_qgsexpressionaddfunctionfiledialog.cpp"
+
+#include "qgshelp.h"
 
 #include <QPushButton>
 #include <QStandardItemModel>
+
+#include "moc_qgsexpressionaddfunctionfiledialog.cpp"
 
 QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool enableProjectFunctions, QWidget *parent )
   : QDialog( parent )
@@ -35,6 +38,9 @@ QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool ena
 
   connect( cboFileOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsExpressionAddFunctionFileDialog::cboFileOptions_currentIndexChanged );
   connect( txtNewFileName, &QLineEdit::textChanged, this, [this]( const QString & ) { updateOkButtonStatus(); } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "expressions/expression.html#function-editor" ) );
+  } );
 
   updateOkButtonStatus();
 }

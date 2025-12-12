@@ -19,9 +19,10 @@
 #define QGSLUDIALOG_H
 
 #include "ui_qgsludialogbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsguiutils.h"
 
 /**
  * \ingroup gui

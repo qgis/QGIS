@@ -20,8 +20,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsraster.h"
 #include "qgserror.h"
+#include "qgsraster.h"
 
 /**
  * \ingroup core

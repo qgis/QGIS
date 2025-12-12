@@ -14,25 +14,28 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputdestinationwidget.h"
-#include "moc_qgsprocessingoutputdestinationwidget.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgsnewdatabasetablenamewidget.h"
-#include "qgssettings.h"
-#include "qgsfileutils.h"
+
+#include "qgsapplication.h"
+#include "qgsdatasourceselectdialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsencodingfiledialog.h"
-#include "qgsdatasourceselectdialog.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsfieldmappingwidget.h"
-#include "qgsapplication.h"
-#include <QMenu>
+#include "qgsfileutils.h"
+#include "qgsnewdatabasetablenamewidget.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingparameters.h"
+#include "qgssettings.h"
+
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QCheckBox>
 #include <QLocale>
+#include <QMenu>
 #include <QTextCodec>
 #include <QUrl>
+
+#include "moc_qgsprocessingoutputdestinationwidget.cpp"
 
 ///@cond NOT_STABLE
 
@@ -177,7 +180,12 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     {
       // output name does not include a folder - use default
       QString defaultFolder = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QStringLiteral( "%1/processing" ).arg( QDir::homePath() ) ).toString();
-      key = QDir( defaultFolder ).filePath( key );
+      QDir destDir( defaultFolder );
+      if ( !destDir.exists() && !QDir().mkpath( defaultFolder ) )
+      {
+        QgsDebugError( QStringLiteral( "Can't create output folder '%1'" ).arg( defaultFolder ) );
+      }
+      key = destDir.filePath( key );
     }
   }
 

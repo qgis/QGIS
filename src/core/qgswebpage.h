@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsmessagelog.h"
+
 #include <QObject>
 
 #ifdef WITH_QTWEBKIT
@@ -128,7 +129,7 @@ class CORE_EXPORT QWebPage : public QObject
       connect( mFrame, &QWebFrame::loadFinished, this, &QWebPage::loadFinished );
     }
 
-    ~QWebPage()
+    ~QWebPage() override
     {
       delete mFrame;
       delete mSettings;

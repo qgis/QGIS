@@ -16,13 +16,16 @@
  ***************************************************************************/
 
 #include "qgsprocessingfeedback.h"
-#include "moc_qgsprocessingfeedback.cpp"
-#include "qgsgeos.h"
-#include "qgsprocessingprovider.h"
-#include "qgsmessagelog.h"
-#include <ogr_api.h>
+
 #include <gdal_version.h>
+#include <ogr_api.h>
 #include <proj.h>
+
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
+#include "qgsprocessingprovider.h"
+
+#include "moc_qgsprocessingfeedback.cpp"
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>

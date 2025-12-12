@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgsdelimitedtextfile.h"
-#include "moc_qgsdelimitedtextfile.cpp"
+
 #include "qgslogger.h"
 
-#include <QtGlobal>
+#include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
-#include <QDataStream>
 #include <QFileSystemWatcher>
-#include <QTextCodec>
-#include <QStringList>
 #include <QRegularExpression>
+#include <QStringList>
+#include <QTextCodec>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QtGlobal>
+
+#include "moc_qgsdelimitedtextfile.cpp"
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
@@ -250,7 +252,7 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   return mDefinitionValid;
 }
 
-QUrl QgsDelimitedTextFile::url()
+QUrl QgsDelimitedTextFile::url() const
 {
   QUrl url = QUrl::fromLocalFile( mFileName );
   QUrlQuery query( url );
@@ -320,7 +322,7 @@ void QgsDelimitedTextFile::setUseWatcher( bool useWatcher )
   mUseWatcher = useWatcher;
 }
 
-QString QgsDelimitedTextFile::type()
+QString QgsDelimitedTextFile::type() const
 {
   if ( mType == DelimTypeWhitespace )
     return QStringLiteral( "whitespace" );
@@ -956,7 +958,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
   return status;
 }
 
-bool QgsDelimitedTextFile::isValid()
+bool QgsDelimitedTextFile::isValid() const
 {
   return mDefinitionValid && QFile::exists( mFileName ) && QFileInfo( mFileName ).size() > 0;
 }

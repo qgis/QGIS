@@ -16,10 +16,11 @@
 #ifndef QGSEDITFORMCONFIG_P_H
 #define QGSEDITFORMCONFIG_P_H
 
-#include <QMap>
-#include "qgsfields.h"
-#include "qgseditformconfig.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgseditformconfig.h"
+#include "qgsfields.h"
+
+#include <QMap>
 
 /// @cond PRIVATE
 
@@ -36,7 +37,7 @@ class QgsEditFormConfigPrivate : public QSharedData
       , mConfiguredRootContainer( o.mConfiguredRootContainer )
       , mFieldEditables( o.mFieldEditables )
       , mLabelOnTop( o.mLabelOnTop )
-      , mReuseLastValue( o.mReuseLastValue )
+      , mReuseLastValuePolicy( o.mReuseLastValuePolicy )
       , mDataDefinedFieldProperties( o.mDataDefinedFieldProperties )
       , mWidgetConfigs( o.mWidgetConfigs )
       , mEditorLayout( o.mEditorLayout )
@@ -82,7 +83,7 @@ class QgsEditFormConfigPrivate : public QSharedData
 
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
-    QMap< QString, bool> mReuseLastValue;
+    QMap< QString, Qgis::AttributeFormReuseLastValuePolicy> mReuseLastValuePolicy;
     QMap< QString, QgsPropertyCollection> mDataDefinedFieldProperties;
 
     QMap<QString, QVariantMap > mWidgetConfigs;

@@ -19,13 +19,13 @@
 #ifndef QGSTILEDSCENEBOUNDINGVOLUME_H
 #define QGSTILEDSCENEBOUNDINGVOLUME_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsbox3d.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmatrix4x4.h"
 #include "qgsorientedbox3d.h"
-#include "qgscoordinatetransform.h"
 
 class QgsMatrix4x4;
 

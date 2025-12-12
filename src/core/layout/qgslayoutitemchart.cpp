@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutitemchart.h"
-#include "moc_qgslayoutitemchart.cpp"
+
 #include "qgsapplication.h"
-#include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
@@ -28,6 +28,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+
+#include "moc_qgslayoutitemchart.cpp"
 
 QgsLayoutItemChart::QgsLayoutItemChart( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -307,6 +309,12 @@ void QgsLayoutItemChart::prepareGatherer()
     mPlotData.clearSeries();
     mIsGathering = false;
     update();
+  }
+
+  if ( !metadata )
+  {
+    QgsDebugError( "Could not find plot metadata" );
+    return;
   }
 
   mGatherer = metadata->createPlotDataGatherer( mPlot.get() );

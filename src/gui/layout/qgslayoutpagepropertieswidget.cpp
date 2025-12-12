@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgslayoutpagepropertieswidget.h"
-#include "moc_qgslayoutpagepropertieswidget.cpp"
+
 #include "qgsapplication.h"
-#include "qgspagesizeregistry.h"
-#include "qgslayoutitempage.h"
-#include "qgslayout.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
-#include "qgsvectorlayer.h"
 #include "qgsfillsymbol.h"
+#include "qgslayout.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgspagesizeregistry.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayoutpagepropertieswidget.cpp"
 
 QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *layoutItem )
   : QgsLayoutItemBaseWidget( parent, layoutItem )

@@ -16,20 +16,18 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERWIDGET_H
 #define QGSGRADUATEDSYMBOLRENDERERWIDGET_H
 
-#include <QStandardItem>
-
-
-#include "qgsgraduatedsymbolrenderer.h"
-#include "qgis_sip.h"
-#include "qgsrendererwidget.h"
-#include "qgsproxystyle.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsdoublevalidator.h"
-
-#include "qtimer.h"
 #include "ui_qgsgraduatedsymbolrendererwidget.h"
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsdoublevalidator.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgsprocessingwidgetwrapper.h"
+#include "qgsproxystyle.h"
+#include "qgsrendererwidget.h"
+
+#include <QStandardItem>
+#include <qtimer.h>
 
 class QgsSymbolSelectorWidget;
 

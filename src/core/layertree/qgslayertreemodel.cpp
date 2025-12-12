@@ -13,30 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMimeData>
-#include <QTextStream>
-
 #include "qgslayertreemodel.h"
-#include "moc_qgslayertreemodel.cpp"
 
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
+#include "qgslayerdefinition.h"
 #include "qgslayertree.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgsmaplayerelevationproperties.h"
-#include "qgsproject.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsvectorlayer.h"
-#include "qgslayerdefinition.h"
-#include "qgsiconutils.h"
-#include "qgsmimedatautils.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsmaplayerstyle.h"
+#include "qgsmimedatautils.h"
+#include "qgsproject.h"
 #include "qgsrendercontext.h"
-#include "qgslayertreefiltersettings.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
+#include <QMimeData>
 #include <QPalette>
+#include <QTextStream>
+
+#include "moc_qgslayertreemodel.cpp"
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
@@ -677,14 +677,9 @@ void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *set
       hitTestWasRunning = true;
     }
 
-    std::unique_ptr< QgsMapHitTest > blockingHitTest;
     if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
-      mHitTestTask = new QgsMapHitTestTask( *mFilterSettings );
-    else
-      blockingHitTest = std::make_unique< QgsMapHitTest >( *mFilterSettings );
-
-    if ( mHitTestTask )
     {
+      mHitTestTask = new QgsMapHitTestTask( *mFilterSettings );
       connect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
       QgsApplication::taskManager()->addTask( mHitTestTask );
 
@@ -693,6 +688,7 @@ void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *set
     }
     else
     {
+      auto blockingHitTest = std::make_unique< QgsMapHitTest >( *mFilterSettings );
       blockingHitTest->run();
       mHitTestResults = blockingHitTest->results();
       handleHitTestResults();

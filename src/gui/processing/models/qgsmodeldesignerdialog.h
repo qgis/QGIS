@@ -16,12 +16,12 @@
 #ifndef QGSMODELDESIGNERDIALOG_H
 #define QGSMODELDESIGNERDIALOG_H
 
-#include "qgis.h"
-#include "qgis_gui.h"
 #include "ui_qgsmodeldesignerdialogbase.h"
 
-#include "qgsprocessingtoolboxmodel.h"
+#include "qgis.h"
+#include "qgis_gui.h"
 #include "qgsprocessingmodelchilddependency.h"
+#include "qgsprocessingtoolboxmodel.h"
 
 class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
@@ -71,6 +71,12 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      * Ends the current undo command. This should be called after changes are made to the model.
      */
     void endUndoCommand();
+
+    /**
+     * Aborts pending undo command, turning last call to beginUndoCommand obsolete
+     * \since QGIS 4.0
+     */
+    void abortUndoCommand();
 
     /**
      * Returns the model shown in the dialog.

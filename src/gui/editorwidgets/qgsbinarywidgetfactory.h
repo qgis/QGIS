@@ -16,8 +16,8 @@
 #ifndef QGSBINARYWIDGETFACTORY_H
 #define QGSBINARYWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 class QgsMessageBar;
 
@@ -36,12 +36,12 @@ class GUI_EXPORT QgsBinaryWidgetFactory : public QgsEditorWidgetFactory
   public:
     /**
      * Constructor for QgsBinaryWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      *
      * The \a messageBar argument can be used to link the widget to a QgsMessageBar
      * for providing user feedback.
      */
-    explicit QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar );
+    explicit QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

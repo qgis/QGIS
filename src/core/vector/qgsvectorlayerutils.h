@@ -17,9 +17,9 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgis_core.h"
+#include "qgsfeaturesink.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsfeaturesink.h"
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
@@ -134,6 +134,21 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \see getDoubleValues
      */
     static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Fetches all unique values from a specified field name or expression. Null values or
+     * invalid expression results are skipped.
+     * \param layer vector layer to retrieve values from
+     * \param fieldOrExpression field name or an expression string evaluating to a double value
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
+     * \param limit Maximum number of unique values to return. Use -1 for no limit.
+     * \param feedback optional feedback object to allow cancellation
+     * \returns list of unique fetched values
+     * \see getValues
+     * \since QGIS 4.0
+     */
+    static QList< QVariant > uniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok SIP_OUT, bool selectedOnly = false, int limit = -1, QgsFeedback *feedback = nullptr );
 
     /**
      * Fetches all double values from a specified field name or expression. Null values or
@@ -452,6 +467,79 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QString guessFriendlyIdentifierField( const QgsFields &fields );
 #endif
 
+
+#ifndef SIP_RUN
+    /**
+     * Converts field values from an iterator to an array of data.
+     *
+     * \param fields layer fields
+     * \param fieldName field name to source values from
+     * \param it feature iterator for features to include
+     * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
+     *
+     * \warning Only numeric field types are supported.
+     *
+     * \since QGIS 4.0
+     */
+    static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
+#else
+
+    /**
+     * Converts field values from an iterator to an array of data.
+     *
+     * \param fields layer fields
+     * \param fieldName field name to source values from
+     * \param it feature iterator for features to include
+     * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
+     *
+     * \warning Only numeric field types are supported.
+     *
+     * \throws KeyError if the field name is not found
+     * \throws TypeError if the field is of a non-supported type
+     *
+     * \since QGIS 4.0
+     */
+    static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
+    % MethodCode
+
+    const int fieldIndex = a0->lookupField( *a1 );
+    if ( fieldIndex == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const QgsField field = a0->at( fieldIndex );
+      switch ( field.type() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+        case QMetaType::Type::Float:
+        case QMetaType::Type::Double:
+        case QMetaType::Type::Short:
+        case QMetaType::Type::UShort:
+        {
+          Py_BEGIN_ALLOW_THREADS
+          sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
+          Py_END_ALLOW_THREADS
+          break;
+        }
+
+        default:
+        {
+          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          sipIsErr = 1;
+        }
+      }
+    }
+    % End
+
+#endif
 };
 
 

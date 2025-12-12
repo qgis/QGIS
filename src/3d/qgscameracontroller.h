@@ -20,9 +20,9 @@
 #include "qgscamerapose.h"
 #include "qgscoordinatetransform.h"
 
+#include <QImage>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
-#include <QImage>
 
 #ifndef SIP_RUN
 namespace Qt3DInput
@@ -213,8 +213,17 @@ class _3D_EXPORT QgsCameraController : public QObject
      * while keeping the pivot point (given in world coordinates) at the
      * same screen coordinates after the zoom.
      * \since QGIS 3.42
+     * \deprecated QGIS 3.44.4. Use version with oldDistanceFromCenterPoint argument instead.
      */
-    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
+    Q_DECL_DEPRECATED void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint ) SIP_DEPRECATED;
+
+    /**
+     * Zooms camera by given zoom factor (>1 one means zoom in)
+     * while keeping the pivot point (given in world coordinates) at the
+     * same screen coordinates after the zoom.
+     * \since QGIS 3.44.4
+     */
+    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
 
     /**
      * If the event is relevant, handles the event and returns TRUE, otherwise FALSE.
@@ -456,7 +465,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
-    double mDragDepth;
+    double mDragDepth = 0;
 
     bool mZoomPointCalculated = false;
     QVector3D mZoomPoint;

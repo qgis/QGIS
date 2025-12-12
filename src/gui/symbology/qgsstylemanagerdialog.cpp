@@ -14,55 +14,53 @@
  ***************************************************************************/
 
 #include "qgsstylemanagerdialog.h"
-#include "moc_qgsstylemanagerdialog.cpp"
-#include "qgsstylesavedialog.h"
 
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorramp.h"
-
-#include "qgssymbolselectordialog.h"
-#include "qgsgradientcolorrampdialog.h"
-#include "qgslimitedrandomcolorrampdialog.h"
-#include "qgscolorbrewercolorrampdialog.h"
-#include "qgspresetcolorrampdialog.h"
-#include "qgscptcitycolorrampdialog.h"
-#include "qgsstyleexportimportdialog.h"
-#include "qgssmartgroupeditordialog.h"
-#include "qgssettings.h"
-#include "qgsstylemodel.h"
-#include "qgsmessagebar.h"
-#include "qgstextformatwidget.h"
-#include "qgslabelinggui.h"
-#include "qgslegendpatchshapewidget.h"
-#include "qgsabstract3dsymbol.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
+#include "qgsabstract3dsymbol.h"
+#include "qgsapplication.h"
+#include "qgscolorbrewercolorrampdialog.h"
+#include "qgscolorramp.h"
+#include "qgscptcitycolorrampdialog.h"
+#include "qgsfileutils.h"
 #include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgsgradientcolorrampdialog.h"
 #include "qgsiconutils.h"
+#include "qgslabelinggui.h"
+#include "qgslegendpatchshapewidget.h"
+#include "qgslimitedrandomcolorrampdialog.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmessagebar.h"
+#include "qgspresetcolorrampdialog.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
-#include "qgsfileutils.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgssmartgroupeditordialog.h"
+#include "qgsstyleexportimportdialog.h"
+#include "qgsstylemodel.h"
+#include "qgsstylesavedialog.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgstextformatwidget.h"
 
 #include <QAction>
+#include <QClipboard>
+#include <QDesktopServices>
 #include <QFile>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QStandardItemModel>
-#include <QMenu>
-#include <QClipboard>
-#include <QDesktopServices>
-#include <QUrl>
 #include <QShortcut>
+#include <QStandardItemModel>
+#include <QUrl>
 
-#include "qgsapplication.h"
-#include "qgslogger.h"
+#include "moc_qgsstylemanagerdialog.cpp"
 
 const QgsSettingsEntryString *QgsStyleManagerDialog::settingLastStyleDatabaseFolder = new QgsSettingsEntryString( QStringLiteral( "last-style-database-folder" ), sTtreeStyleManager, QString(), QStringLiteral( "Last used folder for style databases" ) );
 
@@ -2383,9 +2381,12 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   else if ( category == QLatin1String( "favorite" ) )
   {
     enableGroupInputs( false );
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFavoritesOnly( true );
+    if ( mModel )
+    {
+      mModel->setTagId( -1 );
+      mModel->setSmartGroupId( -1 );
+      mModel->setFavoritesOnly( true );
+    }
   }
   else if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
   {

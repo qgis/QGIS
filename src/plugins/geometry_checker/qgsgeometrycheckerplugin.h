@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgisplugin.h"
+
 #include <QAction>
 #include <QApplication>
 

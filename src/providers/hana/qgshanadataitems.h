@@ -18,12 +18,12 @@
 #define QGSHANADATAITEMS_H
 
 #include "qgsconnectionsitem.h"
-#include "qgsdataitemprovider.h"
-#include "qgshanatablemodel.h"
 #include "qgsdatabaseschemaitem.h"
 #include "qgsdatacollectionitem.h"
-#include "qgslayeritem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
+#include "qgshanatablemodel.h"
+#include "qgslayeritem.h"
 
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;

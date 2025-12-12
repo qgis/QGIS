@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgssymbolslistwidget.h"
-#include "moc_qgssymbolslistwidget.cpp"
-#include "qgsextentbufferdialog.h"
-#include "qgsstylesavedialog.h"
-#include "qgsstyleitemslistwidget.h"
-#include "qgsvectorlayer.h"
-#include "qgsnewauxiliarylayerdialog.h"
+
 #include "qgsauxiliarystorage.h"
-#include "qgsmarkersymbol.h"
+#include "qgsextentbufferdialog.h"
 #include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsstyleitemslistwidget.h"
+#include "qgsstylesavedialog.h"
 #include "qgssymbolanimationsettingswidget.h"
 #include "qgssymbolbuffersettingswidget.h"
-#include "qgsprojectstylesettings.h"
+#include "qgsvectorlayer.h"
 
-#include <QMessageBox>
 #include <QAction>
 #include <QMenu>
+#include <QMessageBox>
+
+#include "moc_qgssymbolslistwidget.cpp"
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
@@ -125,10 +127,16 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
   connect( mSymbolColorButton, &QgsColorButton::colorChanged, this, &QgsSymbolsListWidget::setSymbolColor );
 
-  registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::Property::Opacity );
+  if ( opacityDDBtn )
+  {
+    registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::Property::Opacity );
+  }
 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
-  updateAssistantSymbol();
+  if ( mSymbol )
+  {
+    updateAssistantSymbol();
+  }
 
   mSymbolColorButton->setAllowOpacity( true );
   mSymbolColorButton->setColorDialogTitle( tr( "Select Color" ) );

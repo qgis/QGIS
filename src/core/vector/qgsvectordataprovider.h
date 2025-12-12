@@ -18,10 +18,11 @@
 class QTextCodec;
 
 #include "qgis_core.h"
-#include <QList>
-#include <QSet>
-#include <QMap>
+
 #include <QHash>
+#include <QList>
+#include <QMap>
+#include <QSet>
 
 //QGIS Includes
 #include "qgis_sip.h"
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Returns a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
-    virtual QString dataComment() const override;
+    QString dataComment() const override;
 
     /**
      * Returns the minimum value of an attribute

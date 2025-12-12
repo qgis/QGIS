@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsexpressionutils.h"
-#include "qgsvectorlayer.h"
+
+#include <memory>
+
 #include "qgscolorrampimpl.h"
-#include "qgsproviderregistry.h"
-#include "qgsvariantutils.h"
 #include "qgsproject.h"
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
 
@@ -122,7 +125,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
       if ( QThread::currentThread() == store->thread() )
         findLayerInStoreFunction();
       else
-        QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+        QMetaObject::invokeMethod( store, std::move( findLayerInStoreFunction ), Qt::BlockingQueuedConnection );
       if ( ml )
         return ml;
     }
@@ -275,7 +278,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     for ( QgsMapLayerStore *store : stores )
     {
       QPointer< QgsMapLayerStore > storePointer( store );
-      auto findLayerInStoreFunction = [ storePointer, identifier, function, &foundLayer ]
+      auto findLayerInStoreFunction = [ storePointer = std::move( storePointer ), identifier, function, &foundLayer ]
       {
         QgsMapLayer *ml = nullptr;
         if ( QgsMapLayerStore *store = storePointer.data() )
@@ -358,7 +361,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
+      featureSource = std::make_unique<QgsVectorLayerFeatureSource>( vl );
     }
   }, foundLayer );
 

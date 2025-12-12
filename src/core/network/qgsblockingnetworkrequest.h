@@ -15,14 +15,16 @@
 #ifndef QGSBLOCKINGNETWORKREQUEST_H
 #define QGSBLOCKINGNETWORKREQUEST_H
 
-#include "qgis_core.h"
-#include "qgsnetworkreply.h"
-#include "qgsfeedback.h"
-#include "qgis.h"
-#include <QThread>
-#include <QObject>
 #include <functional>
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgsfeedback.h"
+#include "qgsnetworkreply.h"
+
+#include <QObject>
 #include <QPointer>
+#include <QThread>
 
 class QNetworkRequest;
 class QNetworkReply;
@@ -277,7 +279,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     Qgis::HttpMethod mMethod = Qgis::HttpMethod::Get;
 
     //! payload data used in PUT/POST request
-    QIODevice *mPayloadData;
+    QIODevice *mPayloadData = nullptr;
 
     //! Authentication configuration ID
     QString mAuthCfg;

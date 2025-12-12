@@ -15,42 +15,42 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspostgresprovider.h"
+
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsfeature.h"
+#include "qgsfeedback.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgsmessagelog.h"
-#include "qgsprojectstorageregistry.h"
+#include "qgsjsonutils.h"
 #include "qgslayermetadataproviderregistry.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsxmlutils.h"
-#include "qgsvectorlayer.h"
-#include "qgspostgresprovider.h"
-#include "moc_qgspostgresprovider.cpp"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresfeatureiterator.h"
-#include "qgspostgrestransaction.h"
+#include "qgspostgreslayermetadataprovider.h"
 #include "qgspostgreslistener.h"
 #include "qgspostgresprojectstorage.h"
 #include "qgspostgresproviderconnection.h"
-#include "qgslogger.h"
-#include "qgsfeedback.h"
-#include "qgsstringutils.h"
-#include "qgsjsonutils.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgspostgreslayermetadataprovider.h"
-#include "qgsthreadingutils.h"
-
-#include "qgspostgresprovider.h"
-#include "qgsprovidermetadata.h"
-#include "qgspostgresproviderconnection.h"
 #include "qgspostgresprovidermetadatautils.h"
+#include "qgspostgrestransaction.h"
 #include "qgspostgresutils.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrectangle.h"
+#include "qgsstringutils.h"
+#include "qgsthreadingutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsxmlutils.h"
+
 #include <QRegularExpression>
+
+#include "moc_qgspostgresprovider.cpp"
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
@@ -2227,6 +2227,13 @@ bool QgsPostgresProvider::getTopoLayerInfo()
 /* private */
 void QgsPostgresProvider::dropOrphanedTopoGeoms()
 {
+  QgsPostgresConn *conn = connectionRW();
+  if ( !conn )
+  {
+    QgsDebugError( QStringLiteral( "Cannot drop orphaned topo geoms from invalid provider" ) );
+    return;
+  }
+
   QString sql = QString( "DELETE FROM %1.relation WHERE layer_id = %2 AND "
                          "topogeo_id NOT IN ( SELECT id(%3) FROM %4.%5 )" )
                   .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
@@ -2235,7 +2242,7 @@ void QgsPostgresProvider::dropOrphanedTopoGeoms()
 
   QgsDebugMsgLevel( "TopoGeom orphans cleanup query: " + sql, 2 );
 
-  connectionRW()->LoggedPQexecNR( "QgsPostgresProvider", sql );
+  conn->LoggedPQexecNR( "QgsPostgresProvider", sql );
 }
 
 QString QgsPostgresProvider::geomParam( int offset ) const
@@ -5180,6 +5187,9 @@ bool QgsPostgresProvider::hasMetadata() const
 
 QString QgsPostgresProvider::htmlMetadata() const
 {
+  if ( !mValid )
+    return QString();
+
   // construct multiple temporary tables to be used with PostgreSQL WITH statement
   // that build one on another and are then used to create single SQL query to get the additional metadata
 

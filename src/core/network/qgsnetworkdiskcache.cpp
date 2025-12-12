@@ -17,10 +17,12 @@
 
 
 #include "qgsnetworkdiskcache.h"
-#include "moc_qgsnetworkdiskcache.cpp"
+
+#include <mutex>
 
 #include <QStorageInfo>
-#include <mutex>
+
+#include "moc_qgsnetworkdiskcache.cpp"
 
 ///@cond PRIVATE
 ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;

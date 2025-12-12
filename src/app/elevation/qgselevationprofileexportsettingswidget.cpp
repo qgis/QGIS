@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgselevationprofileexportsettingswidget.h"
-#include "moc_qgselevationprofileexportsettingswidget.cpp"
+
 #include "qgsplot.h"
+
+#include "moc_qgselevationprofileexportsettingswidget.cpp"
 
 QgsElevationProfileExportSettingsWidget::QgsElevationProfileExportSettingsWidget( QWidget *parent )
   : QWidget( parent )

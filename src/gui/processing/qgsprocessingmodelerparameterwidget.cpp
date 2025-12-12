@@ -17,25 +17,28 @@
 
 
 #include "qgsprocessingmodelerparameterwidget.h"
-#include "moc_qgsprocessingmodelerparameterwidget.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgsexpressionlineedit.h"
-#include "qgsprocessingguiregistry.h"
+
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionlineedit.h"
+#include "qgsfilterlineedit.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
-#include "qgsexpressioncontext.h"
-#include "qgsapplication.h"
-#include "qgsprocessingregistry.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
-#include "qgsfilterlineedit.h"
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QStackedWidget>
-#include <QMenu>
-#include <QLabel>
+#include "qgsprocessingregistry.h"
+
 #include <QComboBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMenu>
+#include <QStackedWidget>
+#include <QToolButton>
+
+#include "moc_qgsprocessingmodelerparameterwidget.cpp"
 
 QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent )
   : QWidget( parent )

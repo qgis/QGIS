@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgspolymorphicrelation.h"
-#include "qgsvectorlayer.h"
-#include "moc_qgspolymorphicrelation.cpp"
+
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgspolymorphicrelation_p.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
 #include <QApplication>
+
+#include "moc_qgspolymorphicrelation.cpp"
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )
@@ -41,10 +43,29 @@ QgsPolymorphicRelation::QgsPolymorphicRelation( const QgsPolymorphicRelation &ot
 {
 }
 
+QgsPolymorphicRelation::QgsPolymorphicRelation( QgsPolymorphicRelation &&other )
+  : d( std::move( other.d ) )
+  , mContext( std::move( other.mContext ) )
+{
+}
+
 QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( const QgsPolymorphicRelation &other )
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
   mContext = other.mContext;
+  return *this;
+}
+
+QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( QgsPolymorphicRelation &&other )
+{
+  if ( &other == this )
+    return *this;
+
+  d = std::move( other.d );
+  mContext = std::move( other.mContext );
   return *this;
 }
 

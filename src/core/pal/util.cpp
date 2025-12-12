@@ -27,11 +27,12 @@
  *
  */
 
-#include "qgsgeos.h"
 #include "util.h"
 
-#include "qgslogger.h"
 #include <cfloat>
+
+#include "qgsgeos.h"
+#include "qgslogger.h"
 
 QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_geom )
 {

@@ -15,19 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterinterface.h"
+
 #include <limits>
 #include <typeinfo>
-
-#include <QByteArray>
-#include <QTime>
-#include <QStringList>
 
 #include "qgslogger.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogram.h"
-#include "qgsrasterinterface.h"
-#include "moc_qgsrasterinterface.cpp"
 #include "qgsrectangle.h"
+
+#include <QByteArray>
+#include <QStringList>
+#include <QTime>
+
+#include "moc_qgsrasterinterface.cpp"
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
   : mInput( input )
@@ -101,7 +103,7 @@ bool QgsRasterInterface::hasStatistics( int bandNo,
                                         const QgsRectangle &extent,
                                         int sampleSize )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( stats ).arg( sampleSize ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( static_cast<int>( stats ) ).arg( sampleSize ), 4 );
   if ( mStatistics.isEmpty() ) return false;
 
   QgsRasterBandStats myRasterBandStats;
@@ -124,7 +126,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
     const QgsRectangle &extent,
     int sampleSize, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( stats ).arg( sampleSize ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( static_cast<int>( stats ) ).arg( sampleSize ), 4 );
 
   // TODO: null values set on raster layer!!!
 
@@ -237,7 +239,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   // stdDev may differ  from GDAL stats, because GDAL is using naive single pass
   // algorithm which is more error prone (because of rounding errors)
   // Divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = std::sqrt( mySumOfSquares / ( myRasterBandStats.elementCount - 1 ) );
+  myRasterBandStats.stdDev = std::sqrt( mySumOfSquares / ( static_cast< double >( myRasterBandStats.elementCount ) - 1 ) );
 
   QgsDebugMsgLevel( QStringLiteral( "************ STATS **************" ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "MIN %1" ).arg( myRasterBandStats.minimumValue ), 4 );

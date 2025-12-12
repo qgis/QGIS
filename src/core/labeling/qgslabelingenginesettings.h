@@ -15,9 +15,10 @@
 #ifndef QGSLABELINGENGINESETTINGS_H
 #define QGSLABELINGENGINESETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QColor>
 
 class QgsProject;
@@ -53,7 +54,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
     ~QgsLabelingEngineSettings();
 
     QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other );
+    SIP_SKIP QgsLabelingEngineSettings( QgsLabelingEngineSettings &&other );
+
     QgsLabelingEngineSettings &operator=( const QgsLabelingEngineSettings &other );
+    QgsLabelingEngineSettings &operator=( QgsLabelingEngineSettings &&other );
 
     //! Returns the configuration to the defaults
     void clear();

@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrasterrendererwidget.h"
-#include "moc_qgsrasterrendererwidget.cpp"
+
+#include "qgsmapcanvas.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include "qgsmapcanvas.h"
+
+#include "moc_qgsrasterrendererwidget.cpp"
 
 void QgsRasterRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 {

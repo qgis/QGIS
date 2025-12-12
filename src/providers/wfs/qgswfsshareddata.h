@@ -15,13 +15,14 @@
 #ifndef QGSWFSSHAREDDATA_H
 #define QGSWFSSHAREDDATA_H
 
-#include "qgswfsfeatureiterator.h"
-#include "qgswfsrequest.h"
-#include "qgswfscapabilities.h"
-#include "qgsogcutils.h"
-
-#include "qgsbackgroundcachedshareddata.h"
 #include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgsbackgroundcachedshareddata.h"
+#include "qgsogcutils.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsrequest.h"
+
+class QgsFeatureDownloaderImpl;
+class QgsGmlStreamingParser;
 
 //! Class shared between provider and feature source
 class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
@@ -74,12 +75,14 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Creates a deep copy of this shared data
     QgsWFSSharedData *clone() const;
 
-    /** Returns TRUE if the initial GetFeature request was issued
+    /**
+     * Returns TRUE if the initial GetFeature request was issued
      * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
      */
     bool initialGetFeatureIssued() const;
 
-    /** Sets whether the initial GetFeature request was \a issued
+    /**
+     * Sets whether the initial GetFeature request was \a issued
      * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
      */
     void setInitialGetFeatureIssued( bool issued );

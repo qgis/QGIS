@@ -15,21 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
 #include "qgsrastercalculator.h"
+
+#include <cpl_string.h>
+#include <gdalwarper.h>
+
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsproject.h"
 
 #include <QFile>
-
-#include <cpl_string.h>
-#include <gdalwarper.h>
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -733,7 +734,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
 
   auto uniqueRasterBandIdentifier = [&]( QgsRasterCalculatorEntry &entry ) -> bool {
     unsigned int i( 1 );
-    entry.ref = QStringLiteral( "%1@%2" ).arg( entry.raster->name() ).arg( entry.bandNumber );
+    entry.ref = QStringLiteral( "%1@%2" ).arg( entry.raster ? entry.raster->name() : QString() ).arg( entry.bandNumber );
     while ( true )
     {
       bool unique( true );

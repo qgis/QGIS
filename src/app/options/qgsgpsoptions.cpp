@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgsgpsoptions.h"
-#include "moc_qgsgpsoptions.cpp"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsgpsmarker.h"
-#include "qgsmarkersymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgpsdetector.h"
-#include "qgsgpsconnection.h"
-#include "qgsgpscanvasbridge.h"
-#include "qgsappgpsdigitizing.h"
-#include "qgslinesymbol.h"
-#include "qgssettingsentryenumflag.h"
 
+#include "qgsappgpsdigitizing.h"
+#include "qgsapplication.h"
+#include "qgsgpscanvasbridge.h"
+#include "qgsgpsconnection.h"
+#include "qgsgpsdetector.h"
+#include "qgsgpsmarker.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssymbollayerutils.h"
 
 #include <QTimeZone>
+
+#include "moc_qgsgpsoptions.cpp"
 
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200;    // max gps distance threshold (in meters)

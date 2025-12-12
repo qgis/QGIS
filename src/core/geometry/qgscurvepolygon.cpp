@@ -16,22 +16,24 @@
  ***************************************************************************/
 
 #include "qgscurvepolygon.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
+#include "qgsmulticurve.h"
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
-#include "qgsmulticurve.h"
-#include "qgsfeedback.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsCurvePolygon::QgsCurvePolygon()
 {
@@ -139,15 +141,15 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatCurveType = QgsWkbTypes::flatType( curveType );
     if ( flatCurveType == Qgis::WkbType::LineString )
     {
-      currentCurve.reset( new QgsLineString() );
+      currentCurve = std::make_unique<QgsLineString>( );
     }
     else if ( flatCurveType == Qgis::WkbType::CircularString )
     {
-      currentCurve.reset( new QgsCircularString() );
+      currentCurve = std::make_unique<QgsCircularString>( );
     }
     else if ( flatCurveType == Qgis::WkbType::CompoundCurve )
     {
-      currentCurve.reset( new QgsCompoundCurve() );
+      currentCurve = std::make_unique<QgsCompoundCurve>( );
     }
     else
     {

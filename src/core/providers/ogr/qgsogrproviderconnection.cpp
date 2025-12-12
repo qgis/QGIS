@@ -15,19 +15,23 @@
  ***************************************************************************/
 
 #include "qgsogrproviderconnection.h"
-#include "qgsogrprovider.h"
-#include "qgsmessagelog.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsfielddomain.h"
-#include "qgsogrproviderutils.h"
+
+#include "qgsapplication.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsfeedback.h"
+#include "qgsfielddomain.h"
+#include "qgsmessagelog.h"
+#include "qgsogrprovider.h"
+#include "qgsogrproviderutils.h"
+#include "qgsogrutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgssqlstatement.h"
+#include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
+
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
 #include "qgsgdalutils.h"
 #endif
@@ -62,6 +66,16 @@ QgsOgrProviderResultIterator::~QgsOgrProviderResultIterator()
   }
 }
 
+void QgsOgrProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName )
+{
+  mPrimaryKeyColumnName = primaryKeyColumnName;
+}
+
+void QgsOgrProviderResultIterator::setPrimaryKeyColumnIndex( int primaryKeyColumnIndex )
+{
+  mPrimaryKeyColumnIndex = primaryKeyColumnIndex;
+}
+
 QVariantList QgsOgrProviderResultIterator::nextRowPrivate()
 {
   const QVariantList currentRow = mNextRow;
@@ -77,33 +91,80 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
     gdal::ogr_feature_unique_ptr fet;
     if ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
     {
-      // PK
-      if ( ! mPrimaryKeyColumnName.isEmpty() )
-      {
-        row.push_back( OGR_F_GetFID( fet.get() ) );
-      }
-
       if ( ! mFields.isEmpty() )
       {
-        QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
+        const QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
         const QgsAttributes constAttrs  = f.attributes();
         for ( const QVariant &attribute : constAttrs )
         {
           row.push_back( attribute );
         }
 
-        // Geom goes last
-        if ( ! mGeometryColumnName.isEmpty( ) )
+        if ( !mGeometryColumns.empty() )
         {
-          row.push_back( f.geometry().asWkt() );
+          const int colIndex { mGeometryColumns.cbegin()->first };
+          if ( colIndex < 0 || colIndex >= f.fields().count() )
+          {
+            row.push_back( f.geometry().asWkb() );
+          }
+          else
+          {
+            row.insert( colIndex, f.geometry().asWkb() );
+          }
         }
-
       }
       else // Fallback to strings
       {
         for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
         {
           row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
+        }
+
+        // Geometry
+        for ( auto &[columnIndex, columnName] : mGeometryColumns )
+        {
+          const int colOgrIndex = OGR_F_GetGeomFieldIndex( fet.get(), columnName.toUtf8().constData() );
+          if ( colOgrIndex < 0 )
+          {
+            // Emit warning
+            QgsMessageLog::logMessage( QStringLiteral( "Geometry column '%1' not found in layer." ).arg( columnName ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
+            continue;
+          }
+
+          const OGRGeometryH hGeom { OGR_F_GetGeomFieldRef( fet.get(), colOgrIndex ) };
+          if ( hGeom )
+          {
+            // Get the WKB representation of the geometry
+            const int size = OGR_G_WkbSize( hGeom );
+            QByteArray wkbBuffer( size, Qt::Initialization::Uninitialized );
+            OGR_G_ExportToWkb( hGeom, wkbNDR, reinterpret_cast<unsigned char *>( wkbBuffer.data() ) );
+            if ( columnIndex < 0 || columnIndex >= row.count() )
+            {
+              row.push_back( wkbBuffer );
+            }
+            else
+            {
+              row.insert( columnIndex,  wkbBuffer );
+            }
+          }
+          else
+          {
+            // Emit warning
+            QgsMessageLog::logMessage( QStringLiteral( "Geometry column '%1' has null geometry." ).arg( columnName ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
+          }
+        }
+      }
+
+      // PK
+      if ( ! mPrimaryKeyColumnName.isEmpty() )
+      {
+        if ( mPrimaryKeyColumnIndex < 0 || mPrimaryKeyColumnIndex >= row.count() )
+        {
+          row.push_back( OGR_F_GetFID( fet.get() ) );
+        }
+        else
+        {
+          row.insert( mPrimaryKeyColumnIndex, OGR_F_GetFID( fet.get() ) );
         }
       }
     }
@@ -126,14 +187,9 @@ void QgsOgrProviderResultIterator::setFields( const QgsFields &fields )
   mFields = fields;
 }
 
-void QgsOgrProviderResultIterator::setGeometryColumnName( const QString &geometryColumnName )
+void QgsOgrProviderResultIterator::addGeometryColumn( const QString &geometryColumnName, int index )
 {
-  mGeometryColumnName = geometryColumnName;
-}
-
-void QgsOgrProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName )
-{
-  mPrimaryKeyColumnName = primaryKeyColumnName;
+  mGeometryColumns[index] = geometryColumnName;
 }
 
 //
@@ -292,7 +348,36 @@ QgsVectorLayer *QgsOgrProviderConnection::createSqlVectorLayer( const QgsAbstrac
   QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   Q_ASSERT( providerMetadata );
   QMap<QString, QVariant> decoded = providerMetadata->decodeUri( uri() );
-  decoded[ QStringLiteral( "subset" ) ] = sanitizeSqlForQueryLayer( options.sql ) ;
+
+  QString where;
+  QStringList columns;
+  QStringList tables;
+
+  QgsAbstractDatabaseProviderConnection::splitSimpleQuery( options.sql, columns, tables, where );
+
+  // We have two options here: if the original SQL is a plain SELECT * FROM table [WHERE ...] statement,
+  // we could turn this into a normal layer with a subset filter but this would be a bit inconsistent from a UX
+  // perspective because the SQL update menu would not be available, let's keep it a SQL layer always.
+
+  if ( !options.filter.isEmpty() )
+  {
+    if ( ! where.isEmpty() )
+    {
+      QString sql {  sanitizeSqlForQueryLayer( options.sql ) };
+      const thread_local QRegularExpression whereRegExp( R"sql(\s+WHERE\s+.+$)sql", QRegularExpression::CaseInsensitiveOption );
+      sql.remove( whereRegExp );
+      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 WHERE ( %2 ) AND ( %3 ))sql" ).arg( sql, where, options.filter );
+    }
+    else
+    {
+      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 WHERE ( %2 ))sql" ).arg( sanitizeSqlForQueryLayer( options.sql ), options.filter );
+    }
+  }
+  else
+  {
+    decoded[ QStringLiteral( "subset" ) ] = sanitizeSqlForQueryLayer( options.sql );
+  }
+
   return new QgsVectorLayer( providerMetadata->encodeUri( decoded ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 }
 
@@ -513,6 +598,16 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
       if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteLayer ) )
         mCapabilities |= DropVectorTable;
     }
+
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCUpdateFieldDomain ) )
+    {
+      mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain;
+    }
+
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteFieldDomain ) )
+    {
+      mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain;
+    }
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
@@ -696,15 +791,80 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
       return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
+    // Analyze the SQL to determine the properties but first remove LIMIT clause for parsing
+    thread_local const QRegularExpression limit { R"(\s+limit\s+\d+\s*;*\s*$)", QRegularExpression::CaseInsensitiveOption };
+    QString sqlNoLimit = sql;
+    sqlNoLimit.replace( limit, QString() );
+    const QgsSQLStatement statement { sqlNoLimit };
+    QStringList columnNames;
+    QStringList tableNames;
+
+    bool hasAsterisk { false };
+    bool hasMultipleGeometries { false };
+
+    // The parser isn't perfect: GDAL may have a chance anyway
+    if ( ! statement.hasParserError() )
+    {
+      const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( statement.rootNode() );
+      const QList<QgsSQLStatement::NodeSelectedColumn *> columnList { nodeSelect->columns() };
+      const QList<QgsSQLStatement::NodeTableDef *> tableList { nodeSelect->tables() };
+
+      for ( const QgsSQLStatement::NodeTableDef *tableDef : std::as_const( tableList ) )
+      {
+        tableNames.append( tableDef->name() );
+      }
+      for ( const QgsSQLStatement::NodeSelectedColumn *colNode : std::as_const( columnList ) )
+      {
+        const QString columnName { colNode->dump() };
+        // Determine if the column name contains any ST_ functions
+        const thread_local QRegularExpression stFunctionRegex( R"sql(\bST_[A-Za-z_]+\s*\()sql" );
+        if ( stFunctionRegex.match( columnName ).hasMatch() )
+        {
+          hasMultipleGeometries = true;
+        }
+        if ( columnName.endsWith( QLatin1String( ".*" ) ) )
+        {
+          hasAsterisk = true;
+          // get table prefix
+          const QString tableName { columnName.section( QLatin1Char( '.' ), 0, 0 ) };
+          // Get all fields in the table
+          const QStringList fieldNames = fields( QString(), tableName ).names();
+          columnNames.append( fieldNames );
+        }
+        else if ( columnName == QLatin1Char( '*' ) )
+        {
+          hasAsterisk = true;
+          if ( tableNames.size() == 1 )
+          {
+            // Get all fields in the table
+            const QStringList fieldNames = fields( QString(), tableNames.first() ).names();
+            columnNames.append( fieldNames );
+          }
+          else
+          {
+            const QString errMsg = QObject::tr( "Ambiguous use of * in SQL statement %1 with multiple tables" ).arg( sql );
+            logWrapper.setError( errMsg );
+            throw QgsProviderConnectionException( errMsg );
+          }
+        }
+        else
+        {
+          const QString alias {colNode->alias()};
+          columnNames.append( alias.isEmpty() ? columnName : alias );
+        }
+      }
+    }
+
+    // Execute the query
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
+    OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, hasMultipleGeometries ? "INDIRECT_SQLITE" : nullptr ) );
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Read fields
     if ( ogrLayer )
     {
-
       auto iterator = std::make_shared<QgsOgrProviderResultIterator>( std::move( hDS ), ogrLayer );
+
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
       results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
@@ -712,67 +872,78 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
 
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
-        // pk column name
+
         QString pkColumnName;
+        QStringList geomColumnNames;
 
-        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
-
-        // We try to guess the table name from the FROM clause
-        thread_local const QRegularExpression tableNameRegexp { QStringLiteral( R"re((?<=from|join)\s+(\w+)|"([^"]+)")re" ), QRegularExpression::PatternOption::CaseInsensitiveOption };
-        const auto match { tableNameRegexp.match( sql ) };
-        if ( match.hasMatch() )
+        if ( ! tableNames.isEmpty() )
         {
-          pkColumnName = primaryKeyColumnName( match.captured( match.lastCapturedIndex() ) );
+          pkColumnName = primaryKeyColumnName( tableNames.first() );
         }
 
-        // fallback to "fid"
-        if ( pkColumnName.isEmpty() )
-        {
-          pkColumnName = QStringLiteral( "fid" );
-        }
-
-        // geom column name
-        QString geomColumnName;
-
-        OGRFeatureDefnH featureDef = OGR_F_GetDefnRef( fet.get() );
+        const OGRFeatureDefnH featureDef = OGR_F_GetDefnRef( fet.get() );
 
         if ( featureDef )
         {
-          if ( OGR_F_GetGeomFieldCount( fet.get() ) > 0 )
+          const int geomCount { OGR_F_GetGeomFieldCount( fet.get() ) };
+          for ( int geomIdx = 0; geomIdx < geomCount; ++geomIdx )
           {
-            OGRGeomFieldDefnH geomFldDef { OGR_F_GetGeomFieldDefnRef( fet.get(), 0 ) };
+            OGRGeomFieldDefnH geomFldDef { OGR_F_GetGeomFieldDefnRef( fet.get(), geomIdx ) };
             if ( geomFldDef )
             {
-              geomColumnName = OGR_GFld_GetNameRef( geomFldDef );
+              const QString geomColumnName { OGR_GFld_GetNameRef( geomFldDef ) };
+              if ( ! geomColumnName.isEmpty() )
+              {
+                geomColumnNames.append( geomColumnName );
+              }
             }
           }
         }
 
-        // May need to prepend PK and append geometry to the columns
-        if ( ! pkColumnName.isEmpty() )
+        const QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
+        iterator->setFields( fields );
+
+        // If SQL had parser errors get columns from the feature
+        if ( columnNames.empty() )
         {
-          const QRegularExpression pkRegExp { QStringLiteral( R"(^select\s+(\*|%1)[,\s+](.*)from)" ).arg( pkColumnName ),  QRegularExpression::PatternOption::CaseInsensitiveOption };
-          if ( pkRegExp.match( sql.trimmed() ).hasMatch() )
+
+          for ( const QgsField &field : std::as_const( fields ) )
           {
-            iterator->setPrimaryKeyColumnName( pkColumnName );
-            results.appendColumn( pkColumnName );
+            columnNames.append( field.name() );
+          }
+
+          // Insert pk at the beginning
+          if ( ! pkColumnName.isEmpty() && !columnNames.contains( pkColumnName ) )
+          {
+            columnNames.insert( 0, pkColumnName );
+          }
+
+          // Append geom
+          for ( const auto &geomColumnName : std::as_const( geomColumnNames ) )
+          {
+            if ( ! columnNames.contains( geomColumnName ) )
+            {
+              columnNames.append( geomColumnName );
+            }
           }
         }
 
-        // Add other fields
-        for ( const auto &f : std::as_const( fields ) )
+        for ( const auto &geomColumnName : std::as_const( geomColumnNames ) )
         {
-          results.appendColumn( f.name() );
+          iterator->addGeometryColumn( geomColumnName, columnNames.indexOf( geomColumnName ) );
         }
 
-        // Append geom
-        if ( ! geomColumnName.isEmpty() )
+        if ( ! pkColumnName.isEmpty() && ( hasAsterisk || columnNames.contains( pkColumnName ) ) )
         {
-          results.appendColumn( geomColumnName );
-          iterator->setGeometryColumnName( geomColumnName );
+          iterator->setPrimaryKeyColumnName( pkColumnName );
+          iterator->setPrimaryKeyColumnIndex( static_cast<int>( columnNames.indexOf( pkColumnName ) ) );
         }
 
-        iterator->setFields( fields );
+        for ( const auto &name : std::as_const( columnNames ) )
+        {
+          results.appendColumn( name );
+        }
+
       }
 
       // Check for errors
@@ -1000,6 +1171,77 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
 #endif
 }
 
+void QgsOgrProviderConnection::updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const
+{
+  if ( !schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+
+  if ( GDALDatasetTestCapability( hDS.get(), ODsCUpdateFieldDomain ) )
+  {
+    OGRFieldDomainH ogrDomain = QgsOgrUtils::convertFieldDomain( domain );
+    if ( !ogrDomain )
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Could not update field domain" ) );
+    }
+
+    char *failureReason = nullptr;
+    const bool success = GDALDatasetUpdateFieldDomain( hDS.get(), ogrDomain, &failureReason );
+
+    if ( !success )
+    {
+      const QString error( failureReason );
+      CPLFree( failureReason );
+      OGR_FldDomain_Destroy( ogrDomain );
+      throw QgsProviderConnectionException( QObject::tr( "Could not update field domain: %1" ).arg( error ) );
+    }
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Updating field domains is not supported by the current dataset" ) );
+  }
+}
+
+void QgsOgrProviderConnection::deleteFieldDomain( const QString &name, const QString &schema ) const
+{
+  if ( !schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+
+  if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteFieldDomain ) )
+  {
+    char *failureReason = nullptr;
+    const bool success = GDALDatasetDeleteFieldDomain( hDS.get(), name.toUtf8().constData(), &failureReason );
+
+    if ( !success )
+    {
+      const QString error( failureReason );
+      CPLFree( failureReason );
+      throw QgsProviderConnectionException( QObject::tr( "Could not delete field domain: %1" ).arg( error ) );
+    }
+
+    CPLFree( failureReason );
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Deleting field domains is not supported by the current dataset" ) );
+  }
+}
+
 void QgsOgrProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameField );
@@ -1133,13 +1375,26 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
   QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   Q_ASSERT( providerMetadata );
   QMap<QString, QVariant> decoded = providerMetadata->decodeUri( layerSource );
-  if ( decoded.contains( QStringLiteral( "subset" ) ) )
+
+  const QString subset { decoded.value( QStringLiteral( "subset" ), QString() ).toString() };
+  const QString layerName { decoded.value( QStringLiteral( "layerName" ), QString() ).toString() };
+
+  if ( !subset.isEmpty() && subset.contains( QLatin1String( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    options.sql = decoded[ QStringLiteral( "subset" ) ].toString();
+    options.sql = subset;
   }
-  else if ( decoded.contains( QStringLiteral( "layerName" ) ) )
+  else
   {
-    options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
+    if ( !layerName.isEmpty() )
+    {
+      options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( layerName ) );
+    }
+    else if ( mSingleTableDataset && !decoded.value( QStringLiteral( "path" ), QString() ).toString().isEmpty() )
+    {
+      const QFileInfo fileInfo( decoded[ QStringLiteral( "path" ) ].toString() );
+      options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( fileInfo.baseName() ) );
+    }
+    options.filter = subset;
   }
   return options;
 }

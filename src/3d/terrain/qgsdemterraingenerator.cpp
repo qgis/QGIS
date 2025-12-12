@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdemterraingenerator.h"
-#include "moc_qgsdemterraingenerator.cpp"
-
-#include "qgsdemterraintileloader_p.h"
 
 #include "qgs3dutils.h"
-#include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdemterraintileloader_p.h"
+#include "qgsrasterlayer.h"
+
+#include "moc_qgsdemterraingenerator.cpp"
 
 QgsTerrainGenerator *QgsDemTerrainGenerator::create()
 {

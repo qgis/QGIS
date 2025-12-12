@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 
+#include "editorwidgets/qgsspinbox.h"
 #include "qgstest.h"
 
-#include <editorwidgets/qgsspinbox.h>
 #include <QSignalSpy>
 
 class TestQgsSpinBox : public QObject

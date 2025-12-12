@@ -12,7 +12,6 @@
 
 
 
-
 class QgsExpressionBuilderWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -301,7 +300,8 @@ Updates the list of function files found at the given path
 
     void saveProjectFunctionsEntry();
 %Docstring
-Saves the current function editor text to a project entry.
+Writes the current function editor text to a project entry. The project
+becomes dirty.
 
 .. versionadded:: 3.40
 %End
@@ -386,12 +386,20 @@ them (eg. RelationReference).
     void autosave();
 %Docstring
 Auto save the current Python function code.
+
+.. note::
+
+   Auto save does not apply to Project Functions.
 %End
 
     void setAutoSave( bool enabled );
 %Docstring
 Enabled or disable auto saving. When enabled Python scripts will be auto
 saved when text changes.
+
+.. note::
+
+   Auto save does not apply to Project Functions.
 
 :param enabled: ``True`` to enable auto saving.
 %End

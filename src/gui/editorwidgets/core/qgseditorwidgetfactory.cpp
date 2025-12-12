@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetfactory.h"
+
 #include "qgsdefaultsearchwidgetwrapper.h"
-#include "qgssearchwidgetwrapper.h"
 #include "qgsfields.h"
+#include "qgssearchwidgetwrapper.h"
 #include "qgsvectordataprovider.h"
 
 #include <QSettings>
 
 class QgsDefaultSearchWidgetWrapper;
 
-QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString &name )
+QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString &name, const QIcon &icon )
   : mName( name )
+  , mIcon( icon )
 {
 }
 
@@ -40,6 +42,11 @@ QgsSearchWidgetWrapper *QgsEditorWidgetFactory::createSearchWidget( QgsVectorLay
 QString QgsEditorWidgetFactory::name() const
 {
   return mName;
+}
+
+QIcon QgsEditorWidgetFactory::icon() const
+{
+  return mIcon;
 }
 
 unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const

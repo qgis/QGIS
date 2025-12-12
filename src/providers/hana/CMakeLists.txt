@@ -109,6 +109,15 @@ if (WITH_GUI)
   )
 endif()
 
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  target_compile_options(provider_hana PRIVATE -Wno-suggest-override)
+  target_compile_options(provider_hana_a PRIVATE -Wno-suggest-override)
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  target_compile_options(provider_hana PRIVATE -Wno-suggest-destructor-override)
+  target_compile_options(provider_hana_a PRIVATE -Wno-suggest-destructor-override)
+endif()
+
 # clang-tidy
 if(CLANG_TIDY_EXE)
   set_target_properties(

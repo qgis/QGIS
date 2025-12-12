@@ -16,19 +16,17 @@
 #ifndef QGSRELATION_H
 #define QGSRELATION_H
 
-#include <QList>
-#include <QDomNode>
-#include <QPair>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsattributes.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrelationcontext.h"
-#include "qgsattributes.h"
 
-#include "qgis_sip.h"
+#include <QDomNode>
+#include <QList>
+#include <QPair>
 
 class QgsFeatureIterator;
-class QgsFeature;
 class QgsFeatureRequest;
 class QgsVectorLayer;
 class QgsRelationPrivate;
@@ -106,6 +104,7 @@ class CORE_EXPORT QgsRelation
      * changed.
      */
     QgsRelation( const QgsRelation &other );
+    SIP_SKIP QgsRelation( QgsRelation &&other );
 
     /**
      * Copies a relation.
@@ -113,6 +112,7 @@ class CORE_EXPORT QgsRelation
      * changed.
      */
     QgsRelation &operator=( const QgsRelation &other );
+    QgsRelation &operator=( QgsRelation &&other );
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.

@@ -4,6 +4,7 @@
 {
 %TypeHeaderCode
 #include <string>
+
 %End
 
 %ConvertFromTypeCode

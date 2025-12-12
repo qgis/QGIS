@@ -14,25 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialogButtonBox>
-#include <QLabel>
-#include <QToolButton>
-#include <QPushButton>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-
 #include "qgsrelationadddlg.h"
-#include "moc_qgsrelationadddlg.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsmaplayercombobox.h"
+
 #include "qgsfieldcombobox.h"
-#include "qgsmaplayerproxymodel.h"
 #include "qgshelp.h"
+#include "qgsmaplayercombobox.h"
+#include "qgsmaplayerproxymodel.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgsvectorlayer.h"
 
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgsrelationadddlg.cpp"
 
 QgsCreateRelationDialog::QgsCreateRelationDialog( QWidget *parent )
   : QDialog( parent )

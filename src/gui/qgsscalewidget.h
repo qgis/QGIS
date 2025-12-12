@@ -16,13 +16,12 @@
 #ifndef QGSSCALEWIDGET_H
 #define QGSSCALEWIDGET_H
 
-#include <QWidget>
-#include <QToolButton>
-
-
-#include "qgsscalecombobox.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsscalecombobox.h"
+
+#include <QToolButton>
+#include <QWidget>
 
 class QgsMapCanvas;
 
@@ -57,7 +56,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Returns whether a button to set the scale from map canvas is shown or not.
      * \see setShowCurrentScaleButton()
      */
-    bool showCurrentScaleButton() { return mShowCurrentScaleButton; }
+    bool showCurrentScaleButton() const { return mShowCurrentScaleButton; }
 
     /**
      * Set the map \a canvas associated to the current button.

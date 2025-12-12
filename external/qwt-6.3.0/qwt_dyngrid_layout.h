@@ -31,7 +31,7 @@ class QWT_EXPORT QwtDynGridLayout : public QLayout
     explicit QwtDynGridLayout( QWidget*, int margin = 0, int spacing = -1 );
     explicit QwtDynGridLayout( int spacing = -1 );
 
-    virtual ~QwtDynGridLayout();
+    ~QwtDynGridLayout() override;
 
     virtual void invalidate() QWT_OVERRIDE;
 

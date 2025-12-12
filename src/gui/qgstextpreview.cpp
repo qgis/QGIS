@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgstextpreview.h"
-#include "moc_qgstextpreview.cpp"
-#include "qgstextrenderer.h"
+
 #include "qgsscreenhelper.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
+
+#include "moc_qgstextpreview.cpp"
 
 QgsTextPreview::QgsTextPreview( QWidget *parent )
   : QLabel( parent )

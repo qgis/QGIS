@@ -18,9 +18,10 @@
 #ifndef QGSRASTERRANGE_H
 #define QGSRASTERRANGE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QList>
 
 class QgsRasterRange;

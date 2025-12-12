@@ -16,11 +16,13 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgslayoutnortharrowhandler.h"
-#include "moc_qgslayoutnortharrowhandler.cpp"
-#include "qgslayoutitemmap.h"
-#include "qgslayout.h"
+
 #include "qgsbearingutils.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmap.h"
 #include "qgslogger.h"
+
+#include "moc_qgslayoutnortharrowhandler.cpp"
 
 QgsLayoutNorthArrowHandler::QgsLayoutNorthArrowHandler( QObject *parent )
   : QObject( parent )

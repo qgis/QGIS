@@ -156,6 +156,9 @@ QgsLayoutObject.MapGridFrameDivisionsTop.__doc__ = "Map frame division display t
 QgsLayoutObject.MapGridFrameDivisionsBottom = QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsBottom
 QgsLayoutObject.MapGridFrameDivisionsBottom.is_monkey_patched = True
 QgsLayoutObject.MapGridFrameDivisionsBottom.__doc__ = "Map frame division display bottom"
+QgsLayoutObject.MapGridDrawAnnotation = QgsLayoutObject.DataDefinedProperty.MapGridDrawAnnotation
+QgsLayoutObject.MapGridDrawAnnotation.is_monkey_patched = True
+QgsLayoutObject.MapGridDrawAnnotation.__doc__ = "Map annotation visibility (for individual annotations) \n.. versionadded:: 4.0"
 QgsLayoutObject.MapCrs = QgsLayoutObject.DataDefinedProperty.MapCrs
 QgsLayoutObject.MapCrs.is_monkey_patched = True
 QgsLayoutObject.MapCrs.__doc__ = "Map CRS"
@@ -333,6 +336,10 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for dif
 * ``MapGridFrameDivisionsRight``: Map frame division display right
 * ``MapGridFrameDivisionsTop``: Map frame division display top
 * ``MapGridFrameDivisionsBottom``: Map frame division display bottom
+* ``MapGridDrawAnnotation``: Map annotation visibility (for individual annotations)
+
+  .. versionadded:: 4.0
+
 * ``MapCrs``: Map CRS
 * ``StartDateTime``: Temporal range's start DateTime
 * ``EndDateTime``: Temporal range's end DateTime

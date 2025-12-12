@@ -13,33 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
-#include "moc_qgsgml.cpp"
+
+#include <limits>
+#include <ogr_api.h>
+
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgswkbptr.h"
 #include "qgsogcutils.h"
 #include "qgsogrutils.h"
-#include "qgsapplication.h"
+#include "qgsrectangle.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgswkbptr.h"
+
 #include <QBuffer>
 #include <QList>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QProgressDialog>
+#include <QRegularExpression>
 #include <QSet>
 #include <QSettings>
-#include <QUrl>
 #include <QTextCodec>
-#include <QRegularExpression>
+#include <QUrl>
 
-#include "ogr_api.h"
-
-#include <limits>
+#include "moc_qgsgml.cpp"
 
 using namespace nlohmann;
 
@@ -57,7 +59,6 @@ QgsGml::QgsGml(
   const QgsFields &fields )
   : mParser( typeName, geometryAttribute, fields )
   , mTypeName( typeName )
-  , mFinished( false )
 {
   const int index = mTypeName.indexOf( ':' );
   if ( index != -1 && index < mTypeName.length() )

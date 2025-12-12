@@ -16,10 +16,10 @@
 #ifndef QGSTILEDSCENEELEVATIONPROPERTIESWIDGET_H
 #define QGSTILEDSCENEELEVATIONPROPERTIESWIDGET_H
 
+#include "ui_qgstiledsceneelevationpropertieswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-
-#include "ui_qgstiledsceneelevationpropertieswidgetbase.h"
 
 class QgsTiledSceneLayer;
 

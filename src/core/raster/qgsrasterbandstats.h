@@ -18,15 +18,15 @@
 #ifndef QGSRASTERBANDSTATS
 #define QGSRASTERBANDSTATS
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgis.h"
-#include <QString>
-#include <QVector>
-
 #include <limits>
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsrectangle.h"
+
+#include <QString>
+#include <QVector>
 
 /**
  * \ingroup core

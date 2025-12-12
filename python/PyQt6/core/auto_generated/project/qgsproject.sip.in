@@ -14,7 +14,6 @@
 
 
 
-
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")
@@ -787,7 +786,7 @@ Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -1784,6 +1783,17 @@ or ``False`` if visiting should be canceled.
 .. versionadded:: 3.10
 %End
 
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
+%Docstring
+Accepts the specified object entity ``visitor``, causing it to visit all
+object entities associated with the project.
+
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
+
+.. versionadded:: 4.0
+%End
+
     QgsElevationShadingRenderer elevationShadingRenderer() const;
 %Docstring
 Returns the elevation shading renderer used for map shading
@@ -1797,7 +1807,6 @@ Sets the elevation shading renderer used for global map shading
 
 .. versionadded:: 3.30
 %End
-
 
 
 
@@ -2260,14 +2269,30 @@ Emitted when a layer was added to the registry.
 
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 %Docstring
-Emitted, when a layer was added to the registry and the legend. Layers
-can also be private layers, which are signalled by
+Emitted when ``layers`` were added to the registry and the legend.
+
+Layers can also be private layers, which are signalled by
 :py:func:`~QgsProject.layersAdded` and
 :py:func:`~QgsProject.layerWasAdded` but will not be advertised by this
 signal.
 
 :param layers: List of :py:class:`QgsMapLayer` which were added to the
                legend.
+
+.. seealso:: :py:func:`layersAddedWithoutLegend`
+%End
+
+    void layersAddedWithoutLegend( const QList<QgsMapLayer *> &layers );
+%Docstring
+Emitted when ``layers`` were added to the registry without adding to the
+legend.
+
+:param layers: List of :py:class:`QgsMapLayer` which were added to the
+               project but not the legend.
+
+.. seealso:: :py:func:`legendLayersAdded`
+
+.. versionadded:: 4.0
 %End
 
     void isDirtyChanged( bool dirty );

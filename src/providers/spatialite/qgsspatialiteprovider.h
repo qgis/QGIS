@@ -19,10 +19,10 @@ email                : a.furieri@lqt.it
 
 extern "C"
 {
-#include <sys/types.h>
 #include <sqlite3.h>
-#include <spatialite/gaiageo.h>
+#include <sys/types.h>
 #include <spatialite.h>
+#include <spatialite/gaiageo.h>
 }
 
 #include "qgsvectordataprovider.h"
@@ -131,7 +131,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the SpatiaLite
     //   (following the PostgreSQL provider example)
-    bool supportsNativeTransform()
+    bool supportsNativeTransform() const
     {
       return false;
     }
@@ -154,7 +154,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
     struct SLException
     {
-        explicit SLException( char *msg )
+        explicit SLException( const QString &msg )
           : errMsg( msg )
         {
         }
@@ -166,19 +166,17 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
         ~SLException()
         {
-          if ( errMsg )
-            sqlite3_free( errMsg );
         }
 
         SLException &operator=( const SLException &other ) = delete;
 
         QString errorMessage() const
         {
-          return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
+          return !errMsg.isEmpty() ? errMsg : QStringLiteral( "unknown cause" );
         }
 
       private:
-        char *errMsg = nullptr;
+        QString errMsg;
     };
 
     //! Check if version is above major and minor
@@ -193,7 +191,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     /**
      * Sqlite exec sql wrapper for SQL logging
      */
-    static int exec_sql( sqlite3 *handle, const QString &sql, const QString &uri, char *errMsg = nullptr, const QString &origin = QString() );
+    static int exec_sql( sqlite3 *handle, const QString &sql, const QString &uri, QString &errMsg, const QString &origin = QString() );
 
   private:
     //! Loads fields from input file to member mAttributeFields
@@ -335,8 +333,6 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     //! SpatiaLite minor version
     int mSpatialiteVersionMinor = 0;
 
-    //! Internal transaction handling (for addFeatures etc.)
-    int mSavepointId;
     static QAtomicInt sSavepointId;
 
     /**
@@ -377,7 +373,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     /**
      * Handles an error encountered while executing an sql statement.
      */
-    void handleError( const QString &sql, char *errorMessage, const QString &savepointId );
+    void handleError( const QString &sql, const QString &errorMessage, const QString &savepointId );
 
     /**
      * Returns the sqlite handle to be used, if we are inside a transaction it will be the transaction's handle
@@ -390,7 +386,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
     // QgsVectorDataProvider interface
   public:
-    virtual QString defaultValueClause( int fieldIndex ) const override;
+    QString defaultValueClause( int fieldIndex ) const override;
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 };
@@ -407,7 +403,7 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
-    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;

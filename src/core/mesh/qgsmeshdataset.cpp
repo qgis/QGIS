@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsmeshdataset.h"
+
+#include "qgis.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
-#include "qgis.h"
+
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
@@ -347,7 +349,61 @@ void QgsMeshDataBlock::setValid( bool valid )
 
 QgsMesh3DDataBlock::QgsMesh3DDataBlock() = default;
 
-QgsMesh3DDataBlock::~QgsMesh3DDataBlock() {};
+QgsMesh3DDataBlock::~QgsMesh3DDataBlock() {}
+
+QgsMesh3DDataBlock::QgsMesh3DDataBlock( const QgsMesh3DDataBlock &other )
+  : mSize( other.mSize )
+  , mIsValid( other.mIsValid )
+  , mIsVector( other.mIsVector )
+  , mVerticalLevelsCount( other.mVerticalLevelsCount )
+  , mVerticalLevels( other.mVerticalLevels )
+  , mFaceToVolumeIndex( other.mFaceToVolumeIndex )
+  , mDoubleBuffer( other.mDoubleBuffer )
+{
+
+}
+
+QgsMesh3DDataBlock::QgsMesh3DDataBlock( QgsMesh3DDataBlock &&other )
+  : mSize( other.mSize )
+  , mIsValid( other.mIsValid )
+  , mIsVector( other.mIsVector )
+  , mVerticalLevelsCount( std::move( other.mVerticalLevelsCount ) )
+  , mVerticalLevels( std::move( other.mVerticalLevels ) )
+  , mFaceToVolumeIndex( std::move( other.mFaceToVolumeIndex ) )
+  , mDoubleBuffer( std::move( other.mDoubleBuffer ) )
+{
+
+}
+
+QgsMesh3DDataBlock &QgsMesh3DDataBlock::operator=( const QgsMesh3DDataBlock &other )
+{
+  if ( &other == this )
+    return *this;
+
+  mSize = other.mSize;
+  mIsValid = other.mIsValid;
+  mIsVector = other.mIsVector;
+  mVerticalLevelsCount = other.mVerticalLevelsCount;
+  mVerticalLevels = other.mVerticalLevels;
+  mFaceToVolumeIndex = other.mFaceToVolumeIndex;
+  mDoubleBuffer = other.mDoubleBuffer;
+  return *this;
+}
+
+QgsMesh3DDataBlock &QgsMesh3DDataBlock::operator=( QgsMesh3DDataBlock &&other )
+{
+  if ( &other == this )
+    return *this;
+
+  mSize = other.mSize;
+  mIsValid = other.mIsValid;
+  mIsVector = other.mIsVector;
+  mVerticalLevelsCount = std::move( other.mVerticalLevelsCount );
+  mVerticalLevels = std::move( other.mVerticalLevels );
+  mFaceToVolumeIndex = std::move( other.mFaceToVolumeIndex );
+  mDoubleBuffer = std::move( other.mDoubleBuffer );
+  return *this;
+}
 
 QgsMesh3DDataBlock::QgsMesh3DDataBlock( int count, bool isVector )
   : mSize( count )
@@ -790,6 +846,9 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::rootItem() const
 void QgsMeshDatasetGroupTreeItem::freeAsDependency()
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
+  if ( !root )
+    return;
+
   for ( const int index : mDatasetGroupDependentOn )
   {
     QgsMeshDatasetGroupTreeItem *item = root->childFromDatasetGroupIndex( index );

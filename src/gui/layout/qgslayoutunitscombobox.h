@@ -15,10 +15,11 @@
 #ifndef QGSLAYOUTUNITSCOMBOBOX_H
 #define QGSLAYOUTUNITSCOMBOBOX_H
 
-#include <QComboBox>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsunittypes.h"
+
+#include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QPointer>
 

@@ -21,97 +21,101 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h" //for globals
-#include "qgssettings.h"
 #include "qgsvectorlayer.h"
-#include "moc_qgsvectorlayer.cpp"
+
+#include <limits>
+#include <memory>
+#include <optional>
+
+#include "qgis.h"
 #include "qgsactionmanager.h"
 #include "qgsapplication.h"
+#include "qgsauxiliarystorage.h"
 #include "qgsconditionalstyle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscurve.h"
 #include "qgsdatasourceuri.h"
+#include "qgsdiagramrenderer.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfieldbuffer.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeature.h"
+#include "qgsfeaturerenderergenerator.h"
 #include "qgsfeaturerequest.h"
+#include "qgsfeedback.h"
 #include "qgsfields.h"
-#include "qgsmaplayerfactory.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryoptions.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmessagelog.h"
+#include "qgsnetworkcontentfetcherregistry.h"
+#include "qgsobjectvisitor.h"
 #include "qgsogcutils.h"
 #include "qgspainting.h"
+#include "qgspallabeling.h"
+#include "qgspoint.h"
 #include "qgspointxy.h"
+#include "qgsprofilerequest.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
-#include "qgsweakrelation.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgsrulebasedlabeling.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgssldexportcontext.h"
+#include "qgsstoredexpressionmanager.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgstaskmanager.h"
+#include "qgsthreadingutils.h"
+#include "qgstransaction.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayertemporalproperties.h"
-#include "qgsvectorlayerelevationproperties.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditpassthrough.h"
 #include "qgsvectorlayereditutils.h"
+#include "qgsvectorlayerelevationproperties.h"
+#include "qgsvectorlayerfeaturecounter.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsvectorlayerrenderer.h"
-#include "qgsvectorlayerfeaturecounter.h"
-#include "qgsvectorlayerselectionproperties.h"
-#include "qgspoint.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayer.h"
-#include "qgsdiagramrenderer.h"
-#include "qgspallabeling.h"
-#include "qgsrulebasedlabeling.h"
-#include "qgsstoredexpressionmanager.h"
-#include "qgsexpressioncontext.h"
-#include "qgsfeedback.h"
-#include "qgsxmlutils.h"
-#include "qgstaskmanager.h"
-#include "qgstransaction.h"
-#include "qgsauxiliarystorage.h"
-#include "qgsgeometryoptions.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsfeaturerenderergenerator.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsvectorlayerprofilegenerator.h"
-#include "qgsprofilerequest.h"
-#include "qgssymbollayerutils.h"
-#include "qgsthreadingutils.h"
-#include "qgssldexportcontext.h"
+#include "qgsvectorlayerrenderer.h"
+#include "qgsvectorlayerselectionproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
+#include "qgsvectorlayerutils.h"
+#include "qgsweakrelation.h"
+#include "qgsxmlutils.h"
 
 #include <QDir>
+#include <QDomNode>
 #include <QFile>
 #include <QImage>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
 #include <QProgressDialog>
+#include <QRegularExpression>
 #include <QString>
-#include <QDomNode>
-#include <QVector>
 #include <QStringBuilder>
-#include <QUrl>
+#include <QTimer>
 #include <QUndoCommand>
+#include <QUrl>
 #include <QUrlQuery>
 #include <QUuid>
-#include <QRegularExpression>
-#include <QTimer>
+#include <QVector>
 
-#include <limits>
-#include <optional>
-
-#include "qgssettingsentryenumflag.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingstree.h"
+#include "moc_qgsvectorlayer.cpp"
 
 const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyDrawingTol = new QgsSettingsEntryDouble( QStringLiteral( "simplifyDrawingTol" ), QgsSettingsTree::sTreeQgis, Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD );
 const QgsSettingsEntryBool *QgsVectorLayer::settingsSimplifyLocal = new QgsSettingsEntryBool( QStringLiteral( "simplifyLocal" ), QgsSettingsTree::sTreeQgis, true );
@@ -1894,6 +1898,96 @@ bool QgsVectorLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
   if ( mLabeling )
     if ( !mLabeling->accept( visitor ) )
       return false;
+
+  return true;
+}
+
+bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mActions )
+  {
+    const QList<QgsAction> actions = mActions->actions();
+    for ( const QgsAction &action : actions )
+    {
+      if ( action.command().isEmpty() )
+      {
+        continue;
+      }
+
+      switch ( action.type() )
+      {
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
+        {
+          QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::Action, tr( "%1: Action ’%2’" ).arg( name(), action.name() ), action.command() );
+          if ( !visitor->visitEmbeddedScript( entity, context ) )
+          {
+            return false;
+          }
+          break;
+        }
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          break;
+        }
+      }
+    }
+  }
+
+  QString initCode;
+  switch ( mEditFormConfig.initCodeSource() )
+  {
+    case Qgis::AttributeFormPythonInitCodeSource::Dialog:
+    {
+      initCode = QStringLiteral( "# Calling function ’%1’\n\n%2" ).arg( mEditFormConfig.initFunction(), mEditFormConfig.initCode() );
+      break;
+    }
+
+    case Qgis::AttributeFormPythonInitCodeSource::File:
+    {
+      QFile *inputFile = QgsApplication::networkContentFetcherRegistry()->localFile( mEditFormConfig.initFilePath() );
+      if ( inputFile && inputFile->open( QFile::ReadOnly ) )
+      {
+        // Read it into a string
+        QTextStream inf( inputFile );
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+        inf.setCodec( "UTF-8" );
+#endif
+        initCode = inf.readAll();
+        inputFile->close();
+        initCode = QStringLiteral( "# Calling function ’%1’\n# From file %2\n\n" ).arg( mEditFormConfig.initFunction(), mEditFormConfig.initFilePath() ) + initCode;
+      }
+      break;
+    }
+
+    case Qgis::AttributeFormPythonInitCodeSource::Environment:
+    {
+      initCode = QStringLiteral( "# Calling function ’%1’\n# From environment\n\n" ).arg( mEditFormConfig.initFunction() );
+      break;
+    }
+
+    case Qgis::AttributeFormPythonInitCodeSource::NoSource:
+    {
+      break;
+    }
+  }
+
+  if ( !initCode.isEmpty() )
+  {
+    QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::FormInitCode, tr( "%1: Attribute form init code" ).arg( name() ), initCode );
+    if ( !visitor->visitEmbeddedScript( entity, context ) )
+    {
+      return false;
+    }
+  }
 
   return true;
 }
@@ -4739,7 +4833,7 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature &feature, Qgs
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) ) );
+    tempContext = std::make_unique<QgsExpressionContext>( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
     evalContext = tempContext.get();
   }
 
@@ -5173,7 +5267,7 @@ void QgsVectorLayer::createEditBuffer()
   // forward signals
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::invalidateSymbolCountedFlag );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::layerModified ); // TODO[MD]: necessary?
-  //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
+  //connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::triggerRepaint ); // TODO[MD]: works well?
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsVectorLayer::onFeatureAdded );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureDeleted, this, &QgsVectorLayer::onFeatureDeleted );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::geometryChanged, this, &QgsVectorLayer::geometryChanged );

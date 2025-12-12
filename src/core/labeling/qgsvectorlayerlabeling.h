@@ -17,11 +17,11 @@
 
 #include <memory>
 
+#include "qgis.h"
+
+#include <QDomNode>
 #include <QString>
 #include <QStringList>
-#include <QDomNode>
-
-#include "qgis.h"
 
 class QDomDocument;
 class QDomElement;

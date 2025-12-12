@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtessellate.h"
-#include "qgstessellator.h"
+
+#include <geos_c.h>
+
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include <geos_c.h>
+#include "qgstessellator.h"
 
 ///@cond PRIVATE
 
@@ -126,7 +128,8 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
       {
         // 3D case, or 2D case with unsupported GEOS version -- use less stable poly2tri backend
         const QgsRectangle bounds = f.geometry().boundingBox();
-        QgsTessellator t( bounds, false );
+        QgsTessellator t;
+        t.setBounds( bounds );
         t.setOutputZUp( true );
 
         if ( f.geometry().isMultipart() )

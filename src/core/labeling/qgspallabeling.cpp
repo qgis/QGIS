@@ -16,51 +16,52 @@
  ***************************************************************************/
 
 #include "qgspallabeling.h"
-#include "qgscolorutils.h"
-#include "qgstextlabelfeature.h"
-#include "qgsunittypes.h"
-#include "qgsexception.h"
-#include "qgsapplication.h"
-#include "qgsstyle.h"
-#include "qgstextrenderer.h"
-#include "qgsscaleutils.h"
 
 #include <cmath>
+#include <memory>
+
+#include "callouts/qgscallout.h"
+#include "callouts/qgscalloutsregistry.h"
+#include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgscurvepolygon.h"
+#include "qgsexception.h"
+#include "qgsexpression.h"
+#include "qgsfontmanager.h"
+#include "qgsfontutils.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgslabelingengine.h"
+#include "qgslogger.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
+#include "qgsmultisurface.h"
+#include "qgsproperty.h"
+#include "qgsrasterlayer.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsscaleutils.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
+#include "qgstextrendererutils.h"
+#include "qgsunittypes.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilebasiclabeling.h"
+#include "qgsvectortilelayer.h"
 
 #include <QApplication>
 #include <QByteArray>
-#include <QString>
 #include <QFontMetrics>
-#include <QTime>
+#include <QMimeData>
 #include <QPainter>
 #include <QScreen>
-#include <QWidget>
+#include <QString>
 #include <QTextBoundaryFinder>
-#include <QMimeData>
-
-#include "qgsfontutils.h"
-#include "qgsexpression.h"
-#include "qgslabelingengine.h"
-#include "qgstextrendererutils.h"
-#include "qgsmultisurface.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometry.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
-#include "qgscurvepolygon.h"
-#include "qgsmessagelog.h"
-#include "qgsgeometrycollection.h"
-#include "callouts/qgscallout.h"
-#include "callouts/qgscalloutsregistry.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectortilebasiclabeling.h"
-#include "qgsfontmanager.h"
-#include "qgsvariantutils.h"
-#include "qgsmeshlayer.h"
-#include "qgsrasterlayer.h"
+#include <QTime>
+#include <QWidget>
 
 using namespace pal;
 
@@ -279,8 +280,7 @@ Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
-  : fieldIndex( 0 )
-  , mDataDefinedProperties( s.mDataDefinedProperties )
+  : mDataDefinedProperties( s.mDataDefinedProperties )
 {
   *this = s;
 }
@@ -1601,7 +1601,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   std::unique_ptr< QgsRenderContext > scopedRc;
   if ( !context )
   {
-    scopedRc.reset( new QgsRenderContext() );
+    scopedRc = std::make_unique<QgsRenderContext>( );
     if ( f )
       scopedRc->expressionContext().setFeature( *f );
   }
@@ -1769,7 +1769,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
     case Qgis::TextOrientation::Vertical:
     {
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+      double letterSpacing = mFormat.scaledFont( *rc ).letterSpacing();
       double labelWidth = fm->maxWidth();
       w = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
@@ -1787,11 +1787,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       double widthHorizontal = 0.0;
       for ( const QString &line : std::as_const( multiLineSplit ) )
       {
-        widthHorizontal = std::max( w, fm->horizontalAdvance( line ) );
+        widthHorizontal = std::max( widthHorizontal, fm->horizontalAdvance( line ) );
       }
 
       double widthVertical = 0.0;
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+      double letterSpacing = mFormat.scaledFont( *rc ).letterSpacing();
       double labelWidth = fm->maxWidth();
       widthVertical = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 

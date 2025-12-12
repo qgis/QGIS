@@ -14,24 +14,26 @@
  ***************************************************************************/
 #include "qgsdiagramrenderer.h"
 
-#include "qgscolorutils.h"
-#include "qgsdatadefinedsizelegend.h"
-#include "diagram/qgstextdiagram.h"
-#include "diagram/qgspiediagram.h"
+#include <memory>
+
 #include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgspiediagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
-#include "qgsrendercontext.h"
-#include "qgslayertreemodellegendnode.h"
-#include "qgsfontutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
+#include "diagram/qgstextdiagram.h"
 #include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsfontutils.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgsrendercontext.h"
 #include "qgsscaleutils.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -74,6 +76,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
 }
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mCt( rh.mCt )
   , mPlacement( rh.mPlacement )
   , mPlacementFlags( rh.mPlacementFlags )
@@ -84,12 +87,31 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings 
   , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
   , mShowAll( rh.mShowAll )
   , mDataDefinedProperties( rh.mDataDefinedProperties )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   initPropertyDefinitions();
 }
 
+QgsDiagramLayerSettings::QgsDiagramLayerSettings( QgsDiagramLayerSettings &&rh )
+  : mCt( std::move( rh.mCt ) )
+  , mPlacement( rh.mPlacement )
+  , mPlacementFlags( rh.mPlacementFlags )
+  , mPriority( rh.mPriority )
+  , mZIndex( rh.mZIndex )
+  , mObstacle( rh.mObstacle )
+  , mDistance( rh.mDistance )
+  , mRenderer( std::move( rh.mRenderer ) )
+  , mShowAll( rh.mShowAll )
+  , mDataDefinedProperties( std::move( rh.mDataDefinedProperties ) )
+{
+}
+
 QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings &rh )
 {
+  if ( &rh == this )
+    return *this;
+
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mPlacement = rh.mPlacement;
   mPlacementFlags = rh.mPlacementFlags;
   mPriority = rh.mPriority;
@@ -100,6 +122,25 @@ QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( const QgsDiagramLay
   mCt = rh.mCt;
   mShowAll = rh.mShowAll;
   mDataDefinedProperties = rh.mDataDefinedProperties;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
+
+QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( QgsDiagramLayerSettings &&rh )
+{
+  if ( &rh == this )
+    return *this;
+
+  mPlacement = rh.mPlacement;
+  mPlacementFlags = rh.mPlacementFlags;
+  mPriority = rh.mPriority;
+  mZIndex = rh.mZIndex;
+  mObstacle = rh.mObstacle;
+  mDistance = rh.mDistance;
+  mRenderer = std::move( rh.mRenderer );
+  mCt = std::move( rh.mCt );
+  mShowAll = rh.mShowAll;
+  mDataDefinedProperties = std::move( rh.mDataDefinedProperties );
   return *this;
 }
 
@@ -486,6 +527,9 @@ QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer &other )
 
 QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer &other )
 {
+  if ( &other == this )
+    return *this;
+
   mDiagram.reset( other.mDiagram ? other.mDiagram->clone() : nullptr );
   mShowAttributeLegend = other.mShowAttributeLegend;
   return *this;
@@ -616,28 +660,28 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   const QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
   if ( diagramType == QgsPieDiagram::DIAGRAM_NAME_PIE )
   {
-    mDiagram.reset( new QgsPieDiagram() );
+    mDiagram = std::make_unique<QgsPieDiagram>( );
   }
   else if ( diagramType == QgsTextDiagram::DIAGRAM_NAME_TEXT )
   {
-    mDiagram.reset( new QgsTextDiagram() );
+    mDiagram = std::make_unique<QgsTextDiagram>( );
   }
   else if ( diagramType == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM )
   {
-    mDiagram.reset( new QgsHistogramDiagram() );
+    mDiagram = std::make_unique<QgsHistogramDiagram>( );
   }
   else if ( diagramType == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
   {
-    mDiagram.reset( new QgsStackedBarDiagram() );
+    mDiagram = std::make_unique<QgsStackedBarDiagram>( );
   }
   else if ( diagramType == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
   {
-    mDiagram.reset( new QgsStackedDiagram() );
+    mDiagram = std::make_unique<QgsStackedDiagram>( );
   }
   else
   {
     // unknown diagram type -- default to histograms
-    mDiagram.reset( new QgsHistogramDiagram() );
+    mDiagram = std::make_unique<QgsHistogramDiagram>( );
   }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 }
@@ -878,6 +922,9 @@ QgsStackedDiagramRenderer::QgsStackedDiagramRenderer( const QgsStackedDiagramRen
 
 QgsStackedDiagramRenderer &QgsStackedDiagramRenderer::operator=( const QgsStackedDiagramRenderer &other )
 {
+  if ( &other == this )
+    return *this;
+
   mSettings = other.mSettings;
   qDeleteAll( mDiagramRenderers );
   mDiagramRenderers.clear();
@@ -1258,6 +1305,9 @@ QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
 
 QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   enabled = other.enabled;
   font = other.font;
   categoryColors = other.categoryColors;

@@ -111,7 +111,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set vars
         env:
@@ -205,7 +205,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ matrix.run-tests }}
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
@@ -321,7 +321,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set vars
         env:
@@ -369,7 +369,7 @@ jobs:
           sudo df -h
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .
@@ -422,7 +422,7 @@ jobs:
 
       - name: Archive test results report
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ matrix.test-batch }}
           path: qgis_test_report
@@ -449,7 +449,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
@@ -477,7 +477,7 @@ jobs:
         run: docker tag ${{ steps.docker-build.outputs.imageid }} qgis3-build-deps-binary-image
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .

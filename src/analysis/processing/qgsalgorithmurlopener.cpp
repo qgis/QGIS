@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmurlopener.h"
-#include "moc_qgsalgorithmurlopener.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgis.h"
 
-#include <QUrl>
+#include "qgis.h"
+#include "qgsprocessingparameters.h"
+
 #include <QDesktopServices>
+#include <QUrl>
+
+#include "moc_qgsalgorithmurlopener.cpp"
 
 ///@cond PRIVATE
 

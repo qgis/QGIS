@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBlendModeComboBox : QComboBox
 {
 %Docstring(signature="appended")

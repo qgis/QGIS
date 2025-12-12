@@ -13,32 +13,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
-#include <QEvent>
-#include <QHBoxLayout>
-#include <QKeyEvent>
-#include <QLabel>
+#include "qgsmaptoolrotatefeature.h"
 
-#include <limits>
 #include <cmath>
+#include <limits>
 
+#include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsavoidintersectionsoperation.h"
-#include "qgsmaptoolrotatefeature.h"
-#include "moc_qgsmaptoolrotatefeature.cpp"
+#include "qgsdoublespinbox.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgstolerance.h"
-#include "qgisapp.h"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
-#include "qgssnapindicator.h"
 #include "qgsmapmouseevent.h"
+#include "qgsrubberband.h"
+#include "qgssnapindicator.h"
+#include "qgsspinbox.h"
+#include "qgstolerance.h"
+#include "qgsvectorlayer.h"
 
+#include <QEvent>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QSettings>
+
+#include "moc_qgsmaptoolrotatefeature.cpp"
 
 QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )
   : QWidget( parent )

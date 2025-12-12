@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsnewsfeedparser.h"
+
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 

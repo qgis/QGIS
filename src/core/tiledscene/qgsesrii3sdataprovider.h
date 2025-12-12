@@ -16,10 +16,10 @@
 #ifndef QGSESRII3SDATAPROVIDER_H
 #define QGSESRII3SDATAPROVIDER_H
 
-#include "qgis_core.h"
-#include "qgstiledscenedataprovider.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprovidermetadata.h"
+#include "qgstiledscenedataprovider.h"
 
 #define SIP_NO_FILE
 
@@ -88,9 +88,11 @@ class QgsEsriI3SProviderMetadata : public QgsProviderMetadata
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const override;
+    int priorityForUri( const QString &uri ) const override;
 };
 
 ///@endcond

@@ -16,10 +16,10 @@
 #ifndef QGSLAYERTREE_H
 #define QGSLAYERTREE_H
 
-#include "qgslayertreenode.h"
+#include "qgslayertreecustomnode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertreecustomnode.h"
+#include "qgslayertreenode.h"
 
 /**
  * \ingroup core
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * before using the tree.
      *
      */
-    static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr< QgsLayerTree > readXml( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Load the layer order from an XML element.

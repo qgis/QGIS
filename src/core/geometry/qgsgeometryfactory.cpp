@@ -16,22 +16,23 @@
  ***************************************************************************/
 
 #include "qgsgeometryfactory.h"
+
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
-#include "qgspoint.h"
-#include "qgspolygon.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
 #include "qgspolyhedralsurface.h"
-#include "qgstriangulatedsurface.h"
 #include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
 #include "qgswkbtypes.h"
-#include "qgslogger.h"
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr &wkbPtr )
 {

@@ -18,15 +18,15 @@
 #ifndef QGSWMSPARAMETERS_H
 #define QGSWMSPARAMETERS_H
 
+#include "qgslegendsettings.h"
+#include "qgsogcutils.h"
+#include "qgsprojectversion.h"
+#include "qgsrectangle.h"
+#include "qgsserverparameters.h"
+
+#include <QColor>
 #include <QMap>
 #include <QMetaEnum>
-#include <QColor>
-
-#include "qgsrectangle.h"
-#include "qgslegendsettings.h"
-#include "qgsprojectversion.h"
-#include "qgsogcutils.h"
-#include "qgsserverparameters.h"
 
 namespace QgsWms
 {
@@ -203,7 +203,7 @@ namespace QgsWms
       /**
        * Default destructor for QgsWmsParameter.
        */
-      virtual ~QgsWmsParameter() override = default;
+      ~QgsWmsParameter() override = default;
 
       /**
        * Returns TRUE if the parameter is valid, FALSE otherwise.
@@ -399,7 +399,7 @@ namespace QgsWms
         */
       QgsWmsParameters();
 
-      virtual ~QgsWmsParameters() override = default;
+      ~QgsWmsParameters() override = default;
 
       /**
        * Returns the parameter corresponding to \a name.

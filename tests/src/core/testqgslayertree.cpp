@@ -13,27 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include <qgsapplication.h>
-#include <qgslayertree.h>
-#include <qgsproject.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectorlayerdiagramprovider.h>
-#include <qgsvectorlayerlabelprovider.h>
-#include <qgscategorizedsymbolrenderer.h>
-#include <qgsgraduatedsymbolrenderer.h>
-#include <qgsrulebasedrenderer.h>
-#include <qgslayertreemodel.h>
-#include <qgslayertreemodellegendnode.h>
-#include <qgslayertreeutils.h>
-#include <qgssettings.h>
-#include "qgslegendsettings.h"
-#include "qgsmarkersymbol.h"
 #include "qgsannotationlayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsapplication.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeutils.h"
+#include "qgslegendsettings.h"
+#include "qgsmarkersymbol.h"
+#include "qgsproject.h"
+#include "qgsrulebasedrenderer.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerdiagramprovider.h"
+#include "qgsvectorlayerlabelprovider.h"
+
 #include <QSignalSpy>
 
 class TestQgsLayerTree : public QObject
@@ -713,7 +713,7 @@ void TestQgsLayerTree::testEmbeddedGroup()
   //
 
   QgsProject projectMaster;
-  QgsLayerTreeGroup *embeddedGroup = projectMaster.createEmbeddedGroup( grp->name(), projectFilename, QStringList() );
+  std::unique_ptr< QgsLayerTreeGroup > embeddedGroup = projectMaster.createEmbeddedGroup( grp->name(), projectFilename, QStringList() );
   QVERIFY( embeddedGroup );
   QCOMPARE( embeddedGroup->children().size(), 3 );
 
@@ -721,7 +721,7 @@ void TestQgsLayerTree::testEmbeddedGroup()
   {
     QVERIFY( QgsLayerTree::toLayer( child )->layer() );
   }
-  projectMaster.layerTreeRoot()->addChildNode( embeddedGroup );
+  projectMaster.layerTreeRoot()->addChildNode( embeddedGroup.release() );
 
   const QString projectMasterFilename = dirPath + QStringLiteral( "/projectMaster.qgs" );
   projectMaster.write( projectMasterFilename );

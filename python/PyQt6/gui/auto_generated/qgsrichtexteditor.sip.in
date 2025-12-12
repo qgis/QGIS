@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsRichTextEditor : QWidget
 {
 %Docstring(signature="appended")

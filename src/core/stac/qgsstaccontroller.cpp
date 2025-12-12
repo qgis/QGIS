@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgsstaccontroller.h"
-#include "moc_qgsstaccontroller.cpp"
+
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
 #include "qgsstaccollectionlist.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 #include "qgsstacparser.h"
-#include "qgslogger.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
-#include "qgssetrequestinitiator_p.h"
 
 #include <QFile>
 
+#include "moc_qgsstaccontroller.cpp"
 
 QgsStacController::~QgsStacController()
 {

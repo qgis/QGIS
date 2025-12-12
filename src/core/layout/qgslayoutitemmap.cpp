@@ -15,40 +15,44 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmap.h"
-#include "moc_qgslayoutitemmap.cpp"
+
+#include <memory>
+
+#include "qgsannotation.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationmanager.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureexpressionfilterprovider.h"
+#include "qgsgroupedfeaturefilterprovider.h"
+#include "qgslabelingresults.h"
+#include "qgslayertree.h"
 #include "qgslayout.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
-#include "qgslayoutmodel.h"
-#include "qgsmapthemecollection.h"
-#include "qgsannotationmanager.h"
-#include "qgsannotation.h"
-#include "qgsmapsettingsutils.h"
-#include "qgslayertree.h"
-#include "qgsmaplayerref.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerref.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontext.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsannotationlayer.h"
-#include "qgscoordinatereferencesystemregistry.h"
+#include "qgsmapsettingsutils.h"
+#include "qgsmapthemecollection.h"
 #include "qgsprojoperation.h"
-#include "qgslabelingresults.h"
-#include "qgsvectortileutils.h"
-#include "qgsunittypes.h"
-#include "qgsfeatureexpressionfilterprovider.h"
-#include "qgsgroupedfeaturefilterprovider.h"
 #include "qgssettingstree.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortileutils.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QScreen>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
+
+#include "moc_qgslayoutitemmap.cpp"
 
 const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( QStringLiteral( "force-raster-masks" ), QgsSettingsTree::sTreeLayout, false, QStringLiteral( "Whether to force rasterized clipping masks, regardless of output format." ) );
 
@@ -1723,7 +1727,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   if ( w <= 0 || h <= 0 )
     return;
 
-  mCacheRenderingImage.reset( new QImage( w * mPreviewDevicePixelRatio, h * mPreviewDevicePixelRatio, QImage::Format_ARGB32 ) );
+  mCacheRenderingImage = std::make_unique<QImage>( w * mPreviewDevicePixelRatio, h * mPreviewDevicePixelRatio, QImage::Format_ARGB32 );
 
   // set DPI of the image
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
@@ -1753,7 +1757,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   }
 
   mCacheInvalidated = false;
-  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+  mPainter = std::make_unique<QPainter>( mCacheRenderingImage.get() );
   QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX(), true ) );
 
   if ( shouldDrawPart( OverviewMapExtent ) )
@@ -1761,7 +1765,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
     settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
   }
 
-  mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
+  mPainterJob = std::make_unique<QgsMapRendererCustomPainterJob>( settings, mPainter.get() );
   if ( mLayout->reportContext().feature().isValid() && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature )
   {
     mPainterJob->setFeatureFilterProvider( mAtlasFeatureFilterProvider.get() );
@@ -3018,7 +3022,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
 
   QgsFeatureExpressionFilterProvider *filter = new QgsFeatureExpressionFilterProvider();
   filter->setFilter( mLayout->reportContext().layer()->id(), QgsExpression( QStringLiteral( "@id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
-  mAtlasFeatureFilterProvider.reset( new QgsGroupedFeatureFilterProvider() );
+  mAtlasFeatureFilterProvider = std::make_unique<QgsGroupedFeatureFilterProvider>( );
   mAtlasFeatureFilterProvider->addProvider( filter );
 
   if ( !atlasDriven() )
@@ -3070,7 +3074,10 @@ void QgsLayoutItemMap::updateAtlasFeature()
       //scale newExtent to match original scale of map
       //this is required for geographic coordinate systems, where the scale varies by extent
       double newScale = calc.calculate( newExtent, rect().width() );
-      newExtent.scale( originalScale / newScale );
+      if ( qgsDoubleNear( newScale, 0 ) )
+      {
+        newExtent.scale( originalScale / newScale );
+      }
     }
     else if ( mAtlasScalingMode == Predefined && !qgsDoubleNear( originalScale, 0 ) )
     {

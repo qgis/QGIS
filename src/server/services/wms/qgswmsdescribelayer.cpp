@@ -19,12 +19,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswmsutils.h"
+#include "qgswmsdescribelayer.h"
+
+#include "qgsproject.h"
+#include "qgsserverprojectutils.h"
 #include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
-#include "qgswmsdescribelayer.h"
-#include "qgsserverprojectutils.h"
-#include "qgsproject.h"
+#include "qgswmsutils.h"
 
 namespace QgsWms
 {

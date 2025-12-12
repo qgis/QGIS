@@ -13,23 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsoptionsdialoghighlightwidget.h"
+
+#include "qgsfilterlineedit.h"
+#include "qgsmessagebaritem.h"
+#include "qgsoptionsdialoghighlightwidgetsimpl.h"
+
 #include <QCheckBox>
 #include <QEvent>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
+#include <QTableView>
 #include <QTimer>
 #include <QTreeView>
 #include <QTreeWidget>
-#include <QTableView>
 
-#include "qgsoptionsdialoghighlightwidget.h"
 #include "moc_qgsoptionsdialoghighlightwidget.cpp"
-#include "qgsmessagebaritem.h"
-#include "qgsfilterlineedit.h"
-
-#include "qgsoptionsdialoghighlightwidgetsimpl.h"
-
 
 QgsOptionsDialogHighlightWidget::QgsOptionsDialogHighlightWidget( QWidget *widget )
   : mWidget( widget )

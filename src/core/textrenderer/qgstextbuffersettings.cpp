@@ -15,16 +15,17 @@
  ***************************************************************************/
 
 #include "qgstextbuffersettings.h"
-#include "qgstextrenderer_p.h"
-#include "qgsvectorlayer.h"
+
+#include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
-#include "qgspainting.h"
-#include "qgspainteffectregistry.h"
+#include "qgstextrenderer_p.h"
 #include "qgstextrendererutils.h"
-#include "qgsapplication.h"
 #include "qgsunittypes.h"
-#include "qgscolorutils.h"
+#include "qgsvectorlayer.h"
 
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
@@ -35,10 +36,26 @@ QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other
   : d( other.d )
 {
 }
+QgsTextBufferSettings::QgsTextBufferSettings( QgsTextBufferSettings &&other ) //NOLINT
+  : d( std::move( other.d ) )
+{
+}
 
 QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
+  return *this;
+}
+
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &&other )  //NOLINT
+{
+  if ( &other == this )
+    return *this;
+
+  d = std::move( other.d );
   return *this;
 }
 

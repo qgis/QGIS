@@ -15,10 +15,9 @@
 #ifndef QGSORACLEPROJECTSTORAGEDIALOG_H
 #define QGSORACLEPROJECTSTORAGEDIALOG_H
 
-#include <QDialog>
-
 #include "ui_qgsoracleprojectstoragedialog.h"
 
+#include <QDialog>
 
 class QgsOracleProjectStorageDialog : public QDialog, private Ui::QgsOracleProjectStorageDialog
 {

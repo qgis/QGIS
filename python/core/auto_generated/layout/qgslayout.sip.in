@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoObjectInterface
 {
 %Docstring(signature="appended")

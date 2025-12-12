@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdrape.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

@@ -760,6 +760,7 @@ set(QGIS_GUI_SRCS
   qgsprovidersourcewidgetproviderregistry.cpp
   qgsprovidersublayersdialog.cpp
   qgsprojectstorageguiregistry.cpp
+  qgsprojecttrustdialog.cpp
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
@@ -1026,6 +1027,7 @@ set(QGIS_GUI_HDRS
   qgsprevieweffect.h
   qgsprojectstorageguiprovider.h
   qgsprojectstorageguiregistry.h
+  qgsprojecttrustdialog.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
   qgsproviderconnectioncombobox.h
@@ -1803,6 +1805,17 @@ if(WITH_INTERNAL_QWT)
       ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_cubic.cpp
       PROPERTIES COMPILE_FLAGS "-Wno-implicit-fallthrough -Wno-unused-function -Wno-unused-private-field"
     )
+  endif()
+
+  set(QWT_COMPILE_OPTIONS)
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (QWT_COMPILE_OPTIONS)
+    set_source_files_properties($QGIS_QWT_SRCS PROPERTIES COMPILE_OPTIONS "${QWT_COMPILE_OPTIONS}")
   endif()
 
   set(QGIS_GUI_SRCS

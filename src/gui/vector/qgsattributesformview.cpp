@@ -14,36 +14,37 @@
  ***************************************************************************/
 
 #include "qgsattributesformview.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsqmlwidgetwrapper.h"
-#include "qgshtmlwidgetwrapper.h"
-#include "qgscodeeditorhtml.h"
-#include "qgstextwidgetwrapper.h"
-#include "qgscodeeditorexpression.h"
-#include "qgsexpressionfinder.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsattributetypedialog.h"
+
 #include "qgsapplication.h"
-#include "qgsgui.h"
-#include "qgsscrollarea.h"
 #include "qgsattributesformtreeviewindicator.h"
-#include "moc_qgsattributesformview.cpp"
+#include "qgsattributetypedialog.h"
+#include "qgscodeeditorexpression.h"
+#include "qgscodeeditorhtml.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfinder.h"
+#include "qgsgui.h"
+#include "qgshtmlwidgetwrapper.h"
+#include "qgsqmlwidgetwrapper.h"
+#include "qgsscrollarea.h"
+#include "qgstextwidgetwrapper.h"
 
-#include <QMimeData>
-#include <QPushButton>
-#include <QWidget>
-#include <QTreeView>
-#include <QSpinBox>
-#include <QDropEvent>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QFormLayout>
-#include <QPlainTextEdit>
 #include <QAction>
-#include <QMenu>
 #include <QClipboard>
+#include <QDropEvent>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QTreeView>
+#include <QWidget>
 
+#include "moc_qgsattributesformview.cpp"
 
 QgsAttributesFormBaseView::QgsAttributesFormBaseView( QgsVectorLayer *layer, QWidget *parent )
   : QTreeView( parent )
@@ -627,7 +628,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       QgsTextWidgetWrapper *textWrapper = new QgsTextWidgetWrapper( mLayer, nullptr, this );
       QgsFeature previewFeature;
-      mLayer->getFeatures().nextFeature( previewFeature );
+      ( void ) mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( previewFeature );
 
       //update preview on text change
       connect( text, &QgsCodeEditorExpression::textChanged, this, [textWrapper, previewFeature, text] {

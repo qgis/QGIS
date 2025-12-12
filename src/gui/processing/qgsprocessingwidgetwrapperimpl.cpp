@@ -16,73 +16,77 @@
  ***************************************************************************/
 
 #include "qgsprocessingwidgetwrapperimpl.h"
-#include "moc_qgsprocessingwidgetwrapperimpl.cpp"
-#include "qgsprocessingparameters.h"
+
+#include <memory>
+
 #include "processing/models/qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsprojectionselectionwidget.h"
-#include "qgsprocessingmatrixparameterdialog.h"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
-#include "qgsprocessingcontext.h"
-#include "qgsauthconfigselect.h"
+#include "qgsannotationlayer.h"
 #include "qgsapplication.h"
-#include "qgsfilewidget.h"
-#include "qgssettings.h"
-#include "qgsexpressionlineedit.h"
-#include "qgsfieldexpressionwidget.h"
-#include "qgsexpressionbuilderwidget.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgslayoutmanager.h"
-#include "qgsproject.h"
-#include "qgslayoutcombobox.h"
-#include "qgslayoutitemcombobox.h"
-#include "qgsprintlayout.h"
-#include "qgsscalewidget.h"
-#include "qgssnapindicator.h"
-#include "qgsmapmouseevent.h"
-#include "qgsfilterlineedit.h"
-#include "qgsmapcanvas.h"
-#include "qgsmessagebar.h"
+#include "qgsauthconfigselect.h"
+#include "qgscheckablecombobox.h"
 #include "qgscolorbutton.h"
 #include "qgscoordinateoperationwidget.h"
-#include "qgsdatumtransformdialog.h"
-#include "qgsfieldcombobox.h"
-#include "qgsmapthemecollection.h"
-#include "qgsdatetimeedit.h"
-#include "qgsproviderconnectioncombobox.h"
 #include "qgsdatabaseschemacombobox.h"
 #include "qgsdatabasetablecombobox.h"
-#include "qgsextentwidget.h"
-#include "qgsprocessingenummodelerwidget.h"
-#include "qgsprocessingmatrixmodelerwidget.h"
-#include "qgsprocessingmaplayercombobox.h"
-#include "qgsrasterbandcombobox.h"
-#include "qgsprocessingoutputdestinationwidget.h"
-#include "qgscheckablecombobox.h"
-#include "qgsexpressioncontext.h"
+#include "qgsdatetimeedit.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsdoublespinbox.h"
 #include "qgsdoublevalidator.h"
+#include "qgsexpressionbuilderwidget.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressionlineedit.h"
+#include "qgsextentwidget.h"
+#include "qgsfieldcombobox.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsfilewidget.h"
+#include "qgsfilterlineedit.h"
+#include "qgsgeometrywidget.h"
+#include "qgslayoutcombobox.h"
+#include "qgslayoutitemcombobox.h"
+#include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayercombobox.h"
-#include "qgsannotationlayer.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmessagebar.h"
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingenummodelerwidget.h"
+#include "qgsprocessingmaplayercombobox.h"
+#include "qgsprocessingmatrixmodelerwidget.h"
+#include "qgsprocessingmatrixparameterdialog.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingoutputdestinationwidget.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgsproviderconnectioncombobox.h"
+#include "qgsrasterbandcombobox.h"
+#include "qgsscalewidget.h"
+#include "qgssettings.h"
+#include "qgssnapindicator.h"
+#include "qgsspinbox.h"
 #include "qgsunittypes.h"
-#include "qgsgeometrywidget.h"
 
-#include <QToolButton>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
+#include <QMenu>
 #include <QPlainTextEdit>
 #include <QRadioButton>
-#include <QButtonGroup>
-#include <QMenu>
-#include <QFileDialog>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgsprocessingwidgetwrapperimpl.cpp"
 
 ///@cond PRIVATE
 
@@ -2436,6 +2440,9 @@ QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingFileWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( parameterDefinition() );
+  if ( !fileParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -2664,6 +2671,9 @@ QgsProcessingExpressionWidgetWrapper::QgsProcessingExpressionWidgetWrapper( cons
 QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( parameterDefinition() );
+  if ( !expParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -2793,6 +2803,9 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   QVariant val = parentWrapper->parameterValue();
 
   const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( parameterDefinition() );
+  if ( !expParam )
+    return;
+
   switch ( expParam->expressionType() )
   {
     case Qgis::ExpressionType::Qgis:
@@ -3264,6 +3277,9 @@ QgsProcessingEnumWidgetWrapper::QgsProcessingEnumWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterEnum *expParam = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
+  if ( !expParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -3331,8 +3347,7 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
       mComboBox->setCurrentIndex( mComboBox->findData( QVariant() ) );
     else
     {
-      const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
-      if ( enumDef->usesStaticStrings() )
+      if ( auto *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
       {
         const QString v = QgsProcessingParameters::parameterAsEnumString( parameterDefinition(), value, context );
         mComboBox->setCurrentIndex( mComboBox->findData( v ) );
@@ -3349,8 +3364,7 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
     QVariantList opts;
     if ( value.isValid() )
     {
-      const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
-      if ( enumDef->usesStaticStrings() )
+      if ( auto *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
       {
         const QStringList v = QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition(), value, context );
         opts.reserve( v.size() );
@@ -3416,6 +3430,9 @@ QgsProcessingLayoutWidgetWrapper::QgsProcessingLayoutWidgetWrapper( const QgsPro
 QWidget *QgsProcessingLayoutWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterLayout *layoutParam = dynamic_cast<const QgsProcessingParameterLayout *>( parameterDefinition() );
+  if ( !layoutParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -3577,6 +3594,9 @@ QgsProcessingLayoutItemWidgetWrapper::QgsProcessingLayoutItemWidgetWrapper( cons
 QWidget *QgsProcessingLayoutItemWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterLayoutItem *layoutParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( parameterDefinition() );
+  if ( !layoutParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -3723,7 +3743,7 @@ QgsProcessingPointMapTool::QgsProcessingPointMapTool( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 }
 
 QgsProcessingPointMapTool::~QgsProcessingPointMapTool() = default;
@@ -3993,6 +4013,9 @@ QgsProcessingPointWidgetWrapper::QgsProcessingPointWidgetWrapper( const QgsProce
 QWidget *QgsProcessingPointWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterPoint *pointParam = dynamic_cast<const QgsProcessingParameterPoint *>( parameterDefinition() );
+  if ( !pointParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -4272,6 +4295,9 @@ QgsProcessingColorWidgetWrapper::QgsProcessingColorWidgetWrapper( const QgsProce
 QWidget *QgsProcessingColorWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterColor *colorParam = dynamic_cast<const QgsProcessingParameterColor *>( parameterDefinition() );
+  if ( !colorParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -4453,6 +4479,9 @@ QgsProcessingCoordinateOperationWidgetWrapper::QgsProcessingCoordinateOperationW
 QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterCoordinateOperation *coordParam = dynamic_cast<const QgsProcessingParameterCoordinateOperation *>( parameterDefinition() );
+  if ( !coordParam )
+    return nullptr;
+
   QgsProcessingContext c;
   mSourceCrs = QgsProcessingUtils::variantToCrs( coordParam->sourceCrs(), c );
   mDestCrs = QgsProcessingUtils::variantToCrs( coordParam->destinationCrs(), c );
@@ -4897,6 +4926,9 @@ QgsProcessingFieldWidgetWrapper::QgsProcessingFieldWidgetWrapper( const QgsProce
 QWidget *QgsProcessingFieldWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( parameterDefinition() );
+  if ( !fieldParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -5295,6 +5327,8 @@ QgsProcessingMapThemeWidgetWrapper::QgsProcessingMapThemeWidgetWrapper( const Qg
 QWidget *QgsProcessingMapThemeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterMapTheme *themeParam = dynamic_cast<const QgsProcessingParameterMapTheme *>( parameterDefinition() );
+  if ( !themeParam )
+    return nullptr;
 
   mComboBox = new QComboBox();
 
@@ -5419,6 +5453,8 @@ QgsProcessingDateTimeWidgetWrapper::QgsProcessingDateTimeWidgetWrapper( const Qg
 QWidget *QgsProcessingDateTimeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDateTime *dateTimeParam = dynamic_cast<const QgsProcessingParameterDateTime *>( parameterDefinition() );
+  if ( !dateTimeParam )
+    return nullptr;
 
   QgsDateTimeEdit *widget = nullptr;
   switch ( dateTimeParam->dataType() )
@@ -5438,6 +5474,8 @@ QWidget *QgsProcessingDateTimeWidgetWrapper::createWidget()
       widget = mTimeEdit;
       break;
   }
+  if ( !widget )
+    return nullptr;
 
   if ( dateTimeParam->flags() & Qgis::ProcessingParameterFlag::Optional )
   {
@@ -5590,6 +5628,8 @@ QgsProcessingProviderConnectionWidgetWrapper::QgsProcessingProviderConnectionWid
 QWidget *QgsProcessingProviderConnectionWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast<const QgsProcessingParameterProviderConnection *>( parameterDefinition() );
+  if ( !connectionParam )
+    return nullptr;
 
   mProviderComboBox = new QgsProviderConnectionComboBox( connectionParam->providerId() );
   if ( connectionParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -5754,6 +5794,8 @@ QgsProcessingDatabaseSchemaWidgetWrapper::QgsProcessingDatabaseSchemaWidgetWrapp
 QWidget *QgsProcessingDatabaseSchemaWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDatabaseSchema *schemaParam = dynamic_cast<const QgsProcessingParameterDatabaseSchema *>( parameterDefinition() );
+  if ( !schemaParam )
+    return nullptr;
 
   mSchemaComboBox = new QgsDatabaseSchemaComboBox( QString(), QString() );
   if ( schemaParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -5991,6 +6033,8 @@ QgsProcessingDatabaseTableWidgetWrapper::QgsProcessingDatabaseTableWidgetWrapper
 QWidget *QgsProcessingDatabaseTableWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDatabaseTable *tableParam = dynamic_cast<const QgsProcessingParameterDatabaseTable *>( parameterDefinition() );
+  if ( !tableParam )
+    return nullptr;
 
   mTableComboBox = new QgsDatabaseTableComboBox( QString(), QString() );
   if ( tableParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -6205,6 +6249,9 @@ QgsProcessingExtentWidgetWrapper::QgsProcessingExtentWidgetWrapper( const QgsPro
 QWidget *QgsProcessingExtentWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterExtent *extentParam = dynamic_cast<const QgsProcessingParameterExtent *>( parameterDefinition() );
+  if ( !extentParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -6842,6 +6889,9 @@ QgsProcessingBandWidgetWrapper::QgsProcessingBandWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingBandWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( parameterDefinition() );
+  if ( !bandParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -7799,6 +7849,9 @@ QgsProcessingPointCloudAttributeWidgetWrapper::QgsProcessingPointCloudAttributeW
 QWidget *QgsProcessingPointCloudAttributeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( parameterDefinition() );
+  if ( !attrParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:

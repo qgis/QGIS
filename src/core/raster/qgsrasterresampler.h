@@ -18,9 +18,10 @@
 #ifndef QGSRASTERRESAMPLER_H
 #define QGSRASTERRESAMPLER_H
 
-#include <QString>
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QString>
 
 class QString;
 class QImage;

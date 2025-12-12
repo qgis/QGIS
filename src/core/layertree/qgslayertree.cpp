@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgslayertree.h"
-#include "moc_qgslayertree.cpp"
+
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgslayertree.cpp"
 
 QgsLayerTree::QgsLayerTree()
 {
@@ -110,9 +112,9 @@ QList< QgsLayerTreeNode * > QgsLayerTree::layerAndCustomNodeOrder() const
   return layerAndCustomNodeOrderRespectingGroupLayers();
 }
 
-QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr< QgsLayerTree > QgsLayerTree::readXml( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
-  QgsLayerTree *tree = new QgsLayerTree();
+  auto tree = std::make_unique< QgsLayerTree >();
 
   tree->readCommonXml( element );
 

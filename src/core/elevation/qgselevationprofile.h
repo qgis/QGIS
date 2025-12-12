@@ -31,6 +31,7 @@ class QDomElement;
 class QgsMapLayer;
 class QgsCurve;
 class QgsLineSymbol;
+class QgsLayerTree;
 
 /**
  * \ingroup core
@@ -45,6 +46,8 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     Q_OBJECT
 
   public:
+
+    Q_PROPERTY( bool useProjectLayerTree READ useProjectLayerTree WRITE setUseProjectLayerTree NOTIFY useProjectLayerTreeChanged )
 
     /**
      * Constructor for QgsElevationProfile.
@@ -89,18 +92,25 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     QIcon icon() const;
 
     /**
-     * Sets the list of \a layers to include in the profile.
+     * Returns the layer tree used by the profile.
      *
-     * \see layers()
+     * Will be NULLPTR if useProjectLayerTree() is TRUE.
+     *
+     * \see useProjectLayerTree()
+     * \see setUseProjectLayerTree()
      */
-    void setLayers( const QList<QgsMapLayer *> &layers );
+    QgsLayerTree *layerTree();
 
     /**
-     * Returns the list of layers included in the profile.
+     * Returns TRUE if the profile should always use the project's layer tree
      *
-     * \see setLayers()
+     * i.e. the profiles layer tree will be synchronized to the project and no
+     * reordering or re-grouping of layers is supported.
+     *
+     * \see setUseProjectLayerTree()
+     * \see layerTree()
      */
-    QList<QgsMapLayer *> layers() const;
+    bool useProjectLayerTree() { return mUseProjectLayerTree; }
 
     /**
      * Returns the crs associated with the profile's map coordinates.
@@ -213,6 +223,18 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      */
     void setDistanceUnit( Qgis::DistanceUnit unit );
 
+
+    /**
+     * Sets whether the profile should always use the project's layer tree
+     *
+     * i.e. the profiles layer tree will be synchronized to the project and no
+     * reordering or re-grouping of layers is supported.
+     *
+     * \see useProjectLayerTree()
+     * \see layerTree()
+     */
+    void setUseProjectLayerTree( bool useProjectTree );
+
   signals:
 
     /**
@@ -223,14 +245,28 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      */
     void nameChanged( const QString &newName );
 
+    /**
+     * Emitted when the use project layer tree property is changed.
+     *
+     * \see setUseProjectLayerTree()
+     */
+    void useProjectLayerTreeChanged( bool useProjectTree );
+
+  private slots:
+
+    void dirtyProject();
+
   private:
+
+    void setupLayerTreeConnections();
 
     QPointer< QgsProject > mProject;
     QString mName;
     QgsCoordinateReferenceSystem mCrs;
     bool mLockAxisScales = false;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
-    QList< QgsMapLayerRef > mLayers;
+    std::unique_ptr<QgsLayerTree> mLayerTree;
+    bool mUseProjectLayerTree = false;
     std::unique_ptr<QgsCurve> mProfileCurve;
     double mTolerance = 0;
     std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;

@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgsgoochmaterialsettings.h"
-#include "qgscolorutils.h"
+
 #include "qgs3dutils.h"
+#include "qgscolorutils.h"
 
 #include <Qt3DExtras/QGoochMaterial>
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>

@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsquerybuilder.h"
-#include "moc_qgsquerybuilder.cpp"
+
+#include "qgsapplication.h"
+#include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsapplication.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsfieldproxymodel.h"
-#include "qgsfieldmodel.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -33,12 +33,12 @@
 #include <QPushButton>
 #include <QTextStream>
 
+#include "moc_qgsquerybuilder.cpp"
 
 // constructor used when the query builder must make its own
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
-  , mPreviousFieldRow( -1 )
   , mLayer( layer )
 {
   setupUi( this );
@@ -549,5 +549,5 @@ void QgsQueryBuilder::layerSubsetStringChanged()
 {
   if ( mIgnoreLayerSubsetStringChangedSignal )
     return;
-  mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
+  mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() || mLayer->isSqlQuery() );
 }

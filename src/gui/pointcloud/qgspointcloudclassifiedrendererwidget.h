@@ -18,12 +18,13 @@
 #ifndef QGSPOINTCLOUDCLASSIFIEDRENDERERWIDGET_H
 #define QGSPOINTCLOUDCLASSIFIEDRENDERERWIDGET_H
 
-#include "qgspointcloudrendererwidget.h"
-#include "qgspointcloudclassifiedrenderer.h"
 #include "ui_qgspointcloudclassifiedrendererwidgetbase.h"
+
 #include "qgis_gui.h"
-#include "qgsproxystyle.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudrendererwidget.h"
+#include "qgsproxystyle.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;
@@ -103,8 +104,8 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget : public QgsPointCloudRen
     static QgsPointCloudRendererWidget *create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * );
 
     QgsPointCloudRenderer *renderer() override;
-    QgsPointCloudCategoryList categoriesList();
-    QString attribute();
+    QgsPointCloudCategoryList categoriesList() const;
+    QString attribute() const;
 
     /**
      * Sets the selected attribute and categories based on a 2D renderer.

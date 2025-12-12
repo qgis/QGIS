@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgsfieldmappingmodel.h"
-#include "moc_qgsfieldmappingmodel.cpp"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvariantutils.h"
+
+#include "moc_qgsfieldmappingmodel.cpp"
 
 QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions, QObject *parent )
   : QAbstractTableModel( parent )
@@ -129,7 +131,7 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
           }
           case ColumnDataIndex::DestinationName:
           {
-            return f.field.displayNameWithAlias();
+            return f.field.name();
           }
           case ColumnDataIndex::DestinationType:
           {

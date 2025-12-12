@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgscheckablecombobox.h"
-#include "moc_qgscheckablecombobox.cpp"
+
 #include "qgsapplication.h"
 
-#include <QEvent>
-#include <QMouseEvent>
-#include <QLineEdit>
-#include <QPoint>
 #include <QAbstractItemView>
+#include <QEvent>
+#include <QLineEdit>
+#include <QMouseEvent>
+#include <QPoint>
 
+#include "moc_qgscheckablecombobox.cpp"
 
 QgsCheckableItemModel::QgsCheckableItemModel( QObject *parent )
   : QStandardItemModel( 0, 1, parent )

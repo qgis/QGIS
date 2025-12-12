@@ -14,21 +14,21 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetwrapper.h"
-#include "moc_qgseditorwidgetwrapper.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
+
 #include "qgsfields.h"
-#include "qgsvectorlayerutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QTableView>
+
+#include "moc_qgseditorwidgetwrapper.cpp"
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
   , mFieldIdx( fieldIdx )
-  , mValidConstraint( true )
-  , mIsBlockingCommit( false )
 {
 }
 

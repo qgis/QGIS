@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutchartwidget.h"
-#include "moc_qgslayoutchartwidget.cpp"
+
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgslayout.h"
@@ -25,6 +25,7 @@
 #include "qgsplotregistry.h"
 #include "qgsplotwidget.h"
 
+#include "moc_qgslayoutchartwidget.cpp"
 
 QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
   : QgsLayoutItemBaseWidget( nullptr, chartItem )
@@ -176,13 +177,12 @@ void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
 
   const QString plotType = mChartTypeComboBox->currentData().toString();
   QgsPlotAbstractMetadata *abstractMetadata = QgsApplication::instance()->plotRegistry()->plotMetadata( plotType );
-  QgsPlotMetadata *metadata = dynamic_cast<QgsPlotMetadata *>( abstractMetadata );
   if ( !abstractMetadata )
   {
     return;
   }
 
-  QgsPlotWidget *widget = metadata->createPlotWidget( this );
+  QgsPlotWidget *widget = abstractMetadata->createPlotWidget( this );
   if ( !widget )
   {
     return;

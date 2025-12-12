@@ -20,13 +20,19 @@
 
 #include "qgis_core.h"
 
-#include <QVector>
 #include <QSet>
 #include <QVariant>
+#include <QVector>
 #include <QtMath>
 
 class QgsPointCloudAttribute;
 class QgsPointCloudNodeId;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgspointcloudstatistics.h"
+% End
+#endif
 
 /**
  * \ingroup core
