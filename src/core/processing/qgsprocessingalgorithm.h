@@ -854,7 +854,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * Output format may be empty.
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     QString parameterAsOutputFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
@@ -864,7 +864,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * If no explicit output format is attached to the parameter, one will be
      * attempted to be guessed from the file name extension.
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     QString parameterAsOutputRasterFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 

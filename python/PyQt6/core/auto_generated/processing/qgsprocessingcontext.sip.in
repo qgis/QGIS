@@ -569,7 +569,7 @@ fallback when the returned format is not usable.
 
 .. note::
 
-   Since QGIS 3.40, this method returns a GDAL format name. In prior versions, this was a file extension.
+   Since QGIS 4.0, this method returns a GDAL format name. In prior versions, this was a file extension.
 
 .. versionadded:: 3.10
 %End
@@ -594,7 +594,7 @@ creating these outputs.
 
 .. note::
 
-   Since QGIS 3.40, this method expects a GDAL format name. In prior versions, this was a file extension.
+   Since QGIS 4.0, this method expects a GDAL format name. In prior versions, this was a file extension.
 
 .. versionadded:: 3.10
 %End

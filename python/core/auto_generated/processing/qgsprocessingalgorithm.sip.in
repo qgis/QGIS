@@ -964,7 +964,7 @@ Evaluates the parameter with matching ``name`` to a output format
 
 Output format may be empty.
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
     QString parameterAsOutputRasterFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -974,7 +974,7 @@ Evaluates the parameter with matching ``name`` to a output format
 If no explicit output format is attached to the parameter, one will be
 attempted to be guessed from the file name extension.
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
     QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

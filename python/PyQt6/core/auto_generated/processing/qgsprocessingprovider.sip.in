@@ -151,7 +151,7 @@ provider.
 
 .. note::
 
-   Since QGIS 3.40, this method is no longer virtual and use internally
+   Since QGIS 4.0, this method is no longer virtual and use internally
    :py:func:`~QgsProcessingProvider.supportedOutputRasterLayerFormatAndExtensions` instead.
 %End
 
@@ -159,7 +159,7 @@ provider.
 %Docstring
 Returns a list of (format, file extension) supported by this provider.
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
 
@@ -292,7 +292,7 @@ Otherwise the first reported supported raster format will be used.
 
 .. seealso:: :py:func:`defaultRasterFileExtension`
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
     QString defaultRasterFileExtension() const;
@@ -300,7 +300,7 @@ Otherwise the first reported supported raster format will be used.
 Returns the default file extension to use for raster outputs created by
 the provider.
 
-Starting with QGIS 3.40, this method is no longer virtual, and relies on
+Starting with QGIS 4.0, this method is no longer virtual, and relies on
 :py:func:`~QgsProcessingProvider.defaultRasterFileFormat`
 
 .. seealso:: :py:func:`defaultRasterFileFormat`

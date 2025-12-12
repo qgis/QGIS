@@ -616,7 +616,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see setPreferredRasterFormat()
      * \see preferredVectorFormat()
      *
-     * \note Since QGIS 3.40, this method returns a GDAL format name. In prior versions, this was a file extension.
+     * \note Since QGIS 4.0, this method returns a GDAL format name. In prior versions, this was a file extension.
      *
      * \since QGIS 3.10
      */
@@ -635,7 +635,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see preferredRasterFormat()
      * \see setPreferredVectorFormat()
      *
-     * \note Since QGIS 3.40, this method expects a GDAL format name. In prior versions, this was a file extension.
+     * \note Since QGIS 4.0, this method expects a GDAL format name. In prior versions, this was a file extension.
      *
      * \since QGIS 3.10
      */

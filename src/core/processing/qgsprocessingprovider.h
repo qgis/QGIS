@@ -144,7 +144,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputPointCloudLayerExtensions()
      * \see supportedOutputVectorTileLayerExtensions()
      *
-     * \note Since QGIS 3.40, this method is no longer virtual and use internally
+     * \note Since QGIS 4.0, this method is no longer virtual and use internally
      * supportedOutputRasterLayerFormatAndExtensions() instead.
      */
     QStringList supportedOutputRasterLayerExtensions() const;
@@ -152,14 +152,14 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     /**
      * Returns a list of (format, file extension) supported by this provider.
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
 
     /**
      * Returns a list of (format, file extension) supported by GDAL
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     static QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensionsDefault() SIP_SKIP;
 
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputRasterLayerFormatAndExtensions()
      * \see defaultRasterFileExtension()
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     virtual QString defaultRasterFileFormat() const;
 
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns the default file extension to use for raster outputs created by the
      * provider.
      *
-     * Starting with QGIS 3.40, this method is no longer virtual, and relies on
+     * Starting with QGIS 4.0, this method is no longer virtual, and relies on
      * defaultRasterFileFormat()
      *
      * \see defaultRasterFileFormat()
