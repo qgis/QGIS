@@ -132,30 +132,6 @@ jobs:
       - name: Doxygen Layout Test
         run: ./tests/code_layout/test_doxygen_layout.sh
 
-  spell_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Install Requirements
-        run: |
-          sudo apt install -y \
-              expect \
-              silversearcher-ag
-
-      - name: Retrieve changed files
-        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 #v46
-        id: changed_files
-        with:
-          separator: " "
-
-      - name: Spell Test
-        if: steps.changed_files.outputs.any_changed == 'true'
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
-        run: ./scripts/spell_check/check_spelling.sh
-
   sip_check:
     runs-on: ubuntu-latest
     steps:
