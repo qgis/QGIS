@@ -121,6 +121,20 @@ class HubDistancePoints(QgisAlgorithm):
     def displayName(self):
         return self.tr("Distance to nearest hub (points)")
 
+    def shortDescription(self):
+        return self.tr(
+            "Computes the distance between origin features and their closest destination one."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "Given an origin and a destination layers, this algorithm computes the distance "
+            "between origin features and their closest destination one. "
+            "Distance calculations are based on the features center.\n"
+            "The resulting layer contains origin features center point with an additional field "
+            "indicating the identifier of the nearest destination feature and the distance to it."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         if parameters[self.INPUT] == parameters[self.HUBS]:
             raise QgsProcessingException(
