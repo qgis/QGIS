@@ -28,7 +28,7 @@ EXCLUDE_SCRIPT_LIST='(\.(xml|sip|pl|sh|badquote|cmake(\.in)?)|^(debian/copyright
 # always exclude these files
 EXCLUDE_EXTERNAL_LIST='((\.(svg|qgs|laz|las|png|lock|sip\.in))|resources/cpt-city-qgis-min/.*|resources/server/src/.*|resources/server/api/ogc/static/landingpage/js/.*|tests/testdata/.*|doc/api_break.dox|NEWS.md|python/.*/class_map.yaml|python/.*/auto_(additions|generated)/.*)$'
 
-DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
+DIR=$(git rev-parse --show-toplevel)/scripts/pre_commit/spell_check
 
 AGIGNORE=${DIR}/.agignore
 
