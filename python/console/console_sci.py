@@ -347,6 +347,7 @@ class ShellScintilla(QgsCodeEditorPython):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("V") + ctrl)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCSS = QShortcut(
@@ -389,6 +390,14 @@ class ShellScintilla(QgsCodeEditorPython):
         self.console_widget.callWidgetMessageBar(msgText)
 
     def keyPressEvent(self, e):
+        if (
+            e.modifiers()
+            & (Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.MetaModifier)
+            and e.key() == Qt.Key.Key_V
+        ):
+            self.paste()
+            e.accept()
+            return
 
         if (
             e.modifiers()
@@ -426,9 +435,6 @@ class ShellScintilla(QgsCodeEditorPython):
     def paste(self):
         """
         Method to display data from the clipboard.
-
-        XXX: It should reimplement the virtual QScintilla.paste method,
-        but it seems not used by QScintilla code.
         """
         stringPaste = QApplication.clipboard().text()
         if self.isCursorOnLastLine():
