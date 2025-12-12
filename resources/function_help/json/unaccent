@@ -1,0 +1,21 @@
+{
+  "name": "unaccent",
+  "type": "function",
+  "groups": ["String"],
+  "description": "Removes accents and other diacritical marks from a string, replacing accented characters with their unaccented ASCII equivalents. This function is compatible with PostgreSQL's unaccent() function and uses the same comprehensive mapping rules.<br><br>The function handles:<ul><li>Diacritical marks (é→e, ñ→n, ü→u, etc.)</li><li>Ligatures (Æ→AE, œ→oe, etc.)</li><li>Special letters (ß→ss, ł→l, ð→d, etc.)</li><li>Compatibility characters (℃→°C, ½→ 1/2, etc.)</li><li>Cyrillic special characters (ё→е, Ё→Е)</li><li>Full-width characters (＃→#, etc.)</li></ul><br>Common use cases include normalizing text for search operations, creating ASCII-safe identifiers or filenames from international text, and matching user input regardless of accent usage.",
+  "arguments": [
+    { "arg": "string", "description": "The string to remove accents from. If NULL, the function returns NULL." }
+  ],
+  "examples": [
+    { "expression": "unaccent('Hôtel')", "returns": "'Hotel'" },
+    { "expression": "unaccent('crème brûlée')", "returns": "'creme brulee'" },
+    { "expression": "unaccent('Românește')", "returns": "'Romaneste'" },
+    { "expression": "unaccent('Æsir & Œuvre')", "returns": "'AEsir & OEuvre'" },
+    { "expression": "unaccent('Łódź')", "returns": "'Lodz'" },
+    { "expression": "unaccent('straße')", "returns": "'strasse'" },
+    { "expression": "unaccent('ёлка')", "returns": "'елка' -- Cyrillic yo to ye" },
+    { "expression": "unaccent('℃')", "returns": "'°C' -- degree Celsius" }
+  ],
+  "notes": "This function is particularly useful when:<ul><li>Searching or filtering data where accents should be ignored (e.g., 'Jose' matches 'José')</li><li>Creating URL-safe or filename-safe strings from internationalized text</li><li>Normalizing user input for consistent storage or comparison</li><li>Preparing text for systems with limited Unicode support</li></ul>The function uses Unicode NFC normalization internally to ensure consistent handling of composed and decomposed characters.",
+  "tags": ["string", "accent", "diacritic", "normalize", "unaccent", "ascii", "search", "postgresql"]
+}
