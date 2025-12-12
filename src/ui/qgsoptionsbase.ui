@@ -899,7 +899,7 @@
                     <item>
                      <widget class="QLabel" name="label_33">
                       <property name="text">
-                       <string>Behavior for embedded scripts within projects of undetermined trust</string>
+                       <string>Behavior for embedded scripts within projects with undetermined trust</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
@@ -921,7 +921,7 @@
                   <item row="1" column="0">
                    <widget class="QLabel" name="mTrustedProjectsFoldersLabel">
                     <property name="text">
-                     <string>Trusted projects and folders allowing embedded script execution</string>
+                     <string>Trusted projects and folders that allow embedded script execution</string>
                     </property>
                    </widget>
                   </item>
@@ -979,7 +979,7 @@
                   <item row="3" column="0">
                    <widget class="QLabel" name="mUntrustedProjectsFoldersLabel">
                     <property name="text">
-                     <string>Untrusted projects and folders denied embedded script execution</string>
+                     <string>Untrusted projects and folders are denied embedded script execution</string>
                     </property>
                    </widget>
                   </item>
