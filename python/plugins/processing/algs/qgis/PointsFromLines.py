@@ -84,6 +84,17 @@ class PointsFromLines(QgisAlgorithm):
     def displayName(self):
         return self.tr("Generate points (pixel centroids) along line")
 
+    def shortDescription(self):
+        return self.tr(
+            "Generates points corresponding to centroids of a raster pixels intersecting a line layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm generates a point vector layer from an input raster and line layer. "
+            "The points correspond to the pixel centroids that intersect the line layer."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_VECTOR, context)
         if source is None:
