@@ -1780,8 +1780,6 @@ QDomElement QgsOgcUtils::createGMLPositions( const QgsPolylineXY &points, QDomDo
   return posElem;
 }
 
-
-
 // -----------------------------------------
 
 QColor QgsOgcUtils::colorFromOgcFill( const QDomElement &fillElement )
@@ -2152,6 +2150,25 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
   }
   filterElem.appendChild( exprRootElem );
   return filterElem;
+}
+
+//
+
+/* static */ Qgis::WkbType QgsOgcUtils::geomTypeFromPropertyType( const QString &gmlGeomType )
+{
+  if ( gmlGeomType == QLatin1String( "Point" ) )
+    return Qgis::WkbType::Point;
+  if ( gmlGeomType == QLatin1String( "LineString" ) || gmlGeomType == QLatin1String( "Curve" ) )
+    return Qgis::WkbType::LineString;
+  if ( gmlGeomType == QLatin1String( "Polygon" ) || gmlGeomType == QLatin1String( "Surface" ) )
+    return Qgis::WkbType::Polygon;
+  if ( gmlGeomType == QLatin1String( "MultiPoint" ) )
+    return Qgis::WkbType::MultiPoint;
+  if ( gmlGeomType == QLatin1String( "MultiLineString" ) || gmlGeomType == QLatin1String( "MultiCurve" ) )
+    return Qgis::WkbType::MultiLineString;
+  if ( gmlGeomType == QLatin1String( "MultiPolygon" ) || gmlGeomType == QLatin1String( "MultiSurface" ) )
+    return Qgis::WkbType::MultiPolygon;
+  return Qgis::WkbType::Unknown;
 }
 
 //

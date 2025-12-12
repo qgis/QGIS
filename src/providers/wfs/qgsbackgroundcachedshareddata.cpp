@@ -38,9 +38,9 @@
 #include <QMutex>
 
 QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData(
-  const QString &providerName, const QString &componentTranslated
+  const QString &uri, const QString &providerName, const QString &componentTranslated
 )
-  : mCacheDirectoryManager( QgsCacheDirectoryManager::singleton( ( providerName ) ) ), mComponentTranslated( componentTranslated )
+  : mURI( uri ), mCacheDirectoryManager( QgsCacheDirectoryManager::singleton( ( providerName ) ) ), mComponentTranslated( componentTranslated )
 {
 }
 
