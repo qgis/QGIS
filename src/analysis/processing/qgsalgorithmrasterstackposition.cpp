@@ -144,11 +144,6 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
   provider->setNoDataValue( 1, mNoDataValue );
   const qgssize layerSize = static_cast<qgssize>( mLayerWidth ) * static_cast<qgssize>( mLayerHeight );
 
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   provider->setEditable( true );
 
   QgsRasterIterator iter( provider.get() );
@@ -158,6 +153,9 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
   int iterCols = 0;
   int iterRows = 0;
   QgsRectangle blockExtent;
+
+  const bool closeReportsProgress = provider->closeReportsProgress();
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
 
   std::unique_ptr<QgsRasterBlock> outputBlock;
   while ( iter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
@@ -176,7 +174,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
       }
     }
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( 1 ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
@@ -214,6 +212,17 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
     }
   }
   provider->setEditable( false );
+
+  if ( feedback && closeReportsProgress )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );

@@ -128,11 +128,6 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   qgssize noDataCount = 0;
 
   const qgssize layerSize = static_cast<qgssize>( mLayerWidth ) * static_cast<qgssize>( mLayerHeight );
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = std::ceil( 1.0 * mLayerWidth / maxWidth );
-  const int nbBlocksHeight = std::ceil( 1.0 * mLayerHeight / maxHeight );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
@@ -145,7 +140,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   std::unique_ptr<QgsRasterBlock> rasterBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( 100 * iter.progress( mBand ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )

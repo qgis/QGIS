@@ -95,7 +95,7 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
      * The \a feedback argument gives an optional processing feedback, for progress reports
      * and cancellation.
      */
-    static void reclassify( const QVector<RasterClass> &classes, QgsRasterInterface *sourceRaster, int band, const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels, QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues, QgsProcessingFeedback *feedback = nullptr );
+    static void reclassify( const QVector<RasterClass> &classes, QgsRasterInterface *sourceRaster, int band, const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double destNoDataValue, bool useNoDataForMissingValues, QgsProcessingFeedback *feedback = nullptr );
 
     /**
      * Reclassifies a single \a input value, using the specified list of \a classes.

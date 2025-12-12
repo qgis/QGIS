@@ -159,8 +159,22 @@ QVariantMap QgsCellStatisticsAlgorithmBase::processAlgorithm( const QVariantMap 
   mOutputRasterDataProvider->setNoDataValue( 1, mNoDataValue );
   qgssize layerSize = static_cast<qgssize>( mLayerWidth ) * static_cast<qgssize>( mLayerHeight );
 
+  const bool closeReportsProgress = mOutputRasterDataProvider->closeReportsProgress();
+  mMaxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+
   //call child statistics method
   processRasterStack( feedback );
+
+  if ( feedback && closeReportsProgress )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, mMaxProgressDuringBlockWriting, 100.0 ) );
+    if ( !mOutputRasterDataProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   mOutputRasterDataProvider.reset();
 
@@ -282,11 +296,6 @@ bool QgsCellStatisticsAlgorithm::prepareSpecificAlgorithmParameters( const QVari
 
 void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feedback )
 {
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
   QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
@@ -313,7 +322,7 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
       }
     }
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( mMaxProgressDuringBlockWriting * outputIter.progress( 1 ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
@@ -466,11 +475,6 @@ bool QgsCellStatisticsPercentileAlgorithm::prepareSpecificAlgorithmParameters( c
 
 void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeedback *feedback )
 {
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
   QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
@@ -497,7 +501,7 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
       }
     }
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( mMaxProgressDuringBlockWriting * outputIter.progress( 1 ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
@@ -610,11 +614,6 @@ bool QgsCellStatisticsPercentRankFromValueAlgorithm::prepareSpecificAlgorithmPar
 
 void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProcessingFeedback *feedback )
 {
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
   QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
@@ -641,7 +640,7 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
       }
     }
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( mMaxProgressDuringBlockWriting * outputIter.progress( 1 ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
@@ -761,11 +760,6 @@ bool QgsCellStatisticsPercentRankFromRasterAlgorithm::prepareSpecificAlgorithmPa
 
 void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsProcessingFeedback *feedback )
 {
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
   QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
@@ -794,7 +788,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
       }
     }
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( mMaxProgressDuringBlockWriting * outputIter.progress( 1 ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
