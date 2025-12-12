@@ -749,6 +749,7 @@ void TestQgsPoint::measures()
   QCOMPARE( pt.length(), 0.0 );
   QCOMPARE( pt.perimeter(), 0.0 );
   QCOMPARE( pt.area(), 0.0 );
+  QCOMPARE( pt.area3D(), 0.0 );
   QCOMPARE( pt.centroid(), pt );
   QVERIFY( !pt.hasCurvedSegments() );
 

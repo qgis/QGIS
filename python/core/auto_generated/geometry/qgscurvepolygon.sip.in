@@ -69,6 +69,8 @@ to the caller.
 
     virtual double area() const /HoldGIL/;
 
+    virtual double area3D() const /HoldGIL/;
+
     virtual double perimeter() const /HoldGIL/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
@@ -350,6 +352,13 @@ between adjacent segments.
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+
+    bool hasPlane3D( QgsPoint &ptA, QgsPoint &ptB, QgsPoint &ptC, double epsilon = DBL_EPSILON ) const;
+%Docstring
+Test if a 3D plane can be extracted from the CurvePolygon.
+
+.. versionadded:: 4.0
+%End
 
   protected:
 

@@ -2258,6 +2258,16 @@ double QgsGeometry::area() const
   return d->geometry->area();
 }
 
+double QgsGeometry::area3D() const
+{
+  if ( !d->geometry )
+  {
+    return -1.0;
+  }
+
+  return d->geometry->area3D();
+}
+
 double QgsGeometry::length() const
 {
   if ( !d->geometry )
