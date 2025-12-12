@@ -2688,9 +2688,16 @@ QString QgsWmsProvider::htmlMetadata() const
     // Layer properties
     if ( n < mCaps.mLayersSupported.size() )
     {
-      metadata += QStringLiteral( "<tr><th class=\"strong\" id=\"otherlayers\">" ) % tr( "Other Layers" ) % QStringLiteral( "</th></tr>" );
+      static const int MAX_OTHERLAYERS_COUNT = 10;
+      QString description = tr( "Other Layers" );
+      if ( mCaps.mLayersSupported.size() > MAX_OTHERLAYERS_COUNT )
+      {
+        description += tr( " (only the first %1 are listed)" ).arg( MAX_OTHERLAYERS_COUNT );
+      }
 
-      for ( int i = 0; i < mCaps.mLayersSupported.size(); i++ )
+      metadata += QStringLiteral( "<tr><th class=\"strong\" id=\"otherlayers\">" ) % description % QStringLiteral( "</th></tr>" );
+
+      for ( int i = 0; i < std::min( static_cast<int>( mCaps.mLayersSupported.size() ), MAX_OTHERLAYERS_COUNT ); i++ )
       {
         if ( !mSettings.mActiveSubLayers.contains( mCaps.mLayersSupported[i].name ) )
         {
