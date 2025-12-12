@@ -42,7 +42,7 @@ if test "$HAS_AG" != "true"; then
 elif test "$HAS_UNBUFFER" != "true"; then
   echo "WARNING: the unbuffer(1) executable was not found, spell checker could not run" >&2
 else
-  "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
+  "${TOPLEVEL}"/scripts/pre_commit/spell_check/check_spelling.sh "$MODIFIED"
 fi
 
 exit 0
