@@ -85,14 +85,18 @@ class PolarPlot(QgisAlgorithm):
                 import plotly.graph_objs as go
         except ImportError:
             raise QgsProcessingException(
-                self.tr("This algorithm requires the Python “plotly” library. Please install this library and try again.")
+                self.tr(
+                    "This algorithm requires the Python “plotly” library. Please install this library and try again."
+                )
             )
 
         try:
             import numpy as np
         except ImportError:
             raise QgsProcessingException(
-                self.tr("This algorithm requires the Python “numpy” library. Please install this library and try again.")
+                self.tr(
+                    "This algorithm requires the Python “numpy” library. Please install this library and try again."
+                )
             )
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
@@ -110,8 +114,7 @@ class PolarPlot(QgisAlgorithm):
         data = [
             go.Barpolar(
                 r=values,
-                theta=np.degrees(
-                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values))),
+                theta=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values))),
             )
         ]
 
