@@ -258,83 +258,130 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructHighlightsPass()
   // First Pass:
   // Clear stencil and render all Highlights Layer's entities as semi-transparent, with no depth test,
   // while writing to the stencil buffer. Depth buffer is not modified.
-  Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( highlightsRenderTargetSelector );
+  {
+    Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( highlightsRenderTargetSelector );
 
-  // we need to allow writing to the stencil buffer before clearing it
-  Qt3DRender::QStencilMask *forceWriteMask = new Qt3DRender::QStencilMask( stateSet );
-  forceWriteMask->setFrontOutputMask( 0xFF );
-  forceWriteMask->setBackOutputMask( 0xFF );
-  stateSet->addRenderState( forceWriteMask );
+    // we need to allow writing to the stencil buffer before clearing it
+    Qt3DRender::QStencilMask *forceWriteMask = new Qt3DRender::QStencilMask( stateSet );
+    forceWriteMask->setFrontOutputMask( 0xFF );
+    forceWriteMask->setBackOutputMask( 0xFF );
+    stateSet->addRenderState( forceWriteMask );
 
-  Qt3DRender::QClearBuffers *clearStencilBuffer = new Qt3DRender::QClearBuffers( stateSet );
-  clearStencilBuffer->setBuffers( Qt3DRender::QClearBuffers::StencilBuffer );
-  clearStencilBuffer->setClearStencilValue( 0 );
+    Qt3DRender::QClearBuffers *clearStencilBuffer = new Qt3DRender::QClearBuffers( stateSet );
+    clearStencilBuffer->setBuffers( Qt3DRender::QClearBuffers::StencilBuffer );
+    clearStencilBuffer->setClearStencilValue( 0 );
 
-  Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector( clearStencilBuffer );
-  cameraSelector->setObjectName( "Highlights Pass CameraSelector" );
-  cameraSelector->setCamera( mMainCamera );
+    Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector( clearStencilBuffer );
+    cameraSelector->setCamera( mMainCamera );
 
-  Qt3DRender::QLayerFilter *LayerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
-  LayerFilter->addLayer( mHighlightsLayer );
+    Qt3DRender::QLayerFilter *LayerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
+    LayerFilter->addLayer( mHighlightsLayer );
 
-  Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
-  blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
-  blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
-  stateSet->addRenderState( blendState );
+    Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
+    blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
+    blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
+    stateSet->addRenderState( blendState );
 
-  Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
-  blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
-  stateSet->addRenderState( blendEquation );
+    Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
+    blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
+    stateSet->addRenderState( blendEquation );
 
-  Qt3DRender::QNoDepthMask *noDepthMask = new Qt3DRender::QNoDepthMask;
-  stateSet->addRenderState( noDepthMask );
+    Qt3DRender::QNoDepthMask *noDepthMask = new Qt3DRender::QNoDepthMask;
+    stateSet->addRenderState( noDepthMask );
 
-  // todo: is QDepthTest needed is set to Always?
-  // always pass depth test so we "render on top"
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-  stateSet->addRenderState( depthTest );
+    Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+    depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+    stateSet->addRenderState( depthTest );
 
-  // todo: is QCullFace needed if set to NoCulling?
-  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-  stateSet->addRenderState( cullFace );
+    Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+    cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+    stateSet->addRenderState( cullFace );
 
-  Qt3DRender::QStencilOperation *stencilOp = new Qt3DRender::QStencilOperation;
-  stencilOp->front()->setStencilTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
-  stencilOp->front()->setDepthTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
-  stencilOp->front()->setAllTestsPassOperation( Qt3DRender::QStencilOperationArguments::Replace );
-  stencilOp->back()->setStencilTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
-  stencilOp->back()->setDepthTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
-  stencilOp->back()->setAllTestsPassOperation( Qt3DRender::QStencilOperationArguments::Replace );
-  stateSet->addRenderState( stencilOp );
+    Qt3DRender::QStencilOperation *stencilOp = new Qt3DRender::QStencilOperation;
+    stencilOp->front()->setStencilTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
+    stencilOp->front()->setDepthTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
+    stencilOp->front()->setAllTestsPassOperation( Qt3DRender::QStencilOperationArguments::Replace );
+    stencilOp->back()->setStencilTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
+    stencilOp->back()->setDepthTestFailureOperation( Qt3DRender::QStencilOperationArguments::Keep );
+    stencilOp->back()->setAllTestsPassOperation( Qt3DRender::QStencilOperationArguments::Replace );
+    stateSet->addRenderState( stencilOp );
 
-  Qt3DRender::QStencilTest *stencilTest = new Qt3DRender::QStencilTest;
-  stencilTest->front()->setStencilFunction( Qt3DRender::QStencilTestArguments::Always );
-  stencilTest->front()->setComparisonMask( 0xFF );
-  stencilTest->front()->setReferenceValue( 1 );
-  stencilTest->back()->setStencilFunction( Qt3DRender::QStencilTestArguments::Always );
-  stencilTest->back()->setComparisonMask( 0xFF );
-  stencilTest->back()->setReferenceValue( 1 );
-  stateSet->addRenderState( stencilTest );
+    Qt3DRender::QStencilTest *stencilTest = new Qt3DRender::QStencilTest;
+    stencilTest->front()->setStencilFunction( Qt3DRender::QStencilTestArguments::Always );
+    stencilTest->front()->setComparisonMask( 0xFF );
+    stencilTest->front()->setReferenceValue( 1 );
+    stencilTest->back()->setStencilFunction( Qt3DRender::QStencilTestArguments::Always );
+    stencilTest->back()->setComparisonMask( 0xFF );
+    stencilTest->back()->setReferenceValue( 1 );
+    stateSet->addRenderState( stencilTest );
+  }
 
   // Next Passes:
-  // Render the highlights entities offseted by x pixels on each of 8 directions using stencil test
+  // Render the highlights entities offseted by x pixels on each of 4 directions using stencil test
   // to only paint around the existing semi-transparent highlight entities.
 
-  // todo: how to deal with dynamic size? Wrap this all in a QgsAbstractRenderView?
   const int pixels = 5;
   const float offsetX = pixels / static_cast<float>( mSize.width() );
   const float offsetY = pixels / static_cast<float>( mSize.height() );
 
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, offsetX, 0.0f );
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, 0.0f, offsetY );
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, -offsetX, 0.0f );
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, 0.0f, -offsetY );
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, offsetX, offsetY );
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, offsetX, -offsetY );
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, -offsetX, -offsetY );
-  addHighlightStencilPassOffseted( highlightsRenderTargetSelector, mMainCamera, mHighlightsLayer, -offsetX, offsetY );
+  qDebug() << "offsetX:" << offsetX << " = " << pixels << "/" << mSize.width();
+  qDebug() << "offsetY:" << offsetY << " = " << pixels << "/" << mSize.height();
+
+  {
+    Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( highlightsRenderTargetSelector );
+
+    // we need to allow writing to the stencil buffer before clearing it
+    Qt3DRender::QStencilMask *stencilReadMask = new Qt3DRender::QStencilMask( stateSet );
+    stencilReadMask->setFrontOutputMask( 0x00 );
+    stencilReadMask->setBackOutputMask( 0x00 );
+    stateSet->addRenderState( stencilReadMask );
+
+    Qt3DRender::QNoDepthMask *noDepthMask = new Qt3DRender::QNoDepthMask;
+    stateSet->addRenderState( noDepthMask );
+
+    // always pass depth test so we "render on top"
+    Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+    depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+    stateSet->addRenderState( depthTest );
+
+    Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+    cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+    stateSet->addRenderState( cullFace );
+
+    Qt3DRender::QStencilTest *stencilTest = new Qt3DRender::QStencilTest;
+    stencilTest->front()->setStencilFunction( Qt3DRender::QStencilTestArguments::Equal );
+    stencilTest->front()->setComparisonMask( 0xFF );
+    stencilTest->front()->setReferenceValue( 0 );
+    stencilTest->back()->setStencilFunction( Qt3DRender::QStencilTestArguments::Equal );
+    stencilTest->back()->setComparisonMask( 0xFF );
+    stencilTest->back()->setReferenceValue( 0 );
+    stateSet->addRenderState( stencilTest );
+
+    Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector( stateSet );
+    cameraSelector->setObjectName( "Highlights Pass CameraSelector2" );
+    cameraSelector->setCamera( mMainCamera );
+
+    Qt3DRender::QViewport *viewport1 = new Qt3DRender::QViewport( cameraSelector );
+    viewport1->setNormalizedRect( QRectF( offsetX, 0.0f, 1.0f + offsetX, 1.0f ) );
+    Qt3DRender::QLayerFilter *layerFilter1 = new Qt3DRender::QLayerFilter( viewport1 );
+    layerFilter1->addLayer( mHighlightsLayer );
+
+    Qt3DRender::QViewport *viewport2 = new Qt3DRender::QViewport( cameraSelector );
+    viewport2->setNormalizedRect( QRectF( 0.0f, offsetY, 1.0f, 1.0f + offsetY ) );
+    Qt3DRender::QLayerFilter *layerFilter2 = new Qt3DRender::QLayerFilter( viewport2 );
+    layerFilter2->addLayer( mHighlightsLayer );
+
+    Qt3DRender::QViewport *viewport3 = new Qt3DRender::QViewport( cameraSelector );
+    viewport3->setNormalizedRect( QRectF( -offsetX, 0.0f, 1.0f - offsetX, 1.0f ) );
+    Qt3DRender::QLayerFilter *layerFilter3 = new Qt3DRender::QLayerFilter( viewport3 );
+    layerFilter3->addLayer( mHighlightsLayer );
+
+    Qt3DRender::QViewport *viewport4 = new Qt3DRender::QViewport( cameraSelector );
+    viewport4->setNormalizedRect( QRectF( 0.0f, -offsetY, 1.0f, 1.0f - offsetY ) );
+    Qt3DRender::QLayerFilter *layerFilter4 = new Qt3DRender::QLayerFilter( viewport4 );
+    layerFilter4->addLayer( mHighlightsLayer );
+  }
+
 
   return highlightsRenderTargetSelector;
 }
