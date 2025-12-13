@@ -11,6 +11,13 @@
 
 struct QgsVertexId
 {
+%Docstring(signature="appended")
+Utility class for identifying a unique vertex within a geometry.
+%End
+
+%TypeHeaderCode
+#include "qgsvertexid.h"
+%End
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, Qgis::VertexType _type = Qgis::VertexType::Segment ) /HoldGIL/;
 %Docstring

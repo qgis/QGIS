@@ -17,6 +17,15 @@
 
 struct QgsPointCloudAttributeStatistics
 {
+%Docstring(signature="appended")
+Stores statistics of one attribute of a point cloud dataset.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudstatistics.h"
+%End
   double minimum;
   double maximum;
   double mean;
