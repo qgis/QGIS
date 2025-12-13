@@ -17,6 +17,7 @@
 #define QGS3DMAPCANVASWIDGET_H
 
 #include "qgis_app.h"
+#include "qgs3dsnappingmanager.h"
 #include "qgscamerapose.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
@@ -41,6 +42,7 @@ class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
 class Qgs3DMapToolPointCloudChangeAttribute;
 class Qgs3DNavigationWidget;
+class Qgs3DSnappingToolbar;
 class Qgs3DDebugWidget;
 class QgsMapLayer;
 class QgsMapTool;
@@ -204,6 +206,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mCboChangeAttributeValueAction = nullptr;
     QAction *mSpinChangeAttributeValueAction = nullptr;
     QString mChangeAttributePointFilter;
+
+    std::unique_ptr<Qgs3DSnappingManager> mSnapper = nullptr;
+    Qgs3DSnappingToolbar *mSnappingToolBar = nullptr;
 
     QMenu *mToolbarMenu = nullptr;
 };

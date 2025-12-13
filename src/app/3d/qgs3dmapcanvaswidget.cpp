@@ -30,6 +30,7 @@
 #include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
 #include "qgs3dnavigationwidget.h"
+#include "qgs3dsnappingtoolbar.h"
 #include "qgs3dutils.h"
 #include "qgsannotationlayer.h"
 #include "qgsapplication.h"
@@ -304,6 +305,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
   toolBar->addAction( configureAction );
 
+  // Snapping toolbar
+  mSnapper = std::make_unique<Qgs3DSnappingManager>();
+  mSnappingToolBar = new Qgs3DSnappingToolbar( this, mSnapper.get(), setting );
+
   mCanvas = new Qgs3DMapCanvas;
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
 
@@ -344,6 +349,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   topLayout->setContentsMargins( 0, 0, 0, 0 );
   topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
   topLayout->addWidget( toolBar );
+  topLayout->addWidget( mSnappingToolBar );
   topLayout->addStretch( 1 );
   topLayout->addWidget( mLabelPendingJobs );
   topLayout->addWidget( mProgressPendingJobs );
@@ -416,7 +422,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
-  for ( QToolBar *toolBar : { mEditingToolBar } )
+  for ( QToolBar *toolBar : QList<QToolBar *>( { mEditingToolBar, mSnappingToolBar } ) )
   {
     toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
     toolbarMenuActions << toolBar->toggleViewAction();
@@ -431,6 +437,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   toolBar->installEventFilter( this );
   mEditingToolBar->installEventFilter( this );
+  mSnappingToolBar->installEventFilter( this );
 }
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
@@ -709,6 +716,9 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 
   // none of the actions in the Camera menu are supported by globe yet, so just hide it completely
   mActionCamera->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
+
+  // snapping toolbar
+  mSnappingToolBar->onSettingUpdate( map );
 
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
   connect( map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapCanvasWidget::onExtentChanged );
