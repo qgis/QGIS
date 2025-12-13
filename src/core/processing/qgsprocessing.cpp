@@ -25,7 +25,7 @@ const QgsSettingsEntryString *QgsProcessing::settingsTempPath = new QgsSettingsE
 
 const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputVectorLayerExt = new QgsSettingsEntryString( QStringLiteral( "default-output-vector-ext" ), sTreeConfiguration, QString(), QObject::tr( "Default output vector layer extension" ) );
 
-const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputRasterLayerExt = new QgsSettingsEntryString( QStringLiteral( "default-output-raster-ext" ), sTreeConfiguration, QString(), QObject::tr( "Default output raster layer extension" ) );
+const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputRasterLayerFormat = new QgsSettingsEntryString( QStringLiteral( "default-output-raster-format" ), sTreeConfiguration, QString(), QObject::tr( "Default output raster layer format" ) );
 
 const QString QgsProcessing::TEMPORARY_OUTPUT = QStringLiteral( "TEMPORARY_OUTPUT" );
 

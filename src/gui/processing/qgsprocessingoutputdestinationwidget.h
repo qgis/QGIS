@@ -139,6 +139,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     QgsRemappingSinkDefinition mRemapDefinition;
     bool mUseRemapping = false;
 
+    QString mFormat;
+
     QgsProcessingContext *mContext = nullptr;
 
     friend class TestProcessingGui;

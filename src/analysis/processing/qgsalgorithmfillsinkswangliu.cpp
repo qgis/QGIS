@@ -195,8 +195,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
 
   if ( !filledDemOutputFile.isEmpty() )
   {
-    const QFileInfo fi( filledDemOutputFile );
-    const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_FILLED_DEM" ), context );
 
     filledDemWriter = std::make_unique<QgsRasterFileWriter>( filledDemOutputFile );
     filledDemWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -222,8 +221,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
 
   if ( !flowDirectionsOutputFile.isEmpty() )
   {
-    const QFileInfo fi( flowDirectionsOutputFile );
-    const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_FLOW_DIRECTIONS" ), context );
 
     flowDirectionsWriter = std::make_unique<QgsRasterFileWriter>( flowDirectionsOutputFile );
     flowDirectionsWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -245,8 +243,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
 
   if ( !watershedBasinsOutputFile.isEmpty() )
   {
-    const QFileInfo fi( watershedBasinsOutputFile );
-    const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_WATERSHED_BASINS" ), context );
 
     watershedBasinsWriter = std::make_unique<QgsRasterFileWriter>( watershedBasinsOutputFile );
     watershedBasinsWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );

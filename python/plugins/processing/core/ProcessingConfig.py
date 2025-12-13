@@ -59,7 +59,7 @@ class ProcessingConfig:
     SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
     SHOW_ALGORITHMS_KNOWN_ISSUES = "SHOW_ALGORITHMS_KNOWN_ISSUES"
     MAX_THREADS = "MAX_THREADS"
-    DEFAULT_OUTPUT_RASTER_LAYER_EXT = "default-output-raster-ext"
+    DEFAULT_OUTPUT_RASTER_LAYER_FORMAT = "default-output-raster-format"
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = "default-output-vector-ext"
     TEMP_PATH = "temp-path"
     RESULTS_GROUP_NAME = "RESULTS_GROUP_NAME"
@@ -232,15 +232,15 @@ class ProcessingConfig:
             )
         )
 
-        extensions = QgsRasterFileWriter.supportedFormatExtensions()
+        filtersAndFormats = QgsRasterFileWriter.supportedFiltersAndFormats()
         ProcessingConfig.addSetting(
             Setting(
                 ProcessingConfig.tr("General"),
-                ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
-                ProcessingConfig.tr("Default output raster layer extension"),
-                "tif",
+                ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_FORMAT,
+                ProcessingConfig.tr("Default output raster layer format"),
+                "GTiff",
                 valuetype=Setting.SELECTION_STORE_STRING,
-                options=extensions,
+                options=[x.driverName for x in filtersAndFormats],
                 hasSettingEntry=True,
             )
         )

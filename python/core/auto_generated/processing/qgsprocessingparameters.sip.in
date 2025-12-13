@@ -269,6 +269,24 @@ Calling this method will set
 .. versionadded:: 3.14
 %End
 
+    QString format() const;
+%Docstring
+Returns the format (if set)
+
+.. seealso:: :py:func:`setFormat`
+
+.. versionadded:: 4.0
+%End
+
+    void setFormat( const QString &format );
+%Docstring
+Sets the ``format`` of the output dataset
+
+.. seealso:: :py:func:`format`
+
+.. versionadded:: 4.0
+%End
+
     QVariant toVariant() const;
 %Docstring
 Saves this output layer definition to a QVariantMap, wrapped in a
@@ -1420,6 +1438,15 @@ testing only. This prevents default behavior such as output
 post-processing which would otherwise occur.
 
 .. versionadded:: 3.4
+%End
+
+    static QString parameterAsOutputFormat( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a output format
+
+Output format may be empty.
+
+.. versionadded:: 3.40
 %End
 
     static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -4166,17 +4193,35 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+
+    QString defaultFileFormat() const;
+%Docstring
+Returns the default file format for destination file paths associated
+with this parameter.
+
+.. versionadded:: 3.40
+%End
+
     virtual QString createFileFilter() const;
 
 
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+ virtual QStringList supportedOutputRasterLayerExtensions() const /Deprecated="Since 3.40. Use supportedOutputRasterLayerFormatAndExtensions() instead."/;
 %Docstring
 Returns a list of the raster format file extensions supported for this
 parameter.
 
 .. seealso:: :py:func:`defaultFileExtension`
 
-.. versionadded:: 3.2
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProcessingParameterRasterDestination.supportedOutputRasterLayerFormatAndExtensions` instead.
+%End
+
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+%Docstring
+Returns a list of (format, file extension) supported by this provider.
+
+.. versionadded:: 3.40
 %End
 
     static QgsProcessingParameterRasterDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;

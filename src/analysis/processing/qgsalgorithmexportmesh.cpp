@@ -866,8 +866,7 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     creationOptions = optionsString;
 
   const QString fileName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fileInfo( fileName );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fileInfo.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
   QgsRasterFileWriter rasterFileWriter( fileName );
   rasterFileWriter.setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !creationOptions.isEmpty() )

@@ -80,9 +80,9 @@ QStringList QgsPdalAlgorithms::supportedOutputVectorLayerExtensions() const
   return QStringList() << QStringLiteral( "gpkg" );
 }
 
-QStringList QgsPdalAlgorithms::supportedOutputRasterLayerExtensions() const
+QList<QPair<QString, QString>> QgsPdalAlgorithms::supportedOutputRasterLayerFormatAndExtensions() const
 {
-  return QStringList() << QStringLiteral( "tif" );
+  return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), QStringLiteral( "tif" ) );
 }
 
 QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const

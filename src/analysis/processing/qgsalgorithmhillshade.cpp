@@ -86,8 +86,7 @@ QVariantMap QgsHillshadeAlgorithm::processAlgorithm( const QVariantMap &paramete
   const double vAngle = parameterAsDouble( parameters, QStringLiteral( "V_ANGLE" ), context );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsHillshadeFilter hillshade( inputLayer->source(), outputFile, outputFormat, azimuth, vAngle );
   hillshade.setZFactor( zFactor );

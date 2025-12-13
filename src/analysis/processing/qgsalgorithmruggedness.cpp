@@ -85,8 +85,7 @@ QVariantMap QgsRuggednessAlgorithm::processAlgorithm( const QVariantMap &paramet
   const double zFactor = parameterAsDouble( parameters, QStringLiteral( "Z_FACTOR" ), context );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsRuggednessFilter ruggedness( inputLayer->source(), outputFile, outputFormat );
   ruggedness.setZFactor( zFactor );

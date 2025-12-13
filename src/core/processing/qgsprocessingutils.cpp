@@ -1597,20 +1597,31 @@ QString QgsProcessingUtils::defaultVectorExtension()
   return setting;
 }
 
+QString QgsProcessingUtils::defaultRasterFormat()
+{
+  QString setting = QgsProcessing::settingsDefaultOutputRasterLayerFormat->value().trimmed();
+  if ( setting.isEmpty() )
+    return QStringLiteral( "GTiff" );
+
+  const QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersFormats =
+    QgsRasterFileWriter::supportedFiltersAndFormats();
+  for ( const QgsRasterFileWriter::FilterFormatDetails &detail : std::as_const( supportedFiltersFormats ) )
+  {
+    if ( detail.driverName.compare( setting, Qt::CaseInsensitive ) == 0 )
+      return detail.driverName;
+  }
+
+  return QStringLiteral( "GTiff" );
+}
+
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  QString setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value().trimmed();
-  if ( setting.isEmpty() )
-    return QStringLiteral( "tif" );
+  QString format = defaultRasterFormat();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( format );
+  if ( !extensions.isEmpty() )
+    return extensions[0];
 
-  if ( setting.startsWith( '.' ) )
-    setting = setting.mid( 1 );
-
-  const QStringList supportedFormats = QgsRasterFileWriter::supportedFormatExtensions();
-  if ( !supportedFormats.contains( setting, Qt::CaseInsensitive ) )
-    return QStringLiteral( "tif" );
-
-  return setting;
+  return QStringLiteral( "tif" );
 }
 
 QString QgsProcessingUtils::defaultPointCloudExtension()

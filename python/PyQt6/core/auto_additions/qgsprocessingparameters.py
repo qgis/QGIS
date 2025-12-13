@@ -40,6 +40,7 @@ try:
     QgsProcessingParameters.parameterAsLayer = staticmethod(QgsProcessingParameters.parameterAsLayer)
     QgsProcessingParameters.parameterAsRasterLayer = staticmethod(QgsProcessingParameters.parameterAsRasterLayer)
     QgsProcessingParameters.parameterAsOutputLayer = staticmethod(QgsProcessingParameters.parameterAsOutputLayer)
+    QgsProcessingParameters.parameterAsOutputFormat = staticmethod(QgsProcessingParameters.parameterAsOutputFormat)
     QgsProcessingParameters.parameterAsFileOutput = staticmethod(QgsProcessingParameters.parameterAsFileOutput)
     QgsProcessingParameters.parameterAsVectorLayer = staticmethod(QgsProcessingParameters.parameterAsVectorLayer)
     QgsProcessingParameters.parameterAsMeshLayer = staticmethod(QgsProcessingParameters.parameterAsMeshLayer)
@@ -262,7 +263,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterRasterDestination.typeName = staticmethod(QgsProcessingParameterRasterDestination.typeName)
     QgsProcessingParameterRasterDestination.fromScriptCode = staticmethod(QgsProcessingParameterRasterDestination.fromScriptCode)
-    QgsProcessingParameterRasterDestination.__virtual_methods__ = ['supportedOutputRasterLayerExtensions']
+    QgsProcessingParameterRasterDestination.__virtual_methods__ = ['supportedOutputRasterLayerExtensions', 'supportedOutputRasterLayerFormatAndExtensions']
     QgsProcessingParameterRasterDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
     QgsProcessingParameterRasterDestination.__group__ = ['processing']
 except (NameError, AttributeError):

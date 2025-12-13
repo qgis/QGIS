@@ -228,7 +228,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
   }
 
-  const QString driverName { QgsRasterFileWriter::driverForExtension( QFileInfo( outputLayerFileName ).suffix() ) };
+  const QString driverName = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
   if ( driverName.isEmpty() )
   {
     throw QgsProcessingException( QObject::tr( "Invalid output raster format" ) );

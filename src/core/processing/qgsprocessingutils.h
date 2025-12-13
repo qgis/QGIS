@@ -550,6 +550,18 @@ class CORE_EXPORT QgsProcessingUtils
     static QString defaultVectorExtension();
 
     /**
+     * Returns the default raster format to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns the user-set default format from the processing settings, or
+     * a fallback value of "GTiff".
+     *
+     * \see defaultRasterExtension()
+     * \since QGIS 4.0
+     */
+    static QString defaultRasterFormat();
+
+    /**
      * Returns the default raster extension to use, in the absence of all other constraints (e.g.
      * provider based support for extensions).
      *
