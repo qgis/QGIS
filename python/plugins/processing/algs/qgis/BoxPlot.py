@@ -6,12 +6,12 @@
     Copyright            : (C) 2017 by Matteo Ghetta
     Email                : matteo dot ghetta at gmail dot com
 ***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
+* *
+* This program is free software; you can redistribute it and/or modify  *
+* it under the terms of the GNU General Public License as published by  *
+* the Free Software Foundation; either version 2 of the License, or     *
+* (at your option) any later version.                                   *
+* *
 ***************************************************************************
 """
 
@@ -22,18 +22,15 @@ __copyright__ = "(C) 2017, Matteo Ghetta"
 import warnings
 
 from qgis.core import (
+    QgsFeatureRequest,
     QgsProcessingException,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
-    QgsProcessingParameterEnum,
     QgsProcessingParameterFileDestination,
-    QgsFeatureRequest,
     QgsProcessingParameterString,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class BoxPlot(QgisAlgorithm):
@@ -130,9 +127,8 @@ class BoxPlot(QgisAlgorithm):
                 import plotly.graph_objs as go
         except ImportError:
             raise QgsProcessingException(
-                QCoreApplication.translate(
-                    "BoxPlot",
-                    "This algorithm requires the Python “plotly” library. Please install this library and try again.",
+                self.tr(
+                    "This algorithm requires the Python “plotly” library. Please install this library and try again."
                 )
             )
 
@@ -162,20 +158,19 @@ class BoxPlot(QgisAlgorithm):
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(source, valuefieldname)
+        x_data = []
+        y_data = []
 
-        x_index = source.fields().lookupField(namefieldname)
-        x_var = vector.convert_nulls(
-            [
-                i[namefieldname]
-                for i in source.getFeatures(
-                    QgsFeatureRequest()
-                    .setFlags(QgsFeatureRequest.Flag.NoGeometry)
-                    .setSubsetOfAttributes([x_index])
-                )
-            ],
-            "<NULL>",
-        )
+        name_index = source.fields().lookupField(namefieldname)
+        value_index = source.fields().lookupField(valuefieldname)
+
+        req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        req.setSubsetOfAttributes([name_index, value_index])
+
+        for f in source.getFeatures(req):
+            n_val = f[namefieldname]
+            x_data.append(n_val if n_val is not None else "<NULL>")
+            y_data.append(f[valuefieldname])
 
         msdIndex = self.parameterAsEnum(parameters, self.MSD, context)
         msd = True
@@ -185,7 +180,7 @@ class BoxPlot(QgisAlgorithm):
         elif msdIndex == 2:
             msd = False
 
-        data = [go.Box(x=x_var, y=values[valuefieldname], boxmean=msd)]
+        data = [go.Box(x=x_data, y=y_data, boxmean=msd)]
 
         fig = go.Figure(
             data=data,
