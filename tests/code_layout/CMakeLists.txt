@@ -4,7 +4,6 @@ macro (add_qgis_test_script TESTNAME TESTSRC)
   set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
 endmacro()
 
-add_qgis_test_script(qgis_class_names tests/code_layout/test_class_names.sh)
 add_qgis_test_script(qgis_licenses tests/code_layout/test_licenses.sh)
 add_qgis_test_script(qgis_defwindowtitle tests/code_layout/test_defwindowtitle.sh)
 add_qgis_test_script(qgis_qvariant_no_brace_init tests/code_layout/test_qvariant_no_brace_init.sh)

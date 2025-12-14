@@ -58,22 +58,6 @@ jobs:
       - name: Run License Check
         run: ./tests/code_layout/test_licenses.sh
 
-  banned_keywords_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Run Banned Keywords Test
-        run: ./tests/code_layout/test_banned_keywords.sh
-
-  class_name_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Run class naming conventions check
-        run: ./tests/code_layout/test_class_names.sh
-
   def_window_title_check:
     runs-on: ubuntu-latest
     steps:

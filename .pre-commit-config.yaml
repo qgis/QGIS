@@ -19,6 +19,16 @@ repos:
 
   - repo: local
     hooks:
+      - id: class_names
+        name: class_names
+        entry: ./scripts/pre_commit/prepare_commit_class_names.sh
+        language: system
+        always_run: true
+        pass_filenames: true
+        verbose: true
+
+  - repo: local
+    hooks:
       - id: spell_check
         name: spell_check
         entry: ./scripts/pre_commit/prepare_commit_spell_check.sh
