@@ -2,6 +2,8 @@
 
 # This test checks for use of deprecated/outdated methods and suggests their replacement
 
+set -e
+
 declare -a KEYWORDS=()
 declare -a HINTS=()
 declare -a PATHS=()
@@ -194,28 +196,55 @@ KEYWORDS[46]="QgsProject::instance()"
 HINTS[46]="Do not introduce new use of QgsProject::instance() in core library! Find alternative ways to achieve what you are doing here."
 PATHS[46]="core"
 
-RES=
-DIR=$(git rev-parse --show-toplevel)
+# capture files passed by pre-commit
+MODIFIED="$@"
 
-pushd "${DIR}" > /dev/null || exit
+MODIFIED_KEYWORD_FILES=""
+for f in $MODIFIED; do
+  case "$f" in
+    *.h|*.cpp)
+      MODIFIED_KEYWORD_FILES="$MODIFIED_KEYWORD_FILES $f"
+      ;;
+  esac
+done
+
+if [ -z "$MODIFIED_KEYWORD_FILES" ]; then
+  echo nothing was modified
+  exit 0
+fi
+
+RES=
 
 for i in "${!KEYWORDS[@]}"
 do
-  FOUND=$(git grep "${KEYWORDS[$i]}" -- "src/${PATHS[$i]}/*.h" "src/${PATHS[$i]}/*.cpp" | grep --invert-match skip-keyword-check)
+  REQUIRED_PATH="${PATHS[$i]}"
+  FILES_TO_CHECK=""
 
-  if [[  ${FOUND} ]]; then
-    echo "Found source files with banned keyword: ${KEYWORDS[$i]}!"
-    echo " -> ${HINTS[$i]}"
-    echo "    or mark with // skip-keyword-check"
-    echo
-    echo "${FOUND}"
-    echo
-    RES=1
+  if [[ "$REQUIRED_PATH" == "." ]]; then
+    FILES_TO_CHECK="$MODIFIED_KEYWORD_FILES"
+  else
+    for f in $MODIFIED_KEYWORD_FILES; do
+      if [[ "$f" == src/${REQUIRED_PATH}* ]]; then
+        FILES_TO_CHECK="$FILES_TO_CHECK $f"
+      fi
+    done
+  fi
+
+  if [[ -n "$FILES_TO_CHECK" ]]; then
+    FOUND=$(grep -nH "${KEYWORDS[$i]}" $FILES_TO_CHECK 2>/dev/null | grep --invert-match skip-keyword-check || true)
+
+    if [[ ${FOUND} ]]; then
+      echo "Found source files with banned keyword: ${KEYWORDS[$i]}!"
+      echo " -> ${HINTS[$i]}"
+      echo "    or mark with // skip-keyword-check"
+      echo
+      echo "${FOUND}"
+      echo
+      RES=1
+    fi
   fi
 
 done
-
-popd > /dev/null || exit
 
 if [ $RES ]; then
   echo " *** Found banned keywords"
