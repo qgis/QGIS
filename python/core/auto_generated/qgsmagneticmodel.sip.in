@@ -169,24 +169,6 @@ be used.
 .. seealso:: :py:func:`minimumYear`
 %End
 
-    double equatorialRadius() const throw( QgsNotSupportedException );
-%Docstring
-Returns the equatorial radius of the associated ellipsoid (in meters).
-
-:raises QgsNotSupportedException: if GeographicLib is not available
-
-.. seealso:: :py:func:`flattening`
-%End
-
-    double flattening() const throw( QgsNotSupportedException );
-%Docstring
-Returns the flattening of the associated ellipsoid.
-
-:raises QgsNotSupportedException: if GeographicLib is not available
-
-.. seealso:: :py:func:`equatorialRadius`
-%End
-
     int degree() const throw( QgsNotSupportedException );
 %Docstring
 Returns the maximum degree of the components of the model.

@@ -171,22 +171,6 @@ class CORE_EXPORT QgsMagneticModel
     double maximumYear() const SIP_THROW( QgsNotSupportedException );
 
     /**
-     * Returns the equatorial radius of the associated ellipsoid (in meters).
-     *
-     * \throws QgsNotSupportedException if GeographicLib is not available
-     * \see flattening()
-     */
-    double equatorialRadius() const SIP_THROW( QgsNotSupportedException );
-
-    /**
-     * Returns the flattening of the associated ellipsoid.
-     *
-     * \throws QgsNotSupportedException if GeographicLib is not available
-     * \see equatorialRadius()
-     */
-    double flattening() const SIP_THROW( QgsNotSupportedException );
-
-    /**
      * Returns the maximum degree of the components of the model.
      *
      * \throws QgsNotSupportedException if GeographicLib is not available
