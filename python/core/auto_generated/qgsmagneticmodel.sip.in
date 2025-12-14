@@ -72,9 +72,9 @@ of the model can be found by the :py:func:`~QgsMagneticModel.degree` and
 :param name: the name of the model.
 :param path: optional directory for data file. If not specified then
              :py:func:`~QgsMagneticModel.defaultFilePath` is used.
-:param maxDegree: if nonnegative, truncate the degree of the model this
-                  value
-:param maxOrder: if nonnegative, truncate the order of the model this
+:param maxDegree: if nonnegative, truncate the degree of the model to
+                  this value
+:param maxOrder: if nonnegative, truncate the order of the model to this
                  value
 %End
     ~QgsMagneticModel();

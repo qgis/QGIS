@@ -80,8 +80,8 @@ class CORE_EXPORT QgsMagneticModel
      *
      * \param name the name of the model.
      * \param path optional directory for data file. If not specified then defaultFilePath() is used.
-     * \param maxDegree if nonnegative, truncate the degree of the model this value
-     * \param maxOrder if nonnegative, truncate the order of the model this value
+     * \param maxDegree if nonnegative, truncate the degree of the model to this value
+     * \param maxOrder if nonnegative, truncate the order of the model to this value
      */
     QgsMagneticModel( const QString &name, const QString &path = QString(), int maxDegree = -1, int maxOrder = -1 );
     ~QgsMagneticModel();
