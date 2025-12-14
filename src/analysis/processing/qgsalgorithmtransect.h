@@ -31,15 +31,6 @@
 class QgsTransectAlgorithm : public QgsTransectAlgorithmBase
 {
   public:
-    /**
-     * Draw the transect on which side of the line
-     */
-    enum Side
-    {
-      Left,
-      Right,
-      Both
-    };
     QgsTransectAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -47,15 +38,6 @@ class QgsTransectAlgorithm : public QgsTransectAlgorithmBase
     QgsTransectAlgorithm *createInstance() const override SIP_FACTORY;
 
   private:
-    /**
-     * Returns the transect of the point \a point with \a length, \a orientation and \a angle.
-     * \param point The vertex
-     * \param angleAtVertex Angle at the vertex
-     * \param length Length of the transect Distance to extend line from input feature
-     * \param orientation Orientation of the transect
-     * \param angle Angle of the transect relative to the segment [\a p1 - \a p2] (degrees clockwise)
-     */
-    QgsGeometry calcTransect( const QgsPoint &point, double angleAtVertex, double length, Side orientation, double angle );
     void addAlgorithmParams() override;
     bool
       prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
