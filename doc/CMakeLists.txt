@@ -137,6 +137,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
       ${CMAKE_SOURCE_DIR}/src/gui/vector
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
+      ${CMAKE_SOURCE_DIR}/src/gui/web
       ${CMAKE_SOURCE_DIR}/src/analysis
       ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
