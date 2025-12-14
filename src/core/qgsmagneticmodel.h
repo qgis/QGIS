@@ -187,6 +187,46 @@ class CORE_EXPORT QgsMagneticModel
     int order() const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Calculates the declination of the field at a point.
+     *
+     * \note The latitude and longitude should be specified as a WGS84 coordinate
+     *
+     * \note If calculating both the inclination and declination at the same point it is more efficient to use getComponents() and fieldComponents()
+     *
+     * \param years the time (in fractional years)
+     * \param latitude latitude of the point (in decimal degrees)
+     * \param longitude longitude of the point (in decimal degrees)
+     * \param height height of the point above the ellipsoid (in meters)
+     * \param declination magnetic field declination, in degrees east of north
+     * \returns TRUE if declination was successfully calculated
+     *
+     * \throws QgsNotSupportedException if GeographicLib is not available
+     *
+     * \see inclination()
+     */
+    bool declination( double years, double latitude, double longitude, double height, double &declination SIP_OUT ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Calculates the inclination of the field at a point.
+     *
+     * \note The latitude and longitude should be specified as a WGS84 coordinate
+     *
+     * \note If calculating both the inclination and declination at the same point it is more efficient to use getComponents() and fieldComponents()
+     *
+     * \param years the time (in fractional years)
+     * \param latitude latitude of the point (in decimal degrees)
+     * \param longitude longitude of the point (in decimal degrees)
+     * \param height height of the point above the ellipsoid (in meters)
+     * \param inclination magnetic field inclination, in degrees down from horizontal
+     * \returns TRUE if inclination was successfully calculated
+     *
+     * \throws QgsNotSupportedException if GeographicLib is not available
+     *
+     * \see declination()
+     */
+    bool inclination( double years, double latitude, double longitude, double height, double &inclination SIP_OUT ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Evaluates the components of the geomagnetic field at a point.
      *
      * \note The latitude and longitude should be specified as a WGS84 coordinate
@@ -200,6 +240,8 @@ class CORE_EXPORT QgsMagneticModel
      * \param Bz the vertical (up) component of the magnetic field (in nanotesla)
      *
      * \returns TRUE if the components were successfully calculated
+     *
+     * \throws QgsNotSupportedException if GeographicLib is not available
      *
      * \see getComponentsWithTimeDerivatives()
      */
@@ -223,6 +265,8 @@ class CORE_EXPORT QgsMagneticModel
      *
      * \returns TRUE if the components were successfully calculated
      *
+     * \throws QgsNotSupportedException if GeographicLib is not available
+     *
      * \see getComponents()
      */
     bool getComponentsWithTimeDerivatives( double years, double latitude, double longitude, double height, double &Bx SIP_OUT, double &By SIP_OUT, double &Bz SIP_OUT, double &Bxt SIP_OUT, double &Byt SIP_OUT, double &Bzt SIP_OUT ) const SIP_THROW( QgsNotSupportedException );
@@ -239,6 +283,8 @@ class CORE_EXPORT QgsMagneticModel
      * \param I the inclination of the field (degrees down from horizontal)
      *
      * \returns TRUE if the components were successfully calculated
+     *
+     * \throws QgsNotSupportedException if GeographicLib is not available
      *
      * \see fieldComponentsWithTimeDerivatives()
      */
@@ -263,6 +309,8 @@ class CORE_EXPORT QgsMagneticModel
      * \param It the rate of change of I (degrees/yr)
      *
      * \returns TRUE if the components were successfully calculated
+     *
+     * \throws QgsNotSupportedException if GeographicLib is not available
      *
      * \see fieldComponentsWithTimeDerivatives()
      */

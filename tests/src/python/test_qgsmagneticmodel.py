@@ -46,6 +46,14 @@ class TestQgsMagneticModel(QgisTestCase):
         self.assertEqual(model.degree(), 12)
         self.assertEqual(model.order(), 12)
 
+        res, d = model.declination(2026.6, -35, 138, 0)
+        self.assertTrue(res)
+        self.assertAlmostEqual(d, 7.875942468396237, 5)
+
+        res, i = model.inclination(2026.6, -35, 138, 0)
+        self.assertTrue(res)
+        self.assertAlmostEqual(i, -67.00907306480912, 5)
+
         res, bx, by, bz = model.getComponents(2026.6, -35, 138, 0)
         self.assertTrue(res)
         self.assertAlmostEqual(bx, 3175.8637216334573, 5)

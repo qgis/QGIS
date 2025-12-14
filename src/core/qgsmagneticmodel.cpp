@@ -185,6 +185,58 @@ int QgsMagneticModel::order() const
 #endif
 }
 
+bool QgsMagneticModel::declination( double years, double latitude, double longitude, double height, double &declination ) const
+{
+  declination = 0;
+#ifdef WITH_GEOGRAPHICLIB
+  double Bx = 0;
+  double By = 0;
+  double Bz = 0;
+  if ( !getComponents( years, latitude, longitude, height, Bx, By, Bz ) )
+    return false;
+
+  double H = 0;
+  double F = 0;
+  double I = 0;
+  if ( !fieldComponents( Bx, By, Bz, H, F, declination, I ) )
+    return false;
+
+  return true;
+#else
+  ( void )years;
+  ( void )latitude;
+  ( void )longitude;
+  ( void )height;
+  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+#endif
+}
+
+bool QgsMagneticModel::inclination( double years, double latitude, double longitude, double height, double &inclination ) const
+{
+  inclination = 0;
+#ifdef WITH_GEOGRAPHICLIB
+  double Bx = 0;
+  double By = 0;
+  double Bz = 0;
+  if ( !getComponents( years, latitude, longitude, height, Bx, By, Bz ) )
+    return false;
+
+  double H = 0;
+  double F = 0;
+  double D = 0;
+  if ( !fieldComponents( Bx, By, Bz, H, F, D, inclination ) )
+    return false;
+
+  return true;
+#else
+  ( void )years;
+  ( void )latitude;
+  ( void )longitude;
+  ( void )height;
+  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+#endif
+}
+
 bool QgsMagneticModel::getComponents( double years, double latitude, double longitude, double height, double &Bx, double &By, double &Bz ) const
 {
   Bx = 0;
