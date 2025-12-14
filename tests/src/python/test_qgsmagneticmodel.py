@@ -43,8 +43,6 @@ class TestQgsMagneticModel(QgisTestCase):
         self.assertEqual(model.minimumHeight(), -1000.0)
         self.assertEqual(model.maximumYear(), 2030.0)
         self.assertEqual(model.minimumYear(), 2025.0)
-        self.assertEqual(model.equatorialRadius(), 6378137.0)
-        self.assertAlmostEqual(model.flattening(), 0.0033528106647474805, 7)
         self.assertEqual(model.degree(), 12)
         self.assertEqual(model.order(), 12)
 

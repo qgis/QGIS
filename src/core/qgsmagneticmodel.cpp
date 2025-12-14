@@ -167,24 +167,6 @@ double QgsMagneticModel::maximumYear() const
 #endif
 }
 
-double QgsMagneticModel::equatorialRadius() const
-{
-#ifdef WITH_GEOGRAPHICLIB
-  return mModel ? mModel->EquatorialRadius() : 0;
-#else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
-#endif
-}
-
-double QgsMagneticModel::flattening() const
-{
-#ifdef WITH_GEOGRAPHICLIB
-  return mModel ? mModel->Flattening() : 0;
-#else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
-#endif
-}
-
 int QgsMagneticModel::degree() const
 {
 #ifdef WITH_GEOGRAPHICLIB
