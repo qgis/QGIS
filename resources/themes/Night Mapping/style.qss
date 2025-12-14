@@ -1380,3 +1380,7 @@ QWidget#mCadWidget QLineEdit {
 QWidget#mCadWidget QLineEdit:disabled {
     color: @text;
 }
+
+QgsLocatorResultsView::item:disabled {
+    color: @text;
+}
