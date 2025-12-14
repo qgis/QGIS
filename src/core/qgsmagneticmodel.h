@@ -189,6 +189,8 @@ class CORE_EXPORT QgsMagneticModel
     /**
      * Evaluates the components of the geomagnetic field at a point.
      *
+     * \note The latitude and longitude should be specified as a WGS84 coordinate
+     *
      * \param years the time (in fractional years)
      * \param latitude latitude of the point (in decimal degrees)
      * \param longitude longitude of the point (in decimal degrees)
@@ -205,6 +207,8 @@ class CORE_EXPORT QgsMagneticModel
 
     /**
      * Evaluates the components of the geomagnetic field at a point, and their time derivatives.
+     *
+     * \note The latitude and longitude should be specified as a WGS84 coordinate
      *
      * \param years the time (in fractional years)
      * \param latitude latitude of the point (in decimal degrees)
