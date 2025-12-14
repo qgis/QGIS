@@ -23,7 +23,6 @@ for f in $MODIFIED; do
 done
 
 if [ -z "$FILES_TO_CHECK" ]; then
-  echo nothing was modified
   exit 0
 fi
 

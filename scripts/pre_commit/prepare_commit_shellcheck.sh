@@ -21,7 +21,6 @@ set -e
 MODIFIED="$@"
 
 if [ -z "$MODIFIED" ]; then
-  echo nothing was modified
   exit 0
 fi
 

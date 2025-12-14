@@ -209,7 +209,6 @@ for f in $MODIFIED; do
 done
 
 if [ -z "$MODIFIED_KEYWORD_FILES" ]; then
-  echo nothing was modified
   exit 0
 fi
 
