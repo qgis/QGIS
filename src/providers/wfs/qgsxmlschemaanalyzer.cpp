@@ -17,8 +17,13 @@
  ***************************************************************************/
 
 #include "qgsxmlschemaanalyzer.h"
-#include "qgsbasenetworkrequest.h"
+
+#include <cpl_string.h>
+#include <gdal.h>
+#include <ogr_api.h>
+
 #include "qgsbackgroundcachedshareddata.h"
+#include "qgsbasenetworkrequest.h"
 #include "qgscplhttpfetchoverrider.h"
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
@@ -28,10 +33,6 @@
 #include "qgssettings.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdescribefeaturetype.h"
-
-#include <cpl_string.h>
-#include <gdal.h>
-#include <ogr_api.h>
 
 #include <QDialog>
 #include <QDir>

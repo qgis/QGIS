@@ -32,7 +32,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
-#include "qgsxmlschemaanalyzer.h"
 #include "qgssettings.h"
 #include "qgssqliteutils.h"
 #include "qgswfscapabilities.h"
@@ -43,6 +42,7 @@
 #include "qgswfsshareddata.h"
 #include "qgswfstransactionrequest.h"
 #include "qgswfsutils.h"
+#include "qgsxmlschemaanalyzer.h"
 
 #include <QAbstractButton>
 #include <QApplication>
