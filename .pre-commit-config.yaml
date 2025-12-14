@@ -11,7 +11,7 @@ repos:
     hooks:
       - id: spell_check
         name: spell_check
-        entry: ./scripts/prepare_commit_spell_check.sh
+        entry: ./scripts/pre_commit/prepare_commit_spell_check.sh
         language: system
         always_run: true
         pass_filenames: true
@@ -21,7 +21,7 @@ repos:
     hooks:
       - id: doxygen_test
         name: doxygen_test
-        entry: ./scripts/prepare_commit_doxygen_test.sh
+        entry: ./scripts/pre_commit/prepare_commit_doxygen_test.sh
         language: system
         always_run: true
         pass_filenames: true
@@ -31,7 +31,7 @@ repos:
     hooks:
       - id: shellcheck
         name: shellcheck
-        entry: ./scripts/prepare_commit_shellcheck.sh
+        entry: ./scripts/pre_commit/prepare_commit_shellcheck.sh
         language: system
         always_run: true
         pass_filenames: true
@@ -41,7 +41,7 @@ repos:
     hooks:
       - id: prepare_commit
         name: prepare_commit
-        entry: ./scripts/prepare_commit.sh
+        entry: ./scripts/pre_commit/prepare_commit.sh
         language: system
         always_run: true
         pass_filenames: true
@@ -56,8 +56,7 @@ repos:
       types_or: [c++, c, c#]
       exclude: |
         (?x)^(
-            src/core/.*|
-            tests/code_layout/sipify/sipifyheader.h
+            src/core/.*
         )$
       verbose: true
 
@@ -86,7 +85,7 @@ repos:
     hooks:
       - id: prepare_sip
         name: prepare_sip
-        entry: ./scripts/prepare_commit_sip.sh
+        entry: ./scripts/pre_commit/prepare_commit_sip.sh
         language: system
         always_run: true
         pass_filenames: true

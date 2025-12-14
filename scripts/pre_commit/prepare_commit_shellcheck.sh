@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    prepare_commit.sh
+#    prepare_commit_shellcheck.sh
 #    ---------------------
 #    Date                 : August 2008
 #    Copyright            : (C) 2008 by Juergen E. Fischer
@@ -15,15 +15,7 @@
 ###########################################################################
 
 TOPLEVEL=$(git rev-parse --show-toplevel)
-
-PATH=$TOPLEVEL/scripts:$PATH:$PWD/scripts
-
 set -e
-
-if ! type -p astyle.sh >/dev/null; then
-  echo astyle.sh not found
-  exit 1
-fi
 
 # capture files passed by pre-commit
 MODIFIED="$@"
@@ -33,23 +25,31 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
+MODIFIED_SHELLFILES=""
 for f in $MODIFIED; do
-  case "$f" in
-  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.mm)
-    ;;
-  *)
-    continue
-    ;;
-  esac
-
-  # Run Python formatters
-  scripts/sort_includes.py "$f"
-  scripts/doxygen_space.py "$f"
-
-  # Run astyle only on src/core, others are handled by clang-format (see .pre-commit-config.yaml)
-  if [[ $f =~ ^src/(core) ]]; then
-    astyle.sh "$f"
+  if [[ "$f" == *.sh ]]; then
+    MODIFIED_SHELLFILES="$MODIFIED_SHELLFILES $f"
   fi
 done
+
+if [ -n "$MODIFIED_SHELLFILES" ]; then
+  # Run shell checker if requirements are met
+
+  echo "Running shell check on files: $MODIFIED_SHELLFILES"
+
+  if command -v shellcheck > /dev/null; then
+    pushd ${TOPLEVEL} > /dev/null || exit
+    result=$(shellcheck -e SC2016,SC2015,SC2086,SC2002,SC1117,SC2154,SC2076,SC2046,SC1090,SC2038,SC2031,SC2030,SC2162,SC2044,SC2119,SC1001,SC2120,SC2059,SC2128,SC2005,SC2013,SC2027,SC2090,SC2089,SC2124,SC2001,SC2010,SC1072,SC1073,SC1009,SC2166,SC2045,SC2028,SC1091,SC1083,SC2021 ${MODIFIED_SHELLFILES} || true)
+    popd > /dev/null || return
+
+    if [[ $result ]]; then
+      echo " *** shellcheck found script errors"
+      echo "$result"
+      exit 1
+    fi
+  else
+    echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
+  fi
+fi
 
 exit 0
