@@ -549,10 +549,7 @@ void QgsProcessingAlgorithmDialogBase::algExecuted( bool successful, const QVari
   if ( !successful )
   {
     // show dialog to display errors
-    show();
-    raise();
-    setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
-    activateWindow();
+    showDialog();
     showLog();
   }
   else
@@ -574,12 +571,17 @@ void QgsProcessingAlgorithmDialogBase::taskTriggered( QgsTask *task )
 {
   if ( task == mAlgorithmTask )
   {
-    show();
-    raise();
-    setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
-    activateWindow();
+    showDialog();
     showLog();
   }
+}
+
+void QgsProcessingAlgorithmDialogBase::showDialog()
+{
+  show();
+  raise();
+  setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
+  activateWindow();
 }
 
 void QgsProcessingAlgorithmDialogBase::closeClicked()
@@ -740,6 +742,7 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
 void QgsProcessingAlgorithmDialogBase::runAlgorithm()
 {
 }
+
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
 {
