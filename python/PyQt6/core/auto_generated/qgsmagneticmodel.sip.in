@@ -187,6 +187,58 @@ Returns the maximum order of the components of the model.
 .. seealso:: :py:func:`degree`
 %End
 
+    bool declination( double years, double latitude, double longitude, double height, double &declination /Out/ ) const;
+%Docstring
+Calculates the declination of the field at a point.
+
+.. note::
+
+   The latitude and longitude should be specified as a WGS84 coordinate
+
+.. note::
+
+   If calculating both the inclination and declination at the same point it is more efficient to use :py:func:`~QgsMagneticModel.getComponents` and :py:func:`~QgsMagneticModel.fieldComponents`
+
+:param years: the time (in fractional years)
+:param latitude: latitude of the point (in decimal degrees)
+:param longitude: longitude of the point (in decimal degrees)
+:param height: height of the point above the ellipsoid (in meters)
+
+:return: - ``True`` if declination was successfully calculated
+         - declination: magnetic field declination, in degrees east of
+           north
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`inclination`
+%End
+
+    bool inclination( double years, double latitude, double longitude, double height, double &inclination /Out/ ) const;
+%Docstring
+Calculates the inclination of the field at a point.
+
+.. note::
+
+   The latitude and longitude should be specified as a WGS84 coordinate
+
+.. note::
+
+   If calculating both the inclination and declination at the same point it is more efficient to use :py:func:`~QgsMagneticModel.getComponents` and :py:func:`~QgsMagneticModel.fieldComponents`
+
+:param years: the time (in fractional years)
+:param latitude: latitude of the point (in decimal degrees)
+:param longitude: longitude of the point (in decimal degrees)
+:param height: height of the point above the ellipsoid (in meters)
+
+:return: - ``True`` if inclination was successfully calculated
+         - inclination: magnetic field inclination, in degrees down from
+           horizontal
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`declination`
+%End
+
     bool getComponents( double years, double latitude, double longitude, double height, double &Bx /Out/, double &By /Out/, double &Bz /Out/ ) const;
 %Docstring
 Evaluates the components of the geomagnetic field at a point.
@@ -207,6 +259,8 @@ Evaluates the components of the geomagnetic field at a point.
            nanotesla)
          - Bz: the vertical (up) component of the magnetic field (in
            nanotesla)
+
+:raises QgsNotSupportedException: if GeographicLib is not available
 
 .. seealso:: :py:func:`getComponentsWithTimeDerivatives`
 %End
@@ -236,6 +290,8 @@ time derivatives.
          - Byt: the rate of change of By (nT/yr)
          - Bzt: the rate of change of Bz (nT/yr)
 
+:raises QgsNotSupportedException: if GeographicLib is not available
+
 .. seealso:: :py:func:`getComponents`
 %End
 
@@ -254,6 +310,8 @@ Compute various quantities dependent on a magnetic field.
          - D: the declination of the field (degrees east of north)
          - I: the inclination of the field (degrees down from
            horizontal)
+
+:raises QgsNotSupportedException: if GeographicLib is not available
 
 .. seealso:: :py:func:`fieldComponentsWithTimeDerivatives`
 %End
@@ -281,6 +339,8 @@ of change.
          - Ft: the rate of change of F (nT/yr)
          - Dt: the rate of change of D (degrees/yr)
          - It: the rate of change of I (degrees/yr)
+
+:raises QgsNotSupportedException: if GeographicLib is not available
 
 .. seealso:: :py:func:`fieldComponentsWithTimeDerivatives`
 %End
