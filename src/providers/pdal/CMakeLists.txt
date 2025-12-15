@@ -167,6 +167,9 @@ set(PDAL_WRENCH_SRCS
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/translate.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/utils.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/vpc.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/classify_ground.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/filter_noise.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/height_above_ground.cpp
 
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/tile.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/BufferCache.cpp
