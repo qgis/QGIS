@@ -288,7 +288,7 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   }
 }
 
-QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature( QgsFeature &feature, Qgs3DRenderContext &context, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature( const QgsFeature &feature, Qgs3DRenderContext &context, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
 {
   if ( !isFilterOK( feature, context ) )
     return Filtered;
