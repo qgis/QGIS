@@ -87,7 +87,6 @@ class BarPlot(QgisAlgorithm):
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=ResourceWarning)
                 warnings.filterwarnings("ignore", category=ImportWarning)
-                import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
             raise QgsProcessingException(
