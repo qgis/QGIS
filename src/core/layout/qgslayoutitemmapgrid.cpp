@@ -40,6 +40,8 @@
 #include "qgssettings.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgssymbollayerutils.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
 
@@ -1364,19 +1366,36 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   if ( ! shouldShowAnnotationForSide( coordinateType, annot.border ) )
     return;
 
+  // painter is in MM, scale to dots
+  std::unique_ptr< QgsScopedQPainterState > painterState;
+  double dotsPerMM = 1;
+
+  if ( context.painter() && context.painter()->device() )
+  {
+    painterState = std::make_unique< QgsScopedQPainterState >( context.painter() );
+    dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
+    context.painter()->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
+  }
+
   const Qgis::MapGridBorderSide frameBorder = annot.border;
-  double textWidth = QgsTextRenderer::textWidth( context, mAnnotationFormat, annotationString.split( '\n' ) ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( annotationString.split( '\n' ), mAnnotationFormat );
+  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( context, mAnnotationFormat );
+  const QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, mAnnotationFormat, context, textScaleFactor );
+  const QSizeF sizePainterUnits = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
+  const double painterUnitsToMM = 1 / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+
+  double textWidthPainterUnits = sizePainterUnits.width();
   if ( extension )
-    textWidth *= 1.1; // little bit of extra padding when we are calculating the bounding rect, to account for antialiasing
+    textWidthPainterUnits *= 1.1; // little bit of extra padding when we are calculating the bounding rect, to account for antialiasing
+
+  const double textWidthMM = textWidthPainterUnits * painterUnitsToMM ;
 
   //relevant for annotations is the height of digits
-  const double textHeight = ( extension ? ( QgsTextRenderer::textHeight( context, mAnnotationFormat, QChar(), true ) )
-                              : ( QgsTextRenderer::textHeight( context, mAnnotationFormat, '0', false ) ) ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double textHeightPainterUnits = extension ? QgsTextRenderer::textHeight( context, mAnnotationFormat, QChar(), true )
+                                        : QgsTextRenderer::textHeight( context, mAnnotationFormat, '0', false );
+  const double textHeightMM = textHeightPainterUnits * painterUnitsToMM;
 
-  double xpos = annot.position.x();
-  double ypos = annot.position.y();
-  QPointF anchor = QPointF();
-  int rotation = 0;
 
   const Qgis::MapGridAnnotationPosition anotPos = annotationPosition( frameBorder );
   const Qgis::MapGridAnnotationDirection anotDir = annotationDirection( frameBorder );
@@ -1389,7 +1408,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   const QVector2D vector = ( mRotatedAnnotationsEnabled ) ? annot.vector : normalVector;
 
   // Distance to frame
-  double f = mEvaluatedAnnotationFrameDistance;
+  double distanceToFrameMM = mEvaluatedAnnotationFrameDistance;
 
   // Adapt distance to frame using the frame width and line thickness into account
   const bool isOverTick = ( anotDir == Qgis::MapGridAnnotationDirection::AboveTick || anotDir == Qgis::MapGridAnnotationDirection::OnTick || anotDir == Qgis::MapGridAnnotationDirection::UnderTick );
@@ -1397,23 +1416,24 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   const bool hasExteriorMargin = ! isOverTick && ( mGridFrameStyle == Qgis::MapGridFrameStyle::Zebra || mGridFrameStyle == Qgis::MapGridFrameStyle::ExteriorTicks || mGridFrameStyle == Qgis::MapGridFrameStyle::InteriorExteriorTicks || mGridFrameStyle == Qgis::MapGridFrameStyle::ZebraNautical );
   const bool hasBorderWidth = ( mGridFrameStyle == Qgis::MapGridFrameStyle::Zebra || mGridFrameStyle == Qgis::MapGridFrameStyle::ZebraNautical || mGridFrameStyle == Qgis::MapGridFrameStyle::LineBorder || mGridFrameStyle == Qgis::MapGridFrameStyle::LineBorderNautical );
   if ( ( anotPos == Qgis::MapGridAnnotationPosition::InsideMapFrame && hasInteriorMargin ) || ( anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame && hasExteriorMargin ) )
-    f += mEvaluatedGridFrameWidth;
+    distanceToFrameMM += mEvaluatedGridFrameWidth;
   if ( hasBorderWidth )
-    f += mEvaluatedGridFrameLineThickness / 2.0;
+    distanceToFrameMM += mEvaluatedGridFrameLineThickness / 2.0;
 
   if ( anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame )
-    f *= -1;
+    distanceToFrameMM *= -1;
 
   if ( mRotatedAnnotationsEnabled && mRotatedAnnotationsLengthMode == Qgis::MapGridTickLengthMode::OrthogonalTicks )
   {
-    f /= QVector2D::dotProduct( vector, normalVector );
+    distanceToFrameMM /= QVector2D::dotProduct( vector, normalVector );
   }
 
-  const QVector2D pos = annot.position + f * vector;
-  xpos = pos.x();
-  ypos = pos.y();
+  const QVector2D annotationPositionMM = annot.position + distanceToFrameMM * vector;
 
   const bool outside = ( anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame );
+
+  QPointF anchorMM;
+  int rotation = 0;
 
   if (
     anotDir == Qgis::MapGridAnnotationDirection::AboveTick ||
@@ -1421,86 +1441,85 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     anotDir == Qgis::MapGridAnnotationDirection::UnderTick
   )
   {
-
     rotation = atan2( vector.y(), vector.x() ) / M_PI * 180;
 
     if ( rotation <= -90 || rotation > 90 )
     {
       rotation += 180;
-      anchor.setX( outside ? 0 : textWidth ); // left / right
+      anchorMM.setX( outside ? 0 : textWidthMM ); // left / right
     }
     else
     {
-      anchor.setX( outside ? textWidth : 0 ); // right / left
+      anchorMM.setX( outside ? textWidthMM : 0 ); // right / left
     }
 
     if ( anotDir == Qgis::MapGridAnnotationDirection::AboveTick )
-      anchor.setY( 0.5 * textHeight ); // bottom
+      anchorMM.setY( 0.5 * textHeightMM ); // bottom
     else if ( anotDir == Qgis::MapGridAnnotationDirection::UnderTick )
-      anchor.setY( -1.5 * textHeight ); // top
+      anchorMM.setY( -1.5 * textHeightMM ); // top
     else // OnTick
-      anchor.setY( -0.5 * textHeight ); // middle
+      anchorMM.setY( -0.5 * textHeightMM ); // middle
 
   }
   else if ( anotDir == Qgis::MapGridAnnotationDirection::Horizontal )
   {
     rotation = 0;
-    anchor.setX( 0.5 * textWidth ); // center
-    anchor.setY( -0.5 * textHeight ); // middle
+    anchorMM.setX( 0.5 * textWidthMM ); // center
+    anchorMM.setY( -0.5 * textHeightMM ); // middle
     if ( frameBorder == Qgis::MapGridBorderSide::Top )
-      anchor.setY( outside ? 0 : -textHeight ); // bottom / top
+      anchorMM.setY( outside ? 0 : -textHeightMM ); // bottom / top
     else if ( frameBorder == Qgis::MapGridBorderSide::Right )
-      anchor.setX( outside ? 0 : textWidth ); // left / right
+      anchorMM.setX( outside ? 0 : textWidthMM ); // left / right
     else if ( frameBorder == Qgis::MapGridBorderSide::Bottom )
-      anchor.setY( outside ? -textHeight : 0 ); // top / bottom
+      anchorMM.setY( outside ? -textHeightMM : 0 ); // top / bottom
     else if ( frameBorder == Qgis::MapGridBorderSide::Left )
-      anchor.setX( outside ? textWidth : 0 ); // right / left
+      anchorMM.setX( outside ? textWidthMM : 0 ); // right / left
   }
   else if ( anotDir == Qgis::MapGridAnnotationDirection::Vertical )
   {
     rotation = -90;
-    anchor.setX( 0.5 * textWidth ); // center
-    anchor.setY( -0.5 * textHeight ); // middle
+    anchorMM.setX( 0.5 * textWidthMM ); // center
+    anchorMM.setY( -0.5 * textHeightMM ); // middle
     if ( frameBorder == Qgis::MapGridBorderSide::Top )
-      anchor.setX( outside ? 0 : textWidth ); // left / right
+      anchorMM.setX( outside ? 0 : textWidthMM ); // left / right
     else if ( frameBorder == Qgis::MapGridBorderSide::Right )
-      anchor.setY( outside ? -textHeight : 0 ); // top / bottom
+      anchorMM.setY( outside ? -textHeightMM : 0 ); // top / bottom
     else if ( frameBorder == Qgis::MapGridBorderSide::Bottom )
-      anchor.setX( outside ? textWidth : 0 ); // right / left
+      anchorMM.setX( outside ? textWidthMM : 0 ); // right / left
     else if ( frameBorder == Qgis::MapGridBorderSide::Left )
-      anchor.setY( outside ? 0 : -textHeight ); // bottom / top
+      anchorMM.setY( outside ? 0 : -textHeightMM ); // bottom / top
   }
   else if ( anotDir == Qgis::MapGridAnnotationDirection::VerticalDescending )
   {
     rotation = 90;
-    anchor.setX( 0.5 * textWidth ); // center
-    anchor.setY( -0.5 * textHeight ); // middle
+    anchorMM.setX( 0.5 * textWidthMM ); // center
+    anchorMM.setY( -0.5 * textHeightMM ); // middle
     if ( frameBorder == Qgis::MapGridBorderSide::Top )
-      anchor.setX( outside ? textWidth : 0 ); // right / left
+      anchorMM.setX( outside ? textWidthMM : 0 ); // right / left
     else if ( frameBorder == Qgis::MapGridBorderSide::Right )
-      anchor.setY( outside ? 0 : -textHeight ); // bottom / top
+      anchorMM.setY( outside ? 0 : -textHeightMM ); // bottom / top
     else if ( frameBorder == Qgis::MapGridBorderSide::Bottom )
-      anchor.setX( outside ? 0 : textWidth ); // left / right
+      anchorMM.setX( outside ? 0 : textWidthMM ); // left / right
     else if ( frameBorder == Qgis::MapGridBorderSide::Left )
-      anchor.setY( outside ? -textHeight : 0 ); // top / bottom
+      anchorMM.setY( outside ? -textHeightMM : 0 ); // top / bottom
   }
   else // ( anotDir == QgsLayoutItemMapGrid::BoundaryDirection )
   {
     const QVector2D borderVector = borderToVector2D( annot.border );
     rotation = atan2( borderVector.y(), borderVector.x() ) / M_PI * 180;
-    anchor.setX( 0.5 * textWidth ); // center
+    anchorMM.setX( 0.5 * textWidthMM ); // center
     if ( anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame )
-      anchor.setY( -textHeight ); // top
+      anchorMM.setY( -textHeightMM ); // top
     else
-      anchor.setY( 0 ); // bottom
+      anchorMM.setY( 0 ); // bottom
   }
 
   // extents isn't computed accurately
   if ( extension && anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame )
   {
-    extension->UpdateBorder( frameBorder, -f + textWidth );
+    extension->UpdateBorder( frameBorder, -distanceToFrameMM + textWidthMM );
     // We also add a general margin, can be useful for labels near corners
-    extension->UpdateAll( textWidth / 2.0 );
+    extension->UpdateAll( textWidthMM / 2.0 );
   }
 
   if ( extension || !context.painter() )
@@ -1527,12 +1546,10 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
        ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
 
-  const QgsScopedQPainterState painterState( context.painter() );
-  context.painter()->translate( QPointF( xpos, ypos ) );
+  context.painter()->translate( QPointF( annotationPositionMM .x(), annotationPositionMM .y() ) / painterUnitsToMM );
   context.painter()->rotate( rotation );
-  context.painter()->translate( -anchor );
-  const QgsScopedRenderContextScaleToPixels scale( context );
-  QgsTextRenderer::drawText( QPointF( 0, 0 ), 0, Qgis::TextHorizontalAlignment::Left, annotationString.split( '\n' ), context, mAnnotationFormat );
+  context.painter()->translate( -anchorMM / painterUnitsToMM );
+  QgsTextRenderer::drawDocument( QPointF( 0, 0 ), mAnnotationFormat, doc, documentMetrics, context, Qgis::TextHorizontalAlignment::Left, 0, Qgis::TextLayoutMode::Point );
 }
 
 QString QgsLayoutItemMapGrid::gridAnnotationString( const double value, Qgis::MapGridAnnotationType coord, QgsExpressionContext &expressionContext, bool isGeographic ) const
