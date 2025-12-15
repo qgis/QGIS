@@ -1,5 +1,5 @@
 /*****************************************************************************
- *   Copyright (c) 2023, Lutra Consulting Ltd. and Hobu, Inc.                *
+ *   Copyright (c) 2025, Lutra Consulting Ltd. and Hobu, Inc.                *
  *                                                                           *
  *   All rights reserved.                                                    *
  *                                                                           *
@@ -19,6 +19,7 @@
 #include <pdal/util/ProgramArgs.hpp>
 #include <pdal/pdal_types.hpp>
 #include <pdal/Polygon.hpp>
+#include <pdal/PipelineWriter.hpp>
 
 #include <gdal_utils.h>
 
@@ -31,21 +32,19 @@ using namespace pdal;
 namespace fs = std::filesystem;
 
 
-void Translate::addArgs()
+void ClassifyGround::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
     argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
-    programArgs.add("assign-crs", "Assigns CRS to data (no reprojection)", assignCrs);
-    programArgs.add("transform-crs", "Transforms (reprojects) data to another CRS", transformCrs);
-    programArgs.add("transform-coord-op", "Details on how to do the transform of coordinates when --transform-crs is used. "
-                    "It can be a PROJ pipeline or a WKT2 CoordinateOperation. "
-                    "When not specified, PROJ will pick the default transform.", transformCoordOp);
-    programArgs.add("transform-matrix", "A whitespace-delimited transformation matrix. "
-                    "The matrix is assumed to be presented in row-major order. "
-                    "Only matrices with sixteen elements are allowed.", transformMatrix);
+    
+    argCellSize = &programArgs.add("cell-size", "Sets the grid cell size in map units. Smaller values give finer detail but may increase noise.", cellSize, 1.0);
+    argScalar = &programArgs.add("scalar", "Increases the threshold on steeper slopes. Raise this for rough terrain.", scalar, 1.25);
+    argSlope = &programArgs.add("slope", "Controls how much terrain slope is tolerated as ground. Increase for steep terrain.", slope, 0.15);
+    argThreshold = &programArgs.add("threshold", " Elevation threshold for separating ground from objects. Higher values allow larger deviations from ground.", threshold, 0.5);
+    argWindowSize = &programArgs.add("window-size", "The maximum filter window size. Increase to better identify large buildings or objects, decrease to protect smaller features.", windowSize, 18.0);
 }
 
-bool Translate::checkArgs()
+bool ClassifyGround::checkArgs()
 {
     if (!argOutput->set())
     {
@@ -53,10 +52,9 @@ bool Translate::checkArgs()
         return false;
     }
 
-    // TODO: or use the same format as the reader?
     if (argOutputFormat->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz")
+        if (outputFormat != "las" && outputFormat != "laz" && outputFormat != "copc")
         {
             std::cerr << "unknown output format: " << outputFormat << std::endl;
             return false;
@@ -65,25 +63,14 @@ bool Translate::checkArgs()
     else
         outputFormat = "las";  // uncompressed by default
 
-    if (!transformCoordOp.empty() && transformCrs.empty())
-    {
-        std::cerr << "Need to specify also --transform-crs when --transform-coord-op is used." << std::endl;
-        return false;
-    }
-
     return true;
 }
 
-
-static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string assignCrs, std::string transformCrs, std::string transformCoordOp, std::string transformMatrix)
+static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, pdal::Options &filterOptions)
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Options reader_opts;
-    if (!assignCrs.empty())
-        reader_opts.add(pdal::Option("override_srs", assignCrs));
-
-    Stage& r = makeReader(manager.get(), tile->inputFilenames[0], reader_opts);
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 
@@ -104,6 +91,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
             last = &manager->makeFilter( "filters.crop", *last, filter_opts);
         }
     }
+
     if (!tile->filterExpression.empty())
     {
         Options filter_opts;
@@ -111,56 +99,24 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         last = &manager->makeFilter( "filters.expression", *last, filter_opts);
     }
 
-    // optional reprojection
-    Stage* reproject = nullptr;
-    if (!transformCrs.empty())
-    {
-        Options transform_opts;
-        transform_opts.add(pdal::Option("out_srs", transformCrs));
-        if (!transformCoordOp.empty())
-        {
-            transform_opts.add(pdal::Option("coord_op", transformCoordOp));
-            reproject = &manager->makeFilter( "filters.projpipeline", *last, transform_opts);
-        }
-        else
-        {
-            reproject = &manager->makeFilter( "filters.reprojection", *last, transform_opts);
-        }
-        last = reproject;
-    }
-
-    if (!transformMatrix.empty())
-    {
-        Options matrix_opts;
-        matrix_opts.add(pdal::Option("matrix", transformMatrix));
-        Stage* matrixTransform = &manager->makeFilter( "filters.transformation", *last, matrix_opts);
-        last = matrixTransform;
-    }
-
-    pdal::Options writer_opts;
-    if (!reproject)
-    {
-        // let's use the same offset & scale & header & vlrs as the input
-        writer_opts.add(pdal::Option("forward", "all"));
-    }
-    else
-    {
-        // avoid adding offset as it probably wouldn't work
-        // TODO: maybe adjust scale as well - depending on the CRS
-        writer_opts.add(pdal::Option("forward", "header,scale,vlr"));
-        writer_opts.add(pdal::Option("offset_x", "auto"));
-        writer_opts.add(pdal::Option("offset_y", "auto"));
-        writer_opts.add(pdal::Option("offset_z", "auto"));
-    }
-
-    makeWriter(manager.get(), tile->outputFilename, last, writer_opts);
+    last = &manager->makeFilter( "filters.smrf", *last, filterOptions);
+ 
+    makeWriter(manager.get(), tile->outputFilename, last);
 
     return manager;
 }
 
 
-void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
-{
+void ClassifyGround::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+{   
+    pdal::Options filterOptions;
+    filterOptions.add(pdal::Option("cell", cellSize));
+    filterOptions.add(pdal::Option("scalar", scalar));
+    filterOptions.add(pdal::Option("slope", slope));
+    filterOptions.add(pdal::Option("threshold", threshold));
+    filterOptions.add(pdal::Option("window", windowSize));
+    
+
     if (ends_with(inputFile, ".vpc"))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
@@ -189,23 +145,20 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
 
             tileOutputFiles.push_back(tile.outputFilename);
 
-            pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
+            pipelines.push_back(pipeline(&tile, filterOptions));
         }
     }
     else
     {
-        if (ends_with(outputFile, ".copc.laz"))
-        {
-            isStreaming = false;
-        }
         ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
-        pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
+
+        pipelines.push_back(pipeline(&tile, filterOptions));
     }
 }
 
-void Translate::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
+void ClassifyGround::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;
