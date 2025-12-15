@@ -2,9 +2,9 @@
 ***************************************************************************
     BarPlot.py
     ---------------------
-    Date                 : January 2013
-    Copyright            : (C) 2013 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : March 2015
+    Copyright            : (C) 2017 by Matteo Ghetta
+    Email                : matteo dot ghetta at gmail dot com
 ***************************************************************************
 * *
 * This program is free software; you can redistribute it and/or modify  *
@@ -15,15 +15,16 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "January 2013"
-__copyright__ = "(C) 2013, Victor Olaya"
+__author__ = "Matteo Ghetta"
+__date__ = "March 2017"
+__copyright__ = "(C) 2017, Matteo Ghetta"
 
 import warnings
 
 from qgis.core import (
     QgsFeatureRequest,
     QgsProcessingException,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
@@ -58,24 +59,16 @@ class BarPlot(QgisAlgorithm):
             QgsProcessingParameterField(
                 self.NAME_FIELD,
                 self.tr("Category name field"),
-                None,
-                self.INPUT,
-                QgsProcessingParameterField.DataType.Any,
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Any,
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
                 self.VALUE_FIELD,
                 self.tr("Value field"),
-                None,
-                self.INPUT,
-                QgsProcessingParameterField.DataType.Numeric,
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterFileDestination(
-                self.OUTPUT, self.tr("Bar plot"), self.tr("HTML files (*.html)")
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Numeric,
             )
         )
 
@@ -92,6 +85,12 @@ class BarPlot(QgisAlgorithm):
         self.addParameter(
             QgsProcessingParameterString(
                 self.YAXIS_TITLE, self.tr("Y-axis title"), optional=True
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterFileDestination(
+                self.OUTPUT, self.tr("Bar plot"), self.tr("HTML files (*.html)")
             )
         )
 
@@ -138,22 +137,26 @@ class BarPlot(QgisAlgorithm):
             xaxis_title = namefieldname
         elif xaxis_title == " ":
             xaxis_title = None
-        if yaxis_title == "":
+        if yaxis_title.strip() == "":
             yaxis_title = valuefieldname
         elif yaxis_title == " ":
             yaxis_title = None
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        # Improved data extraction without 'vector' module
         x_data = []
         y_data = []
-        # Use NoGeometry flag for performance optimization
+
+        name_index = source.fields().lookupField(namefieldname)
+        value_index = source.fields().lookupField(valuefieldname)
+
+        # Optimize: Only fetch the 2 fields we need, and skip geometry
         req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        req.setSubsetOfAttributes([name_index, value_index])
+
         for f in source.getFeatures(req):
-            name_val = f[namefieldname]
-            # mimic vector.convert_nulls behavior: replace None with "<NULL>"
-            x_data.append(name_val if name_val is not None else "<NULL>")
+            n_val = f[namefieldname]
+            x_data.append(n_val if n_val is not None else "<NULL>")
             y_data.append(f[valuefieldname])
 
         data = [go.Bar(x=x_data, y=y_data)]

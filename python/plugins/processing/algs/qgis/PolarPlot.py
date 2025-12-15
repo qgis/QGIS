@@ -20,9 +20,9 @@ __date__ = "January 2013"
 __copyright__ = "(C) 2013, Victor Olaya"
 
 import warnings
-import numpy as np
 
 from qgis.core import (
+    QgsFeatureRequest,
     QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
@@ -90,15 +90,6 @@ class PolarPlot(QgisAlgorithm):
                 )
             )
 
-        try:
-            import numpy as np
-        except ImportError:
-            raise QgsProcessingException(
-                self.tr(
-                    "This algorithm requires the Python “numpy” library. Please install this library and try again."
-                )
-            )
-
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(
@@ -108,16 +99,29 @@ class PolarPlot(QgisAlgorithm):
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        # Modern replacement for vector.values
-        values = [f[valuefieldname] for f in source.getFeatures()]
+        # Optimize: Only fetch the field we need, and skip geometry
+        value_index = source.fields().lookupField(valuefieldname)
+        req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        req.setSubsetOfAttributes([value_index])
+
+        values = [f[valuefieldname] for f in source.getFeatures(req)]
+
+        # Calculate angles without numpy (standard Python logic)
+        count = len(values)
+        if count > 0:
+            step = 360.0 / count
+            theta = [i * step for i in range(count)]
+        else:
+            theta = []
 
         data = [
             go.Barpolar(
                 r=values,
-                theta=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values))),
+                theta=theta,
             )
         ]
 
-        plt.offline.plot(data, filename=output, auto_open=False)
+        fig = go.Figure(data=data)
+        fig.write_html(output)
 
         return {self.OUTPUT: output}
