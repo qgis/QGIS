@@ -12165,6 +12165,19 @@ Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTesse
 Qgis.ExtrusionFace.baseClass = Qgis
 Qgis.ExtrusionFaces.baseClass = Qgis
 ExtrusionFaces = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.TriangulationAlgorithm.ConstrainedDelaunay.__doc__ = ""
+Qgis.TriangulationAlgorithm.Earcut.__doc__ = ""
+Qgis.TriangulationAlgorithm.__doc__ = """Triangulation algorithms.
+
+.. versionadded:: 4.0
+
+* ``ConstrainedDelaunay``: 
+* ``Earcut``: 
+
+"""
+# --
+Qgis.TriangulationAlgorithm.baseClass = Qgis
 from enum import Enum
 
 

@@ -6363,6 +6363,17 @@ class CORE_EXPORT Qgis
     Q_FLAG( ExtrusionFaces )
 
     /**
+     * Triangulation algorithms.
+     * \since QGIS 4.0
+     */
+    enum class TriangulationAlgorithm : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ConstrainedDelaunay = 0,
+      Earcut = 1 << 0
+    };
+    Q_ENUM( TriangulationAlgorithm )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
