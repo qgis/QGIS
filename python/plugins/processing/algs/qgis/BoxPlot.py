@@ -3,7 +3,7 @@
     BoxPlot.py
     ---------------------
     Date                 : March 2015
-    Copyright            : (C) 2017 by Matteo Ghetta
+    Copyright            : (C) 2015 by Matteo Ghetta
     Email                : matteo dot ghetta at gmail dot com
 ***************************************************************************
 * *
@@ -16,8 +16,8 @@
 """
 
 __author__ = "Matteo Ghetta"
-__date__ = "March 2017"
-__copyright__ = "(C) 2017, Matteo Ghetta"
+__date__ = "March 2015"
+__copyright__ = "(C) 2015, Matteo Ghetta"
 
 import warnings
 
