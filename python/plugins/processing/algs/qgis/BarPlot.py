@@ -135,28 +135,27 @@ class BarPlot(QgisAlgorithm):
 
         # Optimize: Only fetch the fields we need, and skip geometry
         name_index = source.fields().lookupField(namefieldname)
+        if name_index < 0:
+            raise QgsProcessingException(
+                self.tr("Field '{}' not found in input layer.").format(namefieldname)
+            )
+
         value_index = source.fields().lookupField(valuefieldname)
+        if value_index < 0:
+            raise QgsProcessingException(
+                self.tr("Field '{}' not found in input layer.").format(valuefieldname)
+            )
 
         req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
-
-        # Safety Guard: Only set subset if the fields actually exist (index >= 0)
-        # This prevents crashes in automated tests that use mock layers.
-        attributes_to_fetch = []
-        if name_index >= 0:
-            attributes_to_fetch.append(name_index)
-        if value_index >= 0:
-            attributes_to_fetch.append(value_index)
-
-        if attributes_to_fetch:
-            req.setSubsetOfAttributes(attributes_to_fetch)
+        req.setSubsetOfAttributes(list({name_index, value_index}))
 
         x_data = []
         y_data = []
 
         for f in source.getFeatures(req):
-            n_val = f[namefieldname]
+            n_val = f.attribute(name_index)
             x_data.append(n_val if n_val is not None else "<NULL>")
-            y_data.append(f[valuefieldname])
+            y_data.append(f.attribute(value_index))
 
         data = [go.Bar(x=x_data, y=y_data)]
 
