@@ -90,7 +90,7 @@ void QgsPointCloudLayerChunkLoader::start()
   // this will be run in a background thread
   //
   mFutureWatcher = new QFutureWatcher<void>( this );
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished, Qt::QueuedConnection );
 
   const QgsBox3D box3D = node->box3D();
   const QFuture<void> future = QtConcurrent::run( [pc = std::move( pc ), pcNode, box3D, this] {
