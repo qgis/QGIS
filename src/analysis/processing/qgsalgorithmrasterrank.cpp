@@ -220,8 +220,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   qgssize rows = static_cast<qgssize>( std::round( ( outputExtent.yMaximum() - outputExtent.yMinimum() ) / outputCellSizeY ) );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputFormat( outputFormat );

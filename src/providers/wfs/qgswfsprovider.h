@@ -110,7 +110,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     const QString processSQLWarningMsg() const { return mProcessSQLWarningMsg; }
 
     //Editing operations
-
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;

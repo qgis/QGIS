@@ -237,7 +237,7 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
       continue;
     const QgsPointCloudNode childNode = mPointCloudIndex.getNode( childPcId );
     const QgsBox3D childBounds = childNode.bounds();
-    if ( !mExtent.isEmpty() && !childBounds.intersects( mExtent ) )
+    if ( !mExtent.isEmpty() && !childBounds.toRectangle().intersects( mExtent ) )
       continue;
 
     QgsBox3D childBox3D = nodeBoundsToBox3D( childBounds, mCoordinateTransform, mZValueOffset, mZValueScale );

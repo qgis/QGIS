@@ -59,7 +59,7 @@ resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
 resources/data/world_map_generalize.model3
 scripts/spell_check/spelling.dat
 platform/macos/pymacdeployqt.py
-scripts/spell_check/test.sh
+scripts/pre_commit/spell_check/test.sh
 src/server/qgis_wms.xmi
 src/plugins/grass/modules/v.generalize.qgm
 tests/testdata/qgis_server_accesscontrol/Hello.qml

@@ -334,6 +334,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
 
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;

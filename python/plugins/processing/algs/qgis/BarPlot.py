@@ -81,6 +81,11 @@ class BarPlot(QgisAlgorithm):
     def shortDescription(self):
         return self.tr("Generates a bar plot from a category and a value field.")
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a bar plot from a category and a layer field."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out
