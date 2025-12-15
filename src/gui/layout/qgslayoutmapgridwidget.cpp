@@ -27,6 +27,7 @@
 #include "qgsprojectviewsettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssymbol.h"
+#include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
 
 #include "moc_qgslayoutmapgridwidget.cpp"
@@ -51,6 +52,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed Length" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::NormalizedTicks ) );
   mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Orthogonal" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::OrthogonalTicks ) );
   mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed Length" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::NormalizedTicks ) );
+
+  mHAlignmentComboBox->setAvailableAlignments( Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignRight | Qt::AlignmentFlag::AlignJustify );
 
   mGridFrameMarginSpinBox->setShowClearButton( true );
   mGridFrameMarginSpinBox->setClearValue( 0 );
@@ -113,6 +116,15 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mDistanceToMapFrameSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
   connect( mMinWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::minIntervalChanged );
   connect( mMaxWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::maxIntervalChanged );
+
+  connect( mHAlignmentComboBox, &QgsAlignmentComboBox::changed, this, [this] {
+    mMap->beginCommand( tr( "Change Grid Text Alignment" ) );
+    mMapGrid->setHorizontalAlignment( mHAlignmentComboBox->horizontalAlignment() );
+    mMap->endCommand();
+    mMap->updateBoundingRect();
+    mMap->update();
+  } );
+
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::gridEnabledToggled );
   setPanelTitle( tr( "Map Grid Properties" ) );
 
@@ -314,6 +326,7 @@ void QgsLayoutMapGridWidget::blockAllSignals( bool block )
   mAnnotationFontButton->blockSignals( block );
   mMinWidthSpinBox->blockSignals( block );
   mMaxWidthSpinBox->blockSignals( block );
+  mHAlignmentComboBox->blockSignals( block );
 }
 
 void QgsLayoutMapGridWidget::handleChangedFrameDisplay( Qgis::MapGridBorderSide border, const Qgis::MapGridComponentVisibility mode )
@@ -628,6 +641,8 @@ void QgsLayoutMapGridWidget::setGridItems()
   mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == Qgis::MapGridAnnotationFormat::CustomFormat );
   mDistanceToMapFrameSpinBox->setValue( mMapGrid->annotationFrameDistance() );
   mCoordinatePrecisionSpinBox->setValue( mMapGrid->annotationPrecision() );
+
+  mHAlignmentComboBox->setCurrentAlignment( mMapGrid->horizontalAlignment() );
 
   //Unit
   mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findData( QVariant::fromValue( mMapGrid->units() ) ) );
