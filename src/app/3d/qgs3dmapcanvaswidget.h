@@ -134,7 +134,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
     void setClippingPlanesOn2DCanvas();
-    void disableCrossSection() const;
+    void disableCrossSection();
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
