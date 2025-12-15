@@ -258,6 +258,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mActionSetSceneExtent = mCameraMenu->addAction( QgsApplication::getThemeIcon( u"extents.svg"_s ), tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
   mActionSetSceneExtent->setCheckable( true );
+
   auto createShortcuts = [this]( const QString &objectName, void ( Qgs3DMapCanvasWidget::*slot )() ) {
     if ( QShortcut *sc = QgsGui::shortcutsManager()->shortcutByName( objectName ) )
       connect( sc, &QShortcut::activated, this, slot );
@@ -287,9 +288,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mActionNudgeLeft->setDisabled( true );
   mActionNudgeRight->setDisabled( true );
-
-  mActionNudgeLeft->setShortcut( QKeySequence( tr( "Q" ) ) );
-  mActionNudgeRight->setShortcut( QKeySequence( tr( "E" ) ) );
 
   connect( mActionNudgeLeft, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeLeft );
   connect( mActionNudgeRight, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeRight );
@@ -1246,7 +1244,9 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMainCanvas->setMapTool( mMapToolClippingPlanes.get() );
   QgisApp::instance()->activateWindow();
   QgisApp::instance()->raise();
-  mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
+
+  if ( !mClippingToleranceAction->isLocked() )
+    mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
 void Qgs3DMapCanvasWidget::setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width )
@@ -1287,11 +1287,12 @@ void Qgs3DMapCanvasWidget::onCrossSectionToolFinished( const QgsGeometry &geom, 
     setCrossSectionRubberBandPolygonFromGeometry( geom, geomWidth );
 }
 
-void Qgs3DMapCanvasWidget::disableCrossSection() const
+void Qgs3DMapCanvasWidget::disableCrossSection()
 {
   mCanvas->disableCrossSection();
   mMapToolClippingPlanes->clear();
   mCrossSectionRubberBand->reset( Qgis::GeometryType::Polygon );
+  mCrossSectionLine = QgsGeometry();
 
   mActionNudgeLeft->setEnabled( false );
   mActionNudgeRight->setEnabled( false );
@@ -1380,7 +1381,7 @@ Qgs3DMapClippingToleranceWidgetSettingsAction::Qgs3DMapClippingToleranceWidgetSe
     mLockButton->setToolTip( locked ? tr( "Locked: spinbox enabled, cross section width from tolerance.\nClick to unlock for width from 3rd point." ) : tr( "Unlocked: spinbox disabled, cross section width from 3rd point.\nClick to lock for tolerance width." ) );
   };
 
-  const bool isLocked = Qgs3DMapCanvasWidget::settingDynamicClipping->value();
+  const bool isLocked = !Qgs3DMapCanvasWidget::settingDynamicClipping->value();
 
   mLockButton->setChecked( isLocked );
   refreshLockButton( isLocked );
