@@ -87,8 +87,8 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
-  qDeleteAll( mHighlights );
-  mHighlights.clear();
+
+  clearHighlights();
 
   delete m_aspectEngine;
 }
