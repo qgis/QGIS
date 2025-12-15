@@ -2,9 +2,9 @@
 ***************************************************************************
     BarPlot.py
     ---------------------
-    Date                 : March 2015
-    Copyright            : (C) 2017 by Matteo Ghetta
-    Email                : matteo dot ghetta at gmail dot com
+    Date                 : January 2013
+    Copyright            : (C) 2013 by Victor Olaya
+    Email                : volayaf at gmail dot com
 ***************************************************************************
 * *
 * This program is free software; you can redistribute it and/or modify  *
@@ -15,20 +15,18 @@
 ***************************************************************************
 """
 
-__author__ = "Matteo Ghetta"
-__date__ = "March 2017"
-__copyright__ = "(C) 2017, Matteo Ghetta"
+__author__ = "Victor Olaya"
+__date__ = "January 2013"
+__copyright__ = "(C) 2013, Victor Olaya"
 
 import warnings
 
 from qgis.core import (
     QgsFeatureRequest,
     QgsProcessingException,
-    QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
-    QgsProcessingParameterString,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -38,9 +36,6 @@ class BarPlot(QgisAlgorithm):
     OUTPUT = "OUTPUT"
     NAME_FIELD = "NAME_FIELD"
     VALUE_FIELD = "VALUE_FIELD"
-    TITLE = "TITLE"
-    XAXIS_TITLE = "XAXIS_TITLE"
-    YAXIS_TITLE = "YAXIS_TITLE"
 
     def group(self):
         return self.tr("Plots")
@@ -71,23 +66,6 @@ class BarPlot(QgisAlgorithm):
                 type=QgsProcessingParameterField.DataType.Numeric,
             )
         )
-
-        self.addParameter(
-            QgsProcessingParameterString(self.TITLE, self.tr("Title"), optional=True)
-        )
-
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.XAXIS_TITLE, self.tr("X-axis title"), optional=True
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.YAXIS_TITLE, self.tr("Y-axis title"), optional=True
-            )
-        )
-
         self.addParameter(
             QgsProcessingParameterFileDestination(
                 self.OUTPUT, self.tr("Bar plot"), self.tr("HTML files (*.html)")
@@ -101,7 +79,7 @@ class BarPlot(QgisAlgorithm):
         return self.tr("Bar plot")
 
     def shortDescription(self):
-        return self.tr("Creates a bar plot from a category and a layer field.")
+        return self.tr("Generates a bar plot from a category and a value field.")
 
     def processAlgorithm(self, parameters, context, feedback):
         try:
@@ -126,33 +104,17 @@ class BarPlot(QgisAlgorithm):
 
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
-
-        title = self.parameterAsString(parameters, self.TITLE, context)
-        xaxis_title = self.parameterAsString(parameters, self.XAXIS_TITLE, context)
-        yaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
-
-        if title.strip() == "":
-            title = None
-        if xaxis_title == "":
-            xaxis_title = namefieldname
-        elif xaxis_title == " ":
-            xaxis_title = None
-        if yaxis_title.strip() == "":
-            yaxis_title = valuefieldname
-        elif yaxis_title == " ":
-            yaxis_title = None
-
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        x_data = []
-        y_data = []
-
+        # Optimize: Only fetch the fields we need, and skip geometry
         name_index = source.fields().lookupField(namefieldname)
         value_index = source.fields().lookupField(valuefieldname)
 
-        # Optimize: Only fetch the 2 fields we need, and skip geometry
         req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
         req.setSubsetOfAttributes([name_index, value_index])
+
+        x_data = []
+        y_data = []
 
         for f in source.getFeatures(req):
             n_val = f[namefieldname]
@@ -161,13 +123,7 @@ class BarPlot(QgisAlgorithm):
 
         data = [go.Bar(x=x_data, y=y_data)]
 
-        fig = go.Figure(
-            data=data,
-            layout_title_text=title,
-            layout_xaxis_title=xaxis_title,
-            layout_yaxis_title=yaxis_title,
-        )
-
+        fig = go.Figure(data=data)
         fig.write_html(output)
 
         return {self.OUTPUT: output}
