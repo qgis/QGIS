@@ -629,10 +629,13 @@ void Qgs3DMapScene::updateLights()
     entity->deleteLater();
   mLightEntities.clear();
 
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
   const QList<QgsLightSource *> newLights = mMap.lightSources();
   for ( const QgsLightSource *source : newLights )
   {
-    mLightEntities.append( source->createEntity( mMap, this ) );
+    Qt3DCore::QEntity *entity = source->createEntity( mMap, this );
+    entity->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    mLightEntities.append( entity );
   }
 
   onShadowSettingsChanged();
