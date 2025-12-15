@@ -99,6 +99,7 @@ Returns tiling settings of the renderer
     virtual void resolveReferences( const QgsProject &project );
 
 
+
   protected:
     void copyBaseProperties( QgsAbstractVectorLayer3DRenderer *r ) const;
 %Docstring

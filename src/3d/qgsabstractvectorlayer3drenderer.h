@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 #include "qgis_sip.h"
 #include "qgsabstract3drenderer.h"
+#include "qgsabstractvectorlayer3dhighlightfactory_p.h"
 #include "qgsmaplayerref.h"
 
 class QgsVectorLayer;
@@ -88,6 +89,9 @@ class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer
     QgsVectorLayer3DTilingSettings tilingSettings() const { return mTilingSettings; }
 
     void resolveReferences( const QgsProject &project ) override;
+
+    /// Creates a factory to highlight a feature.
+    virtual std::unique_ptr<QgsAbstractVectorLayer3DHighlightFactory> createHighlightFactory( Qgs3DMapSettings *mapSettings ) const = 0 SIP_SKIP;
 
   protected:
     //! Copies common properties of this object to another object
