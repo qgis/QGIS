@@ -735,7 +735,7 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
   yGridLines();
   xGridLines();
 
-  if ( calculateLinesOnly )
+  if ( calculateLinesOnly || mGridLines.empty() )
     return;
 
   QList< GridLine >::const_iterator vIt = mGridLines.constBegin();
