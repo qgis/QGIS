@@ -133,29 +133,16 @@ class BarPlot(QgisAlgorithm):
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        # Optimize: Only fetch the fields we need, and skip geometry
-        name_index = source.fields().lookupField(namefieldname)
-        if name_index < 0:
-            raise QgsProcessingException(
-                self.tr("Field '{}' not found in input layer.").format(namefieldname)
-            )
-
-        value_index = source.fields().lookupField(valuefieldname)
-        if value_index < 0:
-            raise QgsProcessingException(
-                self.tr("Field '{}' not found in input layer.").format(valuefieldname)
-            )
-
+        # Basic request - no subset optimization to prevent CI crashes
         req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
-        req.setSubsetOfAttributes(list({name_index, value_index}))
 
         x_data = []
         y_data = []
 
         for f in source.getFeatures(req):
-            n_val = f.attribute(name_index)
+            n_val = f[namefieldname]
             x_data.append(n_val if n_val is not None else "<NULL>")
-            y_data.append(f.attribute(value_index))
+            y_data.append(f[valuefieldname])
 
         data = [go.Bar(x=x_data, y=y_data)]
 
