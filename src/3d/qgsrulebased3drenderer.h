@@ -265,7 +265,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * \param context   The context in which the rendering happens
          * \returns          TRUE if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const;
+        bool isFilterOK( const QgsFeature &f, Qgs3DRenderContext &context ) const;
 
         /**
          * Initialize filters. Automatically called by setFilterExpression.

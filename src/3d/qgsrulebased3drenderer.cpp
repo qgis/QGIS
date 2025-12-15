@@ -337,7 +337,7 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
 }
 
 
-bool QgsRuleBased3DRenderer::Rule::isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const
+bool QgsRuleBased3DRenderer::Rule::isFilterOK( const QgsFeature &f, Qgs3DRenderContext &context ) const
 {
   if ( !mFilter || mElseRule )
     return true;
