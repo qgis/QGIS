@@ -555,12 +555,19 @@ bool QgsNewGeoPackageLayerDialog::apply()
   // issue a command that will force table creation
   CPLErrorReset();
   OGR_L_ResetReading( hLayer );
-  if ( CPLGetLastErrorType() != CE_None )
+  const CPLErr errorType = CPLGetLastErrorType();
+  if ( errorType == CE_Failure || errorType == CE_Fatal )
   {
     const QString msg( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
     return false;
+  }
+  else if ( errorType == CE_Warning )
+  {
+    const QString msg( tr( "Layer created with warning (OGR warning: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    if ( !property( "hideDialogs" ).toBool() )
+      QMessageBox::warning( this, tr( "New GeoPackage Layer" ), msg );
   }
   hDS.reset();
 
