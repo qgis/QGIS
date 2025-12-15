@@ -158,7 +158,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
   private:
     void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;
     void setClippingTolerance( double tolerance );
-    void setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width );
+    void setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width, bool setSideView );
     void setDynamicCrossSectionClippingTolerance( bool enabled );
     void updateClippingRubberBand();
 
