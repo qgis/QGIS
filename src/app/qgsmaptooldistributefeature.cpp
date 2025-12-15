@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 
+#include "qgsmaptooldistributefeature.h"
+
 #include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptooldistributefeature.h"
-#include "moc_qgsmaptooldistributefeature.cpp"
-#include "qgsadvanceddigitizingdockwidget.h"
-
 #include "qgssettingstree.h"
 #include "qgssnappingutils.h"
+
+#include "moc_qgsmaptooldistributefeature.cpp"
 
 const QgsSettingsEntryEnumFlag<QgsMapToolDistributeFeature::DistributeMode> *QgsMapToolDistributeFeature::settingsMode = new QgsSettingsEntryEnumFlag<QgsMapToolDistributeFeature::DistributeMode>( QStringLiteral( "distributefeature-mode" ), QgsSettingsTree::sTreeDigitizing, QgsMapToolDistributeFeature::DistributeMode::FeatureCount );
 const QgsSettingsEntryInteger *QgsMapToolDistributeFeature::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "distributefeature-feature-count" ), QgsSettingsTree::sTreeDigitizing, 0 );
@@ -148,9 +149,8 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     // No rubberband means no copy is in progress, find the closest feature to begin a new copy
 
     // Get the selected feature or find the closest feature
-    QgsFeature f;
-    if ( vlayer->selectedFeatureCount() == 1 )
-      f = vlayer->selectedFeatures()[0];
+    if ( vlayer->selectedFeatureCount() > 0 )
+      mFeatureList = vlayer->selectedFeatures();
     else
     {
       QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::All );
@@ -159,12 +159,10 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         cadDockWidget()->clear();
         return;
       }
-      f = vlayer->getFeature( match.featureId() );
+      mFeatureList = { vlayer->getFeature( match.featureId() ) };
     }
 
     // Feature found: store internal information and create rubberband
-    mFeatureId = f.id();
-    mFeatureGeom = f.geometry();
     mStartPointMapCoords = e->mapPoint();
     mFeatureLayer = vlayer;
     updateRubberband();
@@ -186,7 +184,9 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       vlayer->beginEditCommand( tr( "Features distributed and copied" ) );
       for ( int i = 1; i < count + 1; ++i )
       {
-        QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( { mFeatureId } );
+        QgsFeatureIds fids;
+        std::for_each( mFeatureList.begin(), mFeatureList.end(), [&fids]( QgsFeature f ) { fids << f.id(); } );
+        QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( fids );
         if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures(
                vlayer, request, dx * i, dy * i, &errorMsg, QgsProject::instance()->topologicalEditing(), nullptr, &childrenInfoMsg
              ) )
@@ -226,50 +226,57 @@ void QgsMapToolDistributeFeature::deleteRubberbands()
 
 void QgsMapToolDistributeFeature::updateRubberband()
 {
-  if ( mFeatureGeom.isNull() || mStartPointMapCoords.isEmpty() )
-    return;
-
-  mRubberBand.reset( createRubberBand( mFeatureGeom.type() ) );
-
   const int count = featureCount();
-  if ( count == 0 )
+  if ( !mFeatureLayer || mFeatureList.count() == 0 || mStartPointMapCoords.isEmpty() || count == 0 )
     return;
 
-  QgsGeometry geom = mFeatureGeom;
-
-  // The rubberband is in map coordinates, so we transform the feature geometry if needed
-  if ( mFeatureLayer->crs() != canvas()->mapSettings().destinationCrs() )
+  bool firstFeature = true;
+  for ( const QgsFeature &feature : mFeatureList )
   {
-    if ( geom.transform(
-           QgsCoordinateTransform( mFeatureLayer->crs(), canvas()->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() )
-         )
-         != Qgis::GeometryOperationResult::Success )
-    {
-      emit messageEmitted( tr( "Unable to transform coordinates between layer and map CRS" ), Qgis::MessageLevel::Warning );
+    QgsGeometry geom = feature.geometry();
+    if ( geom.isNull() )
       return;
-    }
-  }
 
-  if ( mEndPointMapCoords.isEmpty() )
-  {
-    // No end point: the mouse has not moved yet
-    mRubberBand->addGeometry( geom );
-  }
-  else
-  {
-    // We have a start and an end point: create all the features along the start-end line
-    const QgsPointXY firstFeaturePoint = firstFeatureMapPoint();
-    const double dx = firstFeaturePoint.x() - mStartPointMapCoords.x();
-    const double dy = firstFeaturePoint.y() - mStartPointMapCoords.y();
-    for ( int i = 0; i < count; ++i )
+    if ( firstFeature )
     {
-      Qgis::GeometryOperationResult translateResult = geom.translate( dx, dy );
-      if ( translateResult != Qgis::GeometryOperationResult::Success )
+      mRubberBand.reset( createRubberBand( geom.type() ) );
+      firstFeature = false;
+    }
+
+    // The rubberband is in map coordinates, so we transform the feature geometry if needed
+    if ( mFeatureLayer->crs() != canvas()->mapSettings().destinationCrs() )
+    {
+      if ( geom.transform(
+             QgsCoordinateTransform( mFeatureLayer->crs(), canvas()->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() )
+           )
+           != Qgis::GeometryOperationResult::Success )
       {
-        emit messageEmitted( tr( "Unable to copy and translate feature preview" ), Qgis::MessageLevel::Warning );
+        emit messageEmitted( tr( "Unable to transform coordinates between layer and map CRS" ), Qgis::MessageLevel::Warning );
         return;
       }
+    }
+
+    if ( mEndPointMapCoords.isEmpty() )
+    {
+      // No end point: the mouse has not moved yet
       mRubberBand->addGeometry( geom );
+    }
+    else
+    {
+      // We have a start and an end point: create all the features along the start-end line
+      const QgsPointXY firstFeaturePoint = firstFeatureMapPoint();
+      const double dx = firstFeaturePoint.x() - mStartPointMapCoords.x();
+      const double dy = firstFeaturePoint.y() - mStartPointMapCoords.y();
+      for ( int i = 0; i < count; ++i )
+      {
+        Qgis::GeometryOperationResult translateResult = geom.translate( dx, dy );
+        if ( translateResult != Qgis::GeometryOperationResult::Success )
+        {
+          emit messageEmitted( tr( "Unable to copy and translate feature preview" ), Qgis::MessageLevel::Warning );
+          return;
+        }
+        mRubberBand->addGeometry( geom );
+      }
     }
   }
 
