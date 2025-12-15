@@ -303,6 +303,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mActionNudgeLeft, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeLeft );
   connect( mActionNudgeRight, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeRight );
 
+  createShortcuts( QStringLiteral( "m3DCrossSectionNudgeLeft" ), &Qgs3DMapCanvasWidget::nudgeLeft );
+  createShortcuts( QStringLiteral( "m3DCrossSectionNudgeRight" ), &Qgs3DMapCanvasWidget::nudgeRight );
+
   mCrossSectionMenu->addAction( mActionNudgeLeft );
   mCrossSectionMenu->addAction( mActionNudgeRight );
 
