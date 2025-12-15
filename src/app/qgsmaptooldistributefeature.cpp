@@ -22,6 +22,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 
 #include "qgssettingstree.h"
+#include "qgssnappingutils.h"
 
 const QgsSettingsEntryEnumFlag<QgsMapToolDistributeFeature::DistributeMode> *QgsMapToolDistributeFeature::settingsMode = new QgsSettingsEntryEnumFlag<QgsMapToolDistributeFeature::DistributeMode>( QStringLiteral( "distributefeature-mode" ), QgsSettingsTree::sTreeDigitizing, QgsMapToolDistributeFeature::DistributeMode::FeatureCount );
 const QgsSettingsEntryInteger *QgsMapToolDistributeFeature::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "distributefeature-feature-count" ), QgsSettingsTree::sTreeDigitizing, 0 );
@@ -142,46 +143,28 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  const QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
-  const double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
-  const QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius, layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
-
   if ( !mRubberBand )
   {
     // No rubberband means no copy is in progress, find the closest feature to begin a new copy
-    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
-    const QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
-    if ( pointGeometry.isNull() )
-    {
-      cadDockWidget()->clear();
-      return;
-    }
 
-    QgsFeature cf, f;
-    double minDistance = std::numeric_limits<double>::max();
-    while ( fit.nextFeature( f ) )
+    // Get the selected feature or find the closest feature
+    QgsFeature f;
+    if ( vlayer->selectedFeatureCount() == 1 )
+      f = vlayer->selectedFeatures()[0];
+    else
     {
-      if ( f.hasGeometry() )
+      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::All );
+      if ( !match.isValid() )
       {
-        const double currentDistance = pointGeometry.distance( f.geometry() );
-        if ( currentDistance < minDistance )
-        {
-          minDistance = currentDistance;
-          cf = f;
-        }
+        cadDockWidget()->clear();
+        return;
       }
-    }
-
-    // No feature found
-    if ( minDistance == std::numeric_limits<double>::max() )
-    {
-      cadDockWidget()->clear();
-      return;
+      f = vlayer->getFeature( match.featureId() );
     }
 
     // Feature found: store internal information and create rubberband
-    mFeatureId = cf.id();
-    mFeatureGeom = cf.geometry();
+    mFeatureId = f.id();
+    mFeatureGeom = f.geometry();
     mStartPointMapCoords = e->mapPoint();
     mFeatureLayer = vlayer;
     updateRubberband();
