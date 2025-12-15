@@ -16,19 +16,18 @@
 #ifndef QGSMAPTOOLDISTRIBUTEFEATURE_H
 #define QGSMAPTOOLDISTRIBUTEFEATURE_H
 
+#include "ui_qgsdistributefeatureuserinputwidget.h"
+
 #include "qgis_app.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
-#include "qgsrubberband.h"
-#include "qgspointxy.h"
-#include "qgssnappingconfig.h"
 #include "qgspointlocator.h"
-
-#include "qgssettingsentryimpl.h"
+#include "qgspointxy.h"
+#include "qgsrubberband.h"
 #include "qgssettingsentryenumflag.h"
-
-#include "ui_qgsdistributefeatureuserinputwidget.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssnappingconfig.h"
 
 class QgsDistributeFeatureUserWidget;
 
@@ -83,8 +82,8 @@ class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizi
 
     //! The current feature ID, geometry, and layer
     QgsFeatureId mFeatureId;
-    QgsGeometry mFeatureGeom;
     QgsVectorLayer *mFeatureLayer;
+    QgsFeatureList mFeatureList;
 
     //! The user widget
     std::unique_ptr<QgsDistributeFeatureUserWidget> mUserInputWidget;
