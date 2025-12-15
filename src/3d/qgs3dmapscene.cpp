@@ -1318,6 +1318,12 @@ void Qgs3DMapScene::onOriginChanged()
     transform->setOrigin( mMap.origin() );
   }
 
+  const QList<QgsGeoTransform *> highlightsGeoTransforms = mEngine->frameGraph()->highlightsRootEntity()->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : highlightsGeoTransforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
   const QgsVector3D oldOrigin = mCameraController->origin();
   mCameraController->setOrigin( mMap.origin() );
 

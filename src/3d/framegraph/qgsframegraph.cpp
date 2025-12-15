@@ -159,6 +159,8 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
   constructSubPostPassForProcessing()->setParent( mRenderCaptureTargetSelector );
   constructDebugTexturePass( mRenderCaptureTargetSelector );
 
+  constructHighlightsPass()->setParent( mRenderCaptureTargetSelector );
+
   // rubber bands (they should be always on top)
   constructRubberBandsPass()->setParent( mRenderCaptureTargetSelector );
 
@@ -173,6 +175,36 @@ void QgsFrameGraph::constructAmbientOcclusionRenderPass()
 
   QgsAmbientOcclusionRenderView *aorv = new QgsAmbientOcclusionRenderView( AMBIENT_OCCLUSION_RENDERVIEW, mMainCamera, mSize, forwardDepthTexture, mRootEntity );
   registerRenderView( std::unique_ptr<QgsAmbientOcclusionRenderView>( aorv ), AMBIENT_OCCLUSION_RENDERVIEW );
+}
+
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructHighlightsPass()
+{
+  Qt3DRender::QCameraSelector *highlightsCameraSelector = new Qt3DRender::QCameraSelector;
+  highlightsCameraSelector->setObjectName( "highlightsPass" );
+  highlightsCameraSelector->setCamera( mMainCamera );
+
+  Qt3DRender::QLayerFilter *highlightsLayerFilter = new Qt3DRender::QLayerFilter( highlightsCameraSelector );
+  highlightsLayerFilter->addLayer( mHighlightsLayer );
+
+  Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
+  blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
+  blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
+
+  Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
+  blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
+
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
+
+  Qt3DRender::QRenderStateSet *highlightsStateSet = new Qt3DRender::QRenderStateSet( highlightsLayerFilter );
+  highlightsStateSet->addRenderState( depthTest );
+  highlightsStateSet->addRenderState( blendState );
+  highlightsStateSet->addRenderState( blendEquation );
+
+  Qt3DRender::QClearBuffers *clear = new Qt3DRender::QClearBuffers( highlightsStateSet );
+  clear->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
+
+  return highlightsCameraSelector;
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
@@ -250,6 +282,10 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mRootEntity = root;
   mMainCamera = mainCamera;
 
+  mHighlightsLayer = new Qt3DRender::QLayer;
+  mHighlightsLayer->setObjectName( "mHighlightsLayer" );
+  mHighlightsLayer->setRecursive( true );
+
   mRubberBandsLayer = new Qt3DRender::QLayer;
   mRubberBandsLayer->setObjectName( "mRubberBandsLayer" );
   mRubberBandsLayer->setRecursive( true );
@@ -281,6 +317,10 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mMainViewPort );
   postprocessingPass->setObjectName( "PostProcessingPass" );
+
+  mHighlightsRootEntity = new Qt3DCore::QEntity( mRootEntity );
+  mHighlightsRootEntity->setObjectName( "mHighlightsRootEntity" );
+  mHighlightsRootEntity->addComponent( mHighlightsLayer );
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
   mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );
