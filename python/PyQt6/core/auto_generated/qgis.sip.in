@@ -3597,6 +3597,12 @@ The development version
     typedef QFlags<Qgis::ExtrusionFace> ExtrusionFaces;
 
 
+    enum class TriangulationAlgorithm /BaseType=IntFlag/
+    {
+      ConstrainedDelaunay,
+      Earcut
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
