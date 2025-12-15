@@ -818,6 +818,124 @@ class TestPyQgsProviderConnectionGpkg(
         g.fromWkb(results[0][1])
         self.assertIn("POLYGON ((625971", g.asWkt().upper())
 
+    def test_gpkg_geometry_column_capabilities(self):
+        """Test that GeoPackage provider has PolyhedralSurfaces geometry column capability"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+
+        geom_caps = conn.geometryColumnCapabilities()
+
+        # Check standard capabilities
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.Z
+            )
+        )
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.M
+            )
+        )
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.Curves
+            )
+        )
+        # Check PolyhedralSurfaces capability
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.PolyhedralSurfaces
+            )
+        )
+
+    def test_gpkg_create_polyhedral_surface_and_tin(self):
+        """Test creating tables with PolyhedralSurface and TIN geometry types"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        # Test PolyhedralSurface
+        conn.createVectorTable(
+            "",
+            "test_polyhedral",
+            QgsFields(),
+            QgsWkbTypes.Type.PolyhedralSurface,
+            crs,
+            True,
+            {"geometryColumn": "geom"},
+        )
+
+        tables = conn.tables("")
+        table_names = [t.tableName() for t in tables]
+        self.assertIn("test_polyhedral", table_names)
+
+        # Verify geometry type
+        table_info = conn.table("", "test_polyhedral")
+        self.assertEqual(table_info.geometryColumn(), "geom")
+
+        # Test TIN
+        conn.createVectorTable(
+            "",
+            "test_tin",
+            QgsFields(),
+            QgsWkbTypes.Type.TIN,
+            crs,
+            True,
+            {"geometryColumn": "geom"},
+        )
+
+        tables = conn.tables("")
+        table_names = [t.tableName() for t in tables]
+        self.assertIn("test_tin", table_names)
+
+        # Clean up
+        conn.dropVectorTable("", "test_polyhedral")
+        conn.dropVectorTable("", "test_tin")
+
+    def test_gpkg_create_spatial_index_with_geometry_column(self):
+        """Test creating spatial index with explicit geometry column name"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        # Create table without spatial index
+        conn.createVectorTable(
+            "",
+            "test_spatial_index",
+            QgsFields(),
+            QgsWkbTypes.Type.Point,
+            crs,
+            True,
+            {"layerOptions": "SPATIAL_INDEX=NO"},
+        )
+
+        # Reconnect to ensure metadata is flushed
+        del conn
+        conn = md.createConnection(self.uri, {})
+
+        # Verify table was created
+        table_info = conn.table("", "test_spatial_index")
+        geom_column = table_info.geometryColumn()
+        self.assertTrue(geom_column)  # Should have a geometry column
+
+        # Create spatial index with explicit geometry column name
+        options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
+        options.geometryColumnName = geom_column
+        conn.createSpatialIndex("", "test_spatial_index", options)
+
+        # Verify spatial index exists
+        self.assertTrue(conn.spatialIndexExists("", "test_spatial_index", geom_column))
+
+        # Clean up
+        conn.dropVectorTable("", "test_spatial_index")
+
 
 if __name__ == "__main__":
     unittest.main()
