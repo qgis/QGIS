@@ -441,11 +441,13 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
     {
       band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
     }
-    mHighlights.insert( layer, band );
-
+    mHighlights[layer] = QObjectUniquePtr<Qt3DCore::QEntity>( band );
     connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
   }
-  mHighlights[layer]->addPoint( pt );
+  if ( QgsRubberBand3D *band = dynamic_cast<QgsRubberBand3D *>( mHighlights[layer].get() ) )
+  {
+    band->addPoint( geom.vertexAt( 0 ) );
+  }
 }
 
 void Qgs3DMapCanvas::updateHighlightSizes()
@@ -456,7 +458,8 @@ void Qgs3DMapCanvas::updateHighlightSizes()
     {
       if ( mHighlights.contains( layer ) )
       {
-        mHighlights[layer]->setWidth( rnd->symbol()->pointSize() + 1 );
+        if ( QgsRubberBand3D *band = dynamic_cast<QgsRubberBand3D *>( mHighlights[layer].get() ) )
+          band->setWidth( rnd->symbol()->pointSize() + 1 );
       }
     }
   }
@@ -464,11 +467,10 @@ void Qgs3DMapCanvas::updateHighlightSizes()
 
 void Qgs3DMapCanvas::clearHighlights()
 {
-  for ( auto it = mHighlights.keyBegin(); it != mHighlights.keyEnd(); it++ )
+  for ( auto it = mHighlights.begin(); it != mHighlights.end(); it++ )
   {
-    disconnect( it.base().key(), &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
+    it->second.reset();
   }
 
-  qDeleteAll( mHighlights );
   mHighlights.clear();
 }

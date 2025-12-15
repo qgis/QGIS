@@ -20,7 +20,9 @@
 #include "qgis_3d.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
+#include "qobjectuniqueptr.h"
 
+#include <Qt3DCore/QEntity>
 #include <QtGui/QWindow>
 
 #ifndef SIP_RUN
@@ -28,7 +30,6 @@ namespace Qt3DCore
 {
   class QAspectEngine;
   class QAbstractAspect;
-  class QEntity;
 } // namespace Qt3DCore
 
 namespace Qt3DRender
@@ -299,8 +300,8 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     QgsTemporalController *mTemporalController = nullptr;
 
-    //! This holds and owns the rubber bands for highlighting identified features
-    QMap<QgsMapLayer *, QgsRubberBand3D *> mHighlights;
+    //! This holds and owns the entities for highlighting identified features
+    std::map<QgsMapLayer *, QObjectUniquePtr<Qt3DCore::QEntity>> mHighlights;
 };
 
 #endif //QGS3DMAPCANVAS_H
