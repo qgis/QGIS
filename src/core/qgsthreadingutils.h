@@ -36,6 +36,9 @@
 
 #if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
 #include <sys/prctl.h>
+#elif defined(Q_OS_FREEBSD)
+#include <pthread.h>
+#include <pthread_np.h>
 #endif
 
 #ifdef __clang_analyzer__
@@ -300,9 +303,11 @@ class QgsScopedThreadName
      */
     QgsScopedThreadName( const QString &name )
     {
-#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+#if ( defined(Q_OS_LINUX) && !defined(QT_LINUXBASE) ) || defined(Q_OS_FREEBSD)
       mOldName = getCurrentThreadName();
       setCurrentThreadName( name );
+#else
+      ( void )name;
 #endif
     }
 
@@ -311,14 +316,14 @@ class QgsScopedThreadName
      */
     ~QgsScopedThreadName()
     {
-#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+#if ( defined(Q_OS_LINUX) && !defined(QT_LINUXBASE) ) || defined(Q_OS_FREEBSD)
       setCurrentThreadName( mOldName );
 #endif
     }
 
   private:
 
-#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+#if ( defined(Q_OS_LINUX) && !defined(QT_LINUXBASE) ) || defined(Q_OS_FREEBSD)
     QString mOldName;
 
     static QString getCurrentThreadName()
@@ -326,6 +331,10 @@ class QgsScopedThreadName
 #if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
       char name[16];
       prctl( PR_GET_NAME, name, 0, 0, 0 );
+      return QString( name );
+#elif defined(Q_OS_FREEBSD)
+      char name[16];
+      pthread_get_name_np( pthread_self(), name, sizeof( name ) );
       return QString( name );
 #else
       return QString();
@@ -336,6 +345,8 @@ class QgsScopedThreadName
     {
 #if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
       prctl( PR_SET_NAME, name.toLocal8Bit().constData(), 0, 0, 0 );
+#elif defined(Q_OS_FREEBSD)
+      pthread_set_name_np( pthread_self(), name.toLocal8Bit().constData() );
 #else
       ( void )name;
 #endif
