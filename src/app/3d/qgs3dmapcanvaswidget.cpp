@@ -1249,7 +1249,7 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
     mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
-void Qgs3DMapCanvasWidget::setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width )
+void Qgs3DMapCanvasWidget::setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width, bool setSideView )
 {
   if ( !geom.isNull() && !geom.isEmpty() && geom.type() == Qgis::GeometryType::Line )
   {
@@ -1260,7 +1260,7 @@ void Qgs3DMapCanvasWidget::setCrossSectionRubberBandPolygonFromGeometry( const Q
     mCrossSectionLine = geom;
     const QgsGeometry buffered = geom.buffer( width, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 );
     mCrossSectionRubberBand->setToGeometry( buffered );
-    mCanvas->enableCrossSection( pt1, pt2, width, true );
+    mCanvas->enableCrossSection( pt1, pt2, width, setSideView );
   }
 }
 
@@ -1284,7 +1284,7 @@ void Qgs3DMapCanvasWidget::onCrossSectionToolFinished( const QgsGeometry &geom, 
 
   const double geomWidth = mClippingTolerance > 0 ? mClippingTolerance : mClippingToleranceAction->toleranceSpinBox()->value();
   if ( geomWidth > 0 )
-    setCrossSectionRubberBandPolygonFromGeometry( geom, geomWidth );
+    setCrossSectionRubberBandPolygonFromGeometry( geom, geomWidth, true );
 }
 
 void Qgs3DMapCanvasWidget::disableCrossSection()
@@ -1321,7 +1321,12 @@ void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side )
 
   const QgsGeometry nudgedLine = mCrossSectionLine.offsetCurve( side == Qgis::BufferSide::Left ? distance : -distance, 8, Qgis::JoinStyle::Miter, 2 );
 
-  setCrossSectionRubberBandPolygonFromGeometry( nudgedLine, distance / 2 );
+  const QgsPolylineXY previousCurve = mCrossSectionLine.asPolyline();
+  const QgsPolylineXY newCurve = nudgedLine.asPolyline();
+  const QgsVector cameraOffset = newCurve.first() - previousCurve.first();
+
+  setCrossSectionRubberBandPolygonFromGeometry( nudgedLine, distance / 2, false );
+  mCanvas->nudgeCameraXY( cameraOffset.x(), cameraOffset.y() );
 }
 
 void Qgs3DMapCanvasWidget::updateClippingRubberBand()
@@ -1330,7 +1335,7 @@ void Qgs3DMapCanvasWidget::updateClippingRubberBand()
     return;
 
   const double distance = mClippingToleranceAction->toleranceSpinBox()->value();
-  setCrossSectionRubberBandPolygonFromGeometry( mCrossSectionLine, distance );
+  setCrossSectionRubberBandPolygonFromGeometry( mCrossSectionLine, distance, false );
 }
 
 void Qgs3DMapCanvasWidget::setDynamicCrossSectionClippingTolerance( bool enabled )

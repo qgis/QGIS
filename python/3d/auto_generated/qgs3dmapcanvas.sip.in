@@ -130,6 +130,13 @@ has other clipping planes applied
 .. versionadded:: 4.0
 %End
 
+    void nudgeCameraXY( double dx, double dy );
+%Docstring
+Nudges the camera position by ``dx`` and ``dy`` in world coordinates.
+
+.. versionadded:: 4.0
+%End
+
     void crossSectionEnabledChanged( bool enabled );
 %Docstring
 Emitted when the cross section mode is enabled or disabled

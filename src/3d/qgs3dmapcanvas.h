@@ -147,6 +147,12 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      */
     bool crossSectionEnabled() const;
 
+    /**
+     * Nudges the camera position by \a dx and \a dy in world coordinates.
+     * \since QGIS 4.0
+     */
+    void nudgeCameraXY( double dx, double dy );
+
 #ifndef SIP_RUN
 
     /**
