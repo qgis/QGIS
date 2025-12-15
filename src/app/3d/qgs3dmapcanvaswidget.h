@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QPointer>
 #include <QToolBar>
+#include <QToolButton>
 #include <QWidgetAction>
 
 #define SIP_NO_FILE
@@ -158,7 +159,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;
     void setClippingTolerance( double tolerance );
     void setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width );
-    void setDynamicClipping( bool enabled );
+    void setDynamicCrossSectionClippingTolerance( bool enabled );
     void updateClippingRubberBand();
 
     QString mCanvasName;
@@ -181,6 +182,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QMenu *mExportMenu = nullptr;
     QMenu *mMapThemeMenu = nullptr;
     QMenu *mCameraMenu = nullptr;
+    QMenu *mCrossSectionMenu = nullptr;
     QMenu *mEffectsMenu = nullptr;
     QMenu *mEditingToolsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
@@ -194,6 +196,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionExport = nullptr;
     QAction *mActionMapThemes = nullptr;
     QAction *mActionCamera = nullptr;
+    QAction *mActionCrossSection = nullptr;
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QAction *mActionSetClippingPlanes = nullptr;
@@ -243,9 +246,14 @@ class Qgs3DMapClippingToleranceWidgetSettingsAction : public QWidgetAction
     Qgs3DMapClippingToleranceWidgetSettingsAction( QWidget *parent = nullptr );
 
     QgsDoubleSpinBox *toleranceSpinBox() { return mToleranceWidget; }
+    bool isLocked() const { return mLockButton && mLockButton->isChecked(); }
+
+  signals:
+    void lockStateChanged( bool locked );
 
   private:
     QgsDoubleSpinBox *mToleranceWidget = nullptr;
+    QToolButton *mLockButton = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H
