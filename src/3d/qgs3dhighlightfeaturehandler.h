@@ -49,14 +49,18 @@ class Qgs3DHighlightFeatureHandler : public QObject
     ~Qgs3DHighlightFeatureHandler();
 
   public slots:
-    //!
+    /**
+     * Highlights \a feature of \a layer in the 3d scene
+     * When multiple features are identified, this slot is called multiple times. The features are aggregated,
+     * and eventually a single highlight entity is added to the 3d scene for each layer.
+     */
     void highlightFeature( const QgsFeature &feature, QgsMapLayer *layer );
+
     //! Clears all highlights
     void clearHighlights();
 
   private slots:
-    //! Adjust highlights to match 3d renderer changes
-    void updateHighlightSizes();
+    void onRenderer3DChanged();
 
   private:
     void finalizeAndAddToScene( Qgs3DMapSceneEntity *entity );

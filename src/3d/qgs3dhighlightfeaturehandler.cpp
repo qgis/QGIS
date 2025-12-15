@@ -183,7 +183,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, 
         }
         mRubberBands.insert( layer, band );
 
-        connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DHighlightFeatureHandler::updateHighlightSizes );
+        connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DHighlightFeatureHandler::onRenderer3DChanged );
       }
       mRubberBands[layer]->addPoint( pt );
       return;
@@ -191,7 +191,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, 
   }
 }
 
-void Qgs3DHighlightFeatureHandler::updateHighlightSizes()
+void Qgs3DHighlightFeatureHandler::onRenderer3DChanged()
 {
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
@@ -245,7 +245,7 @@ void Qgs3DHighlightFeatureHandler::clearHighlights()
   // point cloud layer highlights
   for ( auto it = mRubberBands.keyBegin(); it != mRubberBands.keyEnd(); it++ )
   {
-    disconnect( it.base().key(), &QgsMapLayer::renderer3DChanged, this, &Qgs3DHighlightFeatureHandler::updateHighlightSizes );
+    disconnect( it.base().key(), &QgsMapLayer::renderer3DChanged, this, &Qgs3DHighlightFeatureHandler::onRenderer3DChanged );
   }
 
   qDeleteAll( mRubberBands );
