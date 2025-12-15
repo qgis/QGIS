@@ -22,6 +22,7 @@
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsfeature3dhandler_p.h"
+#include "qgsrulebased3dhighlightfactory_p.h"
 #include "qgsrulebasedchunkloader_p.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -413,4 +414,16 @@ void QgsRuleBased3DRenderer::readXml( const QDomElement &elem, const QgsReadWrit
   readXmlBaseProperties( elem, context );
 
   // root rule is read before class constructed
+}
+
+std::unique_ptr<QgsAbstractVectorLayer3DHighlightFactory> QgsRuleBased3DRenderer::createHighlightFactory( Qgs3DMapSettings *mapSettings ) const
+{
+  QgsVectorLayer *vectorLayer = layer();
+
+  if ( !vectorLayer )
+  {
+    return nullptr;
+  }
+
+  return std::make_unique<QgsRuleBased3DHighlightFactory>( mapSettings, vectorLayer, mRootRule );
 }

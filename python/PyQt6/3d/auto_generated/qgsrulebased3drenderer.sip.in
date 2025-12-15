@@ -260,6 +260,7 @@ Returns pointer to the root rule
     virtual QgsRuleBased3DRenderer *clone() const /Factory/;
 
 
+
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

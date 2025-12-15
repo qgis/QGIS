@@ -69,6 +69,7 @@ Returns 3D symbol associated with the renderer
     virtual QgsVectorLayer3DRenderer *clone() const /Factory/;
 
 
+
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

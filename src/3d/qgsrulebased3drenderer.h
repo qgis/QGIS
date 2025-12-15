@@ -306,6 +306,8 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
     QgsRuleBased3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
+    std::unique_ptr<QgsAbstractVectorLayer3DHighlightFactory> createHighlightFactory( Qgs3DMapSettings *mapSettings ) const override SIP_SKIP;
+
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
