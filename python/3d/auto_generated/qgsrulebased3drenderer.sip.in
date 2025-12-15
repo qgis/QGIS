@@ -239,6 +239,7 @@ store labeling info to XML element
 
 
 
+
       private:
         Rule( const QgsRuleBased3DRenderer::Rule &rh );
     };
