@@ -1391,9 +1391,18 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
 
   const double textWidthMM = textWidthPainterUnits * painterUnitsToMM ;
 
-  //relevant for annotations is the height of digits
-  const double textHeightPainterUnits = extension ? QgsTextRenderer::textHeight( context, mAnnotationFormat, QChar(), true )
-                                        : QgsTextRenderer::textHeight( context, mAnnotationFormat, '0', false );
+  double textHeightPainterUnits = 0;
+  if ( extension || doc.size() > 1 )
+  {
+    textHeightPainterUnits = sizePainterUnits.height();
+  }
+  else
+  {
+    // special logic for single line annotations -- using fixed digit height only.
+    // kept for pixel-perfect compatibility with existing renders prior to proper support for
+    // multi-line annotation labels
+    textHeightPainterUnits = QgsTextRenderer::textHeight( context, mAnnotationFormat, '0', false );
+  }
   const double textHeightMM = textHeightPainterUnits * painterUnitsToMM;
 
 
