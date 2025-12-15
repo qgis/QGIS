@@ -1700,7 +1700,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             {
               try
               {
-                conn2->createSpatialIndex( schemaName, tableName );
+                QgsAbstractDatabaseProviderConnection::SpatialIndexOptions spatialIndexOptions;
+                spatialIndexOptions.geometryColumnName = geometryColumn;
+                conn2->createSpatialIndex( schemaName, tableName, spatialIndexOptions );
               }
               catch ( QgsProviderConnectionException &ex )
               {
