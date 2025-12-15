@@ -359,7 +359,8 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SingleLineString,
     GeometryColumnCapability::SinglePoint,
     GeometryColumnCapability::SinglePolygon,
-    GeometryColumnCapability::Curves
+    GeometryColumnCapability::Curves,
+    GeometryColumnCapability::PolyhedralSurfaces
   };
   mSqlLayerDefinitionCapabilities =
   {
