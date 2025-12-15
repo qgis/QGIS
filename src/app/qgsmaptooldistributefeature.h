@@ -19,7 +19,6 @@
 #include "ui_qgsdistributefeatureuserinputwidget.h"
 
 #include "qgis_app.h"
-#include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointlocator.h"
@@ -45,7 +44,7 @@ class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizi
     void deactivate() override;
     void activate() override;
 
-    enum DistributeMode
+    enum class DistributeMode
     {
       FeatureCount,          //!< Distribute a fixed number of features with an undefined spacing
       FeatureSpacing,        //!< Distribute a undefined number of features with a fixed spacing
@@ -72,18 +71,17 @@ class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizi
 
   private:
     //! The mode, feature count, and feature spacing
-    int mFeatureCount;
-    double mFeatureSpacing;
-    DistributeMode mMode;
+    int mFeatureCount = settingsFeatureCount->value();
+    double mFeatureSpacing = settingsFeatureSpacing->value();
+    DistributeMode mMode = settingsMode->value();
 
     //! Start point of the move in map coordinates
     QgsPointXY mStartPointMapCoords;
     QgsPointXY mEndPointMapCoords;
 
     //! The current feature ID, geometry, and layer
-    QgsFeatureId mFeatureId;
-    QgsVectorLayer *mFeatureLayer;
     QgsFeatureList mFeatureList;
+    QgsVectorLayer *mFeatureLayer = nullptr;
 
     //! The user widget
     std::unique_ptr<QgsDistributeFeatureUserWidget> mUserInputWidget;

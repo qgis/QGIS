@@ -33,12 +33,6 @@ QgsMapToolDistributeFeature::QgsMapToolDistributeFeature( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Copy and distribute feature" );
-
-  mMode = QgsMapToolDistributeFeature::settingsMode->value();
-  mFeatureCount = QgsMapToolDistributeFeature::settingsFeatureCount->value();
-  mFeatureSpacing = QgsMapToolDistributeFeature::settingsFeatureSpacing->value();
-  mFeatureLayer = nullptr;
-
   setUseSnappingIndicator( true );
 }
 
@@ -60,8 +54,14 @@ void QgsMapToolDistributeFeature::activate()
 
 void QgsMapToolDistributeFeature::deactivate()
 {
+  // Delete rubberbands
   deleteRubberbands();
-  mUserInputWidget.reset();
+
+  // Remove user input widget
+  if ( mUserInputWidget )
+    mUserInputWidget.reset();
+
+  // Save current values in QgsSettings
   QgsMapToolDistributeFeature::settingsMode->setValue( mMode );
   QgsMapToolDistributeFeature::settingsFeatureCount->setValue( mFeatureCount );
   QgsMapToolDistributeFeature::settingsFeatureSpacing->setValue( mFeatureSpacing );
@@ -106,7 +106,7 @@ void QgsMapToolDistributeFeature::setFeatureCount( int featureCount )
 
 void QgsMapToolDistributeFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( mRubberBand )
+  if ( !mStartPointMapCoords.isEmpty() )
   {
     mEndPointMapCoords = e->mapPoint();
     updateRubberband();
@@ -144,9 +144,9 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( !mRubberBand )
+  if ( mStartPointMapCoords.isEmpty() )
   {
-    // No rubberband means no copy is in progress, find the closest feature to begin a new copy
+    // No start point means no copy is in progress, find the closest feature to begin a new copy
 
     // Get the selected feature or find the closest feature
     if ( vlayer->selectedFeatureCount() > 0 )
@@ -222,6 +222,8 @@ void QgsMapToolDistributeFeature::deleteRubberbands()
   mRubberBand.reset();
   mStartPointMapCoords = QgsPointXY();
   mEndPointMapCoords = QgsPointXY();
+  mFeatureList.clear();
+  mFeatureLayer = nullptr;
 }
 
 void QgsMapToolDistributeFeature::updateRubberband()
