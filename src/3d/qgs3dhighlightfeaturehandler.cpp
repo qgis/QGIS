@@ -39,7 +39,14 @@ Qgs3DHighlightFeatureHandler::Qgs3DHighlightFeatureHandler( Qgs3DMapScene *scene
 {
 }
 
-Qgs3DHighlightFeatureHandler::~Qgs3DHighlightFeatureHandler() = default;
+Qgs3DHighlightFeatureHandler::~Qgs3DHighlightFeatureHandler()
+{
+  qDeleteAll( mHighlightHandlers );
+  for ( auto it = mHighlightRuleBasedHandlers.constBegin(); it != mHighlightRuleBasedHandlers.constEnd(); ++it )
+  {
+    qDeleteAll( it.value() );
+  }
+}
 
 void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, QgsMapLayer *layer )
 {
@@ -221,7 +228,12 @@ void Qgs3DHighlightFeatureHandler::finalizeAndAddToScene( Qgs3DMapSceneEntity *e
 void Qgs3DHighlightFeatureHandler::clearHighlights()
 {
   mHighlightHandlerTimer.reset();
+  qDeleteAll( mHighlightHandlers );
   mHighlightHandlers.clear();
+  for ( auto it = mHighlightRuleBasedHandlers.constBegin(); it != mHighlightRuleBasedHandlers.constEnd(); ++it )
+  {
+    qDeleteAll( it.value() );
+  }
   mHighlightRuleBasedHandlers.clear();
   // vector layer highlights
   for ( Qt3DCore::QEntity *e : std::as_const( mHighlightEntities ) )
