@@ -1,0 +1,71 @@
+/***************************************************************************
+    qgs3dhighlightfeaturehandler.h
+    ---------------------
+    begin                : December 2025
+    copyright            : (C) 2025 by Stefanos Natsis
+    email                : uclaros at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGS3DHIGHLIGHTFEATUREHANDLER_H
+#define QGS3DHIGHLIGHTFEATUREHANDLER_H
+
+#include <QObject>
+
+class QTimer;
+class Qgs3DMapScene;
+class Qgs3DMapSceneEntity;
+class QgsFeature3DHandler;
+class QgsFeature;
+class QgsMapLayer;
+class QgsRubberBand3D;
+
+#define SIP_NO_FILE
+
+/**
+ * \ingroup qgis_3d
+ * \brief Handles the creation of 3D entities used for highlighting identified features
+ * \note Not available in Python bindings
+ *
+ * \since QGIS 4.0
+ */
+class Qgs3DHighlightFeatureHandler : public QObject
+{
+    Q_OBJECT
+
+  public:
+    //! Constructor
+    explicit Qgs3DHighlightFeatureHandler( Qgs3DMapScene *scene );
+    ~Qgs3DHighlightFeatureHandler();
+
+  public slots:
+    //!
+    void highlightFeature( const QgsFeature &feature, QgsMapLayer *layer );
+    //! Clears all highlights
+    void clearHighlights();
+
+  private slots:
+    //! Adjust highlights to match 3d renderer changes
+    void updateHighlightSizes();
+
+  private:
+    Qgs3DMapScene *mScene;
+    //! This holds the rubber bands for highlighting identified point cloud features
+    QMap<QgsMapLayer *, QgsRubberBand3D *> mRubberBands;
+    //! This holds the entities for highlighting identified vector features
+    QVector<Qgs3DMapSceneEntity *> mHighlightEntities;
+    //! Per layer feature handlers for vector 3d renderers
+    std::map<QgsMapLayer *, std::unique_ptr<QgsFeature3DHandler>> mHighlightHandlers;
+    //! Per layer feature handlers for rule based 3d renderers
+    std::map<QgsMapLayer *, std::unique_ptr<QgsFeature3DHandler>> mHighlightHandlersRuleBased;
+    //! Singleshot timer is used to trigger finalizing the 3d entities and adding them to the scene
+    std::unique_ptr<QTimer> mHighlightHandlerTimer;
+};
+
+#endif // QGS3DHIGHLIGHTFEATUREHANDLER_H

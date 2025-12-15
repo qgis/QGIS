@@ -139,6 +139,7 @@ Emitted when the cross section mode is enabled or disabled
 .. versionadded:: 4.0
 %End
 
+
   protected:
     virtual void showEvent( QShowEvent *e );
 

@@ -12,6 +12,7 @@ set(QGIS_3D_SRCS
   qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
+  qgs3dhighlightfeaturehandler.cpp
   qgs3dmapexportsettings.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
@@ -96,6 +97,7 @@ set(QGIS_3D_SRCS
   framegraph/qgsdepthentity.cpp
   framegraph/qgsdepthrenderview.cpp
   framegraph/qgsforwardrenderview.cpp
+  framegraph/qgshighlightsrenderview.cpp
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgsrenderpassquad.cpp
   framegraph/qgsshadowrenderview.cpp
@@ -148,6 +150,7 @@ set(QGIS_3D_HDRS
   qgs3danimationsettings.h
   qgs3daxis.h
   qgs3daxissettings.h
+  qgs3dhighlightfeaturehandler.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
   qgs3dmaptool.h
@@ -221,6 +224,7 @@ set(QGIS_3D_HDRS
   framegraph/qgsforwardrenderview.h
   framegraph/qgsframegraph.h
   framegraph/qgsframegraphutils.h
+  framegraph/qgshighlightsrenderview.h
   framegraph/qgspostprocessingentity.h
   framegraph/qgsrenderpassquad.h
   framegraph/qgsshadowrenderview.h

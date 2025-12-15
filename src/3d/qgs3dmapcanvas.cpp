@@ -13,6 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgs3dmapcanvas.h"
+
+#include "qgs3daxis.h"
+#include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dmaptool.h"
+#include "qgs3dutils.h"
+#include "qgsframegraph.h"
+#include "qgsraycastcontext.h"
+#include "qgstemporalcontroller.h"
+#include "qgswindow3dengine.h"
+
 #include <Qt3DCore/QAspectEngine>
 
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
@@ -24,26 +36,7 @@
 #include <Qt3DInput/QInputSettings>
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DLogic/QFrameAction>
-
-#include "qgs3daxis.h"
-#include "qgs3dmapcanvas.h"
-#include "qgs3dmapscene.h"
-#include "qgswindow3dengine.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3dmaptool.h"
-#include "qgstemporalcontroller.h"
-#include "qgsframegraph.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgsrubberband3d.h"
-#include "qgs3dutils.h"
-#include "qgsraycastcontext.h"
-#include "qgsfeature3dhandler_p.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
-#include "qgsvectorlayer3drenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsgeotransform.h"
-#include "qgshighlightmaterial.h"
+#include <QTimer>
 
 #include "moc_qgs3dmapcanvas.cpp"
 
@@ -94,8 +87,6 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
-  qDeleteAll( mHighlights );
-  mHighlights.clear();
 
   delete m_aspectEngine;
 }
@@ -171,6 +162,8 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
   connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
   connect( mScene, &Qgs3DMapScene::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged );
+
+  mHighlightsHandler.reset( new Qgs3DHighlightFeatureHandler( mScene ) );
 
   delete mMapSettings;
   mMapSettings = mapSettings;
@@ -429,140 +422,10 @@ QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
 
 void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *layer )
 {
-  switch ( layer->type() )
-  {
-    // we only support point clouds and vector for now
-    case Qgis::LayerType::Raster:
-    case Qgis::LayerType::Plugin:
-    case Qgis::LayerType::Mesh:
-    case Qgis::LayerType::VectorTile:
-    case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledScene:
-      return;
-
-    case Qgis::LayerType::Vector:
-    {
-      const QgsGeometry geom = feature.geometry();
-
-      QgsAbstract3DRenderer *r3d = layer->renderer3D();
-      QgsVectorLayer3DRenderer *vr3d = dynamic_cast<QgsVectorLayer3DRenderer *>( r3d );
-
-      // We only support polygon 3d symbol for now
-      if ( !vr3d || !vr3d->symbol() || vr3d->symbol()->type() != QLatin1String( "polygon" ) )
-        return;
-
-      QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( layer );
-      QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( vLayer, vr3d->symbol() );
-      if ( !handler )
-      {
-        QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + vr3d->symbol()->type() );
-        return;
-      }
-
-      Qgs3DRenderContext renderContext = Qgs3DRenderContext::fromMapSettings( mMapSettings );
-      renderContext.expressionContext().setFeature( feature );
-
-      QgsExpressionContext exprContext;
-      exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-      exprContext.setFields( vLayer->fields() );
-      renderContext.setExpressionContext( exprContext );
-
-      QSet<QString> attributeNames;
-      const QgsVector3D origin( geom.boundingBox().center().x(), geom.boundingBox().center().y(), 0 );
-      if ( !handler->prepare( renderContext, attributeNames, renderContext.origin() ) )
-      {
-        QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
-        return;
-      }
-
-      handler->processFeature( feature, renderContext );
-
-      QgsFrameGraph *frameGraph = mEngine->frameGraph();
-      Qt3DCore::QEntity *highlightsRootEntity = frameGraph->highlightsRootEntity();
-      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( highlightsRootEntity );
-      entity->setObjectName( QStringLiteral( "%1_highlight" ).arg( vLayer->name() ) );
-      handler->finalize( entity, renderContext );
-
-      entity->addComponent( frameGraph->highlightsLayer() );
-
-      // todo: maybe we could set the origin when the geotransform is attached, in the handler code
-      const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
-      for ( QgsGeoTransform *transform : transforms )
-      {
-        transform->setOrigin( mMapSettings->origin() );
-      }
-
-      // we remove existing material and replace them with the highlight material
-      const QList<QgsMaterial *> materials = entity->findChildren<QgsMaterial *>();
-      for ( QgsMaterial *mat : materials )
-      {
-        // material is not necessarily direct child of entity, so let's grab its parent
-        Qt3DCore::QEntity *materialParent = static_cast<Qt3DCore::QEntity *>( mat->parentNode() );
-        materialParent->removeComponent( mat );
-        materialParent->addComponent( new QgsHighlightMaterial );
-      }
-
-      mHighlightEntities.append( entity );
-      return;
-    }
-
-    case Qgis::LayerType::PointCloud:
-    {
-      const QgsGeometry geom = feature.geometry();
-      const QgsPoint pt( geom.vertexAt( 0 ) );
-
-      if ( !mHighlights.contains( layer ) )
-      {
-        QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
-
-        const QgsSettings settings;
-        const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-        band->setColor( color );
-        band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
-        if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
-        {
-          band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
-        }
-        mHighlights.insert( layer, band );
-
-        connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
-      }
-      mHighlights[layer]->addPoint( pt );
-      return;
-    }
-  }
-}
-
-void Qgs3DMapCanvas::updateHighlightSizes()
-{
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
-  {
-    if ( QgsPointCloudLayer3DRenderer *rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
-    {
-      if ( mHighlights.contains( layer ) )
-      {
-        mHighlights[layer]->setWidth( rnd->symbol()->pointSize() + 1 );
-      }
-    }
-  }
+  mHighlightsHandler->highlightFeature( feature, layer );
 }
 
 void Qgs3DMapCanvas::clearHighlights()
 {
-  // vector layer highlights
-  for ( Qt3DCore::QEntity *e : std::as_const( mHighlightEntities ) )
-  {
-    e->deleteLater();
-  }
-  mHighlightEntities.clear();
-
-  // point cloud layer highlights
-  for ( auto it = mHighlights.keyBegin(); it != mHighlights.keyEnd(); it++ )
-  {
-    disconnect( it.base().key(), &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
-  }
-
-  qDeleteAll( mHighlights );
-  mHighlights.clear();
+  mHighlightsHandler->clearHighlights();
 }

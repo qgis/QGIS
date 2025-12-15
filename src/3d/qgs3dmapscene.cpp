@@ -37,6 +37,7 @@
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
+#include "qgshighlightsrenderview.h"
 #include "qgslinematerial_p.h"
 #include "qgslogger.h"
 #include "qgsmaplayerelevationproperties.h"
@@ -51,6 +52,7 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspostprocessingentity.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgsshadowrenderview.h"
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
 #include "qgssourcecache.h"
@@ -576,6 +578,11 @@ void Qgs3DMapScene::createTerrainDeferred()
 
   if ( terrainOrGlobe )
   {
+    // The terrain is not added through addSceneEntity(), so we add the required QLayers here
+    QgsFrameGraph *frameGraph = mEngine->frameGraph();
+    terrainOrGlobe->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    terrainOrGlobe->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
+
     terrainOrGlobe->setParent( this );
     terrainOrGlobe->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
@@ -906,8 +913,19 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     bm->setViewportSize( mEngine->size() );
   }
 
-  // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  // Here we check if the entity should not be rendered during the initial forward pass
+  // For example highlights should only be rendered during their own pass, so we check for attached QLayers
+  const QVector<Qt3DRender::QLayer *> layers = newEntity->componentsOfType<Qt3DRender::QLayer>();
+  if ( layers.contains( frameGraph->highlightsRenderView().highlightsLayer() ) )
+    return;
+
+  // Add the required QLayers to the entity
+  newEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
+  newEntity->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
+
+  // Finalize adding the 3D transparent objects by adding the layer components to the entities
   Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView().transparentObjectLayer();
   const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
@@ -1314,12 +1332,6 @@ void Qgs3DMapScene::onOriginChanged()
 
   const QList<QgsGeoTransform *> rubberBandGeoTransforms = mEngine->frameGraph()->rubberBandsRootEntity()->findChildren<QgsGeoTransform *>();
   for ( QgsGeoTransform *transform : rubberBandGeoTransforms )
-  {
-    transform->setOrigin( mMap.origin() );
-  }
-
-  const QList<QgsGeoTransform *> highlightsGeoTransforms = mEngine->frameGraph()->highlightsRootEntity()->findChildren<QgsGeoTransform *>();
-  for ( QgsGeoTransform *transform : highlightsGeoTransforms )
   {
     transform->setOrigin( mMap.origin() );
   }
