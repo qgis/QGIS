@@ -20,7 +20,7 @@ __date__ = "January 2013"
 __copyright__ = "(C) 2013, Victor Olaya"
 
 import warnings
-import numpy as np
+import math
 
 from qgis.core import (
     QgsProcessingException,
@@ -90,15 +90,6 @@ class PolarPlot(QgisAlgorithm):
                 )
             )
 
-        try:
-            import numpy as np
-        except ImportError:
-            raise QgsProcessingException(
-                self.tr(
-                    "This algorithm requires the Python “numpy” library. Please install this library and try again."
-                )
-            )
-
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(
@@ -111,10 +102,18 @@ class PolarPlot(QgisAlgorithm):
         # Modern replacement for vector.values
         values = [f[valuefieldname] for f in source.getFeatures()]
 
+        # Calculate angles without numpy
+        count = len(values)
+        if count > 0:
+            step = 360.0 / count
+            theta = [i * step for i in range(count)]
+        else:
+            theta = []
+
         data = [
             go.Barpolar(
                 r=values,
-                theta=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values))),
+                theta=theta,
             )
         ]
 
