@@ -61,8 +61,8 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, 
       QgsExpressionContext exprContext;
       exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
       exprContext.setFields( vLayer->fields() );
+      exprContext.setFeature( feature );
       Qgs3DRenderContext renderContext = Qgs3DRenderContext::fromMapSettings( mScene->mapSettings() );
-      renderContext.expressionContext().setFeature( feature );
       renderContext.setExpressionContext( exprContext );
 
       if ( mHighlightHandlers.contains( layer ) )
