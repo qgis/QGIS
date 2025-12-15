@@ -34,7 +34,7 @@
 #include "moc_qgsvectorlayer3drendererwidget.cpp"
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mLayer( layer )
 {
   // If layer is null, the widget cannot be created.
@@ -69,14 +69,19 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   if ( r && r->type() == "vector"_L1 )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
-    widgetSymbol->setSymbol( vectorRenderer->symbol(), mLayer );
+    setSymbol( vectorRenderer->symbol() );
   }
   else
   {
     const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
     sym->setDefaultPropertiesFromLayer( mLayer );
-    widgetSymbol->setSymbol( sym.get(), mLayer );
+    setSymbol( sym.get() );
   }
+}
+
+void QgsSingleSymbol3DRendererWidget::setSymbol( const QgsAbstract3DSymbol *symbol )
+{
+  widgetSymbol->setSymbol( symbol, mLayer );
 }
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
