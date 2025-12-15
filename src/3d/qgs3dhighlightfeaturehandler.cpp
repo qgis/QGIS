@@ -65,82 +65,95 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, 
       Qgs3DRenderContext renderContext = Qgs3DRenderContext::fromMapSettings( mScene->mapSettings() );
       renderContext.setExpressionContext( exprContext );
 
-      if ( mHighlightHandlers.contains( layer ) )
+      QgsAbstract3DRenderer *renderer = layer->renderer3D();
+      if ( !renderer )
+        return;
+
+      if ( renderer->type() == QLatin1String( "vector" ) )
       {
-        if ( !mHighlightHandlers[layer] )
-          return;
+        if ( !mHighlightHandlers.contains( layer ) )
+        {
+          QgsVectorLayer3DRenderer *renderer3d = static_cast<QgsVectorLayer3DRenderer *>( renderer );
+
+          // We only support polygon 3d symbol for now
+          if ( !renderer3d || !renderer3d->symbol() || renderer3d->symbol()->type() != QLatin1String( "polygon" ) )
+          {
+            return;
+          }
+
+          std::unique_ptr<QgsFeature3DHandler> handler( QgsApplication::symbol3DRegistry()->createHandlerForSymbol( vLayer, renderer3d->symbol() ) );
+          if ( !handler )
+          {
+            QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + renderer3d->symbol()->type() );
+            return;
+          }
+
+          QSet<QString> attributeNames;
+          const QgsGeometry geom = feature.geometry();
+          const QgsVector3D origin( geom.boundingBox().center().x(), geom.boundingBox().center().y(), 0 );
+          if ( !handler->prepare( renderContext, attributeNames, renderContext.origin() ) )
+          {
+            QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
+            return;
+          }
+
+          mHighlightHandlers[layer] = handler.release();
+        }
 
         mHighlightHandlers[layer]->processFeature( feature, renderContext );
       }
-      else
+      else if ( renderer->type() == QLatin1String( "rulebased" ) )
       {
-        QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layer->renderer3D() );
-
-        // We only support polygon 3d symbol for now
-        if ( !renderer3d || !renderer3d->symbol() || renderer3d->symbol()->type() != QLatin1String( "polygon" ) )
+        QgsRuleBased3DRenderer *ruleBasedRenderer = static_cast<QgsRuleBased3DRenderer *>( renderer );
+        QgsRuleBased3DRenderer::Rule *rootRule = ruleBasedRenderer->rootRule();
+        if ( !mHighlightRuleBasedHandlers.contains( layer ) )
         {
-          mHighlightHandlers[layer] = nullptr;
-          return;
+          QgsRuleBased3DRenderer::RuleToHandlerMap handlers;
+          rootRule->createHandlers( vLayer, handlers );
+          QSet<QString> attributeNames;
+          const QgsGeometry geom = feature.geometry();
+          const QgsVector3D origin( geom.boundingBox().center().x(), geom.boundingBox().center().y(), 0 );
+          rootRule->prepare( renderContext, attributeNames, origin, handlers );
+          mHighlightRuleBasedHandlers[layer] = handlers;
         }
 
-        std::unique_ptr<QgsFeature3DHandler> handler( QgsApplication::symbol3DRegistry()->createHandlerForSymbol( vLayer, renderer3d->symbol() ) );
-        if ( !handler )
-        {
-          QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + renderer3d->symbol()->type() );
-          mHighlightHandlers[layer] = nullptr;
-          return;
-        }
-
-        QSet<QString> attributeNames;
-        const QgsGeometry geom = feature.geometry();
-        const QgsVector3D origin( geom.boundingBox().center().x(), geom.boundingBox().center().y(), 0 );
-        if ( !handler->prepare( renderContext, attributeNames, renderContext.origin() ) )
-        {
-          QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
-          mHighlightHandlers[layer] = nullptr;
-          return;
-        }
-
-        handler->processFeature( feature, renderContext );
-        mHighlightHandlers[layer] = std::move( handler );
-
-        // We'll use a singleshot timer to handle the entity creation once we stop receiving highlighted features
-        if ( !mHighlightHandlerTimer )
-        {
-          mHighlightHandlerTimer = std::make_unique<QTimer>();
-          mHighlightHandlerTimer->setSingleShot( true );
-          mHighlightHandlerTimer->setInterval( 0 );
-          connect( mHighlightHandlerTimer.get(), &QTimer::timeout, this, [this, renderContext] {
-            for ( auto it = mHighlightHandlers.cbegin(); it != mHighlightHandlers.cend(); ++it )
-            {
-              if ( !it->second )
-                continue;
-
-              Qgs3DMapSceneEntity *entity = new Qgs3DMapSceneEntity( mScene->mapSettings(), nullptr );
-              entity->setObjectName( QStringLiteral( "%1_highlight" ).arg( it->first->name() ) );
-              it->second->finalize( entity, renderContext );
-
-              // We need the highlights layer to force rendering on highlights renderview only
-              QgsFrameGraph *frameGraph = mScene->engine()->frameGraph();
-              entity->addComponent( frameGraph->highlightsRenderView().highlightsLayer() );
-
-              // we remove existing material and replace them with the highlight material
-              const QList<QgsMaterial *> materials = entity->findChildren<QgsMaterial *>();
-              for ( QgsMaterial *mat : materials )
-              {
-                // material is not necessarily direct child of entity, so let's grab its parent
-                Qt3DCore::QEntity *materialParent = static_cast<Qt3DCore::QEntity *>( mat->parentNode() );
-                materialParent->removeComponent( mat );
-                materialParent->addComponent( new QgsHighlightMaterial );
-              }
-
-              mScene->addSceneEntity( entity );
-              mHighlightEntities.append( entity );
-            }
-          } );
-          mHighlightHandlerTimer->start();
-        }
+        rootRule->registerFeature( feature, renderContext, mHighlightRuleBasedHandlers[layer] );
       }
+
+      // We'll use a singleshot timer to handle the entity creation, it will be served once we stop receiving highlighted features
+      if ( !mHighlightHandlerTimer && ( !mHighlightHandlers.isEmpty() || !mHighlightRuleBasedHandlers.isEmpty() ) )
+      {
+        mHighlightHandlerTimer = std::make_unique<QTimer>();
+        mHighlightHandlerTimer->setSingleShot( true );
+        mHighlightHandlerTimer->setInterval( 0 );
+        connect( mHighlightHandlerTimer.get(), &QTimer::timeout, this, [this, renderContext] {
+          for ( auto it = mHighlightHandlers.constBegin(); it != mHighlightHandlers.constEnd(); ++it )
+          {
+            Qgs3DMapSceneEntity *entity = new Qgs3DMapSceneEntity( mScene->mapSettings(), nullptr );
+            entity->setObjectName( QStringLiteral( "%1_highlight" ).arg( it.key()->name() ) );
+            QgsFeature3DHandler *handler = it.value();
+            handler->finalize( entity, renderContext );
+
+            finalizeAndAddToScene( entity );
+          }
+
+          for ( auto rulesIt = mHighlightRuleBasedHandlers.constBegin(); rulesIt != mHighlightRuleBasedHandlers.constEnd(); ++rulesIt )
+          {
+            Qgs3DMapSceneEntity *entity = new Qgs3DMapSceneEntity( mScene->mapSettings(), nullptr );
+            entity->setObjectName( QStringLiteral( "%1_highlight" ).arg( rulesIt.key()->name() ) );
+
+            for ( auto handlersIt = rulesIt.value().constBegin(); handlersIt != rulesIt.value().constEnd(); ++handlersIt )
+            {
+              QgsFeature3DHandler *handler = handlersIt.value();
+              handler->finalize( entity, renderContext );
+            }
+
+            finalizeAndAddToScene( entity );
+          }
+        } );
+        mHighlightHandlerTimer->start();
+      }
+
       return;
     }
 
@@ -185,10 +198,31 @@ void Qgs3DHighlightFeatureHandler::updateHighlightSizes()
   }
 }
 
+void Qgs3DHighlightFeatureHandler::finalizeAndAddToScene( Qgs3DMapSceneEntity *entity )
+{
+  // We need the highlights layer to force rendering on highlights renderview only
+  QgsFrameGraph *frameGraph = mScene->engine()->frameGraph();
+  entity->addComponent( frameGraph->highlightsRenderView().highlightsLayer() );
+
+  // we remove existing material and replace them with the highlight material
+  const QList<QgsMaterial *> materials = entity->findChildren<QgsMaterial *>();
+  for ( QgsMaterial *mat : materials )
+  {
+    // material is not necessarily direct child of entity, so let's grab its parent
+    Qt3DCore::QEntity *materialParent = static_cast<Qt3DCore::QEntity *>( mat->parentNode() );
+    materialParent->removeComponent( mat );
+    materialParent->addComponent( new QgsHighlightMaterial );
+  }
+
+  mScene->addSceneEntity( entity );
+  mHighlightEntities.append( entity );
+}
+
 void Qgs3DHighlightFeatureHandler::clearHighlights()
 {
   mHighlightHandlerTimer.reset();
   mHighlightHandlers.clear();
+  mHighlightRuleBasedHandlers.clear();
   // vector layer highlights
   for ( Qt3DCore::QEntity *e : std::as_const( mHighlightEntities ) )
   {

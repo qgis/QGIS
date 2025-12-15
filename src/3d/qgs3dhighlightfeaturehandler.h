@@ -16,7 +16,11 @@
 #ifndef QGS3DHIGHLIGHTFEATUREHANDLER_H
 #define QGS3DHIGHLIGHTFEATUREHANDLER_H
 
+#include "qgsrulebased3drenderer.h"
+
+#include <QMap>
 #include <QObject>
+#include <QVector>
 
 class QTimer;
 class Qgs3DMapScene;
@@ -55,15 +59,17 @@ class Qgs3DHighlightFeatureHandler : public QObject
     void updateHighlightSizes();
 
   private:
+    void finalizeAndAddToScene( Qgs3DMapSceneEntity *entity );
+
     Qgs3DMapScene *mScene;
     //! This holds the rubber bands for highlighting identified point cloud features
     QMap<QgsMapLayer *, QgsRubberBand3D *> mRubberBands;
     //! This holds the entities for highlighting identified vector features
     QVector<Qgs3DMapSceneEntity *> mHighlightEntities;
     //! Per layer feature handlers for vector 3d renderers
-    std::map<QgsMapLayer *, std::unique_ptr<QgsFeature3DHandler>> mHighlightHandlers;
+    QMap<QgsMapLayer *, QgsFeature3DHandler *> mHighlightHandlers;
     //! Per layer feature handlers for rule based 3d renderers
-    std::map<QgsMapLayer *, std::unique_ptr<QgsFeature3DHandler>> mHighlightHandlersRuleBased;
+    QMap<QgsMapLayer *, QgsRuleBased3DRenderer::RuleToHandlerMap> mHighlightRuleBasedHandlers;
     //! Singleshot timer is used to trigger finalizing the 3d entities and adding them to the scene
     std::unique_ptr<QTimer> mHighlightHandlerTimer;
 };
