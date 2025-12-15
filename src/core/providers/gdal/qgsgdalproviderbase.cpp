@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgdalproviderbase.h"
+
 ///@cond PRIVATE
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok

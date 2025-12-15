@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgslistwidget.h"
-#include "moc_qgslistwidget.cpp"
+
 #include "qgsvariantutils.h"
+
+#include "moc_qgslistwidget.cpp"
 
 QgsListWidget::QgsListWidget( QMetaType::Type subType, QWidget *parent )
   : QgsTableWidgetBase( parent )

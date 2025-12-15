@@ -11,6 +11,7 @@
 
 
 
+
 class QgsDataItem : QObject
 {
 %Docstring(signature="appended")
@@ -72,7 +73,10 @@ this item.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    bool hasChildren();
+    bool hasChildren() const;
+%Docstring
+Returns whether this item has children.
+%End
 
     virtual bool layerCollection() const;
 %Docstring
@@ -83,7 +87,10 @@ if their children are layers.
 .. versionadded:: 3.14
 %End
 
-    int rowCount();
+    int rowCount() const;
+%Docstring
+Returns the number of rows of this item
+%End
 
     virtual QVector<QgsDataItem *> createChildren() /TransferBack/;
 %Docstring
@@ -431,18 +438,19 @@ Ownership of the returned objects is transferred to the caller.
 Refresh the items from a specified list of child items.
 %End
 
-    bool deferredDelete();
+    bool deferredDelete() const;
 %Docstring
-The item is scheduled to be deleted. E.g. if
-:py:func:`~QgsDataItem.deleteLater` is called when item is in Populating
-state (:py:func:`~QgsDataItem.createChildren` running in another
-thread), the :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and
-item will be deleted once Populating finished. Items with slow
-:py:func:`~QgsDataItem.reateChildren` (for example network or database
-based) may check during :py:func:`~QgsDataItem.createChildren` if
-:py:func:`~QgsDataItem.deferredDelete` returns ``True`` and return from
-:py:func:`~QgsDataItem.createChildren` immediately because result will
-be useless.
+Returns ``True`` if the item is scheduled to be deleted.
+
+E.g. if :py:func:`~QgsDataItem.deleteLater` is called when item is in
+Populating state (:py:func:`~QgsDataItem.createChildren` running in
+another thread), the :py:func:`~QgsDataItem.deferredDelete` returns
+``True`` and item will be deleted once Populating finished. Items with
+slow :py:func:`~QgsDataItem.reateChildren` (for example network or
+database based) may check during :py:func:`~QgsDataItem.createChildren`
+if :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and return
+from :py:func:`~QgsDataItem.createChildren` immediately because result
+will be useless.
 %End
 
 

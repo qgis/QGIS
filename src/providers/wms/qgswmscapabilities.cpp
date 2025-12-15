@@ -14,26 +14,27 @@
  ***************************************************************************/
 
 #include "qgswmscapabilities.h"
-#include "moc_qgswmscapabilities.cpp"
-#include "qgswmsprovider.h"
-
-#include <QFile>
-#include <QDir>
-#include <QNetworkCacheMetaData>
-#include <QRegularExpression>
-#include <QUrlQuery>
 
 #include "qgis.h"
-#include "qgssettings.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsexception.h"
+#include "qgssettings.h"
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
+#include "qgswmsprovider.h"
+
+#include <QDir>
+#include <QFile>
+#include <QNetworkCacheMetaData>
+#include <QRegularExpression>
+#include <QUrlQuery>
+
+#include "moc_qgswmscapabilities.cpp"
 
 bool QgsWmsSettings::parseUri( const QString &uriString )
 {
@@ -2480,13 +2481,17 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   mIsAborted = false;
 
   QString url = mBaseUrl;
+
+
   if ( !QgsWmsProvider::isUrlForWMTS( url ) )
   {
     url += QLatin1String( "SERVICE=WMS&REQUEST=GetCapabilities" );
   }
+
   QgsDebugMsgLevel( QStringLiteral( "url = %1" ).arg( url ), 2 );
 
   mError.clear();
+
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsCapabilitiesDownload" ) );

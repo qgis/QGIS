@@ -15,30 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssvgselectorwidget.h"
-#include "moc_qgssvgselectorwidget.cpp"
 
 #include "qgsapplication.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsfieldexpressionwidget.h"
 #include "qgssymbollayerwidget.h"
 #include "qgsvectorlayer.h"
 
 #include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileDialog>
+#include <QMenu>
 #include <QModelIndex>
 #include <QPixmapCache>
+#include <QSortFilterProxyModel>
 #include <QStyle>
 #include <QTime>
-#include <QMenu>
+
+#include "moc_qgssvgselectorwidget.cpp"
 
 // QgsSvgSelectorLoader
 

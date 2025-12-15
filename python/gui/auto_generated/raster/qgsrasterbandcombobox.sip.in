@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRasterBandComboBox : QComboBox
 {
 %Docstring(signature="appended")

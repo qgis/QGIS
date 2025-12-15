@@ -15,12 +15,14 @@
 
 #include "qgsgdalcloudconnection.h"
 
+#include <gdal.h>
+
 #include "qgsdatasourceuri.h"
-#include "qgssettingsentryimpl.h"
 #include "qgsgdalutils.h"
+#include "qgssettingsentryimpl.h"
+
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-#include <gdal.h>
 
 ///@cond PRIVATE
 

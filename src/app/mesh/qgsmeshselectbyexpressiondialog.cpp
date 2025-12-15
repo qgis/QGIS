@@ -14,14 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmeshselectbyexpressiondialog.h"
-#include "moc_qgsmeshselectbyexpressiondialog.cpp"
-
-#include <QAction>
 
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+
+#include <QAction>
+
+#include "moc_qgsmeshselectbyexpressiondialog.cpp"
 
 QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *parent )
   : QDialog( parent )

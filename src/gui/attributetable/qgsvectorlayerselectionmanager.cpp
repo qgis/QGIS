@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerselectionmanager.h"
-#include "moc_qgsvectorlayerselectionmanager.cpp"
 
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorlayerselectionmanager.cpp"
 
 QgsVectorLayerSelectionManager::QgsVectorLayerSelectionManager( QgsVectorLayer *layer, QObject *parent )
   : QgsIFeatureSelectionManager( parent )

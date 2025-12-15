@@ -16,12 +16,13 @@
 #ifndef QGSSERVEROGCAPIHANDLER_H
 #define QGSSERVEROGCAPIHANDLER_H
 
-#include <QRegularExpression>
-#include "qgis_server.h"
-#include "qgsserverquerystringparameter.h"
-#include "qgsserverogcapi.h"
 #include <nlohmann/json_fwd.hpp>
-#include "inja/inja.hpp"
+
+#include "qgis_server.h"
+#include "qgsserverogcapi.h"
+#include "qgsserverquerystringparameter.h"
+
+#include <QRegularExpression>
 
 #ifndef SIP_RUN
 using namespace nlohmann;

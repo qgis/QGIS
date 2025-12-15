@@ -14,45 +14,47 @@
  ***************************************************************************/
 
 #include "qgsmaprendererjob.h"
-#include "moc_qgsmaprendererjob.cpp"
 
-#include <QPainter>
+#include <memory>
+
+#include "qgselevationmap.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgeometrypaintdevice.h"
+#include "qgsgeos.h"
+#include "qgslabelingengine.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgsmaplayerstyle.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaprenderercache.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerlabeling.h"
+#include "qgsmessagelog.h"
+#include "qgspainting.h"
+#include "qgspallabeling.h"
+#include "qgsrasterlabeling.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrendercontext.h"
+#include "qgsrendereditemresults.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsvectorlayerrenderer.h"
+#include "qgsvectorlayerutils.h"
+
 #include <QElapsedTimer>
+#include <QPainter>
+#include <QPicture>
 #include <QTimer>
 #include <QtConcurrentMap>
 
-#include <QPicture>
-
-#include "qgslogger.h"
-#include "qgsrendercontext.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsmaprenderercache.h"
-#include "qgsrasterlayer.h"
-#include "qgsmessagelog.h"
-#include "qgspallabeling.h"
-#include "qgsexception.h"
-#include "qgslabelingengine.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgsmaplayerelevationproperties.h"
-#include "qgsmaplayerstyle.h"
-#include "qgsvectorlayerrenderer.h"
-#include "qgsrendereditemresults.h"
-#include "qgsgeometrypaintdevice.h"
-#include "qgsrasterrenderer.h"
-#include "qgselevationmap.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingstree.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshlayerlabeling.h"
-#include "qgsrasterlabeling.h"
-#include "qgsgeos.h"
-#include "qgspainting.h"
+#include "moc_qgsmaprendererjob.cpp"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
 const QgsSettingsEntryString *QgsMapRendererJob::settingsMaskBackend = new QgsSettingsEntryString( QStringLiteral( "mask-backend" ), QgsSettingsTree::sTreeMap, QString(), QStringLiteral( "Backend engine to use for selective masking" ) );
@@ -65,6 +67,9 @@ const QString QgsMapRendererJob::LABEL_PREVIEW_CACHE_ID = QStringLiteral( "_prev
 
 LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mContext = std::move( other.mContext );
 
   img = other.img;
@@ -729,7 +734,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.context()->setElevationMap( job.elevationMap );
     }
 
-    if ( ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
+    if ( job.renderer && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
     {
       if ( canUseCache && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage ) && mCache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
       {
@@ -933,7 +938,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   }
   else if ( !labelJob.picture && !canUseImage )
   {
-    labelJob.picture.reset( new QPicture() );
+    labelJob.picture = std::make_unique<QPicture>( );
   }
 
   // first we initialize painter and mask painter for all jobs
@@ -1334,7 +1339,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   const QgsElevationShadingRenderer mapShadingRenderer = settings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
-    mainElevationMap.reset( new QgsElevationMap( settings.deviceOutputSize(), settings.devicePixelRatio() ) );
+    mainElevationMap = std::make_unique<QgsElevationMap>( settings.deviceOutputSize(), settings.devicePixelRatio() );
 
   QPainter painter( &image );
 

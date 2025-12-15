@@ -16,10 +16,9 @@
 #ifndef QGSAPPMAPTOOLS_H
 #define QGSAPPMAPTOOLS_H
 
-#include <QList>
 #include <QHash>
+#include <QList>
 #include <QPointer>
-
 
 class QgsMapTool;
 class QgsMapToolCapture;
@@ -45,6 +44,7 @@ class QgsAppMapTools
       MoveFeature,
       MoveFeatureCopy,
       OffsetCurve,
+      ChamferFillet,
       ReshapeFeatures,
       SplitFeatures,
       SplitParts,

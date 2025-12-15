@@ -14,12 +14,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtGlobal>
-
 #include <cmath>
+#include <cstdio>
 #include <ctime>
 #include <iostream>
-#include <cstdio>
+
+#include <QtGlobal>
+
 #ifndef Q_OS_WIN
 #include <sys/resource.h>
 #endif
@@ -121,10 +122,7 @@ QgsBench::QgsBench( int width, int height, int iterations )
   : mWidth( width )
   , mHeight( height )
   , mIterations( iterations )
-  , mSetExtent( false )
-  , mUserStart( 0.0 )
-  , mSysStart( 0.0 )
-  , mParallel( false )
+
 {
   QgsDebugMsgLevel( QStringLiteral( "mIterations = %1" ).arg( mIterations ), 1 );
 

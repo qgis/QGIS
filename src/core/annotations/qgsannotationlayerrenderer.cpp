@@ -15,16 +15,20 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerrenderer.h"
+
+#include <optional>
+
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
-#include "qgsrenderedannotationitemdetails.h"
 #include "qgspainteffect.h"
 #include "qgsrendercontext.h"
-#include <optional>
+#include "qgsrenderedannotationitemdetails.h"
+#include "qgsthreadingutils.h"
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( std::make_unique< QgsFeedback >() )
+  , mLayerName( layer->name() )
   , mLayerOpacity( layer->opacity() )
   , mLayerBlendMode( layer->blendMode() )
 {
@@ -79,6 +83,8 @@ QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
 
 bool QgsAnnotationLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   QgsRenderContext &context = *renderContext();
 
   if ( mPaintEffect )

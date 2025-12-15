@@ -30,7 +30,7 @@ class QWT_EXPORT QwtPlotSvgItem : public QwtPlotGraphicItem
   public:
     explicit QwtPlotSvgItem( const QString& title = QString() );
     explicit QwtPlotSvgItem( const QwtText& title );
-    virtual ~QwtPlotSvgItem();
+    ~QwtPlotSvgItem() override;
 
     bool loadFile( const QRectF&, const QString& fileName );
     bool loadData( const QRectF&, const QByteArray& );

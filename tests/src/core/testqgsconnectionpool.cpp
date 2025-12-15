@@ -17,16 +17,17 @@
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgspoint.h"
 #include "qgslinestring.h"
+#include "qgspoint.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+
 #include <QEventLoop>
+#include <QFutureWatcher>
 #include <QObject>
 #include <QTemporaryFile>
 #include <QtConcurrentMap>
-#include <QFutureWatcher>
-#include "qgstest.h"
 
 class TestQgsConnectionPool : public QObject
 {
@@ -77,7 +78,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   const int nRoutePts = 10;
   QTemporaryFile testFile( QStringLiteral( "testXXXXXX.gpx" ) );
   testFile.setAutoRemove( false );
-  testFile.open();
+  QVERIFY( testFile.open() );
   testFile.write( "<gpx version=\"1.1\" creator=\"qgis\">\n" );
   for ( int i = 0; i < nWaypoints; ++i )
   {

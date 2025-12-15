@@ -25,8 +25,8 @@
 
 #include <QObject>
 #include <QPointer>
-#include <qtypeinfo.h>
 #include <QtDebug>
+#include <qtypeinfo.h>
 
 class QVariant;
 
@@ -91,6 +91,10 @@ class QObjectUniquePtr
 
     QObjectUniquePtr &operator=( QObjectUniquePtr &&other ) noexcept
     {
+      if ( &other == this )
+        return *this;
+
+      delete mPtr.data();
       mPtr = other.mPtr;
       other.clear();
       return *this;

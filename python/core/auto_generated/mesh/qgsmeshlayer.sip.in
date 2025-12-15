@@ -133,6 +133,8 @@ connect to and access the data.
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
     virtual QgsAbstractProfileSource *profileSource();
+    virtual QString profileSourceId() const;
+    virtual QString profileSourceName() const;
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
      virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
@@ -165,8 +167,7 @@ connect to and access the data.
 
     virtual bool supportsEditing() const;
 
-    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
-
+    QString loadDefaultStyle( bool &resultFlag /Out/ ) final;
 
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
 %Docstring

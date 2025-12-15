@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgssinglebandpseudocolorrenderer.h"
+
 #include "qgscolorramp.h"
+#include "qgscolorramplegendnode.h"
 #include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgscolorramplegendnode.h"
 #include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>

@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgserrordialog.h"
-#include "moc_qgserrordialog.cpp"
+
 #include "qgssettings.h"
 
 #include <QMessageBox>
+
+#include "moc_qgserrordialog.cpp"
 
 QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

@@ -34,7 +34,7 @@ class QWT_EXPORT QwtTextLabel : public QFrame
   public:
     explicit QwtTextLabel( QWidget* parent = NULL );
     explicit QwtTextLabel( const QwtText&, QWidget* parent = NULL );
-    virtual ~QwtTextLabel();
+    ~QwtTextLabel() override;
 
     void setPlainText( const QString& );
     QString plainText() const;

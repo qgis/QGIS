@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstablewidgetitem.h"
+
 #include "qgis.h"
 
 QgsTableWidgetItem::QgsTableWidgetItem( const QString &text )

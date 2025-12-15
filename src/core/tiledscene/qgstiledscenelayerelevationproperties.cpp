@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerelevationproperties.h"
-#include "moc_qgstiledscenelayerelevationproperties.cpp"
+
 #include "qgstiledscenelayer.h"
+
+#include "moc_qgstiledscenelayerelevationproperties.cpp"
 
 QgsTiledSceneLayerElevationProperties::QgsTiledSceneLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

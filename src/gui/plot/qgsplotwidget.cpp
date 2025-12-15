@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsplotwidget.h"
-#include "moc_qgsplotwidget.cpp"
+
 #include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsbarchartplot.h"
 #include "qgscolorrampbutton.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
 #include "qgslinechartplot.h"
 #include "qgslinesymbol.h"
-#include "qgsplotregistry.h"
-#include "qgsbarchartplot.h"
-#include "qgspiechartplot.h"
 #include "qgsnumericformatselectorwidget.h"
+#include "qgspiechartplot.h"
+#include "qgsplotregistry.h"
 
+#include "moc_qgsplotwidget.cpp"
 
 void QgsPlotWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
@@ -44,12 +45,12 @@ QgsExpressionContext QgsPlotWidget::createExpressionContext() const
     context.appendScope( QgsExpressionContextUtils::globalScope() );
   }
 
-  std::unique_ptr<QgsExpressionContextScope> plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
+  auto plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QString(), true ) );
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), 0.0, true ) );
   context.appendScope( plotScope.release() );
 
-  std::unique_ptr<QgsExpressionContextScope> chartScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "chart" ) );
+  auto chartScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "chart" ) );
   chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), QString(), true ) );
   chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), 0.0, true ) );
   context.appendScope( chartScope.release() );
@@ -799,7 +800,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
 
   // Marker
   symbolButton = new QgsSymbolButton( this );
-  symbolButton->setFixedSizeContraints( false );
+  symbolButton->setFixedSizeConstraints( false );
   symbolButton->setSymbolType( Qgis::SymbolType::Marker );
   symbolButton->setShowNull( true );
   symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartMarkerSymbol() );
@@ -863,7 +864,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 
     // Marker
     symbolButton = new QgsSymbolButton( this );
-    symbolButton->setFixedSizeContraints( false );
+    symbolButton->setFixedSizeConstraints( false );
     symbolButton->setSymbolType( Qgis::SymbolType::Marker );
     symbolButton->setShowNull( true );
     symbolButton->setSymbol( i < chartPlot->markerSymbolCount() ? chartPlot->markerSymbolAt( i )->clone() : nullptr );

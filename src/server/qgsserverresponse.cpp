@@ -18,9 +18,9 @@
  ***************************************************************************/
 
 #include "qgsserverresponse.h"
+
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
-
 
 void QgsServerResponse::write( const QString &data )
 {

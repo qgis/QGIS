@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QMenu>
-
 #include "qgsmssqlnewconnection.h"
-#include "moc_qgsmssqlnewconnection.cpp"
-#include "qgsmssqlprovider.h"
-#include "qgssettings.h"
+
+#include "qgsgui.h"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
-#include "qgsgui.h"
+#include "qgsmssqlprovider.h"
+#include "qgssettings.h"
+
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QSqlDatabase>
+#include <QSqlError>
+
+#include "moc_qgsmssqlnewconnection.cpp"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -118,7 +120,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   groupBoxSchemasFilter->setCollapsed( !groupBoxSchemasFilter->isChecked() );
 }
 
-//! Autoconnected SLOTS
+//! Autoconnected slots
 void QgsMssqlNewConnection::accept()
 {
   QgsSettings settings;
@@ -200,7 +202,7 @@ void QgsMssqlNewConnection::cb_trustedConnection_clicked()
   }
 }
 
-//! End  Autoconnected SLOTS
+//! End  Autoconnected slots
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {

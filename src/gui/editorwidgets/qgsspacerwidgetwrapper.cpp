@@ -15,9 +15,10 @@
  ***************************************************************************/
 
 #include "qgsspacerwidgetwrapper.h"
-#include "moc_qgsspacerwidgetwrapper.cpp"
-#include "qframe.h"
 
+#include <qframe.h>
+
+#include "moc_qgsspacerwidgetwrapper.cpp"
 
 QgsSpacerWidgetWrapper::QgsSpacerWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )

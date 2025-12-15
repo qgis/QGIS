@@ -36,6 +36,26 @@ May return ``None`` if the source cannot generate a profile at this
 time.
 %End
 
+    virtual QString profileSourceId() const;
+%Docstring
+Returns a unique identifier for this profile source.
+
+For map layer sources, the source ID will match the layer's
+:py:func:`QgsMapLayer.id()`. Other (non-map-layer) sources will have a
+different unique ID with its own custom interpretation.
+
+.. versionadded:: 4.0.0
+%End
+    virtual QString profileSourceName() const;
+%Docstring
+Returns a name for displaying this profile source in the elevation
+profile layer tree.
+
+For map layer sources, the name displayed in the elevation profile tree
+will be taken from and synchronized to the layer's name.
+
+.. versionadded:: 4.0.0
+%End
 };
 
 /************************************************************************

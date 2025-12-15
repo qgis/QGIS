@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgstiledscenetexturerenderer.h"
-#include "qgspainting.h"
+
 #include "qgsfillsymbol.h"
+#include "qgspainting.h"
 #include "qgssymbollayerutils.h"
 
 QgsTiledSceneTextureRenderer::QgsTiledSceneTextureRenderer()

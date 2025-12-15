@@ -15,13 +15,11 @@
 
 #include "qgstiledscenelayer3drenderer.h"
 
+#include "qgs3dmapsettings.h"
+#include "qgstiledscenechunkloader_p.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
-#include "qgstiledscenechunkloader_p.h"
 #include "qgstiledscenelayerelevationproperties.h"
-
-#include "qgs3dmapsettings.h"
-
 
 QgsTiledSceneLayer3DRendererMetadata::QgsTiledSceneLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "tiledscene" ) )
@@ -66,7 +64,7 @@ Qt3DCore::QEntity *QgsTiledSceneLayer3DRenderer::createEntity( Qgs3DMapSettings 
 
   QgsTiledSceneIndex index = tsl->dataProvider()->index();
 
-  return new QgsTiledSceneLayerChunkedEntity( map, index, tsl->dataProvider()->sceneCrs(), maximumScreenError(), showBoundingBoxes(), qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zScale(), qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zOffset() );
+  return new QgsTiledSceneLayerChunkedEntity( map, index, tsl->dataProvider()->sceneCrs(), tsl->dataProvider()->crs(), maximumScreenError(), showBoundingBoxes(), qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zScale(), qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zOffset() );
 }
 
 void QgsTiledSceneLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

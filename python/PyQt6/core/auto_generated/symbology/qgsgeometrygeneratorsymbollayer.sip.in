@@ -65,6 +65,8 @@ created by this generator.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
+    virtual bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const;
+
 
     virtual QgsSymbolLayer *clone() const /Factory/;
 

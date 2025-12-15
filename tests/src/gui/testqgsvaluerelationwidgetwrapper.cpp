@@ -14,23 +14,24 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-#include <QScrollBar>
-#include <QSignalSpy>
+#include <gdal_version.h>
+#include <nlohmann/json.hpp>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <qgsapplication.h>
-#include <qgsproject.h>
-#include <qgsvectorlayer.h>
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "editorwidgets/qgsvaluerelationwidgetwrapper.h"
+#include "qgsapplication.h"
 #include "qgsattributeform.h"
 #include "qgsattributeformeditorwidget.h"
 #include "qgseditorwidgetwrapper.h"
-#include <editorwidgets/qgsvaluerelationwidgetwrapper.h>
 #include "qgsfilterlineedit.h"
-#include <QComboBox>
 #include "qgsgui.h"
-#include <gdal_version.h>
-#include <nlohmann/json.hpp>
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QComboBox>
+#include <QScrollBar>
+#include <QSignalSpy>
 
 class TestQgsValueRelationWidgetWrapper : public QObject
 {
@@ -227,6 +228,13 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   QCOMPARE( w_municipality.mComboBox->count(), 1 );
   QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.value().toString(), QStringLiteral( "1" ) );
+
+  // Test that drill down works when the parent attribute changes
+  // Test regression GH #63448
+  w_municipality.widgetValueChanged( QStringLiteral( "fk_province" ), 245, true );
+  QCOMPARE( w_municipality.mComboBox->count(), 1 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Dreamland By The Clouds" ) );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "2" ) );
 
   // Filter by geometry
   cfg_municipality[QStringLiteral( "FilterExpression" )] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );

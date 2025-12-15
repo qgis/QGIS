@@ -15,37 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdiagramproperties.h"
+
 #include "diagram/qgshistogramdiagram.h"
 #include "diagram/qgspiediagram.h"
-#include "diagram/qgstextdiagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
-
-#include "qgsproject.h"
+#include "diagram/qgstextdiagram.h"
 #include "qgsapplication.h"
+#include "qgsauxiliarystorage.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"
-#include "qgsdiagramproperties.h"
-#include "moc_qgsdiagramproperties.cpp"
 #include "qgsdiagramrenderer.h"
-#include "qgsfeatureiterator.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgspropertytransformer.h"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
+#include "qgsfeatureiterator.h"
 #include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgsproject.h"
+#include "qgspropertytransformer.h"
+#include "qgssettings.h"
+#include "qgssymbolselectordialog.h"
 
 #include <QList>
 #include <QMessageBox>
-#include <QStyledItemDelegate>
 #include <QRandomGenerator>
+#include <QStyledItemDelegate>
+
+#include "moc_qgsdiagramproperties.cpp"
 
 QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
@@ -406,6 +407,27 @@ void QgsDiagramProperties::insertDefaults()
   mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
 }
 
+void QgsDiagramProperties::updateDataDefinedButtons()
+{
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
+  {
+    updateDataDefinedButton( button );
+  }
+}
+
+void QgsDiagramProperties::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  if ( !button )
+    return;
+
+  if ( button->propertyKey() < 0 )
+    return;
+
+  const QgsWidgetWrapper::Property key = static_cast<QgsWidgetWrapper::Property>( button->propertyKey() );
+  whileBlocking( button )->setToProperty( mDataDefinedProperties.property( key ) );
+}
+
 void QgsDiagramProperties::syncToLayer()
 {
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
@@ -620,6 +642,7 @@ void QgsDiagramProperties::syncToSettings( const QgsDiagramLayerSettings *dls )
     mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
 
     mDataDefinedProperties = dls->dataDefinedProperties();
+    updateDataDefinedButtons();
   }
 }
 

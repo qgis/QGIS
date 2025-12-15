@@ -13,18 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
-#include <qgsgeometry.h>
-#include <qgsspatialindex.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
+#include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
+#include "qgsspatialindex.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
+#include <QElapsedTimer>
+#include <QObject>
+#include <QString>
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {

@@ -14,22 +14,23 @@
  ***************************************************************************/
 
 #include "qgstemplateprojectsmodel.h"
-#include "moc_qgstemplateprojectsmodel.cpp"
-#include "qgsziputils.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgis.h"
-#include "qgsprojectlistitemdelegate.h"
-#include "qgsproject.h"
-
-#include <QApplication>
-#include <QStandardPaths>
-#include <QDir>
-#include <QCryptographicHash>
-#include <QPainter>
 
 #include <memory>
 
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgsprojectlistitemdelegate.h"
+#include "qgssettings.h"
+#include "qgsziputils.h"
+
+#include <QApplication>
+#include <QCryptographicHash>
+#include <QDir>
+#include <QPainter>
+#include <QStandardPaths>
+
+#include "moc_qgstemplateprojectsmodel.cpp"
 
 QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   : QStandardItemModel( parent )

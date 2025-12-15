@@ -14,19 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresproviderconnection.h"
-#include "qgspostgresconn.h"
-#include "qgspostgresconnpool.h"
-#include "qgspostgresprovidermetadatautils.h"
-#include "qgssettings.h"
-#include "qgspostgresprovider.h"
-#include "qgsexception.h"
-#include "qgsapplication.h"
-#include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
-#include <QRegularExpression>
-#include <QIcon>
 
 #include <chrono>
+
+#include "qgsapplication.h"
+#include "qgsexception.h"
+#include "qgsfeedback.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresconnpool.h"
+#include "qgspostgresprovider.h"
+#include "qgspostgresprovidermetadatautils.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QIcon>
+#include <QRegularExpression>
 
 extern "C"
 {
@@ -1946,9 +1948,63 @@ void QgsPostgresProviderConnection::renameField( const QString &schema, const QS
 
 void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const
 {
-  const QString sql = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" )
-                        .arg( QgsPostgresConn::quotedIdentifier( sourceSchema ) )
-                        .arg( QgsPostgresConn::quotedIdentifier( tableName ) )
-                        .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) );
-  executeSqlPrivate( sql );
+  const QString sqlMoveToSchema = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" );
+
+  const QString sqlMoveTable = sqlMoveToSchema.arg( QgsPostgresConn::quotedIdentifier( sourceSchema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedIdentifier( targetSchema ) );
+
+  auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
+  QgsPostgresLayerProperty property;
+  // need property from target schema, it is already moved
+  bool ok = conn->get()->supportedLayer( property, sourceSchema, tableName );
+
+  if ( !ok )
+  {
+    throw QgsProviderConnectionException( QStringLiteral( "Table `%1` requested for move, does not exist." ).arg( tableName ) );
+  }
+
+  QString sqlAdditionalCommands;
+  // if raster table is moved the overview info is not updated so we need to do it manually
+  // also the overviews are moved to the same schema as the raster
+  if ( property.isRaster )
+  {
+    // first take a look if there were overviews for the moved raster
+    const QString sqlOverviews = QStringLiteral( "SELECT o_table_schema, o_table_name, o_raster_column, overview_factor FROM public.raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2;" )
+                                   .arg( QgsPostgresConn::quotedValue( sourceSchema ), QgsPostgresConn::quotedValue( tableName ) );
+
+    const QList<QVariantList> results = executeSqlPrivate( sqlOverviews );
+
+    for ( const QVariantList &result : std::as_const( results ) )
+    {
+      const QString overviewSchema = result.at( 0 ).toString();
+      const QString overviewTableName = result.at( 1 ).toString();
+      const QString overviewRastCol = result.at( 2 ).toString();
+      const QVariant overviewFactor = result.at( 3 );
+
+      // drop the overview constraint
+      const QString sqlDropConstraint = QStringLiteral( "SELECT DropOverviewConstraints(%1, %2, %3);" )
+                                          .arg( QgsPostgresConn::quotedValue( overviewSchema ), QgsPostgresConn::quotedValue( overviewTableName ), QgsPostgresConn::quotedValue( overviewRastCol ) );
+      sqlAdditionalCommands.append( sqlDropConstraint );
+
+      // move overview table to the target schema
+      const QString sqlMoveOverview = sqlMoveToSchema.arg( QgsPostgresConn::quotedIdentifier( overviewSchema ), QgsPostgresConn::quotedIdentifier( overviewTableName ), QgsPostgresConn::quotedIdentifier( targetSchema ) );
+      sqlAdditionalCommands.append( sqlMoveOverview );
+
+      // create the overview constraint with updated info
+      const QString sqlAddConstraint = QStringLiteral( "SELECT AddOverviewConstraints(%1, %2, %3, %4, %5, %6, %7);" )
+                                         .arg( QgsPostgresConn::quotedValue( targetSchema ), QgsPostgresConn::quotedValue( overviewTableName ), QgsPostgresConn::quotedValue( overviewRastCol ), QgsPostgresConn::quotedValue( targetSchema ), QgsPostgresConn::quotedValue( tableName ), QgsPostgresConn::quotedValue( property.geometryColName ), QgsPostgresConn::quotedValue( overviewFactor ) );
+      sqlAdditionalCommands.append( sqlAddConstraint );
+    }
+  }
+
+  conn->get()->begin();
+
+  QgsPostgresResult resMove( conn->get()->LoggedPQexec( "QgsPostgresProviderConnection", QStringLiteral( "%1 %2" ).arg( sqlMoveTable ).arg( sqlAdditionalCommands ) ) );
+
+  if ( resMove.PQresultStatus() == PGRES_FATAL_ERROR )
+  {
+    conn->get()->rollback();
+    throw QgsProviderConnectionException( QStringLiteral( "Cannot move `%1` to schema `%2`." ).arg( tableName ).arg( targetSchema ) );
+  }
+
+  conn->get()->commit();
 }

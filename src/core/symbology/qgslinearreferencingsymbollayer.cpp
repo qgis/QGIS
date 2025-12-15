@@ -14,22 +14,23 @@
  ***************************************************************************/
 
 #include "qgslinearreferencingsymbollayer.h"
-#include "qgsrendercontext.h"
-#include "qgstextrenderer.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsmarkersymbol.h"
-#include "qgsnumericformatregistry.h"
+
+#include "feature.h"
+#include "labelposition.h"
 #include "qgsapplication.h"
 #include "qgsbasicnumericformat.h"
 #include "qgsgeometryutils.h"
-#include "qgsunittypes.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgsmarkersymbol.h"
+#include "qgsnumericformatregistry.h"
+#include "qgspallabeling.h"
+#include "qgspolygon.h"
+#include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgstextlabelfeature.h"
-#include "qgsgeos.h"
-#include "qgspallabeling.h"
-#include "labelposition.h"
-#include "feature.h"
+#include "qgstextrenderer.h"
+#include "qgsunittypes.h"
 
 ///@cond PRIVATE
 class QgsTextLabelFeatureWithFormat : public QgsTextLabelFeature
@@ -58,7 +59,7 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       mPriority = 0;
     }
 
-    ~QgsLinearReferencingSymbolLayerLabelProvider()
+    ~QgsLinearReferencingSymbolLayerLabelProvider() override
     {
       qDeleteAll( mLabels );
     }

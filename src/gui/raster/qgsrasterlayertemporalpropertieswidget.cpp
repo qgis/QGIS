@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
-#include "moc_qgsrasterlayertemporalpropertieswidget.cpp"
-#include "qgsrasterdataprovidertemporalcapabilities.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsmaplayerconfigwidget.h"
+
+#include "qgsapplication.h"
 #include "qgsdatetimeedit.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsunittypes.h"
-#include "qgsapplication.h"
-#include "qgsrasterrendererregistry.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayertemporalproperties.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsunittypes.h"
 
-#include <QMenu>
 #include <QAction>
+#include <QMenu>
+
+#include "moc_qgsrasterlayertemporalpropertieswidget.cpp"
 
 QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsRasterLayer *layer )
   : QWidget( parent )
@@ -145,6 +147,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
   temporalProperties->setFixedRangePerBand( mFixedRangePerBandModel->rangeData() );
 
   temporalProperties->setTemporalRepresentationOffset( mOffsetDateTimeEdit->dateTime() );
+  temporalProperties->setAccumulatePixels( mAccumulateCheckBox->isChecked() );
 
   const QgsInterval scale( mScaleSpinBox->value(), static_cast<Qgis::TemporalUnit>( mScaleUnitComboBox->currentData().toInt() ) );
   temporalProperties->setTemporalRepresentationScale( scale );
@@ -200,6 +203,7 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
 
   mOffsetDateTimeEdit->setDateTime( temporalProperties->temporalRepresentationOffset() );
+  mAccumulateCheckBox->setChecked( temporalProperties->accumulatePixels() );
 
   mScaleSpinBox->setValue( temporalProperties->temporalRepresentationScale().originalDuration() );
   mScaleUnitComboBox->setCurrentIndex( mScaleUnitComboBox->findData( static_cast<int>( temporalProperties->temporalRepresentationScale().originalUnit() ) ) );

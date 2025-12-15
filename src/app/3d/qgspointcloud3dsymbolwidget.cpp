@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgspointcloud3dsymbolwidget.h"
-#include "moc_qgspointcloud3dsymbolwidget.cpp"
 
-#include "qgspointcloudlayer.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgsapplication.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudattributebyramprenderer.h"
-#include "qgspointcloudrgbrenderer.h"
-#include "qgspointcloudclassifiedrenderer.h"
 #include "qgsdoublevalidator.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrgbrenderer.h"
 #include "qgsstackedwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
+
+#include "moc_qgspointcloud3dsymbolwidget.cpp"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -200,13 +201,13 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   if ( symbol->symbolType() == QLatin1String( "single-color" ) )
   {
     mStackedWidget->setCurrentIndex( 2 );
-    QgsSingleColorPointCloud3DSymbol *symb = dynamic_cast<QgsSingleColorPointCloud3DSymbol *>( symbol );
+    QgsSingleColorPointCloud3DSymbol *symb = qgis::down_cast<QgsSingleColorPointCloud3DSymbol *>( symbol );
     mSingleColorBtn->setColor( symb->singleColor() );
   }
   else if ( symbol->symbolType() == QLatin1String( "color-ramp" ) )
   {
     mStackedWidget->setCurrentIndex( 3 );
-    QgsColorRampPointCloud3DSymbol *symb = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
+    QgsColorRampPointCloud3DSymbol *symb = qgis::down_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
 
     // we will be restoring the existing ramp classes -- we don't want to regenerate any automatically!
     mBlockSetMinMaxFromLayer = true;
@@ -223,7 +224,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   {
     mStackedWidget->setCurrentIndex( 4 );
 
-    QgsRgbPointCloud3DSymbol *symb = dynamic_cast<QgsRgbPointCloud3DSymbol *>( symbol );
+    QgsRgbPointCloud3DSymbol *symb = qgis::down_cast<QgsRgbPointCloud3DSymbol *>( symbol );
     mRedAttributeComboBox->setAttribute( symb->redAttribute() );
     mGreenAttributeComboBox->setAttribute( symb->greenAttribute() );
     mBlueAttributeComboBox->setAttribute( symb->blueAttribute() );
@@ -237,7 +238,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   else if ( symbol->symbolType() == QLatin1String( "classification" ) )
   {
     mStackedWidget->setCurrentIndex( 5 );
-    QgsClassificationPointCloud3DSymbol *symb = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( symbol );
+    QgsClassificationPointCloud3DSymbol *symb = qgis::down_cast<QgsClassificationPointCloud3DSymbol *>( symbol );
     mClassifiedRendererWidget->setFromCategories( symb->categoriesList(), symb->attribute() );
   }
   else
@@ -462,7 +463,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     }
     else if ( newSymbolType == QLatin1String( "color-ramp" ) && mLayer->renderer()->type() == QLatin1String( "ramp" ) )
     {
-      const QgsPointCloudAttributeByRampRenderer *renderer2d = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
+      const QgsPointCloudAttributeByRampRenderer *renderer2d = qgis::down_cast<const QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
       mBlockChangedSignals++;
       mRenderingParameterComboBox->setAttribute( renderer2d->attribute() );
       mColorRampShaderMinEdit->setValue( renderer2d->minimum() );
@@ -471,9 +472,9 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( renderer2d->minimum(), renderer2d->maximum() );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "rgb" ) )
+    else if ( newSymbolType == QLatin1String( "rgb" ) && mLayer->renderer()->type() == QLatin1String( "rgb" ) )
     {
-      const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast<const QgsPointCloudRgbRenderer *>( mLayer->renderer() );
+      const QgsPointCloudRgbRenderer *renderer2d = qgis::down_cast<const QgsPointCloudRgbRenderer *>( mLayer->renderer() );
       mBlockChangedSignals++;
       if ( renderer2d )
       {
@@ -509,7 +510,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       ( void ) ( renderer2d );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "classification" ) )
+    else if ( newSymbolType == QLatin1String( "classification" ) && mLayer->renderer()->type() == QLatin1String( "classified" ) )
     {
       mClassifiedRendererWidget->setFromRenderer( mLayer->renderer() );
     }

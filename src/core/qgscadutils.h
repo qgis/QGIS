@@ -17,11 +17,10 @@
 #ifndef QGSCADUTILS_H
 #define QGSCADUTILS_H
 
-#include <QQueue>
-
 #include "qgis_core.h"
 #include "qgspointlocator.h"
 
+#include <QQueue>
 
 class QgsSnappingUtils;
 
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsCadUtils
         //! Snapping utils that will be used to snap point to map. Must not be NULLPTR.
         QgsSnappingUtils *snappingUtils = nullptr;
         //! Map units/pixel ratio from map canvas.
-        double mapUnitsPerPixel;
+        double mapUnitsPerPixel = 1;
 
         //! Constraint for X coordinate
         QgsCadUtils::AlignMapPointConstraint xConstraint;

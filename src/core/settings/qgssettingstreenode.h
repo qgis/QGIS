@@ -16,11 +16,11 @@
 #ifndef QGSSETTINGSTREENODE_H
 #define QGSSETTINGSTREENODE_H
 
-#include <QObject>
-
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QObject>
 
 class QgsSettingsTreeNamedListNode;
 class QgsSettingsEntryBase;
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsSettingsTreeNode
 class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
 {
   public:
-    virtual ~QgsSettingsTreeNamedListNode();
+    ~QgsSettingsTreeNamedListNode() override;
 
     /**
      *  Returns the list of items

@@ -18,9 +18,10 @@
 #ifndef QGSPROCESSINGPROVIDER_H
 #define QGSPROCESSINGPROVIDER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprocessingalgorithm.h"
+
 #include <QIcon>
 
 /**
@@ -142,8 +143,25 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputVectorLayerExtensions()
      * \see supportedOutputPointCloudLayerExtensions()
      * \see supportedOutputVectorTileLayerExtensions()
+     *
+     * \note Since QGIS 4.0, this method is no longer virtual and use internally
+     * supportedOutputRasterLayerFormatAndExtensions() instead.
      */
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    QStringList supportedOutputRasterLayerExtensions() const;
+
+    /**
+     * Returns a list of (format, file extension) supported by this provider.
+     *
+     * \since QGIS 4.0
+     */
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+
+    /**
+     * Returns a list of (format, file extension) supported by GDAL
+     *
+     * \since QGIS 4.0
+     */
+    static QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensionsDefault() SIP_SKIP;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
@@ -228,19 +246,33 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 
     /**
-     * Returns the default file extension to use for raster outputs created by the
+     * Returns the default file format to use for raster outputs created by the
      * provider.
      *
      * The default implementation returns the user's default Processing raster output format
-     * setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
+     * setting, if it's supported by the provider (see supportedOutputRasterLayerFormatAndExtensions()).
      * Otherwise the first reported supported raster format will be used.
      *
-     * \see supportedOutputRasterLayerExtensions()
+     * \see supportedOutputRasterLayerFormatAndExtensions()
+     * \see defaultRasterFileExtension()
+     *
+     * \since QGIS 4.0
+     */
+    virtual QString defaultRasterFileFormat() const;
+
+    /**
+     * Returns the default file extension to use for raster outputs created by the
+     * provider.
+     *
+     * Starting with QGIS 4.0, this method is no longer virtual, and relies on
+     * defaultRasterFileFormat()
+     *
+     * \see defaultRasterFileFormat()
      * \see defaultVectorFileExtension()
      * \see defaultPointCloudFileExtension()
      * \see defaultVectorTileFileExtension()
      */
-    virtual QString defaultRasterFileExtension() const;
+    QString defaultRasterFileExtension() const;
 
     /**
      * Returns the default file extension to use for point cloud outputs created by the

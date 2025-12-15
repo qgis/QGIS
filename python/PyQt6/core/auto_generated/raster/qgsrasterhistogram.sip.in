@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterHistogram
 {
 %Docstring(signature="appended")

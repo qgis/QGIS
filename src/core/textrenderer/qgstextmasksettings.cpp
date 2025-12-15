@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgstextmasksettings.h"
-#include "qgstextrenderer_p.h"
+
+#include "qgsapplication.h"
+#include "qgspainteffectregistry.h"
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
-#include "qgspainteffectregistry.h"
-#include "qgsapplication.h"
+#include "qgstextrenderer_p.h"
 #include "qgsunittypes.h"
 
 QgsTextMaskSettings::QgsTextMaskSettings()
@@ -33,9 +34,26 @@ QgsTextMaskSettings::QgsTextMaskSettings( const QgsTextMaskSettings &other ) //N
 {
 }
 
+QgsTextMaskSettings::QgsTextMaskSettings( QgsTextMaskSettings &&other ) //NOLINT
+  : d( std::move( other.d ) )
+{
+}
+
 QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
+  return *this;
+}
+
+QgsTextMaskSettings &QgsTextMaskSettings::operator=( QgsTextMaskSettings &&other )  //NOLINT
+{
+  if ( &other == this )
+    return *this;
+
+  d = std::move( other.d );
   return *this;
 }
 

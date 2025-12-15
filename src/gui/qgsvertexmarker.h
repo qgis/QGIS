@@ -16,9 +16,9 @@
 #ifndef QGSVERTEXMARKER_H
 #define QGSVERTEXMARKER_H
 
+#include "qgis_gui.h"
 #include "qgsmapcanvasitem.h"
 #include "qgspointxy.h"
-#include "qgis_gui.h"
 
 class QPainter;
 
@@ -111,6 +111,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     void setPenWidth( int width );
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *p ) override;
 
     QRectF boundingRect() const override;

@@ -17,14 +17,15 @@
 #ifndef QGSPLOT_H
 #define QGSPLOT_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgstextformat.h"
 #include "qgsmargins.h"
 #include "qgspropertycollection.h"
+#include "qgstextformat.h"
 
 #include <QSizeF>
-#include <memory>
 
 class QgsColorRamp;
 class QgsMarkerSymbol;
@@ -303,7 +304,9 @@ class CORE_EXPORT QgsPlotData
     ~QgsPlotData();
 
     QgsPlotData( const QgsPlotData &other );
+    SIP_SKIP QgsPlotData( QgsPlotData &&other );
     QgsPlotData &operator=( const QgsPlotData &other );
+    QgsPlotData &operator=( QgsPlotData &&other );
 
     /**
      * Returns the list of series forming the plot data.

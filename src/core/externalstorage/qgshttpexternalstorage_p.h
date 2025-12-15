@@ -18,9 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgstaskmanager.h"
-
 #include "qgsexternalstorage.h"
+#include "qgstaskmanager.h"
 
 #include <QPointer>
 #include <QUrl>

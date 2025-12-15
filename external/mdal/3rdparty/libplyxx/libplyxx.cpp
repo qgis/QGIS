@@ -82,7 +82,7 @@ namespace libply
 
   void File::setElementReadCallback( std::string elementName, ElementReadCallback &readCallback )
   {
-    m_parser->setElementReadCallback( elementName, readCallback );
+    m_parser->setElementReadCallback( std::move( elementName ), readCallback );
   }
 
   void File::read()

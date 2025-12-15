@@ -18,13 +18,13 @@
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
 
 QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QString &stName, const QString &laName, Qgis::GeometryType geomType )
   : mStyleName( stName )
@@ -40,6 +40,9 @@ QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QgsVecto
 
 QgsVectorTileBasicRendererStyle &QgsVectorTileBasicRendererStyle::operator=( const QgsVectorTileBasicRendererStyle &other )
 {
+  if ( &other == this )
+    return *this;
+
   mStyleName = other.mStyleName;
   mLayerName = other.mLayerName;
   mGeometryType = other.mGeometryType;

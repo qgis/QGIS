@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorFileWriter : QgsFeatureSink
 {
 %Docstring(signature="appended")
@@ -693,6 +694,7 @@ Returns the capabilities supported by the writer.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 

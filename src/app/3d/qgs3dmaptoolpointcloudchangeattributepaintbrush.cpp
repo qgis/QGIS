@@ -14,17 +14,20 @@
  ***************************************************************************/
 
 #include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
-#include "moc_qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp"
-#include "qgsrubberband3d.h"
+
+#include <memory>
+
+#include "qgisapp.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
-#include "qgswindow3dengine.h"
 #include "qgsframegraph.h"
 #include "qgsgeometry.h"
 #include "qgsguiutils.h"
 #include "qgslinestring.h"
-#include "qgisapp.h"
+#include "qgsrubberband3d.h"
+#include "qgswindow3dengine.h"
 
+#include "moc_qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp"
 
 class QgsPointCloudAttribute;
 Qgs3DMapToolPointCloudChangeAttributePaintbrush::Qgs3DMapToolPointCloudChangeAttributePaintbrush( Qgs3DMapCanvas *canvas )
@@ -47,14 +50,14 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::run()
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::activate()
 {
   mCanvas->cameraController()->setInputHandlersEnabled( false );
-  mSelectionRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point ) );
+  mSelectionRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
   mSelectionRubberBand->setMarkerOutlineStyle( Qt::PenStyle::DotLine );
   mSelectionRubberBand->setWidth( 32 );
   mSelectionRubberBand->setOutlineColor( mSelectionRubberBand->color() );
   mSelectionRubberBand->setColor( QColorConstants::Transparent );
   mSelectionRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( QCursor::pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() ) );
   mIsActive = true;
-  mHighlighterRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon ) );
+  mHighlighterRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon );
   mHighlighterRubberBand->setMarkersEnabled( false );
   mHighlighterRubberBand->setEdgesEnabled( false );
 }

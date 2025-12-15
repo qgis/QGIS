@@ -12,11 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsscaleutils.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
-
-#include "qgsscaleutils.h"
 
 class TestQgsScaleUtils : public QObject
 {

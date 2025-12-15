@@ -15,9 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QElapsedTimer>
-#include <QPointer>
+#include "qgspointcloudlayerrenderer.h"
 
+#include <memory>
+
+#include "delaunator.hpp"
 #include "qgsapplication.h"
 #include "qgscolorramp.h"
 #include "qgselevationmap.h"
@@ -31,15 +33,15 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"
-#include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudrequest.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsthreadingutils.h"
 #include "qgsvirtualpointcloudprovider.h"
 
-#include <delaunator.hpp>
-
+#include <QElapsedTimer>
+#include <QPointer>
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -60,7 +62,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mRenderer.reset( layer->renderer()->clone() );
   if ( !mSubIndexes.isEmpty() )
   {
-    mSubIndexExtentRenderer.reset( new QgsPointCloudExtentRenderer() );
+    mSubIndexExtentRenderer = std::make_unique<QgsPointCloudExtentRenderer>( );
     mSubIndexExtentRenderer->setShowLabels( mRenderer->showLabels() );
     mSubIndexExtentRenderer->setLabelTextFormat( mRenderer->labelTextFormat() );
   }
@@ -96,6 +98,8 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
 bool QgsPointCloudLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {
@@ -428,6 +432,9 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<QgsPointCloudNode
 
 int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
+  if ( nodes.isEmpty() )
+    return 0;
+
   if ( context.feedback() && context.feedback()->isCanceled() )
     return 0;
 
@@ -504,7 +511,8 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNod
   }
 
   // Wait for all point cloud nodes to finish loading
-  loop.exec();
+  if ( !blockRequests.isEmpty() )
+    loop.exec();
 
   // Rendering may have got canceled and the event loop exited before finished()
   // was called for all blocks, so let's clean up anything that is left
@@ -726,7 +734,7 @@ void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderC
   std::unique_ptr<delaunator::Delaunator> delaunator;
   try
   {
-    delaunator.reset( new delaunator::Delaunator( points ) );
+    delaunator = std::make_unique<delaunator::Delaunator>( points );
   }
   catch ( std::exception & )
   {

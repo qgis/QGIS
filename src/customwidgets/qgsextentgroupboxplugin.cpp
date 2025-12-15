@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsextentgroupboxplugin.h"
+
 #include "qgiscustomwidgets.h"
 #include "qgsextentgroupbox.h"
-#include "qgsextentgroupboxplugin.h"
-#include "moc_qgsextentgroupboxplugin.cpp"
 
+#include "moc_qgsextentgroupboxplugin.cpp"
 
 QgsExtentGroupBoxPlugin::QgsExtentGroupBoxPlugin( QObject *parent )
   : QObject( parent )

@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
 #include <QObject>
 #include <QString>
-#include <QApplication>
 
 //qgis includes...
 #include <qgsrasterblock.h>

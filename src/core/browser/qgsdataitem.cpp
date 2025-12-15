@@ -15,38 +15,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
+#include "qgsconfig.h"
 #include "qgsdataitem.h"
-#include "moc_qgsdataitem.cpp"
+
+#include <mutex>
+
+#include "qgis.h"
+#include "qgsanimatedicon.h"
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsproviderregistry.h"
-#include "qgsconfig.h"
-#include "qgssettings.h"
-#include "qgsanimatedicon.h"
 #include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QApplication>
-#include <QtConcurrentMap>
-#include <QtConcurrentRun>
 #include <QDateTime>
-#include <QElapsedTimer>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QRegularExpression>
+#include <QStyle>
+#include <QTimer>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVector>
-#include <QStyle>
-#include <QTimer>
-#include <mutex>
-#include <QRegularExpression>
+#include <QtConcurrentMap>
+#include <QtConcurrentRun>
+
+#include "moc_qgsdataitem.cpp"
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -388,11 +391,11 @@ void QgsDataItem::setProviderKey( const QString &value )
   mProviderKey = value;
 }
 
-int QgsDataItem::rowCount()
+int QgsDataItem::rowCount() const
 {
   return mChildren.size();
 }
-bool QgsDataItem::hasChildren()
+bool QgsDataItem::hasChildren() const
 {
   return ( state() == Qgis::BrowserItemState::Populated ? !mChildren.isEmpty() : true );
 }

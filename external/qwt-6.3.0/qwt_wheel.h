@@ -56,7 +56,7 @@ class QWT_EXPORT QwtWheel : public QWidget
 
   public:
     explicit QwtWheel( QWidget* parent = NULL );
-    virtual ~QwtWheel();
+    ~QwtWheel() override;
 
     double value() const;
 

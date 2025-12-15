@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgslayoutobject.h"
-#include "moc_qgslayoutobject.cpp"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgslayout.h"
 #include "qgslayoutreportcontext.h"
 
 #include <QPainter>
+
+#include "moc_qgslayoutobject.cpp"
 
 QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;
 
@@ -88,6 +90,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display right" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display top" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display bottom" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ), QgsPropertyDefinition( "dataDefinedMapGridDrawAnnotation", QObject::tr( "Draw map grid annotation" ), QgsPropertyDefinition::Boolean, QString(), QObject::tr( "Allows control over the visibility of individual grid annotations" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapCrs ), QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. 'EPSG:4326'), a proj string prefixes by \"PROJ:\" (e.g. 'PROJ: +proj=...') or a WKT string prefixed by \"WKT:\" (e.g. 'WKT:GEOGCRS[\"WGS 84\"...]')" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::StartDateTime ), QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::EndDateTime ), QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
@@ -190,6 +193,7 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight:
     case QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop:
     case QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom:
+    case QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation:
     case QgsLayoutObject::DataDefinedProperty::PictureSource:
     case QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor:
     case QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor:

@@ -16,28 +16,30 @@
  ***************************************************************************/
 
 #include "qgslabelinggui.h"
-#include "moc_qgslabelinggui.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgshelp.h"
-#include "qgsstylesavedialog.h"
-#include "qgscallout.h"
-#include "qgsapplication.h"
-#include "qgscalloutsregistry.h"
+
 #include "callouts/qgscalloutwidget.h"
-#include "qgslabelobstaclesettingswidget.h"
-#include "qgslabellineanchorwidget.h"
-#include "qgslabelremoveduplicatesettingswidget.h"
-#include "qgsprojectstylesettings.h"
+#include "qgsapplication.h"
+#include "qgscallout.h"
+#include "qgscalloutsregistry.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslabellineanchorwidget.h"
+#include "qgslabelobstaclesettingswidget.h"
+#include "qgslabelremoveduplicatesettingswidget.h"
+#include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsstylesavedialog.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
+
+#include "moc_qgslabelinggui.cpp"
 
 ///@cond PRIVATE
 
@@ -139,7 +141,7 @@ void QgsLabelingGui::showObstacleSettings()
   QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, vLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mObstacleSettings );
-  widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
+  widget->setGeometryType( vLayer->geometryType() );
   widget->setContext( symbolContext );
 
   auto applySettings = [this, widget] {
@@ -192,7 +194,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   QgsLabelLineAnchorWidget *widget = new QgsLabelLineAnchorWidget( nullptr, vLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mLineSettings );
-  widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
+  widget->setGeometryType( vLayer->geometryType() );
   widget->setContext( symbolContext );
 
   auto applySettings = [this, widget] {

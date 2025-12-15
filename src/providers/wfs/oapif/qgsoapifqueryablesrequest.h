@@ -16,11 +16,11 @@
 #ifndef QGSOAPIFQUERYABLESREQUEST_H
 #define QGSOAPIFQUERYABLESREQUEST_H
 
-#include <QObject>
-#include <QMap>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+
+#include <QMap>
+#include <QObject>
 
 //! Manages the queryable request
 class QgsOapifQueryablesRequest : public QgsBaseNetworkRequest

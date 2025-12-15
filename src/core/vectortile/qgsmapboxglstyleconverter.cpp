@@ -19,33 +19,35 @@
  */
 
 #include "qgsmapboxglstyleconverter.h"
-#include "moc_qgsmapboxglstyleconverter.cpp"
-#include "qgsvectortilebasicrenderer.h"
-#include "qgsvectortilebasiclabeling.h"
-#include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgslogger.h"
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsblureffect.h"
+#include "qgseffectstack.h"
+#include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
+#include "qgsfontmanager.h"
 #include "qgsfontutils.h"
 #include "qgsjsonutils.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-#include "qgsblureffect.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgstextbackgroundsettings.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
-#include "qgsapplication.h"
-#include "qgsfontmanager.h"
-#include "qgis.h"
-#include "qgsrasterlayer.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainteffect.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextbackgroundsettings.h"
+#include "qgsvectortilebasiclabeling.h"
+#include "qgsvectortilebasicrenderer.h"
 
 #include <QBuffer>
 #include <QRegularExpression>
+
+#include "moc_qgsmapboxglstyleconverter.cpp"
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {
@@ -225,13 +227,13 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
   if ( hasRendererBackgroundStyle )
     rendererStyles.prepend( rendererBackgroundStyle );
 
-  mRenderer = std::make_unique< QgsVectorTileBasicRenderer >();
-  QgsVectorTileBasicRenderer *renderer = dynamic_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
+  auto renderer = std::make_unique< QgsVectorTileBasicRenderer >();
   renderer->setStyles( rendererStyles );
+  mRenderer = std::move( renderer );
 
-  mLabeling = std::make_unique< QgsVectorTileBasicLabeling >();
-  QgsVectorTileBasicLabeling *labeling = dynamic_cast< QgsVectorTileBasicLabeling * >( mLabeling.get() );
+  auto labeling = std::make_unique< QgsVectorTileBasicLabeling >();
   labeling->setStyles( labelingStyles );
+  mLabeling = std::move( labeling );
 }
 
 bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle )

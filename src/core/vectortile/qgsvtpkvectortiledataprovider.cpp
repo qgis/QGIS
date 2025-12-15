@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsvtpkvectortiledataprovider.h"
-#include "moc_qgsvtpkvectortiledataprovider.cpp"
-#include "qgsthreadingutils.h"
-#include "qgsvtpktiles.h"
-#include "qgsvectortileloader.h"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsthreadingutils.h"
+#include "qgsvectortileloader.h"
+#include "qgsvtpktiles.h"
 
-#include <QIcon>
 #include <QFileInfo>
+#include <QIcon>
+
+#include "moc_qgsvtpkvectortiledataprovider.cpp"
 
 ///@cond PRIVATE
 

@@ -14,27 +14,29 @@
  ***************************************************************************/
 
 #include "qgscompoundcolorwidget.h"
-#include "moc_qgscompoundcolorwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgsscreenhelper.h"
 #include "qgsguiutils.h"
+#include "qgsscreenhelper.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 
 #include <QButtonGroup>
-#include <QHeaderView>
-#include <QPushButton>
-#include <QMenu>
-#include <QToolButton>
 #include <QFileDialog>
+#include <QHeaderView>
+#include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <QScreen>
-#include <QInputDialog>
-#include <QVBoxLayout>
+#include <QPushButton>
 #include <QRegularExpression>
+#include <QScreen>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgscompoundcolorwidget.cpp"
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )

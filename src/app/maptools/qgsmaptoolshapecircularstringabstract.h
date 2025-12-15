@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLSHAPECIRCULARSTRINGABSTRACT_H
 #define QGSMAPTOOLSHAPECIRCULARSTRINGABSTRACT_H
 
-#include "qgsmaptoolshapeabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapeabstract.h"
 
 class QgsGeometryRubberBand;
 
@@ -47,7 +47,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringAbstract : public QgsMapToolShapeA
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
 
     //center point rubber band
-    bool mShowCenterPointRubberBand;
+    bool mShowCenterPointRubberBand = false;
     QgsGeometryRubberBand *mCenterPointRubberBand = nullptr;
 
     void createCenterPointRubberBand();

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsarcgisportalutils.h"
+
 #include "qgsarcgisrestquery.h"
 #include "qgsfeedback.h"
 
@@ -136,6 +137,8 @@ QString QgsArcGisPortalUtils::typeToString( Qgis::ArcGisRestServiceType type )
       return QStringLiteral( "Map Service" );
     case Qgis::ArcGisRestServiceType::ImageServer:
       return QStringLiteral( "Image Service" );
+    case Qgis::ArcGisRestServiceType::SceneServer:
+      return QStringLiteral( "Scene Service" );
 
     case Qgis::ArcGisRestServiceType::GlobeServer:
     case Qgis::ArcGisRestServiceType::GPServer:

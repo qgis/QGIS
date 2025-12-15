@@ -15,18 +15,21 @@
  ***************************************************************************/
 
 #include "qgsreportorganizerwidget.h"
-#include "moc_qgsreportorganizerwidget.cpp"
-#include "qgsreport.h"
-#include "qgsreportsectionmodel.h"
-#include "qgsreportsectionlayout.h"
-#include "qgsreportsectionfieldgroup.h"
+
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
-#include "qgsreportlayoutsectionwidget.h"
-#include "qgsreportsectionwidget.h"
+#include "qgsreport.h"
 #include "qgsreportfieldgroupsectionwidget.h"
+#include "qgsreportlayoutsectionwidget.h"
+#include "qgsreportsectionfieldgroup.h"
+#include "qgsreportsectionlayout.h"
+#include "qgsreportsectionmodel.h"
+#include "qgsreportsectionwidget.h"
+
 #include <QMenu>
 #include <QMessageBox>
+
+#include "moc_qgsreportorganizerwidget.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

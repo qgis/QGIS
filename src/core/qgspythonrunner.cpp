@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspythonrunner.h"
+
 #include "qgslogger.h"
 
 QgsPythonRunner *QgsPythonRunner::sInstance = nullptr;

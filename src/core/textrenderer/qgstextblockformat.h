@@ -16,14 +16,14 @@
 #ifndef QGSTEXTBLOCKFORMAT_H
 #define QGSTEXTBLOCKFORMAT_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmargins.h"
 
-#include <QFont>
-#include <QColor>
 #include <QBrush>
+#include <QColor>
+#include <QFont>
 
 class QTextBlockFormat;
 class QgsRenderContext;

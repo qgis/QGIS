@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledsceneindex.h"
+
 #include "qgsfeedback.h"
 #include "qgstiledscenetile.h"
 
@@ -66,12 +67,27 @@ QgsTiledSceneIndex::QgsTiledSceneIndex( const QgsTiledSceneIndex &other )
 
 }
 
+QgsTiledSceneIndex::QgsTiledSceneIndex( QgsTiledSceneIndex &&other )
+  : mIndex( std::move( other.mIndex ) )
+{
+
+}
+
 QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( const QgsTiledSceneIndex &other )
 {
   if ( this == &other )
     return *this;
 
   mIndex = other.mIndex;
+  return *this;
+}
+
+QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( QgsTiledSceneIndex &&other )
+{
+  if ( this == &other )
+    return *this;
+
+  mIndex = std::move( other.mIndex );
   return *this;
 }
 

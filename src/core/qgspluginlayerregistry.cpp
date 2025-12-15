@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgspluginlayerregistry.h"
+
 #include "qgslogger.h"
 #include "qgspluginlayer.h"
 #include "qgsproject.h"

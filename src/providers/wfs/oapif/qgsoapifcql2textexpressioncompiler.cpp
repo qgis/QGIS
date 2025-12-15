@@ -15,9 +15,9 @@
 
 #include "qgsoapifcql2textexpressioncompiler.h"
 
-#include "qgsexpressionnodeimpl.h"
-#include "qgsexpressionfunction.h"
 #include "qgsexpression.h"
+#include "qgsexpressionfunction.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsvariantutils.h"

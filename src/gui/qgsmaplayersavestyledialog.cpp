@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaplayersavestyledialog.h"
+
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPushButton>
 
-#include "qgsmaplayersavestyledialog.h"
 #include "moc_qgsmaplayersavestyledialog.cpp"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsmaplayerstylecategoriesmodel.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsvectorlayer.h"
 
 QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )

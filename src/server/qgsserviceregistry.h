@@ -20,13 +20,14 @@
 #define QGSSERVICEREGISTRY_H
 
 #include "qgsconfig.h"
+
+#include <memory>
+
 #include "qgis.h"
+#include "qgsservicenativeloader.h"
 
 #include <QHash>
 #include <QString>
-
-#include "qgsservicenativeloader.h"
-#include <memory>
 
 class QgsService;
 class QgsServerRequest;

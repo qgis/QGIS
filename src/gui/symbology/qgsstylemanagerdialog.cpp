@@ -14,55 +14,53 @@
  ***************************************************************************/
 
 #include "qgsstylemanagerdialog.h"
-#include "moc_qgsstylemanagerdialog.cpp"
-#include "qgsstylesavedialog.h"
 
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorramp.h"
-
-#include "qgssymbolselectordialog.h"
-#include "qgsgradientcolorrampdialog.h"
-#include "qgslimitedrandomcolorrampdialog.h"
-#include "qgscolorbrewercolorrampdialog.h"
-#include "qgspresetcolorrampdialog.h"
-#include "qgscptcitycolorrampdialog.h"
-#include "qgsstyleexportimportdialog.h"
-#include "qgssmartgroupeditordialog.h"
-#include "qgssettings.h"
-#include "qgsstylemodel.h"
-#include "qgsmessagebar.h"
-#include "qgstextformatwidget.h"
-#include "qgslabelinggui.h"
-#include "qgslegendpatchshapewidget.h"
-#include "qgsabstract3dsymbol.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
+#include "qgsabstract3dsymbol.h"
+#include "qgsapplication.h"
+#include "qgscolorbrewercolorrampdialog.h"
+#include "qgscolorramp.h"
+#include "qgscptcitycolorrampdialog.h"
+#include "qgsfileutils.h"
 #include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgsgradientcolorrampdialog.h"
 #include "qgsiconutils.h"
+#include "qgslabelinggui.h"
+#include "qgslegendpatchshapewidget.h"
+#include "qgslimitedrandomcolorrampdialog.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmessagebar.h"
+#include "qgspresetcolorrampdialog.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
-#include "qgsfileutils.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgssmartgroupeditordialog.h"
+#include "qgsstyleexportimportdialog.h"
+#include "qgsstylemodel.h"
+#include "qgsstylesavedialog.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgstextformatwidget.h"
 
 #include <QAction>
+#include <QClipboard>
+#include <QDesktopServices>
 #include <QFile>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QStandardItemModel>
-#include <QMenu>
-#include <QClipboard>
-#include <QDesktopServices>
-#include <QUrl>
 #include <QShortcut>
+#include <QStandardItemModel>
+#include <QUrl>
 
-#include "qgsapplication.h"
-#include "qgslogger.h"
+#include "moc_qgsstylemanagerdialog.cpp"
 
 const QgsSettingsEntryString *QgsStyleManagerDialog::settingLastStyleDatabaseFolder = new QgsSettingsEntryString( QStringLiteral( "last-style-database-folder" ), sTtreeStyleManager, QString(), QStringLiteral( "Last used folder for style databases" ) );
 
@@ -735,8 +733,8 @@ void QgsStyleManagerDialog::copyItem()
 
     case QgsStyle::LabelSettingsEntity:
     {
-      const QgsTextFormat format( mStyle->labelSettings( details.name ).format() );
-      QApplication::clipboard()->setMimeData( format.toMimeData() );
+      const QgsPalLayerSettings labelSettings( mStyle->labelSettings( details.name ) );
+      QApplication::clipboard()->setMimeData( labelSettings.toMimeData() );
       break;
     }
 
@@ -780,6 +778,34 @@ void QgsStyleManagerDialog::pasteItem()
   }
 
   bool ok = false;
+
+  const QgsPalLayerSettings labelSettings = QgsPalLayerSettings::fromMimeData( QApplication::clipboard()->mimeData(), &ok );
+  if ( ok )
+  {
+    QgsStyleSaveDialog saveDlg( this, QgsStyle::LabelSettingsEntity );
+    saveDlg.setDefaultTags( defaultTag );
+    saveDlg.setWindowTitle( tr( "Paste Label Settings" ) );
+    if ( !saveDlg.exec() || saveDlg.name().isEmpty() )
+      return;
+
+    if ( mStyle->labelSettingsNames().contains( saveDlg.name() ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Paste Label Settings" ), tr( "A label setting with the name '%1' already exists. Overwrite?" ).arg( saveDlg.name() ), QMessageBox::Yes | QMessageBox::No );
+      if ( res != QMessageBox::Yes )
+      {
+        return;
+      }
+      mStyle->removeLabelSettings( saveDlg.name() );
+    }
+
+    QStringList symbolTags = saveDlg.tags().split( ',' );
+    mStyle->addLabelSettings( saveDlg.name(), labelSettings );
+    // make sure the settings are stored
+    mStyle->saveLabelSettings( saveDlg.name(), labelSettings, saveDlg.isFavorite(), symbolTags );
+    return;
+  }
+
+  ok = false;
   const QgsTextFormat format = QgsTextFormat::fromMimeData( QApplication::clipboard()->mimeData(), &ok );
   if ( ok )
   {
@@ -2355,9 +2381,12 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   else if ( category == QLatin1String( "favorite" ) )
   {
     enableGroupInputs( false );
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFavoritesOnly( true );
+    if ( mModel )
+    {
+      mModel->setTagId( -1 );
+      mModel->setSmartGroupId( -1 );
+      mModel->setFavoritesOnly( true );
+    }
   }
   else if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
   {
@@ -2774,7 +2803,15 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
     enablePaste = true;
   else
   {
-    ( void ) QgsTextFormat::fromMimeData( QApplication::clipboard()->mimeData(), &enablePaste );
+    const QMimeData *mimeData = QApplication::clipboard()->mimeData();
+    if ( mimeData->hasFormat( QLatin1String( "application/qgis.labelsettings" ) ) )
+    {
+      ( void ) QgsPalLayerSettings::fromMimeData( mimeData, &enablePaste );
+    }
+    else
+    {
+      ( void ) QgsTextFormat::fromMimeData( mimeData, &enablePaste );
+    }
   }
   mActionPasteItem->setEnabled( enablePaste );
 

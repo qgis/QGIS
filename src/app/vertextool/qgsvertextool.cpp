@@ -12,43 +12,43 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmessagelog.h"
 #include "qgsvertextool.h"
-#include "moc_qgsvertextool.cpp"
 
-#include "qgsavoidintersectionsoperation.h"
+#include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgscurve.h"
-#include "qgslinestring.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
 #include "qgsguiutils.h"
+#include "qgslinestring.h"
+#include "qgslockedfeature.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
 #include "qgsmulticurve.h"
 #include "qgsmultipoint.h"
 #include "qgspointlocator.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsvertexmarker.h"
 #include "qgsstatusbar.h"
-#include "qgisapp.h"
-#include "qgslockedfeature.h"
-#include "qgsvertexeditor.h"
-#include "qgsmapmouseevent.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmessagebar.h"
-#include "qgssettingsentryimpl.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayereditutils.h"
-
+#include "qgsvertexeditor.h"
+#include "qgsvertexmarker.h"
 
 #include <QMenu>
 #include <QRubberBand>
 #include <QTimer>
+
+#include "moc_qgsvertextool.cpp"
 
 uint qHash( const Vertex &v )
 {
@@ -430,7 +430,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( mSelectionMethod == SelectionRange )
   {
-    rangeMethodPressEvent( e );
     return;
   }
 
@@ -1888,8 +1887,7 @@ QgsPointLocator::MatchList QgsVertexTool::layerVerticesSnappedToPoint( QgsVector
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
-  return loc->verticesInRect( mapPoint, tol, &myfilter, true );
+  return loc->verticesInRect( mapPoint, 1e-8, &myfilter, true );
 }
 
 QgsPointLocator::MatchList QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
@@ -2177,7 +2175,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         {
           const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
           const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
-          if ( newDistanceBetweenOriginalAdjacentVertices )
+          if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
           {
             pt.setZ( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
           }
@@ -2198,7 +2196,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         {
           const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
           const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
-          if ( newDistanceBetweenOriginalAdjacentVertices )
+          if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
           {
             pt.setM( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
           }
@@ -2379,11 +2377,50 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
     else
       point = QgsPoint( toLayerCoordinates( topo.layer, mapPoint ) );
 
+    const int vid = topo.vertexId + 1;
+
     QgsPoint pt( point );
     if ( QgsWkbTypes::hasZ( topo.layer->wkbType() ) )
-      pt.addZValue( defaultZValue() );
+    {
+      // try to linearly interpolate z from adjacent vertices
+      const QgsPoint pointBefore = topoGeom.vertexAt( topo.vertexId );
+      const QgsPoint pointAfter = topoGeom.vertexAt( vid );
+      // we can only do this if the adjacent vertices HAVE valid z values
+      if ( !std::isnan( pointBefore.z() ) && !std::isnan( pointAfter.z() ) )
+      {
+        const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+        const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+        if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
+        {
+          pt.addZValue( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+        }
+      }
+      else
+      {
+        pt.addZValue( defaultZValue() );
+      }
+    }
+    if ( QgsWkbTypes::hasM( topo.layer->wkbType() ) )
+    {
+      // try to linearly interpolate m from adjacent vertices
+      const QgsPoint pointBefore = topoGeom.vertexAt( topo.vertexId );
+      const QgsPoint pointAfter = topoGeom.vertexAt( vid );
+      // we can only do this if the adjacent vertices HAVE valid m values
+      if ( !std::isnan( pointBefore.m() ) && !std::isnan( pointAfter.m() ) )
+      {
+        const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+        const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+        if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
+        {
+          pt.addMValue( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+        }
+      }
+      else
+      {
+        pt.addMValue( defaultMValue() );
+      }
+    }
 
-    const int vid = topo.vertexId + 1;
     if ( !topoGeom.insertVertex( pt, vid ) )
     {
       QgsDebugError( QStringLiteral( "[topo] segment insert vertex failed!" ) );
@@ -3077,12 +3114,6 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
     }
   }
   return lst;
-}
-
-void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
-{
-  // nothing to do here for now...
-  Q_UNUSED( e )
 }
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )

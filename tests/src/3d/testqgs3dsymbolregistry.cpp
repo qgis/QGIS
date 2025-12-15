@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgs3d.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgstest.h"
 
 #include <QObject>
-#include "qgstest.h"
-#include "qgs3d.h"
 
 //dummy symbol for testing
 class Dummy3DSymbol : public QgsAbstract3DSymbol

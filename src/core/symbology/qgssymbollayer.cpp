@@ -14,26 +14,27 @@
  ***************************************************************************/
 
 #include "qgssymbollayer.h"
-#include "qgsrendercontext.h"
+
 #include "qgsdxfexport.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgsgeos.h"
+#include "qgslegendpatchshape.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
-#include "qgsexpressioncontext.h"
-#include "qgssymbollayerutils.h"
-#include "qgslegendpatchshape.h"
+#include "qgsrendercontext.h"
+#include "qgssldexportcontext.h"
 #include "qgsstyle.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
-#include "qgsgeos.h"
-#include "qgssldexportcontext.h"
+#include "qgssymbollayerutils.h"
 
-#include <QSize>
 #include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
+#include <QSize>
 #include <QUuid>
 
 QgsPropertiesDefinition QgsSymbolLayer::sPropertyDefinitions;
@@ -119,6 +120,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { static_cast< int >( QgsSymbolLayer::Property::LineClipping ), QgsPropertyDefinition( "lineClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>during_render</b>|<b>before_render</b>]" ), origin )},
     { static_cast< int >( QgsSymbolLayer::Property::SkipMultiples ), QgsPropertyDefinition( "skipMultiples", QObject::tr( "Skip multiples of" ), QgsPropertyDefinition::DoublePositive, origin )},
     { static_cast< int >( QgsSymbolLayer::Property::ShowMarker ), QgsPropertyDefinition( "showMarker", QObject::tr( "Show marker" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::BlankSegments ), QgsPropertyDefinition( "blankSegments", QObject::tr( "Line blank segments" ), QgsPropertyDefinition::String, origin )},
   };
 }
 
@@ -252,6 +254,34 @@ QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
   , mLocked( locked )
   , mId( QUuid::createUuid().toString() )
 {
+}
+
+bool QgsSymbolLayer::rendersIdenticallyTo( const QgsSymbolLayer *other ) const
+{
+  if ( !other )
+    return false;
+
+  if ( layerType() != other->layerType() )
+    return false;
+
+  // TODO -- we could consider each property individually
+  if ( hasDataDefinedProperties() || other->hasDataDefinedProperties() )
+    return false;
+
+  // shortcut now that we know there's no randomness/changing overrides involved
+  if ( other == this )
+    return true;
+
+  if ( mEnabled != other->mEnabled
+       || mColor != other->mColor
+       || mRenderingPass != other->mRenderingPass
+
+       // TODO -- we could consider the actual settings of the paint effect
+       || ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+       || ( other->mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( other->mPaintEffect.get() ) ) )
+    return false;
+
+  return properties() == other->properties();
 }
 
 Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const

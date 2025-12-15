@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeatureiterator.h"
-#include "qgssimplifymethod.h"
+
+#include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 #include "qgsexpressionsorter_p.h"
 #include "qgsfeedback.h"
-#include "qgscoordinatetransform.h"
+#include "qgssimplifymethod.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )

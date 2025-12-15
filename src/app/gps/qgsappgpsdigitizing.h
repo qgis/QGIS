@@ -16,13 +16,13 @@
 #ifndef QGSAPPGPSDIGITIZING_H
 #define QGSAPPGPSDIGITIZING_H
 
-#include <QObject>
-
-#include "qgscoordinatetransform.h"
 #include "qgis_app.h"
+#include "qgsattributes.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgpslogger.h"
 #include "qgsmaplayeraction.h"
-#include "qgsattributes.h"
+
+#include <QObject>
 
 class QgsAppGpsConnection;
 class QgsLineSymbol;
@@ -43,6 +43,8 @@ class QgsUpdateGpsDetailsAction : public QgsMapLayerAction
     QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent );
     bool canRunUsingLayer( QgsMapLayer *layer ) const override;
     bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const override;
+
+    using QgsMapLayerAction::triggerForFeature;
     void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context ) override;
 
   private:

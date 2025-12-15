@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsdoubleboxscalebarrenderer.h"
+
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsfillsymbollayer.h"
+
 #include <QList>
 #include <QPainter>
 

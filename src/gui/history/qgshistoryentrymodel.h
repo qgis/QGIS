@@ -16,10 +16,11 @@
 #ifndef QGSHISTORYENTRYMODEL_H
 #define QGSHISTORYENTRYMODEL_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgshistorywidgetcontext.h"
+
 #include <QAbstractItemModel>
 
 class QWidget;

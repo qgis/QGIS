@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgssymbollayerreference.h"
+
 #include <QList>
 #include <QSet>
 

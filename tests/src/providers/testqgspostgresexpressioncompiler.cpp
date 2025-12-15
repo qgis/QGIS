@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgspostgresexpressioncompiler.h"
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgresprovider.h"
+#include "qgstest.h"
 
 //The only purpose of this class is to set geomColumn and srid
 class QgsTestPostgresExpressionCompiler : public QgsPostgresExpressionCompiler

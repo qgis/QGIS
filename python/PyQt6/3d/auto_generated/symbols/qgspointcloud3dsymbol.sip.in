@@ -8,8 +8,6 @@
 
 
 
-
-
 class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 {
 %Docstring(signature="appended")
@@ -45,6 +43,8 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
     ~QgsPointCloud3DSymbol();
 
     virtual QString type() const;
+    virtual QgsPointCloud3DSymbol *clone() const = 0 /Factory/;
+
 
     virtual QString symbolType() const = 0;
 %Docstring
@@ -209,7 +209,7 @@ color.
 
     virtual QString symbolType() const;
 
-    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+    virtual QgsSingleColorPointCloud3DSymbol *clone() const /Factory/;
 
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -258,7 +258,7 @@ ramp shader.
   public:
     QgsColorRampPointCloud3DSymbol();
 
-    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+    virtual QgsColorRampPointCloud3DSymbol *clone() const /Factory/;
 
     virtual QString symbolType() const;
 
@@ -350,7 +350,7 @@ colors in the dataset.
 
     virtual QString symbolType() const;
 
-    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+    virtual QgsRgbPointCloud3DSymbol *clone() const /Factory/;
 
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -522,7 +522,7 @@ classification of the dataset.
   public:
     QgsClassificationPointCloud3DSymbol();
 
-    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+    virtual QgsClassificationPointCloud3DSymbol *clone() const /Factory/;
 
     virtual QString symbolType() const;
 

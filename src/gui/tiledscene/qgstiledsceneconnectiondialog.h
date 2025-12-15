@@ -19,10 +19,9 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QDialog>
-
 #include "ui_qgstiledsceneconnectiondialog.h"
 
+#include <QDialog>
 
 class QgsTiledSceneConnectionDialog : public QDialog, public Ui::QgsTiledSceneConnectionDialog
 {

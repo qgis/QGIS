@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgstriangle.h"
+
+#include <memory>
+
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
-
-#include <memory>
 
 QgsTriangle::QgsTriangle()
 {
@@ -201,21 +202,14 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   }
 
   mExteriorRing.reset( mInteriorRings.takeFirst() );
-  if ( ( mExteriorRing->numPoints() < 3 ) || ( mExteriorRing->numPoints() > 4 ) || ( mExteriorRing->numPoints() == 4 && mExteriorRing->startPoint() != mExteriorRing->endPoint() ) )
+  if ( !mExteriorRing || ( mExteriorRing->numPoints() < 3 ) || ( mExteriorRing->numPoints() > 4 ) || ( mExteriorRing->numPoints() == 4 && mExteriorRing->startPoint() != mExteriorRing->endPoint() ) )
   {
     clear();
     return false;
   }
 
-  //scan through rings and check if dimensionality of rings is different to CurvePolygon.
-  //if so, update the type dimensionality of the CurvePolygon to match
-  bool hasZ = false;
-  bool hasM = false;
-  if ( mExteriorRing )
-  {
-    hasZ = hasZ || mExteriorRing->is3D();
-    hasM = hasM || mExteriorRing->isMeasure();
-  }
+  bool hasZ = mExteriorRing->is3D();
+  bool hasM = mExteriorRing->isMeasure();
   if ( hasZ )
     addZValue( 0 );
   if ( hasM )

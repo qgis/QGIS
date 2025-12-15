@@ -16,14 +16,14 @@
 #include "qgspolygon.h"
 #include "qgssurface.h"
 #include "qgstest.h"
+#include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
+#include "testgeometryutils.h"
+
 #include <QObject>
 #include <QPainter>
 #include <QString>
 #include <qtestcase.h>
-
-#include "qgstriangle.h"
-#include "qgstriangulatedsurface.h"
-#include "testgeometryutils.h"
 
 class TestQgsTriangulatedSurface : public QObject
 {

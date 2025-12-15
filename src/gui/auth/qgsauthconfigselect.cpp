@@ -14,23 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthconfigselect.h"
-#include "moc_qgsauthconfigselect.cpp"
 #include "ui_qgsauthconfigselect.h"
+#include "qgsauthconfigselect.h"
 
+#include "qgsapplication.h"
 #include "qgsauthconfig.h"
+#include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
-#include "qgsauthconfigedit.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
 #include "qgsauthmethodmetadata.h"
+#include "qgslogger.h"
 
 #include <QHash>
 #include <QMessageBox>
-#include <QTimer>
 #include <QRegularExpression>
+#include <QTimer>
 
+#include "moc_qgsauthconfigselect.cpp"
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
   : QWidget( parent )

@@ -18,20 +18,20 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include <limits>
 
-#include <QCoreApplication> // for tr()
-#include <QImage>
-
-#include "qgsfeedback.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsfeedback.h"
+#include "qgsrasterbandstats.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgsrasterbandstats.h"
+
+#include <QCoreApplication>
+#include <QImage>
 
 /**
  * \ingroup core

@@ -16,12 +16,12 @@
 #ifndef QGSEDITORCONFIGWIDGET_H
 #define QGSEDITORCONFIGWIDGET_H
 
-#include <QWidget>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-
+#include "qgis_sip.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsexpressioncontextgenerator.h"
+
+#include <QWidget>
 
 class QgsVectorLayer;
 class QgsPropertyOverrideButton;

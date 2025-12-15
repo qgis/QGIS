@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsvectortilebasiclabelingwidget.h"
-#include "moc_qgsvectortilebasiclabelingwidget.cpp"
+
+#include <memory>
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsvectortilebasiclabeling.h"
-#include "qgsvectortilelayer.h"
 #include "qgslabelinggui.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectortileutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilebasiclabeling.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortileutils.h"
 
 #include <QMenu>
+
+#include "moc_qgsvectortilebasiclabelingwidget.cpp"
 
 ///@cond PRIVATE
 
@@ -388,7 +391,7 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
   }
   else
   {
-    mLabeling.reset( new QgsVectorTileBasicLabeling() );
+    mLabeling = std::make_unique<QgsVectorTileBasicLabeling>();
     whileBlocking( mLabelModeComboBox )->setCurrentIndex( 1 );
   }
   mOptionsStackedWidget->setCurrentIndex( mLabelModeComboBox->currentIndex() );

@@ -25,7 +25,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// Version: - v2.9.6
+// Version: - v2.9.7
 // See https://github.com/syoyo/tinygltf/releases for release history.
 //
 // Tiny glTF loader is using following third party libraries:
@@ -4352,7 +4352,7 @@ static bool ParseImage(Image *image, const int image_idx, std::string *err,
     // Just only save some information here. Loading actual image data from
     // bufferView is done after this `ParseImage` function.
     image->bufferView = bufferView;
-    image->mimeType = mime_type;
+    image->mimeType = std::move( mime_type );
     image->width = width;
     image->height = height;
 
@@ -5251,7 +5251,7 @@ static bool ParseNode(Node *node, std::string *err, const detail::json &o,
   if (node->extensions.count("MSFT_lod") != 0) {
     auto const &msft_lod_ext = node->extensions["MSFT_lod"];
     if (msft_lod_ext.Has("ids")) {
-      auto idsArr = msft_lod_ext.Get("ids");
+      const auto &idsArr = msft_lod_ext.Get("ids");
       for (size_t i = 0; i < idsArr.ArrayLen(); ++i) {
         node->lods.emplace_back(idsArr.Get(i).GetNumberAsInt());
       }
@@ -5280,7 +5280,7 @@ static bool ParseScene(Scene *scene, std::string *err, const detail::json &o,
   if (scene->extensions.count("KHR_audio") != 0) {
     auto const &audio_ext = scene->extensions["KHR_audio"];
     if (audio_ext.Has("emitters")) {
-      auto emittersArr = audio_ext.Get("emitters");
+      const auto &emittersArr = audio_ext.Get("emitters");
       for (size_t i = 0; i < emittersArr.ArrayLen(); ++i) {
         scene->audioEmitters.emplace_back(emittersArr.Get(i).GetNumberAsInt());
       }
@@ -5316,7 +5316,7 @@ static bool ParsePbrMetallicRoughness(
       }
       return false;
     }
-    pbr->baseColorFactor = baseColorFactor;
+    pbr->baseColorFactor = std::move( baseColorFactor );
   }
 
   {
@@ -5468,7 +5468,7 @@ static bool ParseMaterial(Material *material, std::string *err, std::string *war
   if (material->extensions.count("MSFT_lod") != 0) {
     auto const &msft_lod_ext = material->extensions["MSFT_lod"];
     if (msft_lod_ext.Has("ids")) {
-      auto idsArr = msft_lod_ext.Get("ids");
+      const auto &idsArr = msft_lod_ext.Get("ids");
       for (size_t i = 0; i < idsArr.ArrayLen(); ++i) {
         material->lods.emplace_back(idsArr.Get(i).GetNumberAsInt());
       }

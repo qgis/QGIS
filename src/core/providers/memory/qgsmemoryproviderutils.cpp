@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmemoryproviderutils.h"
+
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
+
 #include <QUrl>
 
 QString memoryLayerFieldType( QMetaType::Type type, const QString &typeString )

@@ -24,10 +24,10 @@
 #ifndef QGSWFSUTILS_H
 #define QGSWFSUTILS_H
 
-#include "qgsmodule.h"
 #include "qgsfeaturerequest.h"
-#include "qgswfsserviceexception.h"
+#include "qgsmodule.h"
 #include "qgsserversettings.h"
+#include "qgswfsserviceexception.h"
 
 class QgsMapLayer;
 
@@ -49,11 +49,6 @@ namespace QgsWfs
    * Service URL string
    */
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings );
-
-  /**
-   * Returns typename from vector layer
-   */
-  QString layerTypeName( const QgsMapLayer *layer );
 
   /**
    * Retrieve a layer by typename

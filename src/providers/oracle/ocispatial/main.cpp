@@ -42,9 +42,12 @@
 ****************************************************************************/
 
 #include "main.h"
-#include "moc_main.cpp"
-#include <qsqldriverplugin.h>
+
 #include "qsql_ocispatial.h"
+
+#include <qsqldriverplugin.h>
+
+#include "moc_main.cpp"
 
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
 {

@@ -17,9 +17,8 @@
 #define QGSTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
-#include "qgstilingscheme.h"
 #include "qgschunkloader.h"
+#include "qgstilingscheme.h"
 
 class QgsAABB;
 class Qgs3DMapSettings;

@@ -13,15 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-
-#include "qgsgeometryutils_base.h"
 #include "qgsinterpolatedlinerenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyle.h"
-#include "qgsunittypes.h"
-#include "qgscolorutils.h"
 
+#include <memory>
+
+#include "qgscolorutils.h"
+#include "qgsgeometryutils_base.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+
+#include <QPainter>
 
 void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth )
 {
@@ -824,7 +826,7 @@ QgsInterpolatedLineSymbolLayer *QgsInterpolatedLineSymbolLayer::clone() const
 QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &properties )
 {
   std::unique_ptr<QgsInterpolatedLineSymbolLayer> symbolLayer;
-  symbolLayer.reset( new QgsInterpolatedLineSymbolLayer() );
+  symbolLayer = std::make_unique<QgsInterpolatedLineSymbolLayer>( );
 
   if ( properties.contains( QStringLiteral( "start_width_expression" ) ) )
     symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineStartWidthValue, QgsProperty::fromExpression( properties.value( QStringLiteral( "start_width_expression" ) ).toString() ) );

@@ -18,14 +18,14 @@
 #ifndef QGSMESHRENDERERSETTINGS_H
 #define QGSMESHRENDERERSETTINGS_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgscolorrampshader.h"
+#include "qgsinterpolatedlinerenderer.h"
+#include "qgsmesh3daveraging.h"
+
 #include <QColor>
 #include <QDomElement>
-
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgscolorrampshader.h"
-#include "qgsmesh3daveraging.h"
-#include "qgsinterpolatedlinerenderer.h"
 
 /**
  * \ingroup core
@@ -719,6 +719,12 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Constructs renderer with default single layer averaging method
      */
     QgsMeshRendererSettings();
+    QgsMeshRendererSettings( const QgsMeshRendererSettings &other );
+    SIP_SKIP QgsMeshRendererSettings( QgsMeshRendererSettings &&other );
+
+    QgsMeshRendererSettings &operator=( const QgsMeshRendererSettings &other );
+    QgsMeshRendererSettings &operator=( QgsMeshRendererSettings &&other );
+
     ~QgsMeshRendererSettings();
 
     //! Returns native mesh renderer settings

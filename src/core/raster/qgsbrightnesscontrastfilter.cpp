@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
 #include "qgsbrightnesscontrastfilter.h"
+
+#include "qgsrasterdataprovider.h"
 
 #include <QDomDocument>
 #include <QDomElement>

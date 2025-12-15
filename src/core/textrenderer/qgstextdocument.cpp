@@ -14,19 +14,49 @@
  ***************************************************************************/
 
 #include "qgstextdocument.h"
+
 #include "qgis.h"
 #include "qgsstringutils.h"
 #include "qgstextblock.h"
-#include "qgstextfragment.h"
 #include "qgstextformat.h"
+#include "qgstextfragment.h"
 
-#include <QTextDocument>
 #include <QTextBlock>
-
+#include <QTextDocument>
 
 QgsTextDocument::~QgsTextDocument() = default;
 
 QgsTextDocument::QgsTextDocument() = default;
+
+QgsTextDocument::QgsTextDocument( const QgsTextDocument &other )
+  : mBlocks( other.mBlocks )
+{
+
+}
+
+QgsTextDocument::QgsTextDocument( QgsTextDocument &&other )
+  : mBlocks( std::move( other.mBlocks ) )
+{
+
+}
+
+QgsTextDocument &QgsTextDocument::operator=( const QgsTextDocument &other )
+{
+  if ( &other == this )
+    return *this;
+
+  mBlocks = other.mBlocks;
+  return *this;
+}
+
+QgsTextDocument &QgsTextDocument::operator=( QgsTextDocument &&other )
+{
+  if ( &other == this )
+    return *this;
+
+  mBlocks = std::move( other.mBlocks );
+  return *this;
+}
 
 QgsTextDocument::QgsTextDocument( const QgsTextBlock &block )
 {

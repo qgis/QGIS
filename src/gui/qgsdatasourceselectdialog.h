@@ -18,15 +18,15 @@
 
 #include "ui_qgsdatasourceselectdialog.h"
 
-#include "qgis_gui.h"
 #include "qgis.h"
-#include "qgsmimedatautils.h"
+#include "qgis_gui.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowserproxymodel.h"
+#include "qgsmimedatautils.h"
 
-#include <QObject>
-#include <QLabel>
 #include <QDialog>
+#include <QLabel>
+#include <QObject>
 
 /**
  * \ingroup gui

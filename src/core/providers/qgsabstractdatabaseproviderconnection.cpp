@@ -14,15 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "moc_qgsabstractdatabaseproviderconnection.cpp"
-#include "qgsvectorlayer.h"
+
 #include "qgsexception.h"
-#include "qgsweakrelation.h"
 #include "qgsfeedback.h"
 #include "qgsprovidersqlquerybuilder.h"
+#include "qgssqlstatement.h"
+#include "qgsvectorlayer.h"
+#include "qgsweakrelation.h"
 
-#include <QVariant>
 #include <QObject>
+#include <QVariant>
+
+#include "moc_qgsabstractdatabaseproviderconnection.cpp"
 
 QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &name ):
   QgsAbstractProviderConnection( name )
@@ -1403,6 +1406,16 @@ void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain
   checkCapability( Capability::AddFieldDomain );
 }
 
+void QgsAbstractDatabaseProviderConnection::updateFieldDomain( QgsFieldDomain *, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain );
+}
+
+void QgsAbstractDatabaseProviderConnection::deleteFieldDomain( const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain );
+}
+
 void QgsAbstractDatabaseProviderConnection::setFieldAlias( const QString &, const QString &, const QString &, const QString & ) const
 {
   checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetFieldAlias );
@@ -1643,6 +1656,53 @@ long long QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
   return mResultIterator->rowCount();
 }
 
+bool QgsAbstractDatabaseProviderConnection::splitSimpleQuery( const QString &sql, QStringList &columns, QStringList &tables, QString &where )
+{
+  const QgsSQLStatement statement { sql };
+  if ( statement.hasParserError() )
+  {
+    return false;
+  }
+
+  const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( statement.rootNode() );
+
+  if ( !nodeSelect || !nodeSelect->joins().empty() || !nodeSelect->orderBy().empty() )
+  {
+    return false;
+  }
+
+  const QList<QgsSQLStatement::NodeTableDef *> tablesList { nodeSelect->tables() };
+
+  if ( tablesList.empty() )
+  {
+    return false;
+  }
+
+  for ( const QgsSQLStatement::NodeTableDef *tableDef : tablesList )
+  {
+    tables.append( tableDef->name() );
+  }
+
+  const QList<QgsSQLStatement::NodeSelectedColumn *> columnsList { nodeSelect->columns() };
+
+  if ( columnsList.empty() )
+  {
+    return false;
+  }
+
+  for ( const QgsSQLStatement::NodeSelectedColumn *colDef : columnsList )
+  {
+    columns.append( colDef->dump() );
+  }
+
+  if ( nodeSelect->where() )
+  {
+    where = nodeSelect->where()->dump();
+  }
+
+  return true;
+}
+
 
 bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
 {
@@ -1658,9 +1718,8 @@ void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QSt
   mColumns.push_back( columnName );
 }
 
-
 QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
-  : mResultIterator( iterator )
+  : mResultIterator( std::move( iterator ) )
 {}
 
 double QgsAbstractDatabaseProviderConnection::QueryResult::queryExecutionTime() const

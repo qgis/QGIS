@@ -16,8 +16,6 @@
 #include "qgstest.h"
 #include "qobjectuniqueptr.h"
 
-#include "qgstest.h"
-
 class TestQObjectUniquePtr : public QObject
 {
     Q_OBJECT
@@ -136,6 +134,18 @@ void TestQObjectUniquePtr::testVector()
 
   QCOMPARE( objects.at( 0 )->objectName(), "TESTA" );
   QCOMPARE( objects.at( 1 )->objectName(), "TESTB" );
+
+  int nbObjectDestroyed = 0;
+  auto onDestroyed = [&nbObjectDestroyed]() { nbObjectDestroyed++; };
+
+  connect( objects.at( 0 ), &QObject::destroyed, this, onDestroyed );
+  connect( objects.at( 1 ), &QObject::destroyed, this, onDestroyed );
+
+  objects.erase( objects.cbegin() );
+
+  QCOMPARE( objects.size(), 1 );
+  QCOMPARE( nbObjectDestroyed, 1 );
+  QCOMPARE( objects.at( 0 )->objectName(), "TESTB" );
 }
 
 

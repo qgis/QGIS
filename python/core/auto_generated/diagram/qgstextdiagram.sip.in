@@ -8,6 +8,7 @@
 
 
 
+
 class QgsTextDiagram: QgsDiagram /NoDefaultCtors/
 {
 %Docstring(signature="appended")

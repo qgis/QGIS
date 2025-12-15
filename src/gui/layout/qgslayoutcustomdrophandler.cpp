@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgslayoutcustomdrophandler.h"
-#include "moc_qgslayoutcustomdrophandler.cpp"
+
 #include <QPointF>
+
+#include "moc_qgslayoutcustomdrophandler.cpp"
 
 QgsLayoutCustomDropHandler::QgsLayoutCustomDropHandler( QObject *parent )
   : QObject( parent )

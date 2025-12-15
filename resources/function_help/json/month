@@ -13,7 +13,10 @@
     "examples": [{
       "expression": "month('2012-05-12')",
       "returns": "05"
-    }]
+    },{
+      "expression": "month(now())",
+      "returns": "the current month"
+     }]
   }, {
     "variant": "Interval variant",
     "variant_description": "Calculates the length in months of an interval.",

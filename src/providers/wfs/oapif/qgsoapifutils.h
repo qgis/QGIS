@@ -17,6 +17,7 @@
 #define QGSOAPIFUTILS_H
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include <QString>
@@ -44,5 +45,7 @@ class QgsOAPIFJson
     //! Find among links the one that matches rel, by using an optional list of preferable types.
     static QString findLink( const std::vector<Link> &links, const QString &rel, const QStringList &preferableTypes = QStringList() );
 };
+
+extern const QString OAPIF_PROVIDER_DEFAULT_CRS;
 
 #endif // QGSOAPIFUTILS_H

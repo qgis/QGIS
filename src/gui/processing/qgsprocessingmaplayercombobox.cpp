@@ -14,33 +14,35 @@
  ***************************************************************************/
 
 #include "qgsprocessingmaplayercombobox.h"
-#include "moc_qgsprocessingmaplayercombobox.cpp"
+
+#include "qgsapplication.h"
+#include "qgsdatasourceselectdialog.h"
+#include "qgsfeatureid.h"
+#include "qgsguiutils.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsmimedatautils.h"
-#include "qgsprocessingparameters.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeatureid.h"
-#include "qgsapplication.h"
-#include "qgsguiutils.h"
 #include "qgspanelwidget.h"
 #include "qgsprocessingfeaturesourceoptionswidget.h"
-#include "qgsprocessingrastersourceoptionswidget.h"
-#include "qgsdatasourceselectdialog.h"
-#include "qgsprocessingwidgetwrapper.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingprovider.h"
+#include "qgsprocessingrastersourceoptionswidget.h"
+#include "qgsprocessingwidgetwrapper.h"
 #include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 #include "qgswmsutils.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QToolButton>
+#include <QAction>
 #include <QCheckBox>
 #include <QDragEnterEvent>
-#include <QMenu>
-#include <QAction>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QToolButton>
 #include <QUrl>
+#include <QVBoxLayout>
+
+#include "moc_qgsprocessingmaplayercombobox.cpp"
 
 ///@cond PRIVATE
 
@@ -200,6 +202,12 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
       filters |= Qgis::LayerFilter::MeshLayer;
     if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::PointCloud ) ) )
       filters |= Qgis::LayerFilter::PointCloudLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Annotation ) ) )
+      filters |= Qgis::LayerFilter::AnnotationLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::VectorTile ) ) )
+      filters |= Qgis::LayerFilter::VectorTileLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::TiledScene ) ) )
+      filters |= Qgis::LayerFilter::TiledSceneLayer;
     if ( !filters )
       filters = Qgis::LayerFilter::All;
   }

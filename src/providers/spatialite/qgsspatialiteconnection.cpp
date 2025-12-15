@@ -13,16 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
-#include "moc_qgsspatialiteconnection.cpp"
-#include "qgssettings.h"
+
+#include <cstdlib>
+
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsspatialiteutils.h"
 #include "qgssqliteutils.h"
 #include "qgsvariantutils.h"
 
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <cstdlib> // atoi
+
+#include "moc_qgsspatialiteconnection.cpp"
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )
@@ -274,41 +277,45 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
       }
 
       const QString tableName = QString::fromUtf8( lyr->TableName );
-      ignoreTableNames << tableName;
       const QString column = QString::fromUtf8( lyr->GeometryName );
       ignoreTableNames << QStringLiteral( "idx_%1_%2" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_node" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_parent" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_rowid" ).arg( tableName, column );
-      QString type = tr( "UNKNOWN" );
-      switch ( lyr->GeometryType )
+
+      if ( !ignoreTableNames.contains( tableName, Qt::CaseInsensitive ) )
       {
-        case GAIA_VECTOR_GEOMETRY:
-          type = tr( "GEOMETRY" );
-          break;
-        case GAIA_VECTOR_POINT:
-          type = tr( "POINT" );
-          break;
-        case GAIA_VECTOR_LINESTRING:
-          type = tr( "LINESTRING" );
-          break;
-        case GAIA_VECTOR_POLYGON:
-          type = tr( "POLYGON" );
-          break;
-        case GAIA_VECTOR_MULTIPOINT:
-          type = tr( "MULTIPOINT" );
-          break;
-        case GAIA_VECTOR_MULTILINESTRING:
-          type = tr( "MULTILINESTRING" );
-          break;
-        case GAIA_VECTOR_MULTIPOLYGON:
-          type = tr( "MULTIPOLYGON" );
-          break;
-        case GAIA_VECTOR_GEOMETRYCOLLECTION:
-          type = tr( "GEOMETRYCOLLECTION" );
-          break;
+        QString type = tr( "UNKNOWN" );
+        switch ( lyr->GeometryType )
+        {
+          case GAIA_VECTOR_GEOMETRY:
+            type = tr( "GEOMETRY" );
+            break;
+          case GAIA_VECTOR_POINT:
+            type = tr( "POINT" );
+            break;
+          case GAIA_VECTOR_LINESTRING:
+            type = tr( "LINESTRING" );
+            break;
+          case GAIA_VECTOR_POLYGON:
+            type = tr( "POLYGON" );
+            break;
+          case GAIA_VECTOR_MULTIPOINT:
+            type = tr( "MULTIPOINT" );
+            break;
+          case GAIA_VECTOR_MULTILINESTRING:
+            type = tr( "MULTILINESTRING" );
+            break;
+          case GAIA_VECTOR_MULTIPOLYGON:
+            type = tr( "MULTIPOLYGON" );
+            break;
+          case GAIA_VECTOR_GEOMETRYCOLLECTION:
+            type = tr( "GEOMETRYCOLLECTION" );
+            break;
+        }
+        mTables.append( TableEntry( tableName, column, type ) );
+        ignoreTableNames << tableName;
       }
-      mTables.append( TableEntry( tableName, column, type ) );
 
       lyr = lyr->Next;
     }
@@ -563,38 +570,32 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   int rows;
   int columns;
   bool exists = false;
-  char table_raster[4192];
-  char sql[4258];
 
-  strncpy( table_raster, table, sizeof table_raster );
-  table_raster[sizeof table_raster - 1] = '\0';
-
-  const size_t len = strlen( table_raster );
-  if ( strlen( table_raster ) < 9 )
+  QString tableRaster = QString::fromUtf8( table );
+  if ( !tableRaster.endsWith( QLatin1String( "_metadata" ) ) )
     return false;
-  if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
-    return false;
-  // OK, possible candidate
-  strcpy( table_raster + len - 9, "_rasters" );
 
-  // checking if the related "_RASTERS table exists
-  sprintf( sql, "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%s'", table_raster );
+  // OK, possible candidate → replace suffix
+  tableRaster.chop( 9 );
+  tableRaster += QLatin1String( "_rasters" );
 
-  ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, nullptr );
+  // checking if the related "_RASTERS" table exists
+  QString sqlStr = QStringLiteral(
+                     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%1'"
+  )
+                     .arg( tableRaster.replace( '\'', QLatin1String( "''" ) ) );
+
+  ret = sqlite3_get_table( handle, sqlStr.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
     return false;
-  if ( rows < 1 )
-    ;
-  else
+
+  for ( i = 1; i <= rows; i++ )
   {
-    for ( i = 1; i <= rows; i++ )
+    const char *name = results[( i * columns ) + 0];
+    if ( name )
     {
-      if ( results[( i * columns ) + 0] )
-      {
-        const char *name = results[( i * columns ) + 0];
-        if ( name )
-          exists = true;
-      }
+      exists = true;
+      break;
     }
   }
   sqlite3_free_table( results );

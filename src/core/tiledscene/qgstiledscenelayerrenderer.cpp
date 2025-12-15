@@ -17,23 +17,27 @@
 
 
 #include "qgstiledscenelayerrenderer.h"
+
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgscesiumutils.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsfeedback.h"
+#include "qgsgltfutils.h"
 #include "qgslogger.h"
+#include "qgsmapclippingutils.h"
 #include "qgsquantizedmeshtiles.h"
+#include "qgsrendercontext.h"
+#include "qgsruntimeprofiler.h"
+#include "qgstextrenderer.h"
+#include "qgsthreadingutils.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenelayer.h"
-#include "qgsfeedback.h"
-#include "qgsmapclippingutils.h"
-#include "qgsrendercontext.h"
+#include "qgstiledscenerenderer.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
-#include "qgstiledscenerenderer.h"
-#include "qgsgltfutils.h"
-#include "qgscesiumutils.h"
-#include "qgscurvepolygon.h"
-#include "qgstextrenderer.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
 
 #include <QMatrix4x4>
 #include <qglobal.h>
@@ -59,6 +63,7 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mRenderer.reset( layer->renderer()->clone() );
 
   mSceneCrs = layer->dataProvider()->sceneCrs();
+  mLayerCrs = layer->dataProvider()->crs();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
   mLayerBoundingVolume = layer->dataProvider()->boundingVolume();
@@ -75,6 +80,8 @@ QgsTiledSceneLayerRenderer::~QgsTiledSceneLayerRenderer() = default;
 
 bool QgsTiledSceneLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   if ( !mIndex.isValid() )
     return false;
 
@@ -438,6 +445,21 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     }
     if ( !res ) return false;
   }
+  else if ( format == QLatin1String( "draco" ) )
+  {
+    QgsGltfUtils::I3SNodeContext i3sContext;
+    i3sContext.initFromTile( tile, mLayerCrs, mSceneCrs, context.renderContext().transformContext() );
+
+    QString errors;
+    if ( !QgsGltfUtils::loadDracoModel( tileContent, i3sContext, model, &errors ) )
+    {
+      if ( !mErrors.contains( errors ) )
+        mErrors.append( errors );
+      QgsDebugError( QStringLiteral( "Error raised reading %1: %2" )
+                     .arg( contentUri, errors ) );
+      return false;
+    }
+  }
   else
     return false;
 
@@ -476,7 +498,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
           *gltfLocalTransform = parentTransform * *gltfLocalTransform;
         else
         {
-          gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
+          gltfLocalTransform = std::make_unique<QMatrix4x4>( parentTransform );
         }
       }
 

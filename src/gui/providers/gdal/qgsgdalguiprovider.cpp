@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsgdalguiprovider.h"
+
 #include "moc_qgsgdalguiprovider.cpp"
+
 ///@cond PRIVATE
 
 #include <QList>

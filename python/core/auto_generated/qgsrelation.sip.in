@@ -10,7 +10,6 @@
 
 
 
-
 class QgsRelation
 {
 %Docstring(signature="appended")

@@ -16,41 +16,40 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatereferencesystem.h"
-#include "moc_qgscoordinatereferencesystem.cpp"
-#include "qgscoordinatereferencesystem_p.h"
-
-#include "qgscoordinatereferencesystem_legacy_p.h"
-#include "qgscoordinatereferencesystemregistry.h"
-#include "qgsellipsoidutils.h"
-#include "qgsreadwritelocker.h"
 
 #include <cmath>
+#include <proj.h>
+#include <proj_experimental.h>
+#include <sqlite3.h>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem_legacy_p.h"
+#include "qgscoordinatereferencesystem_p.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgscoordinatereferencesystemutils.h"
+#include "qgsdatums.h"
+#include "qgsellipsoidutils.h"
+#include "qgslocalec.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogcutils.h"
+#include "qgsogrutils.h"
+#include "qgsprojectionfactors.h"
+#include "qgsprojoperation.h"
+#include "qgsprojutils.h"
+#include "qgsreadwritelocker.h"
+#include "qgssettings.h"
 
 #include <QDir>
-#include <QDomNode>
 #include <QDomElement>
+#include <QDomNode>
+#include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QTextStream>
-#include <QFile>
 
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgis.h" //const vals declared here
-#include "qgslocalec.h"
-#include "qgssettings.h"
-#include "qgsogrutils.h"
-#include "qgsdatums.h"
-#include "qgsogcutils.h"
-#include "qgsprojectionfactors.h"
-#include "qgsprojoperation.h"
-#include "qgscoordinatereferencesystemutils.h"
-
-#include <sqlite3.h>
-#include "qgsprojutils.h"
-#include <proj.h>
-#include <proj_experimental.h>
+#include "moc_qgscoordinatereferencesystem.cpp"
 
 //gdal and ogr includes (needed for == operator)
 #include <ogr_srs_api.h>
@@ -134,6 +133,9 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateR
 
 QgsCoordinateReferenceSystem &QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem &srs )  //NOLINT
 {
+  if ( &srs == this )
+    return *this;
+
   d = srs.d;
   mValidationHint = srs.mValidationHint;
   mNativeFormat = srs.mNativeFormat;
@@ -1362,6 +1364,27 @@ QString QgsCoordinateReferenceSystem::toProj() const
   }
   // Stray spaces at the end?
   return d->mProj4.trimmed();
+}
+
+std::string QgsCoordinateReferenceSystem::toJsonString( bool multiline, int indentationWidth, const QString &schema ) const
+{
+  if ( !d->mIsValid )
+    return {};
+
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
+    const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
+    const QByteArray schemaOption = QStringLiteral( "SCHEMA=%1" ).arg( schema ).toLocal8Bit();
+    const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), schemaOption.constData(), nullptr};
+
+    const char *json = proj_as_projjson( QgsProjContext::get(), obj, options );
+    return json ? std::string{ json } : std::string{};
+  }
+  else
+  {
+    return {};
+  }
 }
 
 Qgis::CrsType QgsCoordinateReferenceSystem::type() const

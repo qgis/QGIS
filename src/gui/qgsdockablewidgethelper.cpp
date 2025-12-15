@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsdockablewidgethelper.h"
-#include "moc_qgsdockablewidgethelper.cpp"
 
-#include "qgsdockwidget.h"
 #include "qgsapplication.h"
+#include "qgsdockwidget.h"
 
-#include <QLayout>
 #include <QAction>
+#include <QLayout>
 #include <QUuid>
+
+#include "moc_qgsdockablewidgethelper.cpp"
 
 ///@cond PRIVATE
 
@@ -68,6 +69,8 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
 
     mDock->setWidget( nullptr );
     mWidget->setParent( nullptr );
+    // TODO -- potentially "deleteLater" would be safer here, see eg note
+    // in QgsElevationProfileWidget destructor
     delete mDock.data();
     mDock = nullptr;
   }

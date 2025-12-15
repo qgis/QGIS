@@ -14,31 +14,31 @@
  ***************************************************************************/
 
 #include "qgsrelationreferencewidget.h"
-#include "moc_qgsrelationreferencewidget.cpp"
 
-#include <QPushButton>
-#include <QDialog>
-#include <QHBoxLayout>
-#include <QTimer>
-#include <QCompleter>
-
-#include "qgsattributeform.h"
-#include "qgsattributedialog.h"
 #include "qgsapplication.h"
+#include "qgsattributedialog.h"
+#include "qgsattributeform.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsexpression.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturelistcombobox.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooldigitizefeature.h"
+#include "qgsmaptoolidentifyfeature.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaptoolidentifyfeature.h"
-#include "qgsmaptooldigitizefeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfeaturelistcombobox.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QCompleter>
+#include <QDialog>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QTimer>
+
+#include "moc_qgsrelationreferencewidget.cpp"
 
 bool qVariantListIsNull( const QVariantList &list )
 {

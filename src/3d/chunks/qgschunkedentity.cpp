@@ -14,21 +14,20 @@
  ***************************************************************************/
 
 #include "qgschunkedentity.h"
-#include "moc_qgschunkedentity.cpp"
-
-#include <QElapsedTimer>
-#include <QVector4D>
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
+#include "qgseventtracing.h"
 #include "qgsgeotransform.h"
 
-#include "qgseventtracing.h"
-
+#include <QElapsedTimer>
+#include <QVector4D>
 #include <queue>
+
+#include "moc_qgschunkedentity.cpp"
 
 ///@cond PRIVATE
 
@@ -777,12 +776,11 @@ void QgsChunkedEntity::cancelActiveJobs()
   }
 }
 
-
-QVector<QgsRayCastingUtils::RayHit> QgsChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QList<QgsRayCastHit> QgsChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( ray )
   Q_UNUSED( context )
-  return QVector<QgsRayCastingUtils::RayHit>();
+  return {};
 }
 
 /// @endcond

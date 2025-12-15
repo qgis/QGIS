@@ -17,34 +17,33 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgspgsourceselect.h"
-#include "moc_qgspgsourceselect.cpp"
 
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsdbfilterproxymodel.h"
 #include "qgsapplication.h"
-#include "qgspostgresprovider.h"
-#include "qgspgnewconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsquerybuilder.h"
-#include "qgsdatasourceuri.h"
-#include "qgsvectorlayer.h"
 #include "qgscolumntypethread.h"
-#include "qgssettings.h"
-#include "qgsproxyprogresstask.h"
-#include "qgsproject.h"
+#include "qgsdatasourceuri.h"
+#include "qgsdbfilterproxymodel.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgspgnewconnection.h"
 #include "qgspgtablemodel.h"
+#include "qgspostgresprovider.h"
+#include "qgsproject.h"
+#include "qgsproxyprogresstask.h"
+#include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTextStream>
-#include <QHeaderView>
 #include <QStringList>
 #include <QStyledItemDelegate>
+#include <QTextStream>
 
+#include "moc_qgspgsourceselect.cpp"
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -244,7 +243,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   }
 }
 
-//! Autoconnected SLOTS
+//! Autoconnected slots
 // Slot for adding a new connection
 void QgsPgSourceSelect::btnNew_clicked()
 {
@@ -303,7 +302,7 @@ void QgsPgSourceSelect::btnEdit_clicked()
   delete nc;
 }
 
-//! End Autoconnected SLOTS
+//! End Autoconnected slots
 
 // Remember which database is selected
 void QgsPgSourceSelect::cmbConnections_currentIndexChanged( const QString &text )

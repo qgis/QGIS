@@ -42,7 +42,7 @@ Constructor for QgsPdalAlgorithms.
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
 
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 

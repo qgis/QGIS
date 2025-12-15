@@ -81,6 +81,7 @@ namespace MDAL
       int faceVerticesMaximumCount() const override {return 4;}
 
       bool canReadMesh( const std::string &uri ) override;
+      using Driver::load;
       std::unique_ptr< Mesh > load( const std::string &meshFile, const std::string &meshName = "" ) override;
       void save( const std::string &fileName, const std::string &, Mesh *mesh ) override;
 

@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsstacsearchparametersdialog.h"
-#include "moc_qgsstacsearchparametersdialog.cpp"
+
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsstaccollection.h"
 #include "qgsstaccontroller.h"
 
+#include <QMenu>
 #include <QPushButton>
 #include <QScrollBar>
-#include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include <QMenu>
+#include <QStandardItemModel>
 #include <QTextDocument>
+
+#include "moc_qgsstacsearchparametersdialog.cpp"
 
 ///@cond PRIVATE
 
@@ -110,7 +112,7 @@ void QgsStacSearchParametersDialog::reject()
   {
     const QModelIndex index = mCollectionsModel->index( i, 0 );
     const bool isChecked = mSelectedCollections.contains( mCollectionsModel->data( index, Qt::UserRole ).toString() );
-    mCollectionsModel->setData( index, isChecked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole );
+    ( void ) mCollectionsModel->setData( index, isChecked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole );
   }
   QDialog::reject();
 }

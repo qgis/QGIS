@@ -14,30 +14,31 @@
  ***************************************************************************/
 
 #include "qgsrelationeditorwidget.h"
-#include "moc_qgsrelationeditorwidget.cpp"
 
+#include "qgsactionmenu.h"
 #include "qgsapplication.h"
-#include "qgsfeatureiterator.h"
 #include "qgsexpression.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsiconutils.h"
-#include "qgsrelation.h"
 #include "qgslogger.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayerselectionmanager.h"
 #include "qgsmaptooldigitizefeature.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include "qgsactionmenu.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsrelation.h"
+#include "qgsvectorlayerselectionmanager.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QTreeWidget>
+
+#include "moc_qgsrelationeditorwidget.cpp"
 
 /// @cond PRIVATE
 ///
@@ -609,8 +610,14 @@ QgsFeatureIds QgsRelationEditorWidget::selectedChildFeatureIds() const
     }
     return featureIds;
   }
-  else
+  else if ( mFeatureSelectionMgr )
+  {
     return mFeatureSelectionMgr->selectedFeatureIds();
+  }
+  else
+  {
+    return {};
+  }
 }
 
 void QgsRelationEditorWidget::updateUiSingleEdit()
@@ -647,7 +654,7 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
       nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
     }
 
-    request = nmRequest;
+    request = std::move( nmRequest );
     layer = mNmRelation.referencedLayer();
   }
   else if ( mRelation.referencingLayer() )

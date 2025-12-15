@@ -29,6 +29,8 @@ objects.
   public:
 
     QgsTextDocument();
+    QgsTextDocument( const QgsTextDocument &other );
+
     ~QgsTextDocument();
 
     explicit QgsTextDocument( const QgsTextBlock &block );

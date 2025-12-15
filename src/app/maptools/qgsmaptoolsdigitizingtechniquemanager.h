@@ -57,7 +57,7 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     static const QgsSettingsEntryString *settingMapToolShapeDefaultForCategory;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
-    ~QgsMapToolsDigitizingTechniqueManager();
+    ~QgsMapToolsDigitizingTechniqueManager() override;
     void setupToolBars();
     void setupCanvasTools();
 

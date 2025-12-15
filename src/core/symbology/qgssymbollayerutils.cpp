@@ -15,53 +15,53 @@
 
 #include "qgssymbollayerutils.h"
 
-#include "qgssymbollayer.h"
-#include "qgssymbollayerregistry.h"
-#include "qgssymbol.h"
+#include "qgsapplication.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
 #include "qgscolorutils.h"
+#include "qgscurvepolygon.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnode.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmasksymbollayer.h"
+#include "qgsogcutils.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include "qgsogcutils.h"
-#include "qgslogger.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
-#include "qgsunittypes.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgsrenderer.h"
-#include "qgsxmlutils.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgssymbollayerreference.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgscurvepolygon.h"
-#include "qgsmasksymbollayer.h"
 #include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerreference.h"
+#include "qgssymbollayerregistry.h"
+#include "qgsunittypes.h"
+#include "qgsxmlutils.h"
 
-#include "qmath.h"
 #include <QColor>
-#include <QFont>
+#include <QDir>
 #include <QDomDocument>
-#include <QDomNode>
 #include <QDomElement>
+#include <QDomNode>
+#include <QFont>
 #include <QIcon>
+#include <QMimeData>
 #include <QPainter>
-#include <QSettings>
 #include <QPicture>
+#include <QRegularExpression>
+#include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QMimeData>
-#include <QRegularExpression>
-#include <QDir>
+#include <qmath.h>
 
 #define POINTS_TO_MM 2.83464567
 
@@ -5384,7 +5384,7 @@ double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *rendere
   return visitor.refreshRate;
 }
 
-QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok )
+std::unique_ptr< QgsSymbol > QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok )
 {
   if ( !s || !context )
   {
@@ -5444,7 +5444,7 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
 
   if ( markerSymbol )
   {
-    QgsMarkerSymbol *ms = dynamic_cast<QgsMarkerSymbol *>( s->clone() );
+    std::unique_ptr< QgsMarkerSymbol > ms( markerSymbol->clone() );
     ms->setSize( size );
     ms->setSizeUnit( Qgis::RenderUnit::Millimeters );
     width = size;
@@ -5453,7 +5453,7 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else if ( lineSymbol )
   {
-    QgsLineSymbol *ls = dynamic_cast<QgsLineSymbol *>( s->clone() );
+    std::unique_ptr< QgsLineSymbol > ls( lineSymbol->clone() );
     ls->setWidth( size );
     ls->setWidthUnit( Qgis::RenderUnit::Millimeters );
     height = size;

@@ -16,9 +16,9 @@
 #ifndef QGSVTPKTILES_H
 #define QGSVTPKTILES_H
 
-#include "qgis_core.h"
+#include <sqlite3.h>
 
-#include "sqlite3.h"
+#include "qgis_core.h"
 #include "qgsvectortilematrixset.h"
 
 #include <QVariantMap>

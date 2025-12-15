@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsowssourcewidget.h"
-#include "moc_qgsowssourcewidget.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgsmapcanvas.h"
+#include "qgsproviderregistry.h"
 
 #include <QNetworkRequest>
 
+#include "moc_qgsowssourcewidget.cpp"
 
 QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *parent )
   : QgsProviderSourceWidget( parent )
@@ -83,16 +84,16 @@ void QgsOWSSourceWidget::setSourceUri( const QString &uri )
   {
     QStringList coords = bbox.split( ',' );
     extent = inverted ? QgsRectangle(
-                          coords.takeAt( 1 ).toDouble(),
-                          coords.takeAt( 0 ).toDouble(),
-                          coords.takeAt( 2 ).toDouble(),
-                          coords.takeAt( 3 ).toDouble()
+                          coords.at( 1 ).toDouble(),
+                          coords.at( 0 ).toDouble(),
+                          coords.at( 3 ).toDouble(),
+                          coords.at( 2 ).toDouble()
                         )
                       : QgsRectangle(
-                          coords.takeAt( 0 ).toDouble(),
-                          coords.takeAt( 1 ).toDouble(),
-                          coords.takeAt( 2 ).toDouble(),
-                          coords.takeAt( 3 ).toDouble()
+                          coords.at( 0 ).toDouble(),
+                          coords.at( 1 ).toDouble(),
+                          coords.at( 2 ).toDouble(),
+                          coords.at( 3 ).toDouble()
                         );
   }
   else

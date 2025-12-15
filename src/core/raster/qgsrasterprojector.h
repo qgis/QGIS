@@ -23,17 +23,17 @@
 #ifndef QGSRASTERPROJECTOR_H
 #define QGSRASTERPROJECTOR_H
 
+#include <cmath>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QVector>
-#include <QList>
-
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterinterface.h"
+#include "qgsrectangle.h"
 
-#include <cmath>
+#include <QList>
+#include <QVector>
 
 class QgsPointXY;
 
@@ -162,13 +162,13 @@ class ProjectorData
   private:
 
     //! Returns the destination point for _current_ destination position.
-    void destPointOnCPMatrix( int row, int col, double *theX, double *theY );
+    void destPointOnCPMatrix( int row, int col, double *theX, double *theY ) const;
 
     //! Returns the matrix upper left row index for destination row.
-    int matrixRow( int destRow );
+    int matrixRow( int destRow ) const;
 
     //! Returns the matrix upper left col index for destination col.
-    int matrixCol( int destCol );
+    int matrixCol( int destCol ) const;
 
     //! Returns precise source row and column indexes for current source extent and resolution.
     inline bool preciseSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
@@ -201,13 +201,13 @@ class ProjectorData
      * \brief check error along columns
      * returns TRUE if within threshold
     */
-    bool checkCols( const QgsCoordinateTransform &ct );
+    bool checkCols( const QgsCoordinateTransform &ct ) const;
 
     /**
      * \brief check error along rows
      * returns TRUE if within threshold
     */
-    bool checkRows( const QgsCoordinateTransform &ct );
+    bool checkRows( const QgsCoordinateTransform &ct ) const;
 
     //! Calculate array of src helper points
     void calcHelper( int matrixRow, QgsPointXY *points );
@@ -222,7 +222,7 @@ class ProjectorData
      * Use approximation (requested precision is Approximate and it is possible to calculate
      * an approximation matrix with a sufficient precision).
     */
-    bool mApproximate;
+    bool mApproximate = false;
 
     //! Transformation from destination CRS to source CRS
     QgsCoordinateTransform mInverseCt;
@@ -243,28 +243,28 @@ class ProjectorData
     int mDestCols;
 
     //! Destination x resolution
-    double mDestXRes;
+    double mDestXRes = 0.0;
 
     //! Destination y resolution
-    double mDestYRes;
+    double mDestYRes = 0.0;
 
     //! Number of source rows
-    int mSrcRows;
+    int mSrcRows = 0;
 
     //! Number of source columns
-    int mSrcCols;
+    int mSrcCols = 0;
 
     //! Source x resolution
-    double mSrcXRes;
+    double mSrcXRes = 0.0;
 
     //! Source y resolution
-    double mSrcYRes;
+    double mSrcYRes = 0.0;
 
     //! Number of destination rows per matrix row
-    double mDestRowsPerMatrixRow;
+    double mDestRowsPerMatrixRow = 0.0;
 
     //! Number of destination cols per matrix col
-    double mDestColsPerMatrixCol;
+    double mDestColsPerMatrixCol = 0.0;
 
     //! Grid of source control points
     QList< QList<QgsPointXY> > mCPMatrix;
@@ -282,19 +282,19 @@ class ProjectorData
     QgsPointXY *pHelperBottom = nullptr;
 
     //! Current mHelperTop matrix row
-    int mHelperTopRow;
+    int mHelperTopRow = 0;
 
     //! Number of mCPMatrix columns
-    int mCPCols;
+    int mCPCols = 0;
     //! Number of mCPMatrix rows
-    int mCPRows;
+    int mCPRows = 0;
 
     //! Maximum tolerance in destination units
-    double mSqrTolerance;
+    double mSqrTolerance = 0.0;
 
     //! Maximum source resolution
-    double mMaxSrcXRes;
-    double mMaxSrcYRes;
+    double mMaxSrcXRes = 0;
+    double mMaxSrcYRes = 0;
 
 };
 

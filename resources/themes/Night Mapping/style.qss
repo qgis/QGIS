@@ -3,6 +3,11 @@ QWidget
     background: transparent;
 }
 
+QWidget[autoFillBackground=true]
+{
+    background-color: @background;
+}
+
 QLabel, QCheckBox, QRadioButton, QMenu::item
 {
     color: @text;
@@ -1019,6 +1024,11 @@ QTreeView::item:selected, QTreeView::branch:selected {
     color: @textlight;
 }
 
+QTreeView::item:selected:disabled, QTreeView::branch:selected:disabled {
+    background-color: @itemdarkbackground;
+    color: @background;
+}
+
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
     border-image: none;
@@ -1173,20 +1183,21 @@ QTableView QTableCornerButton::section {
 }
 
 QHeaderView {
-    background-color:transparent;
-    border:0;
+    background-color: transparent;
+    border: 0;
+    color: @text;
 }
 
 QHeaderView:disabled {
-    background-color:transparent;
-    border:0;
+    background-color: transparent;
+    border: 0;
+    color: @itemdarkbackground;
 }
 
 QHeaderView::section, QHeaderView::section:vertical {
     padding: 0.1m 0.2em 0.1em 0.2em;
     background: transparent;
     background-color: @background;
-    color: @text;
     border: 1px solid @itemdarkbackground;
     border-left: 0;
     border-top: 0;

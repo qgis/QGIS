@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgsblockingnetworkrequest.h"
-#include "moc_qgsblockingnetworkrequest.cpp"
-#include "qgslogger.h"
+
 #include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsauthmanager.h"
-#include "qgsmessagelog.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsvariantutils.h"
-#include <QUrl>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QMutex>
-#include <QWaitCondition>
-#include <QNetworkCacheMetaData>
+
 #include <QAuthenticator>
 #include <QBuffer>
+#include <QMutex>
+#include <QNetworkCacheMetaData>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QWaitCondition>
+
+#include "moc_qgsblockingnetworkrequest.cpp"
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest( Qgis::NetworkRequestFlags flags )
   : mFlags( flags )
@@ -74,7 +77,9 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRe
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, QIODevice *data, bool forceRefresh, QgsFeedback *feedback )
 {
   mPayloadData = data;
-  return doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
+  const QgsBlockingNetworkRequest::ErrorCode res = doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
+  mPayloadData = nullptr;
+  return res;
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::head( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
@@ -93,7 +98,9 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkReq
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback )
 {
   mPayloadData = data;
-  return doRequest( Qgis::HttpMethod::Put, request, true, feedback );
+  const QgsBlockingNetworkRequest::ErrorCode res = doRequest( Qgis::HttpMethod::Put, request, true, feedback );
+  mPayloadData = nullptr;
+  return res;
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::deleteResource( QNetworkRequest &request, QgsFeedback *feedback )

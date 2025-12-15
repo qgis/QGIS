@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudrendererpropertieswidget.h"
-#include "moc_qgspointcloudrendererpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -34,6 +33,8 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgstextformatwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
+
+#include "moc_qgspointcloudrendererpropertieswidget.cpp"
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -260,7 +261,10 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   else if ( !cboRenderers->currentData().toString().isEmpty() )
   {
     QDomElement elem;
-    mLayer->setRenderer( QgsApplication::pointCloudRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() )->createRenderer( elem, QgsReadWriteContext() ) );
+    if ( QgsPointCloudRendererAbstractMetadata *metadata = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() ) )
+    {
+      mLayer->setRenderer( metadata->createRenderer( elem, QgsReadWriteContext() ) );
+    }
   }
 
   mLayer->renderer()->setPointSize( mPointSizeSpinBox->value() );

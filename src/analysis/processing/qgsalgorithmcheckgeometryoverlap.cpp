@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcheckgeometryoverlap.h"
+
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsgeometryoverlapcheck.h"
 #include "qgspoint.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -63,7 +64,7 @@ QString QgsGeometryCheckOverlapAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckOverlapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckOverlapAlgorithm *QgsGeometryCheckOverlapAlgorithm::createInstance() const
@@ -92,7 +93,7 @@ void QgsGeometryCheckOverlapAlgorithm::initAlgorithm( const QVariantMap &configu
     QStringLiteral( "MIN_OVERLAP_AREA" ), QObject::tr( "Minimum overlap area" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -119,7 +120,6 @@ QgsFields QgsGeometryCheckOverlapAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
@@ -128,8 +128,8 @@ QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMa
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
-  int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
+  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 
@@ -153,9 +153,7 @@ QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMa
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  const QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -177,7 +175,19 @@ QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMa
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );
@@ -187,6 +197,11 @@ QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMa
 
   for ( const QgsGeometryCheckError *error : checkErrors )
   {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
     const QgsGeometryOverlapCheckError *overlapError = dynamic_cast<const QgsGeometryOverlapCheckError *>( error );
     if ( !overlapError )
       break;

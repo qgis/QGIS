@@ -15,17 +15,18 @@
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsfield.h"
 
-#include <QObject>
-#include <QFont>
 #include <QColor>
-#include <QPixmap>
-#include <QDomNode>
 #include <QDomDocument>
+#include <QDomNode>
+#include <QFont>
 #include <QHash>
-#include <memory>
+#include <QObject>
+#include <QPixmap>
 
 class QgsConditionalStyle;
 class QgsReadWriteContext;
@@ -135,10 +136,12 @@ class CORE_EXPORT QgsConditionalStyle
   public:
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle &other );
+    SIP_SKIP QgsConditionalStyle( QgsConditionalStyle &&other );
     QgsConditionalStyle( const QString &rule );
     ~QgsConditionalStyle();
 
     QgsConditionalStyle &operator=( const QgsConditionalStyle &other );
+    QgsConditionalStyle &operator=( QgsConditionalStyle &&other );
 
     /**
      * \brief Check if the rule matches using the given value and feature

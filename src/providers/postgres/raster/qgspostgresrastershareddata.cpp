@@ -14,26 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspostgresrastershareddata.h"
+
+#include <cpl_string.h>
+#include <gdal.h>
+
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgspolygon.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresrasterutils.h"
+
 #include <QDebug>
 #include <QObject>
 
-#include "cpl_string.h"
-#include "gdal.h"
-
-#include "qgspostgresrastershareddata.h"
-#include "qgspostgresrasterutils.h"
-#include "qgspostgresconn.h"
-#include "qgsmessagelog.h"
-#include "qgspolygon.h"
-#include "qgslogger.h"
-
-QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData()
-{
-  for ( const auto &idx : mSpatialIndexes )
-  {
-    delete idx.second;
-  }
-}
+QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData() = default;
 
 QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( const QgsPostgresRasterSharedData::TilesRequest &request )
 {
@@ -47,7 +42,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   if ( mSpatialIndexes.find( cacheKey ) == mSpatialIndexes.end() )
   {
     // Create the index
-    mSpatialIndexes.emplace( cacheKey, new QgsGenericSpatialIndex<Tile>() );
+    mSpatialIndexes.emplace( cacheKey, std::make_unique< QgsGenericSpatialIndex<Tile> >() );
     mTiles.emplace( cacheKey, std::map<TileIdType, std::unique_ptr<Tile>>() );
     mLoadedIndexBounds[cacheKey] = QgsGeometry();
   }

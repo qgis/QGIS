@@ -21,7 +21,7 @@ Build-Depends:
  libpq-dev,
  libproj-dev,
  libdraco-dev,
- libspatialindex-dev,
+#bookworm noble# libspatialindex-dev,
  libspatialite-dev,
  libmeshoptimizer-dev,
  libsqlite3-dev,
@@ -74,6 +74,7 @@ Build-Depends:
 #apidoc#Build-Depends-indep:
 #apidoc# doxygen
 Build-Conflicts:
+ libspatialindex-dev (>= 2.1.0),
  libqgis-dev,
  libqgis-qt6-dev,
  qgis-dev
@@ -832,7 +833,7 @@ Description: QGIS - common Qt Quick files
 #qt6# python3-psycopg2,
 #qt6# python3-pygments,
 #qt6# python3-pyproj,
-#qt6# python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtsvg, python3-pyqt6.qtserialport, python3-pyqt6.sip,
+#qt6# python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtsvg, python3-pyqt6.qtserialport, python3-pyqt6.sip, pyqt6-dev-tools,
 #qt6# python3-yaml,
 #qt6# python3-lxml,
 #qt6# ${python3:Depends},

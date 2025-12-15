@@ -16,13 +16,12 @@
 #ifndef QgsQueryResultModel_H
 #define QgsQueryResultModel_H
 
-#include <QAbstractTableModel>
-#include <QThread>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgsabstractdatabaseproviderconnection.h"
+
+#include <QAbstractTableModel>
+#include <QThread>
 
 ///@cond private
 
@@ -87,7 +86,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
      */
     QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = nullptr );
 
-    ~QgsQueryResultModel();
+    ~QgsQueryResultModel() override;
 
     // QAbstractItemModel interface
   public:

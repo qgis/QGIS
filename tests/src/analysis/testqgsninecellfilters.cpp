@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsalignraster.h"
-#include "qgsaspectfilter.h"
-#include "qgsslopefilter.h"
-#include "qgshillshadefilter.h"
-#include "qgsruggednessfilter.h"
-#include "qgstotalcurvaturefilter.h"
 #include "qgsapplication.h"
+#include "qgsaspectfilter.h"
+#include "qgshillshadefilter.h"
 #include "qgsrasterlayer.h"
+#include "qgsruggednessfilter.h"
+#include "qgsslopefilter.h"
+#include "qgstest.h"
+#include "qgstotalcurvaturefilter.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -226,7 +226,7 @@ void TestNineCellFilters::testCreationOptions()
 {
   QString tmpFile( tempFile( QStringLiteral( "createopts" ) ) );
 
-  QString worldFileName = tmpFile.replace( QStringLiteral( ".tif" ), QStringLiteral( ".tfw" ) );
+  QString worldFileName = tmpFile.replace( QLatin1String( ".tif" ), QLatin1String( ".tfw" ) );
   QFile worldFile( worldFileName );
   QVERIFY( !worldFile.exists() );
 

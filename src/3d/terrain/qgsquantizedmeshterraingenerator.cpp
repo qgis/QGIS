@@ -14,11 +14,15 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshterraingenerator.h"
-#include "moc_qgsquantizedmeshterraingenerator.cpp"
+
+#include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsapplication.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeotransform.h"
+#include "qgsgltf3dutils.h"
 #include "qgslogger.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayerutils.h"
@@ -27,6 +31,7 @@
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsrectangle.h"
+#include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
 #include "qgsterraintileloader.h"
 #include "qgstiledsceneindex.h"
@@ -34,20 +39,17 @@
 #include "qgstiledscenetile.h"
 #include "qgstiles.h"
 #include "qgstriangularmesh.h"
-#include "qgsgltf3dutils.h"
-#include "qgsterrainentity.h"
-#include "qgs3dmapsettings.h"
 #include "qgsvector3d.h"
-#include "qgsapplication.h"
-#include "qgsabstractterrainsettings.h"
 
 #include <QComponent>
 #include <QDiffuseSpecularMaterial>
 #include <QEntity>
-#include <QtGlobal>
 #include <QPhongMaterial>
-#include <QtConcurrentRun>
 #include <QTextureMaterial>
+#include <QtConcurrentRun>
+#include <QtGlobal>
+
+#include "moc_qgsquantizedmeshterraingenerator.cpp"
 
 ///@cond PRIVATE
 
@@ -59,10 +61,10 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
       QgsTerrainEntity *terrain, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs
     );
     void start() override;
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   protected:
-    virtual void onTextureLoaded() override;
+    void onTextureLoaded() override;
 
   private:
     QgsTerrainTileEntity *mEntity = nullptr;
@@ -77,7 +79,7 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
 QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerrainEntity *terrain_, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs )
   : QgsTerrainTileLoader( terrain_, node )
   , mTileId( tileId )
-  , mIndex( index )
+  , mIndex( std::move( index ) )
   , mTileCrsToMapCrs( tileCrsToMapCrs )
 {
 }

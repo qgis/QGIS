@@ -17,8 +17,10 @@
 #ifndef QGSARCGISRESTSOURCEWIDGET_H
 #define QGSARCGISRESTSOURCEWIDGET_H
 
-#include "qgsprovidersourcewidget.h"
 #include "ui_qgsarcgisrestsourcewidgetbase.h"
+
+#include "qgsprovidersourcewidget.h"
+
 #include <QVariantMap>
 
 class QgsArcGisRestSourceWidget : public QgsProviderSourceWidget, private Ui::QgsArcGisRestSourceWidgetBase

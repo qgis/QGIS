@@ -2,6 +2,7 @@
 try:
     QgsVectorLayerUtils.getValuesIterator = staticmethod(QgsVectorLayerUtils.getValuesIterator)
     QgsVectorLayerUtils.getValues = staticmethod(QgsVectorLayerUtils.getValues)
+    QgsVectorLayerUtils.uniqueValues = staticmethod(QgsVectorLayerUtils.uniqueValues)
     QgsVectorLayerUtils.getDoubleValues = staticmethod(QgsVectorLayerUtils.getDoubleValues)
     QgsVectorLayerUtils.valueExists = staticmethod(QgsVectorLayerUtils.valueExists)
     QgsVectorLayerUtils.createUniqueValue = staticmethod(QgsVectorLayerUtils.createUniqueValue)
@@ -20,6 +21,7 @@ try:
     QgsVectorLayerUtils.getFeatureDisplayString = staticmethod(QgsVectorLayerUtils.getFeatureDisplayString)
     QgsVectorLayerUtils.impactsCascadeFeatures = staticmethod(QgsVectorLayerUtils.impactsCascadeFeatures)
     QgsVectorLayerUtils.guessFriendlyIdentifierField = staticmethod(QgsVectorLayerUtils.guessFriendlyIdentifierField)
+    QgsVectorLayerUtils.fieldToDataArray = staticmethod(QgsVectorLayerUtils.fieldToDataArray)
     QgsVectorLayerUtils.__group__ = ['vector']
 except (NameError, AttributeError):
     pass

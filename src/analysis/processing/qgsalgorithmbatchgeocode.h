@@ -18,8 +18,8 @@
 #ifndef QGSALGORITHMBATCHGEOCODE_H
 #define QGSALGORITHMBATCHGEOCODE_H
 
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 class QgsGeocoderInterface;
@@ -38,6 +38,7 @@ class QgsGeocoderInterface;
  *
  *      def geocodeString(self, string, context, feedback):
  *         # calculate and return results...
+ *         pass
  *
  *   my_geocoder = MyGeocoder()
  *

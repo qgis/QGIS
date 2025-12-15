@@ -12,18 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfontutils.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettings.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgspallabeling.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include <QMimeData>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-
-#include "qgspallabeling.h"
-#include "qgsfontutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsmapsettings.h"
-#include "qgsmaprenderersequentialjob.h"
 
 class TestQgsPalLabeling : public QgsTest
 {
@@ -41,6 +42,7 @@ class TestQgsPalLabeling : public QgsTest
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     void testPolygonWithEmptyRing();
 #endif
+    void testLabelSettingsToFromMime();
 };
 
 void TestQgsPalLabeling::cleanupTestCase()
@@ -290,6 +292,26 @@ void TestQgsPalLabeling::testPolygonWithEmptyRing()
   job.waitForFinished();
 }
 #endif
+
+void TestQgsPalLabeling::testLabelSettingsToFromMime()
+{
+  QgsPalLayerSettings settings;
+
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
+
+  const QMimeData *md = settings.toMimeData();
+
+  bool ok = false;
+  QgsPalLayerSettings from_mime = QgsPalLayerSettings::fromMimeData( nullptr, &ok );
+  QVERIFY( !ok );
+  from_mime = QgsPalLayerSettings::fromMimeData( md, &ok );
+  QVERIFY( ok );
+  QCOMPARE( from_mime.fieldName, settings.fieldName );
+  QCOMPARE( from_mime.isExpression, settings.isExpression );
+  QCOMPARE( from_mime.placement, settings.placement );
+}
 
 QGSTEST_MAIN( TestQgsPalLabeling )
 #include "testqgspallabeling.moc"

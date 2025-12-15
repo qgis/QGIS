@@ -13,19 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsavoidintersectionsoperation.h"
 #include "qgsmaptoolreshape.h"
-#include "moc_qgsmaptoolreshape.cpp"
+
+#include "qgisapp.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmultipoint.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
 #include "qgsvectorlayereditutils.h"
-#include "qgsmultipoint.h"
+
+#include "moc_qgsmaptoolreshape.cpp"
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )

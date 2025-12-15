@@ -505,7 +505,7 @@ BOOL CALLBACK enumParams(
 
     switch ( pSymInfo->Register )
     {
-#ifndef _WIN64
+#if defined( _M_IX86 )
       case 17:
         WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->Eax, sizeof( stackTrace->contextRecord->Eax ), NULL );
         break;
@@ -518,7 +518,7 @@ BOOL CALLBACK enumParams(
       case 20:
         WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->Ebx, sizeof( stackTrace->contextRecord->Ebx ), NULL );
         break;
-#else
+#elif defined( _M_AMD64 )
       case 328:
         WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->Rax, sizeof( stackTrace->contextRecord->Rax ), NULL );
         break;
@@ -558,6 +558,46 @@ BOOL CALLBACK enumParams(
       case 157:
         WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->Xmm3, sizeof( stackTrace->contextRecord->Xmm3 ), NULL );
         break;
+#elif defined( _M_ARM64 )
+      case 50:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->X0, sizeof( stackTrace->contextRecord->X0 ), NULL );
+        break;
+
+      case 51:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->X1, sizeof( stackTrace->contextRecord->X1 ), NULL );
+        break;
+
+      case 52:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->X2, sizeof( stackTrace->contextRecord->X2 ), NULL );
+        break;
+
+      case 53:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->X3, sizeof( stackTrace->contextRecord->X3 ), NULL );
+        break;
+
+      case 54:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->X4, sizeof( stackTrace->contextRecord->X4 ), NULL );
+        break;
+
+      case 69:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->X19, sizeof( stackTrace->contextRecord->X19 ), NULL );
+        break;
+
+      case 180:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->V[0], sizeof( stackTrace->contextRecord->V[0] ), NULL );
+        break;
+
+      case 181:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->V[1], sizeof( stackTrace->contextRecord->V[1] ), NULL );
+        break;
+
+      case 182:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->V[2], sizeof( stackTrace->contextRecord->V[2] ), NULL );
+        break;
+
+      case 183:
+        WriteProcessMemory( stackTrace->process, valueLocation, &stackTrace->contextRecord->V[3], sizeof( stackTrace->contextRecord->V[3] ), NULL );
+        break;
 #endif
 
       default:
@@ -567,26 +607,35 @@ BOOL CALLBACK enumParams(
   }
   else if ( pSymInfo->Flags & SYMFLAG_LOCAL )
   {
-#ifndef _WIN64
+#if defined( _M_IX86 )
     valueLocation = ( ( char * ) stackTrace->contextRecord->Ebp ) + pSymInfo->Address;
-#else
+#elif defined( _M_AMD64 )
     valueLocation = ( ( char * ) stackTrace->contextRecord->Rbp ) + pSymInfo->Address;
+#elif defined( _M_ARM64 )
+    valueLocation = ( ( char * ) stackTrace->contextRecord->Fp ) + pSymInfo->Address;
 #endif
   }
   else if ( pSymInfo->Flags & SYMFLAG_REGREL )
   {
     switch ( pSymInfo->Register )
     {
-#ifndef _WIN64
+#if defined( _M_IX86 )
       case 22:
         valueLocation = ( ( char * ) stackTrace->contextRecord->Ebp ) + pSymInfo->Address;
         break;
-#else
+#elif defined( _M_AMD64 )
       case 334:
         valueLocation = ( ( char * ) stackTrace->contextRecord->Rbp ) + pSymInfo->Address;
         break;
       case 335:
         valueLocation = ( ( char * ) stackTrace->contextRecord->Rsp ) + 0x20 + pSymInfo->Address;
+        break;
+#elif defined( _M_ARM64 )
+      case 79:
+        valueLocation = ( ( char * ) stackTrace->contextRecord->Fp ) + pSymInfo->Address;
+        break;
+      case 81:
+        valueLocation = ( ( char * ) stackTrace->contextRecord->Sp ) + pSymInfo->Address;
         break;
 #endif
 
@@ -639,10 +688,12 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
   symbol->MaxNameLen = 255;
   symbol->SizeOfStruct = sizeof( SYMBOL_INFOW );
 
-#ifndef _WIN64
+#if defined( _M_IX86 )
   DWORD machineType = IMAGE_FILE_MACHINE_I386;
-#else
+#elif defined( _M_AMD64 )
   DWORD machineType = IMAGE_FILE_MACHINE_AMD64;
+#elif defined( _M_ARM64 )
+  DWORD machineType = IMAGE_FILE_MACHINE_ARM64;
 #endif
 
   for ( int i = 0;; i++ )
@@ -732,19 +783,26 @@ QgsStackTrace *QgsStackTrace::trace( DWORD processId, DWORD threadId, LPEXCEPTIO
   ReadProcessMemory( stackTrace->process, exception, &remoteException, sizeof( remoteException ), NULL );
   ReadProcessMemory( stackTrace->process, remoteException.ContextRecord, &remoteContextRecord, sizeof( remoteContextRecord ), NULL );
 
-#ifndef _WIN64
+#if defined( _M_IX86 )
   stackTrace->currentStackFrame.AddrPC.Offset = remoteContextRecord.Eip;
   stackTrace->currentStackFrame.AddrPC.Mode = AddrModeFlat;
   stackTrace->currentStackFrame.AddrFrame.Offset = remoteContextRecord.Ebp;
   stackTrace->currentStackFrame.AddrFrame.Mode = AddrModeFlat;
   stackTrace->currentStackFrame.AddrStack.Offset = remoteContextRecord.Esp;
   stackTrace->currentStackFrame.AddrStack.Mode = AddrModeFlat;
-#else
+#elif defined( _M_AMD64 )
   stackTrace->currentStackFrame.AddrPC.Offset = remoteContextRecord.Rip;
   stackTrace->currentStackFrame.AddrPC.Mode = AddrModeFlat;
   stackTrace->currentStackFrame.AddrFrame.Offset = remoteContextRecord.Rbp;
   stackTrace->currentStackFrame.AddrFrame.Mode = AddrModeFlat;
   stackTrace->currentStackFrame.AddrStack.Offset = remoteContextRecord.Rsp;
+  stackTrace->currentStackFrame.AddrStack.Mode = AddrModeFlat;
+#elif defined( _M_ARM64 )
+  stackTrace->currentStackFrame.AddrPC.Offset = remoteContextRecord.Pc;
+  stackTrace->currentStackFrame.AddrPC.Mode = AddrModeFlat;
+  stackTrace->currentStackFrame.AddrFrame.Offset = remoteContextRecord.Fp;
+  stackTrace->currentStackFrame.AddrFrame.Mode = AddrModeFlat;
+  stackTrace->currentStackFrame.AddrStack.Offset = remoteContextRecord.Sp;
   stackTrace->currentStackFrame.AddrStack.Mode = AddrModeFlat;
 #endif
 

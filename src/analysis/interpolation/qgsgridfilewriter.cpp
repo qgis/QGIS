@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgsgridfilewriter.h"
-#include "qgsinterpolator.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsfeedback.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsrasterdataprovider.h"
+#include "qgsinterpolator.h"
 #include "qgsrasterblock.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsvectorlayer.h"
+
 #include <QFileInfo>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, const QString &outputFormat )
   : mInterpolator( i )
   , mOutputFilePath( outputPath )
   , mInterpolationExtent( extent )
@@ -32,19 +34,17 @@ QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputP
   , mNumRows( nRows )
   , mCellSizeX( extent.width() / nCols )
   , mCellSizeY( extent.height() / nRows )
+  , mOutputFormat( outputFormat.isEmpty() ? QgsRasterFileWriter::driverForExtension( QFileInfo( mOutputFilePath ).suffix() ) : outputFormat )
 {}
 
 int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 {
-  const QFileInfo fi( mOutputFilePath );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
-
   QgsInterpolator::LayerData ld = mInterpolator->layerData().at( 0 );
   const QgsCoordinateReferenceSystem crs = ld.source->sourceCrs();
 
   auto writer = std::make_unique<QgsRasterFileWriter>( mOutputFilePath );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  writer->setOutputFormat( outputFormat );
+  writer->setOutputFormat( mOutputFormat );
   writer->setCreationOptions( mCreationOptions );
 
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( Qgis::DataType::Float32, mNumColumns, mNumRows, mInterpolationExtent, crs ) );

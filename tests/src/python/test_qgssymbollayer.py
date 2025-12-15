@@ -81,6 +81,8 @@ from qgis.core import (
     QgsVectorFieldSymbolLayer,
     QgsVectorLayer,
     QgsSymbolRenderContext,
+    QgsDropShadowEffect,
+    QgsInnerGlowEffect,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1304,6 +1306,71 @@ class TestQgsSymbolLayer(QgisTestCase):
             renderHints=Qgis.SymbolRenderHint.ForceVectorRendering,
         )
         self.assertTrue(context.forceVectorRendering())
+
+    def test_renders_identically_to(self):
+        layer1 = QgsSimpleLineSymbolLayer()
+        layer2 = QgsSimpleMarkerSymbolLayer()
+
+        # simple tests
+        self.assertTrue(layer1.rendersIdenticallyTo(layer1))
+        self.assertTrue(layer1.rendersIdenticallyTo(QgsSimpleLineSymbolLayer()))
+        self.assertTrue(layer2.rendersIdenticallyTo(layer2))
+        self.assertTrue(layer2.rendersIdenticallyTo(QgsSimpleMarkerSymbolLayer()))
+
+        # type mismatches
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+        self.assertFalse(layer2.rendersIdenticallyTo(layer1))
+
+        # data defined properties
+        layer1 = QgsSimpleLineSymbolLayer()
+        layer2 = QgsSimpleLineSymbolLayer()
+        self.assertTrue(layer1.rendersIdenticallyTo(layer2))
+        # a data defined property should force a False return, as we are being pessimistic and don't currently
+        # have a means to check if the expression will always return the same result
+        layer1.setDataDefinedProperty(
+            QgsSymbolLayer.Property.StrokeColor, QgsProperty.fromExpression("@red")
+        )
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+
+        # one layer disabled
+        layer1 = QgsSimpleLineSymbolLayer()
+        layer2 = QgsSimpleLineSymbolLayer()
+        layer2.setEnabled(False)
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+        self.assertFalse(layer2.rendersIdenticallyTo(layer1))
+        layer1.setEnabled(False)
+        self.assertTrue(layer1.rendersIdenticallyTo(layer2))
+
+        # different color
+        layer1.setColor(QColor(255, 0, 0))
+        layer2.setColor(QColor(255, 255, 0))
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+        self.assertFalse(layer2.rendersIdenticallyTo(layer1))
+
+        # different render pass
+        layer1 = QgsSimpleLineSymbolLayer()
+        layer2 = QgsSimpleLineSymbolLayer()
+        layer2.setRenderingPass(5)
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+        self.assertFalse(layer2.rendersIdenticallyTo(layer1))
+
+        # paint effect. Currently we are pessimistic and treat all paint
+        # effects as different
+        layer1 = QgsSimpleLineSymbolLayer()
+        layer2 = QgsSimpleLineSymbolLayer()
+        layer2.setPaintEffect(QgsDropShadowEffect())
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+        self.assertFalse(layer2.rendersIdenticallyTo(layer1))
+        layer1.setPaintEffect(QgsInnerGlowEffect())
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+        self.assertFalse(layer2.rendersIdenticallyTo(layer1))
+
+        # different properties
+        layer1 = QgsSimpleLineSymbolLayer()
+        layer2 = QgsSimpleLineSymbolLayer()
+        layer2.setPenStyle(Qt.PenStyle.DashLine)
+        self.assertFalse(layer1.rendersIdenticallyTo(layer2))
+        self.assertFalse(layer2.rendersIdenticallyTo(layer1))
 
 
 if __name__ == "__main__":

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgstiledscenewireframerenderer.h"
+
 #include "qgsfillsymbol.h"
-#include "qgssymbollayerutils.h"
 #include "qgslinesymbol.h"
+#include "qgssymbollayerutils.h"
 
 QgsTiledSceneWireframeRenderer::QgsTiledSceneWireframeRenderer()
 {

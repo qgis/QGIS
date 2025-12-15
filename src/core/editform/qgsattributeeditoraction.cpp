@@ -14,8 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeeditoraction.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsactionmanager.h"
+#include "qgsvectorlayer.h"
 
 QgsAttributeEditorAction::QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent )
   : QgsAttributeEditorElement( Qgis::AttributeEditorType::Action, action.id().toString(), parent )

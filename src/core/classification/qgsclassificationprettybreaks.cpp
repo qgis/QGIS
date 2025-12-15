@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationprettybreaks.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
 
+#include "qgsapplication.h"
+#include "qgssymbollayerutils.h"
+
+#include <QObject>
 
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
   : QgsClassificationMethod( SymmetricModeAvailable )
@@ -44,6 +44,13 @@ QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, d
 
   if ( symmetricModeEnabled() )
     makeBreaksSymmetric( breaks, symmetryPoint(), symmetryAstride() );
+
+  // Special case for single class
+  if ( minimum == maximum && breaks.isEmpty() )
+  {
+    // 1 is totally arbitrary but we need something
+    breaks << maximum + 1.0;
+  }
 
   return breaks;
 }

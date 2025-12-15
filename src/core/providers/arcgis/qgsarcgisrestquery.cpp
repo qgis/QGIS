@@ -14,22 +14,26 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestquery.h"
-#include "moc_qgsarcgisrestquery.cpp"
+
+#include "qgsapplication.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgsauthmanager.h"
 #include "qgsvariantutils.h"
 
+#include <QCryptographicHash>
+#include <QFile>
+#include <QImageReader>
+#include <QJsonParseError>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QImageReader>
-#include <QRegularExpression>
-#include <QJsonParseError>
+
+#include "moc_qgsarcgisrestquery.cpp"
 
 QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
 {
@@ -353,6 +357,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
       case Qgis::ArcGisRestServiceType::FeatureServer:
       case Qgis::ArcGisRestServiceType::MapServer:
       case Qgis::ArcGisRestServiceType::ImageServer:
+      case Qgis::ArcGisRestServiceType::SceneServer:
         // supported
         break;
 
@@ -415,6 +420,12 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     const QString parentLayerId = layerInfoMap.value( QStringLiteral( "parentLayerId" ) ).toString();
     const QString name = layerInfoMap.value( QStringLiteral( "name" ) ).toString();
     const QString description = layerInfoMap.value( QStringLiteral( "description" ) ).toString();
+
+    if ( filter == ServiceTypeFilter::Scene )
+    {
+      visitor( parentLayerId, ServiceTypeFilter::Scene, Qgis::GeometryType::Unknown, id, name, description, parentUrl, false, crs, format );
+      continue;
+    }
 
     // Yes, potentially we may visit twice, once as as a raster (if applicable), and once as a vector (if applicable)!
     if ( serviceMayRenderMaps && ( filter == ServiceTypeFilter::Raster || filter == ServiceTypeFilter::AllTypes ) )

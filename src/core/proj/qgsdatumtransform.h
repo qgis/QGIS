@@ -20,8 +20,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
-#include <QString>
+
 #include <QList>
+#include <QString>
 
 class QgsCoordinateReferenceSystem;
 

@@ -14,8 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include <memory>
+
+#include "qgstest.h"
 
 //qgis includes...
 #include "qgsgeometry.h"

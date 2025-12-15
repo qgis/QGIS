@@ -18,9 +18,10 @@
 
 #define SIP_NO_FILE
 
+#include <optional>
+
 #include "qgis_core.h"
 #include "qgssettings.h"
-#include <optional>
 
 /**
  * \class QgsSettingsProxy

@@ -17,16 +17,16 @@
 #define QGSMSSQLDATABASE_H
 
 
+#include <memory>
+
+#include "qgsdatasourceuri.h"
+#include "qgsfields.h"
+
 #include <QMap>
 #include <QMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-
-#include <memory>
-
-#include "qgsfields.h"
-#include "qgsdatasourceuri.h"
 
 class QgsDataSourceUri;
 
@@ -141,7 +141,7 @@ class QgsMssqlQuery : public QSqlQuery
   public:
     explicit QgsMssqlQuery( std::shared_ptr<QgsMssqlDatabase> db )
       : QSqlQuery( db->db() )
-      , mDb( db )
+      , mDb( std::move( db ) )
     {
       if ( mDb->hasTransaction() )
         mDb->mTransactionMutex->lock();

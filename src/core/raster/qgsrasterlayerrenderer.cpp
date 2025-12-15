@@ -14,43 +14,46 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerrenderer.h"
-#include "moc_qgsrasterlayerrenderer.cpp"
 
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgselevationmap.h"
+#include "qgsexception.h"
+#include "qgsgdalutils.h"
+#include "qgsinterval.h"
+#include "qgsmapclippingutils.h"
 #include "qgsmessagelog.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterprojector.h"
-#include "qgsrendercontext.h"
-#include "qgsrasterrenderer.h"
-#include "qgsexception.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsmapclippingutils.h"
-#include "qgsrasterpipe.h"
-#include "qgselevationmap.h"
-#include "qgsgdalutils.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
-#include "qgsrastertransparency.h"
-#include "qgsrasterlayerutils.h"
-#include "qgsinterval.h"
-#include "qgsunittypes.h"
-#include "qgsrasternuller.h"
-#include "qgsrenderedlayerstatistics.h"
 #include "qgsrasterlabeling.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsrasterlayerutils.h"
+#include "qgsrasternuller.h"
+#include "qgsrasterpipe.h"
+#include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsrastertransparency.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderedlayerstatistics.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsthreadingutils.h"
+#include "qgsunittypes.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
 #include <QThread>
 
+#include "moc_qgsrasterlayerrenderer.cpp"
+
 ///@cond PRIVATE
 
 QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r )
   : mR( r )
-  , mMinimalPreviewInterval( 250 )
 {
   setRenderPartialOutput( r->renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput ) );
 }
@@ -306,7 +309,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   layer->dataProvider()->setDpi( std::floor( dpi * rendererContext.devicePixelRatio() ) );
 
   // copy the whole raster pipe!
-  mPipe.reset( new QgsRasterPipe( *layer->pipe() ) );
+  mPipe = std::make_unique<QgsRasterPipe>( *layer->pipe() );
 
   QObject::connect( mPipe->provider(), &QgsRasterDataProvider::statusChanged, layer, &QgsRasterLayer::statusChanged );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
@@ -385,7 +388,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
           const QgsInterval &scale = temporalProperties->temporalRepresentationScale();
           const double adjustedLower = static_cast< double >( offset.msecsTo( rendererContext.temporalRange().begin() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
           const double adjustedUpper = static_cast< double >( offset.msecsTo( rendererContext.temporalRange().end() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
-          transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
+          if ( !temporalProperties->accumulatePixels() )
+          {
+            transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
+          }
           transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( adjustedUpper, std::numeric_limits<double>::max(), 0, !rendererContext.zRange().includeUpper(), true ) );
 
           transparency->setTransparentSingleValuePixelList( transparentPixels );
@@ -507,6 +513,8 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 
 bool QgsRasterLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {
@@ -788,9 +796,9 @@ void QgsRasterLayerRenderer::drawElevationMap()
           QgsGdalUtils::blockToSingleBandMemoryDataset( viewExtentInLayerCoordinate, sourcedata.get() );
 
 
-        elevationBlock.reset( new QgsRasterBlock( dataType,
-                              outputWidth,
-                              outputHeight ) );
+        elevationBlock = std::make_unique<QgsRasterBlock>( dataType,
+                         outputWidth,
+                         outputHeight );
 
         elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( mElevationBand ) );
 

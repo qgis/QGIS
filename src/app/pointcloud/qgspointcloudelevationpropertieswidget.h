@@ -16,10 +16,10 @@
 #ifndef QGSPOINTCLOUDELEVATIONPROPERTIESWIDGET_H
 #define QGSPOINTCLOUDELEVATIONPROPERTIESWIDGET_H
 
+#include "ui_qgspointcloudelevationpropertieswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-
-#include "ui_qgspointcloudelevationpropertieswidgetbase.h"
 
 class QgsPointCloudLayer;
 class QgsProjectionSelectionWidget;

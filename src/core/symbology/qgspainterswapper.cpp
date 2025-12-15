@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspainterswapper.h"
+
 #include "qgsrendercontext.h"
+
 #include <QPainter>
 
 QgsPainterSwapper::QgsPainterSwapper( QgsRenderContext &renderContext, QPainter *newPainter )

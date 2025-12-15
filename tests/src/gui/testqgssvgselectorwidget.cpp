@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssvgselectorwidget.h"
+#include "qgstest.h"
+
 #include <QPixmapCache>
 #include <QTemporaryFile>
-
-#include "qgstest.h"
-#include "qgssvgselectorwidget.h"
 
 class TestQgsSvgSelectorWidget : public QgsTest
 {

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsImageOperation
 {
 %Docstring(signature="appended")

@@ -14,38 +14,39 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassprovider.h"
+
+#include <cfloat>
 #include <cstring>
 #include <vector>
-#include <cfloat>
-
-#include <QString>
-#include <QDateTime>
-#include <QElapsedTimer>
 
 #include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
+#include "qgsgrass.h"
+#include "qgsgrassfeatureiterator.h"
+#include "qgsgrassundocommand.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "moc_qgsgrassprovider.cpp"
-#include "qgsgrassfeatureiterator.h"
-#include "qgsgrassundocommand.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
 
 #include <QByteArray>
+#include <QDateTime>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QString>
 #include <QTextCodec>
+
+#include "moc_qgsgrassprovider.cpp"
 
 #ifdef _MSC_VER
 // enable grass prototypes
@@ -444,7 +445,7 @@ QgsFields QgsGrassProvider::fields() const
   return QgsFields();
 }
 
-int QgsGrassProvider::keyField()
+int QgsGrassProvider::keyField() const
 {
   return mLayer ? mLayer->keyColumn() : -1;
 }
@@ -481,7 +482,7 @@ QgsCoordinateReferenceSystem QgsGrassProvider::crs() const
   return QgsGrass::crs( mGrassObject.gisdbase(), mGrassObject.location(), error );
 }
 
-int QgsGrassProvider::grassLayer()
+int QgsGrassProvider::grassLayer() const
 {
   return mLayerField;
 }

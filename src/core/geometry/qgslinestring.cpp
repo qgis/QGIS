@@ -16,25 +16,26 @@
  ***************************************************************************/
 
 #include "qgslinestring.h"
+
+#include <cmath>
+#include <limits>
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsgeometrytransformer.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
-#include "qgswkbptr.h"
 #include "qgslinesegment.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsfeedback.h"
+#include "qgswkbptr.h"
 
-#include <nlohmann/json.hpp>
-#include <cmath>
-#include <memory>
-#include <QPainter>
-#include <limits>
 #include <QDomDocument>
 #include <QJsonObject>
-
-#include "qgsbox3d.h"
+#include <QPainter>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -406,7 +407,7 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 
   if ( !mBoundingBox.isNull() )
   {
-    return mBoundingBox.intersects( rectangle );
+    return mBoundingBox.toRectangle().intersects( rectangle );
   }
   const int nb = mX.size();
 
@@ -433,11 +434,14 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
   // and save future calls to calculate the bounding box!
   double xmin = std::numeric_limits<double>::max();
   double ymin = std::numeric_limits<double>::max();
+  double zmin = -std::numeric_limits<double>::max();
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
+  double zmax = -std::numeric_limits<double>::max();
 
   const double *x = mX.constData();
   const double *y = mY.constData();
+  const double *z = is3D() ? mZ.constData() : nullptr;
   bool foundPointInRectangle = false;
   for ( int i = 0; i < nb; ++i )
   {
@@ -447,6 +451,12 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
     const double py = *y++;
     ymin = std::min( ymin, py );
     ymax = std::max( ymax, py );
+    if ( z )
+    {
+      const double pz = *z++;
+      zmin = std::min( zmin, pz );
+      zmax = std::max( zmax, pz );
+    }
 
     if ( !foundPointInRectangle && rectangle.contains( px, py ) )
     {
@@ -464,7 +474,7 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 
   // at this stage we now know the overall bounding box of the linestring, so let's cache
   // it so we don't ever have to calculate this again. We've done all the hard work anyway!
-  mBoundingBox = QgsRectangle( xmin, ymin, xmax, ymax, false );
+  mBoundingBox = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax, false );
 
   if ( foundPointInRectangle )
     return true;
@@ -1532,7 +1542,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
   double pZ = std::numeric_limits<double>::quiet_NaN();
   double pM = std::numeric_limits<double>::quiet_NaN();
   double nextPointDistance = distance;
-  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon ();
+  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon();
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
@@ -1969,7 +1979,7 @@ void QgsLineString::transform( const QgsCoordinateTransform &ct, Qgis::Transform
   std::unique_ptr< double[] > dummyZ;
   if ( !hasZ || !transformZ )
   {
-    dummyZ.reset( new double[nPoints]() );
+    dummyZ = std::make_unique<double[]>( nPoints );
     zArray = dummyZ.get();
   }
   else
@@ -2816,4 +2826,50 @@ std::unique_ptr< QgsLineString > QgsLineString::interpolateM( bool use3DDistance
     ++i;
   }
   return std::make_unique< QgsLineString >( xOut, yOut, zOut, mOut );
+}
+
+double QgsLineString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const
+{
+  // Convert QgsVertexId to simple vertex numbers for linestrings (single ring, single part)
+  if ( fromVertex.part != 0 || fromVertex.ring != 0 || toVertex.part != 0 || toVertex.ring != 0 )
+    return -1.0;
+
+  const int fromVertexNumber = fromVertex.vertex;
+  const int toVertexNumber = toVertex.vertex;
+
+  // Ensure fromVertex < toVertex for simplicity
+  if ( fromVertexNumber > toVertexNumber )
+  {
+    return distanceBetweenVertices( QgsVertexId( 0, 0, toVertexNumber ), QgsVertexId( 0, 0, fromVertexNumber ) );
+  }
+
+  const int nPoints = numPoints();
+  if ( fromVertexNumber < 0 || fromVertexNumber >= nPoints || toVertexNumber < 0 || toVertexNumber >= nPoints )
+    return -1.0;
+
+  if ( fromVertexNumber == toVertexNumber )
+    return 0.0;
+
+  const bool is3DGeometry = is3D();
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
+  const double *zData = is3DGeometry ? mZ.constData() : nullptr;
+  double totalDistance = 0.0;
+
+  // For linestring, just accumulate Euclidean distances between consecutive points
+  for ( int i = fromVertexNumber; i < toVertexNumber; ++i )
+  {
+    double dx = xData[i + 1] - xData[i];
+    double dy = yData[i + 1] - yData[i];
+    double dz = 0.0;
+
+    if ( is3DGeometry )
+    {
+      dz = zData[i + 1] - zData[i];
+    }
+
+    totalDistance += std::sqrt( dx * dx + dy * dy + dz * dz );
+  }
+
+  return totalDistance;
 }

@@ -16,11 +16,11 @@
 #ifndef QGSGRADIENTSTOPEDITOR_H
 #define QGSGRADIENTSTOPEDITOR_H
 
-#include "qgscolorrampimpl.h"
-#include "qgis_sip.h"
-#include <QWidget>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorrampimpl.h"
 
+#include <QWidget>
 
 /**
  * \ingroup gui

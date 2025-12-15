@@ -15,16 +15,19 @@
  ***************************************************************************/
 
 #include "qgsannotationitemregistry.h"
-#include "moc_qgsannotationitemregistry.cpp"
+
 #include "qgsannotationitem.h"
-#include "qgsannotationmarkeritem.h"
 #include "qgsannotationlineitem.h"
-#include "qgsannotationpolygonitem.h"
-#include "qgsannotationpointtextitem.h"
 #include "qgsannotationlinetextitem.h"
-#include "qgsannotationrectangletextitem.h"
+#include "qgsannotationmarkeritem.h"
 #include "qgsannotationpictureitem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationpolygonitem.h"
+#include "qgsannotationrectangletextitem.h"
+
 #include <QDomElement>
+
+#include "moc_qgsannotationitemregistry.cpp"
 
 QgsAnnotationItemRegistry::QgsAnnotationItemRegistry( QObject *parent )
   : QObject( parent )

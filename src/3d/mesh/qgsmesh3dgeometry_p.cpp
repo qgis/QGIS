@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsmesh3dgeometry_p.h"
-#include "moc_qgsmesh3dgeometry_p.cpp"
 
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+
+#include "moc_qgsmesh3dgeometry_p.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

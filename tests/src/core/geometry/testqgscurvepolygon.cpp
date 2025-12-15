@@ -14,20 +14,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QPainter>
-#include <QString>
-
 #include "qgscircularstring.h"
 #include "qgscurvepolygon.h"
 #include "qgslinestring.h"
 #include "qgsmulticurve.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
+#include "qgstest.h"
 #include "qgsvertexid.h"
-
 #include "testgeometryutils.h"
+
+#include <QObject>
+#include <QPainter>
+#include <QString>
 
 class TestQgsCurvePolygon : public QObject
 {

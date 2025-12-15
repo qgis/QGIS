@@ -19,16 +19,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswfsgetcapabilities.h"
 
-#include "qgsproject.h"
-#include "qgsexception.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsproject.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgswfsutils.h"
 
 namespace QgsWfs
 {
@@ -447,7 +447,7 @@ namespace QgsWfs
 
       //create Name
       QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
-      const QDomText nameText = doc.createTextNode( layerTypeName( layer ) );
+      const QDomText nameText = doc.createTextNode( layer->serverProperties()->wfsTypeName() );
       nameElem.appendChild( nameText );
       layerElem.appendChild( nameElem );
 
