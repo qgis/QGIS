@@ -253,19 +253,19 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          */
         RegisterResult registerFeature( QgsFeature &feature, Qgs3DRenderContext &context, RuleToHandlerMap &handlers ) const SIP_SKIP;
 
+        /**
+         * Check if a given feature shall be labelled by this rule
+         *
+         * \param feature   The feature to test
+         * \param context   The context in which the rendering happens
+         * \returns         TRUE if the feature shall be rendered
+         */
+        bool isFilterOK( const QgsFeature &feature, Qgs3DRenderContext &context ) const SIP_SKIP;
+
       private:
 #ifdef SIP_RUN
         Rule( const QgsRuleBased3DRenderer::Rule &rh );
 #endif
-
-        /**
-         * Check if a given feature shall be labelled by this rule
-         *
-         * \param f         The feature to test
-         * \param context   The context in which the rendering happens
-         * \returns          TRUE if the feature shall be rendered
-         */
-        bool isFilterOK( const QgsFeature &f, Qgs3DRenderContext &context ) const;
 
         /**
          * Initialize filters. Automatically called by setFilterExpression.
