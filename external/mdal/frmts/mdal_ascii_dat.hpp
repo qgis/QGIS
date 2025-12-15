@@ -56,6 +56,7 @@ namespace MDAL
       DriverAsciiDat *create() override;
 
       bool canReadDatasets( const std::string &uri ) override;
+      using Driver::load;
       void load( const std::string &datFile, Mesh *mesh ) override;
       bool persist( DatasetGroup *group ) override;
 

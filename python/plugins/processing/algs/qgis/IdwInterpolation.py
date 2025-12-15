@@ -136,6 +136,13 @@ class IdwInterpolation(QgisAlgorithm):
             "Generates an Inverse Distance Weighted (IDW) interpolation of a point vector layer."
         )
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm generates an Inverse Distance Weighted (IDW) interpolation of a point vector layer.\n"
+            "Sample points are weighted during interpolation such that the influence of one point relative "
+            "to another declines with distance from the unknown point you want to create."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         interpolationData = ParameterInterpolationData.parseValue(
             parameters[self.INTERPOLATION_DATA]

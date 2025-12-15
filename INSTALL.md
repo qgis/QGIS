@@ -126,7 +126,7 @@ Optional dependencies:
 * for georeferencer - GSL >= 1.8
 * for PostGIS support - PostgreSQL >= 8.0.x
 * for gps plugin - gpsbabel
-* for mapserver export and PyQGIS - Python >= 3.6
+* for mapserver export and PyQGIS - Python >= 3.11
 * for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
 * for qgis mapserver - FastCGI
 * for oracle provider - Oracle OCI library
@@ -520,7 +520,7 @@ Or install to your system
 make install
 ```
 
-### 3.11.2. Suggested system tweaks
+### 3.10.2. Suggested system tweaks
 
 By default Fedora disables debugging calls from Qt applications. This prevents
 the useful debug output which is normally printed when running the unit tests.

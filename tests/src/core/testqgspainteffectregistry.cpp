@@ -32,6 +32,7 @@ class DummyPaintEffect : public QgsPaintEffect
     QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
     static QgsPaintEffect *create( const QVariantMap & ) { return new DummyPaintEffect(); }
     QVariantMap properties() const override { return QVariantMap(); }
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override { Q_UNUSED( props ); }
 
   protected:

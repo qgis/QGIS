@@ -20,6 +20,6 @@ else
 fi
 
 if [[ -n $FILES ]]; then
-  DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
+  DIR=$(git rev-parse --show-toplevel)/scripts/pre_commit/spell_check
   ${DIR}/check_spelling.sh -r $FILES
 fi
