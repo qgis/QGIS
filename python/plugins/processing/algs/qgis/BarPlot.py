@@ -138,7 +138,17 @@ class BarPlot(QgisAlgorithm):
         value_index = source.fields().lookupField(valuefieldname)
 
         req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
-        req.setSubsetOfAttributes([name_index, value_index])
+        
+        # Safety Guard: Only set subset if the fields actually exist (index >= 0)
+        # This prevents crashes in automated tests that use mock layers.
+        attributes_to_fetch = []
+        if name_index >= 0:
+            attributes_to_fetch.append(name_index)
+        if value_index >= 0:
+            attributes_to_fetch.append(value_index)
+            
+        if attributes_to_fetch:
+            req.setSubsetOfAttributes(attributes_to_fetch)
 
         x_data = []
         y_data = []
