@@ -1365,7 +1365,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     return;
 
   const Qgis::MapGridBorderSide frameBorder = annot.border;
-  double textWidth = QgsTextRenderer::textWidth( context, mAnnotationFormat, QStringList() << annotationString ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  double textWidth = QgsTextRenderer::textWidth( context, mAnnotationFormat, annotationString.split( '\n' ) ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
   if ( extension )
     textWidth *= 1.1; // little bit of extra padding when we are calculating the bounding rect, to account for antialiasing
 
