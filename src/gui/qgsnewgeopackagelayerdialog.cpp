@@ -92,6 +92,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   addGeomItem( wkbCurvePolygon );
   addGeomItem( wkbMultiCurve );
   addGeomItem( wkbMultiSurface );
+  addGeomItem( wkbPolyhedralSurface );
+  addGeomItem( wkbTIN );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
