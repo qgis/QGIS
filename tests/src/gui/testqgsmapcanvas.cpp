@@ -526,7 +526,7 @@ void TestQgsMapCanvas::testZoomResolutions()
   const double wheelFactor = 2.0;
   mCanvas->setWheelFactor( wheelFactor );
 
-  const double nextResolution = qCeil( resolution ) + 1;
+  const double nextResolution = std::ceil( resolution ) + 1;
   QList<double> resolutions = QList<double>() << nextResolution << ( 2.5 * nextResolution ) << ( 3.6 * nextResolution ) << ( 4.7 * nextResolution );
   mCanvas->setZoomResolutions( resolutions );
 

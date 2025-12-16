@@ -52,7 +52,7 @@ class TestQgsFields : public QObject
     void appendExpressionField();
     void dataStream();
     void field(); //test QgsFields::Field
-    void qforeach();
+    void rangeIteration();
     void iterator();
     void constIterator();
     void appendList();
@@ -528,7 +528,7 @@ void TestQgsFields::field()
   QVERIFY( field1 != field4 );
 }
 
-void TestQgsFields::qforeach()
+void TestQgsFields::rangeIteration()
 {
   QgsFields fields;
   const QgsField field( QStringLiteral( "1" ) );

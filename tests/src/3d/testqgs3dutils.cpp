@@ -213,12 +213,12 @@ void TestQgs3DUtils::testQgsBox3DDistanceTo()
   {
     const QgsBox3D box( -1, -1, -1, 1, 1, 1 );
     QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), 0.0 );
-    QCOMPARE( box.distanceTo( QgsVector3D( 2, 2, 2 ) ), qSqrt( 3.0 ) );
+    QCOMPARE( box.distanceTo( QgsVector3D( 2, 2, 2 ) ), std::sqrt( 3.0 ) );
   }
   {
     const QgsBox3D box( 1, 2, 1, 4, 3, 3 );
     QCOMPARE( box.distanceTo( QgsVector3D( 1, 2, 1 ) ), 0.0 );
-    QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), qSqrt( 6.0 ) );
+    QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), std::sqrt( 6.0 ) );
   }
 }
 
