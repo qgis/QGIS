@@ -1,0 +1,30 @@
+{
+  "name": "py-calamine",
+  "version": "0.6.1",
+  "port-version": 1,
+  "description": "Python binding for Rust's library for reading excel and odf file - calamine.",
+  "homepage": "https://github.com/dimastbk/python-calamine",
+  "dependencies": [
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "py-setuptools",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    },
+    {
+      "name": "py-maturin",
+      "host": true
+    },
+    {
+      "name": "vcpkg-tool-rust",
+      "host": true
+    }
+  ]
+}
