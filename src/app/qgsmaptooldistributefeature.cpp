@@ -40,7 +40,7 @@ void QgsMapToolDistributeFeature::activate()
 {
   QgsMapToolAdvancedDigitizing::activate();
 
-  mUserInputWidget = std::make_unique<QgsDistributeFeatureUserWidget>();
+  mUserInputWidget.reset( new QgsDistributeFeatureUserWidget() );
   connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::modeChanged, this, [this]( QgsMapToolDistributeFeature::DistributeMode mode ) { mMode = mode; } );
   connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::featureCountChanged, this, [this]( int value ) { mFeatureCount = value; } );
   connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::featureSpacingChanged, this, [this]( int value ) { mFeatureSpacing = value; } );

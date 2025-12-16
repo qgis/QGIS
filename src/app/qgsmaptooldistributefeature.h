@@ -27,6 +27,7 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssnappingconfig.h"
+#include "qobjectuniqueptr.h"
 
 class QgsDistributeFeatureUserWidget;
 
@@ -84,7 +85,7 @@ class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizi
     QgsVectorLayer *mFeatureLayer = nullptr;
 
     //! The user widget
-    std::unique_ptr<QgsDistributeFeatureUserWidget> mUserInputWidget;
+    QObjectUniquePtr<QgsDistributeFeatureUserWidget> mUserInputWidget;
 
     //! The rubberband that shows the feature being distributed
     std::unique_ptr<QgsRubberBand> mRubberBand;
