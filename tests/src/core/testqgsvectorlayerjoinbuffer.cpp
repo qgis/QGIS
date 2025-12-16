@@ -32,7 +32,6 @@
 #include <QSignalSpy>
 
 /**
- * @ingroup UnitTests
  * This is a unit test for the vector layer join buffer
  *
  * \see QgsVectorLayerJoinBuffer
@@ -857,7 +856,7 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumn()
   joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
   joinInfo.setJoinLayer( vlB );
   joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
-  joinInfo.setPrefix( QLatin1String( "" ) );
+  joinInfo.setPrefix( QString() );
   joinInfo.setEditable( true );
   joinInfo.setUpsertOnEdit( true );
   vlA->addJoin( joinInfo );
@@ -1000,7 +999,7 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumnCached()
   joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
   joinInfo.setJoinLayer( vlB );
   joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
-  joinInfo.setPrefix( QLatin1String( "" ) );
+  joinInfo.setPrefix( QString() );
   joinInfo.setEditable( true );
   joinInfo.setUpsertOnEdit( false );
   joinInfo.setUsingMemoryCache( true );

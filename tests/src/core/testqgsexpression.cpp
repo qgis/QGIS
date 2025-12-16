@@ -4584,9 +4584,9 @@ class TestQgsExpression : public QObject
       concatExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" );
       QCOMPARE( QgsExpression( "array_cat(\"strings\", array('a', 'b'), array('c'))" ).evaluate( &context ), QVariant( concatExpected ) );
 
-      QVariantList foreachExpected;
-      foreachExpected << QStringLiteral( "ABC" ) << QStringLiteral( "HELLO" );
-      QCOMPARE( QgsExpression( "array_foreach(array:=array('abc', 'hello'), expression:=upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) );
+      QVariantList foreachExpected;                                                                                                                              // skip-keyword-check
+      foreachExpected << QStringLiteral( "ABC" ) << QStringLiteral( "HELLO" );                                                                                   // skip-keyword-check
+      QCOMPARE( QgsExpression( "array_foreach(array:=array('abc', 'hello'), expression:=upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) ); // skip-keyword-check
 
       QVariantList filterExpected = QVariantList() << QStringLiteral( "A: a" ) << QStringLiteral( "A: d" );
       QCOMPARE( QgsExpression( "array_filter(array:=array('A: a', 'B: b', 'C: c', 'A: d'), expression:=substr(@element, 1, 2) = 'A:')" ).evaluate( &context ), QVariant( filterExpected ) );
@@ -4688,10 +4688,10 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression( "array_sort(array(1,10,2,30,4))" ).evaluate( &context ), QVariant( QVariantList() << 1 << 2 << 4 << 10 << 30 ) );
       QCOMPARE( QgsExpression( "array_sort(array(1,10,2,30,4),false)" ).evaluate( &context ), QVariant( QVariantList() << 30 << 10 << 4 << 2 << 1 ) );
 
-      QVariantList foreachExpected;
-      foreachExpected << 10 << 20 << 40;
-      QCOMPARE( QgsExpression( "array_foreach(array(1, 2, 4), @element * 10)" ).evaluate( &context ), QVariant( foreachExpected ) );
-      QCOMPARE( QgsExpression( "array_foreach(array(10, 19, 38), @element + @counter)" ).evaluate( &context ), QVariant( foreachExpected ) );
+      QVariantList foreachExpected;                                                                                                           // skip-keyword-check
+      foreachExpected << 10 << 20 << 40;                                                                                                      // skip-keyword-check
+      QCOMPARE( QgsExpression( "array_foreach(array(1, 2, 4), @element * 10)" ).evaluate( &context ), QVariant( foreachExpected ) );          // skip-keyword-check
+      QCOMPARE( QgsExpression( "array_foreach(array(10, 19, 38), @element + @counter)" ).evaluate( &context ), QVariant( foreachExpected ) ); // skip-keyword-check
 
       QVariantList filterExpected = QVariantList() << 1 << 2;
       QCOMPARE( QgsExpression( "array_filter(array(1, 2, 4), @element < 3)" ).evaluate( &context ), QVariant( filterExpected ) );

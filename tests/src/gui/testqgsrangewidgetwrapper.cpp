@@ -35,7 +35,6 @@
 #define SPECIAL_TEXT_WHEN_EMPTY QString( QChar( 0x2063 ) )
 
 /**
- * @ingroup UnitTests
  * This is a unit test for the range widget
  *
  * \see QgsRangeWidgetWrapper
@@ -494,7 +493,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
-  QCOMPARE( editor3->mLineEdit->text(), QLatin1String( "" ) );
+  QCOMPARE( editor3->mLineEdit->text(), QString() );
 
   editor1->mLineEdit->setFocus();
   editor1->mLineEdit->setText( QString( "151.000000000" ) );

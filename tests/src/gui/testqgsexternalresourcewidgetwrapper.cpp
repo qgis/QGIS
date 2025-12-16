@@ -39,7 +39,6 @@
 #define OTHER_SAMPLE_IMAGE QStringLiteral( "%1/sample_image2.png" ).arg( TEST_DATA_DIR )
 
 /**
- * @ingroup UnitTests
  * This is a unit test for the external resource widget wrapper
  *
  * \see QgsExternalResourceWidgetWrapper

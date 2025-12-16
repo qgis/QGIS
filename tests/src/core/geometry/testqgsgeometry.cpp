@@ -2345,8 +2345,7 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point EMPTY" ) );
   result = geomTest.orientedMinimumBoundingBox();
-  resultTestWKT = QLatin1String( "" );
-  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( result.asWkt( 2 ), QString() );
 }
 
 void TestQgsGeometry::boundingBox()
