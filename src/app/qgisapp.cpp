@@ -4526,7 +4526,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::AddFeature )->setAction( mActionAddFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeature )->setAction( mActionMoveFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeatureCopy )->setAction( mActionMoveFeatureCopy );
-  mMapTools->mapTool( QgsAppMapTools::DistributeFeature )->setAction( mActionDistributeFeature );
+  mMapTools->mapTool( QgsAppMapTools::DistributeFeatureCopy )->setAction( mActionDistributeFeature );
   mMapTools->mapTool( QgsAppMapTools::RotateFeature )->setAction( mActionRotateFeature );
   mMapTools->mapTool( QgsAppMapTools::ScaleFeature )->setAction( mActionScaleFeature );
   mMapTools->mapTool( QgsAppMapTools::OffsetCurve )->setAction( mActionOffsetCurve );
@@ -8821,7 +8821,7 @@ void QgisApp::moveFeatureCopy()
 
 void QgisApp::distributeFeature()
 {
-  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::DistributeFeature ) );
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::DistributeFeatureCopy ) );
 }
 
 void QgisApp::offsetCurve()
