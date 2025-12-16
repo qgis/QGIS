@@ -1,0 +1,29 @@
+{
+  "name": "py-pyproj",
+  "version": "3.7.2",
+  "description": "Python interface to PROJ (cartographic projections and coordinate transformations library).",
+  "homepage": "https://pyproj4.github.io/pyproj/",
+  "dependencies": [
+    {
+      "name": "proj",
+      "default-features": false
+    },
+    {
+      "name": "py-certifi",
+      "host": true
+    },
+    {
+      "name": "py-cython",
+      "host": true
+    },
+    {
+      "name": "py-setuptools",
+      "host": true
+    },
+    "python3",
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}
