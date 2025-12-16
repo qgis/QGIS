@@ -1,0 +1,26 @@
+{
+  "name": "py-adbc-driver-manager",
+  "version": "1.9.0",
+  "description": "A generic entrypoint for ADBC drivers.",
+  "homepage": "https://arrow.apache.org/adbc/",
+  "license": "Apache-2.0",
+  "features": {
+    "dbapi": {
+      "description": "DBAPI 2.0-compatible interface",
+      "dependencies":[
+        "py-arrow"
+      ]
+    }
+  },
+  "dependencies": [
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}
