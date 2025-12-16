@@ -427,7 +427,6 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
     return;
 
   const QgsGeometry geom = feature.geometry();
-  const QgsPoint pt( geom.vertexAt( 0 ) );
 
   if ( !mHighlights.contains( layer ) )
   {
