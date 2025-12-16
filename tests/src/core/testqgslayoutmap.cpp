@@ -733,7 +733,7 @@ void TestQgsLayoutMap::expressionContext()
   QgsExpression e10( QStringLiteral( "@map_layer_ids" ) );
   r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
-  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
+  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) ); // skip-keyword-check
   r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
 
