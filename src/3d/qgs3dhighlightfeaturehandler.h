@@ -46,7 +46,7 @@ class Qgs3DHighlightFeatureHandler : public QObject
   public:
     //! Constructor
     explicit Qgs3DHighlightFeatureHandler( Qgs3DMapScene *scene );
-    ~Qgs3DHighlightFeatureHandler();
+    ~Qgs3DHighlightFeatureHandler() override;
 
   public slots:
     /**
