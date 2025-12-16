@@ -1,0 +1,65 @@
+{
+  "name": "py-scipy",
+  "version": "1.16.3",
+  "port-version": 1,
+  "description": "Fundamental algorithms for scientific computing in Python",
+  "homepage": "https://scipy.org/",
+  "dependencies": [
+    {
+      "name": "blas",
+      "platform": "!osx"
+    },
+    {
+      "name": "cblas",
+      "platform": "!osx"
+    },
+    {
+      "name": "lapack",
+      "platform": "!osx"
+    },
+    "py-numpy",    
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "py-setuptools",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    },
+    {
+      "name": "py-cython",
+      "host": true
+    },
+    {
+      "name": "pybind11",
+      "features": [
+        "scripts"
+      ]
+    },
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    },
+    {
+      "name": "py-gpep517",
+      "host": true
+    },
+    {
+      "name": "py-meson",
+      "host": true
+    },
+    {
+      "name": "py-numpy",
+      "host": true
+    },
+    {
+      "name": "py-pythran",
+      "host": true
+    }
+  ]
+}

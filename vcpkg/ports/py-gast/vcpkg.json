@@ -1,0 +1,17 @@
+{
+  "name": "py-gast",
+  "version": "0.7.0",
+  "description": "Python AST that abstracts the underlying Python version.",
+  "homepage": "https://github.com/serge-sans-paille/gast",
+  "dependencies": [
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}

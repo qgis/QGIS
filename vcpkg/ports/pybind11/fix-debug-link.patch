@@ -1,0 +1,15 @@
+ CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 80633039..60c191cd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -286,6 +286,7 @@ if(NOT TARGET pybind11_headers)
+ 
+   target_compile_features(pybind11_headers INTERFACE cxx_inheriting_constructors cxx_user_literals
+                                                      cxx_right_angle_brackets)
++  target_compile_definitions (pybind11_headers INTERFACE $<$<CONFIG:Debug>:Py_DEBUG>)
+   if(NOT "${PYBIND11_INTERNALS_VERSION}" STREQUAL "")
+     target_compile_definitions(
+       pybind11_headers INTERFACE "PYBIND11_INTERNALS_VERSION=${PYBIND11_INTERNALS_VERSION}")

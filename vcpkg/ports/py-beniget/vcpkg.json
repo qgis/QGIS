@@ -1,0 +1,17 @@
+{
+  "name": "py-beniget",
+  "version": "0.5.0",
+  "description": "Extract semantic information about static Python code.",
+  "homepage": "https://github.com/serge-sans-paille/beniget",
+  "dependencies": [
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}
