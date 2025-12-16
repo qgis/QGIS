@@ -22,6 +22,7 @@
 #include "qgspoint.h"
 
 class Qgs3DMeasureDialog;
+class Qgs3DSnappingManager;
 class QgsRubberBand3D;
 
 
@@ -30,7 +31,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     Q_OBJECT
 
   public:
-    Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas );
+    Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas, Qgs3DSnappingManager *snapper );
     ~Qgs3DMapToolMeasureLine() override;
 
     //! When we have added our last point, and not following
@@ -78,6 +79,8 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     //! Check if mouse was moved between mousePress and mouseRelease
     bool mMouseHasMoved = false;
     QPoint mMouseClickPos;
+
+    Qgs3DSnappingManager *mSnapper;
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H
