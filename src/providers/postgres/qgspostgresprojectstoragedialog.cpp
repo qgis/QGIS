@@ -15,6 +15,7 @@
 #include "qgspostgresprojectstoragedialog.h"
 
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
@@ -22,7 +23,6 @@
 #include "qgspostgresutils.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
-#include "qgsguiutils.h"
 
 #include <QMenu>
 #include <QMessageBox>
