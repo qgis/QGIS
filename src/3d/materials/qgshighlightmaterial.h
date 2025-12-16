@@ -44,6 +44,6 @@ class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
     void init();
 };
 
-///@endcond
+///@endcond PRIVATE
 
 #endif // QGSHIGHLIGHTMATERIAL_H

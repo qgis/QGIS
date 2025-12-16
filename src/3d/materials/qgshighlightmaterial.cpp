@@ -28,6 +28,8 @@
 
 #include "moc_qgshighlightmaterial.cpp"
 
+///@cond PRIVATE
+
 QgsHighlightMaterial::QgsHighlightMaterial( QNode *parent )
   : QgsMaterial( parent )
 {
@@ -77,3 +79,5 @@ void QgsHighlightMaterial::init()
   effect->addTechnique( technique );
   setEffect( effect );
 }
+
+///@endcond PRIVATE
