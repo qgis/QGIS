@@ -370,6 +370,13 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      */
     virtual QVariantMap extraMetadata() const;
 
+    /**
+     *  Returns the URI used to load the index
+     *
+     * \since QGIS 4.0
+     */
+    QString uri() const { return mUri; }
+
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
@@ -651,6 +658,9 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     //! Returns a list of node IDs that have been modified
     QList<QgsPointCloudNodeId> updatedNodes() const;
+
+    //! Returns the uri used to load the index
+    QString uri() const;
 
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
