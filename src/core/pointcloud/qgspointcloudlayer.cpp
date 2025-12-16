@@ -1003,6 +1003,7 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
 bool QgsPointCloudLayer::startEditing()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mIsVpc )
   {
     if ( !mEditingSubIndexes.isEmpty() )
@@ -1013,6 +1014,7 @@ bool QgsPointCloudLayer::startEditing()
     if ( mEditIndex )
       return false;
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   if ( mIsVpc )
   {
@@ -1068,6 +1070,7 @@ bool QgsPointCloudLayer::startEditing()
 bool QgsPointCloudLayer::commitChanges( bool stopEditing )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mIsVpc )
   {
     if ( mEditingSubIndexes.isEmpty() )
@@ -1078,6 +1081,7 @@ bool QgsPointCloudLayer::commitChanges( bool stopEditing )
     if ( !mEditIndex )
       return false;
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   if ( mIsVpc )
   {
@@ -1190,6 +1194,8 @@ bool QgsPointCloudLayer::supportsEditing() const
 bool QgsPointCloudLayer::isEditable() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mIsVpc )
   {
     if ( !mEditingSubIndexes.isEmpty() )
@@ -1200,6 +1206,7 @@ bool QgsPointCloudLayer::isEditable() const
     if ( mEditIndex )
       return true;
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   return false;
 }
@@ -1250,6 +1257,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QMap<QString, QHash<QgsPoin
     QHash<QgsPointCloudNodeId, QVector<int>> nodesAndPoints = it.value();
     QgsPointCloudIndex *editIndexPtr = nullptr;
 
+    // NOLINTBEGIN(bugprone-branch-clone)
     if ( mIsVpc )
     {
       for ( QgsPointCloudIndex &index : mEditingSubIndexes )
@@ -1264,6 +1272,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QMap<QString, QHash<QgsPoin
     {
       editIndexPtr = &mEditIndex;
     }
+    // NOLINTEND(bugprone-branch-clone)
 
     // Cannot allow x,y,z editing as points may get moved outside the node extents
     if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 ||
