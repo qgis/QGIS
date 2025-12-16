@@ -3642,6 +3642,7 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             "OAPIF",
         )
         self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         with open(
             sanitize(
