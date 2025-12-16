@@ -545,7 +545,7 @@ namespace
         }
       }
 
-      const char *GetLastError() { return mLastError.c_str(); }
+      const char *GetLastError() const { return mLastError.c_str(); }
 
     private:
       QgsArrowIterator mIterator;
@@ -575,7 +575,7 @@ void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
   mSchema = schema;
 }
 
-QgsArrowArrayStream QgsArrowIterator::toArrayStream( int batchSize )
+QgsArrowArrayStream QgsArrowIterator::toArrayStream( int batchSize ) const
 {
   QgsArrowArrayStream out;
   nanoarrow::ArrayStreamFactory<ArrowIteratorArrayStreamImpl>::InitArrayStream( new ArrowIteratorArrayStreamImpl( *this, batchSize ), out.arrayStream() );
