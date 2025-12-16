@@ -95,11 +95,17 @@ const struct ArrowSchema *QgsArrowSchema::schema() const
 
 unsigned long long QgsArrowSchema::cSchemaAddress() const
 {
+  // In the event QGIS is compiled on platform where unsigned long long is insufficient to
+  // represent a uintptr_t, ensure compilation fails
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   return reinterpret_cast<unsigned long long>( &mSchema );
 }
 
 void QgsArrowSchema::exportToAddress( unsigned long long otherAddress )
 {
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   struct ArrowSchema *otherArrowSchema = reinterpret_cast<struct ArrowSchema *>( otherAddress );
   QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &mSchema, otherArrowSchema ) );
 }
@@ -153,11 +159,17 @@ const struct ArrowArray *QgsArrowArray::array() const
 
 unsigned long long QgsArrowArray::cArrayAddress() const
 {
+  // In the event QGIS is compiled on platform where unsigned long long is insufficient to
+  // represent a uintptr_t, ensure compilation fails
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   return reinterpret_cast<unsigned long long>( &mArray );
 }
 
 void QgsArrowArray::exportToAddress( unsigned long long otherAddress )
 {
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   struct ArrowArray *otherArrowArray = reinterpret_cast<struct ArrowArray *>( otherAddress );
   ArrowArrayMove( &mArray, otherArrowArray );
 }
@@ -202,11 +214,17 @@ struct ArrowArrayStream *QgsArrowArrayStream::arrayStream()
 
 unsigned long long QgsArrowArrayStream::cArrayStreamAddress() const
 {
+  // In the event QGIS is compiled on platform where unsigned long long is insufficient to
+  // represent a uintptr_t, ensure compilation fails
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   return reinterpret_cast<unsigned long long>( &mArrayStream );
 }
 
 void QgsArrowArrayStream::exportToAddress( unsigned long long otherAddress )
 {
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   struct ArrowArrayStream *otherArrowArrayStream = reinterpret_cast<struct ArrowArrayStream *>( otherAddress );
   ArrowArrayStreamMove( &mArrayStream, otherArrowArrayStream );
 }
