@@ -29,12 +29,12 @@
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
 
-class TestQgs3dMaterial : public QgsTest
+class TestQgs3DMaterial : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgs3dMaterial()
+    TestQgs3DMaterial()
       : QgsTest( QStringLiteral( "3D Material Tests" ), QStringLiteral( "3d" ) )
     {}
 
@@ -52,33 +52,33 @@ class TestQgs3dMaterial : public QgsTest
     void setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings );
 };
 
-void TestQgs3dMaterial::initTestCase()
+void TestQgs3DMaterial::initTestCase()
 {
   QgsApplication::init(); // init paths for CRS lookup
   QgsApplication::initQgis();
 }
 
-void TestQgs3dMaterial::cleanupTestCase()
+void TestQgs3DMaterial::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgs3dMaterial::init()
+void TestQgs3DMaterial::init()
 {
 }
 
-void TestQgs3dMaterial::cleanup()
+void TestQgs3DMaterial::cleanup()
 {
 }
 
-void TestQgs3dMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )
+void TestQgs3DMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )
 {
   collection.setProperty( propertyType, property );
   materialSettings.setDataDefinedProperties( collection );
 }
 
 
-void TestQgs3dMaterial::colorDataDefinedPhong()
+void TestQgs3DMaterial::colorDataDefinedPhong()
 {
   const QgsExpressionContext expressionContext;
   QgsPhongMaterialSettings phongSettings;
@@ -140,7 +140,7 @@ void TestQgs3dMaterial::colorDataDefinedPhong()
   QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_3 );
 }
 
-void TestQgs3dMaterial::colorDataDefinedGooch()
+void TestQgs3DMaterial::colorDataDefinedGooch()
 {
   const QgsExpressionContext expressionContext;
 
@@ -223,7 +223,7 @@ void TestQgs3dMaterial::colorDataDefinedGooch()
   QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_4 );
 }
 
-void TestQgs3dMaterial::clipping()
+void TestQgs3DMaterial::clipping()
 {
   const QString defineClippingStr = QStringLiteral( "#define %1" ).arg( QgsMaterial::CLIP_PLANE_DEFINE );
   const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
@@ -358,5 +358,5 @@ void TestQgs3dMaterial::clipping()
   QVERIFY( !QString( lineShaderCode[1] ).contains( defineClippingStr ) );
 }
 
-QGSTEST_MAIN( TestQgs3dMaterial )
+QGSTEST_MAIN( TestQgs3DMaterial )
 #include "testqgs3dmaterial.moc"
