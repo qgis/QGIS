@@ -1,0 +1,53 @@
+{
+  "name": "py-geopandas",
+  "version": "1.1.1",
+  "description": "Geographic pandas extensions.",
+  "homepage": "https://geopandas.org",
+  "license": "BSD-3-Clause",
+  "default-features": [
+    "pyogrio"
+  ],
+  "features": {
+    "pyogrio": {
+      "description": "Fast reads of OGR data sources with pyogrio",
+      "dependencies": [
+        "py-pyogrio"
+      ]
+    },
+    "fiona": {
+      "description": "Use Fiona for input/output of OGR datasources",
+      "dependencies": [
+        "py-fiona"
+      ]
+    },
+    "arrow": {
+      "description": "I/O speedup with pyogrio",
+      "dependencies":[
+        "py-arrow"
+      ]
+    }
+  },
+  "dependencies": [
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    "py-pandas",
+    "py-pyproj",
+    "py-shapely",
+    "py-numpy",
+    {
+        "name": "py-packaging",
+        "host": true
+    },
+    {
+        "name": "py-versioneer",
+        "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}
