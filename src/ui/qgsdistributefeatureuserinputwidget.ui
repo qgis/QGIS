@@ -54,6 +54,9 @@
      <property name="maximum">
       <number>200</number>
      </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
     </widget>
    </item>
    <item row="1" column="0">
