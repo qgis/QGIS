@@ -83,13 +83,20 @@ void QgsHillshadeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Hillshade" ) ) );
 }
 
+bool QgsHillshadeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  if ( !layer )
+  {
+    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+  }
+
+  mLayerSource = layer->source();
+  return true;
+}
+
 QVariantMap QgsHillshadeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-
-  if ( !inputLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
-
   const double zFactor = parameterAsDouble( parameters, QStringLiteral( "Z_FACTOR" ), context );
   const double azimuth = parameterAsDouble( parameters, QStringLiteral( "AZIMUTH" ), context );
   const double vAngle = parameterAsDouble( parameters, QStringLiteral( "V_ANGLE" ), context );
@@ -99,7 +106,7 @@ QVariantMap QgsHillshadeAlgorithm::processAlgorithm( const QVariantMap &paramete
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
-  QgsHillshadeFilter hillshade( inputLayer->source(), outputFile, outputFormat, azimuth, vAngle );
+  QgsHillshadeFilter hillshade( mLayerSource, outputFile, outputFormat, azimuth, vAngle );
   hillshade.setZFactor( zFactor );
   if ( !creationOptions.isEmpty() )
   {
