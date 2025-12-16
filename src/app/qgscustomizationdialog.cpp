@@ -68,7 +68,7 @@ class QgsCustomizationDialog::QgsCustomizationModel : public QAbstractItemModel
 
     /**
      * Read new customization model file and reset model
-     * Returns error string. An empty string is returned if no error occured
+     * Returns error string. An empty string is returned if no error occurred
      */
     QString readFile( const QString &filePath );
 

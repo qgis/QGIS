@@ -17,6 +17,7 @@
 #define QGSCUSTOMIZATIONDIALOG_H
 
 #include "ui_qgscustomizationdialogbase.h"
+
 #include "qgscustomization.h"
 #include "qgssettingstree.h"
 
@@ -69,7 +70,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     void preNotify( QObject *receiver, QEvent *event, bool *done );
 
     /**
-     * Enable "catch" mode, allow to click on the application UI to select action
+     * Enable "catch" mode, allows clicking on the application UI to select action
      */
     void onActionCatchToggled( bool toggled );
 
