@@ -33,6 +33,10 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
+    {
+      "name": "arrow-adbc",
+      "features": ["postgresql", "sqlite"]
+    },
     "duckdb",
     "expat",
     {
@@ -93,12 +97,18 @@
           "features": [
             "python"
           ]
-        },
+        },   
         "py-attrs",
         "py-autopep8",
         "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
+        {
+          "name": "py-geopandas",
+          "features": [
+            "arrow"
+          ]
+        },
         "py-isort",
         "py-jinja2",
         {
@@ -110,6 +120,18 @@
         "py-networkx",
         "py-numpy",
         "py-owslib",
+        {
+          "name": "py-pandas",
+          "features":[
+            "xml", 
+            "html", 
+            "excel", 
+            "performance", 
+            "arrow", 
+            "computation", 
+            "output-formatting"
+          ]
+        },
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
