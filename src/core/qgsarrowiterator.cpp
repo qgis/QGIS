@@ -538,9 +538,19 @@ namespace
           ArrowArrayMove( batch.array(), array );
           return NANOARROW_OK;
         }
+        catch ( QgsException &e )
+        {
+          mLastError = e.what().toStdString();
+          return EINVAL;
+        }
         catch ( std::exception &e )
         {
           mLastError = e.what();
+          return EINVAL;
+        }
+        catch ( ... )
+        {
+          mLastError = "unknown error";
           return EINVAL;
         }
       }
