@@ -25,7 +25,7 @@ class QWT_EXPORT QwtPolarFitter : public QwtCurveFitter
 {
   public:
     QwtPolarFitter( int stepCount = 5 );
-    virtual ~QwtPolarFitter();
+    ~QwtPolarFitter() override;
 
     void setStepCount( int size );
     int stepCount() const;

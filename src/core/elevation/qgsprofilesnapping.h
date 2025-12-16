@@ -17,9 +17,9 @@
 #ifndef QGSPROFILESNAPPING_H
 #define QGSPROFILESNAPPING_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsprofilepoint.h"
 
 /**

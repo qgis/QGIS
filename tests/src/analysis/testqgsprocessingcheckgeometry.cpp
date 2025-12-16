@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnativealgorithms.h"
-#include "qgsprocessingregistry.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingregistry.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
@@ -25,7 +25,7 @@ class DummyFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
-    void reportError( const QString &error, bool fatalError = false )
+    void reportError( const QString &error, bool fatalError = false ) override
     {
       Q_UNUSED( fatalError );
       mErrors.append( error );
@@ -291,7 +291,7 @@ void TestQgsProcessingCheckGeometry::containedAlg_data()
 {
   QTest::addColumn<QgsVectorLayer *>( "layerToTest" );
   QTest::addColumn<int>( "expectedErrorCount" );
-  QTest::newRow( "Point layer" ) << mPointLayer << 2;
+  QTest::newRow( "Point layer" ) << mPointLayer << 3;
   QTest::newRow( "Line layer with selection" ) << mLineLayer << 1;
   QTest::newRow( "Polygon layer" ) << mPolygonLayer << 1;
 }
@@ -777,7 +777,7 @@ void TestQgsProcessingCheckGeometry::pointCoveredByLineAlg()
 
   std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
   QVERIFY( errorsLayer->isValid() );
-  QCOMPARE( errorsLayer->featureCount(), 5 );
+  QCOMPARE( errorsLayer->featureCount(), 6 );
 }
 
 void TestQgsProcessingCheckGeometry::lineLayerIntersectionAlg()

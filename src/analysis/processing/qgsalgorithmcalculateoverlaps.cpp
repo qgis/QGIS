@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcalculateoverlaps.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometryengine.h"
+
 #include "qgsdistancearea.h"
+#include "qgsgeometryengine.h"
 #include "qgsspatialindex.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

@@ -15,11 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrecentcoordinatereferencesystemsmodel.h"
-#include "moc_qgsrecentcoordinatereferencesystemsmodel.cpp"
-#include "qgscoordinatereferencesystemregistry.h"
+
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystemregistry.h"
 
 #include <QFont>
+
+#include "moc_qgsrecentcoordinatereferencesystemsmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

@@ -353,10 +353,8 @@ In a world file, this is normally the first row (without the sign).
 .. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End
 
-    virtual void setOpacity( double opacity ) ${SIP_FINAL};
-
-    virtual double opacity() const ${SIP_FINAL};
-
+    void setOpacity( double opacity ) final;
+    double opacity() const final;
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
@@ -420,6 +418,7 @@ Draws a preview of the rasterlayer into a QImage
     virtual void setSubLayerVisibility( const QString &name, bool vis );
 
     virtual QDateTime timestamp() const;
+
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
@@ -534,6 +533,7 @@ data extent.
     void showStatusMessage( const QString &message );
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
 %Docstring
 Sets the coordinate transform context to ``transformContext``
 

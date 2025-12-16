@@ -14,28 +14,30 @@
  ***************************************************************************/
 
 #include "qgstextrenderer.h"
-#include "qgstextformat.h"
-#include "qgstextdocument.h"
-#include "qgstextdocumentmetrics.h"
-#include "qgstextfragment.h"
-#include "qgspallabeling.h"
-#include "qgspainteffect.h"
-#include "qgspainterswapper.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsunittypes.h"
-#include "qgstextmetrics.h"
-#include "qgstextrendererutils.h"
-#include "qgsgeos.h"
-#include "qgspainting.h"
-#include "qgsapplication.h"
-#include "qgsimagecache.h"
+
+#include <memory>
 #include <optional>
 
-#include <QTextBoundaryFinder>
+#include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgsimagecache.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainteffect.h"
+#include "qgspainterswapper.h"
+#include "qgspainting.h"
+#include "qgspallabeling.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
+#include "qgstextformat.h"
+#include "qgstextfragment.h"
+#include "qgstextmetrics.h"
+#include "qgstextrendererutils.h"
+#include "qgsunittypes.h"
 
+#include <QTextBoundaryFinder>
 
 Qgis::TextHorizontalAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
 {
@@ -154,7 +156,7 @@ void QgsTextRenderer::drawDocument( QPointF point, const QgsTextFormat &_format,
   drawParts( point, rotation, alignment, document, metrics, context, lFormat, components, mode );
 }
 
-void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine )
+void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine, Qgis::CurvedTextFlags flags )
 {
   QgsTextFormat lFormat = _format;
   if ( _format.dataDefinedProperties().hasActiveProperties() ) // note, we use _format instead of tmpFormat here, it's const and potentially avoids a detach
@@ -166,10 +168,11 @@ void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text
   // todo handle newlines??
   const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( {text}, lFormat );
 
-  drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine );
+  drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine, flags );
 }
 
-void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine, double offsetFromLine )
+void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine, double offsetFromLine,
+    Qgis::CurvedTextFlags flags )
 {
   QPolygonF labelBaselineCurve = line;
   if ( !qgsDoubleNear( offsetFromLine, 0 ) )
@@ -312,8 +315,7 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
         metrics, labelBaselineCurve, offsetAlongLine,
         QgsTextRendererUtils::RespectPainterOrientation,
         -1, -1,
-        QgsTextRendererUtils::CurvedTextFlag::UseBaselinePlacement
-        | QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+        flags
       );
 
   if ( placement->graphemePlacement.empty() )
@@ -1189,7 +1191,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
         renderedSymbol.reset( );
 
         QgsSymbolLayer *symL = QgsSvgMarkerSymbolLayer::create( map );
-        renderedSymbol.reset( new QgsMarkerSymbol( QgsSymbolLayerList() << symL ) );
+        renderedSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList() << symL );
       }
       else
       {

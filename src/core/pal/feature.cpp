@@ -27,25 +27,26 @@
  *
  */
 
-#include "pal.h"
-#include "layer.h"
 #include "feature.h"
+
+#include <cmath>
+
 #include "geomfunction.h"
 #include "labelposition.h"
+#include "layer.h"
+#include "pal.h"
 #include "pointset.h"
-
 #include "qgis.h"
 #include "qgsgeometry.h"
-#include "qgsgeos.h"
-#include "qgstextlabelfeature.h"
-#include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
 #include "qgspolygon.h"
+#include "qgstextlabelfeature.h"
 #include "qgstextrendererutils.h"
 
 #include <QLinkedList>
-#include <cmath>
 
 using namespace pal;
 
@@ -1421,7 +1422,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   return lPos.size();
 }
 
-std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *mapShape, const std::vector< double> &pathDistances, QgsTextRendererUtils::LabelLineDirection direction, const double offsetAlongLine, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints, QgsTextRendererUtils::CurvedTextFlags flags )
+std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *mapShape, const std::vector< double> &pathDistances, QgsTextRendererUtils::LabelLineDirection direction, const double offsetAlongLine, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints, Qgis::CurvedTextFlags flags )
 {
   const QgsPrecalculatedTextMetrics *metrics = qgis::down_cast< QgsTextLabelFeature * >( mLF )->textMetrics();
   Q_ASSERT( metrics );
@@ -1433,7 +1434,7 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     QgsTextRendererUtils::generateCurvedTextPlacement( *metrics, mapShape->x.data(), mapShape->y.data(), mapShape->nbPoints, pathDistances, offsetAlongLine, direction, maximumCharacterAngleInside, maximumCharacterAngleOutside, flags )
   );
 
-  labeledLineSegmentIsRightToLeft = !( flags & QgsTextRendererUtils::CurvedTextFlag::UprightCharactersOnly ) ? placement->labeledLineSegmentIsRightToLeft : placement->flippedCharacterPlacementToGetUprightLabels;
+  labeledLineSegmentIsRightToLeft = !( flags & Qgis::CurvedTextFlag::UprightCharactersOnly ) ? placement->labeledLineSegmentIsRightToLeft : placement->flippedCharacterPlacementToGetUprightLabels;
 
   if ( placement->graphemePlacement.empty() )
     return nullptr;
@@ -1660,9 +1661,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       // placements may need to be reversed if using map orientation and the line has right-to-left direction
       bool labeledLineSegmentIsRightToLeft = false;
       const QgsTextRendererUtils::LabelLineDirection direction = ( flags & Qgis::LabelLinePlacementFlag::MapOrientation ) ? QgsTextRendererUtils::RespectPainterOrientation : QgsTextRendererUtils::FollowLineDirection;
-      QgsTextRendererUtils::CurvedTextFlags curvedTextFlags;
+      Qgis::CurvedTextFlags curvedTextFlags;
       if ( onlyShowUprightLabels() && ( !singleCandidateOnly || !( flags & Qgis::LabelLinePlacementFlag::MapOrientation ) ) )
-        curvedTextFlags |= QgsTextRendererUtils::CurvedTextFlag::UprightCharactersOnly;
+        curvedTextFlags |= Qgis::CurvedTextFlag::UprightCharactersOnly;
 
       std::unique_ptr< LabelPosition > labelPosition = curvedPlacementAtOffset( currentMapShape, pathDistances, direction, distanceAlongLineToStartCandidate, labeledLineSegmentIsRightToLeft, !singleCandidateOnly, curvedTextFlags );
       if ( !labelPosition )

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsregularpolygon.h"
-#include "qgsgeometryutils.h"
 
 #include <memory>
+
+#include "qgsgeometryutils.h"
 
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )

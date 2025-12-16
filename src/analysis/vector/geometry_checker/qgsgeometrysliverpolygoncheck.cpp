@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrysliverpolygoncheck.h"
+
 #include "qgsfeaturepool.h"
 
 bool QgsGeometrySliverPolygonCheck::checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const

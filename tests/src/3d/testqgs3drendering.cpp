@@ -13,59 +13,60 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
+#include "qgs3d.h"
+#include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
+#include "qgs3dutils.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationlayer3drenderer.h"
+#include "qgsannotationlinetextitem.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationrectangletextitem.h"
+#include "qgsapplication.h"
+#include "qgsbillboardgeometry.h"
+#include "qgscameracontroller.h"
+#include "qgsdemterraingenerator.h"
+#include "qgsdemterrainsettings.h"
+#include "qgsdirectionallightsettings.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsflatterrainsettings.h"
+#include "qgsfontutils.h"
+#include "qgsframegraph.h"
+#include "qgsgoochmaterialsettings.h"
+#include "qgsline3dsymbol.h"
 #include "qgslinestring.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmetalroughmaterialsettings.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgsphongtexturedmaterialsettings.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspointlightsettings.h"
+#include "qgspolygon3dsymbol.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastershader.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgs3d.h"
-#include "qgs3drendercontext.h"
-
-#include "qgs3dmapscene.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3dutils.h"
-#include "qgscameracontroller.h"
-#include "qgsflatterrainsettings.h"
-#include "qgsdemterrainsettings.h"
-#include "qgsflatterraingenerator.h"
-#include "qgsline3dsymbol.h"
-#include "qgsoffscreen3dengine.h"
-#include "qgsframegraph.h"
-#include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
-#include "qgsvectorlayer3drenderer.h"
-#include "qgspoint3dsymbol.h"
-#include "qgssymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgssymbol.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsfillsymbollayer.h"
 #include "qgssimplelinematerialsettings.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsgoochmaterialsettings.h"
-#include "qgsdirectionallightsettings.h"
-#include "qgsmetalroughmaterialsettings.h"
-#include "qgspointlightsettings.h"
-#include "qgsphongtexturedmaterialsettings.h"
-#include "qgsdemterraingenerator.h"
-#include "qgsbillboardgeometry.h"
-#include "qgspoint3dbillboardmaterial.h"
-#include "qgsannotationlayer.h"
-#include "qgsannotationmarkeritem.h"
-#include "qgsannotationpointtextitem.h"
-#include "qgsannotationlinetextitem.h"
-#include "qgsannotationrectangletextitem.h"
-#include "qgsannotationlayer3drenderer.h"
-#include "qgsfontutils.h"
-#include <QFileInfo>
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayer3drenderer.h"
+
 #include <QDir>
+#include <QFileInfo>
 #include <QSignalSpy>
 
 class TestQgs3DRendering : public QgsTest
@@ -110,7 +111,7 @@ class TestQgs3DRendering : public QgsTest
     void testBillboardRendering();
     void testTexturedBillboardRendering();
     void testInstancedRendering();
-    void testInstancedRenderingClipping();
+    void testModelPointRendering();
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
     void testFilteredExtrudedPolygons();
@@ -176,7 +177,7 @@ void TestQgs3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( mLayerDtm->isValid() );
@@ -1727,34 +1728,59 @@ void TestQgs3DRendering::testInstancedRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
 
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
+                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
+                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  scene->enableClipping( clipPlanesEquations );
+
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering_clipping", "sphere_rendering_clipping", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
 
+  // ====================== CYLINDER
   QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
   cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
   QVariantMap vmCylinder;
   vmCylinder[QStringLiteral( "radius" )] = 20.0f;
-  vmCylinder[QStringLiteral( "length" )] = 200.0f;
+  vmCylinder[QStringLiteral( "length" )] = 300.0f;
   cylinder3DSymbol->setShapeProperties( vmCylinder );
   cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  // simulate call to set transform as the symbol widget will do
+  QMatrix4x4 id;
+  id.translate( 10.0, 0.0, 10.0 );
+  cylinder3DSymbol->setTransform( id );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
+  scene->enableClipping( clipPlanesEquations );
+
   QImage imgCylinder = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "cylinder_rendering_clipping", "cylinder_rendering_clipping", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgCylinder = Qgs3DUtils::captureSceneImage( engine, scene );
   delete scene;
   delete mapSettings;
   QGSVERIFYIMAGECHECK( "cylinder_rendering", "cylinder_rendering", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
-
-void TestQgs3DRendering::testInstancedRenderingClipping()
+void TestQgs3DRendering::testModelPointRendering()
 {
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
@@ -1776,16 +1802,19 @@ void TestQgs3DRendering::testInstancedRenderingClipping()
   featureList << f1 << f2 << f3;
   layerPointsZ->dataProvider()->addFeatures( featureList );
 
-  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
-  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
-  QVariantMap vmSphere;
-  vmSphere[QStringLiteral( "radius" )] = 80.0f;
-  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  QVariantMap vMap;
+  vMap[QStringLiteral( "model" )] = testDataPath( "/mesh/tree.obj" );
+  symbol->setShapeProperties( vMap );
   QgsPhongMaterialSettings materialSettings;
-  materialSettings.setAmbient( Qt::gray );
-  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+  materialSettings.setAmbient( Qt::green );
+  symbol->setMaterialSettings( materialSettings.clone() );
+  QMatrix4x4 id;
+  id.scale( 100.0f );
+  symbol->setTransform( id );
 
-  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
 
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mProject->crs() );
@@ -1800,58 +1829,27 @@ void TestQgs3DRendering::testInstancedRenderingClipping()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
-  QList<QVector4D> clipPlanesEquationsSphere = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 660.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 650.0 );
-  scene->enableClipping( clipPlanesEquationsSphere );
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
+                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
+                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "sphere_rendering_clipping", "sphere_rendering_clipping", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+  QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering_clipping", "model_rendering_clipping", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 
   scene->disableClipping();
 
   Qgs3DUtils::captureSceneImage( engine, scene );
-  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
-
-  QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
-  cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
-  QVariantMap vmCylinder;
-  vmCylinder[QStringLiteral( "radius" )] = 20.0f;
-  vmCylinder[QStringLiteral( "length" )] = 200.0f;
-  cylinder3DSymbol->setShapeProperties( vmCylinder );
-  cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
-
-  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
-
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
-
-  QList<QVector4D> clipPlanesEquationsCylinder = QList<QVector4D>()
-                                                 << QVector4D( 0.866025, -0.5, 0, 678.0 )
-                                                 << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                                 << QVector4D( -0.5, -0.866025, 0, 680.0 );
-  scene->enableClipping( clipPlanesEquationsSphere );
-
-  scene->enableClipping( clipPlanesEquationsCylinder );
-
-  QImage imgCylinder = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "cylinder_rendering_clipping", "cylinder_rendering_clipping", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
-
-  scene->disableClipping();
-
-  Qgs3DUtils::captureSceneImage( engine, scene );
-  imgCylinder = Qgs3DUtils::captureSceneImage( engine, scene );
-  delete scene;
-  delete mapSettings;
-  QGSVERIFYIMAGECHECK( "cylinder_rendering", "cylinder_rendering", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testBillboardRendering()

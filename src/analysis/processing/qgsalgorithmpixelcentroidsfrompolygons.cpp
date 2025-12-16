@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpixelcentroidsfrompolygons.h"
+
 #include "qgsgeos.h"
 #include "qgsrasteranalysisutils.h"
 

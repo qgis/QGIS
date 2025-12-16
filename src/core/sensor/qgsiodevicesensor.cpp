@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgsiodevicesensor.h"
-#include "moc_qgsiodevicesensor.cpp"
+
 #include "qgssensorregistry.h"
 
 #include <QDomElement>
+
+#include "moc_qgsiodevicesensor.cpp"
 
 #if defined( Q_OS_ANDROID ) || defined( Q_OS_LINUX )
 #include <sys/socket.h>

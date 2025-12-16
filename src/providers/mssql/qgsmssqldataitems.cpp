@@ -16,18 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmssqldataitems.h"
-#include "moc_qgsmssqldataitems.cpp"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsmssqlutils.h"
-#include "qgsmssqlgeomcolumntypethread.h"
+
+#include "qgsdatasourceuri.h"
+#include "qgsfieldsitem.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsdatasourceuri.h"
-#include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlgeomcolumntypethread.h"
+#include "qgsmssqlutils.h"
 #include "qgsproject.h"
-#include "qgsfieldsitem.h"
+#include "qgssettings.h"
+
+#include "moc_qgsmssqldataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
@@ -40,9 +41,6 @@
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
-  , mUseGeometryColumns( false )
-  , mUseEstimatedMetadata( false )
-  , mAllowGeometrylessTables( true )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Collapse;
   mIconName = QStringLiteral( "mIconConnect.svg" );
@@ -107,24 +105,11 @@ void QgsMssqlConnectionItem::refresh()
   QgsDebugMsgLevel( "mPath = " + mPath, 3 );
   stop();
 
-  // Clear all children
-  const QVector<QgsDataItem *> allChildren = children();
-  for ( QgsDataItem *item : allChildren )
-  {
-    removeChildItem( item );
-    delete item;
-  }
-
-  // read up the schemas and layers from database
-  const QVector<QgsDataItem *> items = createChildren();
-  for ( QgsDataItem *item : items )
-    addChildItem( item, true );
+  QgsDataCollectionItem::refresh();
 }
 
 QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 {
-  setState( Qgis::BrowserItemState::Populating );
-
   stop();
 
   QVector<QgsDataItem *> children;
@@ -184,30 +169,6 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
 
-      // skip layers which are added already
-      bool skip = false;
-      const auto constMChildren = mChildren;
-      for ( QgsDataItem *child : constMChildren )
-      {
-        if ( child->name() == layer.schemaName )
-        {
-          const auto constChildren = child->children();
-          for ( QgsDataItem *child2 : constChildren )
-          {
-            QgsMssqlLayerItem *layerItem = qobject_cast<QgsMssqlLayerItem *>( child2 );
-            if ( child2->name() == layer.tableName && layerItem && layerItem->disableInvalidGeometryHandling() == disableInvalidGeometryHandling )
-            {
-              newLayers.append( child2 );
-              skip = true; // already added
-              break;
-            }
-          }
-        }
-      }
-
-      if ( skip )
-        continue;
-
       QString type = layer.type;
       QString srid = layer.srid;
 
@@ -250,18 +211,6 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       QgsMssqlLayerItem *added = schemaItem->addLayer( layer, false );
       if ( added )
         newLayers.append( added );
-    }
-
-    // Remove no more present items
-    const auto constMChildren = mChildren;
-    for ( QgsDataItem *child : constMChildren )
-    {
-      const auto constChildren = child->children();
-      for ( QgsDataItem *child2 : constChildren )
-      {
-        if ( findItem( newLayers, child2 ) < 0 )
-          child->deleteChildItem( child2 );
-      }
     }
 
     // add missing schemas (i.e., empty schemas)

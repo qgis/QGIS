@@ -19,8 +19,9 @@
 #define QGSCOORDINATEOPERATIONWIDGET_H
 
 #include "ui_qgscoordinateoperationwidgetbase.h"
-#include "qgscoordinatereferencesystem.h"
+
 #include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
 
 /**
  * \ingroup gui

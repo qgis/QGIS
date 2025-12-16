@@ -12,15 +12,14 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgsdelimitedtextsourceselect.h"
-#include "moc_qgsdelimitedtextsourceselect.cpp"
 
-#include "qgslogger.h"
-#include "qgsvectordataprovider.h"
-#include "qgssettings.h"
-#include "qgsproviderregistry.h"
-#include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
 #include "qgsvariantutils.h"
+#include "qgsvectordataprovider.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -28,10 +27,12 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QRegularExpression>
-#include <QTextStream>
 #include <QTextCodec>
+#include <QTextStream>
 #include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsdelimitedtextsourceselect.cpp"
 
 const int MAX_SAMPLE_LENGTH = 200;
 

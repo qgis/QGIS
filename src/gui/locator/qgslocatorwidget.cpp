@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslocatorwidget.h"
+
+#include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
+#include "qgsguiutils.h"
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
-#include "qgslocatorwidget.h"
-#include "moc_qgslocatorwidget.cpp"
 #include "qgslocatormodelbridge.h"
-#include "qgsfilterlineedit.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsguiutils.h"
+#include "qgsmapcanvas.h"
 
-#include <QLayout>
 #include <QCompleter>
+#include <QLayout>
 #include <QMenu>
 #include <QTextLayout>
 #include <QTextLine>
+
+#include "moc_qgslocatorwidget.cpp"
 
 ///@cond PRIVATE
 const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( QStringLiteral( "tree-height" ), sTreeGuiLocator, 20, QStringLiteral( "Number of rows to show in the locator tree (requires a restart)" ), Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );

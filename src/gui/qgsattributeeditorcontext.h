@@ -16,15 +16,15 @@
 #ifndef QGSATTRIBUTEEDITORCONTEXT_H
 #define QGSATTRIBUTEEDITORCONTEXT_H
 
-#include <QMap>
-#include <QWidget>
-#include <QMetaEnum>
-
-#include "qgsdistancearea.h"
-#include "qgsvectorlayertools.h"
-#include "qgsvectorlayer.h"
 #include "qgis_gui.h"
+#include "qgsdistancearea.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertools.h"
+
+#include <QMap>
+#include <QMetaEnum>
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;

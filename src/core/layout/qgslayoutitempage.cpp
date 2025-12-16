@@ -15,20 +15,24 @@
  ***************************************************************************/
 
 #include "qgslayoutitempage.h"
-#include "moc_qgslayoutitempage.cpp"
+
+#include <memory>
+
+#include "qgsfillsymbol.h"
 #include "qgslayout.h"
-#include "qgslayoututils.h"
-#include "qgspagesizeregistry.h"
-#include "qgssymbollayerutils.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
+#include "qgspagesizeregistry.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
-#include "qgsfillsymbol.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+
+#include "moc_qgslayoutitempage.cpp"
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout, false )
@@ -47,7 +51,7 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   const QFontMetrics fm( font );
   mMaximumShadowWidth = fm.boundingRect( QStringLiteral( "X" ) ).width();
 
-  mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
+  mGrid = std::make_unique<QgsLayoutItemPageGrid>( pos().x(), pos().y(), rect().width(), rect().height(), mLayout );
   mGrid->setParentItem( this );
 
   createDefaultPageStyleSymbol();

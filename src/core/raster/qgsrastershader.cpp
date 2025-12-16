@@ -16,9 +16,10 @@ email                : ersts@amnh.org
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
+
+#include "qgscolorrampshader.h"
+#include "qgslogger.h"
 #include "qgsrasterblock.h"
 #include "qgssymbollayerutils.h"
 

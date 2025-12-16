@@ -18,9 +18,9 @@
 #ifndef QGSPOINTCLOUDEXPRESSIONNODEIMPL_H
 #define QGSPOINTCLOUDEXPRESSIONNODEIMPL_H
 
-#include "qgspointcloudexpressionnode.h"
-#include "qgspointcloudblock.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgspointcloudblock.h"
+#include "qgspointcloudexpressionnode.h"
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return std::numeric_limits<double>::quiet_NaN(); }
 

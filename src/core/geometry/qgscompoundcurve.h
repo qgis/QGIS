@@ -124,7 +124,10 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsAbstractGeometry *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+
+    using QgsCurve::boundingBoxIntersects;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
+
     const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
 
     /**
@@ -195,6 +198,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     bool hasCurvedSegments() const override;
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
+    double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
     QgsCompoundCurve *reversed() const override SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCompoundCurve *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;

@@ -29,9 +29,9 @@
 
 class QgsTerrainTextureImage;
 
-#include <Qt3DCore/QEntity>
-
 #include "qgschunknode.h"
+
+#include <Qt3DCore/QEntity>
 
 /**
  * \ingroup qgis_3d

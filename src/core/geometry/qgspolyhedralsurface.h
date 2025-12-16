@@ -20,10 +20,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssurface.h"
-#include "qgspolygon.h"
 #include "qgsmultipolygon.h"
-
+#include "qgspolygon.h"
+#include "qgssurface.h"
 
 /**
  * \ingroup core
@@ -135,6 +134,8 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     QgsPolyhedralSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsPolyhedralSurface *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+
+    using QgsSurface::boundingBoxIntersects;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**

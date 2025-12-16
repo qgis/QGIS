@@ -14,24 +14,26 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerchunkloader_p.h"
-#include "moc_qgspointcloudlayerchunkloader_p.cpp"
 
 #include "qgs3dutils.h"
 #include "qgsbox3d.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgschunknode.h"
-#include "qgslogger.h"
-#include "qgspointcloudindex.h"
-#include "qgspointcloudrequest.h"
 #include "qgseventtracing.h"
+#include "qgslogger.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloud3dsymbol_p.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrequest.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloud3dsymbol_p.h"
 
 #include <QtConcurrent>
+
+#include "moc_qgspointcloudlayerchunkloader_p.cpp"
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #else
@@ -41,6 +43,7 @@
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <QPointSize>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -67,18 +70,21 @@ void QgsPointCloudLayerChunkLoader::start()
 
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
 
+  // suppress false positive clang tidy warning
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mContext.symbol()->symbolType() == QLatin1String( "single-color" ) )
-    mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsSingleColorPointCloud3DSymbolHandler>();
   else if ( mContext.symbol()->symbolType() == QLatin1String( "color-ramp" ) )
-    mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsColorRampPointCloud3DSymbolHandler>();
   else if ( mContext.symbol()->symbolType() == QLatin1String( "rgb" ) )
-    mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsRGBPointCloud3DSymbolHandler>();
   else if ( mContext.symbol()->symbolType() == QLatin1String( "classification" ) )
   {
-    mHandler.reset( new QgsClassificationPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsClassificationPointCloud3DSymbolHandler>();
     const QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( mContext.symbol() );
     mContext.setFilteredOutCategories( classificationSymbol->getFilteredOutCategories() );
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   //
   // this will be run in a background thread
@@ -231,7 +237,7 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
       continue;
     const QgsPointCloudNode childNode = mPointCloudIndex.getNode( childPcId );
     const QgsBox3D childBounds = childNode.bounds();
-    if ( !mExtent.isEmpty() && !childBounds.intersects( mExtent ) )
+    if ( !mExtent.isEmpty() && !childBounds.toRectangle().intersects( mExtent ) )
       continue;
 
     QgsBox3D childBox3D = nodeBoundsToBox3D( childBounds, mCoordinateTransform, mZValueOffset, mZValueScale );
@@ -295,7 +301,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettin
     connect( pcl, &QgsPointCloudLayer::editingStarted, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
     connect( pcl, &QgsPointCloudLayer::editingStopped, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
 
-    mChunkUpdaterFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
+    mChunkUpdaterFactory = std::make_unique<QgsChunkUpdaterFactory>( mChunkLoaderFactory );
 
     connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n ) {
       QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );

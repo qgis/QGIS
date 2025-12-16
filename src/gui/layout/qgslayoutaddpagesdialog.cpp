@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgslayoutaddpagesdialog.h"
-#include "moc_qgslayoutaddpagesdialog.cpp"
-#include "qgspagesizeregistry.h"
-#include "qgssettings.h"
+
+#include "qgshelp.h"
 #include "qgslayout.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgslayoutpagecollection.h"
-#include "qgshelp.h"
 #include "qgslayoutrendercontext.h"
+#include "qgspagesizeregistry.h"
+#include "qgssettings.h"
+
+#include "moc_qgslayoutaddpagesdialog.cpp"
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

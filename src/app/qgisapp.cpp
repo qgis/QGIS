@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
 #include <QAction>
 #include <QApplication>
 #include <QBitmap>
@@ -30,7 +29,6 @@
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QEvent>
-#include <QUrlQuery>
 #include <QFile>
 #include <QFileInfo>
 #include <QImageWriter>
@@ -41,19 +39,22 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QObject>
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include <QRegularExpression>
 #include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
 #include <QStandardPaths>
 #include <QUrl>
-#include <QRegularExpression>
+#include <QUrlQuery>
+
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif
@@ -70,6 +71,7 @@
 #include <QVBoxLayout>
 #include <QWhatsThis>
 #include <QWidgetAction>
+#include <memory>
 #include <mutex>
 #include <QWindow>
 #include <QActionGroup>
@@ -171,6 +173,10 @@
 #ifdef WITH_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <SFCGAL/version.h>
+#endif
+
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -995,6 +1001,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
+  // Initialize QGIS (and the plugins) before the network
+  QgsApplication::initQgis();
+
   // start the network logger early, we want all requests logged!
   startProfile( tr( "Create network logger" ) );
   mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
@@ -1040,8 +1049,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   mSplash->showMessage( tr( "Setting up the GUI" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
-
-  QgsApplication::initQgis();
 
   // setup connections to auth system
   masterPasswordSetup();
@@ -1566,7 +1573,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+  connect( mWindowAction, &QAction::triggered, this, &QgisApp::activate );
 
   // add this window to Window menu
   addWindow( mWindowAction );
@@ -2212,6 +2219,8 @@ QgisApp::~QgisApp()
   mLayerTreeView = nullptr;
   delete mMessageButton;
   mMessageButton = nullptr;
+  delete mAboutDialog;
+  mAboutDialog = nullptr;
 
   QgsGui::nativePlatformInterface()->cleanup();
 
@@ -3100,15 +3109,15 @@ void QgisApp::createActions()
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
-  connect( mActionWindowMinimize, SIGNAL( triggered() ), this, SLOT( showActiveWindowMinimized() ) );
+  connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
-  connect( mActionWindowZoom, SIGNAL( triggered() ), this, SLOT( toggleActiveWindowMaximized() ) );
+  connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
-  connect( mActionWindowAllToFront, SIGNAL( triggered() ), this, SLOT( bringAllToFront() ) );
+  connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
   // list of open windows
   mWindowActions = new QActionGroup( this );
@@ -5450,15 +5459,15 @@ void QgisApp::sponsors()
 
 void QgisApp::about()
 {
-  static QgsAbout *sAbt = nullptr;
-  if ( !sAbt )
+  if ( !mAboutDialog )
   {
-    sAbt = new QgsAbout( this );
+    mAboutDialog = new QgsAbout( this );
   }
-  sAbt->setVersion( QgisApp::getVersionString() );
-  sAbt->show();
-  sAbt->raise();
-  sAbt->activateWindow();
+
+  mAboutDialog->setVersion( QgisApp::getVersionString() );
+  mAboutDialog->show();
+  mAboutDialog->raise();
+  mAboutDialog->activateWindow();
 }
 
 QString QgisApp::getVersionString()
@@ -5572,6 +5581,15 @@ QString QgisApp::getVersionString()
 #endif
   versionString += QLatin1String( "</td></tr><tr>" );
 
+  // GeographicLib version
+#ifdef WITH_GEOGRAPHICLIB
+  const QString geographicLibVersionRunning = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH );
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), geographicLibVersionRunning );
+#else
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), tr( "No support" ) );
+#endif
+  versionString += QLatin1String( "</td></tr><tr>" );
+
   // SQLite version
   const QString sqliteVersionCompiled { SQLITE_VERSION };
   const QString sqliteVersionRunning { sqlite3_libversion() };
@@ -5671,16 +5689,19 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     }
   }
 
-  // Use the last used image format
-  QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  for ( const QString &fmt : supportedFormats )
+  // Use the last used image format if not specified in the uri
+  if ( !uri.contains( QStringLiteral( "format=" ) ) )
   {
-    if ( fmt == lastImageEncoding )
+    const QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), QStringLiteral( "image/png" ) ).toString();
+    for ( const QString &fmt : supportedFormats )
     {
-      const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
-      newuri.replace( sFormatRegEx, "format=" + fmt );
-      QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
-      break;
+      if ( fmt == lastImageEncoding )
+      {
+        const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
+        newuri.replace( sFormatRegEx, "format=" + fmt );
+        QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
+        break;
+      }
     }
   }
   return newuri;
@@ -5816,7 +5837,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   QgsSettings settings;
 
-  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+  [[maybe_unused]] QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
   QgsCanvasRefreshBlocker refreshBlocker;
   closeProject();
 
@@ -5883,7 +5904,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
     return false; //cancel pressed
   }
 
-  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+  [[maybe_unused]] QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
   QgsDebugMsgLevel( QStringLiteral( "loading project template: %1" ).arg( fileName ), 2 );
   if ( addProject( fileName ) )
   {
@@ -8020,7 +8041,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
   {
     QgsDebugMsgLevel( QStringLiteral( "Writing raw data" ), 2 );
-    pipe.reset( new QgsRasterPipe() );
+    pipe = std::make_unique<QgsRasterPipe>();
     if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
     {
       QgsDebugError( QStringLiteral( "Cannot set pipe provider" ) );
@@ -8054,7 +8075,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   {
     // clone the whole pipe
     QgsDebugMsgLevel( QStringLiteral( "Writing rendered image" ), 2 );
-    pipe.reset( new QgsRasterPipe( *rasterLayer->pipe() ) );
+    pipe = std::make_unique<QgsRasterPipe>( *rasterLayer->pipe() );
     QgsRasterProjector *projector = pipe->projector();
     if ( !projector )
     {
@@ -8195,22 +8216,31 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
       QgsMessageBarItem *barItem = new QgsMessageBarItem( tr( "Layer Saved" ), tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
 
-      if ( ( !newLayerName.isEmpty() ) )
+      QString layerNameForRename;
+
+      if ( newLayerName.isEmpty() )
       {
-        if ( newLayerName != vl->name() )
-        {
-          QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
-          barItem->setWidget( button );
+        QFileInfo fileInfoSource( source );
+        layerNameForRename = fileInfoSource.baseName();
+      }
+      else
+      {
+        layerNameForRename = newLayerName;
+      }
 
-          connect( vl, &QgsVectorLayer::willBeDeleted, this, [button]() {
-            button->setEnabled( false );
-          } );
+      if ( layerNameForRename != vl->name() )
+      {
+        QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
+        barItem->setWidget( button );
 
-          connect( button, &QPushButton::clicked, this, [button, vl, newLayerName]() {
-            vl->setName( newLayerName );
-            button->setEnabled( false );
-          } );
-        }
+        connect( vl, &QgsVectorLayer::willBeDeleted, barItem, [button]() {
+          button->setEnabled( false );
+        } );
+
+        connect( button, &QPushButton::clicked, vl, [button, vl, layerNameForRename]() {
+          vl->setName( layerNameForRename );
+          button->setEnabled( false );
+        } );
       }
 
       this->visibleMessageBar()->pushItem( barItem );
@@ -9237,14 +9267,14 @@ QList<Qgs3DMapCanvasWidget *> QgisApp::get3DMapViews()
 
 void QgisApp::setupDuplicateFeaturesAction()
 {
-  mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable ) );
+  mDuplicateFeatureAction = std::make_unique<QgsMapLayerAction>( tr( "Duplicate Feature" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureAction.get() );
   connect( mDuplicateFeatureAction.get(), &QgsMapLayerAction::triggeredForFeatureV2, this, [this]( QgsMapLayer *layer, const QgsFeature &feat, const QgsMapLayerActionContext & ) {
     duplicateFeatures( layer, feat );
   } );
 
-  mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature and Digitize" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable | Qgis::MapLayerActionFlag::EnableOnlyWhenHasGeometry ) );
+  mDuplicateFeatureDigitizeAction = std::make_unique<QgsMapLayerAction>( tr( "Duplicate Feature and Digitize" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable | Qgis::MapLayerActionFlag::EnableOnlyWhenHasGeometry );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureDigitizeAction.get() );
   connect( mDuplicateFeatureDigitizeAction.get(), &QgsMapLayerAction::triggeredForFeatureV2, this, [this]( QgsMapLayer *layer, const QgsFeature &feat, const QgsMapLayerActionContext & ) {

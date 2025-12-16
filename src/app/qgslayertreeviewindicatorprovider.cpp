@@ -14,19 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayertreeviewindicatorprovider.h"
-#include "moc_qgslayertreeviewindicatorprovider.cpp"
 
+#include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgspointcloudlayer.h"
-#include "qgsvectortilelayer.h"
 #include "qgsmeshlayer.h"
-#include "qgisapp.h"
-#include "qgsapplication.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+
+#include "moc_qgslayertreeviewindicatorprovider.cpp"
 
 QgsLayerTreeViewIndicatorProvider::QgsLayerTreeViewIndicatorProvider( QgsLayerTreeView *view )
   : QObject( view )

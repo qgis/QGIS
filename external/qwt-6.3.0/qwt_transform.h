@@ -81,7 +81,7 @@ class QWT_EXPORT QwtNullTransform : public QwtTransform
 {
   public:
     QwtNullTransform();
-    virtual ~QwtNullTransform();
+    ~QwtNullTransform() override;
 
     virtual double transform( double value ) const QWT_OVERRIDE;
     virtual double invTransform( double value ) const QWT_OVERRIDE;
@@ -101,7 +101,7 @@ class QWT_EXPORT QwtLogTransform : public QwtTransform
 {
   public:
     QwtLogTransform();
-    virtual ~QwtLogTransform();
+    ~QwtLogTransform() override;
 
     virtual double transform( double value ) const QWT_OVERRIDE;
     virtual double invTransform( double value ) const QWT_OVERRIDE;
@@ -126,7 +126,7 @@ class QWT_EXPORT QwtPowerTransform : public QwtTransform
 {
   public:
     explicit QwtPowerTransform( double exponent );
-    virtual ~QwtPowerTransform();
+    ~QwtPowerTransform() override;
 
     virtual double transform( double value ) const QWT_OVERRIDE;
     virtual double invTransform( double value ) const QWT_OVERRIDE;

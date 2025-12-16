@@ -16,26 +16,28 @@
 
 #include "qgsinternalgeometryengine.h"
 
+#include <functional>
+#include <geos_c.h>
+#include <memory>
+#include <random>
+
+#include "qgscircle.h"
+#include "qgscircularstring.h"
+#include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgslinesegment.h"
 #include "qgslinestring.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include "qgsmulticurve.h"
-#include "qgscircularstring.h"
-#include "qgsgeometry.h"
-#include "qgsgeometryutils.h"
-#include "qgslinesegment.h"
-#include "qgscircle.h"
 #include "qgstessellator.h"
-#include "qgsfeedback.h"
-#include "qgsgeometryengine.h"
-#include "qgsmultilinestring.h"
-#include "qgsgeos.h"
+
 #include <QTransform>
-#include <functional>
-#include <memory>
 #include <queue>
-#include <random>
-#include <geos_c.h>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
   : mGeometry( geometry.constGet() )
@@ -1235,8 +1237,9 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 {
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
-  QgsTessellator t( bounds, false, false, false, true );
-  t.setOutputZUp( true );
+  QgsTessellator t;
+  t.setBounds( bounds );
+  t.setInputZValueIgnored( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {

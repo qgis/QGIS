@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsscalemethodwidget.h"
+
 #include "qgsapplication.h"
-#include "moc_qgsscalemethodwidget.cpp"
-#include <QHBoxLayout>
+
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QLabel>
+
+#include "moc_qgsscalemethodwidget.cpp"
 
 QgsScaleMethodWidget::QgsScaleMethodWidget( QWidget *parent )
   : QWidget( parent )

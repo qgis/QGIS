@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsexpressionbuilderwidgetplugin.h"
+
 #include "qgiscustomwidgets.h"
 #include "qgsexpressionbuilderwidget.h"
-#include "qgsexpressionbuilderwidgetplugin.h"
-#include "moc_qgsexpressionbuilderwidgetplugin.cpp"
 
+#include "moc_qgsexpressionbuilderwidgetplugin.cpp"
 
 QgsExpressionBuilderWidgetPlugin::QgsExpressionBuilderWidgetPlugin( QObject *parent )
   : QObject( parent )

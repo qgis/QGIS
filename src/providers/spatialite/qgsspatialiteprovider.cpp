@@ -14,36 +14,38 @@ email                : a.furieri@lqt.it
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsfields.h"
-#include "qgsgeometry.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
 #include "qgsspatialiteprovider.h"
-#include "moc_qgsspatialiteprovider.cpp"
-#include "qgsspatialiteconnpool.h"
-#include "qgsspatialitefeatureiterator.h"
-#include "qgsfeedback.h"
-#include "qgsspatialitedataitems.h"
-#include "qgsspatialiteconnection.h"
-#include "qgsspatialitetransaction.h"
-#include "qgsspatialiteproviderconnection.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgsthreadingutils.h"
-#include "qgsjsonutils.h"
-#include "qgsvectorlayer.h"
-
-#include "qgsprovidermetadata.h"
-
-#include <QFileInfo>
-#include <QDir>
-#include <QRegularExpression>
 
 #include <nlohmann/json.hpp>
+
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsfeature.h"
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgsgeometry.h"
+#include "qgsjsonutils.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrectangle.h"
+#include "qgsspatialiteconnection.h"
+#include "qgsspatialiteconnpool.h"
+#include "qgsspatialitedataitems.h"
+#include "qgsspatialitefeatureiterator.h"
+#include "qgsspatialiteproviderconnection.h"
+#include "qgsspatialitetransaction.h"
+#include "qgsthreadingutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QDir>
+#include <QFileInfo>
+#include <QRegularExpression>
+
+#include "moc_qgsspatialiteprovider.cpp"
+
 using namespace nlohmann;
 
 

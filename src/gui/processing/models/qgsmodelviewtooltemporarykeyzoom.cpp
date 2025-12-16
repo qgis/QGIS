@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtooltemporarykeyzoom.h"
-#include "moc_qgsmodelviewtooltemporarykeyzoom.cpp"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelgraphicsview.h"
+
 #include "qgsapplication.h"
-#include <QScrollBar>
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+
 #include <QApplication>
+#include <QScrollBar>
+
+#include "moc_qgsmodelviewtooltemporarykeyzoom.cpp"
 
 QgsModelViewToolTemporaryKeyZoom::QgsModelViewToolTemporaryKeyZoom( QgsModelGraphicsView *view )
   : QgsModelViewToolZoom( view )

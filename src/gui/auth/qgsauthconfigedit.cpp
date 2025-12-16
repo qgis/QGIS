@@ -15,18 +15,20 @@
  ***************************************************************************/
 
 #include "qgsauthconfigedit.h"
-#include "moc_qgsauthconfigedit.cpp"
 
-#include <QPushButton>
-
-#include "qgsauthmethodmetadata.h"
+#include "qgsapplication.h"
 #include "qgsauthconfig.h"
 #include "qgsauthconfigidedit.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmethodedit.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
+#include "qgsauthmethodmetadata.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslogger.h"
+
+#include <QPushButton>
+
+#include "moc_qgsauthconfigedit.cpp"
 
 QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, const QString &dataprovider )
   : QDialog( parent )
@@ -66,6 +68,9 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAuthConfigEdit::saveConfig );
     connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsAuthConfigEdit::resetConfig );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+      QgsHelp::openHelp( QStringLiteral( "auth_system/auth_overview.html#authentication-configurations" ) );
+    } );
 
     populateAuthMethods();
 
@@ -74,17 +79,11 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
 
     connect( authCfgEdit, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
 
-    // needed (if only combobox is ever changed)?
-    // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
-    //          cmbAuthMethods, SLOT( setCurrentIndex( int ) ) );
-
-    // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
-    //          this, SLOT( validateAuth() ) );
-
     if ( cmbAuthMethods->count() > 0 )
     {
       cmbAuthMethods->setCurrentIndex( 0 );
       stkwAuthMethods->setCurrentIndex( 0 );
+      stkwAuthMethods->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
     }
 
     loadConfig();

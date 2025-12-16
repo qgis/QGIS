@@ -15,11 +15,12 @@
  ***************************************************************************/
 
 #include "qgsauthbasicmethod.h"
-#include "moc_qgsauthbasicmethod.cpp"
 
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsauthbasicmethod.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsauthbasicedit.h"

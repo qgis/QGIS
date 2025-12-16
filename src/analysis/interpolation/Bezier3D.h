@@ -18,8 +18,8 @@
 #define BEZIER3D_H
 
 #include "ParametricLine.h"
-#include "qgslogger.h"
 #include "qgis_analysis.h"
+#include "qgslogger.h"
 
 #define SIP_NO_FILE
 

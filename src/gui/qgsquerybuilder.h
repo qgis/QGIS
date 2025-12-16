@@ -14,17 +14,20 @@
  ***************************************************************************/
 #ifndef QGSQUERYBUILDER_H
 #define QGSQUERYBUILDER_H
+#include "ui_qgsquerybuilderbase.h"
+
 #include <map>
-#include "qgis_sip.h"
 #include <vector>
-#include <QStandardItemModel>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgssubsetstringeditorinterface.h"
+
+#include <QModelIndex>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
-#include <QModelIndex>
-#include "ui_qgsquerybuilderbase.h"
-#include "qgsguiutils.h"
-#include "qgis_gui.h"
-#include "qgssubsetstringeditorinterface.h"
+#include <QStandardItemModel>
 
 class QgsVectorLayer;
 class QgsCodeEditor;
@@ -183,7 +186,7 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
     //! Filter proxy Model for values ListView
     QSortFilterProxyModel *mProxyValues = nullptr;
     //! Previous field row to delete model
-    int mPreviousFieldRow;
+    int mPreviousFieldRow = -1;
 
     //! vector layer
     QgsVectorLayer *mLayer = nullptr;

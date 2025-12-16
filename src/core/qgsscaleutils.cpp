@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsscaleutils.h"
+
 #include "qgis.h"
 
-#include <QFile>
 #include <QDomDocument>
+#include <QFile>
 #include <QTextStream>
 
 bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage )

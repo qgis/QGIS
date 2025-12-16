@@ -14,20 +14,21 @@
  ***************************************************************************/
 
 #include "qgsellipsesymbollayer.h"
+
+#include "qgscolorutils.h"
 #include "qgsdxfexport.h"
 #include "qgsfeature.h"
-#include "qgsrendercontext.h"
 #include "qgslogger.h"
-#include "qgsunittypes.h"
 #include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorutils.h"
+#include "qgsrendercontext.h"
 #include "qgssldexportcontext.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
-#include <QPainter>
-#include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainter>
+#include <QSet>
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
   : mStrokeColor( QColor( 35, 35, 35 ) )

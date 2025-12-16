@@ -17,29 +17,30 @@
 
 
 //qt includes
+#include "qgsconfig.h"
+
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+
 #include <QBitmap>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QFont>
 #include <QFontDatabase>
-#include <QPixmap>
+#include <QImageReader>
 #include <QLocale>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QScreen>
 #include <QSplashScreen>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
 #include <QStyle>
 #include <QStyleFactory>
-#include <QImageReader>
-#include <QMessageBox>
-#include <QStandardPaths>
-#include <QScreen>
 #include <QSurfaceFormat>
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstdarg>
-#include "qgsconfig.h"
 
 #if !defined( Q_OS_WIN )
 #include "sigwatch.h"
@@ -1326,9 +1327,6 @@ int main( int argc, char *argv[] )
 #ifdef Q_OS_MAC
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
-
-  // Set 1024x1024 icon for dock, app switcher, etc., rendering
-  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) ) );
 #else
   QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
@@ -1577,9 +1575,8 @@ int main( int argc, char *argv[] )
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   QgsApplication::connect(
-    &myApp, SIGNAL( preNotify( QObject *, QEvent *, bool * ) ),
-    //qgis, SLOT( preNotify( QObject *, QEvent *))
-    QgsCustomization::instance(), SLOT( preNotify( QObject *, QEvent *, bool * ) )
+    &myApp, &QgsApplication::preNotify,
+    QgsCustomization::instance(), &QgsCustomization::preNotify
   );
 
   /////////////////////////////////////////////////////////////////////
@@ -1813,7 +1810,7 @@ int main( int argc, char *argv[] )
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
   qgis->show();
-  QgsApplication::connect( &myApp, SIGNAL( lastWindowClosed() ), &myApp, SLOT( quit() ) );
+  QgsApplication::connect( &myApp, &QgsApplication::lastWindowClosed, &myApp, &QgsApplication::quit );
 
   mypSplash->finish( qgis );
   delete mypSplash;

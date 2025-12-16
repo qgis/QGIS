@@ -16,9 +16,11 @@
 #ifndef QGSOVERLAYUTILS_H
 #define QGSOVERLAYUTILS_H
 
-#include <QList>
-#include "qgswkbtypes.h"
 #include "qgsgeometry.h"
+#include "qgswkbtypes.h"
+
+#include <QList>
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE

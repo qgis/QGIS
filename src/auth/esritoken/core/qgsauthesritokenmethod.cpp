@@ -15,11 +15,12 @@
  ***************************************************************************/
 
 #include "qgsauthesritokenmethod.h"
-#include "moc_qgsauthesritokenmethod.cpp"
 
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsauthesritokenmethod.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsauthesritokenedit.h"

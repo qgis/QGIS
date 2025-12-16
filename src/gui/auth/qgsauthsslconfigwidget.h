@@ -17,16 +17,16 @@
 #ifndef QGSAUTHSSLCONFIGWIDGET_H
 #define QGSAUTHSSLCONFIGWIDGET_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include <QWidget>
 #include "ui_qgsauthsslconfigwidget.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthconfig.h"
+
+#include <QDialog>
 #include <QSslCertificate>
 #include <QSslConfiguration>
-
-#include "qgsauthconfig.h"
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QComboBox;
 class QGroupBox;

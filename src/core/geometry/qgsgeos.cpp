@@ -14,21 +14,24 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeos.h"
+
+#include <cstdio>
+#include <limits>
+#include <memory>
+
 #include "qgsabstractgeometry.h"
 #include "qgsgeometrycollection.h"
+#include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
+#include "qgsgeometryutils_base.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
-#include "qgslogger.h"
 #include "qgspolygon.h"
-#include "qgsgeometryeditutils.h"
 #include "qgspolyhedralsurface.h"
-#include "qgsgeometryutils_base.h"
-#include <limits>
-#include <cstdio>
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
@@ -1186,7 +1189,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
   }
   else if ( type == GEOS_LINESTRING )
   {
-    multiCurve.reset( new QgsMultiCurve() );
+    multiCurve = std::make_unique<QgsMultiCurve>( );
     multiCurve->addGeometry( mGeometry->clone() );
   }
   else

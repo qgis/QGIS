@@ -12,21 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgsfield.h"
 #include "qgsreferencedgeometry.h"
 #include "qgstest.h"
+#include "qgsunsetattributevalue.h"
 
+#include <QLocale>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QLocale>
-
-#include <memory>
-
-#include "qgsfield.h"
-#include "qgsapplication.h"
-#include "qgstest.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsunsetattributevalue.h"
 
 class TestQgsField : public QObject
 {

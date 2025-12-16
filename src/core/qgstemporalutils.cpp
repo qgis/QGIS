@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgstemporalutils.h"
-#include "qgsproject.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgstemporalnavigationobject.h"
-#include "qgsmapdecoration.h"
-#include "qgsmapsettings.h"
-#include "qgsmaprenderercustompainterjob.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsmapdecoration.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgstemporalnavigationobject.h"
 
 #include <QRegularExpression>
 
@@ -94,7 +95,10 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   navigator.setTemporalExtents( settings.animationRange );
   navigator.setFrameDuration( settings.frameDuration );
   if ( settings.frameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
+  {
     navigator.setAvailableTemporalRanges( settings.availableTemporalRanges );
+  }
+  navigator.setTemporalRangeCumulative( settings.temporalRangeCumulative );
 
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
@@ -344,7 +348,7 @@ long long QgsTimeDuration::toSeconds() const
   return secs;
 }
 
-QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime )
+QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime ) const
 {
   QDateTime resultDateTime = dateTime;
 

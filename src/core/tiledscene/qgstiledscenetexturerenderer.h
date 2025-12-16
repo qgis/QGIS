@@ -18,9 +18,9 @@
 #ifndef QGSTILEDSCENETEXTURERENDERER_H
 #define QGSTILEDSCENETEXTURERENDERER_H
 
-#include "qgstiledscenerenderer.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgstiledscenerenderer.h"
 
 class QgsFillSymbol;
 
@@ -38,7 +38,7 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
      * Constructor for QgsTiledSceneTextureRenderer.
      */
     QgsTiledSceneTextureRenderer();
-    ~QgsTiledSceneTextureRenderer();
+    ~QgsTiledSceneTextureRenderer() override;
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;

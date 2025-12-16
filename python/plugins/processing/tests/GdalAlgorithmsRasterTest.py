@@ -84,6 +84,7 @@ from processing.algs.gdal.roughness import roughness
 from processing.algs.gdal.pct2rgb import pct2rgb
 from processing.algs.gdal.rgb2pct import rgb2pct
 from processing.algs.gdal.CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
+from processing.algs.gdal.DatasetIdentify import DatasetIdentify
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
@@ -6620,6 +6621,31 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
             self.assertTrue(os.path.exists(os.path.join(outdir, "dem.tif")))
             self.assertTrue(os.path.exists(os.path.join(outdir, "raster.tif")))
+
+    def testDatasetIdentify(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        with tempfile.TemporaryDirectory() as indir, tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + "/out.csv"
+            alg = DatasetIdentify()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": indir,
+                        "OUTPUT": outsource,
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal dataset identify",
+                    f"--recursive --detailed --input {indir} --output {outsource}",
+                ],
+            )
 
 
 if __name__ == "__main__":

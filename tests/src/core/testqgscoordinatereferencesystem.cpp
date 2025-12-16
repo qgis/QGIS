@@ -12,11 +12,11 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QPixmap>
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgstest.h"
+
+#include <QPixmap>
 
 //header for class being tested
 #include "qgscoordinatereferencesystem.h"

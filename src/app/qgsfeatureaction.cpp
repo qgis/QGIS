@@ -15,24 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeatureaction.h"
+
 #include "qgisapp.h"
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributedialog.h"
 #include "qgsdistancearea.h"
-#include "qgsfeatureaction.h"
-#include "moc_qgsfeatureaction.cpp"
-#include "qgslogger.h"
 #include "qgshighlight.h"
+#include "qgslogger.h"
 #include "qgsproject.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsactionmanager.h"
-#include "qgsaction.h"
 #include "qgsvectorlayerutils.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QPushButton>
 
+#include "moc_qgsfeatureaction.cpp"
 
 QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, QUuid actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )
@@ -40,7 +41,6 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVecto
   , mFeature( &f )
   , mActionId( actionId )
   , mIdx( defaultAttr )
-  , mFeatureSaved( false )
 {
 }
 
@@ -268,7 +268,7 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
     emit addFeatureFinished();
   }
 
-  // Will be set in the onFeatureSaved SLOT
+  // Will be set in the onFeatureSaved slot
   // assume dialog was canceled if dialog was shown yet feature wasn't added
   return mFeatureSaved ? AddFeatureResult::Success : ( dialogWasShown ? AddFeatureResult::Canceled : AddFeatureResult::FeatureError );
 }

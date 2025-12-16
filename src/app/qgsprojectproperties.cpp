@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsprojectproperties.h"
+
 #include "moc_qgsprojectproperties.cpp"
 
 //qgis includes
@@ -90,7 +91,6 @@ const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl, const QList<QgsOptionsWidgetFactory *> &optionsFactories )
   : QgsOptionsDialogBase( QStringLiteral( "ProjectProperties" ), parent, fl )
   , mMapCanvas( mapCanvas )
-  , mEllipsoidIndex( 0 )
 {
   // set wait cursor since construction of the project properties
   // dialog can be slow

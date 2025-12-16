@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmboundary.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

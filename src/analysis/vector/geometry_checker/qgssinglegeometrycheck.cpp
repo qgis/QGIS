@@ -13,11 +13,11 @@ email                : matthias@opengis.ch
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfeedback.h"
 #include "qgssinglegeometrycheck.h"
+
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgspoint.h"
-
 
 QgsGeometryCheck::Result QgsSingleGeometryCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {

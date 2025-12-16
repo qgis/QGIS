@@ -14,21 +14,21 @@
  ***************************************************************************/
 
 
+#include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsrenderchecker.h"
+#include "qgsrubberband.h"
+#include "qgssymbol.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QCoreApplication>
 #include <QObject>
 #include <QString>
-#include <QCoreApplication>
 #include <QWidget>
-
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
-#include <qgsrubberband.h>
-#include <qgslogger.h>
-#include "qgssymbol.h"
-#include "qgsrenderchecker.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
 
 class TestQgsRubberband : public QgsTest
 {

@@ -13,10 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationequalinterval.h"
+
 #include "qgsapplication.h"
+
+#include <QObject>
 
 const QString QgsClassificationEqualInterval::METHOD_ID = QStringLiteral( "EqualInterval" );
 

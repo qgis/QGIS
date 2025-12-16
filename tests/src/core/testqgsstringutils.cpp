@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsstringutils.h"
-#include <QObject>
 #include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsStringUtils : public QObject
 {

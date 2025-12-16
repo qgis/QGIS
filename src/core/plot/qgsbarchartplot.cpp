@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgsbarchartplot.h"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayerplotdatagatherer.h"
-
 
 QgsBarChartPlot::QgsBarChartPlot()
 {

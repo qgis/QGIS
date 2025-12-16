@@ -15,39 +15,41 @@
  ***************************************************************************/
 
 #include "qgslayoutitemscalebar.h"
-#include "moc_qgslayoutitemscalebar.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgsscalebarrendererregistry.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayout.h"
-#include "qgslayoututils.h"
+
+#include <cmath>
+
 #include "qgsdistancearea.h"
-#include "qgssingleboxscalebarrenderer.h"
-#include "qgsscalebarrenderer.h"
-#include "qgsmessagelog.h"
-#include "qgsrectangle.h"
-#include "qgsproject.h"
-#include "qgssymbollayerutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsfontutils.h"
-#include "qgsunittypes.h"
-#include "qgssettings.h"
-#include "qgsstyleentityvisitor.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmessagelog.h"
 #include "qgsnumericformat.h"
 #include "qgsnumericformatregistry.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgslayoutrendercontext.h"
+#include "qgsproject.h"
+#include "qgsrectangle.h"
+#include "qgsscalebarrenderer.h"
+#include "qgsscalebarrendererregistry.h"
+#include "qgssettings.h"
+#include "qgssingleboxscalebarrenderer.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
+#include <QAbstractTextDocumentLayout>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
 #include <QTextDocument>
-#include <QAbstractTextDocumentLayout>
 
-#include <cmath>
+#include "moc_qgslayoutitemscalebar.cpp"
 
 QgsLayoutItemScaleBar::QgsLayoutItemScaleBar( QgsLayout *layout )
   : QgsLayoutItem( layout )

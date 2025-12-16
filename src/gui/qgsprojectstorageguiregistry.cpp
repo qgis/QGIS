@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprojectstorageguiregistry.h"
+
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsproviderguiregistry.h"
 

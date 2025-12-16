@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationoptions.h"
-#include "moc_qgselevationoptions.cpp"
 
-#include "qgssettings.h"
-#include "qgsapplication.h"
 #include "elevation/qgselevationprofilewidget.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
+
 #include <QDir>
+
+#include "moc_qgselevationoptions.cpp"
 
 //
 // QgsElevationOptionsWidget

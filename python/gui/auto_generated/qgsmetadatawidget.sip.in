@@ -11,6 +11,7 @@
 
 
 
+
 class QgsMetadataWidget : QWidget
 {
 %Docstring(signature="appended")

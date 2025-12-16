@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmaprenderersequentialjob.h"
-#include "moc_qgsmaprenderersequentialjob.cpp"
 
+#include "qgslabelingresults.h"
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgspallabeling.h"
-#include "qgslabelingresults.h"
 #include "qgsrendereditemresults.h"
+
+#include "moc_qgsmaprenderersequentialjob.cpp"
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )

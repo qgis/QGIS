@@ -17,8 +17,8 @@
 #define QGSORACLECONNPOOL_H
 
 #include "qgsconnectionpool.h"
-#include "qgsoracleconn.h"
 #include "qgslogger.h"
+#include "qgsoracleconn.h"
 
 inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn *c )
 {
@@ -55,9 +55,12 @@ class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
 
   public:
     explicit QgsOracleConnPoolGroup( QString name )
-      : QgsConnectionPoolGroup<QgsOracleConn *>( name ) { initTimer( this ); }
+      : QgsConnectionPoolGroup<QgsOracleConn *>( name )
+    {
+      initTimer<QgsOracleConnPoolGroup>( this );
+    }
 
-  protected slots:
+  public slots:
     void handleConnectionExpired() { onConnectionExpired(); }
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }

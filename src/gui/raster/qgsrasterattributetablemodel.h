@@ -17,8 +17,8 @@
 #define QGSRASTERATTRIBUTETABLEMODEL_H
 
 #include "qgis_gui.h"
-#include "qgsrasterattributetable.h"
 #include "qgis_sip.h"
+#include "qgsrasterattributetable.h"
 
 #include <QAbstractTableModel>
 #include <QObject>

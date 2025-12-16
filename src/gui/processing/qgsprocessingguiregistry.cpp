@@ -16,20 +16,21 @@
  ***************************************************************************/
 
 #include "qgsprocessingguiregistry.h"
-#include "qgsprocessingalgorithmconfigurationwidget.h"
-#include "qgsprocessingconfigurationwidgets.h"
-#include "qgsprocessingalignrasterlayerswidgetwrapper.h"
-#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
-#include "qgsprocessingfieldmapwidgetwrapper.h"
-#include "qgsprocessingaggregatewidgetwrapper.h"
-#include "qgsprocessingdxflayerswidgetwrapper.h"
-#include "qgsprocessingwidgetwrapperimpl.h"
-#include "qgsprocessingtininputlayerswidget.h"
-#include "qgsprocessingmeshdatasetwidget.h"
-#include "qgsprocessingrasteroptionswidgetwrapper.h"
-#include "qgsprocessingparameters.h"
+
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsprocessingaggregatewidgetwrapper.h"
+#include "qgsprocessingalgorithmconfigurationwidget.h"
+#include "qgsprocessingalignrasterlayerswidgetwrapper.h"
+#include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingdxflayerswidgetwrapper.h"
+#include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingrasteroptionswidgetwrapper.h"
+#include "qgsprocessingtininputlayerswidget.h"
+#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
+#include "qgsprocessingwidgetwrapperimpl.h"
 
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {

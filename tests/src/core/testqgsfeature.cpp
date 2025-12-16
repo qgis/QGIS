@@ -12,18 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgssymbol.h"
 #include "qgslinesymbol.h"
+#include "qgssymbol.h"
+#include "qgstest.h"
 #include "qgsunsetattributevalue.h"
+
+#include <QObject>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
 
 class TestQgsFeature : public QObject
 {

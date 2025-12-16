@@ -15,19 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgsxyzsourceselect.h"
-#include "moc_qgsxyzsourceselect.cpp"
+
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsowsconnection.h"
 #include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
-#include "qgsowsconnection.h"
 #include "qgsxyzsourcewidget.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsxyzsourceselect.cpp"
 
 QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )

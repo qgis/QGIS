@@ -13,13 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include <qgsjsonutils.h>
 #include <nlohmann/json.hpp>
 
-#include "qgsvectorlayer.h"
 #include "qgsfeature.h"
+#include "qgsjsonutils.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsJsonUtils : public QObject
 {

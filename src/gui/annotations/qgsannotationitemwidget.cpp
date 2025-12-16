@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsannotationitemwidget.h"
-#include "moc_qgsannotationitemwidget.cpp"
+
+#include "qgsannotationlayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsrenderedannotationitemdetails.h"
 #include "qgsrendereditemdetails.h"
 #include "qgsrendereditemresults.h"
-#include "qgsrenderedannotationitemdetails.h"
-#include "qgsannotationlayer.h"
+
+#include "moc_qgsannotationitemwidget.cpp"
 
 QgsAnnotationItemBaseWidget::QgsAnnotationItemBaseWidget( QWidget *parent )
   : QgsPanelWidget( parent )

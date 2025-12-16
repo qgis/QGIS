@@ -19,11 +19,11 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspoint.h"
-#include "qgsvertexid.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils_base.h"
+#include "qgspoint.h"
 #include "qgsvector3d.h"
+#include "qgsvertexid.h"
 
 #include <QJsonArray>
 
@@ -1449,6 +1449,23 @@ class CORE_EXPORT QgsGeometryUtils
                                    double radius,
                                    QgsPoint filletPoints[3],
                                    double epsilon = 1e-8 ) SIP_SKIP;
+
+    /**
+     * Checks if three points are collinear within a given tolerance.
+     *
+     * This function determines whether the points `pt1`, `pt2`, and `pt3` lie
+     * on the same straight line, considering a numerical tolerance `epsilon`.
+     * The function works only with 2D and 3D points. The measure component (if present) is ignored.
+     *
+     * \param pt1 The first point.
+     * \param pt2 The second point.
+     * \param pt3 The third point.
+     * \param epsilon The tolerance used to account for floating-point inaccuracies.
+     * \return true if the points are collinear, false otherwise.
+     *
+     * \since QGIS 4.0
+     */
+    static bool pointsAreCollinear( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon );
 
   private:
 

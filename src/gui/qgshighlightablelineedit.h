@@ -16,11 +16,11 @@
 #ifndef QGSHIGHLIGHTABLELINEEDIT_H
 #define QGSHIGHLIGHTABLELINEEDIT_H
 
-#include <QWidget>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsfilterlineedit.h"
+
+#include <QWidget>
 
 /**
  * \class QgsHighlightableLineEdit

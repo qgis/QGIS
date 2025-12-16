@@ -21,8 +21,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrange.h"
-#include <QObject>
 
+#include <QObject>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

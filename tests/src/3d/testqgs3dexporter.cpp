@@ -13,11 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -30,8 +25,10 @@
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsrasterlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-
 
 class TestQgs3DExporter : public QgsTest
 {
@@ -128,7 +125,7 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevels
   QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
 
   QFile file( QString( "%1/%2.obj" ).arg( QDir::tempPath(), objFileName ) );
-  file.open( QIODevice::ReadOnly | QIODevice::Text );
+  QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
   QTextStream fileStream( &file );
 
   // check the generated obj file

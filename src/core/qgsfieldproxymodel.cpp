@@ -14,9 +14,11 @@
 ***************************************************************************/
 
 #include "qgsfieldproxymodel.h"
-#include "moc_qgsfieldproxymodel.cpp"
+
 #include "qgsfieldmodel.h"
 #include "qgsvariantutils.h"
+
+#include "moc_qgsfieldproxymodel.cpp"
 
 QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

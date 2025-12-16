@@ -13,25 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsnetworkloggerpanelwidget.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
-#include "qgsnetworkloggerpanelwidget.h"
-#include "moc_qgsnetworkloggerpanelwidget.cpp"
-#include "qgsnetworkloggernode.h"
 #include "qgsnetworklogger.h"
+#include "qgsnetworkloggernode.h"
 #include "qgssettings.h"
 
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
-#include <QToolButton>
-#include <QCheckBox>
 #include <QTextStream>
+#include <QToolButton>
 
-#include <nlohmann/json.hpp>
+#include "moc_qgsnetworkloggerpanelwidget.cpp"
 
 //
 // QgsNetworkLoggerTreeView

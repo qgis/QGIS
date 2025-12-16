@@ -17,12 +17,13 @@
 #ifndef QGSAUTHIMPORTCERTDIALOG_H
 #define QGSAUTHIMPORTCERTDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
 #include "ui_qgsauthimportcertdialog.h"
 
-#include <QSslCertificate>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QDialog>
+#include <QSslCertificate>
 
 class QPushButton;
 

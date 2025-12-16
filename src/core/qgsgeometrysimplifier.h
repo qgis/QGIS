@@ -17,8 +17,8 @@
 #ifndef QGSGEOMETRYSIMPLIFIER_H
 #define QGSGEOMETRYSIMPLIFIER_H
 
-#include <QVector>
 #include <QPointF>
+#include <QVector>
 
 class QgsGeometry;
 class QgsRectangle;

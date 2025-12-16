@@ -16,7 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbsourceselect.h"
+
 #include "moc_qgsogrdbsourceselect.cpp"
+
 ///@cond PRIVATE
 
 #include "qgsogrdbconnection.h"
@@ -363,11 +365,6 @@ void QgsOgrDbSourceSelect::setConnectionListPosition()
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
-}
-
-void QgsOgrDbSourceSelect::setSearchExpression( const QString &regexp )
-{
-  Q_UNUSED( regexp )
 }
 
 void QgsOgrDbSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

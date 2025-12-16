@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationprofile.h"
-#include "qgsproject.h"
-#include "moc_qgselevationprofile.cpp"
+
 #include "qgscurve.h"
-#include "qgslinesymbol.h"
-#include "qgssymbollayerutils.h"
 #include "qgslayertree.h"
+#include "qgslinesymbol.h"
+#include "qgsproject.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgselevationprofile.cpp"
 
 QgsElevationProfile::QgsElevationProfile( QgsProject *project )
   : mProject( project )
@@ -53,7 +55,14 @@ QDomElement QgsElevationProfile::writeXml( QDomDocument &document, const QgsRead
     profileElem.appendChild( curveElem );
   }
 
-  mLayerTree->writeXml( profileElem, context );
+  if ( !mUseProjectLayerTree )
+  {
+    mLayerTree->writeXml( profileElem, context );
+  }
+  else
+  {
+    profileElem.setAttribute( QStringLiteral( "useProjectLayerTree" ), QStringLiteral( "1" ) );
+  }
 
   if ( mSubsectionsSymbol )
   {
@@ -107,6 +116,8 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
   mTolerance = element.attribute( QStringLiteral( "tolerance" ) ).toDouble();
   mLockAxisScales = element.attribute( QStringLiteral( "lockAxisScales" ), QStringLiteral( "0" ) ).toInt();
 
+  setUseProjectLayerTree( element.attribute( QStringLiteral( "useProjectLayerTree" ), QStringLiteral( "0" ) ).toInt() );
+  if ( !mUseProjectLayerTree )
   {
     const QDomElement layerTreeElem = element.firstChildElement( QStringLiteral( "layer-tree-group" ) );
     mLayerTree = QgsLayerTree::readXml( layerTreeElem, context );
@@ -139,7 +150,7 @@ QIcon QgsElevationProfile::icon() const
 
 QgsLayerTree *QgsElevationProfile::layerTree()
 {
-  return mLayerTree.get();
+  return !mUseProjectLayerTree ? mLayerTree.get() : nullptr;
 }
 
 void QgsElevationProfile::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -208,6 +219,16 @@ void QgsElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
     return;
 
   mDistanceUnit = unit;
+  dirtyProject();
+}
+
+void QgsElevationProfile::setUseProjectLayerTree( bool useProjectTree )
+{
+  if ( mUseProjectLayerTree == useProjectTree )
+    return;
+
+  mUseProjectLayerTree = useProjectTree;
+  emit useProjectLayerTreeChanged( mUseProjectLayerTree );
   dirtyProject();
 }
 

@@ -76,6 +76,7 @@ from .rasterize_over import rasterize_over
 from .Buffer import Buffer
 from .ClipVectorByExtent import ClipVectorByExtent
 from .ClipVectorByMask import ClipVectorByMask
+from .DatasetIdentify import DatasetIdentify
 from .Dissolve import Dissolve
 from .ExecuteSql import ExecuteSql
 from .OffsetCurve import OffsetCurve
@@ -204,6 +205,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             OneSideBuffer(),
             PointsAlongLines(),
             # Ogr2OgrTableToPostGisList(),
+            DatasetIdentify(),
         ]
 
         if int(gdal.VersionInfo()) > 3010000:

@@ -15,15 +15,16 @@
  ***************************************************************************/
 
 #include "qgslayoutguidecollection.h"
-#include "moc_qgslayoutguidecollection.cpp"
+
 #include "qgslayout.h"
-#include "qgsreadwritecontext.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsreadwritecontext.h"
 #include "qgsunittypes.h"
 
 #include <QGraphicsLineItem>
 
+#include "moc_qgslayoutguidecollection.cpp"
 
 //
 // QgsLayoutGuide

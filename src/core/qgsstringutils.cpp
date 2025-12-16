@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include "qgsstringutils.h"
+
+#include <cstdlib>
+
 #include "qgslogger.h"
-#include <QVector>
+
+#include <QRegularExpression>
 #include <QStringList>
 #include <QTextBoundaryFinder>
-#include <QRegularExpression>
-#include <cstdlib> // for std::abs
+#include <QVector>
 
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
 {

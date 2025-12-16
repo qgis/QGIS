@@ -18,13 +18,13 @@
 #ifndef QGSELLIPSE_H
 #define QGSELLIPSE_H
 
-#include <QString>
-
 #include "qgis_core.h"
+#include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
-#include "qgslinestring.h"
 #include "qgsrectangle.h"
+
+#include <QString>
 
 /**
  * \ingroup core

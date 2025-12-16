@@ -17,29 +17,30 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgsoraclesourceselect.h"
-#include "moc_qgsoraclesourceselect.cpp"
 
-#include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsoraclenewconnection.h"
-#include "qgsoracletablecache.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
-#include "qgsvectorlayer.h"
-#include "qgsoraclecolumntypetask.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsoraclecolumntypetask.h"
+#include "qgsoraclenewconnection.h"
+#include "qgsoracletablecache.h"
 #include "qgsoracletablemodel.h"
 #include "qgsprovidermetadata.h"
+#include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTextStream>
-#include <QHeaderView>
 #include <QStringList>
+#include <QTextStream>
+
+#include "moc_qgsoraclesourceselect.cpp"
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -216,7 +217,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   populateConnectionList();
 }
-//! Autoconnected SLOTS
+//! Autoconnected slots
 // Slot for adding a new connection
 void QgsOracleSourceSelect::btnNew_clicked()
 {
@@ -279,7 +280,7 @@ void QgsOracleSourceSelect::btnEdit_clicked()
   delete nc;
 }
 
-//! End Autoconnected SLOTS
+//! End Autoconnected slots
 
 // Remember which database is selected
 void QgsOracleSourceSelect::cmbConnections_currentIndexChanged( const QString &text )

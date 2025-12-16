@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
+
 //header for class being tested
 #include <qgsdatasourceuri.h>
 
@@ -38,6 +40,7 @@ class TestQgsDataSourceUri : public QObject
     void checkParameterKeys();
     void checkRemovePassword();
     void checkUnicodeUri();
+    void checkUriInUri();
 };
 
 void TestQgsDataSourceUri::checkparser_data()
@@ -775,7 +778,7 @@ void TestQgsDataSourceUri::checkAuthParams()
   // issue GH #53654
   QgsDataSourceUri uri5;
   uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
-  QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
 
   uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application/vnd.geoserver.mbstyle+json" ) );
   QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
@@ -820,6 +823,83 @@ void TestQgsDataSourceUri::checkUnicodeUri()
   QgsDataSourceUri uri;
   uri.setEncodedUri( QStringLiteral( "url=file:///directory/テスト.mbtiles&type=mbtiles" ) );
   QCOMPARE( uri.param( QStringLiteral( "url" ) ), QStringLiteral( "file:///directory/テスト.mbtiles" ) );
+}
+
+void TestQgsDataSourceUri::checkUriInUri()
+{
+  QString dataUri = QStringLiteral( "dpiMode=7&url=%1&SERVICE=WMS&REQUEST=GetCapabilities&username=username&password=qgis%C3%A8%C3%A9" );
+
+  // If the 'url' field references a QGIS server then the 'MAP' parameter can contain an url to the project file.
+  // When the project is saved in a postgresql db, the connection url will also contains '&' and '='.
+  {
+    QgsDataSourceUri uri;
+    // here the project url is encoded but the whole serverUrl is not encoded.
+    // The OGC server will receive a call with this url: http://localhost:8000/ows/?MAP=postgresql://?service=qgis_test&dbname&schema=project&project=luxembourg&SERVICE=WMS&REQUEST=GetCapabilities
+    // from the OGC server POV the 'schema' and 'project' keys will be parsed as main query parameters for 'http://localhost:8000/ows/?'
+    // and not associated to the project file uri.
+    QString project = "postgresql://?service=qgis_test&dbname&schema=project&project=luxembourg";
+    QString projectEnc = QUrl::toPercentEncoding( project );
+    QString serverUrl = QString( "http://localhost:8000/ows/?MAP=%1" );
+    uri.setEncodedUri( dataUri.arg( serverUrl.arg( projectEnc ) ) );
+    QCOMPARE( uri.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+    QCOMPARE( uri.username(), QStringLiteral( "username" ) );
+    QCOMPARE( uri.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri.password(), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
+    QCOMPARE( uri.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+    // not enough encoded at the beginning ==> bad encoding at the end
+    QCOMPARE( uri.param( QStringLiteral( "url" ) ), serverUrl.arg( project ) );
+
+    QgsDataSourceUri uri2;
+    // here the project url is encoded and the whole serverUrl is also encoded.
+    // The OGC server will receive a call with this url: http://localhost:8000/ows/?MAP=postgresql%3A%2F%2F%3Fservice%3Dqgis_test%26dbname%26schema%3Dproject%26project%3Dluxembourg&SERVICE=WMS&REQUEST=GetCapabilities
+    // and will be able to decode all parameters
+    QString serverUrlEnc = QUrl::toPercentEncoding( serverUrl.arg( projectEnc ) );
+    uri2.setEncodedUri( dataUri.arg( serverUrlEnc ) );
+    QCOMPARE( uri2.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+    QCOMPARE( uri2.username(), QStringLiteral( "username" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri2.password(), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "url" ) ), serverUrl.arg( projectEnc ) );
+  }
+
+  // same as above but with extra param at the end of the
+  {
+    QgsDataSourceUri uri;
+    // here the project url is encoded but the whole serverUrl is not encoded.
+    // The OGC server will receive a call with this url: https://titiler.xyz/cog/tiles/WebMercatorQuad/16/34060/23336@1x?url=https://data.geo.admin.ch/ch.swisstopo.swissalti3d/swissalti3d_2019_2573-1085/swissalti3d_2019_2573-1085_0.5_2056_5728.tif&bidx=1&rescale=1600%2C2100&colormap_name=gist_earth
+    // from the OGC server POV the 'rescale' and 'colormap_name' keys could be parsed as sub query parameters for 'https://data.geo.admin.ch/'
+    QString project = "https://data.geo.admin.ch/ch.swisstopo.swissalti3d/swissalti3d_2019_2573-1085/swissalti3d_2019_2573-1085_0.5_2056_5728.tif";
+    QString projectEnc = QUrl::toPercentEncoding( project );
+    QString extraParam = "&bidx=1&rescale=1600%2C2100&colormap_name=gist_earth";
+    QString serverUrl = QString( "https://titiler.xyz/cog/tiles/WebMercatorQuad/16/34060/23336@1x?url=%1" );
+
+    uri.setEncodedUri( dataUri.arg( serverUrl.arg( projectEnc ) + extraParam ) );
+    QCOMPARE( uri.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+    QCOMPARE( uri.username(), QStringLiteral( "username" ) );
+    QCOMPARE( uri.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri.password(), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
+    QCOMPARE( uri.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+    // not enough encoded at the beginning ==> bad encoding at the end
+    QCOMPARE( uri.param( QStringLiteral( "url" ) ), serverUrl.arg( project ) );
+
+    QgsDataSourceUri uri2;
+    // here the project url is encoded and the whole serverUrl is also encoded.
+    // The OGC server will receive a call with this url: https://titiler.xyz/cog/tiles/WebMercatorQuad/16/34060/23336@1x?url=https%3A%2F%2Fdata.geo.admin.ch%2Fch.swisstopo.swissalti3d%2Fswissalti3d_2019_2573-1085%2Fswissalti3d_2019_2573-1085_0.5_2056_5728.tif&bidx=1&rescale=1600%2C2100&colormap_name=gist_earth
+    // and will be able to decode all parameters
+    QString serverUrlEnc = QUrl::toPercentEncoding( serverUrl.arg( projectEnc ) + extraParam );
+    uri2.setEncodedUri( dataUri.arg( serverUrlEnc ) );
+    QCOMPARE( uri2.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+    QCOMPARE( uri2.username(), QStringLiteral( "username" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri2.password(), QStringLiteral( "qgisèé" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+    QCOMPARE( uri2.param( QStringLiteral( "url" ) ), serverUrl.arg( projectEnc ) + extraParam );
+  }
 }
 
 

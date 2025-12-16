@@ -13,23 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewsfeedparser.h"
-#include "moc_qgsnewsfeedparser.cpp"
+
 #include "qgis.h"
-#include "qgsnetworkcontentfetchertask.h"
-#include "qgsnetworkcontentfetcher.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
+#include "qgsapplication.h"
 #include "qgsjsonutils.h"
 #include "qgsmessagelog.h"
-#include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetcher.h"
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QDateTime>
-#include <QUrlQuery>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QRegularExpression>
+#include <QUrlQuery>
 
+#include "moc_qgsnewsfeedparser.cpp"
 
 const QgsSettingsEntryInteger64 *QgsNewsFeedParser::settingsFeedLastFetchTime = new QgsSettingsEntryInteger64( QStringLiteral( "last-fetch-time" ), sTreeNewsFeed, 0, QStringLiteral( "Feed last fetch time" ), Qgis::SettingsOptions(), 0 );
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedLanguage = new QgsSettingsEntryString( QStringLiteral( "lang" ), sTreeNewsFeed, QString(), QStringLiteral( "Feed language" ) );
@@ -122,7 +123,14 @@ void QgsNewsFeedParser::dismissEntry( int key )
   if ( beforeSize == mEntries.size() )
     return; // didn't find matching entry
 
-  sTreeNewsFeedEntries->deleteItem( QString::number( key ), {mFeedKey} );
+  try
+  {
+    sTreeNewsFeedEntries->deleteItem( QString::number( key ), {mFeedKey} );
+  }
+  catch ( QgsSettingsException &e )
+  {
+    QgsDebugError( QStringLiteral( "Could not dismiss news feed entry: %1" ).arg( e.what( ) ) );
+  }
 
   // also remove preview image, if it exists
   if ( !dismissed.imageUrl.isEmpty() )

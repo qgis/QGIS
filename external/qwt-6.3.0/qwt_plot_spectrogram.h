@@ -53,7 +53,7 @@ class QWT_EXPORT QwtPlotSpectrogram : public QwtPlotRasterItem
     Q_DECLARE_FLAGS( DisplayModes, DisplayMode )
 
     explicit QwtPlotSpectrogram( const QString& title = QString() );
-    virtual ~QwtPlotSpectrogram();
+    ~QwtPlotSpectrogram() override;
 
     void setDisplayMode( DisplayMode, bool on = true );
     bool testDisplayMode( DisplayMode ) const;

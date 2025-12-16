@@ -18,12 +18,12 @@
 
 #define SIP_NO_FILE
 
-#include <QStringList>
-
-#include "qgshttpheaders.h"
 #include "qgis_core.h"
-#include "qgssettingstree.h"
 #include "qgsabstractproviderconnection.h"
+#include "qgshttpheaders.h"
+#include "qgssettingstree.h"
+
+#include <QStringList>
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;

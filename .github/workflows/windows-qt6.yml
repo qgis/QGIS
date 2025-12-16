@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
@@ -33,7 +33,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@628dd514bed37cb0a609e84a6186cbbaa2fc0140
+        uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1
         with:
           cmakeVersion: 3.31.6
 
@@ -83,6 +83,8 @@ jobs:
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
+                -D WITH_GEOGRAPHICLIB=OFF \
+                -D WITH_SFCGAL=ON \
                 -D ENABLE_TESTS=OFF \
                 -D USE_CCACHE=ON \
                 -D ENABLE_UNITY_BUILDS=ON \

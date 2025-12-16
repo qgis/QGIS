@@ -7,6 +7,9 @@
  ************************************************************************/
 
 
+
+
+
 class QgsQueryBuilder : QgsSubsetStringEditorInterface
 {
 %Docstring(signature="appended")

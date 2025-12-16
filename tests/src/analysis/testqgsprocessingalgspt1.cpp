@@ -14,47 +14,49 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "limits"
+#include <limits>
 
-#include "qgstest.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingutils.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsprocessingcontext.h"
-#include "qgsnativealgorithms.h"
+#include "annotations/qgsannotationmanager.h"
+#include "annotations/qgstextannotation.h"
 #include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithmkmeansclustering.h"
-#include "qgsvectorlayer.h"
-#include "qgscategorizedsymbolrenderer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsmultipolygon.h"
-#include "qgsrasteranalysisutils.h"
-#include "qgsrasteranalysisutils.cpp"
-#include "qgsrasterfilewriter.h"
 #include "qgsalgorithmrasterlogicalop.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutitemmap.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsrulebasedrenderer.h"
-#include "qgspallabeling.h"
-#include "qgsrastershader.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgslayoutitemscalebar.h"
-#include "annotations/qgstextannotation.h"
-#include "qgsfontutils.h"
-#include "annotations/qgsannotationmanager.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsstyle.h"
 #include "qgsbookmarkmanager.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsrelationmanager.h"
-#include "qgsmeshlayer.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgscolorrampimpl.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
+#include "qgsgdalutils.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutmanager.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmeshlayer.h"
+#include "qgsmultipolygon.h"
+#include "qgsnativealgorithms.h"
+#include "qgspallabeling.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingutils.h"
+#include "qgsrasteranalysisutils.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrastershader.h"
+#include "qgsrelationmanager.h"
+#include "qgsrulebasedrenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsstyle.h"
+#include "qgstest.h"
 #include "qgstextformat.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include <qgsrasteranalysisutils.cpp>
 
 class TestQgsProcessingAlgsPt1 : public QgsTest
 {
@@ -113,6 +115,11 @@ class TestQgsProcessingAlgsPt1 : public QgsTest
 
     void fillNoData_data();
     void fillNoData();
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+    void rasterCOGOutput();
+#endif
+
     void lineDensity_data();
     void lineDensity();
 
@@ -1263,7 +1270,7 @@ void TestQgsProcessingAlgsPt1::createDirectory()
   if ( QFile::exists( outputPath ) )
     QFile::remove( outputPath );
   QFile file( outputPath );
-  file.open( QIODevice::ReadWrite );
+  QVERIFY( file.open( QIODevice::ReadWrite ) );
   file.close();
 
   QVariantMap parameters;
@@ -2240,6 +2247,55 @@ void TestQgsProcessingAlgsPt1::fillNoData()
   }
 }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+void TestQgsProcessingAlgsPt1::rasterCOGOutput()
+{
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fillnodata" ) ) );
+
+  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  auto inputRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + QStringLiteral( "/raster/band1_int16_noct_epsg4326.tif" ), QStringLiteral( "inputDataset" ), QStringLiteral( "gdal" ) );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( inputRasterLayer->crs(), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), QString( myDataPath + QStringLiteral( "/raster/band1_int16_noct_epsg4326.tif" ) ) );
+  parameters.insert( QStringLiteral( "BAND" ), 1 );
+  parameters.insert( QStringLiteral( "FILL_VALUE" ), 1 );
+
+  QgsProcessingOutputLayerDefinition outputLayerDef( QgsProcessing::TEMPORARY_OUTPUT );
+  outputLayerDef.setFormat( QStringLiteral( "COG" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputLayerDef );
+
+  //run alg...
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const QString outputFilename = results.value( QStringLiteral( "OUTPUT" ) ).toString();
+
+  gdal::dataset_unique_ptr dataset( GDALOpen( outputFilename.toStdString().c_str(), GA_ReadOnly ) );
+  QVERIFY( dataset );
+
+  const char *pszLayout = GDALGetMetadataItem( dataset.get(), "LAYOUT", "IMAGE_STRUCTURE" );
+  QVERIFY( pszLayout );
+
+  QCOMPARE( QString( pszLayout ), QStringLiteral( "COG" ) );
+}
+#endif
+
 void TestQgsProcessingAlgsPt1::lineDensity_data()
 {
   QTest::addColumn<QString>( "inputDataset" );
@@ -2508,7 +2564,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
   {
     // generate unique filename (need to open the file first to generate it)
     QTemporaryFile tmpFile;
-    tmpFile.open();
+    QVERIFY( tmpFile.open() );
     tmpFile.close();
 
     // create a GeoTIFF - this will create data provider in editable mode
@@ -2547,7 +2603,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
 
   // make destination OR raster
   QTemporaryFile tmpFile2;
-  tmpFile2.open();
+  QVERIFY( tmpFile2.open() );
   tmpFile2.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
@@ -2557,7 +2613,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
 
   // make destination AND raster
   QTemporaryFile tmpFile3;
-  tmpFile3.open();
+  QVERIFY( tmpFile3.open() );
   tmpFile3.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
@@ -4436,7 +4492,7 @@ void TestQgsProcessingAlgsPt1::styleFromProject()
 
   // using a project path
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.close();
   QVERIFY( p.write( tmpFile.fileName() ) );
   p.clear();
@@ -4478,11 +4534,11 @@ void TestQgsProcessingAlgsPt1::combineStyles()
   s2.addTextFormat( QStringLiteral( "format2" ), QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ), true );
 
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.close();
   QVERIFY( s1.exportXml( tmpFile.fileName() ) );
   QTemporaryFile tmpFile2;
-  tmpFile2.open();
+  QVERIFY( tmpFile2.open() );
   tmpFile2.close();
   QVERIFY( s2.exportXml( tmpFile2.fileName() ) );
 

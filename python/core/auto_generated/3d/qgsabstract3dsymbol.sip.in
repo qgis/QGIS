@@ -12,7 +12,6 @@
 
 
 
-
 class QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")

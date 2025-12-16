@@ -21,8 +21,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgis_gui.h"
+#include "qgsprocessingalgorithmconfigurationwidget.h"
 
 class QTableWidget;
 

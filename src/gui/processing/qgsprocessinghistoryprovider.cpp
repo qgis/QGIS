@@ -15,27 +15,30 @@
  ***************************************************************************/
 
 #include "qgsprocessinghistoryprovider.h"
-#include "moc_qgsprocessinghistoryprovider.cpp"
-#include "qgsapplication.h"
-#include "qgsgui.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgshistoryentry.h"
-#include "qgshistoryentrynode.h"
-#include "qgsprocessingregistry.h"
-#include "qgscodeeditorpython.h"
-#include "qgscodeeditorshell.h"
-#include "qgscodeeditorjson.h"
-#include "qgsjsonutils.h"
 
 #include <nlohmann/json.hpp>
-#include <QFile>
-#include <QTextStream>
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
+
+#include "qgsapplication.h"
+#include "qgscodeeditorjson.h"
+#include "qgscodeeditorpython.h"
+#include "qgscodeeditorshell.h"
+#include "qgsgui.h"
+#include "qgshistoryentry.h"
+#include "qgshistoryentrynode.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgsjsonutils.h"
+#include "qgsprocessingregistry.h"
+
 #include <QAction>
+#include <QClipboard>
+#include <QFile>
 #include <QMenu>
 #include <QMimeData>
-#include <QClipboard>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QTextStream>
+
+#include "moc_qgsprocessinghistoryprovider.cpp"
 
 QgsProcessingHistoryProvider::QgsProcessingHistoryProvider()
 {

@@ -16,12 +16,12 @@
 #ifndef QGSMAPLAYERPROXYMODEL_H
 #define QGSMAPLAYERPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
-#include <QStringList>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
+#include <QSortFilterProxyModel>
+#include <QStringList>
 
 class QgsMapLayerModel;
 class QgsMapLayer;

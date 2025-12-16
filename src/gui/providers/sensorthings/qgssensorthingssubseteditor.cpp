@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgssensorthingssubseteditor.h"
-#include "moc_qgssensorthingssubseteditor.cpp"
-#include "qgsvectorlayer.h"
+
 #include "qgscodeeditor.h"
-#include "qgsfieldproxymodel.h"
 #include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsvectorlayer.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QStandardItemModel>
 #include <QPushButton>
+#include <QStandardItemModel>
+
+#include "moc_qgssensorthingssubseteditor.cpp"
 
 ///@cond PRIVATE
 

@@ -15,10 +15,10 @@
 #ifndef QGSVECTORLAYERFEATURECOUNTER_H
 #define QGSVECTORLAYERFEATURECOUNTER_H
 
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsfeatureid.h"
 #include "qgsrenderer.h"
 #include "qgstaskmanager.h"
-#include "qgsfeatureid.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup core

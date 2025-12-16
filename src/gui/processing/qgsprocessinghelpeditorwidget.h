@@ -16,9 +16,10 @@
 #ifndef QGSPROCESSINGHELPEDITORWIDGET_H
 #define QGSPROCESSINGHELPEDITORWIDGET_H
 
+#include "ui_qgsprocessinghelpeditorwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessinghelpeditorwidgetbase.h"
 
 #include <QDialog>
 

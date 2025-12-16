@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsguiutils.h"
-#include "qgsrasterrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
-#include "moc_qgsrasterhistogramwidget.cpp"
-#include "qgsrasterminmaxwidget.h"
-#include "qgsdoublevalidator.h"
-#include "qgssettings.h"
-#include "qgsrasterlayer.h"
 
-#include <QMenu>
-#include <QFileInfo>
-#include <QDir>
-#include <QPainter>
+#include "qgsapplication.h"
+#include "qgsdoublevalidator.h"
+#include "qgsguiutils.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterminmaxwidget.h"
+#include "qgsrasterrendererwidget.h"
+#include "qgssettings.h"
+
 #include <QActionGroup>
+#include <QDir>
+#include <QFileInfo>
+#include <QMenu>
+#include <QPainter>
 #include <QRandomGenerator>
+
+#include "moc_qgsrasterhistogramwidget.cpp"
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -106,11 +108,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     // histo min/max selectors
     leHistoMin->setValidator( new QgsDoubleValidator( this ) );
     leHistoMax->setValidator( new QgsDoubleValidator( this ) );
-    // this might generate many refresh events! test..
-    // connect( leHistoMin, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateHistoMarkers() ) );
-    // connect( leHistoMax, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateHistoMarkers() ) );
-    // connect( leHistoMin, SIGNAL( textChanged( const QString & ) ), this, SLOT( applyHistoMin() ) );
-    // connect( leHistoMax, SIGNAL( textChanged( const QString & ) ), this, SLOT( applyHistoMax() ) );
+
     connect( leHistoMin, &QLineEdit::editingFinished, this, &QgsRasterHistogramWidget::applyHistoMin );
     connect( leHistoMax, &QLineEdit::editingFinished, this, &QgsRasterHistogramWidget::applyHistoMax );
 

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsGridFileWriter
 {
 %Docstring(signature="appended")
@@ -22,7 +23,7 @@ file.
 #include "qgsgridfilewriter.h"
 %End
   public:
-    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
+    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, const QString &outputFormat = QString() );
 %Docstring
 Constructor for QgsGridFileWriter, for the specified ``interpolator``.
 
@@ -30,6 +31,9 @@ The ``outputPath`` argument is used to set the output file path.
 
 The ``extent`` and ``nCols``, ``nRows`` arguments dictate the extent and
 size of the output raster.
+
+The ``outputFormat`` (available since QGIS 4.0), if not explicitly set,
+is inferred from the ``outputPath`` extension.
 %End
 
     int writeFile( QgsFeedback *feedback = 0 );

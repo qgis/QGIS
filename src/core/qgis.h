@@ -19,14 +19,15 @@
 #define QGIS_H
 
 
-#include <QMetaEnum>
-#include <QTimeZone>
 #include <cfloat>
-#include <memory>
 #include <cmath>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QMetaEnum>
+#include <QTimeZone>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -2981,6 +2982,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextCharacterVerticalAlignment )
 
     /**
+     * Flags controlling behavior of curved text generation.
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsTextRendererUtils::CurvedTextFlag
+     */
+    enum class CurvedTextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRendererUtils, CurvedTextFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      TruncateStringWhenLineIsTooShort = 1 << 0, //!< When a string is too long for the line, truncate characters instead of aborting the placement
+      UseBaselinePlacement = 1 << 1, //!< Generate placement based on the character baselines instead of centers
+      UprightCharactersOnly = 1 << 2, //!< Permit upright characters only. If not present then upside down text placement is permitted.
+      ExtendLineToFitText = 1 << 3, //!< When a string is too long for the line, extend the line's final segment to fit the entire string. \since QGIS 4.0
+    };
+    Q_ENUM( CurvedTextFlag )
+
+    /**
+     * Flags controlling behavior of curved text generation.
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsTextRendererUtils::CurvedTextFlags
+     */
+    Q_DECLARE_FLAGS( CurvedTextFlags, CurvedTextFlag )SIP_MONKEYPATCH_FLAGS_UNNEST( QgsTextRendererUtils, CurvedTextFlags )
+
+    /**
      * Simplification algorithms for vector features.
      *
      * \note Prior to QGIS 3.38 this was available as QgsVectorSimplifyMethod::SimplifyAlgorithm
@@ -5369,6 +5391,8 @@ class CORE_EXPORT Qgis
       SetFieldComment = 1 << 0, //!< Can set comments for fields via setFieldComment()
       SetFieldAlias = 1 << 1, //!< Can set aliases for fields via setFieldAlias()
       SetTableComment = 1 << 2, //!< Can set comments for tables via setTableComment() \since QGIS 3.44
+      EditFieldDomain = 1 << 3,   //!< Can edit existing field domain \since QGIS 4.0
+      DeleteFieldDomain = 1 << 4, //!< Can delete existing field domain \since QGIS 4.0
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )
@@ -6124,6 +6148,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( DevToolsNodeRole )
 
     /**
+     * Extrusion face types for the QgsTessellator.
+     *
+     * \since QGIS 4.0
+     */
+    enum class ExtrusionFace : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoFace = 0,
+      Walls = 1 << 0,
+      Roof = 1 << 1,
+      Floor = 1 << 2
+    };
+    Q_ENUM( ExtrusionFace )
+
+    /**
+    * Tessellator extrusion face types.
+    * \since QGIS 4.0
+    */
+    Q_DECLARE_FLAGS( ExtrusionFaces, ExtrusionFace )
+    Q_FLAG( ExtrusionFaces )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -6247,6 +6292,36 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     static QString geosVersion();
+
+    /**
+     * Returns TRUE if the QGIS build contains SFCGAL.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasSfcgal();
+
+    /**
+     * Returns the version of the SFCGAL library if QGIS is built with SFCGAL. Else throws an exception.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based without SFCGAL.
+     * \since QGIS 4.0
+     */
+    static int sfcgalVersionInt();
+
+    /**
+     * Returns TRUE if the QGIS build contains GeographicLib.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasGeographicLib();
+
+    /**
+     * Returns the version of the GeographicLib library if QGIS is built with GeographicLib support.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based without GeographicLib.
+     * \since QGIS 4.0
+     */
+    static int geographicLibVersion();
 
     /**
      * Returns TRUE if the QGIS build contains QtWebkit.
@@ -6387,6 +6462,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
@@ -7123,45 +7200,6 @@ typedef unsigned long long qgssize;
 #  endif
 #endif
 #endif
-#endif
-
-// see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute
-#if __cplusplus >= 201703L
-#define NODISCARD [[nodiscard]]
-#elif defined(__clang__)
-#define NODISCARD [[nodiscard]]
-#elif defined(_MSC_VER)
-#define NODISCARD // no support
-#elif defined(__has_cpp_attribute)
-#if __has_cpp_attribute(nodiscard)
-#define NODISCARD [[nodiscard]]
-#elif __has_cpp_attribute(gnu::warn_unused_result)
-#define NODISCARD [[gnu::warn_unused_result]]
-#else
-#define NODISCARD Q_REQUIRED_RESULT
-#endif
-#else
-#define NODISCARD Q_REQUIRED_RESULT
-#endif
-
-#if __cplusplus >= 201703L
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(__clang__)
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(_MSC_VER)
-#define MAYBE_UNUSED // no support
-#elif defined(__has_cpp_attribute)
-#if __has_cpp_attribute(gnu::unused)
-#define MAYBE_UNUSED [[gnu::unused]]
-#else
-#define MAYBE_UNUSED
-#endif
-#else
-#define MAYBE_UNUSED
-#endif
-
-#ifndef FINAL
-#define FINAL final
 #endif
 
 #ifndef SIP_RUN

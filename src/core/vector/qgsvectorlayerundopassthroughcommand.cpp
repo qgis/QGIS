@@ -15,14 +15,13 @@
 
 #include "qgsvectorlayerundopassthroughcommand.h"
 
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayereditbuffer.h"
-
 #include "qgslogger.h"
 #include "qgstransaction.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 
 #include <QUuid>
 
@@ -202,7 +201,6 @@ QgsVectorLayerUndoPassthroughCommandChangeGeometry::QgsVectorLayerUndoPassthroug
   , mFid( fid )
   , mNewGeom( geom )
   , mOldGeom( mBuffer->L->getFeature( mFid ).geometry() )
-  , mFirstChange( true )
 {
   if ( mBuffer->mAddedFeatures.contains( mFid ) )
   {
@@ -284,7 +282,6 @@ QgsVectorLayerUndoPassthroughCommandChangeAttribute::QgsVectorLayerUndoPassthrou
   , mFieldIndex( field )
   , mNewValue( newValue )
   , mOldValue( mBuffer->L->getFeature( mFid ).attribute( field ) )
-  , mFirstChange( true )
 {
 
   if ( mBuffer->mAddedFeatures.contains( mFid ) )

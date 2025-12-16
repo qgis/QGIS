@@ -24,14 +24,13 @@ class QgsMessageBar;
 class QgsExternalStorageFileWidget;
 class QgsExternalStorageFetchedContent;
 
-#include <QWidget>
-#include <QVariant>
-#include <QPointer>
-
-#include "qgsfilewidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsfilewidget.h"
 
+#include <QPointer>
+#include <QVariant>
+#include <QWidget>
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode

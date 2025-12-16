@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgscolorramplegendnodewidget.h"
-#include "moc_qgscolorramplegendnodewidget.cpp"
+
 #include "qgshelp.h"
-#include "qgsnumericformatselectorwidget.h"
 #include "qgsnumericformat.h"
+#include "qgsnumericformatselectorwidget.h"
+
 #include <QDialogButtonBox>
+
+#include "moc_qgscolorramplegendnodewidget.cpp"
 
 QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent, Capabilities capabilities )
   : QgsPanelWidget( parent )

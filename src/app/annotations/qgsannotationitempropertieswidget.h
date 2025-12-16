@@ -16,9 +16,11 @@
 #ifndef QGSANNOTATIONITEMPROPERTIESWIDGET_H
 #define QGSANNOTATIONITEMPROPERTIESWIDGET_H
 
+#include "ui_qgsannotationitempropertieswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "ui_qgsannotationitempropertieswidgetbase.h"
+
 #include <QPointer>
 
 class QgsAnnotationLayer;

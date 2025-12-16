@@ -1,4 +1,5 @@
 #include "moc_qgsfield.cpp"
+
 /***************************************************************************
        qgsfield.cpp - Describes a field in a layer or table
         --------------------------------------
@@ -479,7 +480,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   if ( QgsVariantUtils::isNull( v ) )
   {
-    v.convert( d->type );
+    ( void )v.convert( d->type );
     return true;
   }
 

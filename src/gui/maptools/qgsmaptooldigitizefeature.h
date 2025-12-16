@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLDIGITIZEFEATURE_H
 #define QGSMAPTOOLDIGITIZEFEATURE_H
 
-#include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_gui.h"
+#include "qgsmaptoolcapturelayergeometry.h"
 
 class QgsFeature;
 
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
      * Called when the feature has been digitized.
      * \param geometry the digitized geometry
      */
-    void layerGeometryCaptured( const QgsGeometry &geometry ) FINAL;
+    void layerGeometryCaptured( const QgsGeometry &geometry ) final;
 
     /**
      * Called when the feature has been digitized
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
     */
-    bool mCheckGeometryType;
+    bool mCheckGeometryType = true;
 
     friend class TestQgsRelationReferenceWidget;
 };

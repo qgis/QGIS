@@ -14,11 +14,13 @@
 ***************************************************************************/
 
 #include "qgsmaplayerproxymodel.h"
-#include "moc_qgsmaplayerproxymodel.cpp"
-#include "qgsmaplayermodel.h"
+
 #include "qgsmaplayer.h"
+#include "qgsmaplayermodel.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsmaplayerproxymodel.cpp"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

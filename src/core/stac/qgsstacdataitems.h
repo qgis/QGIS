@@ -17,8 +17,8 @@
 #define QGSSTACDATAITEMS_H
 
 #include "qgis_core.h"
-#include "qgsdataitemprovider.h"
 #include "qgsconnectionsitem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
     bool equal( const QgsDataItem *other ) override;
     QVariant sortKey() const override { return QStringLiteral( "4 %1" ).arg( mName ); }
     void updateToolTip();
-    const QgsStacAsset *stacAsset() { return mStacAsset; }
+    const QgsStacAsset *stacAsset() const { return mStacAsset; }
 
   private:
     const QgsStacAsset *mStacAsset;

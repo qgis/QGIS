@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
-#include "qgslogger.h"
 #include "qgsrelief.h"
-#include "qgsaspectfilter.h"
-#include "qgshillshadefilter.h"
-#include "qgsslopefilter.h"
-#include "qgsfeedback.h"
-#include "qgis.h"
-#include "cpl_string.h"
-#include "qgsogrutils.h"
-#include <cfloat>
 
-#include <QVector>
+#include <cfloat>
+#include <cpl_string.h>
+
+#include "qgis.h"
+#include "qgsaspectfilter.h"
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgshillshadefilter.h"
+#include "qgslogger.h"
+#include "qgsogrutils.h"
+#include "qgsslopefilter.h"
+
 #include <QColor>
 #include <QFile>
 #include <QTextStream>
+#include <QVector>
 
 QgsRelief::QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )
@@ -87,9 +89,10 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
   }
 
   gdal::dataset_unique_ptr outputDataset = openOutputFile( inputDataset.get(), outputDriver );
+  constexpr int RET_OUTPUT_CREATION_FAILED = 3;
   if ( !outputDataset )
   {
-    return 3; //create operation on output file failed
+    return RET_OUTPUT_CREATION_FAILED; //create operation on output file failed
   }
 
   //initialize dependency filters with cell sizes
@@ -157,12 +160,19 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
 
   bool resultOk;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
+
   //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * i / static_cast<double>( ySize ) );
+      feedback->setProgress( maxProgressDuringBlockWriting * i / static_cast<double>( ySize ) );
     }
 
     if ( feedback && feedback->isCanceled() )
@@ -255,12 +265,26 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
   CPLFree( scanLine2 );
   CPLFree( scanLine3 );
 
+  constexpr int RET_CANCELED = 7;
   if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return 7;
+    return RET_CANCELED;
   }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  else if ( closeReportsProgress && feedback )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      return feedback->isCanceled() ? RET_CANCELED : RET_OUTPUT_CREATION_FAILED;
+    }
+  }
+#endif
 
   return 0;
 }

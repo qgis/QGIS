@@ -15,8 +15,10 @@
  ***************************************************************************/
 
 #include "qgsprocessingfeaturesourceoptionswidget.h"
-#include "moc_qgsprocessingfeaturesourceoptionswidget.cpp"
+
 #include "qgis.h"
+
+#include "moc_qgsprocessingfeaturesourceoptionswidget.cpp"
 
 ///@cond NOT_STABLE
 

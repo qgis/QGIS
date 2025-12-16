@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColor>
-
 #include "qgshillshaderenderer.h"
-#include "qgsrastertransparency.h"
-#include "qgsrasterinterface.h"
-#include "qgsrasterblock.h"
-#include "qgsrectangle.h"
-#include "qgsmessagelog.h"
-#include "qgssldexportcontext.h"
+
 #include <memory>
+
+#include "qgsmessagelog.h"
+#include "qgsrasterblock.h"
+#include "qgsrasterinterface.h"
+#include "qgsrastertransparency.h"
+#include "qgsrectangle.h"
+#include "qgssldexportcontext.h"
+
+#include <QColor>
 
 #ifdef HAVE_OPENCL
 #ifdef QGISDEBUG
@@ -526,7 +528,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         }
         if ( mAlphaBand > 0 )
         {
-          currentAlpha *= alphaBlock->value( row ) / 255.0;
+          currentAlpha *= alphaBlock->value( static_cast<qgssize>( row ) * width + col ) / 255.0;
         }
 
         if ( qgsDoubleNear( currentAlpha, 1.0 ) )

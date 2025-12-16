@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgstabpositionwidget.h"
-#include "moc_qgstabpositionwidget.cpp"
+
 #include "qgsapplication.h"
 #include "qgsdoublevalidator.h"
 #include "qgsunittypes.h"
 
 #include <QDialogButtonBox>
+
+#include "moc_qgstabpositionwidget.cpp"
 
 QgsTabPositionWidget::QgsTabPositionWidget( QWidget *parent )
   : QgsPanelWidget( parent )

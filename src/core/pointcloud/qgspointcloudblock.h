@@ -20,12 +20,12 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgspointcloudattribute.h"
+
+#include <QByteArray>
 #include <QPair>
 #include <QString>
 #include <QVector>
-#include <QByteArray>
-
-#include "qgspointcloudattribute.h"
 
 /**
  * \ingroup core

@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsshapegenerator.h"
+
+#include <algorithm>
+
 #include "qgsgeometryutils.h"
+
 #include <QLineF>
 #include <QList>
 #include <QPainterPath>
-#include <algorithm>
 
 QLineF segment( int index, QRectF rect, double radius )
 {

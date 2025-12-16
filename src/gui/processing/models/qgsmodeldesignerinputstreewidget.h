@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+
 #include <QTreeWidget>
 
 class QMimeData;

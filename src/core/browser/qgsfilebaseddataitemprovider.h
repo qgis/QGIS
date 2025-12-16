@@ -18,11 +18,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsdataitemprovider.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdatacollectionitem.h"
+#include "qgsdataitemprovider.h"
 #include "qgslayeritem.h"
 #include "qgsprovidersublayerdetails.h"
-#include "qgsabstractdatabaseproviderconnection.h"
+
 #include <QString>
 #include <QVector>
 

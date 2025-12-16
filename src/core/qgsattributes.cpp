@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include "qgsattributes.h"
-#include "qgis.h"
 
+#include "qgis.h"
 
 QgsAttributeMap QgsAttributes::toMap() const
 {

@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsalignmentcombobox.h"
-#include "moc_qgsalignmentcombobox.cpp"
 
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
+
+#include "moc_qgsalignmentcombobox.cpp"
 
 QgsAlignmentComboBox::QgsAlignmentComboBox( QWidget *parent )
   : QComboBox( parent )

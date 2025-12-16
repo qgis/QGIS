@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsxyzsourcewidget.h"
-#include "moc_qgsxyzsourcewidget.cpp"
-#include "qgswmssourceselect.h"
+
 #include "qgsproviderregistry.h"
+#include "qgswmssourceselect.h"
+
+#include "moc_qgsxyzsourcewidget.cpp"
 
 QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   : QgsProviderSourceWidget( parent )

@@ -15,21 +15,22 @@
  ***************************************************************************/
 
 #include "qgslayoutgeopdfexporter.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsfeaturerequest.h"
-#include "qgslayout.h"
-#include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgslayertree.h"
-#include "qgslayoutrendercontext.h"
 
 #include <gdal.h>
-#include "qgslayoutpagecollection.h"
 
-#include <QMutex>
-#include <QMutexLocker>
+#include "qgsfeaturerequest.h"
+#include "qgsgeometry.h"
+#include "qgslayertree.h"
+#include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsvectorlayer.h"
+
 #include <QDomDocument>
 #include <QDomElement>
+#include <QMutex>
+#include <QMutexLocker>
 
 ///@cond PRIVATE
 class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface

@@ -18,16 +18,15 @@
 #ifndef QGSCIRCLE_H
 #define QGSCIRCLE_H
 
-#include <QString>
-
 #include <cmath>
 
 #include "qgis_core.h"
+#include "qgscircularstring.h"
 #include "qgsellipse.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
-#include "qgscircularstring.h"
 
+#include <QString>
 
 class QgsPoint;
 

@@ -15,14 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include "qgslayoutmeasurement.h"
+#include "qgslayoutmeasurementconverter.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutsize.h"
-#include "qgslayoutmeasurementconverter.h"
-#include "qgis.h"
+#include "qgstest.h"
+#include "qgsunittypes.h"
 
 class TestQgsLayoutUnits : public QgsTest
 {

@@ -516,6 +516,7 @@ class GUI_EXPORT QgsAttributesFormItem : public QObject
     static bool isGroup( QgsAttributesFormItem *item );
 
   signals:
+
     /**
      * Notifies other objects when children have been added to the \a item, informing the indices where added children are located.
      *
@@ -627,12 +628,14 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     QgsAttributesFormItem *rootItem() const;
 
   public slots:
+
     /**
      * Populates the model with initial data read from the layer.
      */
     virtual void populate() = 0;
 
   signals:
+
     /**
      *  Notifies other objects that the field config data has changed in the \a item.
      *

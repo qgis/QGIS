@@ -16,22 +16,23 @@
 #ifndef QGSRENDERER_H
 #define QGSRENDERER_H
 
+#include "qgsconfig.h"
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsrectangle.h"
-#include "qgsfields.h"
 #include "qgsfeaturerequest.h"
-#include "qgsconfig.h"
+#include "qgsfields.h"
 #include "qgspropertycollection.h"
+#include "qgsrectangle.h"
 
-#include <QList>
-#include <QString>
-#include <QVariant>
-#include <QPair>
-#include <QPixmap>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QList>
+#include <QPair>
+#include <QPixmap>
+#include <QString>
+#include <QVariant>
 
 class QgsFeature;
 class QgsVectorLayer;

@@ -16,6 +16,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerblob.h"
+
 #include <cstring>
 #include <limits>
 

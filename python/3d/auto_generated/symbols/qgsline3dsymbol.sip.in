@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring(signature="appended")

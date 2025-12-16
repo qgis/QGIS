@@ -12,13 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
+
 #include <QFile>
-#include <QTextStream>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <qgsapplication.h>
+#include <QTextStream>
+
 //header for class being tested
 #include <qgsclipper.h>
 #include <qgspoint.h>
@@ -226,7 +228,7 @@ void TestQgsClipper::clipGeometryWithNaNZValues()
   QCOMPARE( pointsX.size(), 9 );
 
   // 2d trim
-  QgsRectangle clipRect( 704430.30, 7060007.72, 704456.51, 7060029.03 );
+  QgsBox3D clipRect( 704430.30, 7060007.72, std::numeric_limits<double>::quiet_NaN(), 704456.51, 7060029.03, std::numeric_limits<double>::quiet_NaN() );
   QgsClipper::trimPolygon( pointsX, pointsY, pointsZ, clipRect );
   // one vertex should be clipped
   QCOMPARE( pointsX.size(), 8 );

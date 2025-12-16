@@ -21,8 +21,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgswkbtypes.h"
 #include "qgshttpheaders.h"
+#include "qgswkbtypes.h"
 
 #include <QMap>
 #include <QSet>

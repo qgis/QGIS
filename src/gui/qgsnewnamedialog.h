@@ -20,8 +20,9 @@
 class QLabel;
 class QLineEdit;
 
-#include "qgsdialog.h"
 #include "qgis_gui.h"
+#include "qgsdialog.h"
+
 #include <QRegularExpression>
 
 /**
@@ -171,7 +172,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     bool mAllowEmptyName = false;
     QString mConflictingNameWarning;
 
-    QString highlightText( const QString &text );
+    static QString highlightText( const QString &text );
     static QStringList fullNames( const QString &name, const QStringList &extensions );
     // get list of existing names
     static QStringList matching( const QStringList &newNames, const QStringList &existingNames, Qt::CaseSensitivity cs = Qt::CaseSensitive );

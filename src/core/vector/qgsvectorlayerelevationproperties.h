@@ -19,9 +19,9 @@
 #ifndef QGSVECTORLAYERELEVATIONPROPERTIES_H
 #define QGSVECTORLAYERELEVATIONPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsmaplayerelevationproperties.h"
 
 class QgsLineSymbol;

@@ -20,10 +20,10 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsattributeactionpropertiesdialogbase.h"
-#include "qgsexpressioncontextgenerator.h"
 
-#include "qgshelp.h"
 #include "qgis_gui.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 

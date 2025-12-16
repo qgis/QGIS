@@ -16,20 +16,22 @@
  ***************************************************************************/
 
 #include "qgsbasenetworkrequest.h"
-#include "moc_qgsbasenetworkrequest.cpp"
+
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgssettings.h"
+#include "qgstestutils.h"
 #include "qgsvariantutils.h"
 
 #include <QCache>
 #include <QEventLoop>
-#include <QNetworkCacheMetaData>
-#include <QCryptographicHash> // just for testing file:// fake_qgis_http_endpoint hack
 #include <QFuture>
+#include <QNetworkCacheMetaData>
 #include <QtConcurrent>
+
+#include "moc_qgsbasenetworkrequest.cpp"
 
 static QMutex gMemoryCacheMmutex;
 static QCache<QUrl, std::pair<QDateTime, QByteArray>> gCache( 10 * 1024 * 1024 );
@@ -109,6 +111,8 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   // Specific code for testing
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
+    mIsSimulatedMode = true;
+
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString;
 
@@ -158,35 +162,10 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     }
 #endif
 
-    // For REST API using URL subpaths, normalize the subpaths
-    const int afterEndpointStartPos = static_cast<int>( modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" ) );
-    QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
-    afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-    modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
-
     const auto posQuotationMark = modifiedUrlString.indexOf( '?' );
     if ( posQuotationMark > 0 )
     {
-      QString args = modifiedUrlString.mid( posQuotationMark );
-      if ( modifiedUrlString.size() > 256 )
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Args before MD5: %1" ).arg( args ), 4 );
-        args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
-      }
-      else
-      {
-        args.replace( '?', '_' );
-        args.replace( '&', '_' );
-        args.replace( '<', '_' );
-        args.replace( '>', '_' );
-        args.replace( '\'', '_' );
-        args.replace( '\"', '_' );
-        args.replace( ' ', '_' );
-        args.replace( ':', '_' );
-        args.replace( '/', '_' );
-        args.replace( '\n', '_' );
-      }
-      modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
+      modifiedUrlString = QgsTestUtils::sanitizeFakeHttpEndpoint( modifiedUrlString );
     }
     QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 4 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
@@ -375,6 +354,40 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
   return success;
 }
 
+void QgsBaseNetworkRequest::extractResponseHeadersForUnitTests()
+{
+  if ( mFakeResponseHasHeaders )
+  {
+    // Expect the file content to be formatted like:
+    // header1: value1\r\n
+    // headerN: valueN\r\n
+    // \r\n
+    // content
+    int from = 0;
+    while ( true )
+    {
+      const int pos = static_cast<int>( mResponse.indexOf( QByteArray( "\r\n" ), from ) );
+      if ( pos < 0 )
+      {
+        break;
+      }
+      QByteArray line = mResponse.mid( from, pos - from );
+      const int posColon = static_cast<int>( line.indexOf( QByteArray( ":" ) ) );
+      if ( posColon > 0 )
+      {
+        mResponseHeaders.append( QNetworkReply::RawHeaderPair( line.mid( 0, posColon ), line.mid( posColon + 1 ).trimmed() ) );
+      }
+      from = pos + 2;
+      if ( from + 2 < mResponse.size() && mResponse[from] == '\r' && mResponse[from] == '\n' )
+      {
+        from += 2;
+        break;
+      }
+    }
+    mResponse = mResponse.mid( from );
+  }
+}
+
 bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
 {
   abort(); // cancel previous
@@ -389,6 +402,7 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -401,36 +415,7 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
     }
     bool ret = sendGET( modifiedUrl, QString(), true, true, false, extraHeadersModified );
 
-    if ( mFakeResponseHasHeaders )
-    {
-      // Expect the file content to be formatted like:
-      // header1: value1\r\n
-      // headerN: valueN\r\n
-      // \r\n
-      // content
-      int from = 0;
-      while ( true )
-      {
-        int pos = mResponse.indexOf( QByteArray( "\r\n" ), from );
-        if ( pos < 0 )
-        {
-          break;
-        }
-        QByteArray line = mResponse.mid( from, pos - from );
-        int posColon = line.indexOf( QByteArray( ":" ) );
-        if ( posColon > 0 )
-        {
-          mResponseHeaders.append( QNetworkReply::RawHeaderPair( line.mid( 0, posColon ), line.mid( posColon + 1 ).trimmed() ) );
-        }
-        from = pos + 2;
-        if ( from + 2 < mResponse.size() && mResponse[from] == '\r' && mResponse[from] == '\n' )
-        {
-          from += 2;
-          break;
-        }
-      }
-      mResponse = mResponse.mid( from );
-    }
+    extractResponseHeadersForUnitTests();
     return ret;
   }
 
@@ -489,6 +474,8 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   QByteArray allowValue;
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -549,6 +536,8 @@ bool QgsBaseNetworkRequest::sendDELETE( const QUrl &url )
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -708,6 +697,9 @@ void QgsBaseNetworkRequest::replyFinished()
 
         mResponse = mReply->readAll();
 
+        if ( mIsSimulatedMode )
+          extractResponseHeadersForUnitTests();
+
         if ( mResponse.isEmpty() && !mGotNonEmptyResponse && !mEmptyResponseIsValid )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
@@ -742,7 +734,8 @@ void QgsBaseNetworkRequest::replyFinished()
 
   if ( mReply )
   {
-    mResponseHeaders = mReply->rawHeaderPairs();
+    if ( !mIsSimulatedMode )
+      mResponseHeaders = mReply->rawHeaderPairs();
 
     mReply->deleteLater();
     mReply = nullptr;

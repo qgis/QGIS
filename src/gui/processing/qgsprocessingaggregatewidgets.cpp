@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgsprocessingaggregatewidgets.h"
-#include "moc_qgsprocessingaggregatewidgets.cpp"
+
+#include <mutex>
+
 #include "qgsexpressioncontextutils.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsfieldmappingwidget.h"
@@ -24,10 +26,10 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
-#include <QToolButton>
 #include <QTableView>
-#include <mutex>
+#include <QToolButton>
 
+#include "moc_qgsprocessingaggregatewidgets.cpp"
 
 //
 // QgsAggregateMappingModel

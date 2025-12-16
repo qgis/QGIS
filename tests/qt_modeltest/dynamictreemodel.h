@@ -30,6 +30,7 @@
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QHash>
 #include <QtCore/QList>
+
 class DynamicTreeModel : public QAbstractItemModel
 {
     Q_OBJECT

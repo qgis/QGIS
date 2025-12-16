@@ -15,6 +15,7 @@
  *
  ***************************************************************************/
 #include "qgshanaprimarykeys.h"
+
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"

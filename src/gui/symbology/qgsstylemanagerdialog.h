@@ -16,16 +16,17 @@
 #ifndef QGSSTYLEV2MANAGERDIALOG_H
 #define QGSSTYLEV2MANAGERDIALOG_H
 
-#include <QDialog>
-#include <QStandardItem>
-#include <QAction>
-#include <QMenu>
-
 #include "ui_qgsstylemanagerdialogbase.h"
-#include "qgsstylemodel.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssettingstree.h"
+#include "qgsstylemodel.h"
+
+#include <QAction>
+#include <QDialog>
+#include <QMenu>
+#include <QStandardItem>
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;

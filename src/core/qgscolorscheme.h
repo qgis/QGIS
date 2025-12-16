@@ -18,13 +18,13 @@
 #ifndef QGSCOLORSCHEME_H
 #define QGSCOLORSCHEME_H
 
-#include <QString>
-#include <QColor>
-#include <QPair>
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QColor>
+#include <QObject>
+#include <QPair>
+#include <QString>
 
 /**
  * \ingroup core

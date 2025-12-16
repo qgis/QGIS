@@ -18,8 +18,9 @@
 #ifndef QGSUNSETATTRIBUTEVALUE_H
 #define QGSUNSETATTRIBUTEVALUE_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QString>
 #include <QVariant>
 

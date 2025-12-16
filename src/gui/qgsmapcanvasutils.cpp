@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmapcanvasutils.h"
+
+#include "qgsexpressioncontextutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayertemporalproperties.h"
 
 long QgsMapCanvasUtils::zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter )

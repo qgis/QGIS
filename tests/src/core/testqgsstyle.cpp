@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
-#include <QStringList>
+
 #include <QApplication>
 #include <QFileInfo>
+#include <QObject>
 #include <QSignalSpy>
+#include <QStringList>
 
 // clazy:excludeall=qcolor-from-literal
 

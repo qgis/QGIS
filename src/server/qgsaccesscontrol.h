@@ -18,11 +18,10 @@
 #ifndef QGSACCESSCONTROL_H
 #define QGSACCESSCONTROL_H
 
-#include "qgsfeaturefilterprovider.h"
-#include "qgsaccesscontrolfilter.h"
-
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsaccesscontrolfilter.h"
+#include "qgsfeaturefilterprovider.h"
 
 SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
@@ -73,6 +72,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 
     bool isFilterThreadSafe() const override { return false; }
 
+    using QgsFeatureFilterProvider::filterFeatures;
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
     QgsAccessControl *clone() const override SIP_FACTORY;

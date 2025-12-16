@@ -18,9 +18,11 @@
 #ifndef QGSPROVIDERSUBLAYERTASKTASK_H
 #define QGSPROVIDERSUBLAYERTASKTASK_H
 
-#include "qgstaskmanager.h"
-#include <QReadWriteLock>
 #include <memory>
+
+#include "qgstaskmanager.h"
+
+#include <QReadWriteLock>
 
 class QgsFeedback;
 class QgsProviderSublayerDetails;

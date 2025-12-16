@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolpan.h"
-#include "moc_qgslayoutviewtoolpan.cpp"
-#include "qgslayoutviewmouseevent.h"
+
 #include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
+
 #include <QScrollBar>
+
+#include "moc_qgslayoutviewtoolpan.cpp"
 
 QgsLayoutViewToolPan::QgsLayoutViewToolPan( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Pan" ) )

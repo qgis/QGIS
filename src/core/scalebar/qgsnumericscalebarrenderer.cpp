@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgsnumericscalebarrenderer.h"
-#include "qgsscalebarsettings.h"
+
 #include "qgslayoututils.h"
 #include "qgsnumericformat.h"
+#include "qgsscalebarsettings.h"
 #include "qgstextrenderer.h"
+
 #include <QList>
 #include <QPainter>
 

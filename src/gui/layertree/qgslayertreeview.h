@@ -16,9 +16,10 @@
 #ifndef QGSLAYERTREEVIEW_H
 #define QGSLAYERTREEVIEW_H
 
-#include <QTreeView>
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QTreeView>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -133,6 +134,8 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
     //! Constructor for QgsLayerTreeViewBase
     explicit QgsLayerTreeViewBase( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsLayerTreeViewBase() override;
+
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
     /**
      * Associates a layer tree model with the view.
@@ -396,8 +399,13 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      */
     void onModelReset();
 
+  private slots:
+
+    void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
+
   private:
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
+    QTimer *mBlockDoubleClickTimer = nullptr;
 };
 
 
@@ -585,7 +593,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
   protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 
-    void mouseDoubleClickEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
@@ -630,7 +637,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     bool mShowPrivateLayers = false;
     bool mHideValidLayers = false;
 
-    QTimer *mBlockDoubleClickTimer = nullptr;
     // For model  debugging
     // void checkModel( );
 
