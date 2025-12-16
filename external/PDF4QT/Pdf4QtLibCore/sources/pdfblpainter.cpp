@@ -35,6 +35,49 @@
   #include <blend2d.h>
 #endif
 
+#if defined(BL_VERSION) && (BL_VERSION < BL_MAKE_VERSION(0,20,0))
+  #define assign_data            assignData
+  #define assign_deep            assignDeep
+  #define assign_stops           assignStops
+  #define blit_image             blitImage
+  #define clear_all              clearAll
+  #define clip_to_rect           clipToRect
+  #define create_from_data       createFromData
+  #define create_from_face       createFromFace
+  #define cubic_to               cubicTo
+  #define dash_array             dashArray
+  #define dash_offset            dashOffset
+  #define fill_ellipse           fillEllipse
+  #define fill_rect_array        fillRectArray
+  #define fill_path              fillPath
+  #define line_to                lineTo
+  #define move_to                moveTo
+  #define reset_transform        resetTransform
+  #define restore_clipping       restoreClipping
+  #define set_comp_op            setCompOp
+  #define set_fill_rule          setFillRule
+  #define set_fill_style         setFillStyle
+  #define set_global_alpha       setGlobalAlpha
+  #define set_hint               setHint
+  #define set_stroke_alpha       setStrokeAlpha
+  #define set_stroke_caps        setStrokeCaps
+  #define set_stroke_dash_array  setStrokeDashArray
+  #define set_stroke_dash_offset setStrokeDashOffset
+  #define set_stroke_join        setStrokeJoin
+  #define set_stroke_miter_limit setStrokeMiterLimit
+  #define set_stroke_options     setStrokeOptions
+  #define set_stroke_style       setStrokeStyle
+  #define set_stroke_width       setStrokeWidth
+  #define set_transform          setTransform
+  #define stroke_line            strokeLine
+  #define stroke_options         strokeOptions
+  #define stroke_path            strokePath
+  #define stroke_rect_array      strokeRectArray
+  #define thread_count           threadCount
+  #define user_to_meta           userToMeta
+  #define user_transform         userTransform
+#endif
+
 namespace pdf
 {
 
