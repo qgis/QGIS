@@ -1038,22 +1038,22 @@ bool QgsPointCloudLayer::startEditing()
     {
       const QgsPointCloudSubIndex &subIndex = subIndexes.at( i );
 
-      QgsPointCloudIndex subIndexPtr = subIndex.index();
+      QgsPointCloudIndex index = subIndex.index();
       QString subIndexUri = subIndex.uri();
 
-      if ( !subIndexPtr.isValid() )
+      if ( !index.isValid() )
       {
         mDataProvider->loadSubIndex( i );
-        subIndexPtr = subIndexes.at( i ).index();
+        index = subIndexes.at( i ).index();
 
-        if ( !subIndexPtr.isValid() )
+        if ( !index.isValid() )
         {
           mEditingSubIndexes.clear();
           return false;
         }
       }
 
-      QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( subIndexPtr, subIndexUri ) );
+      QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
       if ( !editIndex.isValid() )
       {
         mEditingSubIndexes.clear();
