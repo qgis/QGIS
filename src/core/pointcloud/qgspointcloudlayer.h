@@ -342,9 +342,11 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     /**
      * Attempts to modify attribute values for specific points in the editing buffer.
      *
-     * \param mappedPoints A map of URIs to nodes to modify and points to modify within those nodes
+     * \param n The point cloud node containing the points
+     * \param points The point ids of the points to be modified
      * \param attribute The attribute whose value will be updated
      * \param value The new value to set to the attribute
+     * \param uri The URI of the data source
      * \return TRUE if the editing buffer was updated successfully, FALSE otherwise
      * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
