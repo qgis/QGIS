@@ -23,8 +23,8 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 
-#include <QWidget>
 #include <QAction>
+#include <QWidget>
 
 class QgsProcessingDestinationParameter;
 class QgsBrowserGuiModel;

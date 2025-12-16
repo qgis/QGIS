@@ -28,7 +28,6 @@
 #include "qgssettings.h"
 
 #include <QCheckBox>
-#include <QMenu>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QLocale>
