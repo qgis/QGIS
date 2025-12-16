@@ -1,0 +1,17 @@
+{
+  "name": "py-tzdata",
+  "version": "2025.2",
+  "description": "Provider of IANA time zone data.",
+  "homepage": "http://pythonhosted.org/tzdata",
+  "dependencies": [
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "py-pandas",
+  "version": "2.3.3",
+  "description": "Powerful data structures for data analysis, time series, and statistics.",
+  "homepage": "https://pandas.pydata.org",
+  "license": "BSD-3-Clause",
+  "features": {
+    "excel": {
+      "description": "Reading for xls/xlsx/xlsb/ods files",
+      "dependencies": [
+        "py-calamine"
+      ]
+    },
+    "performance": {
+      "description": "Speed improvements, especially when working with large data sets",
+      "dependencies": [
+        "py-bottleneck",
+        "py-numexpr",
+        "py-numba"
+      ]
+    },
+    "output-formatting": {
+      "description": "Conditional formatting with DataFrame.style",
+      "dependencies": [
+        "py-jinja2"
+      ]
+    },
+    "plot": {
+      "description": "plotting",
+      "dependencies": ["py-matplotlib"]
+    },
+    "computation": {
+      "description": "Miscellaneous statistical functions",
+      "dependencies": [
+        "py-scipy"
+      ]
+    },
+    "html": {
+      "description": "HTML parser for read_html",
+      "dependencies": [
+        "py-beautifulsoup4",
+        "py-lxml"
+      ]
+    },
+    "xml": {
+      "description": "XML parser for read_xml and tree builder for to_xml",
+      "dependencies": ["py-lxml"]
+    },
+    "arrow": {
+      "description": "Parquet, ORC, and feather reading / writing",
+      "dependencies": [
+        "py-arrow"
+      ]
+    }
+  },
+  "dependencies": [
+    "py-numpy",
+    "py-dateutil",
+    "py-pytz",
+    "py-tzdata",
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "py-cython",
+      "host": true
+    },
+    {
+        "name": "py-versioneer",
+        "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    },
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}
