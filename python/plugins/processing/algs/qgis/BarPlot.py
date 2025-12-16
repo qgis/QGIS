@@ -159,7 +159,7 @@ class BarPlot(QgisAlgorithm):
 
             # BULK READ (Prevents C++ Segfaults on individual lookups)
             attrs = f.attributes()
-            
+
             n_val = attrs[name_idx]
             x_data.append(n_val if n_val is not None else "<NULL>")
             y_data.append(attrs[value_idx])
