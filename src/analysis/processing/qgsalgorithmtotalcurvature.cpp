@@ -54,7 +54,7 @@ QString QgsTotalCurvatureAlgorithm::shortHelpString() const
 
 QString QgsTotalCurvatureAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Ccalculates total curvature as described by Wilson, Gallant (2000): terrain analysis." );
+  return QObject::tr( "Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis." );
 }
 
 QgsTotalCurvatureAlgorithm *QgsTotalCurvatureAlgorithm::createInstance() const
@@ -79,13 +79,20 @@ void QgsTotalCurvatureAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Total curvature" ) ) );
 }
 
+bool QgsTotalCurvatureAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  if ( !layer )
+  {
+    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+  }
+
+  mLayerSource = layer->source();
+  return true;
+}
+
 QVariantMap QgsTotalCurvatureAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-
-  if ( !inputLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
-
   const double zFactor = parameterAsDouble( parameters, QStringLiteral( "Z_FACTOR" ), context );
   const QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
   const double outputNodata = parameterAsDouble( parameters, QStringLiteral( "NODATA" ), context );
@@ -93,7 +100,7 @@ QVariantMap QgsTotalCurvatureAlgorithm::processAlgorithm( const QVariantMap &par
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
-  QgsTotalCurvatureFilter curvature( inputLayer->source(), outputFile, outputFormat );
+  QgsTotalCurvatureFilter curvature( mLayerSource, outputFile, outputFormat );
   curvature.setZFactor( zFactor );
   if ( !creationOptions.isEmpty() )
   {
