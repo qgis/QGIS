@@ -391,7 +391,7 @@ void TestQgsGrassProvider::mapsets()
   QgsGrass::setLocation( tmpGisdbase, mLocation ); // for G_is_mapset_in_search_path
   // Disabled because adding of all mapsets to search path was disabled in setLocation()
 #if 0
-  for ( QString expectedMapset : expectedMapsets )
+  for ( const QString &expectedMapset : expectedMapsets )
   {
     if ( G_is_mapset_in_search_path( expectedMapset.toLatin1().data() ) != 1 )
     {
@@ -1107,7 +1107,7 @@ QList<TestQgsGrassCommandGroup> TestQgsGrassProvider::createCommands()
 bool TestQgsGrassProvider::setAttributes( QgsFeature &feature, const QMap<QString, QVariant> &attributes )
 {
   bool attributesSet = true;
-  for ( const QString fieldName : attributes.keys() )
+  for ( const QString &fieldName : attributes.keys() )
   {
     int index = feature.fields().indexFromName( fieldName );
     if ( index < 0 )
