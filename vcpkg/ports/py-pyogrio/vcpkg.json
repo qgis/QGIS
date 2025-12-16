@@ -1,0 +1,29 @@
+{
+  "name": "py-pyogrio",
+  "version": "0.12.1",
+  "description": "Vectorized spatial vector file format I/O using GDAL/OGR.",
+  "homepage": "https://github.com/geopandas/pyogrio",
+  "license": "MIT",
+  "dependencies": [
+    "python3",
+    {
+      "name": "gdal"
+    },
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "py-cython",
+      "host": true
+    },
+    {
+        "name": "py-versioneer",
+        "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}
