@@ -71,9 +71,7 @@ class QgsHighlightsRenderView : public QgsAbstractRenderView
     Qt3DRender::QViewport *mViewportLeft = nullptr;
     Qt3DRender::QViewport *mViewportRight = nullptr;
 
-    Qt3DRender::QCameraSelector *mMainCameraSelector = nullptr;
     Qt3DRender::QLayer *mHighlightsLayer = nullptr;
-    Qt3DRender::QLayerFilter *mLayerFilter = nullptr;
     Qt3DRender::QRenderTargetSelector *mRenderTargetSelector = nullptr;
 };
 
