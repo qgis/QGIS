@@ -17,9 +17,6 @@ endif()
 
 # a simple app for testing GUI of renderers
 # These tests are old and are never run so removed for now.
-#set(rendererv2gui_SRCS testrenderergui.cpp)
-#set(rendererv2gui_HDRS testrenderergui.h)
-#add_executable(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 
 #ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
 
