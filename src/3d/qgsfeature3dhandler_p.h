@@ -90,8 +90,10 @@ class QgsFeature3DHandler
     float mZMax = std::numeric_limits<float>::lowest();
     int mFeatureCount = 0;
 
-    //! origin (in the map coordinates) for output geometries - it is kind of arbitrary, but it should be
-    //! picked so that the coordinates are relatively small to avoid numerical precision issues (e.g. at the center of the chunk)
+    /**
+     * Origin (in map coordinates) for output geometries - it is kind of arbitrary, but it should be
+     * picked so that the coordinates are relatively small to avoid numerical precision issues (e.g. at the center of the chunk)
+     */
     QgsVector3D mChunkOrigin;
 
     //! bounding box of the chunk
