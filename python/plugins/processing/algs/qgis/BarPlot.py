@@ -133,11 +133,11 @@ class BarPlot(QgisAlgorithm):
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        # 1. GET FIELD INDICES (Safest way to access data)
+        # 1. GET INDICES
         name_idx = source.fields().indexFromName(namefieldname)
         value_idx = source.fields().indexFromName(valuefieldname)
 
-        # 2. VALIDATE INDICES
+        # 2. VALIDATE
         if name_idx == -1:
             raise QgsProcessingException(
                 self.tr("Field '{}' not found in input layer.").format(namefieldname)
@@ -147,16 +147,22 @@ class BarPlot(QgisAlgorithm):
                 self.tr("Field '{}' not found in input layer.").format(valuefieldname)
             )
 
-        # 3. REQUEST WITHOUT OPTIMIZATIONS (Prevents Crash)
+        # 3. SAFE EXECUTION
         req = QgsFeatureRequest()
-
         x_data = []
         y_data = []
 
         for f in source.getFeatures(req):
-            n_val = f.attribute(name_idx)
+            # CHECK CANCEL (Prevents timeouts/crashes in tests)
+            if feedback.isCanceled():
+                break
+
+            # BULK READ (Prevents C++ Segfaults on individual lookups)
+            attrs = f.attributes()
+            
+            n_val = attrs[name_idx]
             x_data.append(n_val if n_val is not None else "<NULL>")
-            y_data.append(f.attribute(value_idx))
+            y_data.append(attrs[value_idx])
 
         data = [go.Bar(x=x_data, y=y_data)]
 
