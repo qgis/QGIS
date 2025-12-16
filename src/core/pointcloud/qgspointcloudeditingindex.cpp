@@ -51,13 +51,13 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mIsValid = true;
 }
 
-QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &index, const QString &uri )
+QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &index )
 {
   if ( !index.isValid() )
     return;
 
   mIndex = index;
-  mUri = uri;
+  mUri = index.uri();
 
   mAttributes = mIndex.attributes();
   mScale = mIndex.scale();
