@@ -1039,7 +1039,6 @@ bool QgsPointCloudLayer::startEditing()
       const QgsPointCloudSubIndex &subIndex = subIndexes.at( i );
 
       QgsPointCloudIndex index = subIndex.index();
-      QString subIndexUri = subIndex.uri();
 
       if ( !index.isValid() )
       {
