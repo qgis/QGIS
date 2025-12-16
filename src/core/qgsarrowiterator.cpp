@@ -174,14 +174,14 @@ QgsArrowArrayStream::QgsArrowArrayStream( QgsArrowArrayStream &&other )
     ArrowArrayStreamRelease( &mArrayStream );
   }
 
-  ArrowArrayStreamMove( other.array_stream(), &mArrayStream );
+  ArrowArrayStreamMove( other.arrayStream(), &mArrayStream );
 }
 
 QgsArrowArrayStream &QgsArrowArrayStream::operator=( QgsArrowArrayStream &&other )
 {
   if ( this != &other )
   {
-    ArrowArrayStreamMove( other.array_stream(), &mArrayStream );
+    ArrowArrayStreamMove( other.arrayStream(), &mArrayStream );
   }
 
   return *this;
@@ -195,7 +195,7 @@ QgsArrowArrayStream::~QgsArrowArrayStream()
   }
 }
 
-struct ArrowArrayStream *QgsArrowArrayStream::array_stream()
+struct ArrowArrayStream *QgsArrowArrayStream::arrayStream()
 {
   return &mArrayStream;
 }
@@ -518,11 +518,51 @@ namespace
     throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( v.typeName() ).arg( ArrowTypeString( columnTypeView.type ) ) );
   }
 
+  class ArrowIteratorArrayStreamImpl
+  {
+    public:
+      explicit ArrowIteratorArrayStreamImpl( QgsArrowIterator iterator )
+        : mIterator( iterator ) {}
+
+      int GetSchema( struct ArrowSchema *schema )
+      {
+        NANOARROW_RETURN_NOT_OK( ArrowSchemaDeepCopy( mIterator.schema(), schema ) );
+        return NANOARROW_OK;
+      }
+
+      int GetNext( struct ArrowArray *array )
+      {
+        try
+        {
+          QgsArrowArray batch = mIterator.nextFeatures( mBatchSize );
+          ArrowArrayMove( batch.array(), array );
+          return NANOARROW_OK;
+        }
+        catch ( std::exception &e )
+        {
+          mLastError = e.what();
+          return EINVAL;
+        }
+      }
+
+      const char *GetLastError() { return mLastError.c_str(); }
+
+    private:
+      QgsArrowIterator mIterator;
+      int mBatchSize { 65536 };
+      std::string mLastError {};
+  };
+
 } //namespace
 
 QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
   : mFeatureIterator( featureIterator )
 {
+}
+
+struct ArrowSchema *QgsArrowIterator::schema()
+{
+  return mSchema.schema();
 }
 
 void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
@@ -533,6 +573,13 @@ void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
   }
 
   mSchema = schema;
+}
+
+QgsArrowArrayStream QgsArrowIterator::toArrayStream()
+{
+  QgsArrowArrayStream out;
+  nanoarrow::ArrayStreamFactory<ArrowIteratorArrayStreamImpl>::InitArrayStream( new ArrowIteratorArrayStreamImpl( *this ), out.arrayStream() );
+  return out;
 }
 
 

@@ -289,7 +289,7 @@ class CORE_EXPORT QgsArrowArrayStream
 
 #ifndef SIP_RUN
     //! Access the underlying ArrowArray from C++
-    struct ArrowArrayStream *array_stream();
+    struct ArrowArrayStream *arrayStream();
 #endif
 
     /**
@@ -331,12 +331,19 @@ class CORE_EXPORT QgsArrowIterator
     //! Construct iterator from an existing feature iterator
     explicit QgsArrowIterator( QgsFeatureIterator featureIterator );
 
+#ifndef SIP_RUN
+    //! Access the output ArrowSchema from C++
+    struct ArrowSchema *schema();
+#endif
+
     /**
      * Set the ArrowSchema for the output of all future batches
      *
      * This must be set before calling nextFeatures().
      */
     void setSchema( const QgsArrowSchema &schema );
+
+    QgsArrowArrayStream toArrayStream();
 
     /**
      * Build an ArrowArray using the next n features (or fewer depending on the number of features remaining)
