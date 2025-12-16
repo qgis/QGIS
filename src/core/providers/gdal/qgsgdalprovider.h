@@ -277,6 +277,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //! \brief Whether this raster has overviews / pyramids or not
     bool mHasPyramids = false;
 
+    //! Flag indicating if the dataset is in closing
+    bool mInClosing = false;
+
     /**
      * \brief Gdal data types used to represent data in in QGIS,
      * may be longer than source data type to keep nulls
