@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
+#include "qgsbrowserdockwidget.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowserwidget.h"
-#include "qgslayertreeview.h"
-#include "qgstest.h"
 #include "qgscustomization.h"
+#include "qgslayertreeview.h"
 #include "qgsstatusbar.h"
-#include "qgsbrowserdockwidget.h"
+#include "qgstest.h"
 
 #include <QDockWidget>
 
@@ -41,7 +41,7 @@ class TestQgsCustomization : public QgsTest
     void testLoadApply();
     void testActionPosition();
     void testEnabled();
-    void testBackwardCompatiblity();
+    void testBackwardCompatibility();
 
   private:
     template<class T>
@@ -477,7 +477,7 @@ void TestQgsCustomization::testEnabled()
   QVERIFY( customization->isEnabled() );
 }
 
-void TestQgsCustomization::testBackwardCompatiblity()
+void TestQgsCustomization::testBackwardCompatibility()
 {
   QSettings().setValue( "UI/Customization/enabled", true );
 

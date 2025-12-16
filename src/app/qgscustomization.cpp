@@ -128,6 +128,11 @@ const std::vector<std::unique_ptr<QgsCustomization::Item>> &QgsCustomization::It
   return mChildItemList;
 }
 
+QgsCustomization::Item *QgsCustomization::Item::lastChild() const
+{
+  return mChildItemList.back().get();
+}
+
 
 long QgsCustomization::Item::indexOf( Item *item ) const
 {
@@ -565,8 +570,8 @@ void QgsCustomization::addActions( Item *item, QWidget *widget ) const
       {
         // remove '&' which are used to mark shortcut key
         std::unique_ptr<Action> action = std::make_unique<Action>( it.name, it.title, item );
-        childItem = action.get();
         item->addItem( std::move( action ) );
+        childItem = item->lastChild<Action>();
       }
     }
 
@@ -595,8 +600,8 @@ void QgsCustomization::loadApplicationToolBars()
     if ( !t )
     {
       std::unique_ptr<ToolBar> toolBar = std::make_unique<ToolBar>( tb->objectName(), tb->windowTitle(), mToolBars.get() );
-      t = toolBar.get();
       mToolBars->addItem( std::move( toolBar ) );
+      t = mToolBars->lastChild<ToolBar>();
     }
 
     addActions( t, tb );
@@ -639,8 +644,8 @@ void QgsCustomization::loadApplicationDocks()
     if ( !d )
     {
       std::unique_ptr<Dock> dock = std::make_unique<Dock>( name, dw->windowTitle(), mDocks.get() );
-      d = dock.get();
       mDocks->addItem( std::move( dock ) );
+      d = mDocks->lastChild<Dock>();
     }
 
     d->setWasVisible( dw->isVisible() );

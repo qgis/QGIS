@@ -154,6 +154,17 @@ class APP_EXPORT QgsCustomization
         Item *getChild( const QString &name ) const;
 
         /**
+         * Return last child item
+         */
+        template<class T>
+        T *lastChild() const { return dynamic_cast<T *>( lastChild() ); }
+
+        /**
+         * Return last child item
+         */
+        Item *lastChild() const;
+
+        /**
          * Returns list of child items
          */
         const std::vector<std::unique_ptr<Item>> &childItemList() const;
