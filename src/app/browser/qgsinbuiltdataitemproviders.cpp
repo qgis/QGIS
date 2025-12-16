@@ -1693,6 +1693,20 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             options[QStringLiteral( "geometryColumn" )] = geometryColumn;
           }
 
+          // Check for non-standard GeoPackage geometry types
+          const Qgis::WkbType flatType = QgsWkbTypes::flatType( geometryType );
+          if ( flatType == Qgis::WkbType::PolyhedralSurface || flatType == Qgis::WkbType::TIN || flatType == Qgis::WkbType::Triangle )
+          {
+            if ( QMessageBox::question( nullptr, QObject::tr( "New Table" ), QObject::tr( "PolyhedralSurface, TIN and Triangle are non-standard GeoPackage geometry types "
+                                                                                          "and may not be recognized by other software.\n\n"
+                                                                                          "Do you want to continue?" ),
+                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+                 == QMessageBox::No )
+            {
+              return;
+            }
+          }
+
           try
           {
             conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );

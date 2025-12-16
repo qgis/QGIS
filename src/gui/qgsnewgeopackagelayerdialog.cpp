@@ -457,6 +457,21 @@ bool QgsNewGeoPackageLayerDialog::apply()
   if ( mGeometryWithMCheckBox->isChecked() )
     wkbType = OGR_GT_SetM( wkbType );
 
+  // Check for non-standard GeoPackage geometry types
+  const OGRwkbGeometryType flatType = OGR_GT_Flatten( wkbType );
+  const bool isNonStandardGeomType = ( flatType == wkbPolyhedralSurface || flatType == wkbTIN || flatType == wkbTriangle );
+  if ( isNonStandardGeomType && !property( "hideDialogs" ).toBool() )
+  {
+    if ( QMessageBox::question( this, tr( "New GeoPackage Layer" ), tr( "PolyhedralSurface, TIN and Triangle are non-standard GeoPackage geometry types "
+                                                                        "and may not be recognized by other software.\n\n"
+                                                                        "Do you want to continue?" ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         == QMessageBox::No )
+    {
+      return false;
+    }
+  }
+
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
   const QgsCoordinateReferenceSystem srs = mCrsSelector->crs();
@@ -565,8 +580,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
       QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
     return false;
   }
-  else if ( errorType == CE_Warning )
+  else if ( errorType == CE_Warning && !isNonStandardGeomType )
   {
+    // Show OGR warning only if user was not already warned about non-standard geometry types
     const QString msg( tr( "Layer created with warning (OGR warning: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::warning( this, tr( "New GeoPackage Layer" ), msg );
