@@ -571,21 +571,10 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
 
   // If the provider can report progress during closing (typically when generating COG files),
   // report it, making feedback report percentage in the [50, 100] range.
-  if ( destProvider && hasReportsDuringClose )
+  if ( feedback && destProvider && hasReportsDuringClose )
   {
-    QgsFeedback closingProgress;
-    if ( feedback )
-    {
-      QObject::connect( &closingProgress, &QgsFeedback::progressChanged,
-                        feedback, [feedback]( double progress )
-      {
-        feedback->setProgress( 50.0 + progress * 0.5 );
-      } );
-      QObject::connect( &closingProgress, &QgsFeedback::canceled,
-                        feedback, &QgsFeedback::cancel );
-    }
-
-    if ( !destProvider->closeWithProgress( feedback ? &closingProgress : nullptr ) )
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, 50.0, 100.0 ) );
+    if ( !destProvider->closeWithProgress( scaledFeedback.get() ) )
     {
       destProvider->remove();
       destProvider.reset();
