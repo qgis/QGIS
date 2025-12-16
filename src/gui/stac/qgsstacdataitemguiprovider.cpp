@@ -212,8 +212,14 @@ void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
   }
   else if ( assetItem )
   {
-    QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() );
-    authcfg = itemItem->stacController()->authCfg();
+    if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() ) )
+    {
+      authcfg = itemItem->stacController()->authCfg();
+    }
+    else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( assetItem->parent() ) )
+    {
+      authcfg = catalogItem->stacController()->authCfg();
+    }
     d.setContentFromStacAsset( assetItem->name(), assetItem->stacAsset() );
   }
   d.setAuthcfg( authcfg );
@@ -236,11 +242,21 @@ void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemG
   }
   else if ( assetItem )
   {
-    itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() );
+    if ( QgsStacItemItem *parentItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() ) )
+    {
+      dialog.setAuthCfg( parentItem->stacController()->authCfg() );
+    }
+    else if ( QgsStacCatalogItem *parentCatalog = qobject_cast<QgsStacCatalogItem *>( assetItem->parent() ) )
+    {
+      dialog.setAuthCfg( parentCatalog->stacController()->authCfg() );
+    }
     dialog.addStacAsset( assetItem->name(), assetItem->stacAsset() );
   }
   dialog.setMessageBar( context.messageBar() );
-  dialog.setAuthCfg( itemItem->stacController()->authCfg() );
+  if ( itemItem )
+  {
+    dialog.setAuthCfg( itemItem->stacController()->authCfg() );
+  }
   dialog.exec();
 }
 

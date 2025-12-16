@@ -58,8 +58,17 @@ bool QgsStacAssetItem::hasDragEnabled() const
 
 QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
 {
-  QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( parent() );
-  const QString authcfg = itemItem->stacController()->authCfg();
+  QgsStacController *controller = nullptr;
+  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( parent() ) )
+  {
+    controller = itemItem->stacController();
+  }
+  else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( parent() ) )
+  {
+    controller = catalogItem->stacController();
+  }
+
+  const QString authcfg = controller ? controller->authCfg() : QString();
 
   QgsMimeDataUtils::Uri uri;
   QUrl url( mStacAsset->href() );
@@ -453,6 +462,19 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
     else
     {
       // todo: should handle other links?
+    }
+  }
+
+  if ( mIsCollection )
+  {
+    if ( QgsStacCollection *collection = dynamic_cast<QgsStacCollection *>( mStacCatalog.get() ) )
+    {
+      const QMap<QString, QgsStacAsset> assets = collection->assets();
+      for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
+      {
+        QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
+        contents.append( assetItem );
+      }
     }
   }
 
