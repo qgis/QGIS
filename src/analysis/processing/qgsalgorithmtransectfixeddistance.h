@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgsalgorithmtransect.h
-                         -------------------------
-    begin                : October 2017
-    copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+                         qgsalgorithmtransectfixeddistance.h
+                         ------------------------------------
+    begin                : September 2025
+    copyright            : (C) 2025 by Loïc Bartoletti
+    email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMTRANSECT_H
-#define QGSALGORITHMTRANSECT_H
+#ifndef QGSALGORITHMTRANSECTFIXEDDISTANCE_H
+#define QGSALGORITHMTRANSECTFIXEDDISTANCE_H
 
 #define SIP_NO_FILE
 
@@ -26,26 +26,33 @@
 ///@cond PRIVATE
 
 /**
- * Native transect algorithm.
+ * Native transect (fixed distance) algorithm.
  */
-class QgsTransectAlgorithm : public QgsTransectAlgorithmBase
+class QgsTransectFixedDistanceAlgorithm : public QgsTransectAlgorithmBase
 {
   public:
-    QgsTransectAlgorithm() = default;
+    QgsTransectFixedDistanceAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString shortHelpString() const override;
-    QgsTransectAlgorithm *createInstance() const override SIP_FACTORY;
+    QString shortDescription() const override;
+    QgsTransectFixedDistanceAlgorithm *
+      createInstance() const override SIP_FACTORY;
 
-  private:
+  protected:
     void addAlgorithmParams() override;
     bool
       prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     std::vector<QgsPoint>
       generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) override;
     double calculateAzimuth( const QgsLineString &line, const QgsPoint &point, int pointIndex ) override;
+
+  private:
+    double mInterval = 10.0;
+    bool mIncludeStartPoint = true;
 };
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMTRANSECT_H
+#endif // QGSALGORITHMTRANSECTFIXEDDISTANCE_H
