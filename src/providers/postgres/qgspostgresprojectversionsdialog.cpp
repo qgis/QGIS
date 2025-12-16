@@ -15,12 +15,13 @@
 
 
 #include "qgspostgresprojectversionsdialog.h"
-#include "moc_qgspostgresprojectversionsdialog.cpp"
-
-#include <QVBoxLayout>
 
 #include "qgspostgresprojectstorage.h"
 #include "qgsproject.h"
+
+#include <QVBoxLayout>
+
+#include "moc_qgspostgresprojectversionsdialog.cpp"
 
 QgsPostgresProjectVersionsDialog::QgsPostgresProjectVersionsDialog( const QString &connectionName, const QString &schema, const QString &project, QWidget *parent )
   : QDialog { parent }

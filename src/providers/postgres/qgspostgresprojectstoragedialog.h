@@ -15,9 +15,10 @@
 #ifndef QGSPOSTGRESPROJECTSTORAGEDIALOG_H
 #define QGSPOSTGRESPROJECTSTORAGEDIALOG_H
 
+#include "ui_qgspostgresprojectstoragedialog.h"
+
 #include "qgspostgresprojectversionsdialog.h"
 #include "qgspostgresprojectversionsmodel.h"
-#include "ui_qgspostgresprojectstoragedialog.h"
 
 #include <QDialog>
 

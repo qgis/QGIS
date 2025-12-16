@@ -15,11 +15,11 @@
 #ifndef QGSPOSTGRESPROJECTVERSIONSDIALOG_H
 #define QGSPOSTGRESPROJECTVERSIONSDIALOG_H
 
+#include "qgspostgresprojectversionsmodel.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QTableView>
-
-#include "qgspostgresprojectversionsmodel.h"
 
 class QgsPostgresProjectVersionsDialog : public QDialog
 {
