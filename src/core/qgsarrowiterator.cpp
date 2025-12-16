@@ -95,7 +95,7 @@ const struct ArrowSchema *QgsArrowSchema::schema() const
 
 unsigned long long QgsArrowSchema::cSchemaAddress() const
 {
-  // In the event QGIS is compiled on platform where unsigned long long is insufficient to
+  // In the event QGIS is built on platform where unsigned long long is insufficient to
   // represent a uintptr_t, ensure compilation fails
   static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
 
@@ -159,7 +159,7 @@ const struct ArrowArray *QgsArrowArray::array() const
 
 unsigned long long QgsArrowArray::cArrayAddress() const
 {
-  // In the event QGIS is compiled on platform where unsigned long long is insufficient to
+  // In the event QGIS is built on platform where unsigned long long is insufficient to
   // represent a uintptr_t, ensure compilation fails
   static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
 
@@ -214,7 +214,7 @@ struct ArrowArrayStream *QgsArrowArrayStream::arrayStream()
 
 unsigned long long QgsArrowArrayStream::cArrayStreamAddress() const
 {
-  // In the event QGIS is compiled on platform where unsigned long long is insufficient to
+  // In the event QGIS is built on platform where unsigned long long is insufficient to
   // represent a uintptr_t, ensure compilation fails
   static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
 
