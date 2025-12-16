@@ -144,9 +144,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         return self.tr("Variable distance buffer")
 
     def shortDescription(self):
-        return self.tr(
-            "Computes a buffer area whose size is defined by an attribute."
-        )
+        return self.tr("Computes a buffer area whose size is defined by an attribute.")
 
     def shortHelpString(self):
         return self.tr(
