@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgspostgresprojectversionsmodel.h"
-#include "moc_qgspostgresprojectversionsmodel.cpp"
 
 #include "qgsguiutils.h"
 #include "qgspostgresutils.h"
+
+#include "moc_qgspostgresprojectversionsmodel.cpp"
 
 QgsPostgresProjectVersionsModel::QgsPostgresProjectVersionsModel( const QString &connectionName, QObject *parent )
   : QAbstractTableModel( parent )

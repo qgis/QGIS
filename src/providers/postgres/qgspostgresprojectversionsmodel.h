@@ -15,20 +15,21 @@
 #ifndef QGSPOSTGRESPROJECTVERSIONSMODEL_H
 #define QGSPOSTGRESPROJECTVERSIONSMODEL_H
 
-#include <QAbstractTableModel>
-#include <QVector>
-
 #include "qgspostgresconn.h"
 #include "qgspostgresprojectstorage.h"
 
+#include <QAbstractTableModel>
+#include <QVector>
+
 /**
  * A table model for displaying PostgreSQL project versions
- * 
+ *
  * This model displays project version information including:
+ *
  * - Modified Time
  * - Modified User
  * - Comment
- * 
+ *
  * The model stores the date_saved internally for version identification.
  */
 class QgsPostgresProjectVersionsModel : public QAbstractTableModel

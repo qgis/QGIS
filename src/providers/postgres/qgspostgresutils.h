@@ -182,7 +182,7 @@ class QgsPostgresUtils
 
     /*
     * Sets up the necessary database structures for QGIS project versioning in \a schema.
-    * 
+    *
     * \since QGIS 4.0
     */
     static bool setupQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
