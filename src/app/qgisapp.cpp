@@ -1890,8 +1890,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
 #ifdef HAVE_3D
   registerShortcuts( QStringLiteral( "Ctrl+Shift+E" ), QStringLiteral( "m3DSetSceneExtent" ), tr( "Set 3D Scene Extent on 2D Map View" ) );
-  registerShortcuts( QStringLiteral( "" ), QStringLiteral( "m3DCrossSectionNudgeLeft" ), tr( "Nudge 3D Cross section to the left" ) );
-  registerShortcuts( QStringLiteral( "" ), QStringLiteral( "m3DCrossSectionNudgeRight" ), tr( "Nudge 3D Cross section to the right" ) );
+  registerShortcuts( QStringLiteral( "Ctrl+Shift+," ), QStringLiteral( "m3DCrossSectionNudgeLeft" ), tr( "Nudge 3D Cross section to the left" ) );
+  registerShortcuts( QStringLiteral( "Ctrl+Shift+." ), QStringLiteral( "m3DCrossSectionNudgeRight" ), tr( "Nudge 3D Cross section to the right" ) );
   connect( QgsProject::instance()->viewsManager(), &QgsMapViewsManager::views3DListChanged, this, &QgisApp::views3DMenuAboutToShow );
 
   Qgs3DMapScene::sOpenScenesFunction = [this]() -> QMap<QString, Qgs3DMapScene *> {
