@@ -521,8 +521,8 @@ namespace
   class ArrowIteratorArrayStreamImpl
   {
     public:
-      explicit ArrowIteratorArrayStreamImpl( QgsArrowIterator iterator )
-        : mIterator( iterator ) {}
+      ArrowIteratorArrayStreamImpl( QgsArrowIterator iterator, int batchSize )
+        : mIterator( iterator ), mBatchSize( batchSize ) {}
 
       int GetSchema( struct ArrowSchema *schema )
       {
@@ -575,10 +575,10 @@ void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
   mSchema = schema;
 }
 
-QgsArrowArrayStream QgsArrowIterator::toArrayStream()
+QgsArrowArrayStream QgsArrowIterator::toArrayStream( int batchSize )
 {
   QgsArrowArrayStream out;
-  nanoarrow::ArrayStreamFactory<ArrowIteratorArrayStreamImpl>::InitArrayStream( new ArrowIteratorArrayStreamImpl( *this ), out.arrayStream() );
+  nanoarrow::ArrayStreamFactory<ArrowIteratorArrayStreamImpl>::InitArrayStream( new ArrowIteratorArrayStreamImpl( *this, batchSize ), out.arrayStream() );
   return out;
 }
 
