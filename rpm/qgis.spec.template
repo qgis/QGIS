@@ -46,48 +46,17 @@ Source5:        %{name}-server-README.fedora
 # Based on debian/qgis.xml but excluding already defined or proprietary types
 Source6:        %{name}-mime.xml
 
-# Compiling stuff
 BuildRequires:  bison
 BuildRequires:  clang
 BuildRequires:  cmake
-BuildRequires:  expat-devel
 BuildRequires:  flex
 BuildRequires:  desktop-file-utils
-
-# Geo stuff
-BuildRequires:  gdal-devel
-BuildRequires:  python3-gdal
-BuildRequires:  geos-devel
-BuildRequires:  gsl-devel
-BuildRequires:  libspatialite-devel
-BuildRequires:  PDAL
-BuildRequires:  PDAL-devel
-BuildRequires:  proj-devel
-BuildRequires:  spatialindex-devel
-BuildRequires:  grass-devel
-
-# Other stuff
-BuildRequires:  exiv2-devel
-BuildRequires:  gsl-devel
-BuildRequires:  laszip-devel
-BuildRequires:  libzip-devel
-BuildRequires:  libzstd-devel
-BuildRequires:  postgresql-devel
-BuildRequires:  sqlite-devel
 BuildRequires:  hdf5-devel
-BuildRequires:  netcdf-devel
-BuildRequires:  fcgi-devel
-BuildRequires:  protobuf-compiler
-BuildRequires:  protobuf-devel
-BuildRequires:  protobuf-lite-devel
-BuildRequires:  draco-devel
-
-# OpenCL
+BuildRequires:  laszip-devel
 BuildRequires:  opencl-headers
-BuildRequires:  ocl-icd-devel
-
-# Python stuff
-BuildRequires:  python3-devel
+BuildRequires:  PDAL
+BuildRequires:  protobuf-compiler
+BuildRequires:  python3-gdal
 BuildRequires:  python3-jinja2
 BuildRequires:  python3-OWSLib
 BuildRequires:  python3-psycopg2
@@ -96,43 +65,55 @@ BuildRequires:  python3-pyqt6-devel
 BuildRequires:  python3-PyYAML
 BuildRequires:  python3-qscintilla-qt6
 BuildRequires:  python3-qscintilla-qt6-devel
-BuildRequires:  sip6
 BuildRequires:  PyQt-builder
-
-# Qca stuff
-BuildRequires:  qca-qt6-devel
 BuildRequires:  qca-qt6-ossl
 BuildRequires:  qscintilla-qt6-devel
-
-# Qt stuff
-BuildRequires:  qt6-qt3d-devel
-BuildRequires:  qt6-qt5compat-devel
-BuildRequires:  qt6-qtbase-private-devel
-BuildRequires:  qt6-qtlocation-devel
-BuildRequires:  qt6-qtmultimedia-devel
-BuildRequires:  qt6-qtserialport-devel
-BuildRequires:  qt6-qtsvg-devel
 BuildRequires:  qt6-qttools-static
-BuildRequires:  qt6-qtwebengine-devel
-BuildRequires:  qtkeychain-qt6-devel
-
-# Qwt stuff
 BuildRequires:  qwt-qt6-devel
+BuildRequires:  sip6
 
-# PDF4QT
+BuildRequires:  cmake(blend2d)
+BuildRequires:  cmake(draco)
+BuildRequires:  cmake(exiv2)
+BuildRequires:  cmake(gdal)
+BuildRequires:  cmake(geos)
+BuildRequires:  cmake(libzip)
+BuildRequires:  cmake(pdal)
+BuildRequires:  cmake(proj)
+BuildRequires:  cmake(qca-qt6)
+BuildRequires:  cmake(Qt63DCore)
+BuildRequires:  cmake(Qt6Core5Compat)
+BuildRequires:  cmake(Qt6CorePrivate)
+BuildRequires:  cmake(Qt6Keychain)
+BuildRequires:  cmake(Qt6Location)
+BuildRequires:  cmake(Qt6Multimedia)
+BuildRequires:  cmake(Qt6SerialPort)
+BuildRequires:  cmake(Qt6Svg)
+BuildRequires:  cmake(Qt6WebEngineWidgets)
+
+BuildRequires:  pkgconfig(expat)
+BuildRequires:  pkgconfig(fcgi)
 BuildRequires:  pkgconfig(freetype2)
+BuildRequires:  pkgconfig(grass)
+BuildRequires:  pkgconfig(gsl)
 BuildRequires:  pkgconfig(lcms2)
 BuildRequires:  pkgconfig(libjpeg)
 BuildRequires:  pkgconfig(libopenjp2)
+BuildRequires:  pkgconfig(libpq)
+BuildRequires:  pkgconfig(libzstd)
+BuildRequires:  pkgconfig(netcdf)
+BuildRequires:  pkgconfig(ocl-icd)
+BuildRequires:  pkgconfig(protobuf)
+BuildRequires:  pkgconfig(protobuf-lite)
+BuildRequires:  pkgconfig(python3)
+BuildRequires:  pkgconfig(spatialite)
+BuildRequires:  pkgconfig(sfcgal)
+BuildRequires:  pkgconfig(sqlite)
 
-# GDAL must be explicit. It is required by some raster tools
-# like Warp (Reproject) which relies on gdalwarp
 Requires:       gdal
-
-# Installation of QCA plugins must be explicit
-Requires:       qca-qt6-ossl
 Requires:       gpsbabel
 Requires:       PDAL
+Requires:       qca-qt6-ossl
 Requires:       qt6-qtcharts
 
 # We don't want to provide private Python extension libs
@@ -174,8 +155,8 @@ Provides:       %{name}-python = %{combinedversion}-%{release}
 Provides:       %{name}-python%{?_isa} = %{combinedversion}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
-Requires:       python3-gdal
 Requires:       gdal-python-tools
+Requires:       python3-gdal
 Requires:       python3-jinja2
 Requires:       python3-OWSLib
 Requires:       python3-packaging
@@ -212,6 +193,9 @@ find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {
 # Move installation of libPdf4QtLibCore.so from /usr/usr/lib/ to /usr/lib64
 sed -i 's|PDF4QT_INSTALL_LIB_DIR usr/${PDF4QT_INSTALL_LIB_DIR_IMPL}|PDF4QT_INSTALL_LIB_DIR %{_libdir}|' external/PDF4QT/CMakeLists.txt
 
+# Move installation of pyproject.toml from /usr/lib64/python3.x/site-packages/ to /usr/lib64/python3.x/site-packages/qgis/
+sed -i 's|install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml DESTINATION "${QGIS_PYTHON_INSTALL_DIR}/")|install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml DESTINATION "${QGIS_PYTHON_DIR}/")|' python/CMakeLists.txt
+
 # Readme file for QGIS server configuration HTTPD and Nginx example
 install -pm0644 %{SOURCE1} .
 install -pm0644 %{SOURCE2} .
@@ -224,24 +208,18 @@ gzip ChangeLog
 %build
 %cmake \
       %{_cmake_skip_rpath} \
-      -D BUILD_WITH_QT6:BOOL=TRUE \
-      -D QGIS_LIB_SUBDIR=%{_lib} \
-      -D QGIS_MANUAL_SUBDIR=/share/man \
-      -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
-      -D WITH_BINDINGS:BOOL=TRUE \
-      -D WITH_GRASS8:BOOL=TRUE \
-      -D GRASS_PREFIX8=%{grass_prefix} \
-      -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
       -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
       -D ENABLE_TESTS:BOOL=FALSE \
-      -D WITH_EPT:BOOL=TRUE \
-      -D WITH_PDAL:BOOL=TRUE \
+      -D GRASS_PREFIX8=%{grass_prefix} \
+      -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
+      -D QGIS_LIB_SUBDIR=%{_lib} \
+      -D QGIS_MANUAL_SUBDIR=/share/man \
+      -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
+      -D WITH_INTERNAL_SPATIALINDEX:BOOL=TRUE \
       -D WITH_PDF4QT:BOOL=TRUE \
       -D WITH_QSPATIALITE:BOOL=TRUE \
-      -D WITH_QTWEBENGINE:BOOL=TRUE \
-      -D WITH_QTWEBKIT:BOOL=FALSE \
       -D WITH_SERVER:BOOL=TRUE \
-      -D WITH_3D:BOOL=TRUE \
+      -D WITH_SFCGAL:BOOL=TRUE \
       -D USE_OPENCL:BOOL=TRUE \
       %{configure_with_sha} \
       .
