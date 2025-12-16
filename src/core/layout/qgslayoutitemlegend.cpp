@@ -38,13 +38,13 @@
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmapsettings.h"
+#include "qgsmeshlayer.h"
 #include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterrenderer.h"
-#include "qgsmeshlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>

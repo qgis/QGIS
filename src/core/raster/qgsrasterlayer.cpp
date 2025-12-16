@@ -49,6 +49,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterlayerprofilegenerator.h"
 #include "qgsrasterlayerrenderer.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsrasterlayerutils.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterrange.h"
@@ -65,15 +66,9 @@ email                : tim at linfiniti.com
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssldexportcontext.h"
-#include "qgsrasterlayerutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsthreadingutils.h"
 #include "qgsxmlutils.h"
-
-#include <cmath>
-#include <cstdio>
-#include <limits>
-#include <typeinfo>
 
 #include <QApplication>
 #include <QCursor>

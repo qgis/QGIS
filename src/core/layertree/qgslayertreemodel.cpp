@@ -16,11 +16,13 @@
 #include "qgslayertreemodel.h"
 
 #include "qgsapplication.h"
+#include "qgscolorramplegendnode.h"
 #include "qgsiconutils.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
 #include "qgslayertreefiltersettings.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayoutitemlegend.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerelevationproperties.h"
@@ -29,8 +31,6 @@
 #include "qgsmimedatautils.h"
 #include "qgsproject.h"
 #include "qgsrendercontext.h"
-#include "qgslayoutitemlegend.h"
-#include "qgscolorramplegendnode.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 
