@@ -346,8 +346,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.42
      */
-    QgsPointCloudIndex index() const;
-
+    QgsPointCloudIndex index( const QString &uri = QString() ) const;
 
   signals:
 
