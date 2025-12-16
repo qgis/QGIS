@@ -145,7 +145,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "Assigns a color index to polygon features, so no adjacent polygons share the same color index."
+            "Computes a buffer area whose size is defined by an attribute."
         )
 
     def shortHelpString(self):

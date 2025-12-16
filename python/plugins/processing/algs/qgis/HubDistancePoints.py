@@ -130,7 +130,7 @@ class HubDistancePoints(QgisAlgorithm):
         return self.tr(
             "Given an origin and a destination layers, this algorithm computes the distance "
             "between origin features and their closest destination one. "
-            "Distance calculations are based on the features center.\n"
+            "Distance calculations are based on the feature's center.\n"
             "The resulting layer contains origin features center point with an additional field "
             "indicating the identifier of the nearest destination feature and the distance to it."
         )

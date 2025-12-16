@@ -101,13 +101,13 @@ class PointsDisplacement(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "Offsets nearby point features by moving nearby points "
+            "Offsets point features by moving nearby points "
             "by a preset amount to minimize overlapping features."
         )
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm offsets nearby point features by moving nearby points "
+            "This algorithm offsets point features by moving nearby points "
             "by a preset amount to minimize overlapping features."
         )
 

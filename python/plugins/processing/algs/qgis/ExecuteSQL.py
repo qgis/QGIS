@@ -153,11 +153,11 @@ class ExecuteSQL(QgisAlgorithm):
         return self.tr("Execute SQL")
 
     def shortDescription(self):
-        return self.tr("Runs a simple or complex query with SQL syntax.")
+        return self.tr("Runs a query with SQL syntax.")
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm runs a simple or complex query with SQL syntax.\n"
+            "This algorithm runs a query with SQL syntax.\n"
             "Input data sources are identified with input1, input2, ..., inputN "
             "and a simple query will look like: 'SELECT * FROM input1'.\n"
             "The result of the query will be added as a new layer."
