@@ -77,7 +77,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
     def shortHelpString(self):
         return self.tr(
             "This algorithm generates a polygon layer using as polygon rings the lines from an input line layer.\n"
-            "The attribute table of the output layer is the same as the one of the input line layer."
+            "All attributes from the input line layer will be copied to the output layer."
         )
 
     def outputName(self):

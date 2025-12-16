@@ -86,7 +86,7 @@ class PointsFromLines(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "Generates points corresponding to centroids of a raster pixels intersecting a line layer."
+            "Generates points corresponding to centroids of raster pixels intersecting a line layer."
         )
 
     def shortHelpString(self):

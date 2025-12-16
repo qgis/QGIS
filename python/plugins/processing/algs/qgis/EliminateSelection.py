@@ -112,13 +112,13 @@ class EliminateSelection(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "Combines selected polygons of the input layer with certain adjacent polygons "
+            "Combines selected polygons from the input layer with certain adjacent polygons "
             "by erasing their common boundary."
         )
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm combines selected polygons of the input layer with certain adjacent polygons "
+            "This algorithm combines selected polygons from the input layer with certain adjacent polygons "
             "by erasing their common boundary. The adjacent polygon can be either the one with the largest "
             "or smallest area or the one sharing the largest common boundary with the polygon to be eliminated.\n"
             "Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result "
