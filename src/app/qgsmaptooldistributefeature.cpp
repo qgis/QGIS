@@ -248,10 +248,16 @@ void QgsMapToolDistributeFeature::updateRubberband()
     // The rubberband is in map coordinates, so we transform the feature geometry if needed
     if ( mFeatureLayer->crs() != canvas()->mapSettings().destinationCrs() )
     {
-      if ( geom.transform(
-             QgsCoordinateTransform( mFeatureLayer->crs(), canvas()->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() )
-           )
-           != Qgis::GeometryOperationResult::Success )
+      Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::NothingHappened;
+      try
+      {
+        result = geom.transform( QgsCoordinateTransform( mFeatureLayer->crs(), canvas()->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() ) );
+      }
+      catch ( QgsCsException )
+      {
+        ; // result will remain NothingHappened
+      }
+      if ( result != Qgis::GeometryOperationResult::Success )
       {
         emit messageEmitted( tr( "Unable to transform coordinates between layer and map CRS" ), Qgis::MessageLevel::Warning );
         return;
