@@ -1,0 +1,22 @@
+{
+  "name": "py-numexpr",
+  "version": "2.14.1",
+  "description": "Fast numerical expression evaluator for NumPy.",
+  "homepage": "https://github.com/pydata/numexpr",
+  "dependencies": [
+    "python3",
+    "py-numpy",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "py-setuptools",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}
