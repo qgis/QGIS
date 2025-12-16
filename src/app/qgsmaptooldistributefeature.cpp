@@ -42,7 +42,7 @@ void QgsMapToolDistributeFeature::activate()
 
   mUserInputWidget.reset( new QgsDistributeFeatureUserWidget() );
   connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::modeChanged, this, [this]( QgsMapToolDistributeFeature::DistributeMode mode ) { mMode = mode; } );
-  connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::featureCountChanged, this, [this]( int value ) { mFeatureCount = value; } );
+  connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::featureCountChanged, this, [this]( int value ) { mFeatureCount = value; updateRubberband(); } );
   connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::featureSpacingChanged, this, [this]( int value ) { mFeatureSpacing = value; } );
 
   setMode( QgsMapToolDistributeFeature::settingsMode->value() );
