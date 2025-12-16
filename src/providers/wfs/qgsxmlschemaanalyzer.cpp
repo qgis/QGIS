@@ -575,9 +575,11 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
     {
       if ( geometryAttribute.isEmpty() )
       {
-        geomType = QgsWkbTypes::multiType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
+        geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
           OGR_L_GetGeomType( hLayer )
-        ) );
+        );
+        if ( geomType != Qgis::WkbType::Point )
+          geomType = QgsWkbTypes::multiType( geomType );
 
         QString qFieldXPath = QString::fromUtf8( fieldXPath );
         if ( fieldName.endsWith( QLatin1String( "_abstractgeometricprimitive" ) ) && strstr( fieldXPath, "/gml:Point" ) )
