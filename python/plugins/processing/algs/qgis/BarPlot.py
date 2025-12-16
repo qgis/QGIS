@@ -134,18 +134,16 @@ class BarPlot(QgisAlgorithm):
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
         # 1. VALIDATE FIELDS FIRST (Prevents KeyError)
-        # We must check if fields exist to satisfy the test runner's error checks.
         if source.fields().indexFromName(namefieldname) == -1:
-             raise QgsProcessingException(
+            raise QgsProcessingException(
                 self.tr("Field '{}' not found in input layer.").format(namefieldname)
             )
         if source.fields().indexFromName(valuefieldname) == -1:
-             raise QgsProcessingException(
+            raise QgsProcessingException(
                 self.tr("Field '{}' not found in input layer.").format(valuefieldname)
             )
 
         # 2. STANDARD REQUEST (No Flags, No Optimizations)
-        # This prevents the "Exit Code 255" crash in the test runner.
         req = QgsFeatureRequest()
 
         x_data = []
