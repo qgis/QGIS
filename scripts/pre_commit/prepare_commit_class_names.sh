@@ -30,7 +30,7 @@ RES=
 
 for i in "${!KEYWORDS[@]}"
 do
-  FOUND=$(grep -nH "${KEYWORDS[$i]}" $FILES_TO_CHECK 2>/dev/null | sed -n 's/.*\(Qgs\w*\).*/\1/p' | sort -u || true)
+  FOUND=$(grep -nH "${KEYWORDS[$i]}" $FILES_TO_CHECK 2>/dev/null | grep -o "\w*Qgs\w*" | head -n 1 || true)
 
   if [[ ${FOUND} ]]; then
     echo "Found classes with non-standard names!"
