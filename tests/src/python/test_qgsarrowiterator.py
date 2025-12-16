@@ -15,6 +15,11 @@ import json
 import unittest
 
 try:
+    import geopandas
+except ImportError:
+    geopandas = None
+
+try:
     import pyarrow as pa
 except ImportError:
     pa = None
@@ -49,6 +54,7 @@ from qgis.PyQt.QtCore import (
 from qgis.testing import QgisTestCase
 
 
+@unittest.skipIf(geopandas is None, "geopandas is not available")
 @unittest.skipIf(pa is None, "pyarrow is not available")
 @unittest.skipIf(shapely is None, "shapely is not available")
 class TestQgsArrowIterator(QgisTestCase):
@@ -155,6 +161,33 @@ class TestQgsArrowIterator(QgisTestCase):
 
         batch_invalid = iterator.nextFeatures(4)
         assert batch_invalid.isValid() is False
+
+    def test_layer_to_stream(self):
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        layer = self.create_test_layer_with_geometry(crs)
+
+        schema = QgsArrowIterator.inferSchema(layer)
+        iterator = QgsArrowIterator(layer.getFeatures())
+        iterator.setSchema(schema)
+
+        stream = iterator.toArrayStream()
+        reader = pa.RecordBatchReader._import_from_c(stream.cArrayStreamAddress())
+        df = geopandas.GeoDataFrame.from_arrow(reader)
+
+        assert list(df.id) == list(range(1, 11))
+        assert df.crs == "EPSG:4326"
+        assert list(df.geometry.to_wkt()) == [
+            "POINT (0 20)",
+            "POINT (1 21)",
+            "POINT (2 22)",
+            "POINT (3 23)",
+            "POINT (4 24)",
+            "POINT (5 25)",
+            "POINT (6 26)",
+            "POINT (7 27)",
+            "POINT (8 28)",
+            "POINT (9 29)",
+        ]
 
     def test_type_int(self):
         layer = self.create_test_layer_single_field(
