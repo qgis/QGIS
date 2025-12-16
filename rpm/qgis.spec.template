@@ -76,6 +76,7 @@ BuildRequires:  cmake(blend2d)
 BuildRequires:  cmake(draco)
 BuildRequires:  cmake(exiv2)
 BuildRequires:  cmake(gdal)
+BuildRequires:  cmake(geographiclib)
 BuildRequires:  cmake(geos)
 BuildRequires:  cmake(libzip)
 BuildRequires:  cmake(pdal)
@@ -215,6 +216,7 @@ gzip ChangeLog
       -D QGIS_LIB_SUBDIR=%{_lib} \
       -D QGIS_MANUAL_SUBDIR=/share/man \
       -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
+      -D WITH_GEOGRAPHICLIB=TRUE \
       -D WITH_INTERNAL_SPATIALINDEX:BOOL=TRUE \
       -D WITH_PDF4QT:BOOL=TRUE \
       -D WITH_QSPATIALITE:BOOL=TRUE \
