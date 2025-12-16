@@ -48,7 +48,7 @@ Qgs3DHighlightFeatureHandler::~Qgs3DHighlightFeatureHandler()
   }
 }
 
-void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, QgsMapLayer *layer )
+void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
@@ -64,6 +64,10 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, 
 
     case Qgis::LayerType::Vector:
     {
+      QgsAbstract3DRenderer *renderer = layer->renderer3D();
+      if ( !renderer )
+        return;
+
       QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( layer );
       QgsExpressionContext exprContext;
       exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -72,9 +76,22 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( const QgsFeature &feature, 
       Qgs3DRenderContext renderContext = Qgs3DRenderContext::fromMapSettings( mScene->mapSettings() );
       renderContext.setExpressionContext( exprContext );
 
-      QgsAbstract3DRenderer *renderer = layer->renderer3D();
-      if ( !renderer )
-        return;
+      if ( renderContext.crs() != layer->crs() )
+      {
+        QgsCoordinateTransform ct( layer->crs(), renderContext.crs(), renderContext.transformContext() );
+        QgsGeometry geom = feature.geometry();
+        try
+        {
+          geom.transform( ct );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "Could not reproject identified feature to 3d view crs" ) );
+          return;
+        }
+        feature.setGeometry( geom );
+        exprContext.setFeature( feature );
+      }
 
       if ( renderer->type() == QLatin1String( "vector" ) )
       {
