@@ -29,7 +29,11 @@
 #include <QPaintEngine>
 #include <QPainterPathStroker>
 
-#include <blend2d/blend2d.h>
+#if __has_include(<blend2d/blend2d.h>)
+  #include <blend2d/blend2d.h>
+#else
+  #include <blend2d.h>
+#endif
 
 namespace pdf
 {
