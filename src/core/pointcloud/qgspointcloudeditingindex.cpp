@@ -51,6 +51,25 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mIsValid = true;
 }
 
+QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &index, const QString &uri )
+{
+  if ( !index.isValid() )
+    return;
+
+  mIndex = index;
+  mUri = uri; 
+
+  mAttributes = mIndex.attributes();
+  mScale = mIndex.scale();
+  mOffset = mIndex.offset();
+  mExtent = mIndex.extent();
+  mZMin = mIndex.zMin();
+  mZMax = mIndex.zMax();
+  mRootBounds = mIndex.rootNodeBounds();
+  mSpan = mIndex.span();
+  mIsValid = true;
+}
+
 void QgsPointCloudEditingIndex::load( const QString &, const QString & )
 {
   return;
