@@ -18,15 +18,14 @@
 #include "qgsannotationitem.h"
 #include "qgsannotationitemregistry.h"
 #include "qgsmultirenderchecker.h"
-#include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
+#include "qgstest.h"
 
+#include <QImage>
 #include <QObject>
 #include <QPainter>
-#include <QImage>
 #include <QtTest/QSignalSpy>
-
 
 //simple item for testing, since some methods in QgsAnnotationItem are pure virtual
 class TestItem : public QgsAnnotationItem
@@ -61,6 +60,7 @@ class TestItem : public QgsAnnotationItem
       return true;
     }
 
+    using QgsAnnotationItem::boundingBox;
     QgsRectangle boundingBox() const override { return QgsRectangle(); }
 };
 

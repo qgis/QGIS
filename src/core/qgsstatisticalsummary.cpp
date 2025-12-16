@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsstatisticalsummary.h"
-#include "qgsvariantutils.h"
+
 #include <limits>
-#include <QString>
+
+#include "qgsvariantutils.h"
+
 #include <QObject>
+#include <QString>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

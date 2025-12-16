@@ -20,30 +20,31 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QString>
-#include <QFont>
-#include <QFontDatabase>
-#include <QColor>
-#include <QHash>
-#include <QList>
-#include <QPainter>
-#include <QRectF>
-#include <QMap>
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsfields.h"
-#include "qgspointxy.h"
-#include "qgsmapunitscale.h"
-#include "qgsstringutils.h"
-#include "qgstextformat.h"
-#include "qgspropertycollection.h"
-#include "qgslabelplacementsettings.h"
-#include "qgslabelobstaclesettings.h"
-#include "qgslabelthinningsettings.h"
-#include "qgslabellinesettings.h"
-#include "qgslabelpointsettings.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexpression.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
+#include "qgsgeometry.h"
+#include "qgslabellinesettings.h"
+#include "qgslabelobstaclesettings.h"
+#include "qgslabelplacementsettings.h"
+#include "qgslabelpointsettings.h"
+#include "qgslabelthinningsettings.h"
+#include "qgsmapunitscale.h"
+#include "qgspointxy.h"
+#include "qgspropertycollection.h"
+#include "qgsstringutils.h"
+#include "qgstextformat.h"
+
+#include <QColor>
+#include <QFont>
+#include <QFontDatabase>
+#include <QHash>
+#include <QList>
+#include <QMap>
+#include <QPainter>
+#include <QRectF>
+#include <QString>
 
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
@@ -78,6 +79,7 @@ class QgsDxfExport;
 class QgsVectorLayerDiagramProvider;
 class QgsExpressionContext;
 class QgsCallout;
+class QMimeData;
 
 /**
  * \ingroup core
@@ -898,6 +900,24 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.20
      */
     void setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility );
+
+    /**
+     * Returns new mime data representing the labeling settings.
+     * Caller takes responsibility for deleting the returned object.
+     * \see fromMimeData()
+     *
+     * \since QGIS 4.0
+     */
+    QMimeData *toMimeData() const SIP_FACTORY;
+
+    /**
+     * Attempts to parse the provided mime \a data as a QgsPalLayerSettings.
+     * If data can be parsed as a labeling settings, \a ok will be set to TRUE.
+     * \see toMimeData()
+     *
+     * \since QGIS 4.0
+     */
+    static QgsPalLayerSettings fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
 
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;

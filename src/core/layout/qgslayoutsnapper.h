@@ -17,10 +17,11 @@
 #define QGSLAYOUTSNAPPER_H
 
 #include "qgis_core.h"
+#include "qgslayoutguidecollection.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
-#include "qgslayoutguidecollection.h"
 #include "qgslayoutserializableobject.h"
+
 #include <QPen>
 
 class QgsLayout;

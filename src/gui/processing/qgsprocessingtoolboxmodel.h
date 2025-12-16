@@ -19,9 +19,10 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingparametertype.h"
+
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QPointer>
+#include <QSortFilterProxyModel>
 
 class QgsVectorLayer;
 class QgsProcessingRegistry;
@@ -436,13 +437,13 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      *
      * \see isParameter()
      * \see providerForIndex()
-     * \since QGIS 3.44  
+     * \since QGIS 3.44
      */
     const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns TRUE if \a index corresponds to a parameter.
-     * 
+     *
      * \see parameterTypeForIndex()
      * \since QGIS 3.44
      */

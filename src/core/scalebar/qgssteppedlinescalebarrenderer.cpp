@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgssteppedlinescalebarrenderer.h"
+
+#include "qgslinesymbol.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"
-#include "qgslinesymbol.h"
+
 #include <QList>
 #include <QPainter>
 

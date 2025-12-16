@@ -63,10 +63,9 @@ class TestQgsElevationProfile(QgisTestCase):
         profile.setSubsectionsSymbol(line_symbol)
         self.assertEqual(profile.subsectionsSymbol().color().name(), "#ff0000")
 
-        profile.setLayers([layer1, layer2])
-        self.assertEqual(profile.layers(), [layer1, layer2])
-
-        # TODO LAYERS
+        profile.layerTree().addLayer(layer1)
+        group = profile.layerTree().addGroup("my group")
+        group.addLayer(layer2)
 
         # save to xml
         context = QgsReadWriteContext()
@@ -84,11 +83,68 @@ class TestQgsElevationProfile(QgisTestCase):
         self.assertTrue(profile2.lockAxisScales())
         self.assertEqual(profile2.distanceUnit(), Qgis.DistanceUnit.Feet)
         self.assertEqual(profile2.subsectionsSymbol().color().name(), "#ff0000")
+        self.assertFalse(profile2.useProjectLayerTree())
 
         # restoration of layers requires resolving references
-        self.assertFalse(profile2.layers())
+        self.assertEqual(
+            [l.name() for l in profile2.layerTree().findLayers()], ["l1", "l2"]
+        )
+        self.assertEqual(
+            [l.layer() for l in profile2.layerTree().findLayers()], [None, None]
+        )
         profile2.resolveReferences(project)
-        self.assertEqual(profile2.layers(), [layer1, layer2])
+        self.assertEqual(
+            [l.layer() for l in profile2.layerTree().findLayers()], [layer1, layer2]
+        )
+        # make sure group structure was restored
+        self.assertEqual(
+            [n.name() for n in profile2.layerTree().children()], ["l1", "my group"]
+        )
+        group = profile2.layerTree().findGroup("my group")
+        self.assertEqual([l.name() for l in group.children()], ["l2"])
+
+    def test_sync_project_layer_tree(self):
+        project = QgsProject()
+        profile = QgsElevationProfile(project)
+
+        layer1 = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "l1", "memory"
+        )
+        layer2 = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "l2", "memory"
+        )
+        project.addMapLayers([layer1, layer2])
+
+        profile.setName("test profile")
+        self.assertFalse(profile.useProjectLayerTree())
+
+        spy = QSignalSpy(profile.useProjectLayerTreeChanged)
+        profile.setUseProjectLayerTree(True)
+        self.assertEqual(len(spy), 1)
+        self.assertIsNone(profile.layerTree())
+
+        profile.setUseProjectLayerTree(True)
+        self.assertEqual(len(spy), 1)
+
+        profile.setUseProjectLayerTree(False)
+        self.assertFalse(profile.useProjectLayerTree())
+        self.assertEqual(len(spy), 2)
+        profile.setUseProjectLayerTree(True)
+
+        # save to xml
+        context = QgsReadWriteContext()
+        doc = QDomDocument("testdoc")
+        elem = profile.writeXml(doc, context)
+        doc.appendChild(elem)
+
+        # restore from xml
+        profile2 = QgsElevationProfile(project)
+        self.assertTrue(profile2.readXml(elem, doc, context))
+        self.assertEqual(profile2.name(), "test profile")
+        self.assertTrue(profile2.useProjectLayerTree())
+        # no action, no crash
+        profile2.resolveReferences(project)
+        self.assertIsNone(profile2.layerTree())
 
 
 if __name__ == "__main__":

@@ -15,10 +15,11 @@
 #ifndef QGSCOLORBUTTON_H
 #define QGSCOLORBUTTON_H
 
-#include <QColorDialog>
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QColorDialog>
+#include <QToolButton>
 
 class QMimeData;
 class QgsColorSchemeRegistry;

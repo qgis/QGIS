@@ -14,11 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgis.h"
-#include "qgsversion.h"
 #include "qgsconfig.h"
 #include "qgserror.h"
+
+#include "qgis.h"
 #include "qgslogger.h"
+#include "qgsversion.h"
 
 #include <QRegularExpression>
 

@@ -434,6 +434,7 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
             props.temporalRepresentationScale(), QgsInterval(1, Qgis.TemporalUnit.Days)
         )
         self.assertEqual(props.temporalRepresentationOffset(), QDateTime())
+        self.assertFalse(props.accumulatePixels())
         self.assertFalse(props.isActive())
 
         props.setBandNumber(2)
@@ -441,6 +442,7 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
         props.setTemporalRepresentationOffset(
             QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0))
         )
+        props.setAccumulatePixels(True)
         props.setIsActive(True)
         self.assertEqual(props.bandNumber(), 2)
         self.assertEqual(
@@ -451,6 +453,7 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
             props.temporalRepresentationOffset(),
             QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)),
         )
+        self.assertTrue(props.accumulatePixels())
         self.assertTrue(props.isActive())
 
         self.assertEqual(
@@ -492,6 +495,7 @@ class TestQgsRasterLayerTemporalProperties(QgisTestCase):
             props2.temporalRepresentationOffset(),
             QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)),
         )
+        self.assertTrue(props2.accumulatePixels())
         self.assertTrue(props2.isActive())
 
 

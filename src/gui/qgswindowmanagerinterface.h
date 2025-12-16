@@ -16,8 +16,8 @@
 #ifndef QGSWINDOWMANAGERINTERFACE_H
 #define QGSWINDOWMANAGERINTERFACE_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsVectorLayer;
 class QgsRasterLayer;

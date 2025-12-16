@@ -15,10 +15,11 @@
 #include "qgsfilebaseddataitemprovider.h"
 #include "qgstest.h"
 
+#include <QApplication>
+#include <QElapsedTimer>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
-#include <QApplication>
-#include <QFileInfo>
 
 //qgis includes...
 #include "qgsapplication.h"

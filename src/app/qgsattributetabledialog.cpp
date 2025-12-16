@@ -14,49 +14,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QGridLayout>
-#include <QDialogButtonBox>
-#include <QMenu>
-
 #include "qgsattributetabledialog.h"
-#include "moc_qgsattributetabledialog.cpp"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsattributetableview.h"
-#include "qgsexpressioncontextutils.h"
 
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsvectordataprovider.h"
-#include "qgsexpression.h"
+#include "qgisapp.h"
+#include "qgsactionmanager.h"
+#include "qgsactionmenu.h"
 #include "qgsaddattrdialog.h"
+#include "qgsapplication.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetableview.h"
+#include "qgsclipboard.h"
 #include "qgsdelattrdialog.h"
+#include "qgsdockablewidgethelper.h"
+#include "qgsdockwidget.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionselectiondialog.h"
+#include "qgsfeatureaction.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfeaturestore.h"
+#include "qgsfieldcalculator.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsfields.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsfieldcalculator.h"
-#include "qgsfeatureaction.h"
-#include "qgsactionmanager.h"
 #include "qgsmessagebar.h"
-#include "qgsexpressionselectiondialog.h"
-#include "qgsfields.h"
-#include "qgsfieldproxymodel.h"
-#include "qgsclipboard.h"
-#include "qgsfeaturestore.h"
-#include "qgsguiutils.h"
-#include "qgsproxyprogresstask.h"
-#include "qgisapp.h"
 #include "qgsorganizetablecolumnsdialog.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgstransactiongroup.h"
-#include "qgsdockablewidgethelper.h"
-#include "qgsactionmenu.h"
-#include "qgsdockwidget.h"
+#include "qgsproject.h"
+#include "qgsproxyprogresstask.h"
 #include "qgssettingsregistrycore.h"
+#include "qgstransactiongroup.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerutils.h"
 
+#include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QMenu>
+#include <QMessageBox>
+
+#include "moc_qgsattributetabledialog.cpp"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -401,8 +402,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
     connect( mRunFieldCalc, &QAbstractButton::clicked, this, &QgsAttributeTableDialog::updateFieldFromExpression );
     connect( mRunFieldCalcSelected, &QAbstractButton::clicked, this, &QgsAttributeTableDialog::updateFieldFromExpressionSelected );
-    // NW TODO Fix in 2.6 - Doesn't work with field model for some reason.
-    //  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
     connect( mUpdateExpressionText, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsAttributeTableDialog::updateButtonStatus );
     mUpdateExpressionText->setLayer( mLayer );
     mUpdateExpressionText->setLeftHandButtonStyle( true );
@@ -630,6 +629,35 @@ void QgsAttributeTableDialog::layerActionTriggered()
   Q_ASSERT( qAction );
 
   QgsAction action = qAction->data().value<QgsAction>();
+
+  switch ( action.type() )
+  {
+    case Qgis::AttributeActionType::GenericPython:
+    case Qgis::AttributeActionType::Mac:
+    case Qgis::AttributeActionType::Windows:
+    case Qgis::AttributeActionType::Unix:
+    {
+      const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+      if ( !allowed )
+      {
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "Security warning" ),
+          tr( "The action contains an embedded script which has been denied execution." ),
+          Qgis::MessageLevel::Warning
+        );
+        return;
+      }
+      break;
+    }
+
+    case Qgis::AttributeActionType::Generic:
+    case Qgis::AttributeActionType::OpenUrl:
+    case Qgis::AttributeActionType::SubmitUrlEncoded:
+    case Qgis::AttributeActionType::SubmitUrlMultipart:
+    {
+      break;
+    }
+  }
 
   QgsExpressionContext context = mLayer->createExpressionContext();
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();

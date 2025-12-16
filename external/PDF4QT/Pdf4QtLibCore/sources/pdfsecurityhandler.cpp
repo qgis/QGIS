@@ -1,19 +1,24 @@
-﻿//    Copyright (C) 2019-2022 Jakub Melka
+﻿// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfsecurityhandler.h"
 #include "pdfexception.h"
@@ -51,6 +56,8 @@
 
 namespace pdf
 {
+
+static bool s_noDrmMode = false;
 
 template<typename T>
 using openssl_ptr = std::unique_ptr<T, void(*)(T*)>;
@@ -353,9 +360,14 @@ void PDFSecurityHandler::parseDataStandardSecurityHandler(const PDFDictionary* d
         {
             result = object.getString();
 
-            if (result.size() != size)
+            if (result.size() < size)
             {
                 throw PDFException(PDFTranslationContext::tr("Expected %1 characters long string in entry '%2'. Provided length is %3.").arg(size).arg(QString::fromLatin1(key)).arg(result.size()));
+            }
+
+            if (result.size() > size)
+            {
+                result.resize(size);
             }
         }
         else
@@ -507,6 +519,16 @@ PDFSecurityHandlerPointer PDFSecurityHandler::createSecurityHandler(const PDFObj
     }
 
     return handler;
+}
+
+void PDFSecurityHandler::setNoDRMMode()
+{
+    s_noDrmMode = true;
+}
+
+bool PDFSecurityHandler::isNoDRM()
+{
+    return s_noDrmMode;
 }
 
 void PDFSecurityHandler::fillEncryptionDictionary(PDFObjectFactory& factory, bool publicKeyHandler) const
@@ -1301,9 +1323,10 @@ PDFSecurityHandler::AuthorizationResult PDFStandardSecurityHandler::authenticate
                     if (U == m_U)
                     {
                         // We have authorized user access
-                        m_authorizationData.authorizationResult = AuthorizationResult::UserAuthorized;
+                        const AuthorizationResult authorizationResult = isNoDRM() ? AuthorizationResult::OwnerAuthorized : AuthorizationResult::UserAuthorized;
+                        m_authorizationData.authorizationResult = authorizationResult;
                         m_authorizationData.fileEncryptionKey = fileEncryptionKey;
-                        return AuthorizationResult::UserAuthorized;
+                        return authorizationResult;
                     }
                 }
 
@@ -1370,7 +1393,8 @@ PDFSecurityHandler::AuthorizationResult PDFStandardSecurityHandler::authenticate
                         AES_cbc_encrypt(convertByteArrayToUcharPtr(m_UE), convertByteArrayToUcharPtr(m_authorizationData.fileEncryptionKey), m_UE.size(), &key, aesInitializationVector, AES_DECRYPT);
 
                         // We have authorized user access
-                        m_authorizationData.authorizationResult = AuthorizationResult::UserAuthorized;
+                        const AuthorizationResult authorizationResult = isNoDRM() ? AuthorizationResult::OwnerAuthorized : AuthorizationResult::UserAuthorized;
+                        m_authorizationData.authorizationResult = authorizationResult;
                     }
                 }
 
@@ -2519,9 +2543,10 @@ PDFSecurityHandler::AuthorizationResult PDFPublicKeySecurityHandler::authenticat
                             m_permissions = qFromLittleEndian<uint32_t>(decryptedData.data() + 20);
                         }
 
+                        const AuthorizationResult authorizationResult = isNoDRM() ? AuthorizationResult::OwnerAuthorized : AuthorizationResult::UserAuthorized;
                         m_authorizationData.fileEncryptionKey = digestBuffer.left(m_keyLength / 8);
-                        m_authorizationData.authorizationResult = AuthorizationResult::UserAuthorized;
-                        return AuthorizationResult::UserAuthorized;
+                        m_authorizationData.authorizationResult = authorizationResult;
+                        return authorizationResult;
                     }
                 }
             }

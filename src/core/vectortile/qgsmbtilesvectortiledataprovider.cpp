@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgsmbtilesvectortiledataprovider.h"
-#include "moc_qgsmbtilesvectortiledataprovider.cpp"
-#include "qgsthreadingutils.h"
+
+#include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgslogger.h"
 #include "qgsmbtiles.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+#include "qgsthreadingutils.h"
 #include "qgstiles.h"
 #include "qgsvectortileloader.h"
 #include "qgsziputils.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayerdetails.h"
 
-#include <QIcon>
 #include <QFileInfo>
+#include <QIcon>
+
+#include "moc_qgsmbtilesvectortiledataprovider.cpp"
 
 ///@cond PRIVATE
 

@@ -16,29 +16,31 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestsourceselect.h"
-#include "moc_qgsarcgisrestsourceselect.cpp"
-#include "qgsowsconnection.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsproject.h"
+
+#include "qgsafsprovider.h"
+#include "qgsarcgisrestdataitems.h"
+#include "qgsbrowserguimodel.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgsexception.h"
 #include "qgsmapcanvas.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsbrowserguimodel.h"
-#include "qgsarcgisrestdataitems.h"
 #include "qgsnewarcgisrestconnection.h"
-#include "qgsafsprovider.h"
+#include "qgsowsconnection.h"
+#include "qgsproject.h"
 
 #include <QButtonGroup>
+#include <QFileDialog>
+#include <QImageReader>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QRadioButton>
-#include <QImageReader>
+
+#include "moc_qgsarcgisrestsourceselect.cpp"
 
 //
 // QgsArcGisRestBrowserProxyModel
@@ -181,7 +183,7 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
   mBrowserView->expand( mProxyModel->index( 0, 0 ) );
   mBrowserView->setHeaderHidden( true );
 
-  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << QStringLiteral( "AFS" ) << QStringLiteral( "arcgisfeatureserver" ) << QStringLiteral( "AMS" ) << QStringLiteral( "arcgismapserver" ) );
+  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << QStringLiteral( "AFS" ) << QStringLiteral( "arcgisfeatureserver" ) << QStringLiteral( "AMS" ) << QStringLiteral( "arcgismapserver" ) << QStringLiteral( "I3S" ) << QStringLiteral( "esrii3s" ) );
 
   const QModelIndex afsSourceIndex = mBrowserModel->findPath( QStringLiteral( "arcgisfeatureserver:" ) );
   mBrowserView->setRootIndex( mProxyModel->mapFromSource( afsSourceIndex ) );
@@ -346,6 +348,10 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
         emit addRasterLayer( uri, layerName, QStringLiteral( "arcgismapserver" ) );
         Q_NOWARN_DEPRECATED_POP
         emit addLayer( Qgis::LayerType::Raster, uri, layerName, QStringLiteral( "arcgismapserver" ) );
+        break;
+
+      case Qgis::ArcGisRestServiceType::SceneServer:
+        emit addLayer( Qgis::LayerType::TiledScene, uri, layerName, QStringLiteral( "esrii3s" ) );
         break;
 
       case Qgis::ArcGisRestServiceType::ImageServer:
@@ -579,6 +585,10 @@ QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QS
       uri.removeParam( QStringLiteral( "format" ) );
       uri.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
       serviceType = Qgis::ArcGisRestServiceType::MapServer;
+    }
+    else if ( qobject_cast<QgsArcGisSceneServiceLayerItem *>( layerItem ) )
+    {
+      serviceType = Qgis::ArcGisRestServiceType::SceneServer;
     }
     return uri.uri( false );
   }

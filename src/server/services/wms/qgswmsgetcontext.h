@@ -19,8 +19,15 @@
  *                                                                         *
  ***************************************************************************/
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerResponse;
+class QDomDocument;
+
 namespace QgsWms
 {
+
+  class QgsWmsRequest;
 
   /**
    * Output GetContext response

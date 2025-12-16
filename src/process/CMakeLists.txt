@@ -23,9 +23,6 @@ if (QGISPOSTFIX)
   set_target_properties(qgis_process PROPERTIES RUNTIME_OUTPUT_NAME qgis_process${QGISPOSTFIX})
 endif()
 
-# require c++17
-target_compile_features(qgis_process PRIVATE cxx_std_17)
-
 target_include_directories(qgis_process PUBLIC
   ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -37,11 +34,9 @@ if (UNIX AND NOT ANDROID)
   )
 endif()
 
-if (WITH_PDAL)
-  target_include_directories(qgis_process PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
-  )
-endif()
+target_include_directories(qgis_process PRIVATE
+  ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+)
 
 if (WITH_3D)
   include_directories(SYSTEM

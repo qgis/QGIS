@@ -14,45 +14,44 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptooleditmeshframe.h"
-#include "moc_qgsmaptooleditmeshframe.cpp"
-
-#include <QMessageBox>
-#include <QLocale>
 
 #include "qgis.h"
 #include "qgisapp.h"
-#include "qgsapplication.h"
-#include "qgsstatusbar.h"
-
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdistancearea.h"
 #include "qgsdoublespinbox.h"
-#include "qgsmeshdataprovider.h"
+#include "qgsguiutils.h"
+#include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
-#include "qgsmessagebar.h"
+#include "qgsmaptoolidentify.h"
+#include "qgsmaptoolselectionhandler.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshforcebypolylines.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
-#include "qgsmesheditor.h"
+#include "qgsmeshselectbyexpressiondialog.h"
+#include "qgsmeshtransformcoordinatesdockwidget.h"
+#include "qgsmeshtriangulation.h"
+#include "qgsmessagebar.h"
 #include "qgspolygon.h"
-#include "qgstriangularmesh.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsrubberband.h"
 #include "qgssnapindicator.h"
-#include "qgsvertexmarker.h"
-#include "qgsguiutils.h"
-#include "qgsmeshtriangulation.h"
-#include "qgsmeshtransformcoordinatesdockwidget.h"
-#include "qgsmeshforcebypolylines.h"
-#include "qgsmaptoolselectionhandler.h"
-#include "qgsvectorlayer.h"
-#include "qgsunitselectionwidget.h"
-#include "qgsmeshselectbyexpressiondialog.h"
-#include "qgsmaptoolidentify.h"
-#include "qgsidentifymenu.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgscoordinatetransform.h"
+#include "qgsstatusbar.h"
 #include "qgsterrainprovider.h"
-#include "qgsdistancearea.h"
+#include "qgstriangularmesh.h"
+#include "qgsunitselectionwidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
 
+#include <QLocale>
+#include <QMessageBox>
+
+#include "moc_qgsmaptooleditmeshframe.cpp"
 
 //
 // QgsZValueWidget
@@ -2141,7 +2140,8 @@ void QgsMapToolEditMeshFrame::prepareSelection()
     if ( !mZValueWidget )
       createZValueWidget();
 
-    mZValueWidget->setZValue( vertexZValue );
+    if ( mZValueWidget )
+      mZValueWidget->setZValue( vertexZValue );
   }
   else
   {

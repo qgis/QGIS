@@ -16,10 +16,9 @@
 #define QGSORACLEPROJECTSTORAGE_H
 
 #include "qgsconfig.h"
-#include "qgsprojectstorage.h"
 
 #include "qgsdatasourceuri.h"
-
+#include "qgsprojectstorage.h"
 
 //! Stores information parsed from oracle project URI
 typedef struct

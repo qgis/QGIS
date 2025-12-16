@@ -15,21 +15,20 @@
 
 #include "qgsmapsettings.h"
 
-#include "qgsscalecalculator.h"
-#include "qgsmaptopixel.h"
-#include "qgslogger.h"
-
-#include "qgsmessagelog.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsxmlutils.h"
+#include "qgscoordinatetransform.h"
+#include "qgsellipsoidutils.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsgrouplayer.h"
-#include "qgscoordinatetransform.h"
-#include "qgsellipsoidutils.h"
-#include "qgsunittypes.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmaptopixel.h"
+#include "qgsmessagelog.h"
 #include "qgspainting.h"
+#include "qgsscalecalculator.h"
+#include "qgsunittypes.h"
+#include "qgsxmlutils.h"
 
 QgsMapSettings::QgsMapSettings()
   : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances
@@ -299,12 +298,19 @@ void QgsMapSettings::setDpiTarget( double dpi )
 
 QStringList QgsMapSettings::layerIds( bool expandGroupLayers ) const
 {
-  const QList<QgsMapLayer * > mapLayers = layers( expandGroupLayers );
-  QStringList res;
-  res.reserve( mapLayers.size() );
-  for ( const QgsMapLayer *layer : mapLayers )
-    res << layer->id();
-  return res;
+  if ( !expandGroupLayers || !mHasGroupLayers )
+  {
+    return mLayerIds;
+  }
+  else
+  {
+    const QList<QgsMapLayer * > mapLayers = layers( expandGroupLayers );
+    QStringList res;
+    res.reserve( mapLayers.size() );
+    for ( const QgsMapLayer *layer : mapLayers )
+      res << layer->id();
+    return res;
+  }
 }
 
 QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
@@ -363,6 +369,18 @@ void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
   } ), filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
+
+  // pre-generate and store layer IDs, so that we can safely access them from other threads
+  // without needing to touch the actual map layer object
+  mLayerIds.clear();
+  mHasGroupLayers = false;
+  mLayerIds.reserve( mLayers.size() );
+  for ( const QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    mLayerIds << layer->id();
+    if ( layer->type() == Qgis::LayerType::Group )
+      mHasGroupLayers = true;
+  }
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const

@@ -18,14 +18,15 @@
 #ifndef QGSSERVERPROJECTUTILS_H
 #define QGSSERVERPROJECTUTILS_H
 
-#include <QString>
-#include <QHash>
 #include <cmath>
 
 #include "qgis_server.h"
 #include "qgis_sip.h"
 #include "qgsserverrequest.h"
 #include "qgsserversettings.h"
+
+#include <QHash>
+#include <QString>
 
 class QgsProject;
 class QgsRectangle;
@@ -369,6 +370,14 @@ class SERVER_EXPORT QgsServerProjectUtils
    * \returns the WMS output CRS list.
    */
     static QStringList wmsOutputCrsList( const QgsProject &project );
+
+    /**
+   * Returns the WMS output CRS list as OGC URNs.
+   * \param project the QGIS project
+   * \returns the WMS output CRS list.
+   * \since QGIS 4.0
+   */
+    static QStringList wmsOutputCrsListAsOgcUrn( const QgsProject &project );
 
     /**
    * Returns the WMS Extent restriction.

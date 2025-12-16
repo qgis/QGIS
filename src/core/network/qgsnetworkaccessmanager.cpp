@@ -20,30 +20,31 @@
  ***************************************************************************/
 
 #include "qgsnetworkaccessmanager.h"
-#include "moc_qgsnetworkaccessmanager.cpp"
 
-#include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgssettings.h"
-#include "qgssettingsregistrycore.h"
-#include "qgslogger.h"
 #include "qgis.h"
-#include "qgsnetworkdiskcache.h"
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgsnetworkreply.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkdiskcache.h"
+#include "qgsnetworkreply.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssettingstree.h"
 
-#include <QUrl>
-#include <QTimer>
+#include <QAuthenticator>
 #include <QBuffer>
 #include <QNetworkReply>
 #include <QRecursiveMutex>
-#include <QThreadStorage>
-#include <QAuthenticator>
 #include <QStandardPaths>
+#include <QThreadStorage>
+#include <QTimer>
+#include <QUrl>
 #include <QUuid>
+
+#include "moc_qgsnetworkaccessmanager.cpp"
 
 const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout = new QgsSettingsEntryInteger( QStringLiteral( "network-timeout" ), QgsSettingsTree::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
 
@@ -801,19 +802,19 @@ void QgsNetworkAccessManager::setTimeout( const int time )
   settingsNetworkTimeout->setValue( time );
 }
 
-QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
+QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback, Qgis::NetworkRequestFlags flags )
 {
-  QgsBlockingNetworkRequest br;
+  QgsBlockingNetworkRequest br( flags );
   br.setAuthCfg( authCfg );
   br.get( request, forceRefresh, feedback );
   return br.reply();
 }
 
-QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
+QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback, Qgis::NetworkRequestFlags flags )
 {
-  QgsBlockingNetworkRequest br;
+  QgsBlockingNetworkRequest br( flags );
   br.setAuthCfg( authCfg );
-  br.post( request, data, forceRefresh, feedback );
+  ( void )br.post( request, data, forceRefresh, feedback );
   return br.reply();
 }
 

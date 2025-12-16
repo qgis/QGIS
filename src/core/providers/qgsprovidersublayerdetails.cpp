@@ -15,9 +15,9 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayerdetails.h"
+
 #include "qgsmaplayerfactory.h"
 #include "qgsmimedatautils.h"
-
 
 QgsMapLayer *QgsProviderSublayerDetails::toLayer( const LayerOptions &options ) const
 {

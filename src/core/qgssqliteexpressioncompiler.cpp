@@ -16,10 +16,11 @@
 ///@cond PRIVATE
 
 #include "qgssqliteexpressioncompiler.h"
-#include "qgssqlexpressioncompiler.h"
+
+#include "qgsexpression.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsexpression.h"
+#include "qgssqlexpressioncompiler.h"
 #include "qgssqliteutils.h"
 
 QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields, bool ignoreStaticNodes )

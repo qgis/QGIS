@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractprofilesurfacegenerator.h"
-#include "qgsprofilesnapping.h"
+
+#include <optional>
+
 #include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgslinestring.h"
+#include "qgslinesymbol.h"
 #include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
 
 #include <QPainterPath>
-#include <optional>
 
 //
 // QgsAbstractProfileSurfaceResults

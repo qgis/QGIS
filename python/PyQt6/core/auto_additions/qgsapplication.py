@@ -21,7 +21,6 @@ try:
     QgsApplication.uiThemes = staticmethod(QgsApplication.uiThemes)
     QgsApplication.authorsFilePath = staticmethod(QgsApplication.authorsFilePath)
     QgsApplication.contributorsFilePath = staticmethod(QgsApplication.contributorsFilePath)
-    QgsApplication.developersMapFilePath = staticmethod(QgsApplication.developersMapFilePath)
     QgsApplication.sponsorsFilePath = staticmethod(QgsApplication.sponsorsFilePath)
     QgsApplication.donorsFilePath = staticmethod(QgsApplication.donorsFilePath)
     QgsApplication.serverResourcesPath = staticmethod(QgsApplication.serverResourcesPath)
@@ -147,6 +146,10 @@ try:
     QgsApplication.customVariables = staticmethod(QgsApplication.customVariables)
     QgsApplication.setCustomVariables = staticmethod(QgsApplication.setCustomVariables)
     QgsApplication.setCustomVariable = staticmethod(QgsApplication.setCustomVariable)
+    QgsApplication.temporarilyTrustedProjectsFolders = staticmethod(QgsApplication.temporarilyTrustedProjectsFolders)
+    QgsApplication.setTemporarilyTrustedProjectsFolders = staticmethod(QgsApplication.setTemporarilyTrustedProjectsFolders)
+    QgsApplication.temporarilyUntrustedProjectsFolders = staticmethod(QgsApplication.temporarilyUntrustedProjectsFolders)
+    QgsApplication.setTemporarilyUntrustedProjectsFolders = staticmethod(QgsApplication.setTemporarilyUntrustedProjectsFolders)
     QgsApplication.scaleIconSize = staticmethod(QgsApplication.scaleIconSize)
     QgsApplication.setTranslation = staticmethod(QgsApplication.setTranslation)
     QgsApplication.__overridden_methods__ = ['event', 'notify']

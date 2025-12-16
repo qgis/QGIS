@@ -15,23 +15,23 @@
 
 #include "qgsrubberband3d.h"
 
-#include "qgsbillboardgeometry.h"
-#include "qgspoint3dbillboardmaterial.h"
-#include "qgsmarkersymbol.h"
-#include "qgsabstract3dengine.h"
-#include "qgsgeotransform.h"
-#include "qgslinevertexdata_p.h"
-#include "qgslinematerial_p.h"
-#include "qgsvertexid.h"
-#include "qgssymbollayer.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgsabstract3dengine.h"
+#include "qgsbillboardgeometry.h"
+#include "qgsgeotransform.h"
+#include "qgslinematerial_p.h"
 #include "qgslinestring.h"
+#include "qgslinevertexdata_p.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmessagelog.h"
+#include "qgspoint3dbillboardmaterial.h"
 #include "qgspolygon.h"
+#include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
+#include "qgsvertexid.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -80,7 +80,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *en
 
 void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 {
-  mMarkerEntity = new Qt3DCore::QEntity( parentEntity );
+  mMarkerEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
   mMarkerGeometry = new QgsBillboardGeometry();
   mMarkerGeometryRenderer = new Qt3DRender::QGeometryRenderer;
   mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
@@ -97,7 +97,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 
 void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine )
 {
-  mLineEntity = new Qt3DCore::QEntity( parentEntity );
+  mLineEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
 
   QgsLineVertexData dummyLineData;
   mLineGeometry = dummyLineData.createGeometry( mLineEntity );
@@ -132,7 +132,7 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DE
 
 void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
 {
-  mPolygonEntity = new Qt3DCore::QEntity( parentEntity );
+  mPolygonEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
 
   mPolygonGeometry = new QgsTessellatedPolygonGeometry();
 
@@ -182,11 +182,17 @@ void QgsRubberBand3D::removePoint( int index )
 QgsRubberBand3D::~QgsRubberBand3D()
 {
   if ( mPolygonEntity )
-    delete mPolygonEntity;
+  {
+    mPolygonEntity.reset();
+  }
   if ( mLineEntity )
-    delete mLineEntity;
+  {
+    mLineEntity.reset();
+  }
   if ( mMarkerEntity )
-    delete mMarkerEntity;
+  {
+    mMarkerEntity.reset();
+  }
 }
 
 
@@ -451,7 +457,7 @@ void QgsRubberBand3D::updateGeometry()
   if ( mHideLastMarker && !lineData.vertices.isEmpty() )
     lineData.vertices.pop_back();
 
-  mMarkerGeometry->setPoints( lineData.vertices );
+  mMarkerGeometry->setPositions( lineData.vertices );
   mMarkerGeometryRenderer->setVertexCount( lineData.vertices.count() );
   mMarkerTransform->setGeoTranslation( dataOrigin );
 
@@ -459,10 +465,9 @@ void QgsRubberBand3D::updateGeometry()
   {
     if ( const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( mGeometry.constGet() ) )
     {
-      // TODO: tessellator should handle origins with non-zero Z to make
-      // things work well in large scenes
-      const QgsVector3D polygonOrigin( mMapSettings->origin().x(), mMapSettings->origin().y(), 0 );
-      QgsTessellator tessellator( polygonOrigin.x(), polygonOrigin.y(), true );
+      QgsTessellator tessellator;
+      tessellator.setOrigin( mMapSettings->origin() );
+      tessellator.setAddNormals( true );
       tessellator.setOutputZUp( true );
       tessellator.addPolygon( *polygon, 0 );
       if ( !tessellator.error().isEmpty() )
@@ -473,7 +478,7 @@ void QgsRubberBand3D::updateGeometry()
       const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
       const int vertexCount = data.count() / tessellator.stride();
       mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
-      mPolygonTransform->setGeoTranslation( polygonOrigin );
+      mPolygonTransform->setGeoTranslation( mMapSettings->origin() );
     }
     else
     {

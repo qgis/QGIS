@@ -19,10 +19,11 @@
 #define QGSLAZDECODER_H
 
 
-#include "qgspointcloudblock.h"
-#include "qgspointcloudattribute.h"
-
 #include <string>
+
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
+
 #include <QString>
 
 ///@cond PRIVATE

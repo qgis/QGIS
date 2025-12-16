@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsgdalutils.h"
-#include "qgslogger.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssettings.h"
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrasterblock.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsrasterblock.h"
+#include "qgssettings.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
@@ -386,6 +387,8 @@ static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hD
   double noDataValue = GDALGetRasterNoDataValue( GDALGetRasterBand( hDstDS, 1 ), nullptr );
   psWarpOptions->padfDstNoDataReal = reinterpret_cast< double * >( CPLMalloc( sizeof( double ) * 1 ) );
   psWarpOptions->padfDstNoDataReal[0] = noDataValue;
+  psWarpOptions->padfSrcNoDataReal = reinterpret_cast< double * >( CPLMalloc( sizeof( double ) * 1 ) );
+  psWarpOptions->padfSrcNoDataReal[0] = noDataValue;
   psWarpOptions->eResampleAlg = resampleAlg;
 
   // Establish reprojection transformer.
@@ -840,7 +843,8 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
     QStringLiteral( "vrt" ),
     QStringLiteral( "nc" ),
     QStringLiteral( "dxf" ),
-    QStringLiteral( "shp.zip" ) };
+    QStringLiteral( "shp.zip" ),
+    QStringLiteral( "gdb.zip" ) };
   return SUPPORTED_DB_LAYERS_EXTENSIONS;
 #endif
 }
@@ -854,9 +858,10 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
   if ( vsiMatch.hasMatch() )
     return vsiMatch.captured( 1 );
 
-  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
+  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) ||
+       path.endsWith( QLatin1String( ".gdb.zip" ), Qt::CaseInsensitive ) )
   {
-    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
+    // GDAL 3.1 Shapefile/OpenFileGDB drivers directly handle .shp.zip and .gdb.zip files
     if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
       return QString();
     return QStringLiteral( "/vsizip/" );
@@ -1104,3 +1109,26 @@ bool QgsGdalUtils::applyVsiCredentialOptions( const QString &prefix, const QStri
   return true;
 }
 #endif
+
+QgsGdalProgressAdapter::QgsGdalProgressAdapter( QgsFeedback *feedback, double startPercentage, double endPercentage ): mFeedback( feedback ), mStartPercentage( startPercentage ), mEndPercentage( endPercentage )
+{
+}
+
+/* static */
+int CPL_STDCALL QgsGdalProgressAdapter::progressCallback( double dfComplete,
+    const char * /* pszMessage */,
+    void *pProgressArg )
+{
+  const QgsGdalProgressAdapter *adapter = static_cast<QgsGdalProgressAdapter *>( pProgressArg );
+
+  if ( QgsFeedback *feedback = adapter->mFeedback )
+  {
+    feedback->setProgress( adapter->mStartPercentage +
+                           ( adapter->mEndPercentage - adapter->mStartPercentage ) * dfComplete );
+
+    if ( feedback->isCanceled() )
+      return false;
+  }
+
+  return true;
+}

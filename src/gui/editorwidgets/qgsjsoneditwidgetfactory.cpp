@@ -15,11 +15,11 @@
 
 #include "qgsjsoneditwidgetfactory.h"
 
-#include "qgsjsoneditwrapper.h"
 #include "qgsjsoneditconfigdlg.h"
+#include "qgsjsoneditwrapper.h"
 
-QgsJsonEditWidgetFactory::QgsJsonEditWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsJsonEditWidgetFactory::QgsJsonEditWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

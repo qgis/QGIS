@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
-#include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
-#include "qgsrasterformatsaveoptionswidget.h"
-#include "qgsprocessingparameters.h"
+
 #include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
+#include "qgsrasterformatsaveoptionswidget.h"
 
 #include <QComboBox>
 #include <QLineEdit>
+
+#include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
 
 /// @cond private
 

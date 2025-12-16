@@ -12,24 +12,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgspointxy.h"
 #include "qgstest.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+
+#include <QApplication>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
 #include <QTemporaryFile>
-
-#include "qgsvectorlayer.h"               //defines QgsFieldMap
-#include "qgsvectorfilewriter.h"          //logic for writing shpfiles
-#include "qgsfeature.h"                   //we will need to pass a bunch of these for each rec
-#include "qgsgeometry.h"                  //each feature needs a geometry
-#include "qgspointxy.h"                   //we will use point geometry
-#include "qgscoordinatereferencesystem.h" //needed for creating a srs
-#include "qgscoordinatetransformcontext.h"
-#include "qgsapplication.h" //search path for srs.db
-#include "qgslogger.h"
-#include "qgsfield.h"
-#include "qgis.h" //defines GEOWkt
 
 #if defined( linux )
 #include <langinfo.h>
@@ -482,7 +482,7 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   ml.dataProvider()->addFeature( ft );
   QVERIFY( ml.isValid() );
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter_XXXXXX.gpkg" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   options.driverName = "GPKG";
   options.layerName = "test";
@@ -507,7 +507,7 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
 void TestQgsVectorFileWriter::testTextFieldLength()
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter2_XXXXXX.gpkg" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   QgsVectorLayer vl( "Point?field=firstfield:string(1024)", "test", "memory" );
   QCOMPARE( vl.fields().at( 0 ).length(), 1024 );
@@ -539,7 +539,7 @@ void TestQgsVectorFileWriter::testTextFieldLength()
 void TestQgsVectorFileWriter::testExportArrayToGpkg()
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter3_XXXXXX.gpkg" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   QgsVectorLayer vl( "Point?field=arrayfield:integerlist&field=arrayfield2:stringlist", "test", "memory" );
   QCOMPARE( vl.fields().at( 0 ).type(), QMetaType::Type::QVariantList );
@@ -581,7 +581,7 @@ void TestQgsVectorFileWriter::testExportArrayToGpkg()
 void TestQgsVectorFileWriter::_testExportToGpx( const QString &geomTypeName, const QString &wkt, const QString &expectedLayerName, const QString &inputLayerName, const QStringList &layerOptions )
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter_testExportToGpx" + geomTypeName + "_XXXXXX.gpx" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   QString memLayerDef( geomTypeName );
   if ( inputLayerName == QLatin1String( "track_points" ) )

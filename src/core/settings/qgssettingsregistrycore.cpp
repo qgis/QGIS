@@ -12,29 +12,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QThread>
-
 #include "qgssettingsregistrycore.h"
 
+#include "pal.h"
 #include "qgis.h"
-
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgssettings.h"
-
 #include "qgsbabelformatregistry.h"
+#include "qgsgpsdetector.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
-#include "qgsvectortileconnection.h"
-#include "qgsgpsdetector.h"
 #include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
+#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsproxy.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortileconnection.h"
 
-#include "pal.h"
+#include <QThread>
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default-snap-mode" ), QgsSettingsTree::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 
@@ -120,6 +117,12 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsNetworkCacheDirec
 const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSize = new QgsSettingsEntryInteger64( QStringLiteral( "size-bytes" ), QgsSettingsTree::sTreeNetworkCache, 0, QStringLiteral( "Network disk cache size in bytes (0 = automatic size)" ) );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
+
+const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode>( QStringLiteral( "code-execution-behavior-undetermined-projects" ), QgsSettingsTree::sTreeCore, Qgis::EmbeddedScriptMode::Ask, QStringLiteral( "Behavior for embedded scripts within projects of undetermined trust" ) );
+
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-trusted-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are trusted and allowed execution of embedded scripts" ) );
+
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-denied-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are untrusted and denied execution of embedded scripts" ) );
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -392,6 +395,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
   }
+
   QgsSettings::releaseFlush();
 }
 

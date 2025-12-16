@@ -7,7 +7,8 @@ set(WFS_SRCS
   qgswfsprovidermetadata.cpp
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
-  qgswfsfeatureiterator.cpp
+  qgswfsfeaturehitsasyncrequest.cpp
+  qgswfsfeaturedownloaderimpl.cpp
   qgswfsgetcapabilities.cpp
   qgswfsgetfeature.cpp
   qgswfsrequest.cpp
@@ -19,9 +20,14 @@ set(WFS_SRCS
   qgswfstransactionrequest.cpp
   qgswfsutils.cpp
   qgsbackgroundcachedfeatureiterator.cpp
+  qgsbackgroundcachedfeaturesource.cpp
   qgsbackgroundcachedshareddata.cpp
   qgscachedirectorymanager.cpp
   qgsbasenetworkrequest.cpp
+  qgsfeaturedownloader.cpp
+  qgsfeaturedownloaderimpl.cpp
+  qgsfeaturedownloaderprogresstask.cpp
+  qgsthreadedfeaturedownloader.cpp
 
   oapif/qgsoapiflandingpagerequest.cpp
   oapif/qgsoapifapirequest.cpp
@@ -30,6 +36,7 @@ set(WFS_SRCS
   oapif/qgsoapifcreatefeaturerequest.cpp
   oapif/qgsoapifcql2textexpressioncompiler.cpp
   oapif/qgsoapifdeletefeaturerequest.cpp
+  oapif/qgsoapiffeaturedownloaderimpl.cpp
   oapif/qgsoapifpatchfeaturerequest.cpp
   oapif/qgsoapifputfeaturerequest.cpp
   oapif/qgsoapifitemsrequest.cpp
@@ -37,6 +44,7 @@ set(WFS_SRCS
   oapif/qgsoapifprovider.cpp
   oapif/qgsoapifqueryablesrequest.cpp
   oapif/qgsoapifschemarequest.cpp
+  oapif/qgsoapifshareddata.cpp
   oapif/qgsoapifsingleitemrequest.cpp
   oapif/qgsoapifutils.cpp
 )
@@ -70,10 +78,6 @@ target_link_libraries(provider_wfs_a
   GDAL::GDAL
 )
 
-# require c++17
-target_compile_features(provider_wfs_a PRIVATE cxx_std_17)
-
-
 # We use private headers from core that need this
 target_compile_definitions(provider_wfs_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
@@ -97,9 +101,6 @@ if (WITH_GUI)
     qgis_gui
   )
 
-  # require c++17
-  target_compile_features(provider_wfs_gui_a PRIVATE cxx_std_17)
-
   target_compile_definitions(provider_wfs_gui_a PRIVATE "-DQT_NO_FOREACH")
 
   add_dependencies(provider_wfs_gui_a ui)
@@ -120,9 +121,6 @@ else()
   add_library(provider_wfs MODULE ${WFS_SRCS} ${WFS_GUI_SRCS})
 
   set_target_properties(provider_wfs PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
-
-  # require c++17
-  target_compile_features(provider_wfs PRIVATE cxx_std_17)
 
   # We use private headers from core that need this
   target_compile_definitions(provider_wfs PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")

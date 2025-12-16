@@ -14,29 +14,31 @@
  ***************************************************************************/
 
 #include "qgsvaluerelationwidgetwrapper.h"
-#include "moc_qgsvaluerelationwidgetwrapper.cpp"
-
-#include "qgis.h"
-#include "qgsfields.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsfilterlineedit.h"
-#include "qgsvaluerelationfieldformatter.h"
-#include "qgsattributeform.h"
-#include "qgspostgresstringutils.h"
-
-#include <QComboBox>
-#include <QLineEdit>
-#include <QStringListModel>
-#include <QCompleter>
-#include <QTimer>
-#include <QVBoxLayout>
-#include <QHeaderView>
-#include <QKeyEvent>
-#include <QStandardItemModel>
-#include <QMenu>
 
 #include <nlohmann/json.hpp>
+
+#include "qgis.h"
+#include "qgsattributeform.h"
+#include "qgsfields.h"
+#include "qgsfilterlineedit.h"
+#include "qgspostgresstringutils.h"
+#include "qgsproject.h"
+#include "qgsvaluerelationfieldformatter.h"
+#include "qgsvectorlayer.h"
+
+#include <QComboBox>
+#include <QCompleter>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <QMenu>
+#include <QStandardItemModel>
+#include <QStringListModel>
+#include <QTimer>
+#include <QVBoxLayout>
+
+#include "moc_qgsvaluerelationwidgetwrapper.cpp"
+
 using namespace nlohmann;
 
 ///@cond PRIVATE
@@ -524,7 +526,8 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
   // Do nothing if the value has not changed except for multi edit mode
   // In multi edit mode feature is not updated (so attributeChanged is false) until user validate it but we need to update the
   // value relation which could have an expression depending on another modified field
-  if ( attributeChanged || context().attributeFormMode() == QgsAttributeEditorContext::Mode::MultiEditMode )
+  const bool isMultieditMode { context().attributeFormMode() == QgsAttributeEditorContext::Mode::MultiEditMode };
+  if ( attributeChanged || isMultieditMode )
   {
     QVariant oldValue( value() );
     setFormFeatureAttribute( attribute, newValue );
@@ -534,7 +537,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     {
       populate();
       // Restore value
-      updateValue( oldValue, false );
+      updateValue( isMultieditMode ? oldValue : value(), false );
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.
@@ -560,6 +563,11 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
 
 void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 {
+  // No need to proceed further because the status of the object doesn't need to be updated.
+  if ( !formFeature().isValid() && !feature.isValid() && !mCache.isEmpty() )
+  {
+    return;
+  }
   setFormFeature( feature );
   whileBlocking( this )->populate();
   whileBlocking( this )->setValue( feature.attribute( fieldIdx() ) );

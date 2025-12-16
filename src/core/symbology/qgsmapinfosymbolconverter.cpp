@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmapinfosymbolconverter.h"
-#include "qgslogger.h"
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgssymbol.h"
-#include "qgslinesymbol.h"
+
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgssymbol.h"
 
 //
 // QgsMapInfoSymbolConversionContext
@@ -896,7 +897,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   else if ( identifier >= 41 && identifier < 45 )
   {
     const int count = identifier - 40;
-    QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
+    QgsSimpleLineSymbolLayer *simpleLine = qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
     simpleLine->setCustomDashVector( QVector< qreal >() <<  0 << 5.25 * size << 4 * size << ( 3.25 * size  + ( count - 1 ) * ( 7.25 * size ) ) );
     simpleLine->setCustomDashPatternUnit( sizeUnit );
     simpleLine->setUseCustomDashPattern( true );

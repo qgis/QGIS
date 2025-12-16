@@ -14,21 +14,23 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayersdialog.h"
-#include "moc_qgsprovidersublayersdialog.cpp"
-#include "qgssettings.h"
-#include "qgsprovidersublayermodel.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayertask.h"
-#include "qgsapplication.h"
-#include "qgstaskmanager.h"
-#include "qgsnative.h"
-#include "qgsgui.h"
 
-#include <QPushButton>
-#include <QFileInfo>
-#include <QDir>
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgsprovidersublayermodel.h"
+#include "qgsprovidersublayertask.h"
+#include "qgsproviderutils.h"
+#include "qgssettings.h"
+#include "qgstaskmanager.h"
+
 #include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QPushButton>
 #include <QUrl>
+
+#include "moc_qgsprovidersublayersdialog.cpp"
 
 QgsProviderSublayerDialogModel::QgsProviderSublayerDialogModel( QObject *parent )
   : QgsProviderSublayerModel( parent )

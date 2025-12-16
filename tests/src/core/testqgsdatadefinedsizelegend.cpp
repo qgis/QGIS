@@ -13,11 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsfontutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgstest.h"
 
 static QgsRenderContext _createRenderContext( double mupp, double dpi, double scale )
 {
@@ -25,6 +24,7 @@ static QgsRenderContext _createRenderContext( double mupp, double dpi, double sc
   context.setScaleFactor( dpi / 25.4 );
   context.setRendererScale( scale );
   context.setMapToPixel( QgsMapToPixel( mupp ) );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   return context;
 }
 

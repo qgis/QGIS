@@ -67,12 +67,10 @@ class TestQgsPlot(QgisTestCase):
         )
 
         iterator = layer.getFeatures()
-        gatherer = QgsVectorLayerXyPlotDataGatherer(
-            iterator,
-            expression_context,
-            [series1_details],
-            Qgis.PlotAxisType.Categorical,
-        )
+        gatherer = QgsVectorLayerXyPlotDataGatherer(Qgis.PlotAxisType.Categorical)
+        gatherer.setFeatureIterator(iterator)
+        gatherer.setExpressionContext(expression_context)
+        gatherer.setSeriesDetails([series1_details])
         gatherer.taskCompleted.connect(loop.quit)
 
         QgsApplication.taskManager().addTask(gatherer)
@@ -90,12 +88,10 @@ class TestQgsPlot(QgisTestCase):
         )
 
         iterator = layer.getFeatures()
-        gatherer = QgsVectorLayerXyPlotDataGatherer(
-            iterator,
-            expression_context,
-            [series1_details, series2_details],
-            Qgis.PlotAxisType.Categorical,
-        )
+        gatherer = QgsVectorLayerXyPlotDataGatherer(Qgis.PlotAxisType.Categorical)
+        gatherer.setFeatureIterator(iterator)
+        gatherer.setExpressionContext(expression_context)
+        gatherer.setSeriesDetails([series1_details, series2_details])
         gatherer.taskCompleted.connect(loop.quit)
 
         QgsApplication.taskManager().addTask(gatherer)
@@ -113,13 +109,11 @@ class TestQgsPlot(QgisTestCase):
         )
 
         iterator = layer.getFeatures()
-        gatherer = QgsVectorLayerXyPlotDataGatherer(
-            iterator,
-            expression_context,
-            [series1_details],
-            Qgis.PlotAxisType.Categorical,
-            ["category_c", "category_a"],
-        )
+        gatherer = QgsVectorLayerXyPlotDataGatherer(Qgis.PlotAxisType.Categorical)
+        gatherer.setFeatureIterator(iterator)
+        gatherer.setExpressionContext(expression_context)
+        gatherer.setSeriesDetails([series1_details])
+        gatherer.setPredefinedCategories(["category_c", "category_a"])
         gatherer.taskCompleted.connect(loop.quit)
 
         QgsApplication.taskManager().addTask(gatherer)
@@ -159,9 +153,10 @@ class TestQgsPlot(QgisTestCase):
         )
 
         iterator = layer.getFeatures()
-        gatherer = QgsVectorLayerXyPlotDataGatherer(
-            iterator, expression_context, [series1_details], Qgis.PlotAxisType.Interval
-        )
+        gatherer = QgsVectorLayerXyPlotDataGatherer(Qgis.PlotAxisType.Interval)
+        gatherer.setFeatureIterator(iterator)
+        gatherer.setExpressionContext(expression_context)
+        gatherer.setSeriesDetails([series1_details])
         gatherer.taskCompleted.connect(loop.quit)
 
         QgsApplication.taskManager().addTask(gatherer)
@@ -183,9 +178,10 @@ class TestQgsPlot(QgisTestCase):
         request = QgsFeatureRequest()
         request.addOrderBy('"int"')
         iterator = layer.getFeatures(request)
-        gatherer = QgsVectorLayerXyPlotDataGatherer(
-            iterator, expression_context, [series1_details], Qgis.PlotAxisType.Interval
-        )
+        gatherer = QgsVectorLayerXyPlotDataGatherer(Qgis.PlotAxisType.Interval)
+        gatherer.setFeatureIterator(iterator)
+        gatherer.setExpressionContext(expression_context)
+        gatherer.setSeriesDetails([series1_details])
         gatherer.taskCompleted.connect(loop.quit)
 
         QgsApplication.taskManager().addTask(gatherer)
@@ -204,12 +200,10 @@ class TestQgsPlot(QgisTestCase):
         )
 
         iterator = layer.getFeatures(request)
-        gatherer = QgsVectorLayerXyPlotDataGatherer(
-            iterator,
-            expression_context,
-            [series1_details, series2_details],
-            Qgis.PlotAxisType.Interval,
-        )
+        gatherer = QgsVectorLayerXyPlotDataGatherer(Qgis.PlotAxisType.Interval)
+        gatherer.setFeatureIterator(iterator)
+        gatherer.setExpressionContext(expression_context)
+        gatherer.setSeriesDetails([series1_details, series2_details])
         gatherer.taskCompleted.connect(loop.quit)
 
         QgsApplication.taskManager().addTask(gatherer)

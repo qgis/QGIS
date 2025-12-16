@@ -21,8 +21,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsannotationrectitem.h"
-#include "qgstextformat.h"
 #include "qgsmargins.h"
+#include "qgstextformat.h"
 
 /**
  * \ingroup core

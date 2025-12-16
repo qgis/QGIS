@@ -14,15 +14,16 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include "qgsgeometryvalidationmodel.h"
-#include "moc_qgsgeometryvalidationmodel.cpp"
 
-#include "qgsvectorlayer.h"
-#include "qgssinglegeometrycheck.h"
-#include "qgsfeatureid.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureid.h"
+#include "qgssinglegeometrycheck.h"
+#include "qgsvectorlayer.h"
 
 #include <QIcon>
+
+#include "moc_qgsgeometryvalidationmodel.cpp"
 
 QgsGeometryValidationModel::QgsGeometryValidationModel( QgsGeometryValidationService *geometryValidationService, QObject *parent )
   : QAbstractItemModel( parent )

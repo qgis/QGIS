@@ -8,7 +8,7 @@
 
 
 
-class QgsPlotWidget : QgsPanelWidget
+class QgsPlotWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Base class for widgets which allow control over the properties of plots.
@@ -41,6 +41,28 @@ Creates a plot defined by the current settings in the widget.
 
 .. seealso:: :py:func:`setPlot`
 %End
+
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context generator class that will be used to
+retrieve an expression context for configuration widgets when required.
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+  protected:
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key );
+%Docstring
+Initiate a data-defined property button tied to a plot widget.
+%End
+
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+%Docstring
+Initiate a data-defined property button tied to a plot widget.
+%End
+
+
 };
 
 
@@ -66,7 +88,9 @@ Constructor for QgsBarChartPlotWidget.
 %End
 
     virtual void setPlot( QgsPlot *plot );
+
     virtual QgsPlot *createPlot() /Factory/;
+
 
     static QgsPlotWidget *create( QWidget *parent ) /Factory/;
 %Docstring
@@ -98,7 +122,42 @@ Constructor for QgsLineChartPlotWidget.
 %End
 
     virtual void setPlot( QgsPlot *plot );
+
     virtual QgsPlot *createPlot() /Factory/;
+
+
+    static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+%Docstring
+Creates a new line chart plot configuration widget.
+%End
+
+};
+
+
+
+class QgsPieChartPlotWidget : QgsPlotWidget
+{
+%Docstring(signature="appended")
+Widget class to control the properties of pie chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsPieChartPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for :py:class:`QgsLineChartPlotWidget`.
+
+:param parent: parent widget
+%End
+
+    virtual void setPlot( QgsPlot *plot );
+
+    virtual QgsPlot *createPlot() /Factory/;
+
 
     static QgsPlotWidget *create( QWidget *parent ) /Factory/;
 %Docstring

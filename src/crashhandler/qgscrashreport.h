@@ -21,7 +21,6 @@
 #include <QObject>
 #include <QVector>
 
-
 /**
  * Include information to generate user friendly crash report for QGIS.
  */

@@ -16,18 +16,21 @@
  ***************************************************************************/
 
 #include "qgsprojectmetadata.h"
-#include <QDomNode>
-#include <QDomDocument>
 
-bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement )
+#include "qgstranslationcontext.h"
+
+#include <QDomDocument>
+#include <QDomNode>
+
+bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )
 {
-  QgsAbstractMetadataBase::readMetadataXml( metadataElement );
+  QgsAbstractMetadataBase::readMetadataXml( metadataElement, context );
 
   QDomNode mnl;
 
   // set author
   mnl = metadataElement.namedItem( QStringLiteral( "author" ) );
-  mAuthor = mnl.toElement().text();
+  mAuthor = context.projectTranslator()->translate( "metadata", mnl.toElement().text() );
 
   if ( !mDates.contains( Qgis::MetadataDateType::Created ) )
   {
@@ -40,9 +43,9 @@ bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement )
   return true;
 }
 
-bool QgsProjectMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const
+bool QgsProjectMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  QgsAbstractMetadataBase::writeMetadataXml( metadataElement, document );
+  QgsAbstractMetadataBase::writeMetadataXml( metadataElement, document, context );
 
   // author
   QDomElement author = document.createElement( QStringLiteral( "author" ) );
@@ -57,6 +60,13 @@ bool QgsProjectMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDoc
   metadataElement.appendChild( creation );
 
   return true;
+}
+
+void QgsProjectMetadata::registerTranslations( QgsTranslationContext *translationContext ) const
+{
+  QgsAbstractMetadataBase::registerTranslations( translationContext );
+
+  translationContext->registerTranslation( QStringLiteral( "metadata" ), mAuthor );
 }
 
 void QgsProjectMetadata::combine( const QgsAbstractMetadataBase *other )

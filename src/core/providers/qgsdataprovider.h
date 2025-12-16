@@ -17,17 +17,17 @@
 #define QQGSDATAPROVIDER_H
 
 #include "qgis_core.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsdataproviderelevationproperties.h"
+#include "qgsdatasourceuri.h"
+#include "qgserror.h"
+#include "qgslayermetadata.h"
+
 #include <QDateTime>
+#include <QMutex>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QMutex>
-
-#include "qgsdatasourceuri.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgslayermetadata.h"
-#include "qgserror.h"
-#include "qgsdataproviderelevationproperties.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -162,6 +162,20 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.36
      */
     virtual QString htmlMetadata() const;
+
+    /**
+     * Returns provider specific metadata.
+     *
+     * This returned map contains metadata which is dependent on the provider type.
+     * The returned keys are considered to be stable API for the provider, and can safely
+     * be used to retrieve properties which make sense for a particular provider only
+     * (e.g. backend server-specific properties).
+     *
+     * \note Prior to QGIS 4.0 this method was available for QgsVectorDataProvider only.
+     * \note The default implementation returns an empty variant map.
+     * \since QGIS 4.0
+     */
+    virtual QVariantMap metadata() const { return QVariantMap(); }
 
     /**
      * Set the data source specification.

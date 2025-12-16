@@ -14,26 +14,29 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicsview.h"
-#include "moc_qgsmodelgraphicsview.cpp"
-#include "qgssettings.h"
-#include "qgsmodelviewtool.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelviewtooltemporarykeypan.h"
-#include "qgsmodelviewtooltemporarymousepan.h"
-#include "qgsmodelviewtooltemporarykeyzoom.h"
+
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewtool.h"
+#include "qgsmodelviewtooltemporarykeypan.h"
+#include "qgsmodelviewtooltemporarykeyzoom.h"
+#include "qgsmodelviewtooltemporarymousepan.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelparameter.h"
-#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgssettings.h"
 #include "qgsxmlutils.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include <QDragEnterEvent>
-#include <QScrollBar>
+
 #include <QApplication>
 #include <QClipboard>
+#include <QDragEnterEvent>
 #include <QMimeData>
+#include <QScrollBar>
 #include <QTimer>
+
+#include "moc_qgsmodelgraphicsview.cpp"
 
 ///@cond NOT_STABLE
 
@@ -52,8 +55,8 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
-  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, [=] { friendlySetSceneRect(); } );
-  connect( verticalScrollBar(), &QScrollBar::valueChanged, this, [=] { friendlySetSceneRect(); } );
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
+  connect( verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
 
   mSnapper.setSnapToGrid( true );
 }
@@ -400,7 +403,7 @@ void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 {
   setScene( scene );
 
-  connect( scene, &QgsModelGraphicsScene::sceneRectChanged, this, [=] { friendlySetSceneRect(); } );
+  connect( scene, &QgsModelGraphicsScene::sceneRectChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
 
   // IMPORTANT!
   // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
@@ -471,6 +474,11 @@ void QgsModelGraphicsView::beginCommand( const QString &text )
 void QgsModelGraphicsView::endCommand()
 {
   emit commandEnded();
+}
+
+void QgsModelGraphicsView::abortCommand()
+{
+  emit commandAborted();
 }
 
 void QgsModelGraphicsView::snapSelected()

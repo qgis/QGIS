@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsraycasthit.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRayCastHit
+{
+%Docstring(signature="appended")
+Contains details about the ray intersecting entities when ray casting in
+a 3D map canvas.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsraycasthit.h"
+%End
+  public:
+    QgsRayCastHit();
+
+    double distance() const;
+%Docstring
+Returns the hit's distance from the ray's origin
+%End
+
+    QgsVector3D mapCoordinates() const;
+%Docstring
+Returns the hit position in 3d map coordinates
+%End
+
+    QVariantMap properties() const;
+%Docstring
+Returns a map with the properties of the intersected entity. For vector
+layer hits, the FID value is stored in key "fid". For point cloud layer
+hits, it contains the point attributes keys/values. For tiled scene
+layer hits, it contains the intersecting node details.
+%End
+
+    void setDistance( double distance );
+%Docstring
+Sets the hit's ``distance`` from the ray's origin
+%End
+
+    void setMapCoordinates( const QgsVector3D &point );
+%Docstring
+Sets the hit ``point`` position in 3d map coordinates
+%End
+
+    void setProperties( const QVariantMap &attributes );
+%Docstring
+Sets the point cloud point ``attributes``, empty map if hit was not on a
+point cloud point
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsraycasthit.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -14,30 +14,32 @@
  ***************************************************************************/
 
 #include "qgssymbolbutton.h"
-#include "moc_qgssymbolbutton.cpp"
-#include "qgspanelwidget.h"
-#include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
-#include "qgscolorwidgets.h"
+
+#include "qgsapplication.h"
+#include "qgscolordialog.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
-#include "qgsguiutils.h"
+#include "qgscolorwidgets.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsgui.h"
-#include "qgscolordialog.h"
 #include "qgsfillsymbol.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgspanelwidget.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsvectorlayer.h"
 
-#include <QMenu>
+#include <QBuffer>
 #include <QClipboard>
 #include <QDrag>
-#include <QBuffer>
+#include <QMenu>
+
+#include "moc_qgssymbolbutton.cpp"
 
 QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -65,7 +67,7 @@ void QgsSymbolButton::updateSizeHint()
   switch ( mType )
   {
     case Qgis::SymbolType::Marker:
-      if ( mFixedSizeContraints )
+      if ( mFixedSizeConstraints )
       {
         if ( mSymbol )
         {
@@ -831,16 +833,16 @@ bool QgsSymbolButton::showNull() const
   return mShowNull;
 }
 
-void QgsSymbolButton::setFixedSizeContraints( bool fixedSizeConstraints )
+void QgsSymbolButton::setFixedSizeConstraints( bool fixedSizeConstraints )
 {
-  mFixedSizeContraints = fixedSizeConstraints;
+  mFixedSizeConstraints = fixedSizeConstraints;
 
   updateSizeHint();
 }
 
 bool QgsSymbolButton::fixedSizeConstraints() const
 {
-  return mFixedSizeContraints;
+  return mFixedSizeConstraints;
 }
 
 bool QgsSymbolButton::isNull() const

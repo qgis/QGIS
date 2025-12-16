@@ -15,10 +15,10 @@
 
 #include "qgs3dexportobject.h"
 
-#include <QVector3D>
 #include <QDir>
 #include <QImage>
 #include <QMatrix4x4>
+#include <QVector3D>
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
@@ -36,23 +36,9 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgsabstractmaterialsettings.h"
 
 
-template<typename T>
-void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
-{
-  for ( int i = 0; i < faceIndex.size(); i += 3 )
-  {
-    if ( i + 2 >= faceIndex.size() )
-      continue;
-    // skip invalid triangles
-    if ( faceIndex[i] == faceIndex[i + 1] || faceIndex[i + 1] == faceIndex[i + 2] || faceIndex[i] == faceIndex[i + 2] )
-      continue;
-    for ( int j = 0; j < 3; ++j )
-      vertexIndex << faceIndex[i + j];
-  }
-}
-
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {
+  mVertexPosition.clear();
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
     const QVector3D position( positionsBuffer[i], positionsBuffer[i + 1], positionsBuffer[i + 2] );
@@ -61,20 +47,46 @@ void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &position
   }
 }
 
-void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
+void Qgs3DExportObject::setupTriangle( const QVector<float> &positionsBuffer, const QVector<uint> &facesIndexes, const QMatrix4x4 &transform )
 {
-  insertIndexData<uint>( mIndexes, facesIndexes );
+  mType = Qgs3DExportObject::TriangularFaces;
+  setupPositionCoordinates( positionsBuffer, transform );
+
+  // setup faces
+  mIndexes.clear();
+  for ( int i = 0; i < facesIndexes.size(); i += 3 )
+  {
+    if ( i + 2 >= facesIndexes.size() )
+      continue;
+    // skip invalid triangles
+    if ( facesIndexes[i] == facesIndexes[i + 1] || facesIndexes[i + 1] == facesIndexes[i + 2] || facesIndexes[i] == facesIndexes[i + 2] )
+      continue;
+    for ( int j = 0; j < 3; ++j )
+      mIndexes << facesIndexes[i + j];
+  }
 }
 
-void Qgs3DExportObject::setupLine( const QVector<uint> &lineIndexes )
+void Qgs3DExportObject::setupLine( const QVector<float> &positionsBuffer )
 {
-  Q_UNUSED( lineIndexes );
+  mType = Qgs3DExportObject::LineStrip;
+  setupPositionCoordinates( positionsBuffer );
+
+  // setup indexes
+  mIndexes.clear();
   for ( int i = 0; i < mVertexPosition.size(); i += 3 )
     mIndexes << i / 3 + 1;
 }
 
+void Qgs3DExportObject::setupPoint( const QVector<float> &positionsBuffer )
+{
+  mType = Qgs3DExportObject::Points;
+  setupPositionCoordinates( positionsBuffer );
+}
+
 void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform )
 {
+  mNormals.clear();
+
   // Qt does not provide QMatrix3x3 * QVector3D multiplication so we use QMatrix4x4
   QMatrix3x3 normal3x3 = transform.normalMatrix();
   QMatrix4x4 normal4x4( normal3x3( 0, 0 ), normal3x3( 0, 1 ), normal3x3( 0, 2 ), 0, normal3x3( 1, 0 ), normal3x3( 1, 1 ), normal3x3( 1, 2 ), 0, normal3x3( 2, 0 ), normal3x3( 2, 1 ), normal3x3( 2, 2 ), 0, 0, 0, 0, 1 );
@@ -96,19 +108,21 @@ void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuf
 
 void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesBuffer )
 {
+  mTexturesUV.clear();
   mTexturesUV << texturesBuffer;
 }
 
 void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 {
+  mMaterialParameters.clear();
   QMap<QString, QString> parameters = material->toExportParameters();
   for ( auto it = parameters.begin(); it != parameters.end(); ++it )
   {
-    setMaterialParameter( it.key(), it.value() );
+    mMaterialParameters[it.key()] = it.value();
   }
 }
 
-void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
+void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ ) const
 {
   if ( mType != TriangularFaces )
     return;
@@ -124,7 +138,7 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   }
 }
 
-void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision )
+void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision ) const
 {
   // Set groups
   // turns out grouping doest work as expected in blender
@@ -211,7 +225,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   }
 }
 
-QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath )
+QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath ) const
 {
   QString materialName = mName + "_material";
   if ( mMaterialParameters.size() == 0 && ( mTexturesUV.size() == 0 || mTextureImage.isNull() ) )

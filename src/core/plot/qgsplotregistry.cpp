@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsconfig.h"
-
 #include "qgsplotregistry.h"
-#include "moc_qgsplotregistry.cpp"
+
 #include "qgsbarchartplot.h"
 #include "qgslinechartplot.h"
+#include "qgspiechartplot.h"
 #include "qgsplot.h"
+
+#include "moc_qgsplotregistry.cpp"
 
 QgsPlotRegistry::QgsPlotRegistry( QObject *parent )
   : QObject( parent )
@@ -37,8 +39,9 @@ bool QgsPlotRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
-  addPlotType( new QgsPlotMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChartPlot::create ) );
-  addPlotType( new QgsPlotMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChartPlot::create ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChartPlot::create, QgsBarChartPlot::createDataGatherer ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChartPlot::create, QgsLineChartPlot::createDataGatherer ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "pie" ), QObject::tr( "Pie chart" ), QgsPieChartPlot::create, QgsPieChartPlot::createDataGatherer ) );
 
   return true;
 }

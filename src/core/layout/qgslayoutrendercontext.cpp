@@ -15,8 +15,10 @@
  ***************************************************************************/
 
 #include "qgslayoutrendercontext.h"
-#include "moc_qgslayoutrendercontext.cpp"
+
 #include "qgslayout.h"
+
+#include "moc_qgslayoutrendercontext.cpp"
 
 QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
   : QObject( layout )

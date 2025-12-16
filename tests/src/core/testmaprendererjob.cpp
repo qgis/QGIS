@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-
 #include "qgsapplication.h"
-#include "qgsproject.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmaprendererjob.h"
+#include "qgsproject.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+
+#include <QObject>
 
 class TestQgsMapRendererJob : public QObject
 {

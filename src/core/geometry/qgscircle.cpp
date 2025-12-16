@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgscircle.h"
-#include "qgslinestring.h"
-#include "qgsgeometryutils.h"
-#include "qgstriangle.h"
 
 #include <memory>
 #include <utility>
+
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgstriangle.h"
 
 QgsCircle::QgsCircle()
   : QgsEllipse( QgsPoint(), 0.0, 0.0, 0.0 )

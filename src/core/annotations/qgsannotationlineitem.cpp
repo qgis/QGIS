@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsannotationlineitem.h"
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgslinesymbol.h"
-#include "qgsannotationitemnode.h"
+
 #include "qgsannotationitemeditoperation.h"
+#include "qgsannotationitemnode.h"
 #include "qgscurve.h"
 #include "qgslinestring.h"
+#include "qgslinesymbol.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
 QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()
@@ -144,7 +145,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
       if ( modifiedCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
       {

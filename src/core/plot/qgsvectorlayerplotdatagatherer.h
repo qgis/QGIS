@@ -22,8 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsplot.h"
 #include "qgstaskmanager.h"
-#include <qgsvectorlayerfeatureiterator.h>
-
+#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup core
@@ -60,12 +59,21 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
   public:
 
     QgsVectorLayerAbstractPlotDataGatherer() = default;
-    virtual ~QgsVectorLayerAbstractPlotDataGatherer() = default;
+    ~QgsVectorLayerAbstractPlotDataGatherer() override = default;
 
-    //! Returns the plot data
+    //! Returns the plot data.
     virtual QgsPlotData data() const = 0;
 
-  private:
+    //! Sets the feature \a iterator used to gather data from.
+    void setFeatureIterator( QgsFeatureIterator &iterator ) { mIterator = iterator; }
+
+    //! Sets the expression \a context used when evaluating values being gathered.
+    void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
+
+  protected:
+
+    QgsFeatureIterator mIterator;
+    QgsExpressionContext mExpressionContext;
 
 };
 
@@ -101,27 +109,30 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
     };
 
     /**
-     * The class constructor.
-     * \param iterator a feature iterator
-     * \param expressionContext an expression conext
-     * \param seriesDetails a list of XY series details
-     * \param xAxisType the type of X axis - interval or categorical - which will decide whether X values are interval based based or categories' index
-     * \param predefinedCategories a list of predefined categories, only used when the X axis type is set to Qgis.PlotAxisType.Categorical
+     * The vector layer XY plot data gatherer constructor.
+     * \param xAxisType The X-axis type that will define what type of X values to gather.
      */
-    QgsVectorLayerXyPlotDataGatherer( QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
+    explicit QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval );
     ~QgsVectorLayerXyPlotDataGatherer() override = default;
+
+    //! Sets the series \a details list that will be used to prepare the data being gathered.
+    void setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &details );
+
+    /**
+     * Sets the predefined \a categories list that will be used to restrict the categories used when gathering the data.
+     * \note This is only used when the gatherer's X-axis type is set to categorical.
+     */
+    void setPredefinedCategories( const QStringList &categories );
 
     bool run() override;
 
     QgsPlotData data() const override;
 
   protected:
+
     QgsPlotData mData;
 
   private:
-
-    QgsFeatureIterator mIterator;
-    QgsExpressionContext mExpressionContext;
 
     Qgis::PlotAxisType mXAxisType = Qgis::PlotAxisType::Interval;
     QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> mSeriesDetails;

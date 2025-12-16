@@ -13,23 +13,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
-#include <QObject>
-#include <QDir>
-
 #include "qgsapplication.h"
-#include "qgstranslationcontext.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
-#include <qgsmaplayer.h>
-#include <qgsvectorlayer.h>
-#include <qgslayertree.h>
-#include <qgslayertreegroup.h>
-#include "qgsrelationmanager.h"
-#include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorelement.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgstranslationcontext.h"
+#include "qgsvectorlayer.h"
 
+#include <QDir>
+#include <QObject>
 
 class TestQgsTranslateProject : public QObject
 {
@@ -103,7 +101,7 @@ void TestQgsTranslateProject::createTsFile()
   QFile tsFile( tsFileName );
   QVERIFY( tsFile.exists() );
 
-  tsFile.open( QIODevice::ReadWrite );
+  QVERIFY( tsFile.open( QIODevice::ReadWrite ) );
 
   const QString tsFileContent( tsFile.readAll() );
 
@@ -165,6 +163,13 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>Arterial road</source>" ) );
   QVERIFY( tsFileContent.contains( "<source>Highway road</source>" ) );
   QVERIFY( tsFileContent.contains( "<source>nothing</source>" ) );
+
+  //METADATA
+  QVERIFY( tsFileContent.contains( "<source>Metadata Title</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Metadata Type</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Metadata Abstract</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Metadata Rights</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Webmaster</source>" ) );
 
   tsFile.close();
 }
@@ -255,6 +260,17 @@ void TestQgsTranslateProject::translateProject()
   {
     stringValueList.append( valueList[i].toMap().constBegin().key() );
   }
+
+  //METADATA
+  QCOMPARE( QgsProject::instance()->metadata().title(), QStringLiteral( "Metadatentitel" ) );
+  QCOMPARE( QgsProject::instance()->metadata().type(), QStringLiteral( "Metadatentyp" ) );
+  QCOMPARE( QgsProject::instance()->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
+  QCOMPARE( QgsProject::instance()->metadata().author(), QStringLiteral( "Webmasterin" ) );
+
+  QCOMPARE( lines_layer->metadata().title(), QStringLiteral( "Metadatentitel" ) );
+  QCOMPARE( lines_layer->metadata().type(), QStringLiteral( "Metadatentyp" ) );
+  QCOMPARE( lines_layer->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
+  QCOMPARE( lines_layer->metadata().rights(), QStringList() << QStringLiteral( "Metadatenrechte" ) );
 
   QCOMPARE( stringValueList, expectedStringValueList );
 

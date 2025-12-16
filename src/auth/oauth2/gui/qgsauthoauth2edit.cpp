@@ -12,25 +12,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthoauth2edit.h"
-#include "moc_qgsauthoauth2edit.cpp"
 #include "ui_qgsauthoauth2edit.h"
+#include "qgsauthoauth2edit.h"
 
-#include <QDir>
-#include <QFileDialog>
-#include <QDesktopServices>
-#include <QUrl>
+#include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
+#include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
-#include "qgsauthconfigedit.h"
+#include "qgsjsonutils.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsjsonutils.h"
 
-#include <nlohmann/json.hpp>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
+#include <QUrl>
+
+#include "moc_qgsauthoauth2edit.cpp"
 
 QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
@@ -587,7 +588,7 @@ void QgsAuthOAuth2Edit::selectCurrentDefinedConfig()
 
 void QgsAuthOAuth2Edit::getDefinedCustomDir()
 {
-  const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ), QDir::homePath(), QFileDialog::DontResolveSymlinks );
+  const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select Extra Directory to Parse" ), QDir::homePath(), QFileDialog::DontResolveSymlinks );
   this->raise();
   this->activateWindow();
 
@@ -600,7 +601,7 @@ void QgsAuthOAuth2Edit::getDefinedCustomDir()
 
 void QgsAuthOAuth2Edit::getSoftStatementDir()
 {
-  const QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select software statement file" ), QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
+  const QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select Software Statement File" ), QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
   this->raise();
   this->activateWindow();
 

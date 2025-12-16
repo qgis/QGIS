@@ -6,6 +6,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingRasterLayerDefinition.__attribute_docs__ = {'source': "Source definition. Usually a static property set to a source layer's ID or file name.", 'referenceScale': 'If set to a value > 0, sets a scale at which a raster (e.g., a WMS) should be requested or rendered.', 'dpi': 'Indicates the resolution of the raster source (e.g., a WMS server). By default 96 DPI.'}
+    QgsProcessingRasterLayerDefinition.__annotations__ = {'source': 'QgsProperty', 'referenceScale': float, 'dpi': int}
+    QgsProcessingRasterLayerDefinition.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingOutputLayerDefinition.__attribute_docs__ = {'sink': "Sink/layer definition. Usually a static property set to the destination file name for the sink's layer.", 'destinationProject': 'Destination project. Can be set to a :py:class:`QgsProject` instance in which\nto automatically load the resulting sink/layer after completing processing.\nThe default behavior is not to load the result into any project (``None``).', 'destinationName': "Name to use for sink if it's to be loaded into a destination project.", 'createOptions': "Map of optional sink/layer creation options, which\nare passed to the underlying provider when creating new layers. Known options also\ninclude 'fileEncoding', which is used to specify a file encoding to use for created\nfiles."}
     QgsProcessingOutputLayerDefinition.__annotations__ = {'sink': 'QgsProperty', 'destinationProject': 'QgsProject', 'destinationName': str, 'createOptions': 'Dict[str, object]'}
     QgsProcessingOutputLayerDefinition.__group__ = ['processing']
@@ -34,6 +40,7 @@ try:
     QgsProcessingParameters.parameterAsLayer = staticmethod(QgsProcessingParameters.parameterAsLayer)
     QgsProcessingParameters.parameterAsRasterLayer = staticmethod(QgsProcessingParameters.parameterAsRasterLayer)
     QgsProcessingParameters.parameterAsOutputLayer = staticmethod(QgsProcessingParameters.parameterAsOutputLayer)
+    QgsProcessingParameters.parameterAsOutputFormat = staticmethod(QgsProcessingParameters.parameterAsOutputFormat)
     QgsProcessingParameters.parameterAsFileOutput = staticmethod(QgsProcessingParameters.parameterAsFileOutput)
     QgsProcessingParameters.parameterAsVectorLayer = staticmethod(QgsProcessingParameters.parameterAsVectorLayer)
     QgsProcessingParameters.parameterAsMeshLayer = staticmethod(QgsProcessingParameters.parameterAsMeshLayer)
@@ -76,7 +83,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterCrs.typeName = staticmethod(QgsProcessingParameterCrs.typeName)
     QgsProcessingParameterCrs.fromScriptCode = staticmethod(QgsProcessingParameterCrs.fromScriptCode)
-    QgsProcessingParameterCrs.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
+    QgsProcessingParameterCrs.__overridden_methods__ = ['userFriendlyString', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
     QgsProcessingParameterCrs.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -97,7 +104,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterGeometry.typeName = staticmethod(QgsProcessingParameterGeometry.typeName)
     QgsProcessingParameterGeometry.fromScriptCode = staticmethod(QgsProcessingParameterGeometry.fromScriptCode)
-    QgsProcessingParameterGeometry.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterGeometry.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'userFriendlyString']
     QgsProcessingParameterGeometry.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -131,25 +138,25 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterDistance.typeName = staticmethod(QgsProcessingParameterDistance.typeName)
-    QgsProcessingParameterDistance.__overridden_methods__ = ['clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDistance.__overridden_methods__ = ['userFriendlyString', 'clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterDistance.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterArea.typeName = staticmethod(QgsProcessingParameterArea.typeName)
-    QgsProcessingParameterArea.__overridden_methods__ = ['clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterArea.__overridden_methods__ = ['clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'userFriendlyString']
     QgsProcessingParameterArea.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterVolume.typeName = staticmethod(QgsProcessingParameterVolume.typeName)
-    QgsProcessingParameterVolume.__overridden_methods__ = ['clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterVolume.__overridden_methods__ = ['clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'userFriendlyString']
     QgsProcessingParameterVolume.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterDuration.typeName = staticmethod(QgsProcessingParameterDuration.typeName)
-    QgsProcessingParameterDuration.__overridden_methods__ = ['clone', 'type', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDuration.__overridden_methods__ = ['clone', 'type', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'userFriendlyString']
     QgsProcessingParameterDuration.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -177,7 +184,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterEnum.typeName = staticmethod(QgsProcessingParameterEnum.typeName)
     QgsProcessingParameterEnum.fromScriptCode = staticmethod(QgsProcessingParameterEnum.fromScriptCode)
-    QgsProcessingParameterEnum.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterEnum.__overridden_methods__ = ['userFriendlyString', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterEnum.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -256,7 +263,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterRasterDestination.typeName = staticmethod(QgsProcessingParameterRasterDestination.typeName)
     QgsProcessingParameterRasterDestination.fromScriptCode = staticmethod(QgsProcessingParameterRasterDestination.fromScriptCode)
-    QgsProcessingParameterRasterDestination.__virtual_methods__ = ['supportedOutputRasterLayerExtensions']
+    QgsProcessingParameterRasterDestination.__virtual_methods__ = ['supportedOutputRasterLayerExtensions', 'supportedOutputRasterLayerFormatAndExtensions']
     QgsProcessingParameterRasterDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
     QgsProcessingParameterRasterDestination.__group__ = ['processing']
 except (NameError, AttributeError):
@@ -320,7 +327,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterDateTime.typeName = staticmethod(QgsProcessingParameterDateTime.typeName)
     QgsProcessingParameterDateTime.fromScriptCode = staticmethod(QgsProcessingParameterDateTime.fromScriptCode)
-    QgsProcessingParameterDateTime.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toolTip', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDateTime.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toolTip', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'userFriendlyString']
     QgsProcessingParameterDateTime.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -383,7 +390,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingParameterDefinition.__virtual_methods__ = ['isDestination', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsJsonObject', 'valueAsString', 'valueAsStringList', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'dependsOnOtherParameters', 'toolTip']
+    QgsProcessingParameterDefinition.__virtual_methods__ = ['modelColor', 'userFriendlyString', 'isDestination', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsJsonObject', 'valueAsString', 'valueAsStringList', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'dependsOnOtherParameters', 'toolTip']
     QgsProcessingParameterDefinition.__abstract_methods__ = ['clone', 'type']
     QgsProcessingParameterDefinition.__group__ = ['processing']
 except (NameError, AttributeError):

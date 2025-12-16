@@ -12,16 +12,16 @@
 #define QGSGEOREFMAINWINDOW_H
 
 #include "ui_qgsgeorefpluginguibase.h"
-#include "qgsgeoreftransform.h"
-
-#include "qgsgcplist.h"
-#include "qgsgcppoint.h"
-#include "qgsmapcoordsdialog.h"
-#include "qgsimagewarper.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgssettingstree.h"
 
 #include <memory>
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgcplist.h"
+#include "qgsgcppoint.h"
+#include "qgsgeoreftransform.h"
+#include "qgsimagewarper.h"
+#include "qgsmapcoordsdialog.h"
+#include "qgssettingstree.h"
 
 #include <QPointer>
 
@@ -221,8 +221,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     // utils
     bool validate();
     QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t, bool rasterToWorld = true, uint numSamples = 4 );
-    QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
-    int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
+    static QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
+    static int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
     QString guessWorldFileName( const QString &sourceFileName );
     bool checkFileExisting( const QString &fileName, const QString &title, const QString &question );
     bool equalGCPlists( const QList<QgsGcpPoint> &list1, const QgsGCPList &list2 );

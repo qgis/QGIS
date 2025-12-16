@@ -20,19 +20,19 @@
 #ifndef QGSWMSPROVIDER_H
 #define QGSWMSPROVIDER_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkreplyparser.h"
-#include "qgswmscapabilities.h"
 #include "qgsprovidermetadata.h"
+#include "qgsrasterdataprovider.h"
+#include "qgswmscapabilities.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
-#include <QVector>
+#include <QString>
+#include <QStringList>
 #include <QUrl>
+#include <QVector>
 
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;
@@ -212,6 +212,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
 
     Qgis::DataProviderFlags flags() const override;
 
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
@@ -227,10 +228,10 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     virtual bool hasTiles() const;
 #endif
 
-    virtual QString getMapUrl() const;
-    virtual QString getFeatureInfoUrl() const;
-    virtual QString getTileUrl() const;
-    virtual QString getLegendGraphicUrl() const;
+    QString getMapUrl() const;
+    QString getFeatureInfoUrl() const;
+    QString getTileUrl() const;
+    QString getLegendGraphicUrl() const;
 
     //! Gets WMS version string
     QString wmsVersion();
@@ -354,6 +355,8 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     typedef QList<TilePosition> TilePositions;
 
     static bool isUrlForWMTS( const QString &url );
+
+    QVariantMap metadata() const override;
 
   private slots:
     void identifyReplyFinished();

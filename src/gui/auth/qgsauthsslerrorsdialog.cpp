@@ -14,10 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthcertificateinfo.h"
 #include "qgsauthsslerrorsdialog.h"
-#include "moc_qgsauthsslerrorsdialog.cpp"
+
+#include "qgsapplication.h"
+#include "qgsauthcertificateinfo.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthmanager.h"
 #include "qgsauthsslconfigwidget.h"
+#include "qgsauthtrustedcasdialog.h"
+#include "qgscollapsiblegroupbox.h"
+#include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QDialogButtonBox>
 #include <QFont>
@@ -25,14 +32,7 @@
 #include <QStyle>
 #include <QToolButton>
 
-#include "qgsauthmanager.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthtrustedcasdialog.h"
-#include "qgscollapsiblegroupbox.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthsslerrorsdialog.cpp"
 
 QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QList<QSslError> &sslErrors, QWidget *parent, const QString &digest, const QString &hostport )
   : QDialog( parent )

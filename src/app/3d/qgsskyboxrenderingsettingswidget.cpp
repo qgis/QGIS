@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsskyboxrenderingsettingswidget.h"
-#include "moc_qgsskyboxrenderingsettingswidget.cpp"
+
+#include "qgis.h"
+#include "qgs3dmapsettings.h"
 
 #include <QCheckBox>
 #include <QLineEdit>
-#include "qgs3dmapsettings.h"
-#include "qgis.h"
+
+#include "moc_qgsskyboxrenderingsettingswidget.cpp"
 
 QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *parent )
   : QWidget( parent )

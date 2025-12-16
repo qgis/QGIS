@@ -21,9 +21,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutitemmapitem.h"
-#include <QString>
+
 #include <QObject>
 #include <QPainter>
+#include <QString>
 
 class QDomDocument;
 class QDomElement;

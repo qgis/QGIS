@@ -17,10 +17,10 @@
 #ifndef QGSFIELDSITEM_H
 #define QGSFIELDSITEM_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgsdataitem.h"
+#include "qgis_sip.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsdataitem.h"
 #include "qgsfield.h"
 
 /**

@@ -12,27 +12,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
-#include <QApplication>
-#include <QObject>
-#include <QSplashScreen>
-#include <QString>
-#include <QStringList>
-#include <QRegularExpression>
-
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsclipboard.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsfield.h"
-#include "qgsclipboard.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgspoint.h"
-#include "qgssettings.h"
-#include "qgsvectortilelayer.h"
 #include "qgsselectioncontext.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+
+#include <QApplication>
+#include <QObject>
+#include <QRegularExpression>
+#include <QSplashScreen>
+#include <QString>
+#include <QStringList>
 
 /**
  * \ingroup UnitTests

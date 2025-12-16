@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgsoraclefeatureiterator.h"
-#include "qgsoracleprovider.h"
-#include "qgsoracleconnpool.h"
-#include "qgsoracleexpressioncompiler.h"
-#include "qgsoracletransaction.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgsgeometryengine.h"
-
-#include <QObject>
 
 #include <algorithm>
+
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsoracleconnpool.h"
+#include "qgsoracleexpressioncompiler.h"
+#include "qgsoracleprovider.h"
+#include "qgsoracletransaction.h"
+
+#include <QObject>
 
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )

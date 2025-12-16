@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProjectViewSettings : QObject
 {
 %Docstring(signature="appended")
@@ -95,6 +96,22 @@ should be calculated based on the layers in the project.
 .. seealso:: :py:func:`fullExtent`
 
 .. versionadded:: 3.18
+%End
+
+    void setRestoreProjectExtentOnProjectLoad( bool state );
+%Docstring
+Sets whether the project's preset full extent should be restored when
+the project is loaded.
+
+.. versionadded:: 4.0
+%End
+
+    bool restoreProjectExtentOnProjectLoad();
+%Docstring
+Returns whether the project's preset full extent should be restored when
+the project is loaded.
+
+.. versionadded:: 4.0
 %End
 
     QgsReferencedRectangle fullExtent() const;

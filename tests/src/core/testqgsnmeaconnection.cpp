@@ -15,12 +15,12 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
 #include "qgis.h"
 #include "qgsnmeaconnection.h"
+#include "qgstest.h"
 
-#include <QObject>
 #include <QBuffer>
+#include <QObject>
 #include <QSignalSpy>
 
 class ReplayNmeaConnection : public QgsNmeaConnection

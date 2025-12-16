@@ -15,10 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgssourceselectprovider.h"
-#include "qgspointcloudsourceselect.h"
 #include "qgspointcloudproviderguimetadata.h"
+
+#include "qgsapplication.h"
+#include "qgspointcloudsourceselect.h"
+#include "qgssourceselectprovider.h"
 
 ///@cond PRIVATE
 

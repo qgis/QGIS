@@ -16,8 +16,8 @@
 #ifndef QGSCOLORWIDGETWRAPPER_H
 #define QGSCOLORWIDGETWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
 
 SIP_NO_FILE
 

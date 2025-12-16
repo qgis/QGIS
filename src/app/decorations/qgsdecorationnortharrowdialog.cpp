@@ -11,20 +11,23 @@
  ***************************************************************************/
 
 #include "qgsdecorationnortharrowdialog.h"
-#include "moc_qgsdecorationnortharrowdialog.cpp"
+
+#include <cmath>
+
 #include "qgsdecorationnortharrow.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsproject.h"
-#include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 #include "qgssvgselectorwidget.h"
-#include "qgsgui.h"
+#include "qgssymbollayerutils.h"
 
-#include <QPainter>
-#include <cmath>
 #include <QDialogButtonBox>
+#include <QPainter>
 #include <QPushButton>
 #include <QSvgRenderer>
+
+#include "moc_qgsdecorationnortharrowdialog.cpp"
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
   : QDialog( parent )

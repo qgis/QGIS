@@ -16,19 +16,17 @@
 #ifndef QGSRELATION_H
 #define QGSRELATION_H
 
-#include <QList>
-#include <QDomNode>
-#include <QPair>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsattributes.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrelationcontext.h"
-#include "qgsattributes.h"
 
-#include "qgis_sip.h"
+#include <QDomNode>
+#include <QList>
+#include <QPair>
 
 class QgsFeatureIterator;
-class QgsFeature;
 class QgsFeatureRequest;
 class QgsVectorLayer;
 class QgsRelationPrivate;
@@ -45,10 +43,15 @@ class CORE_EXPORT QgsRelation
     Q_GADGET
 
     Q_PROPERTY( QString id READ id WRITE setId )
+    Q_PROPERTY( QString referencingLayerId READ referencingLayerId WRITE setReferencingLayer )
     Q_PROPERTY( QgsVectorLayer *referencingLayer READ referencingLayer )
+    Q_PROPERTY( QList<int> referencingFields READ referencedFields )
+    Q_PROPERTY( QString referencedLayerId READ referencedLayerId WRITE setReferencedLayer )
     Q_PROPERTY( QgsVectorLayer *referencedLayer READ referencedLayer )
+    Q_PROPERTY( QList<int> referencedFields READ referencedFields )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( bool isValid READ isValid )
+    Q_PROPERTY( Qgis::RelationshipStrength strength READ strength WRITE setStrength )
     Q_PROPERTY( QString polymorphicRelationId READ polymorphicRelationId WRITE setPolymorphicRelationId )
     Q_PROPERTY( QgsPolymorphicRelation polymorphicRelation READ polymorphicRelation )
 
@@ -101,6 +104,7 @@ class CORE_EXPORT QgsRelation
      * changed.
      */
     QgsRelation( const QgsRelation &other );
+    SIP_SKIP QgsRelation( QgsRelation &&other );
 
     /**
      * Copies a relation.
@@ -108,6 +112,7 @@ class CORE_EXPORT QgsRelation
      * changed.
      */
     QgsRelation &operator=( const QgsRelation &other );
+    QgsRelation &operator=( QgsRelation &&other );
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
@@ -161,7 +166,7 @@ class CORE_EXPORT QgsRelation
      * \param referencingField  The field name on the referencing (child) layer (FK)
      * \param referencedField   The field name on the referenced (parent) layer  (PK)
      */
-    void addFieldPair( const QString &referencingField, const QString &referencedField );
+    Q_INVOKABLE void addFieldPair( const QString &referencingField, const QString &referencedField );
 
     /**
      * Add a field pair which is part of this relation
@@ -205,7 +210,7 @@ class CORE_EXPORT QgsRelation
      * \see getRelatedFeatures()
      * \see getRelatedFeaturesRequest()
      */
-    QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
+    Q_INVOKABLE QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
 
     /**
      * Creates a request to return the feature on the referenced (parent) layer
@@ -236,7 +241,7 @@ class CORE_EXPORT QgsRelation
      * \returns The referenced (parent) feature, or an invalid feature if no matching feature
      * was found
      */
-    QgsFeature getReferencedFeature( const QgsFeature &feature ) const;
+    Q_INVOKABLE QgsFeature getReferencedFeature( const QgsFeature &feature ) const;
 
     /**
      * Returns a human readable name for this relation. Mostly used as title for the children.

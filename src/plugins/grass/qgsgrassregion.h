@@ -17,11 +17,12 @@
 #define QGSGRASSREGION_H
 
 #include "ui_qgsgrassregionbase.h"
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaptool.h"
-#include "qgsrubberband.h"
 #include "qgspointxy.h"
+#include "qgsrubberband.h"
 
 class QgsGrassPlugin;
 class QgsGrassRegionEdit;
@@ -115,7 +116,7 @@ class QgsGrassRegion : public QWidget, private Ui::QgsGrassRegionBase
     void refreshGui();
 
     //! Currently updating GUI, don't run *Changed methods
-    bool mUpdatingGui;
+    bool mUpdatingGui = false;
 
     // Format N, S, E, W value
     QString formatExtent( double v );
@@ -148,7 +149,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     void deactivate() override;
 
     //! Gets the rectangle
-    QgsRectangle getRegion();
+    QgsRectangle getRegion() const;
 
     //! refresh the rectangle displayed in canvas
     void setRegion( const QgsPointXY &, const QgsPointXY & );

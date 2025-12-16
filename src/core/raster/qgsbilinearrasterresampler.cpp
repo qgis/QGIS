@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgsbilinearrasterresampler.h"
-#include "qgsgdalutils.h"
-#include <QImage>
+
 #include <cmath>
+
+#include "qgsgdalutils.h"
+
+#include <QImage>
 
 QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
 {

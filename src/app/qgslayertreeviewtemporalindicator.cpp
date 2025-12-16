@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewtemporalindicator.h"
-#include "moc_qgslayertreeviewtemporalindicator.cpp"
-#include "qgslayertreeview.h"
-#include "qgslayertree.h"
-#include "qgsmaplayertemporalproperties.h"
+
 #include "qgisapp.h"
+#include "qgslayertree.h"
+#include "qgslayertreeview.h"
+#include "qgsmaplayertemporalproperties.h"
+
+#include "moc_qgslayertreeviewtemporalindicator.cpp"
 
 QgsLayerTreeViewTemporalIndicatorProvider::QgsLayerTreeViewTemporalIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

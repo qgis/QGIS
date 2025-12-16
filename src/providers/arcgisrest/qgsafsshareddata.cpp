@@ -14,22 +14,23 @@
  ***************************************************************************/
 
 #include "qgsafsshareddata.h"
-#include "qgsarcgisrestutils.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsarcgisrestquery.h"
+#include "qgsarcgisrestutils.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgsjsonutils.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsblockingnetworkrequest.h"
 #include "qgsreadwritelocker.h"
-#include "qgsjsonutils.h"
+#include "qgssetrequestinitiator_p.h"
 
-#include <QUrlQuery>
+#include <QFile>
 #include <QNetworkRequest>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-#include <QFile>
-
-#include <nlohmann/json.hpp>
+#include <QUrlQuery>
 
 long long QgsAfsSharedData::objectIdCount() const
 {

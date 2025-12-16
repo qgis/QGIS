@@ -14,16 +14,22 @@
  ***************************************************************************/
 
 #include "qgsexiftools.h"
-#include "moc_qgsexiftools.cpp"
+
+#include "qgslogger.h"
 #include "qgspoint.h"
 
+#include "moc_qgsexiftools.cpp"
+
+#ifdef HAVE_EXIV2
 #include <exiv2/exiv2.hpp>
+#endif
 
 #include <QDate>
 #include <QRegularExpression>
 #include <QFileInfo>
 #include <QTime>
 
+#ifdef HAVE_EXIV2
 double readRational( const Exiv2::Value &value, long n = 0 )
 {
   const Exiv2::Rational rational = value.toRational( n );
@@ -51,7 +57,7 @@ double readCoordinate( const Exiv2::Value &value )
     div *= 60;
   }
   return res;
-};
+}
 
 QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
 {
@@ -284,9 +290,11 @@ QString doubleToExifCoordinateString( const double val )
   const int seconds = static_cast< int >( std::floor( s * 1000 ) );
   return QStringLiteral( "%1/1 %2/1 %3/1000" ).arg( degrees ).arg( minutes ).arg( seconds );
 }
+#endif // HAVE_EXIV2
 
 QVariant QgsExifTools::readTag( const QString &imagePath, const QString &key )
 {
+#ifdef HAVE_EXIV2
   if ( !QFileInfo::exists( imagePath ) )
     return QVariant();
 
@@ -323,10 +331,17 @@ QVariant QgsExifTools::readTag( const QString &imagePath, const QString &key )
   {
     return QVariant();
   }
+#else
+  Q_UNUSED( imagePath )
+  Q_UNUSED( key )
+  QgsDebugError( QStringLiteral( "QGIS is built without exiv2 support" ) );
+  return QVariant();
+#endif
 }
 
 QVariantMap QgsExifTools::readTags( const QString &imagePath )
 {
+#ifdef HAVE_EXIV2
   if ( !QFileInfo::exists( imagePath ) )
     return QVariantMap();
 
@@ -366,17 +381,29 @@ QVariantMap QgsExifTools::readTags( const QString &imagePath )
   {
     return QVariantMap();
   }
+#else
+  Q_UNUSED( imagePath )
+  QgsDebugError( QStringLiteral( "QGIS is built without exiv2 support" ) );
+  return QVariantMap();
+#endif
 }
 
 bool QgsExifTools::hasGeoTag( const QString &imagePath )
 {
+#ifdef HAVE_EXIV2
   bool ok = false;
   QgsExifTools::getGeoTag( imagePath, ok );
   return ok;
+#else
+  Q_UNUSED( imagePath )
+  QgsDebugError( QStringLiteral( "QGIS is built without exiv2 support" ) );
+  return false;
+#endif
 }
 
 QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
 {
+#ifdef HAVE_EXIV2
   ok = false;
   if ( !QFileInfo::exists( imagePath ) )
     return QgsPoint();
@@ -441,10 +468,17 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
   {
     return QgsPoint();
   }
+#else
+  Q_UNUSED( imagePath )
+  ok = false;
+  QgsDebugError( QStringLiteral( "QGIS is built without exiv2 support" ) );
+  return QgsPoint();
+#endif
 }
 
 bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details )
 {
+#ifdef HAVE_EXIV2
   try
   {
     std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
@@ -474,10 +508,18 @@ bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &loca
     return false;
   }
   return true;
+#else
+  Q_UNUSED( imagePath )
+  Q_UNUSED( location )
+  Q_UNUSED( details )
+  QgsDebugError( QStringLiteral( "QGIS is built without exiv2 support" ) );
+  return false;
+#endif
 }
 
 bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const QVariant &value )
 {
+#ifdef HAVE_EXIV2
   try
   {
     std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
@@ -622,4 +664,11 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
     return false;
   }
   return true;
+#else
+  Q_UNUSED( imagePath )
+  Q_UNUSED( tag )
+  Q_UNUSED( value )
+  QgsDebugError( QStringLiteral( "QGIS is built without exiv2 support" ) );
+  return false;
+#endif
 }

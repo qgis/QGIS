@@ -14,47 +14,49 @@
 ***************************************************************************/
 
 #include "qgsarcgisrestutils.h"
-#include "moc_qgsarcgisrestutils.cpp"
-#include "qgsfields.h"
-#include "qgslogger.h"
-#include "qgspropertytransformer.h"
-#include "qgsrectangle.h"
-#include "qgspallabeling.h"
-#include "qgssymbol.h"
-#include "qgssymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsrenderer.h"
-#include "qgsrulebasedlabeling.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgscategorizedsymbolrenderer.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgscircularstring.h"
-#include "qgsmulticurve.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgscurve.h"
-#include "qgsgeometryengine.h"
-#include "qgsmultisurface.h"
-#include "qgsmultilinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgsmultipoint.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsvariantutils.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgscolorrampimpl.h"
 
-#include <QRegularExpression>
-#include <QUrl>
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgscircularstring.h"
 #include "qgsclassificationcustom.h"
 #include "qgsclassificationequalinterval.h"
 #include "qgsclassificationfixedinterval.h"
 #include "qgsclassificationjenks.h"
 #include "qgsclassificationquantile.h"
 #include "qgsclassificationstandarddeviation.h"
+#include "qgscolorrampimpl.h"
+#include "qgscurve.h"
+#include "qgsfields.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometryengine.h"
 #include "qgsgraduatedsymbolrenderer.h"
+#include "qgslinestring.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsmultisurface.h"
+#include "qgspallabeling.h"
+#include "qgspolygon.h"
+#include "qgspropertytransformer.h"
+#include "qgsrectangle.h"
+#include "qgsrenderer.h"
+#include "qgsrulebasedlabeling.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include <QRegularExpression>
+#include <QUrl>
+
+#include "moc_qgsarcgisrestutils.cpp"
 
 QMetaType::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
@@ -1955,6 +1957,8 @@ Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QSt
     return Qgis::ArcGisRestServiceType::GPServer;
   else if ( type.compare( QLatin1String( "GeocodeServer" ), Qt::CaseInsensitive ) == 0 )
     return Qgis::ArcGisRestServiceType::GeocodeServer;
+  else if ( type.compare( QLatin1String( "SceneServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::SceneServer;
 
   return Qgis::ArcGisRestServiceType::Unknown;
 }

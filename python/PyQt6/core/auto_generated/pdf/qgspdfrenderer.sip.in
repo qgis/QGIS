@@ -12,6 +12,9 @@
 
 
 
+
+
+
 class QgsPdfRenderer
 {
 %Docstring(signature="appended")

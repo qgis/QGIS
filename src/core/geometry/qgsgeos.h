@@ -16,12 +16,14 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOS_H
 #define QGSGEOS_H
 
+#include "qgsconfig.h"
+
+#include <geos_c.h>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsgeometryengine.h"
 #include "qgsgeometry.h"
-#include "qgsconfig.h"
-#include <geos_c.h>
+#include "qgsgeometryengine.h"
 
 class QgsLineString;
 class QgsPolygon;
@@ -437,7 +439,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param tolerance tolerance to determine when iteration should end
      * \param errorMsg will be set to descriptive error string if the operation fails
      *
-     * \returns maximum inscribed circle geometry
+     * \returns A two-point linestring geometry, with the first point at the center of the inscribed circle and the second
+     * on the boundary of the inscribed circle.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.8 or earlier.
      *
@@ -466,7 +469,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param boundary optional set of boundary obstacles
      * \param errorMsg will be set to descriptive error string if the operation fails
      *
-     * \returns largest empty circle geometry
+     * \returns A two-point linestring geometry, with first point at the center of the inscribed circle and the second
+     * on the boundary of the inscribed circle.
      *
      * \warning the \a tolerance value must be a value greater than 0, or the algorithm may never converge on a solution
      *

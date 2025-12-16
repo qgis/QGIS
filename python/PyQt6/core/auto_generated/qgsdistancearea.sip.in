@@ -9,6 +9,7 @@
 
 
 
+
 class QgsDistanceArea
 {
 %Docstring(signature="appended")

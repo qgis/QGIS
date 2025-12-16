@@ -22,7 +22,14 @@
 #ifndef QGSWFSGETFEATURE_H
 #define QGSWFSGETFEATURE_H
 
+#include "qgsfeaturerequest.h"
 #include "qgswfsparameters.h"
+
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
 
 namespace QgsWfs
 {
@@ -76,6 +83,8 @@ namespace QgsWfs
    * Output WFS  GetFeature response
    */
   void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
+
+  QString getSrsNameFromVersion( const QgsCoordinateReferenceSystem &crs );
 
 } // namespace QgsWfs
 

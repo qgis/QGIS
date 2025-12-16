@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcategorizeusingstyle.h"
-#include "qgsstyle.h"
+
 #include "qgscategorizedsymbolrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyle.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGeometryCheck
 {
 %Docstring(signature="appended")
@@ -127,6 +128,15 @@ the system is aware of the available geometry checks.
       LayerCheck
     };
 
+    enum class Result
+    {
+      Success,
+      Canceled,
+      DuplicatedUniqueId,
+      InvalidReferenceLayer,
+      GeometryOverlayError
+    };
+
     enum Flag
     {
       AvailableInValidation
@@ -193,13 +203,16 @@ A list of geometry types for which this check can be performed.
 Flags for this geometry check.
 %End
 
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+    virtual Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const;
 %Docstring
 The main worker method. Check all features available from
 ``featurePools`` and write errors found to ``errors``. Other status
 messages can be written to ``messages``. Progress should be reported to
 ``feedback``. Only features and layers listed in ``ids`` should be
 checked.
+
+:return: QgsGeometryCheck.Result.Success in case of success or error
+         value on failure.
 
 .. versionadded:: 3.4
 %End
@@ -252,6 +265,7 @@ Returns the context
 %End
 
   protected:
+
 
 
 

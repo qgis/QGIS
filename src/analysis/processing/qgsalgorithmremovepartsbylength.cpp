@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmremovepartsbylength.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurve.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 
@@ -90,7 +91,7 @@ Qgis::ProcessingFeatureSourceFlags QgsRemovePartsByLengthAlgorithm::sourceFlags(
 
 void QgsRemovePartsByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance > minLength = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with lengths less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minLength = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with lengths less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   minLength->setIsDynamic( true );
   minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
   minLength->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -120,21 +121,20 @@ QgsFeatureList QgsRemovePartsByLengthAlgorithm::processFeature( const QgsFeature
     QgsGeometry outputGeometry;
     if ( const QgsGeometryCollection *inputCollection = qgsgeometry_cast< const QgsGeometryCollection * >( geometry.constGet() ) )
     {
-      std::unique_ptr< QgsAbstractGeometry> filteredGeometry( geometry.constGet()->createEmptyWithSameType() );
-      QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( filteredGeometry.get() );
+      std::unique_ptr< QgsGeometryCollection > filteredGeometry( inputCollection->createEmptyWithSameType() );
       const int size = inputCollection->numGeometries();
-      collection->reserve( size );
+      filteredGeometry->reserve( size );
       for ( int i = 0; i < size; ++i )
       {
         if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( inputCollection->geometryN( i ) ) )
         {
           if ( curve->length() >= minLength )
           {
-            collection->addGeometry( curve->clone() );
+            filteredGeometry->addGeometry( curve->clone() );
           }
         }
       }
-      if ( collection->numGeometries() == 0 )
+      if ( filteredGeometry->numGeometries() == 0 )
       {
         // skip empty features
         return {};

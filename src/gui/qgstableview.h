@@ -16,9 +16,10 @@
 #ifndef QGSTABLEVIEW_H
 #define QGSTABLEVIEW_H
 
-#include <QTableView>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QTableView>
 
 /**
  * \class QgsTableView

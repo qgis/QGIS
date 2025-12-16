@@ -17,16 +17,16 @@
 #ifndef QGSOPTIONSDIALOGBASE_H
 #define QGSOPTIONSDIALOGBASE_H
 
+#include <functional>
+
+#include "qgis_gui.h"
 #include "qgsguiutils.h"
 #include "qgssettings.h"
-#include "qgis_gui.h"
-
-#include <functional>
 
 #include <QDialog>
 #include <QPointer>
-#include <QStyledItemDelegate>
 #include <QSortFilterProxyModel>
+#include <QStyledItemDelegate>
 
 class QDialogButtonBox;
 class QListWidget;
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * Determine if the options list is in icon only mode
      */
-    bool iconOnly() { return mIconOnly; }
+    bool iconOnly() const { return mIconOnly; }
 
     /**
      * Sets the dialog \a page (by object name) to show.

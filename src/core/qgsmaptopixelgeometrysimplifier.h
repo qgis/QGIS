@@ -17,12 +17,14 @@
 #ifndef QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsgeometrysimplifier.h"
+
 #include <QPolygonF>
-#include <memory>
 
 class QgsAbstractGeometry;
 class QgsWkbPtr;

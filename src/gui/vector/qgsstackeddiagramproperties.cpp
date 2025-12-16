@@ -15,22 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsstackeddiagramproperties.h"
+
 #include "diagram/qgshistogramdiagram.h"
 #include "diagram/qgspiediagram.h"
-#include "diagram/qgstextdiagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
-
-#include "qgsgui.h"
+#include "diagram/qgstextdiagram.h"
 #include "qgsdiagramproperties.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsproject.h"
-#include "qgsstackeddiagramproperties.h"
-#include "moc_qgsstackeddiagramproperties.cpp"
 #include "qgsvectorlayer.h"
-#include "qgshelp.h"
 
 #include <QMimeData>
+
+#include "moc_qgsstackeddiagramproperties.cpp"
 
 QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas )
   : QgsPanelWidget( parent )

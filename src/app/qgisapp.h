@@ -38,6 +38,7 @@ class QValidator;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
+class QgsAbout;
 class QgsAppDbUtils;
 class QgsAnnotation;
 class QgsMapCanvasAnnotationItem;
@@ -54,6 +55,7 @@ class QgsCustomProjectOpenHandler;
 class QgsCustomLayerOrderWidget;
 class QgsDockWidget;
 class QgsDoubleSpinBox;
+class QgsElevationProfile;
 class QgsFeature;
 class QgsFeatureStore;
 class QgsGeometry;
@@ -164,35 +166,35 @@ class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
 
-#include <QMainWindow>
-#include <QToolBar>
-#include <QAbstractSocket>
-#include <QPointer>
-#include <QSslError>
-#include <QDateTime>
-#include <QStackedWidget>
-
-#include "qgsauthmanager.h"
 #include "qgsconfig.h"
-#include "qgspointxy.h"
-#include "qgsmimedatautils.h"
-#include "qgsrecentprojectsitemsmodel.h"
-#include "qgsrasterminmaxorigin.h"
-#include "qgslayertreeregistrybridge.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsoptionswidgetfactory.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsmasterlayoutinterface.h"
-#include "qgsmaptoolselect.h"
-#include "qgsvectorlayersaveasdialog.h"
-#include "qgis.h"
 #include "ui_qgisapp.h"
+
+#include "qgis.h"
 #include "qgis_app.h"
 #include "qgsappdevtoolutils.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsauthmanager.h"
+#include "qgslayertreeregistrybridge.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsmaptoolselect.h"
+#include "qgsmasterlayoutinterface.h"
+#include "qgsmimedatautils.h"
 #include "qgsoptionsutils.h"
+#include "qgsoptionswidgetfactory.h"
+#include "qgspointxy.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgsrecentprojectsitemsmodel.h"
+#include "qgsvectorlayersaveasdialog.h"
 
+#include <QAbstractSocket>
+#include <QDateTime>
 #include <QGestureEvent>
+#include <QMainWindow>
+#include <QPointer>
+#include <QSslError>
+#include <QStackedWidget>
 #include <QTapAndHoldGesture>
+#include <QToolBar>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -347,6 +349,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates a menu with actions for opening layout designers
     void populateLayoutsMenu( QMenu *menu );
 
+    //! Populates a menu with actions for opening elevation profiles
+    void populateElevationProfilesMenu( QMenu *menu );
+
     //! Populates a menu with actions for 3D views
     void populate3DMapviewsMenu( QMenu *menu );
 
@@ -452,6 +457,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this layout then it will be activated.
      */
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Opens an elevation profile widget for an existing \a profile.
+     * If a widget already exists for this profile then it will be activated.
+     */
+    QgsElevationProfileWidget *openElevationProfile( QgsElevationProfile *profile );
 
     /**
      * Returns a list of all 3D map canvases open in the app.
@@ -571,6 +582,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionVertexToolActiveLayer() { return mActionVertexToolActiveLayer; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
+    QAction *actionChamferFillet() { return mActionChamferFillet; }
     QAction *actionPan() { return mActionPan; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
@@ -1784,6 +1796,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Slot to handle display of layouts menu, e.g. sorting
     void layoutsMenuAboutToShow();
 
+    //! Slot to handle display of elevation profiles menu
+    void elevationProfilesMenuAboutToShow();
+
     //! Slot to handle display of 3D views menu
     void views3DMenuAboutToShow();
 
@@ -1843,6 +1858,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void moveFeatureCopy();
     //! activates the offset curve tool
     void offsetCurve();
+    //! activates the chamfer fillet tool
+    void chamferFillet();
     //! activates the reshape features tool
     void reshapeFeatures();
     //! activates the split features tool
@@ -2596,6 +2613,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
 
+    QSet<QgsElevationProfileWidget * > mElevationProfileWidgets;
+
     //! QGIS-internal vector feature clipboard
     QgsClipboard *mInternalClipboard = nullptr;
 
@@ -2807,6 +2826,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool mBlockAutoSelectAddedLayer = false;
 
     int mFreezeCount = 0;
+
+    QgsAbout *mAboutDialog = nullptr;
+
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
 

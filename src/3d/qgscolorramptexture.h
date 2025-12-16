@@ -20,18 +20,17 @@
 
 /// @cond PRIVATE
 
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QTexture>
+#include "qgscolorrampshader.h"
 
+#include <QByteArray>
 #include <QUrl>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
-#include <QByteArray>
-
-#include "qgscolorrampshader.h"
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTexture>
 
 #define SIP_NO_FILE
 

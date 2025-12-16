@@ -17,13 +17,13 @@
 
 #include "qgsmodule.h"
 #include "qgsserverogcapi.h"
-#include "qgswfs3handlers.h"
 #include "qgsserverstatichandler.h"
+#include "qgswfs3handlers.h"
 
 /**
  * \ingroup server
  * \class QgsWfsModule
- * \brief Module specialized for WFS3 service
+ * \brief Module specialized for OAPIF (WFS3) service
  * \since QGIS 3.10
  */
 class QgsWfs3Module : public QgsServiceModule
@@ -31,7 +31,17 @@ class QgsWfs3Module : public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsServerOgcApi *wfs3Api = new QgsServerOgcApi { serverIface, QStringLiteral( "/wfs3" ), QStringLiteral( "OGC WFS3 (Draft)" ), QStringLiteral( "1.0.0" ) };
+      // TODO: remove when QGIS 4 is released
+#if _QGIS_VERSION_INT >= 40000
+      QString rootPath = QStringLiteral( "/ogcapi" );
+#else
+      QString rootPath = QStringLiteral( "/wfs3" );
+#endif
+      if ( serverIface && serverIface->serverSettings() && !serverIface->serverSettings()->apiWfs3RootPath().isEmpty() )
+      {
+        rootPath = serverIface->serverSettings()->apiWfs3RootPath();
+      }
+      auto wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, QStringLiteral( "OAPIF" ), QStringLiteral( "1.0.0" ) );
       // Register handlers
       wfs3Api->registerHandler<QgsWfs3CollectionsItemsHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsFeatureHandler>();
@@ -40,11 +50,11 @@ class QgsWfs3Module : public QgsServiceModule
       wfs3Api->registerHandler<QgsWfs3ConformanceHandler>();
       wfs3Api->registerHandler<QgsServerStaticHandler>();
       // API handler must access to the whole API
-      wfs3Api->registerHandler<QgsWfs3APIHandler>( wfs3Api );
+      wfs3Api->registerHandler<QgsWfs3APIHandler>( wfs3Api.get() );
       wfs3Api->registerHandler<QgsWfs3LandingPageHandler>();
 
       // Register API
-      registry.registerApi( wfs3Api );
+      registry.registerApi( wfs3Api.release() );
     }
 };
 

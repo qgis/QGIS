@@ -19,14 +19,14 @@
 #ifndef QGSSERVERCACHEMANAGER_H
 #define QGSSERVERCACHEMANAGER_H
 
-#include "qgsservercachefilter.h"
-#include "qgsaccesscontrol.h"
-#include "qgsserverrequest.h"
-
-#include <QDomDocument>
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsaccesscontrol.h"
+#include "qgsservercachefilter.h"
+#include "qgsserverrequest.h"
 #include "qgsserversettings.h"
+
+#include <QDomDocument>
 
 class QgsProject;
 

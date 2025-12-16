@@ -16,11 +16,12 @@
 #ifndef QGSPOINTCLOUDEXPRESSIONPRIVATE_H
 #define QGSPOINTCLOUDEXPRESSIONPRIVATE_H
 
-#include <QString>
 #include <memory>
 
 #include "qgsexpression.h"
 #include "qgspointcloudexpressionnode.h"
+
+#include <QString>
 
 /// @cond PRIVATE
 

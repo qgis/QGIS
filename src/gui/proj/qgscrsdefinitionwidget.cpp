@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgscrsdefinitionwidget.h"
-#include "moc_qgscrsdefinitionwidget.cpp"
+
+#include <proj.h>
+
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprojutils.h"
 
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-#include <proj.h>
+
+#include "moc_qgscrsdefinitionwidget.cpp"
 
 QgsCrsDefinitionWidget::QgsCrsDefinitionWidget( QWidget *parent )
   : QWidget( parent )

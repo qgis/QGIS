@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvectortileproviderguimetadata.h"
+
 #include "qgsapplication.h"
 #include "qgssourceselectprovider.h"
-#include "qgsvectortilesourceselect.h"
-#include "qgsvectortileproviderguimetadata.h"
 #include "qgsvectortiledataitemguiprovider.h"
+#include "qgsvectortilesourceselect.h"
 
 ///@cond PRIVATE
 

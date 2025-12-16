@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutitemchart.h"
-#include "moc_qgslayoutitemchart.cpp"
+
 #include "qgsapplication.h"
-#include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
@@ -28,6 +28,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+
+#include "moc_qgslayoutitemchart.cpp"
 
 QgsLayoutItemChart::QgsLayoutItemChart( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -66,7 +68,7 @@ void QgsLayoutItemChart::setPlot( QgsPlot *plot )
     return;
   }
 
-  // Logic to minimise plot data refresh to bare minimum
+  // Logic to minimize plot data refresh to bare minimum
   bool requireRefresh = !mPlot || !plot;
   if ( mPlot && plot )
   {
@@ -301,14 +303,36 @@ void QgsLayoutItemChart::prepareGatherer()
     update();
   }
 
-  QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
-  for ( const SeriesDetails &series : mSeriesList )
+  QgsPlotAbstractMetadata *metadata = QgsApplication::instance()->plotRegistry()->plotMetadata( mPlot->type() );
+  if ( !metadata )
   {
-    xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.xExpression(), series.yExpression(), series.filterExpression() );
+    mPlotData.clearSeries();
+    mIsGathering = false;
+    update();
   }
 
-  if ( Qgs2DXyPlot *xyPlot = dynamic_cast<Qgs2DXyPlot *>( mPlot.get() ) )
+  if ( !metadata )
   {
+    QgsDebugError( "Could not find plot metadata" );
+    return;
+  }
+
+  mGatherer = metadata->createPlotDataGatherer( mPlot.get() );
+  if ( !mGatherer )
+  {
+    mPlotData.clearSeries();
+    mIsGathering = false;
+    update();
+  }
+
+  if ( QgsVectorLayerXyPlotDataGatherer *xyGatherer = dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( mGatherer.data() ) )
+  {
+    QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
+    for ( const SeriesDetails &series : mSeriesList )
+    {
+      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.xExpression(), series.yExpression(), series.filterExpression() );
+    }
+
     QgsFeatureRequest request;
     for ( QgsLayoutItemChart::SeriesDetails &series : mSeriesList )
     {
@@ -327,15 +351,13 @@ void QgsLayoutItemChart::prepareGatherer()
     }
 
     QgsFeatureIterator featureIterator = mVectorLayer->getFeatures( request );
-    mGatherer = new QgsVectorLayerXyPlotDataGatherer( featureIterator, createExpressionContext(), xYSeriesList, xyPlot->xAxis().type() );
-    connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
+
+    xyGatherer->setFeatureIterator( featureIterator );
+    xyGatherer->setExpressionContext( createExpressionContext() );
+    xyGatherer->setSeriesDetails( xYSeriesList );
   }
-  else
-  {
-    mPlotData.clearSeries();
-    mIsGathering = false;
-    update();
-  }
+
+  connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
 }
 
 void QgsLayoutItemChart::processData()

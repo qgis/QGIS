@@ -21,11 +21,9 @@
 
 #define SIP_NO_FILE
 
-#include <QString>
-
 #include "qgis_core.h"
 
-
+#include <QString>
 
 /**
  * \ingroup core
@@ -139,6 +137,43 @@ class CORE_EXPORT QgsSettingsException : public QgsException
      */
     QgsSettingsException( const QString &message ) : QgsException( message ) {}
 
+};
+
+
+#ifdef WITH_SFCGAL
+/**
+ * \class QgsSfcgalException
+ * \ingroup core
+ * \brief Custom exception class for SfCGAL related operations.
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsSfcgalException : public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsSfcgalException, with the specified error \a message.
+     */
+    QgsSfcgalException( const QString &message ) : QgsException( message ) {}
+
+};
+#endif
+
+/**
+ * \class QgsInvalidArgumentException
+ * \ingroup core
+ * \brief Custom exception class when argument are invalid. Ie. algorithms or processing can not continue computation.
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsInvalidArgumentException : public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsInvalidArgumentException, with the specified error \a message.
+     */
+    QgsInvalidArgumentException( const QString &message )
+      : QgsException( message ) {}
 };
 
 #endif

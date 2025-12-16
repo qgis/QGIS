@@ -14,31 +14,32 @@
  ***************************************************************************/
 
 #include "qgs3daxis.h"
-#include "moc_qgs3daxis.cpp"
 
+#include <ctime>
+
+#include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dwiredmesh_p.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgscoordinatereferencesystemutils.h"
+#include "qgsframegraph.h"
+#include "qgsterrainentity.h"
+#include "qgswindow3dengine.h"
+
+#include <QActionGroup>
+#include <QApplication>
+#include <QFontDatabase>
+#include <QScreen>
+#include <QWidget>
 #include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QConeMesh>
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QConeMesh>
-#include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSortPolicy>
-#include <QWidget>
-#include <QScreen>
-#include <QFontDatabase>
-#include <ctime>
-#include <QApplication>
-#include <QActionGroup>
+#include <Qt3DRender/qcameralens.h>
 
-#include "qgs3dmapsettings.h"
-#include "qgs3dmapscene.h"
-#include "qgsterrainentity.h"
-#include "qgscoordinatereferencesystemutils.h"
-#include "qgswindow3dengine.h"
-#include "qgsraycastingutils_p.h"
-#include "qgs3dwiredmesh_p.h"
-#include "qgsframegraph.h"
-#include "qgsabstractterrainsettings.h"
+#include "moc_qgs3daxis.cpp"
 
 Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, //
                       QgsCameraController *cameraCtrl, Qgs3DMapSettings *map )
@@ -197,7 +198,7 @@ bool Qgs3DAxis::handleEvent( QEvent *event )
 
 void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits )
 {
-  int mHitsFound = -1;
+  int hitFoundIdx = -1;
   if ( !hits.empty() )
   {
     if ( 2 <= QgsLogger::debugLevel() )
@@ -215,18 +216,25 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       QgsDebugMsgLevel( os.str().c_str(), 2 );
     }
 
-    for ( int i = 0; i < hits.length() && mHitsFound == -1; ++i )
+    for ( int i = 0; i < hits.length() && hitFoundIdx == -1; ++i )
     {
-      if ( hits.at( i ).distance() < 500.0f && hits.at( i ).entity() && ( hits.at( i ).entity() == mCubeRoot || hits.at( i ).entity() == mAxisRoot || hits.at( i ).entity()->parent() == mCubeRoot || hits.at( i ).entity()->parent() == mAxisRoot ) )
+      Qt3DCore::QEntity *hitEntity = hits.at( i ).entity();
+      // In Qt6, a Qt3DExtras::Text2DEntity contains a private entity: Qt3DExtras::DistanceFieldTextRenderer
+      // The Text2DEntity needs to be retrieved to handle proper picking
+      if ( hitEntity && qobject_cast<Qt3DExtras::QText2DEntity *>( hitEntity->parentEntity() ) )
       {
-        mHitsFound = i;
+        hitEntity = hitEntity->parentEntity();
+      }
+      if ( hits.at( i ).distance() < 500.0f && hitEntity && ( hitEntity == mCubeRoot || hitEntity == mAxisRoot || hitEntity->parent() == mCubeRoot || hitEntity->parent() == mAxisRoot ) )
+      {
+        hitFoundIdx = i;
       }
     }
   }
 
   if ( mLastClickedButton == Qt::NoButton ) // hover
   {
-    if ( mHitsFound != -1 )
+    if ( hitFoundIdx != -1 )
     {
       if ( mCanvas->cursor() != Qt::ArrowCursor )
       {
@@ -243,7 +251,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       }
     }
   }
-  else if ( mLastClickedButton == Qt::MouseButton::RightButton && mHitsFound != -1 ) // show menu
+  else if ( mLastClickedButton == Qt::MouseButton::RightButton && hitFoundIdx != -1 ) // show menu
   {
     displayMenuAt( mLastClickedPos );
   }
@@ -251,11 +259,16 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
   {
     hideMenu();
 
-    if ( mHitsFound != -1 )
+    if ( hitFoundIdx != -1 )
     {
-      if ( hits.at( mHitsFound ).entity() == mCubeRoot || hits.at( mHitsFound ).entity()->parent() == mCubeRoot )
+      Qt3DCore::QEntity *hitEntity = hits.at( hitFoundIdx ).entity();
+      if ( hitEntity && qobject_cast<Qt3DExtras::QText2DEntity *>( hitEntity->parentEntity() ) )
       {
-        switch ( hits.at( mHitsFound ).primitiveIndex() / 2 )
+        hitEntity = hitEntity->parentEntity();
+      }
+      if ( hitEntity && ( hitEntity == mCubeRoot || hitEntity->parent() == mCubeRoot ) )
+      {
+        switch ( hits.at( hitFoundIdx ).primitiveIndex() / 2 )
         {
           case 0: // "East face";
             QgsDebugMsgLevel( "Qgs3DAxis: East face clicked", 2 );
@@ -314,7 +327,7 @@ void Qgs3DAxis::constructLabelsScene( Qt3DCore::QEntity *parent3DScene )
   mTwoDLabelSceneEntity->setEnabled( true );
 
   mTwoDLabelCamera = mRenderView->labelCamera();
-  mTwoDLabelCamera->setUpVector( QVector3D( 0.0f, 0.0f, 1.0f ) );
+  mTwoDLabelCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
   mTwoDLabelCamera->setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
   mTwoDLabelCamera->setPosition( QVector3D( 0.0f, 0.0f, 100.0f ) );
 }

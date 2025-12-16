@@ -15,52 +15,54 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsapplication.h"
+
 #include "qgsoptions.h"
-#include "moc_qgsoptions.cpp"
+
+#include "options/qgsadvancedoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
-#include "qgsgdalutils.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgstolerance.h"
-#include "qgsscaleutils.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsproject.h"
-#include "qgsdualview.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgslocaldefaultsettings.h"
-#include "qgsnumericformatwidget.h"
-#include "qgslayertreemodellegendnode.h"
-
+#include "qgsapplication.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgslocalizeddatapathregistry.h"
-#include "qgsrasterformatsaveoptionswidget.h"
-#include "qgsrasterpyramidsoptionswidget.h"
+#include "qgsbearingnumericformat.h"
+#include "qgsclipboard.h"
+#include "qgscolordialog.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscoordinatenumericformat.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgsdialog.h"
-#include "qgscolorschemeregistry.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolordialog.h"
+#include "qgsdualview.h"
 #include "qgsexpressioncontext.h"
-#include "qgsunittypes.h"
-#include "qgsclipboard.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgdalutils.h"
+#include "qgsgui.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayout.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgslocalizeddatapathregistry.h"
+#include "qgslocatoroptionswidget.h"
+#include "qgslocatorwidget.h"
+#include "qgsmeasuredialog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnewsfeedparser.h"
+#include "qgsnumericformatwidget.h"
+#include "qgsoptionswidgetfactory.h"
+#include "qgsproject.h"
+#include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsrasterpyramidsoptionswidget.h"
+#include "qgsscaleutils.h"
 #include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsregistrygui.h"
-#include "qgsoptionswidgetfactory.h"
-#include "qgslocatorwidget.h"
-#include "qgslocatoroptionswidget.h"
-#include "qgsgui.h"
+#include "qgssymbollayerutils.h"
+#include "qgstolerance.h"
+#include "qgsunittypes.h"
 #include "qgswelcomepage.h"
-#include "qgsnewsfeedparser.h"
-#include "qgsbearingnumericformat.h"
-#include "qgscoordinatenumericformat.h"
-#include "options/qgsadvancedoptions.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgsmeasuredialog.h"
+
+#include "moc_qgsoptions.cpp"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -227,11 +229,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // non-default themes are best rendered using the Fusion style, therefore changing themes must require a restart to
   lblUITheme->setText( QStringLiteral( "%1 <i>(%2)</i>" ).arg( lblUITheme->text(), tr( "QGIS restart required" ) ) );
 
-  mEnableMacrosComboBox->addItem( tr( "Never" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::Never ) );
-  mEnableMacrosComboBox->addItem( tr( "Ask" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::Ask ) );
-  mEnableMacrosComboBox->addItem( tr( "For This Session Only" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::SessionOnly ) );
-  mEnableMacrosComboBox->addItem( tr( "Not During This Session" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::NotForThisSession ) );
-  mEnableMacrosComboBox->addItem( tr( "Always (Not Recommended)" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::Always ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Never Execute" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Never ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Never Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::NeverAsk ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Ask ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Always Execute (Not Recommended)" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Always ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -823,8 +824,31 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   chbAskToSaveProjectChanges->setChecked( mSettings->value( QStringLiteral( "qgis/askToSaveProjectChanges" ), QVariant( true ) ).toBool() );
   mLayerDeleteConfirmationChkBx->setChecked( mSettings->value( QStringLiteral( "qgis/askToDeleteLayers" ), true ).toBool() );
   chbWarnOldProjectVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() );
-  Qgis::PythonEmbeddedMode pyEmbeddedMode = mSettings->enumValue( QStringLiteral( "/qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-  mEnableMacrosComboBox->setCurrentIndex( mEnableMacrosComboBox->findData( QVariant::fromValue( pyEmbeddedMode ) ) );
+
+  Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  mProjectTrustBehaviorComboBox->setCurrentIndex( mProjectTrustBehaviorComboBox->findData( QVariant::fromValue( embeddedScriptMode ) ) );
+
+  const QStringList trustedProjectsFoldersList = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();
+  for ( const QString &path : trustedProjectsFoldersList )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mTrustedProjectsFoldersList );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mTrustedProjectsFoldersList->addItem( newItem );
+  }
+  connect( mBtnAddTrustedProject, &QAbstractButton::clicked, this, &QgsOptions::addTrustedProject );
+  connect( mBtnRemoveTrustedProject, &QAbstractButton::clicked, this, &QgsOptions::removeTrustedProject );
+
+  const QStringList untrustedProjectsFoldersList = QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->value();
+  for ( const QString &path : untrustedProjectsFoldersList )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mUntrustedProjectsFoldersList );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mUntrustedProjectsFoldersList->addItem( newItem );
+  }
+  connect( mBtnAddUntrustedProject, &QAbstractButton::clicked, this, &QgsOptions::addUntrustedProject );
+  connect( mBtnRemoveUntrustedProject, &QAbstractButton::clicked, this, &QgsOptions::removeUntrustedProject );
 
   mDefaultPathsComboBox->addItem( tr( "Absolute" ), static_cast<int>( Qgis::FilePathType::Absolute ) );
   mDefaultPathsComboBox->addItem( tr( "Relative" ), static_cast<int>( Qgis::FilePathType::Relative ) );
@@ -1632,7 +1656,29 @@ void QgsOptions::saveOptions()
     mSettings->setValue( QStringLiteral( "/qgis/projectTemplateDir" ), leTemplateFolder->text() );
     QgisApp::instance()->updateProjectFromTemplates();
   }
-  mSettings->setEnumValue( QStringLiteral( "/qgis/enablePythonEmbedded" ), mEnableMacrosComboBox->currentData().value<Qgis::PythonEmbeddedMode>() );
+  QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( mProjectTrustBehaviorComboBox->currentData().value<Qgis::EmbeddedScriptMode>() );
+
+  QStringList trustedProjectsFoldersList;
+  for ( int i = 0; i < mTrustedProjectsFoldersList->count(); ++i )
+  {
+    const QString path = mTrustedProjectsFoldersList->item( i )->text().trimmed();
+    if ( !path.isEmpty() )
+    {
+      trustedProjectsFoldersList << path;
+    }
+  }
+  QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->setValue( trustedProjectsFoldersList );
+
+  QStringList untrustedProjectsFoldersList;
+  for ( int i = 0; i < mUntrustedProjectsFoldersList->count(); ++i )
+  {
+    const QString path = mUntrustedProjectsFoldersList->item( i )->text().trimmed();
+    if ( !path.isEmpty() )
+    {
+      untrustedProjectsFoldersList << path;
+    }
+  }
+  QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->setValue( untrustedProjectsFoldersList );
 
   mSettings->setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), static_cast<Qgis::FilePathType>( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
 
@@ -2062,6 +2108,58 @@ void QgsOptions::mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific )
     mCurrentVariablesTable->sortByColumn( 0, Qt::AscendingOrder );
     mCurrentVariablesTable->resizeColumnToContents( 0 );
   }
+}
+
+void QgsOptions::addTrustedProject()
+{
+  QString path = QFileDialog::getOpenFileName(
+    this,
+    tr( "Choose a Project File" ),
+    QDir::toNativeSeparators( QDir::homePath() ),
+    tr( "Project files (*.qgs *.qgz *.QGS *.QGZ)" )
+  );
+
+  if ( !path.isEmpty() )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mTrustedProjectsFoldersList );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mTrustedProjectsFoldersList->addItem( newItem );
+    mTrustedProjectsFoldersList->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::removeTrustedProject()
+{
+  int currentRow = mTrustedProjectsFoldersList->currentRow();
+  QListWidgetItem *itemToRemove = mTrustedProjectsFoldersList->takeItem( currentRow );
+  delete itemToRemove;
+}
+
+void QgsOptions::addUntrustedProject()
+{
+  QString path = QFileDialog::getOpenFileName(
+    this,
+    tr( "Choose a Project File" ),
+    QDir::toNativeSeparators( QDir::homePath() ),
+    tr( "Project files (*.qgs *.qgz *.QGS *.QGZ)" )
+  );
+
+  if ( !path.isEmpty() )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mUntrustedProjectsFoldersList );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mUntrustedProjectsFoldersList->addItem( newItem );
+    mUntrustedProjectsFoldersList->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::removeUntrustedProject()
+{
+  int currentRow = mUntrustedProjectsFoldersList->currentRow();
+  QListWidgetItem *itemToRemove = mUntrustedProjectsFoldersList->takeItem( currentRow );
+  delete itemToRemove;
 }
 
 void QgsOptions::addPluginPath()

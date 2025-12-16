@@ -23,15 +23,17 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterize.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprovidermetadata.h"
-#include "qgsmaplayerutils.h"
-#include "qgsmapthemecollection.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "gdal.h"
+
+#include <gdal.h>
+
 #include "qgsgdalutils.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapthemecollection.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrasterfilewriter.h"
 
 #include <QtConcurrent>
 
@@ -147,8 +149,16 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   // Note: MAP_THEME and LAYERS are handled and cloned in prepareAlgorithm
   const QgsRectangle extent { parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs ) };
   const int tileSize { parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context ) };
+  if ( tileSize <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Tile size must be > 0" ) );
+  }
   const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
   const double mapUnitsPerPixel { parameterAsDouble( parameters, QStringLiteral( "MAP_UNITS_PER_PIXEL" ), context ) };
+  if ( mapUnitsPerPixel <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Map units per pixel must be > 0" ) );
+  }
   const double extentBuffer { parameterAsDouble( parameters, QStringLiteral( "EXTENT_BUFFER" ), context ) };
   const QString outputLayerFileName { parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context ) };
 
@@ -218,7 +228,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
   }
 
-  const QString driverName { QgsRasterFileWriter::driverForExtension( QFileInfo( outputLayerFileName ).suffix() ) };
+  const QString driverName = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
   if ( driverName.isEmpty() )
   {
     throw QgsProcessingException( QObject::tr( "Invalid output raster format" ) );
@@ -235,6 +245,13 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   {
     throw QgsProcessingException( QObject::tr( "Error creating GDAL output layer" ) );
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( hOutputDataset.get() );
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
 
   GDALSetProjection( hOutputDataset.get(), mCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLatin1().constData() );
   double geoTransform[6];
@@ -320,7 +337,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
       QMutexLocker locker( &rasterWriteLocker );
       err = GDALDatasetRasterIO( hOutputDataset.get(), GF_Write, xOffset, yOffset, tileSize, tileSize, buffer.get(), tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
       rendered++;
-      feedback->setProgress( static_cast<double>( rendered ) / numTiles * 100.0 );
+      feedback->setProgress( static_cast<double>( rendered ) / numTiles * maxProgressDuringBlockWriting );
     }
     if ( err != CE_None )
     {
@@ -348,6 +365,22 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   {
     f.waitForFinished();
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  if ( closeReportsProgress )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           hOutputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Error writing output raster" ) );
+    }
+  }
+#endif
 
   return { { QStringLiteral( "OUTPUT" ), outputLayerFileName } };
 }

@@ -12,8 +12,6 @@
 
 
 
-
-
 typedef QVector<QgsPointXY> QgsPolylineXY;
 
 typedef QVector<QgsPoint> QgsPolyline;
@@ -260,7 +258,7 @@ Example
 .. code-block:: python
 
        # Create a polygon geometry with a single exterior ring (a triangle)
-       polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]]))
+       polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]])
 
        # Create a donut shaped polygon geometry with an interior ring
        polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 10), QgsPointXY(1, 2)],
@@ -539,7 +537,7 @@ Example
        # parts can be modified during the iteration
        geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
        for part in geometry.parts():
-           part.transform(ct)
+           part.transform(ct=QgsCoordinateTransform()) # Dummy transform
 
        # part iteration can also be combined with vertex iteration
        geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
@@ -3251,6 +3249,7 @@ Downgrades a point list from :py:class:`QgsPoint` to
 
     operator QVariant() const;
 
+
     QgsGeometry fillet( int vertexIndex, double radius, int segments = 8 ) const;
 %Docstring
 Creates a fillet (rounded corner) at the specified vertex.
@@ -3273,9 +3272,7 @@ circular arc. The behavior depends on the geometry type:
 .. versionadded:: 4.0
 %End
 
-    QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                        const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                        double radius, int segments = 8 ) const;
+    static QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, int segments = 8 ) throw( QgsInvalidArgumentException );
 %Docstring
 Creates a fillet (rounded corner) between two line segments.
 
@@ -3291,6 +3288,11 @@ This method creates a smooth circular arc connecting two line segments.
 
 :return: new geometry with fillet applied, or invalid geometry on
          failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createFilletGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createFilletGeometry`
 
 .. versionadded:: 4.0
 %End
@@ -3316,9 +3318,7 @@ segments.
 .. versionadded:: 4.0
 %End
 
-    QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                         const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                         double distance1, double distance2 = -1.0 ) const;
+    static QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 = -1.0 ) throw( QgsInvalidArgumentException );
 %Docstring
 Creates a chamfer (angled corner) between two line segments.
 
@@ -3335,6 +3335,11 @@ specified distances.
 
 :return: new geometry with chamfer applied, or invalid geometry on
          failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createChamferGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createChamferGeometry`
 
 .. versionadded:: 4.0
 %End

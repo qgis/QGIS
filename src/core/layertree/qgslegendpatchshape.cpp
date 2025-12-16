@@ -16,6 +16,7 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgslegendpatchshape.h"
+
 #include "qgsstyle.h"
 
 QgsLegendPatchShape::QgsLegendPatchShape( Qgis::SymbolType type, const QgsGeometry &geometry, bool preserveAspectRatio )

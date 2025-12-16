@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsvectortiledataprovider.h"
-#include "moc_qgsvectortiledataprovider.cpp"
+
 #include "qgsthreadingutils.h"
 #include "qgsvectortileloader.h"
 
-#include <QNetworkRequest>
 #include <QImage>
+#include <QNetworkRequest>
 
+#include "moc_qgsvectortiledataprovider.cpp"
 
 int QgsVectorTileDataProvider::DATA_COLUMN = QNetworkRequest::User + 1;
 int QgsVectorTileDataProvider::DATA_ROW = QNetworkRequest::User + 2;

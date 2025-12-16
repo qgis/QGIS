@@ -15,31 +15,29 @@
 
 #include "qgsvectorlayerlabelprovider.h"
 
-#include "qgsgeometry.h"
-#include "qgslabelsearchtree.h"
-#include "qgspallabeling.h"
-#include "qgstextlabelfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsrenderer.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmaskidprovider.h"
-#include "qgstextcharacterformat.h"
-#include "qgstextfragment.h"
-#include "qgslabelingresults.h"
-#include "qgstextrenderer.h"
-
+#include "callouts/qgscallout.h"
 #include "feature.h"
 #include "labelposition.h"
-#include "callouts/qgscallout.h"
-#include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-
 #include "pal/layer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgeometry.h"
+#include "qgslabelingresults.h"
+#include "qgslabelsearchtree.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmaskidprovider.h"
+#include "qgsmultipolygon.h"
+#include "qgspallabeling.h"
+#include "qgspolygon.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgstextcharacterformat.h"
+#include "qgstextfragment.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 #include <QPicture>
 #include <QTextDocument>
@@ -69,7 +67,6 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( Qgis::GeometryType geo
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( geometryType )
-  , mRenderer( nullptr )
   , mFields( fields )
   , mCrs( crs )
 {
@@ -361,6 +358,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
     return;
 
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !lf )
+    return;
 
   // Copy to temp, editable layer settings
   // these settings will be changed by any data defined values, then used for rendering label components
@@ -474,6 +473,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
 {
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !lf )
+    return;
 
   QgsTextFormat format = mSettings.format();
   if ( mSettings.drawLabels

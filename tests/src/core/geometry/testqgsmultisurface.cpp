@@ -12,10 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
 #include "qgscircularstring.h"
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
@@ -23,8 +19,11 @@
 #include "qgsmulticurve.h"
 #include "qgsmultisurface.h"
 #include "qgspoint.h"
-
+#include "qgstest.h"
 #include "testgeometryutils.h"
+
+#include <QObject>
+#include <QString>
 
 class TestQgsMultiSurface : public QObject
 {

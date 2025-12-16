@@ -11,6 +11,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -120,6 +121,14 @@ The development version
       Success,
       NoLevel,
     };
+
+    enum class NetworkRequestFlag
+    {
+      DisableMessageLogging,
+    };
+
+    typedef QFlags<Qgis::NetworkRequestFlag> NetworkRequestFlags;
+
 
     enum class LayerType
       {
@@ -279,19 +288,29 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonEmbeddedMode
+    enum class EmbeddedScriptMode
       {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
+      NeverAsk,
     };
 
-    enum class PythonEmbeddedType
+    enum class EmbeddedScriptType
     {
       Macro,
       ExpressionFunction,
+      Action,
+      FormInitCode,
+    };
+
+    enum class ProjectTrustStatus
+    {
+      Undetermined,
+      Trusted,
+      Untrusted,
     };
 
     enum class DataProviderReadFlag
@@ -819,6 +838,7 @@ The development version
       ResolveGeometryType,
       CountFeatures,
       IncludeSystemTables,
+      OpenLayersToResolveDescriptions,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 
@@ -1231,6 +1251,13 @@ The development version
       Round,
       Miter,
       Bevel,
+    };
+
+    enum class JoinStyle3D
+    {
+      Round,
+      Flat,
+      CylindersAndSpheres,
     };
 
     enum class GeosCreationFlag
@@ -1704,6 +1731,17 @@ The development version
       SubScript,
     };
 
+    enum class CurvedTextFlag
+    {
+      TruncateStringWhenLineIsTooShort,
+      UseBaselinePlacement,
+      UprightCharactersOnly,
+      ExtendLineToFitText,
+    };
+
+    typedef QFlags<Qgis::CurvedTextFlag> CurvedTextFlags;
+
+
     enum class VectorSimplificationAlgorithm
       {
       Distance,
@@ -1892,6 +1930,13 @@ The development version
       Categorical,
     };
 
+    enum class PieChartLabelType
+    {
+      NoLabels,
+      Categories,
+      Values,
+    };
+
     enum class DpiMode
     {
       All,
@@ -1999,7 +2044,8 @@ The development version
       Plugin,
       PointCloud,
       Annotation,
-      VectorTile
+      VectorTile,
+      TiledScene
     };
 
 
@@ -2419,6 +2465,7 @@ The development version
       GPServer,
       GeocodeServer,
       Unknown,
+      SceneServer,
     };
 
     enum class RelationshipType
@@ -3001,6 +3048,8 @@ The development version
       SetFieldComment,
       SetFieldAlias,
       SetTableComment,
+      EditFieldDomain,
+      DeleteFieldDomain,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
@@ -3069,6 +3118,13 @@ The development version
       File,
       Dialog,
       Environment
+    };
+
+    enum class AttributeFormReuseLastValuePolicy
+    {
+      NotAllowed,
+      AllowedDefaultOn,
+      AllowedDefaultOff,
     };
 
     enum class ExpressionType
@@ -3413,6 +3469,35 @@ The development version
       Item,
     };
 
+    enum class RasterProcessingParameterCapability
+    {
+      WmsScale,
+      WmsDpi,
+    };
+
+    typedef QFlags<Qgis::RasterProcessingParameterCapability> RasterProcessingParameterCapabilities;
+
+
+    enum class DevToolsNodeRole
+    {
+      Status,
+      Id,
+      ElapsedTime,
+      MaximumTime,
+      Sort,
+    };
+
+    enum class ExtrusionFace
+    {
+      NoFace,
+      Walls,
+      Roof,
+      Floor
+    };
+
+    typedef QFlags<Qgis::ExtrusionFace> ExtrusionFaces;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3487,6 +3572,41 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 
+    static bool hasSfcgal();
+%Docstring
+Returns ``True`` if the QGIS build contains SFCGAL.
+
+.. versionadded:: 4.0
+%End
+
+    static int sfcgalVersionInt();
+%Docstring
+Returns the version of the SFCGAL library if QGIS is built with SFCGAL.
+Else throws an exception.
+
+:raises QgsNotSupportedException: on QGIS builds based without SFCGAL.
+
+.. versionadded:: 4.0
+%End
+
+    static bool hasGeographicLib();
+%Docstring
+Returns ``True`` if the QGIS build contains GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
+    static int geographicLibVersion();
+%Docstring
+Returns the version of the GeographicLib library if QGIS is built with
+GeographicLib support.
+
+:raises QgsNotSupportedException: on QGIS builds based without
+                                  GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
     static bool hasQtWebkit();
 %Docstring
 Returns ``True`` if the QGIS build contains QtWebkit.
@@ -3529,6 +3649,8 @@ PROJ4 string that represents a geographic coord system.
 
 };
 
+
+QFlags<Qgis::NetworkRequestFlag> operator|(Qgis::NetworkRequestFlag f1, QFlags<Qgis::NetworkRequestFlag> f2);
 
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
@@ -3674,6 +3796,8 @@ QFlags<Qgis::RasterInterfaceCapability> operator|(Qgis::RasterInterfaceCapabilit
 
 QFlags<Qgis::RasterProviderCapability> operator|(Qgis::RasterProviderCapability f1, QFlags<Qgis::RasterProviderCapability> f2);
 
+QFlags<Qgis::RasterProcessingParameterCapability> operator|(Qgis::RasterProcessingParameterCapability f1, QFlags<Qgis::RasterProcessingParameterCapability> f2);
+
 QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
 
 QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
@@ -3699,6 +3823,10 @@ QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCa
 QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
 
 QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Qgis::MapLayerLegendFlag> f2);
+
+QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::CurvedTextFlag> f2);
+
+QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::ExtrusionFace> f2);
 
 
 
@@ -3897,9 +4025,6 @@ empty string if the path is not associated with a vsi prefix.
 
 
 typedef unsigned long long qgssize;
-
-
-
 
 
 

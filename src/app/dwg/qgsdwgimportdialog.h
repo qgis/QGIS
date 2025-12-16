@@ -19,8 +19,9 @@
 #define QGSDWGIMPORTDIALOG_H
 
 #include "ui_qgsdwgimportbase.h"
-#include "qgshelp.h"
+
 #include "qgis_app.h"
+#include "qgshelp.h"
 
 class QgsVectorLayer;
 class QgsLayerTreeGroup;

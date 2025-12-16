@@ -13,27 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererwidget.h"
-#include "moc_qgsrendererwidget.cpp"
 
-#include "qgsdatadefinedsizelegendwidget.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
-#include "qgssymbollevelsdialog.h"
-#include "qgssymbollayer.h"
+#include "qgsdatadefinedsizelegendwidget.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgssymbollevelsdialog.h"
 #include "qgstemporalcontroller.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
+#include "qgsvectorlayer.h"
 
-#include <QMessageBox>
+#include <QClipboard>
 #include <QInputDialog>
 #include <QMenu>
-#include <QClipboard>
+#include <QMessageBox>
+
+#include "moc_qgsrendererwidget.cpp"
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   : mLayer( layer )
@@ -56,18 +57,18 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   connect( mPasteSymbolAction, &QAction::triggered, this, &QgsRendererWidget::pasteSymbolToSelection );
 
   contextMenu->addSeparator();
-  contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeSymbolColor() ) );
-  contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeSymbolOpacity() ) );
-  contextMenu->addAction( tr( "Change Output Unit…" ), this, SLOT( changeSymbolUnit() ) );
+  contextMenu->addAction( tr( "Change Color…" ), this, &QgsRendererWidget::changeSymbolColor );
+  contextMenu->addAction( tr( "Change Opacity…" ), this, &QgsRendererWidget::changeSymbolOpacity );
+  contextMenu->addAction( tr( "Change Output Unit…" ), this, &QgsRendererWidget::changeSymbolUnit );
 
   if ( mLayer && mLayer->geometryType() == Qgis::GeometryType::Line )
   {
-    contextMenu->addAction( tr( "Change Width…" ), this, SLOT( changeSymbolWidth() ) );
+    contextMenu->addAction( tr( "Change Width…" ), this, &QgsRendererWidget::changeSymbolWidth );
   }
   else if ( mLayer && mLayer->geometryType() == Qgis::GeometryType::Point )
   {
-    contextMenu->addAction( tr( "Change Size…" ), this, SLOT( changeSymbolSize() ) );
-    contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );
+    contextMenu->addAction( tr( "Change Size…" ), this, &QgsRendererWidget::changeSymbolSize );
+    contextMenu->addAction( tr( "Change Angle…" ), this, &QgsRendererWidget::changeSymbolAngle );
   }
 
   connect( contextMenu, &QMenu::aboutToShow, this, [this] {

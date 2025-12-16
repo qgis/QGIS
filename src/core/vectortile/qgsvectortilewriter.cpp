@@ -15,6 +15,9 @@
 
 #include "qgsvectortilewriter.h"
 
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
 #include "qgsjsonutils.h"
@@ -26,13 +29,10 @@
 #include "qgsvectortileutils.h"
 #include "qgsziputils.h"
 
-#include <nlohmann/json.hpp>
-
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QUrl>
-
 
 QgsVectorTileWriter::QgsVectorTileWriter()
 {
@@ -84,7 +84,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   }
   else if ( sourceType == QLatin1String( "mbtiles" ) )
   {
-    mbtiles.reset( new QgsMbTiles( sourcePath ) );
+    mbtiles = std::make_unique<QgsMbTiles>( sourcePath );
   }
   else
   {
@@ -280,7 +280,7 @@ bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXY
 }
 
 
-QString QgsVectorTileWriter::mbtilesJsonSchema()
+QString QgsVectorTileWriter::mbtilesJsonSchema() const
 {
   QVariantList arrayLayers;
   for ( const Layer &layer : std::as_const( mLayers ) )

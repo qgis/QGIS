@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometryselfintersection.h"
+
 #include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsgeometrycheckerror.h"
 #include "qgsvectorfilewriter.h"
 
 ///@cond PRIVATE
@@ -69,7 +70,6 @@ void QgsFixGeometrySelfIntersectionAlgorithm::initAlgorithm( const QVariantMap &
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
     QList<int>()
@@ -80,7 +80,6 @@ void QgsFixGeometrySelfIntersectionAlgorithm::initAlgorithm( const QVariantMap &
     QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
   ) );
 
-  // Specific inputs for this check
   QStringList methods;
   {
     QList<QgsGeometryCheckResolutionMethod> checkMethods = QgsGeometrySelfIntersectionCheck( nullptr, QVariantMap() ).availableResolutionMethods();
@@ -121,7 +120,6 @@ void QgsFixGeometrySelfIntersectionAlgorithm::initAlgorithm( const QVariantMap &
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Self-intersections fixed layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
@@ -129,7 +127,7 @@ void QgsFixGeometrySelfIntersectionAlgorithm::initAlgorithm( const QVariantMap &
     QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing self-intersections" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -157,7 +155,6 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
   const QString segment1FieldName = parameterAsString( parameters, QStringLiteral( "SEGMENT_1" ), context );
   const QString segment2FieldName = parameterAsString( parameters, QStringLiteral( "SEGMENT_2" ), context );
 
-  // Specific inputs for this check
   const int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
 
   // Verify that input fields exists
@@ -173,7 +170,7 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in the error layer." ).arg( segment1FieldName ) );
   if ( errors->fields().indexFromName( segment2FieldName ) == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in the error layer." ).arg( segment2FieldName ) );
-  int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
+  const int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in input layer." ).arg( featIdFieldName ) );
 
@@ -199,8 +196,7 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
 
   const QgsGeometrySelfIntersectionCheck check( &checkContext, QVariantMap() );
 
@@ -357,7 +353,7 @@ bool QgsFixGeometrySelfIntersectionAlgorithm::prepareAlgorithm( const QVariantMa
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometrySelfIntersectionAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

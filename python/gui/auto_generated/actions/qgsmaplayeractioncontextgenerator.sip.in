@@ -9,7 +9,6 @@
 
 
 
-
 class QgsMapLayerActionContextGenerator
 {
 %Docstring(signature="appended")

@@ -230,7 +230,7 @@ class merge(GdalAlgorithm):
 
         arguments.append("-ot " + self.TYPES[data_type])
 
-        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
         if not output_format:
             raise QgsProcessingException(self.tr("Output format is invalid"))
 
@@ -266,6 +266,19 @@ class merge(GdalAlgorithm):
         arguments.append(list_file)
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName() + merge.command_ext(),
             GdalUtils.escapeAndJoin(arguments),
         ]
+
+    @staticmethod
+    def command_ext() -> str:
+        """
+        Returns the gdal_merge command extension
+        """
+        if isWindows():
+            return ".bat"
+
+        if GdalUtils.version() < 3090000:
+            return ".py"
+
+        return ""

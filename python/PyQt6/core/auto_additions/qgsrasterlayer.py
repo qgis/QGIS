@@ -4,8 +4,8 @@ try:
     QgsRasterLayer.__annotations__ = {'SAMPLE_SIZE': float, 'SINGLE_BAND_ENHANCEMENT_ALGORITHM': 'QgsContrastEnhancement.ContrastEnhancementAlgorithm', 'MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM': 'QgsContrastEnhancement.ContrastEnhancementAlgorithm', 'MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM': 'QgsContrastEnhancement.ContrastEnhancementAlgorithm', 'SINGLE_BAND_MIN_MAX_LIMITS': 'Qgis.RasterRangeLimit', 'MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS': 'Qgis.RasterRangeLimit', 'MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS': 'Qgis.RasterRangeLimit'}
     QgsRasterLayer.isValidRasterFileName = staticmethod(QgsRasterLayer.isValidRasterFileName)
     QgsRasterLayer.lastModified = staticmethod(QgsRasterLayer.lastModified)
-    QgsRasterLayer.__virtual_methods__ = ['setOpacity', 'opacity', 'subsetString', 'setSubsetString']
-    QgsRasterLayer.__overridden_methods__ = ['clone', 'profileSource', 'createProfileGenerator', 'dataProvider', 'reload', 'createMapRenderer', 'isSpatial', 'htmlMetadata', 'properties', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'timestamp', 'accept', 'temporalProperties', 'elevationProperties', 'setTransformContext', 'readSymbology', 'readStyle', 'readXml', 'writeSymbology', 'writeStyle', 'writeXml', 'encodedSource', 'decodedSource']
+    QgsRasterLayer.__virtual_methods__ = ['subsetString', 'setSubsetString']
+    QgsRasterLayer.__overridden_methods__ = ['clone', 'profileSource', 'profileSourceId', 'profileSourceName', 'createProfileGenerator', 'dataProvider', 'reload', 'createMapRenderer', 'isSpatial', 'htmlMetadata', 'properties', 'setOpacity', 'opacity', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'timestamp', 'accept', 'temporalProperties', 'elevationProperties', 'setTransformContext', 'readSymbology', 'readStyle', 'readXml', 'writeSymbology', 'writeStyle', 'writeXml', 'encodedSource', 'decodedSource']
     QgsRasterLayer.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

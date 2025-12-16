@@ -20,12 +20,12 @@
 #ifndef QGSSERVERSETTINGS_H
 #define QGSSERVERSETTINGS_H
 
-#include <QObject>
-#include <QMetaEnum>
-
-#include "qgsmessagelog.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsmessagelog.h"
+
+#include <QMetaEnum>
+#include <QObject>
 
 /**
  * \ingroup server
@@ -56,8 +56,9 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_LOG_FILE,
       QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
-      QGIS_SERVER_IGNORE_BAD_LAYERS, //!< Do not consider the whole project unavailable if it contains bad layers
-      QGIS_SERVER_RETRY_BAD_LAYERS,  //!> Retry bad layers in following request in case they might only be temporary unavailable
+      QGIS_SERVER_IGNORE_BAD_LAYERS,       //!< Do not consider the whole project unavailable if it contains bad layers
+      QGIS_SERVER_IGNORE_RENDERING_ERRORS, //!< Ignore rendering errors if true. If false, the server returns an error if a rendering error occurs
+      QGIS_SERVER_RETRY_BAD_LAYERS,        //!< Retry bad layers in following request in case they might only be temporary unavailable
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
       QGIS_SERVER_SHOW_GROUP_SEPARATOR,                 //!< Show group (thousands) separator when formatting numeric values, defaults to FALSE \since QGIS 3.8
@@ -66,6 +67,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_WMS_MAX_WIDTH,                        //!< Maximum width for a WMS request. The most conservative between this and the project one is used \since QGIS 3.6.2
       QGIS_SERVER_API_RESOURCES_DIRECTORY,              //!< Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for \since QGIS 3.10
       QGIS_SERVER_API_WFS3_MAX_LIMIT,                   //!< Maximum value for "limit" in a features request, defaults to 10000 \since QGIS 3.10
+      QGIS_SERVER_API_WFS3_ROOT_PATH,                   //!< Root path for OAPIF (WFS3) service API, default value is "/wfs3" \note Default will be changed to "/ogcapi" for QGIS 4. \since QGIS 3.44.3
       QGIS_SERVER_TRUST_LAYER_METADATA,                 //!< Trust layer metadata. Improves project read time. \since QGIS 3.16
       QGIS_SERVER_FORCE_READONLY_LAYERS,                //!< Force to open layers in read-only mode. \since QGIS 3.28
       QGIS_SERVER_DISABLE_GETPRINT,                     //!< Disabled WMS GetPrint request and don't load layouts. Improves project read time. \since QGIS 3.16
@@ -263,6 +265,16 @@ class SERVER_EXPORT QgsServerSettings
     qlonglong apiWfs3MaxLimit() const;
 
     /**
+     * Returns the server-wide root path for OAPIF (WFS3) service API.
+     *
+     * The default value is "/wfs3", this value can be changed by setting the environment
+     * variable QGIS_SERVER_API_WFS3_ROOT_PATH.
+     * \note The default will be changed to "/ogcapi" for QGIS 4.
+     * \since QGIS 3.44.3
+     */
+    QString apiWfs3RootPath() const;
+
+    /**
      * Returns TRUE if the bad layers are ignored and FALSE when the presence of a
      * bad layers invalidates the whole project making it unavailable.
      *
@@ -272,6 +284,12 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.10.5
      */
     bool ignoreBadLayers() const;
+
+    /**
+     * Returns TRUE if rendering errors are ignored by the server. Returns FALSE if the server throws an error in case of rendering errors.
+     * \since QGIS 4.0
+     */
+    bool ignoreRenderingErrors() const;
 
     /**
      * Returns TRUE if bad layers should be re-checked after the project has been cached. The default value is FALSE

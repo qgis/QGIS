@@ -23,13 +23,12 @@ class QVariant;
 class QHBoxLayout;
 class QgsFileDropEdit;
 
-#include <QWidget>
-#include <QFileDialog>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshighlightablelineedit.h"
 
+#include <QFileDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -95,7 +94,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * \see setFilePath()
      * \see splitFilePaths()
      */
-    QString filePath();
+    QString filePath() const;
 
     /**
      * \brief Split the the quoted and space separated \a path and returns a list of strings.

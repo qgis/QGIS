@@ -14,18 +14,13 @@
  ***************************************************************************/
 #include <cmath>
 
-#include <QApplication>
-#include <QDir>
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QTemporaryFile>
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgsgrass.h"
+#include "qgsgrassimport.h"
+#include "qgsgrassprovider.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
@@ -34,12 +29,16 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
+#include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsgrass.h"
-#include "qgsgrassimport.h"
-#include "qgsgrassprovider.h"
+#include <QApplication>
+#include <QDir>
+#include <QObject>
+#include <QString>
+#include <QStringList>
+#include <QTemporaryFile>
 
 extern "C"
 {
@@ -224,7 +223,7 @@ class TestQgsGrassProvider : public QgsTest
     // compare with tolerance
     bool compare( double expected, double got, bool &ok );
     bool copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error );
-    bool removeRecursively( const QString &filePath, QString *error = 0 );
+    bool removeRecursively( const QString &filePath, QString *error = nullptr );
     bool copyLocation( QString &tmpGisdbase );
     bool createTmpLocation( QString &tmpGisdbase, QString &tmpLocation, QString &tmpMapset );
     bool equal( QgsFeature feature, QgsFeature expectedFeatures );
@@ -297,8 +296,11 @@ void TestQgsGrassProvider::initTestCase()
 
 bool TestQgsGrassProvider::verify( bool ok )
 {
-  reportRow( QLatin1String( "" ) );
-  reportRow( QStringLiteral( "Test result: " ) + ( ok ? "ok" : "error" ) );
+  if ( !ok )
+  {
+    reportRow( QLatin1String( "" ) );
+    reportRow( QStringLiteral( "Test result: " ) + ( ok ? "ok" : "error" ) );
+  }
   return ok;
 }
 
@@ -593,8 +595,7 @@ void TestQgsGrassProvider::info()
   }
 
   reportRow( QLatin1String( "" ) );
-  QgsCoordinateReferenceSystem expectedCrs;
-  expectedCrs.createFromString( QStringLiteral( "WKT:GEOGCS[\"wgs84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]]" ) );
+  QgsCoordinateReferenceSystem expectedCrs( QStringLiteral( "EPSG:4326" ) );
 
   reportRow( "expectedCrs: " + expectedCrs.toWkt() );
   QString error;
@@ -760,7 +761,7 @@ bool TestQgsGrassProvider::createTmpLocation( QString &tmpGisdbase, QString &tmp
   }
 
   QStringList cpFiles;
-  cpFiles << QStringLiteral( "DEFAULT_WIND" ) << QStringLiteral( "WIND" ) << QStringLiteral( "PROJ_INFO" ) << QStringLiteral( "PROJ_UNITS" );
+  cpFiles << QStringLiteral( "DEFAULT_WIND" ) << QStringLiteral( "WIND" ) << QStringLiteral( "PROJ_INFO" ) << QStringLiteral( "PROJ_UNITS" ) << QStringLiteral( "PROJ_SRID" );
   QString templateMapsetPath = mGisdbase + "/" + mLocation + "/PERMANENT";
   Q_FOREACH ( const QString &cpFile, cpFiles )
   {
@@ -820,7 +821,7 @@ void TestQgsGrassProvider::rasterImport()
     int newXSize = provider->xSize();
     int newYSize = provider->ySize();
 
-    QgsRasterPipe *pipe = new QgsRasterPipe();
+    auto pipe = std::make_unique< QgsRasterPipe >();
     pipe->set( provider );
 
     QgsCoordinateReferenceSystem providerCrs = provider->crs();
@@ -836,7 +837,7 @@ void TestQgsGrassProvider::rasterImport()
     }
 
     QgsGrassObject rasterObject( tmpGisdbase, tmpLocation, tmpMapset, name, QgsGrassObject::Raster );
-    QgsGrassRasterImport *import = new QgsGrassRasterImport( pipe, rasterObject, newExtent, newXSize, newYSize );
+    QgsGrassRasterImport *import = new QgsGrassRasterImport( std::move( pipe ), rasterObject, newExtent, newXSize, newYSize );
     if ( !import->import() )
     {
       reportRow( "import failed: " + import->error() );
@@ -1160,9 +1161,9 @@ void TestQgsGrassProvider::edit()
     // map of expected layers with grass uri as key
     QMap<QString, QgsVectorLayer *> expectedLayers;
 
-    QgsVectorLayer *grassLayer = 0;
-    QgsGrassProvider *grassProvider = 0;
-    QgsVectorLayer *expectedLayer = 0;
+    QgsVectorLayer *grassLayer = nullptr;
+    QgsGrassProvider *grassProvider = nullptr;
+    QgsVectorLayer *expectedLayer = nullptr;
 
     QList<TestQgsGrassCommand> editCommands; // real edit
 
@@ -1402,10 +1403,6 @@ void TestQgsGrassProvider::edit()
               commandOk = false;
               break;
             }
-            else
-            {
-              reportRow( QStringLiteral( "undo OK" ) );
-            }
           }
         }
       }
@@ -1432,10 +1429,6 @@ void TestQgsGrassProvider::edit()
               commandOk = false;
               break;
             }
-            else
-            {
-              reportRow( QStringLiteral( "redo OK" ) );
-            }
           }
         }
       }
@@ -1459,10 +1452,6 @@ void TestQgsGrassProvider::edit()
         {
           reportRow( QStringLiteral( "command failed" ) );
           break;
-        }
-        else
-        {
-          reportRow( QStringLiteral( "command OK" ) );
         }
       }
     }
@@ -1587,10 +1576,6 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
     {
       reportRow( "comparison failed: " + grassUri );
     }
-    else
-    {
-      reportRow( "comparison OK: " + grassUri );
-    }
   }
   return ok;
 }
@@ -1611,7 +1596,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   }
   QList<QgsFeature> features = getFeatures( layer );
   delete layer;
-  layer = 0;
+  layer = nullptr;
 
   bool sharedOk = compare( features, expectedFeatures, ok );
   if ( sharedOk )
@@ -1667,7 +1652,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   }
   features = getFeatures( layer );
   delete layer;
-  QgsGrassVectorMapStore::setStore( 0 );
+  QgsGrassVectorMapStore::setStore( nullptr );
   delete mapStore;
 
   independentOk = compare( features, expectedFeatures, ok );

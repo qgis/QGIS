@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPlot
 {
 %Docstring(signature="appended")
@@ -26,6 +27,7 @@ Base class for plot/chart/graphs.
 #include "qgsplot.h"
 #include "qgsbarchartplot.h"
 #include "qgslinechartplot.h"
+#include "qgspiechartplot.h"
 %End
 %ConvertToSubClassCode
     if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
@@ -37,6 +39,10 @@ Base class for plot/chart/graphs.
       else if ( dynamic_cast<QgsLineChartPlot *>( item ) != NULL )
       {
         sipType = sipType_QgsLineChartPlot;
+      }
+      else if ( dynamic_cast<QgsPieChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsPieChartPlot;
       }
       else if ( dynamic_cast<Qgs2DXyPlot *>( item ) != NULL )
       {
@@ -58,6 +64,24 @@ Base class for plot/chart/graphs.
 %End
   public:
 
+    enum class DataDefinedProperty
+      {
+      MarginLeft,
+      MarginTop,
+      MarginRight,
+      MarginBottom,
+      XAxisMajorInterval,
+      XAxisMinorInterval,
+      XAxisLabelInterval,
+      YAxisMajorInterval,
+      YAxisMinorInterval,
+      YAxisLabelInterval,
+      XAxisMinimum,
+      XAxisMaximum,
+      YAxisMinimum,
+      YAxisMaximum,
+    };
+
     QgsPlot();
 
     virtual ~QgsPlot();
@@ -65,6 +89,39 @@ Base class for plot/chart/graphs.
     virtual QString type() const;
 %Docstring
 Returns the plot's type.
+
+.. versionadded:: 4.0
+%End
+
+    void setDataDefinedProperty( DataDefinedProperty key, const QgsProperty &property );
+%Docstring
+Sets a data defined property for the plot. Any existing property with
+the same key will be overwritten.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 4.0
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the plot's property collection, used for data
+defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 4.0
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the plot's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be
+                   replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
 
 .. versionadded:: 4.0
 %End
@@ -78,6 +135,13 @@ Writes the plot's properties into an XML ``element``.
 %Docstring
 Reads the plot's properties from an XML ``element``.
 %End
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the plot property definitions.
+%End
+
+  protected:
 
 };
 
@@ -547,6 +611,13 @@ Sets the ``margins`` of the plot area (in millimeters)
 .. seealso:: :py:func:`setMargins`
 %End
 
+  protected:
+
+    void applyDataDefinedProperties( QgsRenderContext &context, QgsMargins &margins ) const;
+%Docstring
+Applies 2D plot data-defined properties
+%End
+
   private:
     Qgs2DPlot( const Qgs2DPlot &other );
 };
@@ -712,6 +783,13 @@ Ownership of ``symbol`` is transferred to the plot.
 .. seealso:: :py:func:`chartBorderSymbol`
 %End
 
+  protected:
+
+    void applyDataDefinedProperties( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const;
+%Docstring
+Applies 2D XY plot data-defined properties
+%End
+
   private:
     Qgs2DXyPlot( const Qgs2DXyPlot &other );
 };
@@ -788,6 +866,27 @@ Returns the default line symbol to use for line charts.
     static QgsFillSymbol *barChartFillSymbol() /Factory/;
 %Docstring
 Returns the default fill symbol to use for bar charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsFillSymbol *pieChartFillSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for pie charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsColorRamp *pieChartColorRamp() /Factory/;
+%Docstring
+Returns the default color ramp to use for pie charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsNumericFormat *pieChartNumericFormat() /Factory/;
+%Docstring
+Returns the default color ramp to use for pie charts.
 
 .. versionadded:: 4.0
 %End

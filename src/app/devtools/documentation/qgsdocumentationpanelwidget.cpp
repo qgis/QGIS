@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdocumentationpanelwidget.h"
-#include "moc_qgsdocumentationpanelwidget.cpp"
+
 #include "qgisapp.h"
 #include "qgsguiutils.h"
+
 #include <QVBoxLayout>
+
+#include "moc_qgsdocumentationpanelwidget.cpp"
 
 #ifdef HAVE_WEBENGINE
 #include <QtWebEngineWidgets/QWebEngineView>

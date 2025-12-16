@@ -14,18 +14,81 @@
  ***************************************************************************/
 
 #include "qgsstacdataitems.h"
-#include "moc_qgsstacdataitems.cpp"
-#include "qgsstacconnection.h"
-#include "qgsstaccontroller.h"
+
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsstaccatalog.h"
-#include "qgsstacitem.h"
-#include "qgsstacitemcollection.h"
 #include "qgsstaccollection.h"
 #include "qgsstaccollectionlist.h"
+#include "qgsstacconnection.h"
+#include "qgsstaccontroller.h"
+#include "qgsstacitem.h"
+#include "qgsstacitemcollection.h"
 
+#include "moc_qgsstacdataitems.cpp"
 
 constexpr int MAX_DISPLAYED_ITEMS = 20;
 
+
+//
+// QgsStacAssetItem
+//
+
+QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString( "%1/%2" ).arg( parent->path(), name ), QStringLiteral( "special:Stac" ) ),
+    mStacAsset( asset ),
+    mName( name )
+{
+  if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( asset->uri().providerKey ) )
+  {
+    mIcon = metadata->icon();
+  }
+  else
+  {
+    mIconName = QStringLiteral( "downloading_svg.svg" );
+  }
+  updateToolTip();
+  setState( Qgis::BrowserItemState::Populated );
+}
+
+bool QgsStacAssetItem::hasDragEnabled() const
+{
+  return mStacAsset->isCloudOptimized();
+}
+
+QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
+{
+  QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( parent() );
+  const QString authcfg = itemItem->stacController()->authCfg();
+
+  QgsMimeDataUtils::Uri uri;
+  QUrl url( mStacAsset->href() );
+  if ( url.isLocalFile() )
+  {
+    uri.uri = mStacAsset->href();
+  }
+  else
+  {
+    uri = mStacAsset->uri( authcfg );
+  }
+
+  return { uri };
+}
+
+bool QgsStacAssetItem::equal( const QgsDataItem * )
+{
+  return false;
+}
+
+void QgsStacAssetItem::updateToolTip()
+{
+  QString title = mStacAsset->title();
+  if ( title.isNull() || title.isEmpty() )
+  {
+    title = mName;
+  }
+  mToolTip = QStringLiteral( "STAC Asset:\n%1\n%2" ).arg( title, mStacAsset->href() );
+}
 
 //
 // QgsStacFetchMoreItem
@@ -53,7 +116,6 @@ bool QgsStacFetchMoreItem::handleDoubleClick()
   }
 }
 
-
 //
 // QgsStacItemItem
 //
@@ -62,6 +124,7 @@ QgsStacItemItem::QgsStacItemItem( QgsDataItem *parent, const QString &name, cons
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name.isEmpty() ? path : name, path, QStringLiteral( "special:Stac" ) )
 {
   mIconName = QStringLiteral( "mActionPropertiesWidget.svg" );
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   updateToolTip();
 }
 
@@ -74,7 +137,16 @@ QVector<QgsDataItem *> QgsStacItemItem::createChildren()
   if ( !mStacItem )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
 
-  return {};
+  setState( Qgis::BrowserItemState::Populating );
+  QVector<QgsDataItem *> contents;
+  contents.reserve( mStacItem->assets().size() );
+  const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
+  for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
+  {
+    QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
+    contents.append( assetItem );
+  }
+  return contents;
 }
 
 bool QgsStacItemItem::hasDragEnabled() const
@@ -103,51 +175,11 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
   const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
-    QgsMimeDataUtils::Uri uri;
-    QUrl url( it->href() );
-    if ( url.isLocalFile() )
+    QgsMimeDataUtils::Uri uri = it->uri( authcfg );
+    if ( uri.isValid() )
     {
-      uri.uri = it->href();
+      uris.append( uri );
     }
-    else if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-              it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
-    {
-      uri.layerType = QStringLiteral( "raster" );
-      uri.providerKey = QStringLiteral( "gdal" );
-      if ( it->href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-           it->href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
-      {
-        uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( it->href() );
-        if ( !authcfg.isEmpty() )
-          uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
-      }
-      else if ( it->href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
-      {
-        uri.uri = QStringLiteral( "/vsis3/%1" ).arg( it->href().mid( 5 ) );
-      }
-      else
-      {
-        uri.uri = it->href();
-      }
-    }
-    else if ( it->mediaType() == QLatin1String( "application/vnd.laszip+copc" ) )
-    {
-      uri.layerType = QStringLiteral( "pointcloud" );
-      uri.providerKey = QStringLiteral( "copc" );
-      uri.uri = it->href();
-      if ( !authcfg.isEmpty() )
-        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
-    }
-    else if ( it->href().endsWith( QLatin1String( "/ept.json" ) ) )
-    {
-      uri.layerType = QStringLiteral( "pointcloud" );
-      uri.providerKey = QStringLiteral( "ept" );
-      uri.uri = it->href();
-      if ( !authcfg.isEmpty() )
-        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
-    }
-    uri.name = it->title().isEmpty() ? url.fileName() : it->title();
-    uris.append( uri );
   }
 
   return uris;
@@ -210,7 +242,6 @@ void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
     mIconName = QStringLiteral( "/mIconDelete.svg" );
     mName = error;
   }
-  setState( Qgis::BrowserItemState::Populated );
 }
 
 
@@ -293,7 +324,6 @@ void QgsStacCatalogItem::childrenCreated()
       if ( item->state() != Qgis::BrowserItemState::NotPopulated )
         continue;
 
-      item->setIconName( QStringLiteral( "mActionIdentify.svg" ) );
       const int requestId = stacController()->fetchStacObjectAsync( item->path() );
       item->setProperty( "requestId", requestId );
     }
@@ -498,7 +528,7 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
 
     QgsStacItemItem *i = new QgsStacItemItem( this, name, item->url() );
     i->setStacItem( std::move( object ) );
-    i->setState( Qgis::BrowserItemState::Populated );
+    i->setState( Qgis::BrowserItemState::NotPopulated );
     contents.append( i );
   }
   return contents;

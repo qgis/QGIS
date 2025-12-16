@@ -14,20 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewmeshlayerdialog.h"
-#include "moc_qgsnewmeshlayerdialog.cpp"
 
-#include <QPushButton>
-#include <QMessageBox>
+#include <memory>
 
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsproject.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsproject.h"
-#include "qgsmeshlayer.h"
-#include "qgsapplication.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
 
+#include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgsnewmeshlayerdialog.cpp"
 
 QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -125,7 +127,7 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
     {
       QgsApplication::setOverrideCursor( Qt::WaitCursor );
       if ( !mMeshFromFileWidget->filePath().isEmpty() )
-        mSourceMeshFromFile.reset( new QgsMeshLayer( mMeshFromFileWidget->filePath(), QString(), QStringLiteral( "mdal" ) ) );
+        mSourceMeshFromFile = std::make_unique<QgsMeshLayer>( mMeshFromFileWidget->filePath(), QString(), QStringLiteral( "mdal" ) );
 
       if ( mSourceMeshFromFile && !mSourceMeshFromFile->isValid() )
         mSourceMeshFromFile.reset();

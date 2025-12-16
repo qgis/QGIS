@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmshpencodinginfo.h"
+
 #include "qgsogrutils.h"
 
 ///@cond PRIVATE

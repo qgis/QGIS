@@ -17,7 +17,10 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshdataprovider.h"
-#include "moc_qgsquantizedmeshdataprovider.cpp"
+
+#include <limits>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
@@ -36,14 +39,15 @@
 #include "qgstiledscenetile.h"
 #include "qgstiles.h"
 #include "qgsvectortileutils.h"
-#include <limits>
-#include <nlohmann/json.hpp>
+
+#include <QUrlQuery>
 #include <qglobal.h>
 #include <qnetworkrequest.h>
 #include <qobject.h>
 #include <qstringliteral.h>
 #include <qvector.h>
-#include <QUrlQuery>
+
+#include "moc_qgsquantizedmeshdataprovider.cpp"
 
 ///@cond PRIVATE
 
@@ -51,7 +55,7 @@ class MissingFieldException : public std::exception
 {
   public:
     MissingFieldException( const char *field ) : mField( field ) { }
-    const char *what() const noexcept
+    const char *what() const noexcept override
     {
       return QString( "Missing field: %1" ).arg( mField ).toLocal8Bit().constData();
     }
@@ -384,11 +388,11 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
 
   QVector<long long> ids;
   // We can only filter on X and Y
-  const QgsRectangle extent = request.filterBox().extent().toRectangle();
+  QgsRectangle extent = request.filterBox().extent().toRectangle();
   if ( request.parentTileId() != -1 )
   {
     const QgsTileXYZ parentTile = decodeTileId( request.parentTileId() );
-    extent.intersect( tileMatrix.tileExtent( parentTile ) );
+    extent = extent.intersect( tileMatrix.tileExtent( parentTile ) );
   }
 
   const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( extent );

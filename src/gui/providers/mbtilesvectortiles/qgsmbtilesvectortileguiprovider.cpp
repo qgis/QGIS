@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmbtilesvectortileguiprovider.h"
+
 ///@cond PRIVATE
 
 #include <QList>

@@ -18,18 +18,19 @@
 #ifndef QGSLOCATOR_H
 #define QGSLOCATOR_H
 
-#include <QObject>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <QMap>
 #include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
+#include "qgslocatorfilter.h"
 #include "qgssettingstree.h"
+
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QMap>
+#include <QObject>
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryString;

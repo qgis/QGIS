@@ -55,12 +55,14 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
+    void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
+    void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
     QStringList schemas() const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
@@ -72,6 +74,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
     QString defaultPrimaryKeyColumnName() const override;
+    void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;

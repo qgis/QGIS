@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgslayoutitem3dmap.h"
-#include "moc_qgslayoutitem3dmap.cpp"
+
+#include <memory>
 
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgslayout.h"
-#include "qgslayoutmodel.h"
 #include "qgslayoutitemregistry.h"
-#include "qgsoffscreen3dengine.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutrendercontext.h"
+#include "qgsoffscreen3dengine.h"
+
+#include "moc_qgslayoutitem3dmap.cpp"
 
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -154,7 +157,7 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
 
   if ( !mEngine )
   {
-    mEngine.reset( new QgsOffscreen3DEngine );
+    mEngine = std::make_unique<QgsOffscreen3DEngine>();
     connect( mEngine.get(), &QgsAbstract3DEngine::imageCaptured, this, &QgsLayoutItem3DMap::onImageCaptured );
 
     mEngine->setSize( sizePixelsInt );
@@ -245,7 +248,7 @@ bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, 
   QDomElement elemSettings = element.firstChildElement( QStringLiteral( "qgis3d" ) );
   if ( !elemSettings.isNull() )
   {
-    mSettings.reset( new Qgs3DMapSettings );
+    mSettings = std::make_unique<Qgs3DMapSettings>();
     mSettings->readXml( elemSettings, context );
     if ( mLayout->project() )
     {

@@ -14,21 +14,23 @@
  ***************************************************************************/
 
 #include "qgsrulebased3drendererwidget.h"
-#include "moc_qgsrulebased3drendererwidget.cpp"
 
+#include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
+#include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgsrulebased3drenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgssymbol3dwidget.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
+#include "qgsvectorlayer.h"
 
 #include <QAction>
 #include <QClipboard>
 #include <QMessageBox>
 #include <QMimeData>
+
+#include "moc_qgsrulebased3drendererwidget.cpp"
 
 QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -605,7 +607,8 @@ void Qgs3DRendererRulePropsWidget::testFilter()
     return;
   }
 
-  QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   if ( !filter.prepare( &context ) )
   {
@@ -638,7 +641,8 @@ void Qgs3DRendererRulePropsWidget::testFilter()
 
 void Qgs3DRendererRulePropsWidget::buildExpression()
 {
-  const QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 

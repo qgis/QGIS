@@ -14,9 +14,10 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
-#include "qgsgrassmoduleinput.h"
 #include "ui_qgsgrassmapcalcbase.h"
+
 #include "qgsgrassmodule.h"
+#include "qgsgrassmoduleinput.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -155,7 +156,7 @@ class QgsGrassMapcalc : public QMainWindow, private Ui::QgsGrassMapcalcBase, pub
     QGraphicsScene *mCanvasScene = nullptr;
 
     // Tool
-    int mTool;
+    int mTool = -1;
     int mToolStep;
 
     // Pointer to current object
@@ -341,7 +342,7 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
     void setCenter( int, int );
 
     // Get center point
-    QPoint center() { return mCenter; }
+    QPoint center() const { return mCenter; }
 
     // Recalculate size
     void resetSize();
@@ -361,13 +362,13 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
     int type() const override;
 
     // Value
-    QString value() { return mValue; }
+    QString value() const { return mValue; }
 
     // label
-    QString label() { return mLabel; }
+    QString label() const { return mLabel; }
 
     //! Function
-    QgsGrassMapcalcFunction function() { return mFunction; }
+    QgsGrassMapcalcFunction function() const { return mFunction; }
 
     // Expression
     QString expression();
@@ -400,25 +401,25 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
     QRect mRect;
 
     // Rounding of box
-    int mRound;
+    int mRound = 0.;
 
     // Center of object
     QPoint mCenter;
 
     // Half size of socket symbol
-    int mSocketHalf;
+    int mSocketHalf = 0.;
 
     // Margin between mRect and QCanvasRectangle.rect()
-    int mMargin;
+    int mMargin = 0.;
 
     // Space between text boxes
-    int mSpace;
+    int mSpace = 0.;
 
     // Height of text box
-    int mTextHeight;
+    int mTextHeight = 0;
 
     // Maximum width of input labels
-    int mInputTextWidth;
+    int mInputTextWidth = 0;
 
     // Label box
     QRect mLabelRect;
@@ -430,7 +431,7 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
     QPoint mOutputPoint;
 
     // Selection box size
-    int mSelectionBoxSize;
+    int mSelectionBoxSize = 5;
 
     // Input connectors
     std::vector<QgsGrassMapcalcConnector *> mInputConnectors;
@@ -438,7 +439,7 @@ class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcIt
 
     // Output connector
     QgsGrassMapcalcConnector *mOutputConnector = nullptr;
-    int mOutputConnectorEnd;
+    int mOutputConnectorEnd = 0;
 };
 
 /*
@@ -456,7 +457,7 @@ class QgsGrassMapcalcConnector : public QGraphicsLineItem, public QgsGrassMapcal
     // Set connector end point coordinates
     void setPoint( int, QPoint );
 
-    QPoint point( int );
+    QPoint point( int ) const;
 
     // Recalculate size
     //void resetSize();
@@ -467,7 +468,7 @@ class QgsGrassMapcalcConnector : public QGraphicsLineItem, public QgsGrassMapcal
     void selectEnd( QPoint );
 
     // Which end is selected
-    int selectedEnd();
+    int selectedEnd() const;
 
     // Try to connect specified end to an object
     bool tryConnectEnd( int end );
@@ -482,10 +483,10 @@ class QgsGrassMapcalcConnector : public QGraphicsLineItem, public QgsGrassMapcal
     QgsGrassMapcalcObject *object( int end );
 
     // End object direction
-    int socketDirection( int end ) { return mSocketDir[end]; }
+    int socketDirection( int end ) const { return mSocketDir[end]; }
 
     // End object socket number
-    int socket( int end ) { return mSocket[end]; }
+    int socket( int end ) const { return mSocket[end]; }
 
     // Refresh/repaint
     void repaint();

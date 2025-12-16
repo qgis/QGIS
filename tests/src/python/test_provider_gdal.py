@@ -550,6 +550,32 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         # This was triggering another crash:
         self.assertEqual(rl.dataProvider().colorInterpretationName(1), "Undefined")
 
+    def testHistogramBinCountWithScale(self):
+        """Test issue GH #59461"""
+
+        # Create raster with 2x2 pixels, int type, values 0-10000, scale 0.001
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), "testBinCountWithScale.tif")
+        ds = gdal.GetDriverByName("GTiff").Create(tmpfile, 2, 2, 1, gdal.GDT_Int32)
+        ds.SetGeoTransform([0, 1, 0, 0, 0, -1])
+        ds.SetProjection("EPSG:4326")
+        ds.WriteRaster(0, 0, 2, 2, struct.pack("i" * 4, 0, 5000, 10000, -10000))
+        # Set band scale
+        band = ds.GetRasterBand(1)
+        band.SetScale(0.001)
+        ds = None
+        rl = QgsRasterLayer(tmpfile, "test")
+        self.assertTrue(rl.isValid())
+        provider = rl.dataProvider()
+        # Data type is changed by QGIS because of the scale
+        self.assertEqual(provider.dataType(1), Qgis.DataType.Float32)
+        self.assertEqual(provider.bandScale(1), 0.001)
+
+        # Create histogram
+        hist = provider.histogram(1, 10000)
+        self.assertIsNotNone(hist)
+        self.assertEqual(hist.binCount, 10)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,18 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "moc_qgsvectorlayerplotdatagatherer.cpp"
 #include "qgsvectorlayerplotdatagatherer.h"
+
 #include "qgsexpression.h"
 
+#include "moc_qgsvectorlayerplotdatagatherer.cpp"
 
-QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType, const QStringList &predefinedCategories )
-  : mIterator( iterator )
-  , mExpressionContext( expressionContext )
-  , mXAxisType( xAxisType )
-  , mSeriesDetails( seriesDetails )
-  , mPredefinedCategories( predefinedCategories )
+QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType )
+  : mXAxisType( xAxisType )
 {
+}
+
+void QgsVectorLayerXyPlotDataGatherer::setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails )
+{
+  mSeriesDetails = seriesDetails;
+}
+
+void QgsVectorLayerXyPlotDataGatherer::setPredefinedCategories( const QStringList &predefinedCategories )
+{
+  mPredefinedCategories = predefinedCategories;
 }
 
 bool QgsVectorLayerXyPlotDataGatherer::run()
@@ -38,7 +45,7 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
   gatheredSeries.reserve( mSeriesDetails.size() );
   for ( int i = 0; i < mSeriesDetails.size(); i++ )
   {
-    std::unique_ptr<QgsXyPlotSeries> series = std::make_unique<QgsXyPlotSeries>();
+    auto series = std::make_unique<QgsXyPlotSeries>();
     gatheredSeries.emplace_back( std::move( series ) );
     gatheredSeriesCategoriesSum << QMap<QString, double>();
   }

@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
 #include "qgseffectstack.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 #include "qgsrendercontext.h"
+#include "qgstest.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 //dummy paint effect for testing
 class DummyPaintEffect : public QgsPaintEffect
@@ -32,6 +32,7 @@ class DummyPaintEffect : public QgsPaintEffect
     QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
     static QgsPaintEffect *create( const QVariantMap & ) { return new DummyPaintEffect(); }
     QVariantMap properties() const override { return QVariantMap(); }
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override { Q_UNUSED( props ); }
 
   protected:

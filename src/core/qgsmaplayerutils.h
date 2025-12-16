@@ -19,9 +19,9 @@
 
 #define MAXIMUM_OPENSTREETMAP_TILES_FETCH  5000
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsMapLayer;
 class QgsRectangle;
@@ -103,6 +103,13 @@ class CORE_EXPORT QgsMapLayerUtils
      * \since QGIS 3.40
      */
     static bool isOpenStreetMapLayer( QgsMapLayer *layer );
+
+    /**
+     * Returns the translated name of the type for a given layer type.
+     *
+     * \since QGIS 4.0
+     */
+    static QString layerTypeToString( Qgis::LayerType type );
 
 };
 

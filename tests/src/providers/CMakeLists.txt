@@ -67,9 +67,21 @@ if (WITH_EPT)
   add_qgis_test(testqgseptprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
 endif()
 
+set(TEST_LAZPERF_SUPPRESSION_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND TEST_LAZPERF_SUPPRESSION_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND TEST_LAZPERF_SUPPRESSION_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+
 if (WITH_COPC)
   add_qgis_test(testqgscopcprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
   add_qgis_test(testqgsvirtualpointcloudprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
+
+  if (TEST_LAZPERF_SUPPRESSION_OPTIONS)
+    set_source_files_properties(testqgscopcprovider.cpp PROPERTIES COMPILE_OPTIONS "${TEST_LAZPERF_SUPPRESSION_OPTIONS}")
+  endif()
 endif()
 
 if (WITH_PDAL)
@@ -77,6 +89,10 @@ if (WITH_PDAL)
     ${CMAKE_SOURCE_DIR}/src/providers/pdal
   )
   add_qgis_test(testqgspdalprovider.cpp MODULE provider LINKEDLIBRARIES provider_pdal_a qgis_core)
+
+  if (TEST_LAZPERF_SUPPRESSION_OPTIONS)
+    set_source_files_properties(testqgspdalprovider.cpp PROPERTIES COMPILE_OPTIONS "${TEST_LAZPERF_SUPPRESSION_OPTIONS}")
+  endif()
 endif()
 
 #############################################################
@@ -89,7 +105,6 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   )
 
   add_executable(test_provider_wcs ${WCSTEST_SRCS} )
-  target_compile_features(test_provider_wcs PRIVATE cxx_std_17)
   target_compile_definitions(test_provider_wcs PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}

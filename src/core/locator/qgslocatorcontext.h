@@ -19,9 +19,9 @@
 #define QGSLOCATORCONTEXT_H
 
 #include "qgis_core.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsrectangle.h"
 
 /**
  * \class QgsLocatorContext

@@ -14,7 +14,24 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssnappingwidget.h"
+
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsscalewidget.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappinglayertreemodel.h"
+#include "qgsunittypes.h"
+
 #include <QAction>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QFont>
 #include <QHBoxLayout>
@@ -23,25 +40,10 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
-#include <QWidgetAction>
-#include <QCheckBox>
 #include <QTreeView>
+#include <QWidgetAction>
 
-#include "qgisapp.h"
-#include "qgsapplication.h"
-#include "qgsdoublespinbox.h"
-#include "qgslayertreegroup.h"
-#include "qgslayertree.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-#include "qgssnappingconfig.h"
-#include "qgssnappinglayertreemodel.h"
-#include "qgssnappingwidget.h"
 #include "moc_qgssnappingwidget.cpp"
-#include "qgsunittypes.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsscalewidget.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -268,7 +270,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mSelfSnappingAction = new QAction( tr( "Self-snapping" ), this );
   mSelfSnappingAction->setCheckable( true );
   mSelfSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSelf.svg" ) ) );
-  mSelfSnappingAction->setToolTip( tr( "If self snapping is enabled, snapping will also take the current state of the digitized feature into consideration." ) );
+  mSelfSnappingAction->setToolTip( tr( "Enable Self-snapping" ) + QStringLiteral( "\n\n" ) + tr( "If enabled, snapping will also take the current state of the digitized feature into consideration." ) );
   mSelfSnappingAction->setObjectName( QStringLiteral( "SelfSnappingAction" ) );
   connect( mSelfSnappingAction, &QAction::toggled, this, &QgsSnappingWidget::enableSelfSnapping );
 

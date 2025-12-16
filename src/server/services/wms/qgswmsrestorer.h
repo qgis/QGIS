@@ -18,12 +18,12 @@
 #ifndef QGSWMSRESTORER_H
 #define QGSWMSRESTORER_H
 
-#include <QList>
-#include <QDomDocument>
-#include <QMap>
-
 #include "qgsfeatureid.h"
 #include "qgswmsrendercontext.h"
+
+#include <QDomDocument>
+#include <QList>
+#include <QMap>
 
 class QgsMapLayer;
 class QgsAbstractVectorLayerLabeling;

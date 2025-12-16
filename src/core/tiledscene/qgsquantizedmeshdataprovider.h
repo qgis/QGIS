@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
@@ -27,7 +29,7 @@
 #include "qgstiledscenedataprovider.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiles.h"
-#include <optional>
+
 #include <qmap.h>
 #include <qvector.h>
 
@@ -58,8 +60,8 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
     QVector<QVector<QgsTileRange>> mAvailableTiles;
     QgsCoordinateReferenceSystem mCrs;
     QString mTileScheme;
-    uint8_t mMinZoom;
-    uint8_t mMaxZoom;
+    uint8_t mMinZoom = 0;
+    uint8_t mMaxZoom = 10;
     std::vector<QString> mTileUrls;
     QgsTileMatrix mTileMatrix;
 
@@ -138,7 +140,7 @@ class QgsQuantizedMeshProviderMetadata : public QgsProviderMetadata
     QgsQuantizedMeshProviderMetadata();
     QgsDataProvider *createProvider( const QString &uri,
                                      const QgsDataProvider::ProviderOptions &providerOptions,
-                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
 };
 
 ///@endcond

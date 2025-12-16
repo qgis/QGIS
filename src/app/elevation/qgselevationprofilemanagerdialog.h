@@ -17,10 +17,10 @@
 #ifndef QGSELEVATIONPROFILEMANAGERDIALOG_H
 #define QGSELEVATIONPROFILEMANAGERDIALOG_H
 
+#include "ui_qgselevationprofilemanagerbase.h"
+
 #include <QItemDelegate>
 #include <QSortFilterProxyModel>
-
-#include "ui_qgselevationprofilemanagerbase.h"
 
 class QListWidgetItem;
 class QgsElevationProfile;
@@ -60,6 +60,7 @@ class QgsElevationProfileManagerDialog : public QDialog, private Ui::QgsElevatio
 
     void removeClicked();
     void showClicked();
+    void duplicateClicked();
     void renameClicked();
     void itemDoubleClicked( const QModelIndex &index );
 };

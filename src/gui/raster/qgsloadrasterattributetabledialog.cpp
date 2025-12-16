@@ -14,12 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsloadrasterattributetabledialog.h"
-#include "moc_qgsloadrasterattributetabledialog.cpp"
-#include "qgsrasterattributetable.h"
-#include "qgsmessagebar.h"
+
 #include "qgsgui.h"
+#include "qgsmessagebar.h"
+#include "qgsrasterattributetable.h"
+
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsloadrasterattributetabledialog.cpp"
 
 QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
   : QDialog( parent )

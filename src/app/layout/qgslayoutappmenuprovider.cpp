@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgslayoutappmenuprovider.h"
-#include "moc_qgslayoutappmenuprovider.cpp"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutdesignerdialog.h"
+
 #include "qgslayout.h"
-#include "qgslayoutundostack.h"
-#include "qgslayoutpagecollection.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgslayoutguidewidget.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
+
 #include <QMenu>
 #include <QMessageBox>
+
+#include "moc_qgslayoutappmenuprovider.cpp"
 
 QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer )
   : QObject( nullptr )
@@ -116,7 +119,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     {
       QAction *manageGuidesAction = new QAction( tr( "Manage Guides for Page…" ), menu );
       QPointer<QgsLayoutGuideWidget> guideManager( mDesigner->guideWidget() );
-      connect( manageGuidesAction, &QAction::triggered, this, [this, pageNumber, guideManager]() {
+      connect( manageGuidesAction, &QAction::triggered, this, [this, pageNumber, guideManager = std::move( guideManager )]() {
         if ( guideManager )
         {
           guideManager->setCurrentPage( pageNumber );

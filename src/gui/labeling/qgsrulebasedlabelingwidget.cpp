@@ -13,24 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabelingwidget.h"
-#include "moc_qgsrulebasedlabelingwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgslabelinggui.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontextutils.h"
 
 #include <QAction>
 #include <QClipboard>
 #include <QMessageBox>
+
+#include "moc_qgsrulebasedlabelingwidget.cpp"
 
 const double ICON_PADDING_FACTOR = 0.16;
 
@@ -658,7 +659,6 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   : QgsPanelWidget( parent )
   , mRule( rule )
   , mLayer( layer )
-  , mSettings( nullptr )
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );

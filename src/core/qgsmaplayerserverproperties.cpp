@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgsmaplayerserverproperties.h"
-#include "moc_qgsmaplayerserverproperties.cpp"
+
 #include "qgsmaplayer.h"
 #include "vector/qgsvectorlayer.h"
 
 #include <QDomNode>
+
+#include "moc_qgsmaplayerserverproperties.cpp"
 
 // QgsServerMetadataUrlProperties
 
@@ -295,6 +297,17 @@ void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMemb
 {
   QgsServerMetadataUrlProperties::reset();
   QgsServerWmsDimensionProperties::reset();
+}
+
+QString QgsMapLayerServerProperties::wfsTypeName() const
+{
+  QString name = mLayer ? mLayer->name() : QString();
+  if ( !mShortName.isEmpty() )
+    name = mShortName;
+
+  name.replace( ' ', '_' ).replace( ':', '-' ).replace( QChar( 0x2014 ) /* em-dash */, '-' );
+
+  return name.toLocal8Bit();
 }
 
 void QgsMapLayerServerProperties::readXml( const QDomNode &layerNode ) // cppcheck-suppress duplInheritedMember

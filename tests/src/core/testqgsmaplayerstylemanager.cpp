@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-
 #include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgslinesymbol.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsproject.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
 
 class TestQgsMapLayerStyleManager : public QObject
 {

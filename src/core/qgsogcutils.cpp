@@ -14,30 +14,30 @@
  ***************************************************************************/
 #include "qgsogcutils.h"
 
-#include "qgsexpression.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgsexpressionfunction.h"
-#include "qgsexpression_p.h"
-#include "qgsgeometry.h"
-#include "qgswkbptr.h"
+#include <memory>
+#include <ogr_api.h>
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrectangle.h"
-#include "qgsvectorlayer.h"
+#include "qgsexpression.h"
+#include "qgsexpression_p.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfunction.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsstringutils.h"
 #include "qgsmultipolygon.h"
-#include "qgspolygon.h"
 #include "qgsogrutils.h"
+#include "qgspolygon.h"
+#include "qgsrectangle.h"
+#include "qgsstringutils.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbptr.h"
 
 #include <QColor>
-#include <QStringList>
-#include <QTextStream>
 #include <QObject>
 #include <QRegularExpression>
-
-
-#include "ogr_api.h"
+#include <QStringList>
+#include <QTextStream>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -64,7 +64,6 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
     const QMap<QString, QString> &fieldNameToXPathMap,
     const QMap<QString, QString> &namespacePrefixToUriMap )
   : mDoc( doc )
-  , mGMLUsed( false )
   , mGMLVersion( gmlVersion )
   , mFilterVersion( filterVersion )
   , mNamespacePrefix( namespacePrefix )
@@ -76,7 +75,6 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
   , mNamespacePrefixToUriMap( namespacePrefixToUriMap )
   , mFilterPrefix( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes" : "ogc" )
   , mPropertyName( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "ValueReference" : "PropertyName" )
-  , mGeomId( 1 )
 {
   QgsCoordinateReferenceSystem crs;
   if ( !mSrsName.isEmpty() )
@@ -156,49 +154,48 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode, const Co
     return geometry;
   }
 
-  // Handle srsName if context has information about the layer and the transformation context
-  if ( context.layer )
+  // Handle srsName
+  // Check if the XY coordinates of geometry need to be swapped by checking the srs from the GML
+  QgsCoordinateReferenceSystem geomSrs;
+  if ( geometryTypeElement.hasAttribute( QStringLiteral( "srsName" ) ) )
   {
-    QgsCoordinateReferenceSystem geomSrs;
+    QString srsName { geometryTypeElement.attribute( QStringLiteral( "srsName" ) ) };
 
-    if ( geometryTypeElement.hasAttribute( QStringLiteral( "srsName" ) ) )
+    // The logic here follows WFS GeoServer conventions from https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html
+    const bool ignoreAxisOrientation { srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) || srsName.startsWith( QLatin1String( "EPSG:" ) ) };
+
+    // GDAL does not recognise http://www.opengis.net/gml/srs/epsg.xml#4326 but it does
+    // http://www.opengis.net/def/crs/EPSG/0/4326 so, let's try that
+    if ( srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) )
     {
-      QString srsName { geometryTypeElement.attribute( QStringLiteral( "srsName" ) ) };
-
-      // The logic here follows WFS GeoServer conventions from https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html
-      const bool ignoreAxisOrientation { srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) || srsName.startsWith( QLatin1String( "EPSG:" ) ) };
-
-      // GDAL does not recognise http://www.opengis.net/gml/srs/epsg.xml#4326 but it does
-      // http://www.opengis.net/def/crs/EPSG/0/4326 so, let's try that
-      if ( srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) )
+      const auto parts { srsName.split( QRegularExpression( QStringLiteral( R"raw(/|#|\.)raw" ) ) ) };
+      if ( parts.length() == 10 )
       {
-        const auto parts { srsName.split( QRegularExpression( QStringLiteral( R"raw(/|#|\.)raw" ) ) ) };
-        if ( parts.length() == 10 )
-        {
-          srsName = QStringLiteral( "http://www.opengis.net/def/crs/%1/0/%2" ).arg( parts[ 7 ].toUpper(), parts[ 9 ] );
-        }
+        srsName = QStringLiteral( "http://www.opengis.net/def/crs/%1/0/%2" ).arg( parts[ 7 ].toUpper(), parts[ 9 ] );
       }
-      geomSrs.createFromUserInput( srsName );
-      if ( geomSrs.isValid() && geomSrs != context.layer->crs() )
+    }
+    geomSrs.createFromUserInput( srsName );
+    if ( geomSrs.isValid() && geomSrs.hasAxisInverted() && !ignoreAxisOrientation )
+    {
+      geometry.get()->swapXy();
+    }
+  }
+
+  // Apply a coordinate transformation if context has information about the layer and the transformation context
+  if ( geomSrs.isValid() && context.layer && geomSrs != context.layer->crs() )
+  {
+    const QgsCoordinateTransform transformer { geomSrs, context.layer->crs(), context.transformContext };
+    try
+    {
+      const Qgis::GeometryOperationResult result = geometry.transform( transformer );
+      if ( result != Qgis::GeometryOperationResult::Success )
       {
-        if ( geomSrs.hasAxisInverted() && ! ignoreAxisOrientation )
-        {
-          geometry.get()->swapXy();
-        }
-        const QgsCoordinateTransform transformer { geomSrs, context.layer->crs(), context.transformContext };
-        try
-        {
-          const Qgis::GeometryOperationResult result = geometry.transform( transformer );
-          if ( result != Qgis::GeometryOperationResult::Success )
-          {
-            QgsDebugMsgLevel( QStringLiteral( "Error transforming geometry: %1" ).arg( qgsEnumValueToKey( result ) ), 2 );
-          }
-        }
-        catch ( QgsCsException & )
-        {
-          QgsDebugMsgLevel( QStringLiteral( "CS error transforming geometry" ), 2 );
-        }
+        QgsDebugMsgLevel( QStringLiteral( "Error transforming geometry: %1" ).arg( qgsEnumValueToKey( result ) ), 2 );
       }
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "CS error transforming geometry" ), 2 );
     }
   }
 
@@ -2092,39 +2089,26 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
   if ( !node )
     return QDomElement();
 
-  switch ( node->nodeType() )
+  QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
+  const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
+
+  if ( errorMessage )
   {
-    case QgsExpressionNode::ntFunction:
-    case QgsExpressionNode::ntLiteral:
-    case QgsExpressionNode::ntColumnRef:
-    case QgsExpressionNode::ntUnaryOperator:
-    {
-      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
-      const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
-
-      if ( errorMessage )
-        *errorMessage = utils.errorMessage();
-
-      if ( !exprRootElem.isNull() )
-      {
-        if ( requiresFilterElement )
-        {
-          QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
-
-          filterElem.appendChild( exprRootElem );
-          return filterElem;
-        }
-        return exprRootElem;
-      }
-      break;
-    }
-    default:
-    {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Node type not supported in expression translation: %1" ).arg( node->nodeType() );
-    }
+    *errorMessage = utils.errorMessage();
   }
-  // got an error
+
+  if ( !exprRootElem.isNull() )
+  {
+    if ( requiresFilterElement )
+    {
+      QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
+
+      filterElem.appendChild( exprRootElem );
+      return filterElem;
+    }
+    return exprRootElem;
+  }
+
   return QDomElement();
 }
 
@@ -2669,7 +2653,6 @@ QgsOgcUtilsSQLStatementToFilter::QgsOgcUtilsSQLStatementToFilter( QDomDocument &
     const QMap<QString, QString> &fieldNameToXPathMap,
     const QMap<QString, QString> &namespacePrefixToUriMap )
   : mDoc( doc )
-  , mGMLUsed( false )
   , mGMLVersion( gmlVersion )
   , mFilterVersion( filterVersion )
   , mLayerProperties( layerProperties )
@@ -2677,7 +2660,6 @@ QgsOgcUtilsSQLStatementToFilter::QgsOgcUtilsSQLStatementToFilter( QDomDocument &
   , mInvertAxisOrientation( invertAxisOrientation )
   , mFilterPrefix( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes" : "ogc" )
   , mPropertyName( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "ValueReference" : "PropertyName" )
-  , mGeomId( 1 )
   , mMapUnprefixedTypenameToPrefixedTypename( mapUnprefixedTypenameToPrefixedTypename )
   , mFieldNameToXPathMap( fieldNameToXPathMap )
   , mNamespacePrefixToUriMap( namespacePrefixToUriMap )
@@ -3651,10 +3633,10 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
       {
         oprValue.replace( escape + escape, escape );
       }
-      opRight.reset( new QgsExpressionNodeLiteral( oprValue ) );
+      opRight = std::make_unique<QgsExpressionNodeLiteral>( oprValue );
     }
 
-    expr.reset( new QgsExpressionNodeBinaryOperator( static_cast< QgsExpressionNodeBinaryOperator::BinaryOperator >( op ), expr.release(), opRight.release() ) );
+    expr = std::make_unique<QgsExpressionNodeBinaryOperator>( static_cast< QgsExpressionNodeBinaryOperator::BinaryOperator >( op ), expr.release(), opRight.release() );
   }
 
   if ( expr == leftOp )
@@ -3723,7 +3705,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
   std::unique_ptr<QgsExpressionNode> root;
   if ( !element.hasChildNodes() )
   {
-    root.reset( new QgsExpressionNodeLiteral( QVariant( "" ) ) );
+    root = std::make_unique<QgsExpressionNodeLiteral>( QVariant( "" ) );
     return root.release();
   }
 
@@ -3780,9 +3762,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
           value = d;
       }
 
-      operand.reset( new QgsExpressionNodeLiteral( value ) );
-      if ( !operand )
-        continue;
+      operand = std::make_unique<QgsExpressionNodeLiteral>( value );
     }
 
     // use the concat operator to merge the ogc:Literal children
@@ -3792,7 +3772,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
     }
     else
     {
-      root.reset( new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boConcat, root.release(), operand.release() ) );
+      root = std::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boConcat, root.release(), operand.release() );
     }
 
     childNode = childNode.nextSibling();

@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLabelingEngineSettings
 {
 %Docstring(signature="appended")
@@ -33,6 +34,7 @@ Stores global configuration for labeling engine.
     ~QgsLabelingEngineSettings();
 
     QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other );
+
 
     void clear();
 %Docstring

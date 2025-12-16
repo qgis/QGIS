@@ -14,22 +14,21 @@
  ***************************************************************************/
 
 #include "qgsterraintexturegenerator_p.h"
-#include "moc_qgsterraintexturegenerator_p.cpp"
 
+#include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgseventtracing.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettings.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgs3dmapsettings.h"
 
-#include "qgseventtracing.h"
+#include "moc_qgsterraintexturegenerator_p.cpp"
 
 ///@cond PRIVATE
 
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : mMap( map )
-  , mLastJobId( 0 )
   , mTextureSize( QSize( mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->mapTileResolution() ) )
 {
 }
@@ -51,9 +50,9 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   if ( !qgsDoubleNear( clippedExtent.width(), clippedExtent.height() ) )
   {
     if ( clippedExtent.height() > clippedExtent.width() )
-      size.setWidth( std::round( size.width() * clippedExtent.width() / clippedExtent.height() ) );
+      size.setWidth( static_cast< int >( std::round( size.width() * clippedExtent.width() / clippedExtent.height() ) ) );
     else if ( clippedExtent.height() < clippedExtent.width() )
-      size.setHeight( std::round( size.height() * clippedExtent.height() / clippedExtent.width() ) );
+      size.setHeight( static_cast< int >( std::round( size.height() * clippedExtent.height() / clippedExtent.width() ) ) );
   }
   mapSettings.setOutputSize( size );
 
@@ -83,9 +82,9 @@ void QgsTerrainTextureGenerator::cancelJob( int jobId )
     if ( jd.jobId == jobId )
     {
       // QgsDebugMsgLevel( QStringLiteral("canceling job %1").arg( jobId ), 2 );
-      jd.job->cancelWithoutBlocking();
       disconnect( jd.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
-      jd.job->deleteLater();
+      connect( jd.job, &QgsMapRendererJob::finished, jd.job, &QgsMapRendererSequentialJob::deleteLater );
+      jd.job->cancelWithoutBlocking();
       mJobs.remove( jd.job );
       return;
     }

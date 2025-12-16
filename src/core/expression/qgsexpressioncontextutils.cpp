@@ -14,33 +14,34 @@
  ***************************************************************************/
 
 #include "qgsexpressioncontextutils.h"
+
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
 #include "qgsexpression.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgsexpressionutils.h"
+#include "qgsfeatureid.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutitem.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmultiframe.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgsmaplayerfactory.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmapsettings.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmeshlayer.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsmapsettings.h"
-#include "qgslayoutitem.h"
-#include "qgsexpressionutils.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutatlas.h"
-#include "qgslayoutmultiframe.h"
-#include "qgsfeatureid.h"
-#include "qgslayoutitemmap.h"
-#include "qgsmaplayerlistutils_p.h"
+#include "qgsproject.h"
 #include "qgsprojoperation.h"
-#include "qgsmarkersymbol.h"
-#include "qgstriangularmesh.h"
-#include "qgsvectortileutils.h"
-#include "qgsmeshlayer.h"
-#include "qgslayoutreportcontext.h"
-#include "qgsexpressionnodeimpl.h"
 #include "qgsproviderregistry.h"
-#include "qgsmaplayerfactory.h"
+#include "qgstriangularmesh.h"
 #include "qgsunittypes.h"
-#include "qgslayoutrendercontext.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortileutils.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -640,7 +641,17 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( layout ) )
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_name" ), l->name(), true ) );
 
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), layout->pageCollection()->pageCount(), true ) );
+  // get the list of pages
+  QList<int> pages;
+  for ( int i = 0; i < layout->pageCollection()->pageCount(); i++ )
+  {
+    if ( layout->renderContext().isPreviewRender() || ( layout->pageCollection()->shouldExportPage( i ) ) )
+    {
+      pages << i;
+    }
+  }
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), pages.size(), true ) );
   if ( layout->pageCollection()->pageCount() > 0 )
   {
     // just take first page size
@@ -652,8 +663,11 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   QVariantList offsets;
   for ( int i = 0; i < layout->pageCollection()->pageCount(); i++ )
   {
-    const QPointF p = layout->pageCollection()->pagePositionToLayoutPosition( i, QgsLayoutPoint( 0, 0 ) );
-    offsets << p.y();
+    if ( pages.contains( i ) )
+    {
+      const QPointF p = layout->pageCollection()->pagePositionToLayoutPosition( i, QgsLayoutPoint( 0, 0 ) );
+      offsets << p.y();
+    }
   }
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageoffsets" ), offsets, true ) );
 
@@ -778,10 +792,33 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutItemScope( const Qgs
     scope->setVariable( variableName, varValue );
   }
 
+  int itemPage = 1;
+  bool itemPageFound = false;
+  if ( item->layout() )
+  {
+    for ( int i = 0; i < item->layout()->pageCollection()->pageCount(); i++ )
+    {
+      if ( item->layout()->renderContext().isPreviewRender() || ( item->layout()->pageCollection()->shouldExportPage( i ) ) )
+      {
+        if ( i == item->page() )
+        {
+          itemPageFound = true;
+          break;
+        }
+
+        itemPage++;
+      }
+    }
+  }
+  if ( !itemPageFound )
+  {
+    itemPage = -1;
+  }
+
   //add known layout item context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "item_id" ), item->id(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "item_uuid" ), item->uuid(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_page" ), item->page() + 1, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_page" ), itemPage, true ) );
 
   if ( item->layout() )
   {

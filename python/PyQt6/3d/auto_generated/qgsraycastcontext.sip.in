@@ -1,0 +1,80 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsraycastcontext.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsRayCastContext
+{
+%Docstring(signature="appended")
+Responsible for defining parameters of the ray casting operations in 3D
+map canvases.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsraycastcontext.h"
+%End
+  public:
+    QgsRayCastContext();
+
+    void setSingleResult( bool enable );
+%Docstring
+Sets whether to fetch only the closest hit for each layer or entity
+type. Setting this to ``False`` will return all ray hits.
+
+.. note::
+
+   Currently only point cloud layers support ``False``.
+%End
+
+    bool singleResult() const;
+%Docstring
+Returns whether to fetch only the closest hit for each layer or entity
+type. If not set it defaults to ``True``.
+%End
+
+    void setMaximumDistance( float distance );
+%Docstring
+Sets the maximum ``distance`` from ray origin to look for hits when
+casting a ray. Setting to -1 will set the maximum distance to the
+camera's far plane.
+%End
+
+    float maximumDistance() const;
+%Docstring
+The maximum distance from ray origin to look for hits when casting a
+ray. Default value is -1, meaning that the far plane will be used as a
+maximum distance.
+%End
+
+    void setAngleThreshold( float angle );
+%Docstring
+Sets an ``angle`` threshold in degrees for ray intersections,
+effectively turning a ray into a cone.
+
+.. note::
+
+   Currently only supported for point cloud layers.
+%End
+
+    float angleThreshold() const;
+%Docstring
+Sets an ``angle`` threshold in degrees for ray intersections,
+effectively turning a ray into a cone.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsraycastcontext.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

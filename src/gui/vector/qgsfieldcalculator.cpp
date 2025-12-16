@@ -13,28 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-
-
 #include "qgsfieldcalculator.h"
-#include "moc_qgsfieldcalculator.cpp"
+
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
-#include "qgsfeatureiterator.h"
-#include "qgsproject.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
-#include "qgsproxyprogresstask.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayerjoinbuffer.h"
-#include "qgsvariantutils.h"
-#include "qgsfields.h"
 #include "qgsmessagebar.h"
+#include "qgsproject.h"
+#include "qgsproxyprogresstask.h"
+#include "qgsvariantutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
+#include <QMessageBox>
+
+#include "moc_qgsfieldcalculator.cpp"
 
 // FTC = FieldTypeCombo
 constexpr int FTC_TYPE_ROLE_IDX = 0;
@@ -66,9 +66,10 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   if ( !dataProvider )
     return;
 
+  const bool layerIsReadOnly { vl->readOnly() };
   const Qgis::VectorProviderCapabilities caps = dataProvider->capabilities();
-  mCanAddAttribute = caps & Qgis::VectorProviderCapability::AddAttributes;
-  mCanChangeAttributeValue = caps & Qgis::VectorProviderCapability::ChangeAttributeValues;
+  mCanAddAttribute = !layerIsReadOnly && ( caps & Qgis::VectorProviderCapability::AddAttributes );
+  mCanChangeAttributeValue = !layerIsReadOnly && ( caps & Qgis::VectorProviderCapability::ChangeAttributeValues );
 
   QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
 
@@ -218,6 +219,16 @@ void QgsFieldCalculator::calculate()
   }
   else
   {
+    // If the layer is read-only, show an error
+    // This should never happen because the read-only state is now checked at construction time
+    // and the GUI is updated accordingly, but I'm leaving the safeguard here as a remainder just
+    // in case the GUI will be redesigned in the future.
+    if ( mVectorLayer->readOnly() )
+    {
+      QMessageBox::critical( nullptr, tr( "Read-only layer" ), tr( "The layer was marked read-only in the project properties and cannot be edited." ) );
+      return;
+    }
+
     if ( !mVectorLayer->isEditable() )
       mVectorLayer->startEditing();
 

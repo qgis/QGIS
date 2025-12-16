@@ -16,18 +16,19 @@
  ***************************************************************************/
 
 #include "qgspointcloudstatscalculationtask.h"
-#include "moc_qgspointcloudstatscalculationtask.cpp"
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudrenderer.h"
 
 #include <QtConcurrent/QtConcurrent>
 
+#include "moc_qgspointcloudstatscalculationtask.cpp"
+
 ///@cond PRIVATE
 
 QgsPointCloudStatsCalculationTask::QgsPointCloudStatsCalculationTask( QgsPointCloudIndex index, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointLimit )
   : QgsTask( tr( "Generating attributes statistics" ) )
-  , mCalculator( index )
+  , mCalculator( std::move( index ) )
   , mAttributes( attributes )
   , mPointLimit( pointLimit )
 {

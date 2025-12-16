@@ -20,6 +20,7 @@ RUN dnf -y --refresh install \
     gdal \
     gdal-devel \
     gdal-python-tools \
+    GeographicLib-devel \
     geos-devel \
     gpsbabel \
     grass \
@@ -90,8 +91,13 @@ RUN dnf -y --refresh install \
     kernel-devel \
     ninja-build \
     patch \
-    dos2unix
+    dos2unix \
+    SFCGAL-devel \
+    blend2d-devel
 
+
+# download wmm2025 magnetic field model for testing
+RUN geographiclib-get-magnetic wmm2025
 
 # Oracle : client side
 RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-basic-linux.x64-21.16.0.0.0dbru.zip > instantclient-basic-linux.x64-21.16.0.0.0dbru.zip
@@ -114,6 +120,8 @@ RUN dnf -y install \
     python3-nose2 \
     python3-psycopg2 \
     python3-pyyaml \
-    python3-shapely
+    python3-shapely \
+    python3-geopandas \
+    python3-pyarrow
 
 FROM binary-only

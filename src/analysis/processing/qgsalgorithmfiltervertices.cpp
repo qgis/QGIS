@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfiltervertices.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmalignsingleraster.h"
-#include "qgsprocessingparameteralignrasterlayers.h"
+
+#include "qgis.h"
 #include "qgsalignraster.h"
 #include "qgsalignrasterdata.h"
-#include "qgis.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
 
 ///@cond PRIVATE
 

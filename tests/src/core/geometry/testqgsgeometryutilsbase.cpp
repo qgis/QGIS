@@ -13,9 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
 #include "qgsgeometryutils_base.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsGeometryUtilsBase : public QObject
 {
@@ -28,6 +31,7 @@ class TestQgsGeometryUtilsBase : public QObject
     void testCreateChamferBase();
     void testCreateFilletBase_data();
     void testCreateFilletBase();
+    void testPointsAreCollinear();
 };
 
 void TestQgsGeometryUtilsBase::testFuzzyEqual()
@@ -172,14 +176,26 @@ void TestQgsGeometryUtilsBase::testCreateChamferBase()
   double trim1StartX, trim1StartY, trim1EndX, trim1EndY;
   double trim2StartX, trim2StartY, trim2EndX, trim2EndY;
 
-  bool result = QgsGeometryUtilsBase::createChamfer(
-    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-    distance1, distance2,
-    chamferStartX, chamferStartY, chamferEndX, chamferEndY,
-    &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
-    &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
-  );
+  bool result;
+  try
+  {
+    result = QgsGeometryUtilsBase::createChamfer(
+      segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+      segment2StartX, segment2StartY, segment2EndX, segment2EndY,
+      distance1, distance2,
+      chamferStartX, chamferStartY, chamferEndX, chamferEndY,
+      &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
+      &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
+    );
+  }
+  catch ( QgsInvalidArgumentException &e )
+  {
+    result = false;
+  }
+  catch ( ... )
+  {
+    QVERIFY2( false, "Caught unhandled exception" );
+  }
 
   QCOMPARE( result, expectedSuccess );
 
@@ -315,14 +331,26 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase()
   double trim1StartX, trim1StartY, trim1EndX, trim1EndY;
   double trim2StartX, trim2StartY, trim2EndX, trim2EndY;
 
-  bool result = QgsGeometryUtilsBase::createFillet(
-    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-    radius,
-    filletPointsX, filletPointsY,
-    &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
-    &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
-  );
+  bool result;
+  try
+  {
+    result = QgsGeometryUtilsBase::createFillet(
+      segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+      segment2StartX, segment2StartY, segment2EndX, segment2EndY,
+      radius,
+      filletPointsX, filletPointsY,
+      &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
+      &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
+    );
+  }
+  catch ( QgsInvalidArgumentException &e )
+  {
+    result = false;
+  }
+  catch ( ... )
+  {
+    QVERIFY2( false, "Caught unhandled exception" );
+  }
 
   QCOMPARE( result, expectedSuccess );
 
@@ -371,6 +399,31 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase()
     QVERIFY2( qgsDoubleNear( dist2, calculatedRadius, 0.001 ), QString( "Distance from center to point 2: %1, should be %2" ).arg( dist2 ).arg( calculatedRadius ).toLatin1() );
     QVERIFY2( qgsDoubleNear( dist3, calculatedRadius, 0.001 ), QString( "Distance from center to point 3: %1, should be %2" ).arg( dist3 ).arg( calculatedRadius ).toLatin1() );
   }
+}
+
+void TestQgsGeometryUtilsBase::testPointsAreCollinear()
+{
+  // 2D version
+  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 0, 10, 10, 10, 20, 10, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 10, 0, 10, 20, 10, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 10, 0, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 15, 10, 10, 0, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 15, 0, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 10, 0, 15, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 0, 10, 10, 10, 20, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 0, 10, 20, 10, 10, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 20, 10, 0, 10, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 15, 20, 10, 10, 10, 20, 0.00001 ) );
+
+  // 3D version
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 1, 1, 1, 2, 2, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 1, 1, 1, 0, 0, 0, 2, 2, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 2, 2, 2, 0, 0, 0, 1, 1, 1, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 0, 0, 1, 0, 0, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 1, 0, 0, 0, 0, 0, 2, 0.00001 ) );
+  QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 2, 0, 0, 0, 0, 0, 1, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 1, 0, 0, 0, 0, 0, 0, 1, 1, 0.00001 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtilsBase )

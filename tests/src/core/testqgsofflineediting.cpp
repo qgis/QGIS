@@ -13,21 +13,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-
-#include <QString>
-#include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-
-#include "qgsunittypes.h"
-#include "qgsofflineediting.h"
-#include "qgstest.h"
-#include "qgsvectorlayerref.h"
+#include "qgsjsonutils.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsjsonutils.h"
+#include "qgsofflineediting.h"
+#include "qgstest.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayerref.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QObject>
+#include <QString>
+#include <QStringList>
 
 /**
  * \ingroup UnitTests

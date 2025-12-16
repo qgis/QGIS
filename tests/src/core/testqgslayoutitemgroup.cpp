@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutitemgroup.h"
-#include "qgslayout.h"
-#include "qgslayoutitemshape.h"
 #include "qgsapplication.h"
+#include "qgslayout.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutundostack.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
-#include "qgslayoutundostack.h"
+#include "qgstest.h"
 
 #include <QObject>
 #include <QtTest/QSignalSpy>
-#include "qgstest.h"
 
 class TestQgsLayoutItemGroup : public QgsTest
 {

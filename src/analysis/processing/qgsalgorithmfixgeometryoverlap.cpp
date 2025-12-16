@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometryoverlap.h"
+
 #include "qgsgeometrycheckerror.h"
 #include "qgsgeometrycheckerutils.h"
 #include "qgsgeometryoverlapcheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -69,7 +70,6 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
@@ -91,7 +91,6 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "No-overlap layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
@@ -99,7 +98,7 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
     QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing overlaps" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -163,8 +162,7 @@ QVariantMap QgsFixGeometryOverlapAlgorithm::processAlgorithm( const QVariantMap 
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
 
   const QgsGeometryOverlapCheck check( &checkContext, QVariantMap() );
 
@@ -280,7 +278,7 @@ bool QgsFixGeometryOverlapAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryOverlapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

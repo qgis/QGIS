@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmorthogonalize.h"
+
 #include "qgsprocessing.h"
 
 ///@cond PRIVATE

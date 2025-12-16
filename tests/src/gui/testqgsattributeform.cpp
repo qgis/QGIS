@@ -14,26 +14,26 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-#include <QPushButton>
-#include <QLineEdit>
-#include <QSignalSpy>
-
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "qgsapplication.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
 #include "qgsattributeform.h"
-#include <qgsapplication.h>
-#include "qgseditorwidgetwrapper.h"
-#include <qgsvectorlayer.h>
-#include "qgsvectordataprovider.h"
-#include <qgsfeature.h>
-#include <qgsvectorlayerjoininfo.h>
-#include "qgsgui.h"
 #include "qgsattributeformeditorwidget.h"
 #include "qgsattributeforminterface.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsfeature.h"
+#include "qgsgui.h"
 #include "qgsmultiedittoolbutton.h"
-#include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorcontainer.h"
 #include "qgsspinbox.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSignalSpy>
 
 class TestQgsAttributeForm : public QObject
 {
@@ -104,6 +104,9 @@ void TestQgsAttributeForm::testFieldConstraint()
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
   ft.setAttribute( QStringLiteral( "col0" ), 0 );
 
+  // toggle start editing to show constraint labels
+  layer->startEditing();
+
   // build a form for this feature
   QgsAttributeForm form( layer );
   form.setFeature( ft );
@@ -120,8 +123,8 @@ void TestQgsAttributeForm::testFieldConstraint()
   QgsEditorWidgetWrapper *ww = nullptr;
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
 
-  // no constraint so we expect an empty label
-  QCOMPARE( constraintsLabel( &form, ww )->text(), QString() );
+  // no constraint so we expect no label
+  QVERIFY( !constraintsLabel( &form, ww ) );
 
   // set a not null constraint
   layer->setConstraintExpression( 0, QStringLiteral( "col0 is not null" ) );
@@ -188,6 +191,9 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   layer->setConstraintExpression( 2, QString() );
   layer->setConstraintExpression( 3, QString() );
 
+  // toggle start editing to show constraint labels
+  layer->startEditing();
+
   // build a form for this feature
   QgsAttributeForm form( layer );
   form.setFeature( ft );
@@ -205,10 +211,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
 
   // no constraint so we expect an empty label
-  QVERIFY( constraintsLabel( &form, ww0 )->text().isEmpty() );
-  QVERIFY( constraintsLabel( &form, ww1 )->text().isEmpty() );
-  QVERIFY( constraintsLabel( &form, ww2 )->text().isEmpty() );
-  QVERIFY( constraintsLabel( &form, ww3 )->text().isEmpty() );
+  QVERIFY( !constraintsLabel( &form, ww0 ) );
+  QVERIFY( !constraintsLabel( &form, ww1 ) );
+  QVERIFY( !constraintsLabel( &form, ww2 ) );
+  QVERIFY( !constraintsLabel( &form, ww3 ) );
 
   // update constraint
   layer->setConstraintExpression( 0, QStringLiteral( "col0 < (col1 * col2)" ) );
@@ -229,8 +235,8 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), inv ); // 2 < ( 1 + 2 )
-  QCOMPARE( constraintsLabel( &form2, ww1 )->text(), QString() );
-  QCOMPARE( constraintsLabel( &form2, ww2 )->text(), QString() );
+  QVERIFY( !constraintsLabel( &form2, ww1 ) );
+  QVERIFY( !constraintsLabel( &form2, ww2 ) );
   QCOMPARE( constraintsLabel( &form2, ww3 )->text(), val ); // 2 = 2
 
   // change value
@@ -239,8 +245,8 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), val ); // 1 < ( 1 + 2 )
-  QCOMPARE( constraintsLabel( &form2, ww1 )->text(), QString() );
-  QCOMPARE( constraintsLabel( &form2, ww2 )->text(), QString() );
+  QVERIFY( !constraintsLabel( &form2, ww1 ) );
+  QVERIFY( !constraintsLabel( &form2, ww2 ) );
   QCOMPARE( constraintsLabel( &form2, ww3 )->text(), inv ); // 2 = 1
 }
 
@@ -501,6 +507,10 @@ void TestQgsAttributeForm::testConstraintsOnJoinedFields()
   layerB->startEditing();
   layerB->addFeature( ft1B );
   layerB->commitChanges();
+
+  // toggle start editing to show constraint labels
+  layerA->startEditing();
+  layerB->startEditing();
 
   // build a form for this feature
   QgsAttributeForm form( layerA );
@@ -945,7 +955,7 @@ void TestQgsAttributeForm::testAttributeFormInterface()
       MyInterface( QgsAttributeForm *form )
         : QgsAttributeFormInterface( form ) {}
 
-      virtual void featureChanged()
+      void featureChanged() override
       {
         QgsAttributeForm *f = form();
         QLineEdit *le = f->findChild<QLineEdit *>( "col0" );
@@ -1279,7 +1289,7 @@ void TestQgsAttributeForm::testFieldConstraintDuplicateField()
 
 void TestQgsAttributeForm::testCaseInsensitiveFieldConstraint()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=f1:integer&field=f2:integer&field=f3:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=f1:integer&field=f2:integer&field=f3:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
   layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );

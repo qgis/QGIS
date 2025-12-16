@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLADDFEATURE_H
 #define QGSMAPTOOLADDFEATURE_H
 
-#include "qgsmaptooldigitizefeature.h"
 #include "qgis_app.h"
+#include "qgsmaptooldigitizefeature.h"
 
 class QgsHighlight;
 

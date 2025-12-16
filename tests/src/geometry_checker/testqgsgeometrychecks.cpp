@@ -13,16 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsfeature.h"
 #include "qgsfeaturepool.h"
-#include "qgsvectorlayer.h"
-#include "qfuturewatcher.h"
-
-#include "qgsgeometrycollection.h"
-#include "qgsgeometrychecker.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryanglecheck.h"
 #include "qgsgeometryareacheck.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometrycontainedcheck.h"
 #include "qgsgeometrydanglecheck.h"
 #include "qgsgeometrydegeneratepolygoncheck.h"
@@ -31,9 +28,9 @@
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometryholecheck.h"
-#include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometrylineintersectioncheck.h"
 #include "qgsgeometrylinelayerintersectioncheck.h"
+#include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometrymultipartcheck.h"
 #include "qgsgeometryoverlapcheck.h"
 #include "qgsgeometrypointcoveredbylinecheck.h"
@@ -42,14 +39,16 @@
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
-#include "qgsgeos.h"
-#include "qgsvectordataproviderfeaturepool.h"
-#include "qgsmultilinestring.h"
-#include "qgslinestring.h"
-#include "qgsproject.h"
-#include "qgsfeedback.h"
-
 #include "qgsgeometrytypecheck.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorlayer.h"
+
+#include <qfuturewatcher.h>
 
 class TestQgsGeometryChecks : public QObject
 {
@@ -368,7 +367,7 @@ void TestQgsGeometryChecks::testContainedCheck()
 
   QList<QgsGeometryCheckError *> errs1;
 
-  QCOMPARE( checkErrors.size(), 4 );
+  QCOMPARE( checkErrors.size(), 5 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 4, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:5" ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 5, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 3, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
@@ -1004,8 +1003,9 @@ void TestQgsGeometryChecks::testPointInPolygonCheck()
 
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"] ).isEmpty() );
-  // Check that the point which is properly inside a polygon is not listed as error
+  // Check that the points which are properly inside a polygon are not listed as errors
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 5 ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 7 ).isEmpty() );
   QVERIFY( messages.contains( "Point in polygon check failed for (polygon_layer.shp:1): the geometry is invalid" ) );
 
   cleanupTestContext( testContext );

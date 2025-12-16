@@ -15,19 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscommandlineutils.h"
 #include "qgsprocess.h"
-#include "moc_qgsprocess.cpp"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingalgorithm.h"
+
+#include "qgscommandlineutils.h"
 #include "qgsnativealgorithms.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingregistry.h"
+
+#include "moc_qgsprocess.cpp"
+
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"
 #endif
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5 )
 #include "qgspdalalgorithms.h"
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
 #endif
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
 #endif
 #include "qgssettings.h"
 #include "qgsapplication.h"
@@ -263,12 +268,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
-
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
-#endif
-#endif
 
 #ifdef WITH_BINDINGS
   if ( !( mFlags & Flag::SkipPython ) )
@@ -1320,6 +1320,18 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
 
   PJ_INFO info = proj_info();
   json.insert( QStringLiteral( "proj_version" ), info.release );
+
+#ifdef WITH_SFCGAL
+  json.insert( QStringLiteral( "sfcgal_version" ), sfcgal_version() );
+#else
+  json.insert( QStringLiteral( "sfcgal_version" ), "no support" );
+#endif
+
+#ifdef WITH_GEOGRAPHICLIB
+  json.insert( QStringLiteral( "geographiclib_version" ), QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH ) );
+#else
+  json.insert( QStringLiteral( "geographiclib_version" ), "no support" );
+#endif
 }
 
 void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, const QgsProcessingAlgorithm *algorithm )
@@ -1374,6 +1386,6 @@ void QgsProcessingExec::addProviderInformation( QVariantMap &providerJson, QgsPr
   providerJson.insert( QStringLiteral( "supported_output_vector_extensions" ), provider->supportedOutputVectorLayerExtensions() );
   providerJson.insert( QStringLiteral( "supported_output_table_extensions" ), provider->supportedOutputTableExtensions() );
   providerJson.insert( QStringLiteral( "default_vector_file_extension" ), provider->defaultVectorFileExtension() );
-  providerJson.insert( QStringLiteral( "default_raster_file_extension" ), provider->defaultRasterFileExtension() );
+  providerJson.insert( QStringLiteral( "default_raster_file_format" ), provider->defaultRasterFileFormat() );
   providerJson.insert( QStringLiteral( "supports_non_file_based_output" ), provider->supportsNonFileBasedOutput() );
 }

@@ -17,34 +17,37 @@
  ***************************************************************************/
 
 #include "qgsamsprovider.h"
-#include "moc_qgsamsprovider.cpp"
-#include "qgsarcgisrestutils.h"
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsrasteridentifyresult.h"
-#include "qgsfeaturestore.h"
-#include "qgsgeometry.h"
-#include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgssettings.h"
-#include "qgsmessagelog.h"
-#include "qgsauthmanager.h"
-#include "qgstilecache.h"
-#include "qgsstringutils.h"
-#include "qgsarcgisrestquery.h"
 
 #include <cstring>
+
+#include "qgsapplication.h"
+#include "qgsarcgisrestquery.h"
+#include "qgsarcgisrestutils.h"
+#include "qgsauthmanager.h"
+#include "qgsdatasourceuri.h"
+#include "qgsfeaturestore.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsrasteridentifyresult.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgssettings.h"
+#include "qgsstringutils.h"
+#include "qgstilecache.h"
+
+#include <QDir>
 #include <QFontMetrics>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QPainter>
 #include <QNetworkCacheMetaData>
-#include <QUrlQuery>
-#include <QDir>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QPainter>
 #include <QTimer>
+#include <QUrlQuery>
+
+#include "moc_qgsamsprovider.cpp"
 
 const QString QgsAmsProvider::AMS_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
 const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Map Service data provider" );

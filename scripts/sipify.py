@@ -1987,6 +1987,20 @@ def try_skip_forward_decl():
             return True
 
 
+def try_skip_unwanted_cpp_lines() -> bool:
+    # Skip unwanted cpp lines
+
+    # skip "using ParentClass::virtualMethod;" lines
+    match = re.match(
+        r"^\s*using\s+.*::.*;\s*$",
+        CONTEXT.current_line,
+    )
+    if match:
+        dbg_info("skipping using ParentClass::virtualMethod; line")
+        return True
+    return False
+
+
 def try_skip_friend_decl():
     # Skip friend declarations
     if re.match(r"^\s*friend class \w+", CONTEXT.current_line):
@@ -2755,12 +2769,13 @@ def process_misc_keywords():
     )
     CONTEXT.current_line = re.sub(r"\s*\boverride\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bSIP_MAKE_PRIVATE\b", "", CONTEXT.current_line)
-    CONTEXT.current_line = re.sub(
-        r"\s*\bFINAL\b", " ${SIP_FINAL}", CONTEXT.current_line
-    )
     CONTEXT.current_line = re.sub(r"\s*\bextern \b", "", CONTEXT.current_line)
-    CONTEXT.current_line = re.sub(r"\s*\bMAYBE_UNUSED \b", "", CONTEXT.current_line)
-    CONTEXT.current_line = re.sub(r"\s*\bNODISCARD \b", "", CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(
+        r"^(\s*)?\[\[maybe_unused\]\](\s*)?", r"\1\2", CONTEXT.current_line
+    )
+    CONTEXT.current_line = re.sub(
+        r"^(\s*)?\[\[nodiscard\]\](\s*)?", r"\1\2", CONTEXT.current_line
+    )
     CONTEXT.current_line = re.sub(r"\s*\bQ_DECL_DEPRECATED\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(
         r"^(\s*)?(const |virtual |static )*inline ", r"\1\2", CONTEXT.current_line
@@ -3551,6 +3566,8 @@ def process_input():
             continue
         check_end_of_typeheadercode()
         if try_skip_forward_decl():
+            continue
+        if try_skip_unwanted_cpp_lines():
             continue
         if try_skip_friend_decl():
             continue

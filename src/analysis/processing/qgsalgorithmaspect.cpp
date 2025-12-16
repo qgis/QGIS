@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaspect.h"
-#include "qgsrasterfilewriter.h"
+
 #include "qgsaspectfilter.h"
+#include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 
@@ -82,8 +83,7 @@ QVariantMap QgsAspectAlgorithm::processAlgorithm( const QVariantMap &parameters,
   const double zFactor = parameterAsDouble( parameters, QStringLiteral( "Z_FACTOR" ), context );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsAspectFilter aspect( inputLayer->source(), outputFile, outputFormat );
   aspect.setZFactor( zFactor );

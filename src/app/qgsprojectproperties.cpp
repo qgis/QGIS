@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsprojectproperties.h"
+
 #include "moc_qgsprojectproperties.cpp"
 
 //qgis includes
@@ -90,7 +91,6 @@ const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl, const QList<QgsOptionsWidgetFactory *> &optionsFactories )
   : QgsOptionsDialogBase( QStringLiteral( "ProjectProperties" ), parent, fl )
   , mMapCanvas( mapCanvas )
-  , mEllipsoidIndex( 0 )
 {
   // set wait cursor since construction of the project properties
   // dialog can be slow
@@ -98,8 +98,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   setupUi( this );
 
-  mExtentGroupBox->setTitleBase( tr( "Set Project Full Extent" ) );
-  mExtentGroupBox->setMapCanvas( mapCanvas, false );
+  mExtentGroupBox->setCheckable( true );
+
+  mExtentWidget = new QgsExtentWidget( parent, QgsExtentWidget::ExpandedStyle );
+  QVBoxLayout *mExtentGroupBoxLayout = qobject_cast<QVBoxLayout *>( mExtentGroupBox->layout() );
+  mExtentGroupBoxLayout->insertWidget( 0, mExtentWidget );
+
+  mExtentWidget->setMapCanvas( mapCanvas, false );
 
   mAdvertisedExtentServer->setOutputCrs( QgsProject::instance()->crs() );
   mAdvertisedExtentServer->setMapCanvas( mapCanvas, false );
@@ -476,12 +481,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   grpProjectScales->setChecked( QgsProject::instance()->viewSettings()->useProjectScales() );
 
   const QgsReferencedRectangle presetExtent = QgsProject::instance()->viewSettings()->presetFullExtent();
-  mExtentGroupBox->setOutputCrs( QgsProject::instance()->crs() );
+  mExtentWidget->setOutputCrs( QgsProject::instance()->crs() );
   if ( presetExtent.isNull() )
-    mExtentGroupBox->setOutputExtentFromUser( QgsProject::instance()->viewSettings()->fullExtent(), QgsProject::instance()->crs() );
+    mExtentWidget->setOutputExtentFromUser( QgsProject::instance()->viewSettings()->fullExtent(), QgsProject::instance()->crs() );
   else
-    mExtentGroupBox->setOutputExtentFromUser( presetExtent, presetExtent.crs() );
+    mExtentWidget->setOutputExtentFromUser( presetExtent, presetExtent.crs() );
   mExtentGroupBox->setChecked( !presetExtent.isNull() );
+  mCheckBoxLoadProjectExtent->setChecked( QgsProject::instance()->viewSettings()->restoreProjectExtentOnProjectLoad() );
 
   mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
   mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );
@@ -1212,6 +1218,7 @@ void QgsProjectProperties::apply()
     }
   }
 
+
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), mMapTileRenderingCheckBox->isChecked() );
 
@@ -1353,12 +1360,14 @@ void QgsProjectProperties::apply()
 
   if ( mExtentGroupBox->isChecked() )
   {
-    QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
+    QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle( mExtentWidget->outputExtent(), mExtentWidget->outputCrs() ) );
   }
   else
   {
     QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle() );
   }
+
+  QgsProject::instance()->viewSettings()->setRestoreProjectExtentOnProjectLoad( mCheckBoxLoadProjectExtent->isChecked() );
 
   bool isDirty = false;
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
@@ -2047,7 +2056,7 @@ void QgsProjectProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
     cmbEllipsoid->setEnabled( false );
   }
 
-  mExtentGroupBox->setOutputCrs( crs );
+  mExtentWidget->setOutputCrs( crs );
   mAdvertisedExtentServer->setOutputCrs( crs );
 }
 

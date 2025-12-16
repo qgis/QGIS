@@ -11,7 +11,6 @@
 
 
 
-
 class QgsDiagramLayerSettings
 {
 %Docstring(signature="appended")
@@ -1010,12 +1009,14 @@ subrenderers.
 
 
     virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const;
+
 %Docstring
 Returns size of the diagram for a feature in map units. Returns an
 invalid QSizeF in case of error
 %End
 
     virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
+
 %Docstring
 Renders the diagram for a specified feature at a specific position in
 the passed render context, taking all renderers and their own diagrams

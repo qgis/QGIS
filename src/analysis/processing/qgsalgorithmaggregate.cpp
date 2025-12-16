@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaggregate.h"
-#include "qgsprocessingparameteraggregate.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsprocessingparameteraggregate.h"
 
 ///@cond PRIVATE
 
@@ -188,7 +189,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       group.layer = layer;
       group.firstFeature = feature;
       group.lastFeature = feature;
-      groups[key] = group;
+      groups[key] = std::move( group );
       keys.append( key );
     }
     else

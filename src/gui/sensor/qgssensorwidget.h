@@ -15,14 +15,13 @@
 #ifndef QGSSENSORWIDGET_H
 #define QGSSENSORWIDGET_H
 
+#include "qgsconfig.h"
+#include "ui_widget_serialportsensor.h"
 #include "ui_widget_tcpsocketsensor.h"
 #include "ui_widget_udpsocketsensor.h"
-#include "ui_widget_serialportsensor.h"
 
-#include "qgsconfig.h"
-
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsabstractsensor.h"
 
 #include <QWidget>

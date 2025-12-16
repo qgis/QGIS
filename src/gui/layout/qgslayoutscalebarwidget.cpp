@@ -15,21 +15,23 @@
  ***************************************************************************/
 
 #include "qgslayoutscalebarwidget.h"
-#include "moc_qgslayoutscalebarwidget.cpp"
+
+#include "qgsfillsymbol.h"
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgsscalebarrendererregistry.h"
-#include "qgslayout.h"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgslayoutundostack.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgslinesymbol.h"
+#include "qgsnumericformatselectorwidget.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>
+
+#include "moc_qgslayoutscalebarwidget.cpp"
 
 QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar )
   : QgsLayoutItemBaseWidget( nullptr, scaleBar )
@@ -118,7 +120,8 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
   //units combo box
-  mUnitsComboBox->addItem( tr( "Map units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
+
+  mUnitsComboBox->addItem( linkedMapUnitsString( scaleBar ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
   mUnitsComboBox->addItem( tr( "Meters" ), static_cast<int>( Qgis::DistanceUnit::Meters ) );
   mUnitsComboBox->addItem( tr( "Kilometers" ), static_cast<int>( Qgis::DistanceUnit::Kilometers ) );
   mUnitsComboBox->addItem( tr( "Feet" ), static_cast<int>( Qgis::DistanceUnit::Feet ) );
@@ -823,6 +826,8 @@ void QgsLayoutScaleBarWidget::mapChanged( QgsLayoutItem *item )
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
+
+  mUnitsComboBox->setItemText( mUnitsComboBox->findData( static_cast<int>( Qgis::DistanceUnit::Unknown ) ), linkedMapUnitsString( mScalebar ) );
 }
 
 void QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged( double )
@@ -865,4 +870,21 @@ void QgsLayoutScaleBarWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mHeightDDBtn );
   updateDataDefinedButton( mSubdivisionHeightDDBtn );
   updateDataDefinedButton( mRightSegmentSubdivisionsDDBtn );
+}
+
+QString QgsLayoutScaleBarWidget::linkedMapUnitsString( QgsLayoutItemScaleBar *scalebar )
+{
+  QString mapUnit;
+  if ( scalebar )
+  {
+    if ( QgsLayoutItemMap *map = scalebar->linkedMap() )
+    {
+      const Qgis::DistanceUnit mapCrsUnits = map->crs().mapUnits();
+      if ( mapCrsUnits != Qgis::DistanceUnit::Unknown )
+      {
+        mapUnit = QgsUnitTypes::toString( mapCrsUnits );
+      }
+    }
+  }
+  return mapUnit.isEmpty() ? tr( "Map Units" ) : tr( "Map Units (%1)" ).arg( mapUnit );
 }

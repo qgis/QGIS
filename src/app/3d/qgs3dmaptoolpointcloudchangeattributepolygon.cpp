@@ -13,7 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
-#include "moc_qgs3dmaptoolpointcloudchangeattributepolygon.cpp"
+
+#include "qgisapp.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgsframegraph.h"
@@ -22,10 +23,11 @@
 #include "qgspoint.h"
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
-#include "qgisapp.h"
 
 #include <QApplication>
 #include <QMouseEvent>
+
+#include "moc_qgs3dmaptoolpointcloudchangeattributepolygon.cpp"
 
 Qgs3DMapToolPointCloudChangeAttributePolygon::Qgs3DMapToolPointCloudChangeAttributePolygon( Qgs3DMapCanvas *canvas, const ToolType type = Polygon )
   : Qgs3DMapToolPointCloudChangeAttribute( canvas ), mToolType( type )

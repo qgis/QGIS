@@ -12,10 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include "qgsproject.h"
+#include "qgsconfig.h"
+
+#include <memory>
+
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerexporter.h"
+#include "qgsproject.h"
+#include "qgstest.h"
 
 class TestQgsPointCloudLayerExporter : public QObject
 {
@@ -40,8 +44,9 @@ class TestQgsPointCloudLayerExporter : public QObject
     void testScratchLayerCrs();
     void testScratchLayerSynthetic();
     void testOgrFile();
+#ifdef HAVE_PDAL_QGIS
     void testPdalFile();
-
+#endif
   private:
     std::unique_ptr<QgsProject> mProject;
     QgsPointCloudLayer *mLayer;
@@ -55,7 +60,7 @@ void TestQgsPointCloudLayerExporter::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::registerOgrDrivers();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
@@ -374,6 +379,7 @@ void TestQgsPointCloudLayerExporter::testOgrFile()
   delete result;
 }
 
+#ifdef HAVE_PDAL_QGIS
 void TestQgsPointCloudLayerExporter::testPdalFile()
 {
   const QString file = QDir::tempPath() + "/filename.laz";
@@ -389,6 +395,7 @@ void TestQgsPointCloudLayerExporter::testPdalFile()
   QCOMPARE( result->pointCount(), 134 );
   delete result;
 }
+#endif
 
 QGSTEST_MAIN( TestQgsPointCloudLayerExporter )
 #include "testqgspointcloudlayerexporter.moc"

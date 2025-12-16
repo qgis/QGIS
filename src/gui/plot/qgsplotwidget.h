@@ -16,9 +16,13 @@
 #define QGSPLOTWIDGET_H
 
 #include "qgis_sip.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
 #include "qgsplot.h"
-#include "qgsnumericformat.h"
+#include "qgspropertycollection.h"
+#include "qgspropertyoverridebutton.h"
 
 #include <QWidget>
 
@@ -28,7 +32,7 @@
  * \brief Base class for widgets which allow control over the properties of plots.
  * \since QGIS 4.0
  */
-class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget
+class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -52,6 +56,34 @@ class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget
      * \see setPlot()
      */
     virtual QgsPlot *createPlot() = 0 SIP_FACTORY;
+
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for configuration widgets when required.
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
+  protected:
+    /**
+     * Initiate a data-defined property button tied to a plot widget.
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key );
+
+    /**
+     * Initiate a data-defined property button tied to a plot widget.
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    QgsPropertyCollection mPropertyCollection;
+
+  private slots:
+
+    void updateProperty();
+
+  private:
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
 
 
@@ -78,8 +110,8 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
      */
     QgsBarChartPlotWidget( QWidget *parent = nullptr );
 
-    virtual void setPlot( QgsPlot *plot ) override;
-    virtual QgsPlot *createPlot() override SIP_FACTORY;
+    void setPlot( QgsPlot *plot ) override;
+    QgsPlot *createPlot() override SIP_FACTORY;
 
     //! Creates a new bar chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsBarChartPlotWidget( parent ); }
@@ -119,8 +151,8 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
      */
     QgsLineChartPlotWidget( QWidget *parent = nullptr );
 
-    virtual void setPlot( QgsPlot *plot ) override;
-    virtual QgsPlot *createPlot() override SIP_FACTORY;
+    void setPlot( QgsPlot *plot ) override;
+    QgsPlot *createPlot() override SIP_FACTORY;
 
     //! Creates a new line chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsLineChartPlotWidget( parent ); }
@@ -134,6 +166,45 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
 
     std::unique_ptr< QgsNumericFormat > mXAxisNumericFormat;
     std::unique_ptr< QgsNumericFormat > mYAxisNumericFormat;
+};
+
+//
+// QgsLineChartPlotWidget
+//
+
+#include "ui_qgspiechartplotwidgetbase.h"
+
+/**
+ * \ingroup gui
+ * \class QgsPieChartPlotWidget
+ * \brief Widget class to control the properties of pie chart plots.
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsPieChartPlotWidget : public QgsPlotWidget, private Ui::QgsPieChartPlotWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsLineChartPlotWidget.
+     * \param parent parent widget
+     */
+    QgsPieChartPlotWidget( QWidget *parent = nullptr );
+
+    void setPlot( QgsPlot *plot ) override;
+    QgsPlot *createPlot() override SIP_FACTORY;
+
+    //! Creates a new line chart plot configuration widget.
+    static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsPieChartPlotWidget( parent ); }
+
+  private slots:
+    void mAddSymbolPushButton_clicked();
+    void mRemoveSymbolPushButton_clicked();
+
+  private:
+    int mBlockChanges = 0;
+
+    std::unique_ptr< QgsNumericFormat > mNumericFormat;
 };
 
 #endif //QGSPLOTWIDGET_H

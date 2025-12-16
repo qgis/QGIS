@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsprocessingtininputlayerswidget.h"
-#include "moc_qgsprocessingtininputlayerswidget.cpp"
-#include "qgsproject.h"
+
 #include "qgsprocessingcontext.h"
+#include "qgsproject.h"
+
+#include "moc_qgsprocessingtininputlayerswidget.cpp"
 
 /// @cond PRIVATE
 

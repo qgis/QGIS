@@ -146,6 +146,8 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
+    using QgsFeatureSink::addFeatures;
+
     /**
      * Adds a list of \a features to the index.
      *

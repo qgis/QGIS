@@ -12,32 +12,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <typeinfo>
-
-#include "qgsgdalutils.h"
 #include "qgsrasterfilewriter.h"
-#include "qgscoordinatetransform.h"
-#include "qgsproviderregistry.h"
-#include "qgsrasterinterface.h"
-#include "qgsrasteriterator.h"
-#include "qgsrasterprojector.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasternuller.h"
-#include "qgsreadwritelocker.h"
-#include "qgsrasterpipe.h"
-#include "qgscontrastenhancement.h"
-
-#include <QCoreApplication>
-#include <QProgressDialog>
-#include <QTextStream>
-#include <QMessageBox>
-#include <QRegularExpression>
 
 #include <cmath>
-
-#include <gdal.h>
 #include <cpl_string.h>
+#include <gdal.h>
 #include <mutex>
+#include <typeinfo>
+
+#include "qgscontrastenhancement.h"
+#include "qgscoordinatetransform.h"
+#include "qgsgdalutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
+#include "qgsrasteriterator.h"
+#include "qgsrasternuller.h"
+#include "qgsrasterpipe.h"
+#include "qgsrasterprojector.h"
+#include "qgsreadwritelocker.h"
+
+#include <QCoreApplication>
+#include <QMessageBox>
+#include <QProgressDialog>
+#include <QRegularExpression>
+#include <QTextStream>
 
 QgsRasterDataProvider *QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
@@ -812,7 +811,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
 
   // TODO progress report
   // TODO test mTiledMode - not tested b/c segfault at line # 289
-  // connect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  // connect( provider, &FIXME::progressUpdate, mPyramidProgress, &FIXME::setValue );
   QList< QgsRasterPyramid> myPyramidList;
   if ( ! mPyramidsList.isEmpty() )
     myPyramidList = destProvider->buildPyramidList( mPyramidsList );

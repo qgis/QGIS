@@ -17,12 +17,14 @@
 
 #include "qgsalgorithmpdalcreatecopc.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QProcessEnvironment>
 #include <QThread>
-#include <QFileInfo>
-#include <QDir>
 
+#ifdef HAVE_PDAL_QGIS
 #include "QgisUntwine.hpp"
+#endif
 #include "qgsapplication.h"
 #include "qgspointcloudlayer.h"
 
@@ -58,6 +60,11 @@ QString QgsPdalCreateCopcAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a COPC file for each input point cloud file." );
 }
 
+QString QgsPdalCreateCopcAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a COPC file for each input point cloud." );
+}
+
 QgsPdalCreateCopcAlgorithm *QgsPdalCreateCopcAlgorithm::createInstance() const
 {
   return new QgsPdalCreateCopcAlgorithm();
@@ -70,8 +77,22 @@ void QgsPdalCreateCopcAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Output layers" ) ) );
 }
 
+bool QgsPdalCreateCopcAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+
+#ifdef HAVE_PDAL_QGIS
+  return true;
+#else
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
+#endif
+}
+
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+#ifdef HAVE_PDAL_QGIS
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
@@ -116,7 +137,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     if ( !pcl )
       continue;
 
-    feedback->pushInfo( QObject::tr( "Processing layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer ? layer->name() : QString() ) );
+    feedback->pushInfo( QObject::tr( "Processing layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer->name() ) );
 
     if ( pcl->source().endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
     {
@@ -181,6 +202,12 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
   return outputs;
+#else
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
+#endif
 }
 
 ///@endcond

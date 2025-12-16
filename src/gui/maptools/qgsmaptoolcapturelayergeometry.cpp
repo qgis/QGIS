@@ -15,11 +15,12 @@
 
 
 #include "qgsmaptoolcapturelayergeometry.h"
-#include "moc_qgsmaptoolcapturelayergeometry.cpp"
-#include "qgsproject.h"
-#include "qgscurvepolygon.h"
-#include "qgscurve.h"
 
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsproject.h"
+
+#include "moc_qgsmaptoolcapturelayergeometry.cpp"
 
 void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geometry )
 {

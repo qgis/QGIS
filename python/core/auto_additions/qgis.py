@@ -69,6 +69,19 @@ Qgis.AuthConfigurationStorageCapability.baseClass = Qgis
 Qgis.AuthConfigurationStorageCapabilities.baseClass = Qgis
 AuthConfigurationStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 Qgis.MessageLevel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.NetworkRequestFlag.DisableMessageLogging.__doc__ = "If present, indicates that no message logging should be performed when network errors are encountered"
+Qgis.NetworkRequestFlag.__doc__ = """Flags controlling behavior of network requests.
+
+.. versionadded:: 4.0
+
+* ``DisableMessageLogging``: If present, indicates that no message logging should be performed when network errors are encountered
+
+"""
+# --
+Qgis.NetworkRequestFlag.baseClass = Qgis
+Qgis.NetworkRequestFlags.baseClass = Qgis
+NetworkRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsMapLayer.LayerType = Qgis.LayerType
 # monkey patching scoped based enum
 QgsMapLayer.VectorLayer = Qgis.LayerType.Vector
@@ -718,49 +731,75 @@ Qgis.VectorLayerTypeFlag.__doc__ = """Vector layer type flags.
 Qgis.VectorLayerTypeFlag.baseClass = Qgis
 Qgis.VectorLayerTypeFlags.baseClass = Qgis
 VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
-Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
+Qgis.PythonMacroMode = Qgis.EmbeddedScriptMode
 # monkey patching scoped based enum
-Qgis.Never = Qgis.PythonEmbeddedMode.Never
+Qgis.Never = Qgis.EmbeddedScriptMode.Never
 Qgis.Never.is_monkey_patched = True
-Qgis.Never.__doc__ = "Python embedded never run"
-Qgis.Ask = Qgis.PythonEmbeddedMode.Ask
+Qgis.Never.__doc__ = "Embedded scripts never run"
+Qgis.Ask = Qgis.EmbeddedScriptMode.Ask
 Qgis.Ask.is_monkey_patched = True
-Qgis.Ask.__doc__ = "User is prompt before running"
-Qgis.SessionOnly = Qgis.PythonEmbeddedMode.SessionOnly
+Qgis.Ask.__doc__ = "User is prompted before running scripts"
+Qgis.SessionOnly = Qgis.EmbeddedScriptMode.SessionOnly
 Qgis.SessionOnly.is_monkey_patched = True
-Qgis.SessionOnly.__doc__ = "Only during this session"
-Qgis.Always = Qgis.PythonEmbeddedMode.Always
+Qgis.SessionOnly.__doc__ = "Only during this session (only used prior to QGIS 4.0)"
+Qgis.Always = Qgis.EmbeddedScriptMode.Always
 Qgis.Always.is_monkey_patched = True
-Qgis.Always.__doc__ = "Python embedded is always run"
-Qgis.NotForThisSession = Qgis.PythonEmbeddedMode.NotForThisSession
+Qgis.Always.__doc__ = "Embedded scripts are always run"
+Qgis.NotForThisSession = Qgis.EmbeddedScriptMode.NotForThisSession
 Qgis.NotForThisSession.is_monkey_patched = True
-Qgis.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
-Qgis.PythonEmbeddedMode.__doc__ = """Authorisation to run Python Embedded in projects
+Qgis.NotForThisSession.__doc__ = "Embedded scripts will not be run for this session (only used prior to QGIS 4.0)"
+Qgis.NeverAsk = Qgis.EmbeddedScriptMode.NeverAsk
+Qgis.NeverAsk.is_monkey_patched = True
+Qgis.NeverAsk.__doc__ = "The user is never prompted, embedded scripts are only run on trusted projects and folders \n.. versionadded:: 4.0"
+Qgis.EmbeddedScriptMode.__doc__ = """Authorisation to run script embedded in projects
 
 .. versionadded:: 3.40
 
-* ``Never``: Python embedded never run
-* ``Ask``: User is prompt before running
-* ``SessionOnly``: Only during this session
-* ``Always``: Python embedded is always run
-* ``NotForThisSession``: Python embedded will not be run for this session
+* ``Never``: Embedded scripts never run
+* ``Ask``: User is prompted before running scripts
+* ``SessionOnly``: Only during this session (only used prior to QGIS 4.0)
+* ``Always``: Embedded scripts are always run
+* ``NotForThisSession``: Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
+* ``NeverAsk``: The user is never prompted, embedded scripts are only run on trusted projects and folders
+
+  .. versionadded:: 4.0
+
 
 """
 # --
-Qgis.PythonEmbeddedMode.baseClass = Qgis
+Qgis.EmbeddedScriptMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.PythonEmbeddedType.Macro.__doc__ = ""
-Qgis.PythonEmbeddedType.ExpressionFunction.__doc__ = ""
-Qgis.PythonEmbeddedType.__doc__ = """Type of Python Embedded in projects
+Qgis.EmbeddedScriptType.Macro.__doc__ = ""
+Qgis.EmbeddedScriptType.ExpressionFunction.__doc__ = ""
+Qgis.EmbeddedScriptType.Action.__doc__ = ""
+Qgis.EmbeddedScriptType.FormInitCode.__doc__ = ""
+Qgis.EmbeddedScriptType.__doc__ = """Type of Python Embedded in projects
 
 .. versionadded:: 3.40
 
 * ``Macro``: 
 * ``ExpressionFunction``: 
+* ``Action``: 
+* ``FormInitCode``: 
 
 """
 # --
-Qgis.PythonEmbeddedType.baseClass = Qgis
+Qgis.EmbeddedScriptType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProjectTrustStatus.Undetermined.__doc__ = ""
+Qgis.ProjectTrustStatus.Trusted.__doc__ = ""
+Qgis.ProjectTrustStatus.Untrusted.__doc__ = ""
+Qgis.ProjectTrustStatus.__doc__ = """Project trust status
+
+.. versionadded:: 4.0
+
+* ``Undetermined``: 
+* ``Trusted``: 
+* ``Untrusted``: 
+
+"""
+# --
+Qgis.ProjectTrustStatus.baseClass = Qgis
 QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 # monkey patching scoped based enum
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
@@ -2622,6 +2661,7 @@ Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
 Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__ = "Include system or internal tables (these are not included by default)"
+Qgis.SublayerQueryFlag.OpenLayersToResolveDescriptions.__doc__ = "Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \n.. versionadded:: 4.0"
 Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will scan for sublayers in a dataset.
 
 .. versionadded:: 3.22
@@ -2630,6 +2670,10 @@ Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will 
 * ``ResolveGeometryType``: Attempt to resolve the geometry type for vector sublayers
 * ``CountFeatures``: Count features in vector sublayers
 * ``IncludeSystemTables``: Include system or internal tables (these are not included by default)
+* ``OpenLayersToResolveDescriptions``: Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call.
+
+  .. versionadded:: 4.0
+
 
 """
 # --
@@ -3854,6 +3898,21 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 """
 # --
 Qgis.JoinStyle.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.JoinStyle3D.Round.__doc__ = "Smooth, rounded buffer around the input geometry"
+Qgis.JoinStyle3D.Flat.__doc__ = "Flat ends and constant width along the linestring"
+Qgis.JoinStyle3D.CylindersAndSpheres.__doc__ = "Cylinders along the linestring segments with spheres at the vertices"
+Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
+
+.. versionadded:: 4.0
+
+* ``Round``: Smooth, rounded buffer around the input geometry
+* ``Flat``: Flat ends and constant width along the linestring
+* ``CylindersAndSpheres``: Cylinders along the linestring segments with spheres at the vertices
+
+"""
+# --
+Qgis.JoinStyle3D.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
@@ -5436,6 +5495,36 @@ of text.
 """
 # --
 Qgis.TextCharacterVerticalAlignment.baseClass = Qgis
+QgsTextRendererUtils.CurvedTextFlag = Qgis.CurvedTextFlag
+# monkey patching scoped based enum
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort = Qgis.CurvedTextFlag.TruncateStringWhenLineIsTooShort
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort.is_monkey_patched = True
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort.__doc__ = "When a string is too long for the line, truncate characters instead of aborting the placement"
+QgsTextRendererUtils.UseBaselinePlacement = Qgis.CurvedTextFlag.UseBaselinePlacement
+QgsTextRendererUtils.UseBaselinePlacement.is_monkey_patched = True
+QgsTextRendererUtils.UseBaselinePlacement.__doc__ = "Generate placement based on the character baselines instead of centers"
+QgsTextRendererUtils.UprightCharactersOnly = Qgis.CurvedTextFlag.UprightCharactersOnly
+QgsTextRendererUtils.UprightCharactersOnly.is_monkey_patched = True
+QgsTextRendererUtils.UprightCharactersOnly.__doc__ = "Permit upright characters only. If not present then upside down text placement is permitted."
+QgsTextRendererUtils.ExtendLineToFitText = Qgis.CurvedTextFlag.ExtendLineToFitText
+QgsTextRendererUtils.ExtendLineToFitText.is_monkey_patched = True
+QgsTextRendererUtils.ExtendLineToFitText.__doc__ = "When a string is too long for the line, extend the line's final segment to fit the entire string. \n.. versionadded:: 4.0"
+Qgis.CurvedTextFlag.__doc__ = """Flags controlling behavior of curved text generation.
+
+.. versionadded:: 4.0.
+
+* ``TruncateStringWhenLineIsTooShort``: When a string is too long for the line, truncate characters instead of aborting the placement
+* ``UseBaselinePlacement``: Generate placement based on the character baselines instead of centers
+* ``UprightCharactersOnly``: Permit upright characters only. If not present then upside down text placement is permitted.
+* ``ExtendLineToFitText``: When a string is too long for the line, extend the line's final segment to fit the entire string.
+
+  .. versionadded:: 4.0
+
+
+"""
+# --
+Qgis.CurvedTextFlag.baseClass = Qgis
+QgsTextRendererUtils.CurvedTextFlags = Qgis.CurvedTextFlags
 QgsVectorSimplifyMethod.SimplifyAlgorithm = Qgis.VectorSimplificationAlgorithm
 # monkey patching scoped based enum
 QgsVectorSimplifyMethod.Distance = Qgis.VectorSimplificationAlgorithm.Distance
@@ -6085,6 +6174,21 @@ Qgis.PlotAxisType.__doc__ = """Plots axis types.
 # --
 Qgis.PlotAxisType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PieChartLabelType.NoLabels.__doc__ = "Labels are not drawn"
+Qgis.PieChartLabelType.Categories.__doc__ = "Category labels are drawn"
+Qgis.PieChartLabelType.Values.__doc__ = "Value labels are drawn"
+Qgis.PieChartLabelType.__doc__ = """Pie chart label types.
+
+.. versionadded:: 4.0
+
+* ``NoLabels``: Labels are not drawn
+* ``Categories``: Category labels are drawn
+* ``Values``: Value labels are drawn
+
+"""
+# --
+Qgis.PieChartLabelType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"
 Qgis.DpiMode.QGIS.__doc__ = "QGIS"
@@ -6354,6 +6458,9 @@ QgsProcessing.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
 QgsProcessing.SourceType.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
 QgsProcessing.TypeVectorTile.is_monkey_patched = True
 QgsProcessing.TypeVectorTile.__doc__ = "Vector tile layers \n.. versionadded:: 3.32"
+QgsProcessing.TiledScene = Qgis.ProcessingSourceType.TiledScene
+QgsProcessing.TiledScene.is_monkey_patched = True
+QgsProcessing.TiledScene.__doc__ = "Tiled scene layers \n.. versionadded:: 4.0"
 Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 .. note::
@@ -6428,6 +6535,10 @@ Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 
   Available as ``QgsProcessing.TypeVectorTile`` in older QGIS releases.
+
+* ``TiledScene``: Tiled scene layers
+
+  .. versionadded:: 4.0
 
 
 """
@@ -7700,6 +7811,9 @@ QgsArcGisPortalUtils.GeocodeServer.__doc__ = "GeocodeServer"
 QgsArcGisPortalUtils.Unknown = Qgis.ArcGisRestServiceType.Unknown
 QgsArcGisPortalUtils.Unknown.is_monkey_patched = True
 QgsArcGisPortalUtils.Unknown.__doc__ = "Other unknown/unsupported type"
+QgsArcGisPortalUtils.SceneServer = Qgis.ArcGisRestServiceType.SceneServer
+QgsArcGisPortalUtils.SceneServer.is_monkey_patched = True
+QgsArcGisPortalUtils.SceneServer.__doc__ = "SceneServer"
 Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 
 .. note::
@@ -7724,6 +7838,7 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 * ``GPServer``: GPServer
 * ``GeocodeServer``: GeocodeServer
 * ``Unknown``: Other unknown/unsupported type
+* ``SceneServer``: SceneServer
 
 """
 # --
@@ -10401,6 +10516,8 @@ Qgis.PostgresRelKind.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ = "Can set comments for fields via setFieldComment()"
 Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set aliases for fields via setFieldAlias()"
 Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
+Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
@@ -10410,6 +10527,14 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum repr
 * ``SetTableComment``: Can set comments for tables via setTableComment()
 
   .. versionadded:: 3.44
+
+* ``EditFieldDomain``: Can edit existing field domain
+
+  .. versionadded:: 4.0
+
+* ``DeleteFieldDomain``: Can delete existing field domain
+
+  .. versionadded:: 4.0
 
 
 """
@@ -10696,6 +10821,21 @@ Qgis.AttributeFormPythonInitCodeSource.__doc__ = """The Python init code source 
 """
 # --
 Qgis.AttributeFormPythonInitCodeSource.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AttributeFormReuseLastValuePolicy.NotAllowed.__doc__ = "Reuse of last values not allowed"
+Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn.__doc__ = "Reuse of last values allowed and enabled by default"
+Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOff.__doc__ = "Reuse of last values allowed and disabled by default"
+Qgis.AttributeFormReuseLastValuePolicy.__doc__ = """Attribute form policy for reusing last entered values.
+
+.. versionadded:: 4.0
+
+* ``NotAllowed``: Reuse of last values not allowed
+* ``AllowedDefaultOn``: Reuse of last values allowed and enabled by default
+* ``AllowedDefaultOff``: Reuse of last values allowed and disabled by default
+
+"""
+# --
+Qgis.AttributeFormReuseLastValuePolicy.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ExpressionType.Qgis.__doc__ = "Native QGIS expression"
 Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
@@ -11575,6 +11715,59 @@ Qgis.StacObjectType.__doc__ = """Available types of stac objects
 """
 # --
 Qgis.StacObjectType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RasterProcessingParameterCapability.WmsScale.__doc__ = "The parameter supports a reference scale for WMS source layers"
+Qgis.RasterProcessingParameterCapability.WmsDpi.__doc__ = "The parameter supports a server resolution for WMS source layers"
+Qgis.RasterProcessingParameterCapability.__doc__ = """Capabilities of a raster layer processing parameter.
+
+.. versionadded:: 4.0
+
+* ``WmsScale``: The parameter supports a reference scale for WMS source layers
+* ``WmsDpi``: The parameter supports a server resolution for WMS source layers
+
+"""
+# --
+Qgis.RasterProcessingParameterCapability.baseClass = Qgis
+Qgis.RasterProcessingParameterCapabilities.baseClass = Qgis
+RasterProcessingParameterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.DevToolsNodeRole.Status.__doc__ = "Request status role"
+Qgis.DevToolsNodeRole.Id.__doc__ = "Request ID role"
+Qgis.DevToolsNodeRole.ElapsedTime.__doc__ = "Elapsed time"
+Qgis.DevToolsNodeRole.MaximumTime.__doc__ = "Maximum encountered elapsed time"
+Qgis.DevToolsNodeRole.Sort.__doc__ = "Sort order role"
+Qgis.DevToolsNodeRole.__doc__ = """Dev tools node custom data roles.
+
+.. versionadded:: 4.0
+
+* ``Status``: Request status role
+* ``Id``: Request ID role
+* ``ElapsedTime``: Elapsed time
+* ``MaximumTime``: Maximum encountered elapsed time
+* ``Sort``: Sort order role
+
+"""
+# --
+Qgis.DevToolsNodeRole.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExtrusionFace.NoFace.__doc__ = ""
+Qgis.ExtrusionFace.Walls.__doc__ = ""
+Qgis.ExtrusionFace.Roof.__doc__ = ""
+Qgis.ExtrusionFace.Floor.__doc__ = ""
+Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTessellator`.
+
+.. versionadded:: 4.0
+
+* ``NoFace``: 
+* ``Walls``: 
+* ``Roof``: 
+* ``Floor``: 
+
+"""
+# --
+Qgis.ExtrusionFace.baseClass = Qgis
+Qgis.ExtrusionFaces.baseClass = Qgis
+ExtrusionFaces = Qgis  # dirty hack since SIP seems to introduce the flags in module
 from enum import Enum
 
 
@@ -11609,6 +11802,7 @@ Qgis.VectorRenderingSimplificationFlag.__or__ = lambda flag1, flag2: Qgis.Vector
 Qgis.DataProviderReadFlag.__or__ = lambda flag1, flag2: Qgis.DataProviderReadFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.VectorProviderCapability.__or__ = lambda flag1, flag2: Qgis.VectorProviderCapabilities(_force_int(flag1) | _force_int(flag2))
 Qgis.LayoutRenderFlag.__or__ = lambda flag1, flag2: Qgis.LayoutRenderFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.CurvedTextFlag.__or__ = lambda flag1, flag2: Qgis.CurvedTextFlags(_force_int(flag1) | _force_int(flag2))
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}
@@ -11622,6 +11816,10 @@ try:
     Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
     Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
     Qgis.geosVersion = staticmethod(Qgis.geosVersion)
+    Qgis.hasSfcgal = staticmethod(Qgis.hasSfcgal)
+    Qgis.sfcgalVersionInt = staticmethod(Qgis.sfcgalVersionInt)
+    Qgis.hasGeographicLib = staticmethod(Qgis.hasGeographicLib)
+    Qgis.geographicLibVersion = staticmethod(Qgis.geographicLibVersion)
     Qgis.hasQtWebkit = staticmethod(Qgis.hasQtWebkit)
     Qgis.geoNone = staticmethod(Qgis.geoNone)
     Qgis.geographicCrsAuthId = staticmethod(Qgis.geographicCrsAuthId)

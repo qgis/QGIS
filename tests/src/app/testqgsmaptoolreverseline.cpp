@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptooladdfeature.h"
-
-#include "testqgsmaptoolutils.h"
-#include "qgsmaptoolreverseline.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaptooladdfeature.h"
+#include "qgsmaptoolreverseline.h"
+#include "qgssettings.h"
 #include "qgssnappingutils.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolReverseLine : public QObject
 {
@@ -174,11 +174,11 @@ void TestQgsMapToolReverseLine::testReverseMultiLineString()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mapPoint = mCanvas->getCoordinateTransform()->transform( 110, 110 );
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     QPoint( mapPoint.x(), mapPoint.y() )
-  ) );
+  );
   // trigger mouseRelease handler
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );

@@ -19,11 +19,10 @@
 #define QGSBOX3D_H
 
 #include "qgis_core.h"
+#include "qgspoint.h"
 #include "qgsrectangle.h"
 
 #include <QVector3D>
-
-#include "qgspoint.h"
 
 class QgsVector3D;
 
@@ -73,9 +72,9 @@ class CORE_EXPORT QgsBox3D
      * Constructs a QgsBox3D from a rectangle.
      * If \a normalize is FALSE then the normalization step will not be applied automatically.
      */
-    QgsBox3D( const QgsRectangle &rect,
-              double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(),
-              bool normalize = true );
+    explicit QgsBox3D( const QgsRectangle &rect,
+                       double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(),
+                       bool normalize = true );
 
 #else
     QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];

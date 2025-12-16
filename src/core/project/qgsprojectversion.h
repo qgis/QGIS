@@ -18,9 +18,10 @@
 #ifndef QGSPROJECTVERSION_H
 #define QGSPROJECTVERSION_H
 
+#include "qgis_core.h"
+
 #include <QString>
 #include <QStringList>
-#include "qgis_core.h"
 
 /**
  * \ingroup core

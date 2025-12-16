@@ -17,13 +17,14 @@
 #ifndef QGSAUTHCONFIGEDITOR_H
 #define QGSAUTHCONFIGEDITOR_H
 
-#include <QSqlTableModel>
-#include "qgis_sip.h"
-#include <QWidget>
-
 #include "ui_qgsauthconfigeditor.h"
-#include "qgsauthmanager.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthmanager.h"
+
+#include <QSqlTableModel>
+#include <QWidget>
 
 class QgsMessageBar;
 

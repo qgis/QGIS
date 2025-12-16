@@ -14,17 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaprenderercustompainterjob.h"
-#include "moc_qgsmaprenderercustompainterjob.cpp"
 
+#include <memory>
+
+#include "qgselevationmap.h"
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils_p.h"
-#include "qgselevationmap.h"
+#include "qgsmaplayerrenderer.h"
 #include "qgspainting.h"
 
 #include <QtConcurrentRun>
+
+#include "moc_qgsmaprenderercustompainterjob.cpp"
 
 //
 // QgsMapRendererAbstractCustomPainterJob
@@ -63,8 +66,6 @@ void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
   : QgsMapRendererAbstractCustomPainterJob( settings )
   , mPainter( painter )
-  , mActive( false )
-  , mRenderSynchronously( false )
 {
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER construct" ), 5 );
 }
@@ -100,7 +101,7 @@ void QgsMapRendererCustomPainterJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -293,7 +294,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   const QgsElevationShadingRenderer mapShadingRenderer = mSettings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
-    mainElevationMap.reset( new QgsElevationMap( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() ) );
+    mainElevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() );
 
   for ( LayerRenderJob &job : mLayerJobs )
   {

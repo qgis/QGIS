@@ -20,9 +20,10 @@
 
 #define SIP_NO_FILE
 
+#include <functional>
+
 #include "qgis_core.h"
 #include "qgssqliteutils.h"
-#include <functional>
 
 /**
  * \ingroup core

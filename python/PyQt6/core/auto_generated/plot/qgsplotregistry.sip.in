@@ -50,6 +50,11 @@ Returns a translated, user visible name for the plot class.
 Creates a plot of this class.
 %End
 
+    virtual QgsVectorLayerAbstractPlotDataGatherer *createPlotDataGatherer( QgsPlot *plot = 0 ) = 0 /TransferBack/;
+%Docstring
+Creates a plot data gatherer of this class.
+%End
+
     virtual QgsPlotWidget *createPlotWidget( QWidget *parent = 0 ) = 0 /TransferBack/;
 %Docstring
 Creates a widget for configuring plot of this type. Can return ``None``

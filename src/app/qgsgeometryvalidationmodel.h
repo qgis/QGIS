@@ -15,11 +15,11 @@ email                : matthias@opengis.ch
 #ifndef QGSGEOMETRYVALIDATIONMODEL_H
 #define QGSGEOMETRYVALIDATIONMODEL_H
 
-#include <QAbstractItemModel>
-
-#include "qgsgeometryvalidationservice.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
+#include "qgsgeometryvalidationservice.h"
+
+#include <QAbstractItemModel>
 
 class QgsGeometryValidationModel : public QAbstractItemModel
 {

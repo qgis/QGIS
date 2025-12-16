@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gdal.h"
 #include "qgsalgorithmreclassifybylayer.h"
+
+#include <gdal.h>
+
+#include "qgis.h"
+#include "qgsrasteranalysisutils.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsreclassifyutils.h"
-#include "qgsrasteranalysisutils.h"
-#include "qgis.h"
 #include "qgsvariantutils.h"
 
 ///@cond PRIVATE
@@ -141,8 +143,7 @@ QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &par
     creationOptions = optionsString;
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );

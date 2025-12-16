@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutItemHtml: QgsLayoutMultiFrame
 {
 %Docstring(signature="appended")

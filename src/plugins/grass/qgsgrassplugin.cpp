@@ -15,19 +15,20 @@
  ***************************************************************************/
 
 #include "qgsgrassplugin.h"
-#include "moc_qgsgrassplugin.cpp"
+
 #include "qgis.h"
 #include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-
 #include "qgsgrassaddfeature.h"
 #include "qgsgrasseditrenderer.h"
 #include "qgsgrassnewmapset.h"
+#include "qgsgrassprovider.h"
 #include "qgsgrassregion.h"
 #include "qgsgrassselect.h"
 #include "qgsgrasstools.h"
 #include "qgsgrassutils.h"
 #include "qgsmessagebar.h"
+
+#include "moc_qgsgrassplugin.cpp"
 
 // includes
 #include "qgisinterface.h"

@@ -16,7 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgis.h"
+
 #include "moc_qgis.cpp"
+
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
@@ -34,6 +36,10 @@
 #include <gdal.h>
 #include <geos_c.h>
 #include <ogr_api.h>
+
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
 
 #define qgis_xstr(x) qgis_str(x)
 #define qgis_str(x) #x
@@ -697,6 +703,42 @@ QString Qgis::devVersion()
 QString Qgis::geosVersion()
 {
   return GEOSversion();
+}
+
+bool Qgis::hasSfcgal()
+{
+#ifdef WITH_SFCGAL
+  return true;
+#else
+  return false;
+#endif
+}
+
+int Qgis::sfcgalVersionInt()
+{
+#ifdef WITH_SFCGAL
+  return SFCGAL_VERSION_MAJOR_INT * 10000 + SFCGAL_VERSION_MINOR_INT * 100 + SFCGAL_VERSION_PATCH_INT;
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based SFCGAL." ) );
+#endif
+}
+
+bool Qgis::hasGeographicLib()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return true;
+#else
+  return false;
+#endif
+}
+
+int Qgis::geographicLibVersion()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return GEOGRAPHICLIB_VERSION_MAJOR * 10000 + GEOGRAPHICLIB_VERSION_MINOR * 100 + GEOGRAPHICLIB_VERSION_PATCH;
+#else
+  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+#endif
 }
 
 bool Qgis::hasQtWebkit()

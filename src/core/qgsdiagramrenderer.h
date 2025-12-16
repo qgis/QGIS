@@ -17,20 +17,19 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdiagram.h"
+#include "qgsexpressioncontext.h"
+#include "qgsmapunitscale.h"
+#include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
 #include <QColor>
+#include <QDomDocument>
 #include <QFont>
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
-#include <QDomDocument>
-
-#include "qgsexpressioncontext.h"
-#include "qgscoordinatetransform.h"
-#include "qgspropertycollection.h"
-
-#include "qgsdiagram.h"
-#include "qgsreadwritecontext.h"
-#include "qgsmapunitscale.h"
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -121,8 +120,10 @@ class CORE_EXPORT QgsDiagramLayerSettings
     QgsDiagramLayerSettings();
 
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
+    SIP_SKIP QgsDiagramLayerSettings( QgsDiagramLayerSettings &&rh );
 
     QgsDiagramLayerSettings &operator=( const QgsDiagramLayerSettings &rh );
+    QgsDiagramLayerSettings &operator=( QgsDiagramLayerSettings &&rh );
 
     ~QgsDiagramLayerSettings();
 
@@ -1013,14 +1014,14 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
     QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
-    virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
+    QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
 
     /**
      * Renders the diagram for a specified feature at a specific position in the
      * passed render context, taking all renderers and their own diagrams into account.
      * Diagram rendering is delegated to renderer's diagram.
      */
-    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
 
     //! Returns list with all diagram settings in the renderer
     QList<QgsDiagramSettings> diagramSettings() const override;

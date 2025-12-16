@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgisapp.h"
-#include "testqgsmaptoolutils.h"
+#include "qgsdwgimportdialog.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgsdwgimportdialog.h"
+#include "qgstest.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsDwgImportDialog : public QObject
 {

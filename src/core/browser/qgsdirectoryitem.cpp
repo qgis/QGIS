@@ -16,21 +16,24 @@
  ***************************************************************************/
 
 #include "qgsdirectoryitem.h"
-#include "moc_qgsdirectoryitem.cpp"
-#include "qgssettings.h"
+
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
-#include "qgszipitem.h"
-#include "qgsprojectitem.h"
 #include "qgsfileutils.h"
 #include "qgsgdalutils.h"
-#include <QFileSystemWatcher>
+#include "qgsprojectitem.h"
+#include "qgssettings.h"
+#include "qgszipitem.h"
+
+#include <QAction>
 #include <QDir>
+#include <QFileSystemWatcher>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QTimer>
-#include <QMenu>
-#include <QAction>
+
+#include "moc_qgsdirectoryitem.cpp"
 
 //
 // QgsDirectoryItem

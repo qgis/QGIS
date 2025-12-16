@@ -1,19 +1,24 @@
-//    Copyright (C) 2021-2022 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfdocumentmanipulator.h"
 #include "pdfdocumentbuilder.h"
@@ -37,6 +42,7 @@ PDFOperationResult PDFDocumentManipulator::assemble(const AssembledPages& pages)
     try
     {
         classify(pages);
+        const PDFDocument* singleDocument = nullptr;
 
         pdf::PDFDocumentBuilder documentBuilder;
         if (m_flags.testFlag(SingleDocument))
@@ -56,7 +62,8 @@ PDFOperationResult PDFDocumentManipulator::assemble(const AssembledPages& pages)
                 throw PDFException(tr("Invalid document."));
             }
 
-            documentBuilder.setDocument(m_documents.at(documentIndex));
+            singleDocument = m_documents.at(documentIndex);
+            documentBuilder.setDocument(singleDocument);
         }
         else
         {
@@ -72,9 +79,13 @@ PDFOperationResult PDFDocumentManipulator::assemble(const AssembledPages& pages)
 
         // Correct page tree (invalid parents are present)
         documentBuilder.flattenPageTree();
-        if (!m_flags.testFlag(SingleDocument) || m_flags.testFlag(RemovedPages))
+        if (!m_flags.testFlag(SingleDocument))
         {
             documentBuilder.removeOutline();
+        }
+
+        if (!m_flags.testFlag(SingleDocument) || m_flags.testFlag(RemovedPages))
+        {
             documentBuilder.removeThreads();
             documentBuilder.removeDocumentActions();
             documentBuilder.removeStructureTree();
@@ -85,6 +96,10 @@ PDFOperationResult PDFDocumentManipulator::assemble(const AssembledPages& pages)
         if (!m_flags.testFlag(SingleDocument))
         {
             addOutlineAndDocumentParts(documentBuilder, pages, adjustedPages);
+        }
+        else if (m_flags.testFlag(RemovedPages) && singleDocument)
+        {
+            filterOutline(documentBuilder, singleDocument, adjustedPages);
         }
 
         pdf::PDFDocument mergedDocument = documentBuilder.build();
@@ -485,6 +500,46 @@ void PDFDocumentManipulator::finalizeDocument(PDFDocument* document)
         }
     }
     m_assembledDocument = finalBuilder.build();
+}
+
+void PDFDocumentManipulator::filterOutline(PDFDocumentBuilder& documentBuilder,
+                                           const PDFDocument* singleDocument,
+                                           const std::vector<PDFObjectReference>& adjustedPages)
+{
+    QSharedPointer<PDFOutlineItem> outline = singleDocument->getCatalog()->getOutlineRootPtr();
+    if (outline)
+    {
+        outline = outline->clone();
+        std::set<PDFObjectReference> adjustedPagesSet(adjustedPages.cbegin(), adjustedPages.cend());
+
+        std::function<void(QSharedPointer<PDFOutlineItem>&)> filter = [&adjustedPagesSet](QSharedPointer<PDFOutlineItem>& item)
+        {
+            for (size_t i = 0; i < item->getChildCount();)
+            {
+                bool shouldRemove = false;
+                const PDFOutlineItem* childItem = item->getChild(i);
+                const PDFAction* action = childItem->getAction();
+                const PDFActionGoTo* actionGoTo = dynamic_cast<const PDFActionGoTo*>(action);
+                if (actionGoTo)
+                {
+                    const PDFObjectReference pageReference = actionGoTo->getDestination().getPageReference();
+                    shouldRemove = !adjustedPagesSet.count(pageReference);
+                }
+
+                if (shouldRemove)
+                {
+                    item->removeChild(i);
+                }
+                else
+                {
+                    ++i;
+                }
+            }
+        };
+
+        filter(outline);
+        documentBuilder.setOutline(outline.data());
+    }
 }
 
 void PDFDocumentManipulator::addOutlineAndDocumentParts(PDFDocumentBuilder& documentBuilder,

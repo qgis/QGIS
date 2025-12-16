@@ -13,11 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgscompoundcolorwidget.h"
-#include "qgssettings.h"
 #include "qgsdoublespinbox.h"
+#include "qgssettings.h"
+#include "qgstest.h"
 
 Q_DECLARE_METATYPE( QgsColorWidget::ColorComponent )
 

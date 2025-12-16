@@ -15,18 +15,19 @@
 #ifndef QGSVECTORLAYERFEATUREITERATOR_H
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfeaturesource.h"
-#include "qgsexpressioncontextscopegenerator.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexpressioncontextscopegenerator.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturesource.h"
+#include "qgsfields.h"
 
 #include <QPointer>
 #include <QSet>
-#include <memory>
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap SIP_SKIP;
 
@@ -307,7 +308,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsGeometryMap::ConstIterator mFetchChangedGeomIt;
     QgsFeatureMap::ConstIterator mFetchAddedFeaturesIt;
 
-    bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
+    bool mFetchedFid = false; // when iterating by FID: indicator whether it has been fetched yet or not
 
     /**
      * Information about joins used in the current select() statement.

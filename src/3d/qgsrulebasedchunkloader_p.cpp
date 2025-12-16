@@ -14,26 +14,25 @@
  ***************************************************************************/
 
 #include "qgsrulebasedchunkloader_p.h"
-#include "moc_qgsrulebasedchunkloader_p.cpp"
-#include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgschunknode.h"
+#include "qgseventtracing.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "qgsraycastingutils_p.h"
-#include "qgschunknode.h"
-#include "qgseventtracing.h"
-
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
-
 #include "qgsrulebased3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgsabstractterrainsettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerchunkloader_p.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
-#include <QtConcurrent>
 #include <Qt3DCore/QTransform>
+#include <QtConcurrent>
+
+#include "moc_qgsrulebasedchunkloader_p.cpp"
 
 ///@cond PRIVATE
 
@@ -63,7 +62,8 @@ void QgsRuleBasedChunkLoader::start()
   // picked so that the coordinates are relatively small to avoid numerical precision issues
   QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
 
-  QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
+  QgsExpressionContext exprContext;
+  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   exprContext.setFields( layer->fields() );
   mContext.setExpressionContext( exprContext );
 
@@ -90,7 +90,7 @@ void QgsRuleBasedChunkLoader::start()
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [req, this] {
+  const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "RB chunk load" ) );
 
     QgsFeature f;
@@ -278,7 +278,7 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged()
   }
 }
 
-QVector<QgsRayCastingUtils::RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QList<QgsRayCastHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
 }

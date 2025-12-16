@@ -14,24 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmanageconnectionsdialog.h"
+
+#include "qgsgdalcloudconnection.h"
+#include "qgshttpheaders.h"
+#include "qgsowsconnection.h"
+#include "qgssensorthingsconnection.h"
+#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgsstacconnection.h"
+#include "qgstiledsceneconnection.h"
+#include "qgsvectortileconnection.h"
+
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QTextStream>
 
-#include "qgssettings.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "moc_qgsmanageconnectionsdialog.cpp"
-#include "qgshttpheaders.h"
-#include "qgsowsconnection.h"
-#include "qgsvectortileconnection.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgstiledsceneconnection.h"
-#include "qgssensorthingsconnection.h"
-#include "qgsgdalcloudconnection.h"
-#include "qgsstacconnection.h"
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )

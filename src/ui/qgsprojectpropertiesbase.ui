@@ -1010,19 +1010,19 @@
             </widget>
            </item>
            <item>
-            <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
-             <property name="toolTip">
-              <string>If checked the preset extent will be used as the full extent of the project. If unchecked, the project's full extent will be calculated using the full extent of all layers in the project.</string>
-             </property>
+            <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox">
              <property name="title">
-              <string>Extent (current: none)</string>
+              <string>Set Project Full Extent</string>
              </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_30">
+              <item>
+               <widget class="QCheckBox" name="mCheckBoxLoadProjectExtent">
+                <property name="text">
+                 <string>Use as extent for the main canvas when opening the project</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
@@ -1132,8 +1132,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>528</width>
-                <height>85</height>
+                <width>685</width>
+                <height>791</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3609,12 +3609,6 @@
    <header>qgsdatetimeedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QgsCollapsibleGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFontButton</class>
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
@@ -3706,7 +3700,6 @@
   <tabstop>pbnRemoveScale</tabstop>
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
-  <tabstop>mExtentGroupBox</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>mShowDatumTransformDialogCheckBox</tabstop>

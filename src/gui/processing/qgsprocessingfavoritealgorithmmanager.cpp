@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsprocessingfavoritealgorithmmanager.h"
-#include "moc_qgsprocessingfavoritealgorithmmanager.cpp"
-#include "qgssettingstree.h"
+
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
+#include "moc_qgsprocessingfavoritealgorithmmanager.cpp"
 
 ///@cond PRIVATE
 
@@ -64,7 +66,7 @@ void QgsProcessingFavoriteAlgorithmManager::clear()
   emit changed();
 }
 
-bool QgsProcessingFavoriteAlgorithmManager::isFavorite( const QString &id )
+bool QgsProcessingFavoriteAlgorithmManager::isFavorite( const QString &id ) const
 {
   return mFavoriteAlgorithmIds.contains( id );
 }

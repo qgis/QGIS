@@ -14,32 +14,33 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayer.h"
-#include "moc_qgsvectortilelayer.cpp"
 
+#include "qgsblockingnetworkrequest.h"
+#include "qgsdatasourceuri.h"
+#include "qgsgeometryengine.h"
+#include "qgsjsonutils.h"
+#include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
-#include "qgsvectortilelayerrenderer.h"
+#include "qgsmapboxglstyleconverter.h"
+#include "qgsmaplayerfactory.h"
+#include "qgspainting.h"
+#include "qgsproviderregistry.h"
+#include "qgsselectioncontext.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgsthreadingutils.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
-#include "qgsvectortilelabeling.h"
-#include "qgsvectortileloader.h"
-#include "qgsvectortileutils.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsdatasourceuri.h"
-#include "qgslayermetadataformatter.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgsmapboxglstyleconverter.h"
-#include "qgsjsonutils.h"
-#include "qgspainting.h"
-#include "qgsmaplayerfactory.h"
-#include "qgsselectioncontext.h"
-#include "qgsgeometryengine.h"
-#include "qgsvectortilemvtdecoder.h"
-#include "qgsthreadingutils.h"
-#include "qgsproviderregistry.h"
 #include "qgsvectortiledataprovider.h"
+#include "qgsvectortilelabeling.h"
+#include "qgsvectortilelayerrenderer.h"
+#include "qgsvectortileloader.h"
+#include "qgsvectortilemvtdecoder.h"
+#include "qgsvectortileutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsvectortilelayer.cpp"
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName, const LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::VectorTile, baseName )
@@ -106,7 +107,7 @@ bool QgsVectorTileLayer::loadDataSource()
   }
 
   mDataProvider.reset( qobject_cast<QgsVectorTileDataProvider *>( QgsProviderRegistry::instance()->createProvider( providerKey, mDataSource, providerOptions, flags ) ) );
-  mProviderKey = mDataProvider->name();
+  mProviderKey = mDataProvider ? mDataProvider->name() : providerKey;
 
   if ( mDataProvider )
   {

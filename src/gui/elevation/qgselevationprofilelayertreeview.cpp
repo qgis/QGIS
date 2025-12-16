@@ -17,32 +17,37 @@
  ***************************************************************************/
 
 #include "qgselevationprofilelayertreeview.h"
-#include "moc_qgselevationprofilelayertreeview.cpp"
-#include "qgslayertreenode.h"
-#include "qgslayertree.h"
-#include "qgssymbollayerutils.h"
-#include "qgsvectorlayerelevationproperties.h"
-#include "qgsmeshlayerelevationproperties.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsvectorlayer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmaplayerutils.h"
 
-#include <QHeaderView>
+#include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgslayertree.h"
+#include "qgslayertreenode.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmeshlayerelevationproperties.h"
+#include "qgsprofilesourceregistry.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
+
 #include <QContextMenuEvent>
+#include <QHeaderView>
 #include <QMenu>
 #include <QMimeData>
 
+#include "moc_qgselevationprofilelayertreeview.cpp"
+
+const QString QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE = QStringLiteral( "elevationProfileRegistry" );
 
 QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
-  setFlag( QgsLayerTreeModel::AllowNodeReorder );
-  setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
-  setFlag( QgsLayerTreeModel::ShowLegendAsTree );
+  setAllowModifications( true );
+
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
+  setFlag( QgsLayerTreeModel::ShowLegendAsTree );
 }
 
 QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int role ) const
@@ -98,6 +103,12 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
                   if ( elevationProperties->respectLayerSymbology() )
                   {
+                    if ( !symbol )
+                    {
+                      // just use default layer icon
+                      return QgsLayerTreeModel::data( index, role );
+                    }
+
                     if ( QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
                     {
                       if ( renderer->symbol()->type() == symbol->type() )
@@ -239,6 +250,9 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
 bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  if ( !mAllowModifications )
+    return false;
+
   if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( index2node( index ) ) )
   {
     if ( role == Qt::CheckStateRole )
@@ -254,8 +268,25 @@ bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const
   return QgsLayerTreeModel::setData( index, value, role );
 }
 
+Qt::ItemFlags QgsElevationProfileLayerTreeModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags f = QgsLayerTreeModel::flags( index );
+
+  // the elevation tree model only supports group renames, not layer renames (otherwise
+  // we'd be renaming the actual layer, which is likely NOT what users expect)
+  QgsLayerTreeNode *node = index2node( index );
+  if ( !mAllowModifications || !QgsLayerTree::isGroup( node ) )
+  {
+    f.setFlag( Qt::ItemFlag::ItemIsEditable, false );
+  }
+  return f;
+}
+
 bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const
 {
+  if ( !mAllowModifications )
+    return false;
+
   if ( action == Qt::IgnoreAction )
     return true;
 
@@ -277,6 +308,9 @@ bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, 
 
 bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
+  if ( !mAllowModifications )
+    return false;
+
   if ( action == Qt::IgnoreAction )
     return true;
 
@@ -331,12 +365,23 @@ bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt:
 
 QMimeData *QgsElevationProfileLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 {
+  if ( !mAllowModifications )
+    return nullptr;
+
   QMimeData *mimeData = QgsLayerTreeModel::mimeData( indexes );
   if ( mimeData )
   {
     mimeData->setData( QStringLiteral( "application/qgis.restrictlayertreemodelsubclass" ), "QgsElevationProfileLayerTreeModel" );
   }
   return mimeData;
+}
+
+void QgsElevationProfileLayerTreeModel::setAllowModifications( bool allow )
+{
+  setFlag( QgsLayerTreeModel::AllowNodeReorder, allow );
+  setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, allow );
+  setFlag( QgsLayerTreeModel::AllowNodeRename, allow );
+  mAllowModifications = allow;
 }
 
 
@@ -374,6 +419,7 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
       }
 
       case QgsLayerTreeNode::NodeGroup:
+      case QgsLayerTreeNode::NodeCustom:
         break;
     }
     return true;
@@ -410,45 +456,29 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
 
 
 QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
-  : QTreeView( parent )
-  , mLayerTree( rootNode )
+  : QgsLayerTreeViewBase( parent )
 {
-  mModel = new QgsElevationProfileLayerTreeModel( rootNode, this );
+  setLayerTree( rootNode );
+}
+
+void QgsElevationProfileLayerTreeView::setLayerTree( QgsLayerTree *rootNode )
+{
+  QgsElevationProfileLayerTreeModel *oldModel = mModel;
+
+  mLayerTree = rootNode;
+
+  mModel = new QgsElevationProfileLayerTreeModel( mLayerTree, this );
+
   connect( mModel, &QgsElevationProfileLayerTreeModel::addLayers, this, &QgsElevationProfileLayerTreeView::addLayers );
   mProxyModel = new QgsElevationProfileLayerTreeProxyModel( mModel, this );
 
-  setHeaderHidden( true );
-
-  setDragEnabled( true );
-  setAcceptDrops( true );
-  setDropIndicatorShown( true );
-  setExpandsOnDoubleClick( false );
-
-  // Ensure legend graphics are scrollable
-  header()->setStretchLastSection( false );
-  header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-
-  // If vertically scrolling by item, legend graphics can get clipped
-  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-
-  setDefaultDropAction( Qt::MoveAction );
-
   setModel( mProxyModel );
+  setLayerTreeModel( mModel );
+
+  delete oldModel;
 }
 
-QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &index )
-{
-  if ( QgsLayerTreeNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
-  {
-    if ( QgsLayerTreeLayer *layerTreeLayerNode = mLayerTree->toLayer( node ) )
-    {
-      return layerTreeLayerNode->layer();
-    }
-  }
-  return nullptr;
-}
-
-void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *project )
+void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *project )
 {
   const QList<QgsMapLayer *> layers = project->layers<QgsMapLayer *>().toList();
 
@@ -460,6 +490,10 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
   std::reverse( sortedLayers.begin(), sortedLayers.end() );
   for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
   {
+    // don't re-add existing layers
+    if ( mLayerTree->findLayer( layer ) )
+      continue;
+
     QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
 
     if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
@@ -471,6 +505,34 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
       node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
     }
   }
+}
+
+void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *project )
+{
+  const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
+  for ( QgsAbstractProfileSource *source : sources )
+  {
+    addNodeForRegisteredSource( source->profileSourceId(), source->profileSourceName() );
+  }
+
+  populateMissingLayers( project );
+}
+
+void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )
+{
+  auto customNode = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
+  customNode->setItemVisibilityChecked( true );
+  // Mark the node so that we know which custom nodes correspond to elevation profile sources
+  customNode->setCustomProperty( QStringLiteral( "source" ), QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE );
+
+  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( -1, customNode.release() );
+  if ( !node )
+    QgsDebugError( QString( "The custom node with id '%1' could not be added!" ).arg( sourceId ) );
+}
+
+void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QString &sourceId )
+{
+  mLayerTree->removeCustomNode( sourceId );
 }
 
 QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()

@@ -30,7 +30,7 @@ class QWT_EXPORT QwtMagnifier : public QObject
 
   public:
     explicit QwtMagnifier( QWidget* );
-    virtual ~QwtMagnifier();
+    ~QwtMagnifier() override;
 
     QWidget* parentWidget();
     const QWidget* parentWidget() const;

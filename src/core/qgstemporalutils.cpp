@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgstemporalutils.h"
-#include "qgsproject.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgstemporalnavigationobject.h"
-#include "qgsmapdecoration.h"
-#include "qgsmapsettings.h"
-#include "qgsmaprenderercustompainterjob.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsmapdecoration.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgstemporalnavigationobject.h"
 
 #include <QRegularExpression>
 
@@ -94,7 +95,10 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   navigator.setTemporalExtents( settings.animationRange );
   navigator.setFrameDuration( settings.frameDuration );
   if ( settings.frameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
+  {
     navigator.setAvailableTemporalRanges( settings.availableTemporalRanges );
+  }
+  navigator.setTemporalRangeCumulative( settings.temporalRangeCumulative );
 
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
@@ -329,22 +333,22 @@ long long QgsTimeDuration::toSeconds() const
   long long secs = 0.0;
 
   if ( years )
-    secs += years * QgsInterval::YEARS;
+    secs += years * static_cast< long long >( QgsInterval::YEARS );
   if ( months )
-    secs += months * QgsInterval::MONTHS;
+    secs += months * static_cast< long long >( QgsInterval::MONTHS );
   if ( days )
-    secs += days * QgsInterval::DAY;
+    secs += days * static_cast< long long >( QgsInterval::DAY );
   if ( hours )
-    secs += hours * QgsInterval::HOUR;
+    secs += hours * static_cast< long long >( QgsInterval::HOUR );
   if ( minutes )
-    secs += minutes * QgsInterval::MINUTE;
+    secs += minutes * static_cast< long long >( QgsInterval::MINUTE );
   if ( seconds )
     secs += seconds;
 
   return secs;
 }
 
-QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime )
+QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime ) const
 {
   QDateTime resultDateTime = dateTime;
 

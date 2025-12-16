@@ -12,52 +12,54 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QWidget>
-#include <QSizePolicy>
-#include <QUndoStack>
-#include <QListWidget>
-
-#include "qgsapplication.h"
-#include "qgslabelingwidget.h"
-#include "qgsmaskingwidget.h"
-#include "qgsdiagramwidget.h"
 #include "qgslayerstylingwidget.h"
-#include "moc_qgslayerstylingwidget.cpp"
-#include "qgsrastertransparencywidget.h"
-#include "qgsrendererpropertiesdialog.h"
-#include "qgsrendererrasterpropertieswidget.h"
-#include "qgsrenderermeshpropertieswidget.h"
-#include "qgsrasterhistogramwidget.h"
-#include "qgsrasterattributetablewidget.h"
-#include "qgsrasterrenderer.h"
-#include "qgsrasterrendererwidget.h"
+
+#include "qgisapp.h"
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgsdiagramwidget.h"
+#include "qgslabelingwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsstyle.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectortilebasiclabelingwidget.h"
-#include "qgsvectortilebasicrendererwidget.h"
-#include "qgsmeshlayer.h"
+#include "qgsmaplayerstylemanagerwidget.h"
+#include "qgsmaskingwidget.h"
 #include "qgsmeshlabelingwidget.h"
+#include "qgsmeshlayer.h"
 #include "qgsproject.h"
-#include "qgsundowidget.h"
+#include "qgsrasterattributetablewidget.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterhistogramwidget.h"
+#include "qgsrasterlabelingwidget.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterminmaxwidget.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterrendererwidget.h"
+#include "qgsrastertransparencywidget.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrenderer.h"
+#include "qgsrenderermeshpropertieswidget.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgsrendererrasterpropertieswidget.h"
 #include "qgsrendererregistry.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterlayer.h"
-#include "qgsmaplayerconfigwidget.h"
-#include "qgsmaplayerstylemanagerwidget.h"
-#include "qgsrasterminmaxwidget.h"
-#include "qgisapp.h"
+#include "qgsstyle.h"
 #include "qgssymbolwidgetcontext.h"
-#include "qgsannotationlayer.h"
-#include "qgsrasterlabelingwidget.h"
+#include "qgsundowidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilebasiclabelingwidget.h"
+#include "qgsvectortilebasicrendererwidget.h"
+#include "qgsvectortilelayer.h"
+
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QListWidget>
+#include <QSizePolicy>
+#include <QUndoStack>
+#include <QVBoxLayout>
+#include <QWidget>
+
+#include "moc_qgslayerstylingwidget.cpp"
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
@@ -67,11 +69,8 @@
 
 QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
   : QWidget( parent )
-  , mNotSupportedPage( 0 )
-  , mLayerPage( 1 )
   , mMapCanvas( canvas )
   , mMessageBar( messageBar )
-  , mBlockAutoApply( false )
   , mPageFactories( pages )
 {
   setupUi( this );
@@ -236,7 +235,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
 
-      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider() && static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
+      QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( layer->dataProvider() );
+      if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
       {
         QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
         histogramItem->setData( Qt::UserRole, RasterHistogram );
@@ -377,12 +377,14 @@ void QgsLayerStylingWidget::apply()
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
     undoName = QStringLiteral( "Label Change" );
   }
   else if ( QgsDiagramWidget *widget = qobject_cast<QgsDiagramWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
     undoName = QStringLiteral( "Diagram Change" );
   }
   else if ( QgsMapLayerConfigWidget *widget = qobject_cast<QgsMapLayerConfigWidget *>( current ) )
@@ -666,7 +668,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
           case 3: // Histogram
           {
-            if ( rlayer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
+            QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( rlayer->dataProvider() );
+            if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
             {
               if ( !mRasterStyleWidget )
               {

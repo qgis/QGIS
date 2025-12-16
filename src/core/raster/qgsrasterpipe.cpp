@@ -15,21 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <typeinfo>
-
-#include <QByteArray>
-
-#include "qgslogger.h"
 #include "qgsrasterpipe.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterrenderer.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsbrightnesscontrastfilter.h"
-#include "qgshuesaturationfilter.h"
-#include "qgsrasterprojector.h"
-#include "qgsrasternuller.h"
 
 #include <mutex>
+#include <typeinfo>
+
+#include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
+#include "qgslogger.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasternuller.h"
+#include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
+
+#include <QByteArray>
 
 QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
 {
@@ -117,6 +117,7 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface *interface )
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "Error inserting pipe %1" ).arg( idx ), 4 );
+    delete interface;
   }
 
   // Connect or reconnect (after the test) interfaces

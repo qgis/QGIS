@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionscope.h"
+
 #include "qgsexpressioncontext.h"
 
 QgsActionScope::QgsActionScope()

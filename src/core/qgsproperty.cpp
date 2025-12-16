@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgsproperty.h"
-#include "qgsproperty_p.h"
 
 #include "qgsexpression.h"
 #include "qgsfeature.h"
+#include "qgsproperty_p.h"
 #include "qgssymbollayerutils.h"
 
 #include <QRegularExpression>
@@ -261,6 +261,9 @@ QgsProperty::QgsProperty( const QgsProperty &other ) //NOLINT
 
 QgsProperty &QgsProperty::operator=( const QgsProperty &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
   return *this;
 }

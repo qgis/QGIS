@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: Please cite this software using these metadata or in the CITATION file.
+type: software
+title: libspatialindex
+version: 2.0.0
+date-released: 2024-05-31
+abstract: libspatialindex a C++ library that implements multiple R* tree families
+  including R*, MVRTree, and TPRTree. It includes support for disk serialization and
+  an adaptable interface for query visitors.
+url: https://libspatialindex.org
+repository-code: https://github.com/libspatialindex/libspatialindex
+license: MIT
+authors:
+  - given-names: Marios
+    family-names: Hadjieleftheriou
+    affiliation: Bell Labs
+    orcid: https://orcid.org/0009-0009-3453-6560
+  - given-names: Howard
+    family-names: Butler
+    affiliation: Hobu Inc
+    orcid: https://orcid.org/0000-0002-5340-1380
+
+keywords:
+  - libspatialindex
+  - rtree
+  - mvrtree
+  - tprtree
+  - spatial index
+

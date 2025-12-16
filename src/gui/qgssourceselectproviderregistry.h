@@ -16,12 +16,12 @@
 #ifndef QGSSOURCESELECTPROVIDERREGISTRY_H
 #define QGSSOURCESELECTPROVIDERREGISTRY_H
 
-#include <QList>
-#include <QObject>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
 #include "qgsproviderregistry.h"
+
+#include <QList>
+#include <QObject>
 
 class QgsSourceSelectProvider;
 class QgsProviderGuiRegistry;
@@ -44,7 +44,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
 
   public:
     QgsSourceSelectProviderRegistry();
-    ~QgsSourceSelectProviderRegistry();
+    ~QgsSourceSelectProviderRegistry() override;
 
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh ) = delete;
     QgsSourceSelectProviderRegistry &operator=( const QgsSourceSelectProviderRegistry &rh ) = delete;

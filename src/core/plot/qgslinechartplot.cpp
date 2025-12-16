@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgslinechartplot.h"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
-
+#include "qgsvectorlayerplotdatagatherer.h"
 
 QgsLineChartPlot::QgsLineChartPlot()
 {
@@ -61,8 +62,20 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   context.painter()->save();
   context.painter()->setClipRect( plotArea );
 
-  const double xScale = plotArea.width() / ( xMaximum() - xMinimum() );
-  const double yScale = plotArea.height() / ( yMaximum() - yMinimum() );
+  double minX = xMinimum();
+  double maxX = xMaximum();
+  double minY = yMinimum();
+  double maxY = yMaximum();
+  double majorIntervalX = xAxis().gridIntervalMajor();
+  double minorIntervalX = xAxis().gridIntervalMinor();
+  double labelIntervalX = xAxis().labelInterval();
+  double majorIntervalY = yAxis().gridIntervalMajor();
+  double minorIntervalY = yAxis().gridIntervalMinor();
+  double labelIntervalY = yAxis().labelInterval();
+  Qgs2DXyPlot::applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+
+  const double xScale = plotArea.width() / ( maxX - minX );
+  const double yScale = plotArea.height() / ( maxY - minY );
   const double categoriesWidth = plotArea.width() / categories.size();
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
@@ -105,10 +118,10 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
               x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
               break;
             case Qgis::PlotAxisType::Interval:
-              x = ( pair.first - xMinimum() ) * xScale;
+              x = ( pair.first - minX ) * xScale;
               break;
           }
-          double y = ( pair.second - yMinimum() ) * yScale;
+          double y = ( pair.second - minY ) * yScale;
 
           const QPointF point( plotArea.x() + x, plotArea.y() + plotArea.height() - y );
           points.replace( xAxis().type() == Qgis::PlotAxisType::Interval ? dataIndex : pair.first, point );
@@ -155,13 +168,20 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
                 break;
 
               case Qgis::PlotAxisType::Categorical:
+                bool found = false;
                 for ( const std::pair<double, double> &pair : data )
                 {
                   if ( pair.first == pointIndex )
                   {
+                    found = true;
                     value = pair.second;
+                    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
                     break;
                   }
+                }
+                if ( !found )
+                {
+                  continue;
                 }
                 break;
             }
@@ -320,4 +340,15 @@ bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteCo
 QgsLineChartPlot *QgsLineChartPlot::create()
 {
   return new QgsLineChartPlot();
+}
+
+QgsVectorLayerAbstractPlotDataGatherer *QgsLineChartPlot::createDataGatherer( QgsPlot *plot )
+{
+  QgsLineChartPlot *chart = dynamic_cast<QgsLineChartPlot *>( plot );
+  if ( !chart )
+  {
+    return nullptr;
+  }
+
+  return new QgsVectorLayerXyPlotDataGatherer( chart->xAxis().type() );
 }

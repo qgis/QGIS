@@ -21,9 +21,9 @@
 
 #include "qgsmediancut.h"
 
+#include <QHash>
 #include <QList>
 #include <QMultiMap>
-#include <QHash>
 
 namespace QgsWms
 {

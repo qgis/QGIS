@@ -14,12 +14,14 @@
 ***************************************************************************/
 
 #include "qgsscalerangewidget.h"
-#include "moc_qgsscalerangewidget.cpp"
+
 #include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsscalewidget.h"
 #include "qgsguiutils.h"
+#include "qgsproject.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsscalewidget.h"
+
+#include "moc_qgsscalerangewidget.cpp"
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   : QWidget( parent )

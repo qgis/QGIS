@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgscoordinatetransformcontext.h"
+
 #include "qgscoordinatetransformcontext_p.h"
-#include "qgssettings.h"
 #include "qgsprojutils.h"
+#include "qgssettings.h"
 
 QString crsToKey( const QgsCoordinateReferenceSystem &crs )
 {
@@ -46,9 +47,26 @@ QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinat
   : d( rhs.d )
 {}
 
+QgsCoordinateTransformContext::QgsCoordinateTransformContext( QgsCoordinateTransformContext &&rhs )  //NOLINT
+  : d( std::move( rhs.d ) )
+{}
+
+
 QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs )  //NOLINT
 {
+  if ( &rhs == this )
+    return *this;
+
   d = rhs.d;
+  return *this;
+}
+
+QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( QgsCoordinateTransformContext &&rhs )  //NOLINT
+{
+  if ( &rhs == this )
+    return *this;
+
+  d = std::move( rhs.d );
   return *this;
 }
 

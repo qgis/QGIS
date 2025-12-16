@@ -17,27 +17,28 @@
 #define QGSFRAMEGRAPH_H
 
 #include <map>
-#include <QWindow>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QRenderSurfaceSelector>
-#include <Qt3DRender/QViewport>
-#include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QLayerFilter>
-#include <Qt3DRender/QLayer>
-#include <Qt3DRender/QRenderTargetSelector>
-#include <Qt3DRender/QRenderTarget>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QClearBuffers>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QFrustumCulling>
-#include <Qt3DRender/QRenderStateSet>
-#include <Qt3DRender/QDepthTest>
-#include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QPolygonOffset>
-#include <Qt3DRender/QRenderCapture>
-#include <Qt3DRender/QDebugOverlay>
 
 #include "qgspointlightsettings.h"
+
+#include <QWindow>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDebugOverlay>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QFrustumCulling>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QPolygonOffset>
+#include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QRenderTarget>
+#include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QViewport>
 
 class QgsDirectionalLightSettings;
 class QgsCameraController;

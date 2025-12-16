@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgsdataitemguiproviderutils.h"
+
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsdbimportvectorlayerdialog.h"
 #include "qgsmessagebar.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsapplication.h"
-#include "qgstaskmanager.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageoutput.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayerexporter.h"
 
-#include <QPointer>
 #include <QMessageBox>
+#include <QPointer>
 #include <QPushButton>
 
 void QgsDataItemGuiProviderUtils::deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent )
@@ -224,4 +225,42 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
   } );
 
   QgsApplication::taskManager()->addTask( exportTask.release() );
+}
+
+void QgsDataItemGuiProviderUtils::addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName )
+{
+  // this action should sit in the Manage menu. If one does not exist, create it now
+  bool foundExistingManageMenu = false;
+  const QList<QAction *> actions = mainMenu->actions();
+  for ( QAction *action : actions )
+  {
+    if ( action->text() == subMenuName )
+    {
+      action->menu()->addAction( actionToAdd );
+      foundExistingManageMenu = true;
+      break;
+    }
+  }
+  if ( !foundExistingManageMenu )
+  {
+    QMenu *addSubMenu = new QMenu( subMenuName, mainMenu );
+    addSubMenu->addAction( actionToAdd );
+    mainMenu->addMenu( addSubMenu );
+  }
+}
+
+void QgsDataItemGuiProviderUtils::refreshChildWithName( QgsDataItem *item, const QString &name )
+{
+  const QVector<QgsDataItem *> constChildren { item->children() };
+  for ( QgsDataItem *c : constChildren )
+  {
+    if ( c->name() == name )
+    {
+      if ( c->state() != Qgis::BrowserItemState::NotPopulated )
+      {
+        c->refresh();
+      }
+      break;
+    }
+  }
 }

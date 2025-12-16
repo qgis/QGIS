@@ -14,17 +14,16 @@
  ***************************************************************************/
 
 #include "qgsmssqltransaction.h"
-#include "moc_qgsmssqltransaction.cpp"
-
-#include "qgsmssqldatabase.h"
 
 #include "qgsexpression.h"
 #include "qgsmessagelog.h"
+#include "qgsmssqldatabase.h"
 
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtDebug>
 
+#include "moc_qgsmssqltransaction.cpp"
 
 QgsMssqlTransaction::QgsMssqlTransaction( const QString &connString )
   : QgsTransaction( connString )

@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsbarchartplot.h"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
-
+#include "qgsvectorlayerplotdatagatherer.h"
 
 QgsBarChartPlot::QgsBarChartPlot()
 {
@@ -60,10 +61,22 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   context.painter()->save();
   context.painter()->setClipRect( plotArea );
 
-  const double xScale = plotArea.width() / ( xMaximum() - xMinimum() );
-  const double yScale = plotArea.height() / ( yMaximum() - yMinimum() );
+  double minX = xMinimum();
+  double maxX = xMaximum();
+  double minY = yMinimum();
+  double maxY = yMaximum();
+  double majorIntervalX = xAxis().gridIntervalMajor();
+  double minorIntervalX = xAxis().gridIntervalMinor();
+  double labelIntervalX = xAxis().labelInterval();
+  double majorIntervalY = yAxis().gridIntervalMajor();
+  double minorIntervalY = yAxis().gridIntervalMinor();
+  double labelIntervalY = yAxis().labelInterval();
+  Qgs2DXyPlot::applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+
+  const double xScale = plotArea.width() / ( maxX - minX );
+  const double yScale = plotArea.height() / ( maxY - minY );
   const double categoriesWidth = plotArea.width() / categories.size();
-  const double valuesWidth = plotArea.width() * ( xAxis().gridIntervalMinor() / ( xMaximum() - xMinimum() ) );
+  const double valuesWidth = plotArea.width() * ( minorIntervalX / ( maxX - minX ) );
   const double barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
   const double barWidth = barsWidth / seriesList.size();
   int seriesIndex = 0;
@@ -76,7 +89,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     }
     symbol->startRender( context );
 
-    const double barStartAdjustement = -( barsWidth / 2 ) + barWidth * seriesIndex;
+    const double barStartAdjustment = -( barsWidth / 2 ) + barWidth * seriesIndex;
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
       const QList<std::pair<double, double>> data = xySeries->data();
@@ -90,17 +103,18 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
             {
               continue;
             }
-            x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
+            x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustment;
+            chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
             break;
 
           case Qgis::PlotAxisType::Interval:
-            x = ( pair.first - xMinimum() ) * xScale + barStartAdjustement;
+            x = ( pair.first - minX ) * xScale + barStartAdjustment;
             break;
         }
 
-        double y = ( pair.second - yMinimum() ) * yScale;
+        double y = ( pair.second - minY ) * yScale;
 
-        const double zero = ( 0.0 - yMinimum() ) * yScale;
+        const double zero = ( 0.0 - minY ) * yScale;
         const QPoint topLeft( plotArea.left() + x,
                               plotArea.y() + plotArea.height() - y );
         const QPoint bottomRight( plotArea.left() + x + barWidth,
@@ -192,4 +206,15 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
 QgsBarChartPlot *QgsBarChartPlot::create()
 {
   return new QgsBarChartPlot();
+}
+
+QgsVectorLayerAbstractPlotDataGatherer *QgsBarChartPlot::createDataGatherer( QgsPlot *plot )
+{
+  QgsBarChartPlot *chart = dynamic_cast<QgsBarChartPlot *>( plot );
+  if ( !chart )
+  {
+    return nullptr;
+  }
+
+  return new QgsVectorLayerXyPlotDataGatherer( chart->xAxis().type() );
 }

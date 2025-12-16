@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
 #include "qgsflatterraingenerator.h"
+#include "qgslayout.h"
 #include "qgslayoutitem3dmap.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgslayout.h"
+#include "qgstest.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsLayout3DMap : public QgsTest
 {
@@ -52,7 +54,7 @@ void TestQgsLayout3DMap::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString dataDir( TEST_DATA_DIR );
   mLayerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "rgb", "gdal" );

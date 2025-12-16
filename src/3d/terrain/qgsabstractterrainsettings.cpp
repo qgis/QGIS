@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgsabstractterrainsettings.h"
+
 #include "qgis.h"
+
 #include <QDomElement>
 
 QgsAbstractTerrainSettings::~QgsAbstractTerrainSettings() = default;

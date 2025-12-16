@@ -12,11 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgscredentials.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QtConcurrent>
-#include "qgscredentials.h"
 
 class TestCredentials : public QgsCredentials
 {

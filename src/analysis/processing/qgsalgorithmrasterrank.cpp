@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterrank.h"
+
+#include <memory>
+
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterprojector.h"
 
@@ -217,8 +220,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   qgssize rows = static_cast<qgssize>( std::round( ( outputExtent.yMaximum() - outputExtent.yMinimum() ) / outputCellSizeY ) );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputFormat( outputFormat );
@@ -281,7 +283,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     for ( int i = 0; i < mRanks.size(); i++ )
     {
-      outputBlocks[i].reset( new QgsRasterBlock( outputDataType, iterCols, iterRows ) );
+      outputBlocks[i] = std::make_unique<QgsRasterBlock>( outputDataType, iterCols, iterRows );
       outputBlocks[i]->setNoDataValue( outputNoData );
     }
 

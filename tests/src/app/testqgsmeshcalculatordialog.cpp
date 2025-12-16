@@ -12,14 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshcalculatordialog.h"
 #include "qgsfeedback.h"
+#include "qgsmeshcalculatordialog.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QTemporaryFile>
 
@@ -90,7 +90,7 @@ void TestQgsMeshCalculatorDialog::testCalc()
   const int groupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
