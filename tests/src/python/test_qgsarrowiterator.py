@@ -189,6 +189,27 @@ class TestQgsArrowIterator(QgisTestCase):
             "POINT (9 29)",
         ]
 
+    def test_layer_to_stream_error(self):
+        crs = QgsCoordinateReferenceSystem()
+        layer = self.create_test_layer_with_geometry(crs)
+
+        # With an incompatible schema, this should throw in get_next()
+        pa_schema = pa.schema({"name": pa.union([], "dense")})
+        schema = QgsArrowSchema()
+        pa_schema._export_to_c(schema.cSchemaAddress())
+
+        iterator = QgsArrowIterator(layer.getFeatures())
+        iterator.setSchema(schema)
+        stream = iterator.toArrayStream()
+        reader = pa.RecordBatchReader._import_from_c(stream.cArrayStreamAddress())
+
+        with self.assertRaises(pa.lib.ArrowInvalid) as ctx:
+            reader.read_next_batch() is stream
+        assert (
+            str(ctx.exception)
+            == "Can't convert variant of type 'QString' to Arrow type 'dense_union'"
+        )
+
     def test_type_int(self):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.Int, [1, 2, None, 4, 5]
