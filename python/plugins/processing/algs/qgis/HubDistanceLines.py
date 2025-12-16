@@ -126,14 +126,14 @@ class HubDistanceLines(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "Creates lines that join each feature of an input vector to the nearest feature in a destination layer."
+            "Creates lines that join each feature from an input vector to the nearest feature in a destination layer."
         )
 
     def shortHelpString(self):
         return self.tr(
             "Given an origin and a destination layers, this algorithm computes "
             "the distance between origin features and their closest destination one. "
-            "Distance calculations are based on the features center.\n"
+            "Distance calculations are based on the feature's center.\n"
             "The resulting layer contains lines linking each origin point with its nearest destination feature."
         )
 
