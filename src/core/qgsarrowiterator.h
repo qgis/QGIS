@@ -344,7 +344,7 @@ class CORE_EXPORT QgsArrowIterator
     void setSchema( const QgsArrowSchema &schema );
 
     //! Export this iterator as an ArrowArrayStream
-    QgsArrowArrayStream toArrayStream(int batchSize = 65536) const;
+    QgsArrowArrayStream toArrayStream( int batchSize = 65536 ) const;
 
     /**
      * Build an ArrowArray using the next n features (or fewer depending on the number of features remaining)
