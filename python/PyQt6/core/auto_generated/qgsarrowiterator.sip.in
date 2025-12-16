@@ -271,7 +271,7 @@ This must be set before calling
 :py:func:`~QgsArrowIterator.nextFeatures`.
 %End
 
-    QgsArrowArrayStream toArrayStream(int batchSize = 65536);
+    QgsArrowArrayStream toArrayStream( int batchSize = 65536 ) const;
 %Docstring
 Export this iterator as an ArrowArrayStream
 %End
