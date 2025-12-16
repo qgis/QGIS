@@ -18,22 +18,22 @@
 #define QGSSVGSELECTORWIDGET_H
 
 #include "ui_widget_svgselector.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 #include "qgsproperty.h"
 
-#include <QSortFilterProxyModel>
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QLayout>
-#include <QStandardItemModel>
-#include <QWidget>
-#include <QThread>
 #include <QElapsedTimer>
 #include <QItemDelegate>
-
+#include <QLayout>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QThread>
+#include <QWidget>
 
 class QCheckBox;
 class QLayout;

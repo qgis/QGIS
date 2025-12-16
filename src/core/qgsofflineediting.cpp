@@ -16,24 +16,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdatasourceuri.h"
-#include "qgsgeometry.h"
-#include "qgsmaplayer.h"
 #include "qgsofflineediting.h"
-#include "moc_qgsofflineediting.cpp"
-#include "qgsproject.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgsspatialiteutils.h"
+
+#include <ogr_srs_api.h>
+
+#include "qgsdatasourceuri.h"
 #include "qgsfeatureiterator.h"
-#include "qgslogger.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsogrutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+#include "qgsgeometry.h"
 #include "qgsjsonutils.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsspatialiteutils.h"
 #include "qgstransactiongroup.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -41,7 +43,7 @@
 #include <QFile>
 #include <QRegularExpression>
 
-#include <ogr_srs_api.h>
+#include "moc_qgsofflineediting.cpp"
 
 extern "C"
 {

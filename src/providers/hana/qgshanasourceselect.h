@@ -17,19 +17,19 @@
 #ifndef QGSHANASOURCESELECT_H
 #define QGSHANASOURCESELECT_H
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsdatasourceuri.h"
+#include "qgsguiutils.h"
 #include "qgshanacolumntypethread.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsguiutils.h"
-#include "qgsabstractdbsourceselect.h"
 
-#include <QMap>
-#include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
-#include <QString>
+#include <QMap>
+#include <QPair>
 #include <QPointer>
+#include <QString>
 
 class QgsProxyProgressTask;
 class QgisApp;

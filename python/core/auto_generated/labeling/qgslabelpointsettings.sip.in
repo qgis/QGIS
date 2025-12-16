@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLabelPointSettings
 {
 %Docstring(signature="appended")

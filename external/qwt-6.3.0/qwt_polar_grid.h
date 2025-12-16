@@ -103,7 +103,7 @@ class QWT_EXPORT QwtPolarGrid : public QwtPolarItem
     Q_DECLARE_FLAGS( GridAttributes, GridAttribute )
 
     explicit QwtPolarGrid();
-    virtual ~QwtPolarGrid();
+    ~QwtPolarGrid() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

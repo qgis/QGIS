@@ -15,18 +15,16 @@
 
 #include "qgscopcupdate.h"
 
-#include "qgslazdecoder.h"
-
 #include <fstream>
 #include <iostream>
 
-#include <lazperf/header.hpp>
-#include <lazperf/vlr.hpp>
-#include <lazperf/Extractor.hpp>
-#include <lazperf/filestream.hpp>
-#include <lazperf/readers.hpp>
-#include <lazperf/writers.hpp>
-
+#include "lazperf/Extractor.hpp"
+#include "lazperf/filestream.hpp"
+#include "lazperf/header.hpp"
+#include "lazperf/readers.hpp"
+#include "lazperf/vlr.hpp"
+#include "lazperf/writers.hpp"
+#include "qgslazdecoder.h"
 
 //! Keeps one entry of COPC hierarchy
 struct HierarchyEntry

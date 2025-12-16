@@ -10516,6 +10516,8 @@ Qgis.PostgresRelKind.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ = "Can set comments for fields via setFieldComment()"
 Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set aliases for fields via setFieldAlias()"
 Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
+Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
@@ -10525,6 +10527,14 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum repr
 * ``SetTableComment``: Can set comments for tables via setTableComment()
 
   .. versionadded:: 3.44
+
+* ``EditFieldDomain``: Can edit existing field domain
+
+  .. versionadded:: 4.0
+
+* ``DeleteFieldDomain``: Can delete existing field domain
+
+  .. versionadded:: 4.0
 
 
 """
@@ -11739,6 +11749,25 @@ Qgis.DevToolsNodeRole.__doc__ = """Dev tools node custom data roles.
 """
 # --
 Qgis.DevToolsNodeRole.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExtrusionFace.NoFace.__doc__ = ""
+Qgis.ExtrusionFace.Walls.__doc__ = ""
+Qgis.ExtrusionFace.Roof.__doc__ = ""
+Qgis.ExtrusionFace.Floor.__doc__ = ""
+Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTessellator`.
+
+.. versionadded:: 4.0
+
+* ``NoFace``: 
+* ``Walls``: 
+* ``Roof``: 
+* ``Floor``: 
+
+"""
+# --
+Qgis.ExtrusionFace.baseClass = Qgis
+Qgis.ExtrusionFaces.baseClass = Qgis
+ExtrusionFaces = Qgis  # dirty hack since SIP seems to introduce the flags in module
 from enum import Enum
 
 
@@ -11789,6 +11818,8 @@ try:
     Qgis.geosVersion = staticmethod(Qgis.geosVersion)
     Qgis.hasSfcgal = staticmethod(Qgis.hasSfcgal)
     Qgis.sfcgalVersionInt = staticmethod(Qgis.sfcgalVersionInt)
+    Qgis.hasGeographicLib = staticmethod(Qgis.hasGeographicLib)
+    Qgis.geographicLibVersion = staticmethod(Qgis.geographicLibVersion)
     Qgis.hasQtWebkit = staticmethod(Qgis.hasQtWebkit)
     Qgis.geoNone = staticmethod(Qgis.geoNone)
     Qgis.geographicCrsAuthId = staticmethod(Qgis.geographicCrsAuthId)

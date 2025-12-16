@@ -21,18 +21,20 @@ back to QgsVectorLayer.
  ***************************************************************************/
 
 #include "qgsattributeactiondialog.h"
-#include "moc_qgsattributeactiondialog.cpp"
-#include "qgsactionmanager.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributeactionpropertiesdialog.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QImageWriter>
 #include <QMessageBox>
 #include <QSettings>
-#include <QImageWriter>
 #include <QTableWidget>
+
+#include "moc_qgsattributeactiondialog.cpp"
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager &actions, QWidget *parent )
   : QWidget( parent )

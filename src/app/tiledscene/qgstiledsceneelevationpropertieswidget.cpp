@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgstiledsceneelevationpropertieswidget.h"
-#include "moc_qgstiledsceneelevationpropertieswidget.cpp"
-#include "qgstiledscenerendererpropertieswidget.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayerelevationproperties.h"
+#include "qgstiledscenerendererpropertieswidget.h"
+
+#include "moc_qgstiledsceneelevationpropertieswidget.cpp"
 
 QgsTiledSceneElevationPropertiesWidget::QgsTiledSceneElevationPropertiesWidget( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsplotcanvasitem.h"
+
 #include "qgsplotcanvas.h"
 
 QgsPlotCanvasItem::QgsPlotCanvasItem( QgsPlotCanvas *canvas )

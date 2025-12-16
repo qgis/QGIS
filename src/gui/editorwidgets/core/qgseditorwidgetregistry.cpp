@@ -14,15 +14,18 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetregistry.h"
-#include "moc_qgseditorwidgetregistry.cpp"
 
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
-#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgseditorwidgetregistry.cpp"
 
 // Editors
 #include "qgsbinarywidgetfactory.h"
@@ -47,7 +50,7 @@
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
 {
-  mFallbackWidgetFactory.reset( new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+  mFallbackWidgetFactory = std::make_unique<QgsTextEditWidgetFactory>( tr( "Text Edit" ) );
 }
 
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )

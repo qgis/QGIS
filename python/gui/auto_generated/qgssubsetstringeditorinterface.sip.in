@@ -8,6 +8,7 @@
 
 
 
+
 class QgsSubsetStringEditorInterface : QDialog
 {
 %Docstring(signature="appended")

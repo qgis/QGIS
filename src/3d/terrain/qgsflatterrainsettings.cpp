@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsflatterrainsettings.h"
-#include "qgsflatterraingenerator.h"
+
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgsflatterraingenerator.h"
 
 QgsAbstractTerrainSettings *QgsFlatTerrainSettings::create()
 {

@@ -19,17 +19,17 @@
 #ifndef QGSNETWORKCONTENTFETCHERREGISTRY_H
 #define QGSNETWORKCONTENTFETCHERREGISTRY_H
 
-#include <QObject>
+#include "qgis_core.h"
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgstaskmanager.h"
+
+#include <QFile>
 #include <QMap>
 #include <QMutex>
 #include <QNetworkReply>
-#include <QFile>
-#include <QTemporaryFile>
+#include <QObject>
 #include <QPointer>
-
-#include "qgis_core.h"
-#include "qgstaskmanager.h"
-#include "qgsnetworkcontentfetchertask.h"
+#include <QTemporaryFile>
 
 /**
  * \class QgsFetchedContent

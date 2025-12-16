@@ -18,9 +18,10 @@
 #define QGSCOLOREFFECT_H
 
 #include "qgis_core.h"
-#include "qgspainteffect.h"
-#include "qgsimageoperation.h"
 #include "qgis_sip.h"
+#include "qgsimageoperation.h"
+#include "qgspainteffect.h"
+
 #include <QPainter>
 
 /**
@@ -48,6 +49,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     Qgis::PaintEffectFlags flags() const override;
     QString type() const override { return QStringLiteral( "color" ); }
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
     QgsColorEffect *clone() const override SIP_FACTORY;
 

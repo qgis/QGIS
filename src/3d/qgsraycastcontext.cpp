@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsraycastcontext.h"
-#include <algorithm>
 
+#include <algorithm>
 
 void QgsRayCastContext::setSingleResult( bool enable )
 {

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAuthConfigurationStorage: QObject
 {
 %Docstring(signature="appended")
@@ -45,7 +44,7 @@ Creates a new authentication configuration storage.
 :param settings: Implementation-specific configuration settings.
 %End
 
-    virtual ~QgsAuthConfigurationStorage();
+    ~QgsAuthConfigurationStorage();
 
     virtual QString name() const = 0;
 %Docstring

@@ -18,6 +18,7 @@
 #define QGS_GEOMETRY_CHECKER_RESULT_TAB_H
 
 #include "ui_qgsgeometrycheckerresulttab.h"
+
 #include "qgsgeometrycheckerfixsummarydialog.h"
 
 class QDialog;

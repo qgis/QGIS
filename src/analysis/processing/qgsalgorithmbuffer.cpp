@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmbuffer.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsmessagelog.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

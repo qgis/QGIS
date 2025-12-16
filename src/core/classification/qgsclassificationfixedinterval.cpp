@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationfixedinterval.h"
+
 #include "qgsapplication.h"
 #include "qgsprocessingcontext.h"
 
+#include <QObject>
 
 QgsClassificationFixedInterval::QgsClassificationFixedInterval()
   : QgsClassificationMethod( IgnoresClassCount, 0 )

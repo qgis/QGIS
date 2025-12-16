@@ -18,10 +18,11 @@
 #ifndef QGSPROCESSING_H
 #define QGSPROCESSING_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+
 #include <QString>
 
 //
@@ -127,8 +128,8 @@ class CORE_EXPORT QgsProcessing
     static const QgsSettingsEntryString *settingsTempPath;
     //! Settings entry default output vector layer ext
     static const QgsSettingsEntryString *settingsDefaultOutputVectorLayerExt;
-    //! Settings entry default output raster layer ext
-    static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerExt;
+    //! Settings entry default output raster layer format
+    static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerFormat;
 #endif
 };
 

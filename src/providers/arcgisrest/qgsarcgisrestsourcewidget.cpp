@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestsourcewidget.h"
-#include "moc_qgsarcgisrestsourcewidget.cpp"
 
 #include "qgsproviderregistry.h"
 
+#include "moc_qgsarcgisrestsourcewidget.cpp"
 
 QgsArcGisRestSourceWidget::QgsArcGisRestSourceWidget( const QString &providerKey, QWidget *parent )
   : QgsProviderSourceWidget( parent )

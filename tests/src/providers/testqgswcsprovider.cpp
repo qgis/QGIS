@@ -14,20 +14,20 @@
  ***************************************************************************/
 #include <cmath>
 
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterchecker.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
+
+#include <QApplication>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
 #include <QTemporaryFile>
-
-#include <qgsdatasourceuri.h>
-#include <qgsrasterlayer.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasterchecker.h>
-#include <qgsproviderregistry.h>
-#include <qgsapplication.h>
-#include "qgsprovidermetadata.h"
 
 #define TINY_VALUE std::numeric_limits<double>::epsilon() * 20
 

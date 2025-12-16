@@ -9,7 +9,6 @@
 
 
 
-
 class QgsNewsFeedParser : QObject
 {
 %Docstring(signature="appended")

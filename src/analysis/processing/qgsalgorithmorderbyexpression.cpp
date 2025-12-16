@@ -17,8 +17,8 @@
 
 
 #include "qgsalgorithmorderbyexpression.h"
-#include "qgsfeaturerequest.h"
 
+#include "qgsfeaturerequest.h"
 
 ///@cond PRIVATE
 

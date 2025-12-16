@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterdtmslopebasedfilter.h"
-#include "qgsrasterfilewriter.h"
+
 #include <algorithm>
+
+#include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 
@@ -155,8 +157,7 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
 
   if ( !groundOutputFile.isEmpty() )
   {
-    const QFileInfo fi( groundOutputFile );
-    const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_GROUND" ), context );
 
     groundWriter = std::make_unique<QgsRasterFileWriter>( groundOutputFile );
     groundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -183,8 +184,7 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
 
   if ( !nonGroundOutputFile.isEmpty() )
   {
-    const QFileInfo fi( groundOutputFile );
-    const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_NONGROUND" ), context );
 
     nonGroundWriter = std::make_unique<QgsRasterFileWriter>( nonGroundOutputFile );
     nonGroundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );

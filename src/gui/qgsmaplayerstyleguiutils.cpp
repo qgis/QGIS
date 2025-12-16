@@ -14,18 +14,18 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstyleguiutils.h"
-#include "moc_qgsmaplayerstyleguiutils.cpp"
-
-#include <QAction>
-#include <QInputDialog>
-#include <QMenu>
-#include <QActionGroup>
 
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstylemanager.h"
 
+#include <QAction>
+#include <QActionGroup>
+#include <QInputDialog>
+#include <QMenu>
+
+#include "moc_qgsmaplayerstyleguiutils.cpp"
 
 QgsMapLayerStyleGuiUtils *QgsMapLayerStyleGuiUtils::instance()
 {

@@ -16,11 +16,12 @@
 #ifndef QGSHISTORYWIDGET_H
 #define QGSHISTORYWIDGET_H
 
+#include "ui_qgshistorywidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgshistorywidgetbase.h"
-#include "qgspanelwidget.h"
 #include "qgshistorywidgetcontext.h"
+#include "qgspanelwidget.h"
 
 #include <QSortFilterProxyModel>
 

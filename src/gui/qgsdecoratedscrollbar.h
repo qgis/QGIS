@@ -21,9 +21,9 @@
 
 #include <QColor>
 #include <QHash>
+#include <QMap>
 #include <QPointer>
 #include <QWidget>
-#include <QMap>
 
 class QScrollBar;
 class QAbstractScrollArea;

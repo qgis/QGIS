@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QObject>
 
 #ifndef QGSMATHUTILS_H
 #define QGSMATHUTILS_H

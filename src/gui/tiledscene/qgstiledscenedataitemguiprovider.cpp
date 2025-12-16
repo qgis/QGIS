@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgstiledscenedataitemguiprovider.h"
-#include "moc_qgstiledscenedataitemguiprovider.cpp"
 
 #include "qgsapplication.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsquantizedmeshdataprovider.h"
-#include "qgstiledscenedataitems.h"
 #include "qgstiledsceneconnection.h"
 #include "qgstiledsceneconnectiondialog.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsdataitemguiproviderutils.h"
+#include "qgstiledscenedataitems.h"
 
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
+
+#include "moc_qgstiledscenedataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 

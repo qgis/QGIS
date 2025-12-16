@@ -13,28 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsappbrowserproviders.h"
+
+#include "layers/qgsapplayerhandling.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsappbrowserproviders.h"
-#include "moc_qgsappbrowserproviders.cpp"
 #include "qgsbookmarkeditordialog.h"
+#include "qgsfileutils.h"
+#include "qgsguiutils.h"
+#include "qgslayertree.h"
+#include "qgslayertreenode.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
-#include "qgsproject.h"
-#include "qgsstyleexportimportdialog.h"
-#include "qgsstyle.h"
-#include "qgslayertreenode.h"
-#include "qgslayertree.h"
-#include "qgsstylemanagerdialog.h"
-#include "qgsguiutils.h"
-#include "qgsfileutils.h"
 #include "qgsnewnamedialog.h"
-#include "layers/qgsapplayerhandling.h"
+#include "qgsproject.h"
+#include "qgsstyle.h"
+#include "qgsstyleexportimportdialog.h"
+#include "qgsstylemanagerdialog.h"
 
 #include <QDesktopServices>
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QUrl>
+
+#include "moc_qgsappbrowserproviders.cpp"
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {

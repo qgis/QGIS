@@ -13,10 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsarrowsymbollayerwidget.h"
-#include "moc_qgsarrowsymbollayerwidget.cpp"
+
 #include "qgsarrowsymbollayer.h"
 #include "qgsvectorlayer.h"
+
 #include <QColorDialog>
+
+#include "moc_qgsarrowsymbollayerwidget.cpp"
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

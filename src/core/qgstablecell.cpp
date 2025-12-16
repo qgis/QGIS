@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgstablecell.h"
+
 #include "qgsapplication.h"
-#include "qgsnumericformatregistry.h"
 #include "qgsnumericformat.h"
+#include "qgsnumericformatregistry.h"
 #include "qgsreadwritecontext.h"
 
 QgsTableCell::QgsTableCell( const QVariant &content )

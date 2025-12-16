@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QCloseEvent>
-#include <QPushButton>
-
 #include "qgs3dmeasuredialog.h"
-#include "moc_qgs3dmeasuredialog.cpp"
-#include "qgs3dmaptoolmeasureline.h"
+
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dmaptoolmeasureline.h"
 #include "qgshelp.h"
+
+#include <QCloseEvent>
+#include <QPushButton>
+
+#include "moc_qgs3dmeasuredialog.cpp"
 
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
   : QDialog( nullptr, f )

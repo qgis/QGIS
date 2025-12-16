@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgssensorthingsshareddata.h"
+
+#include <nlohmann/json.hpp>
+
+#include "qgsblockingnetworkrequest.h"
+#include "qgsjsonutils.h"
+#include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsreadwritelocker.h"
 #include "qgssensorthingsprovider.h"
 #include "qgssensorthingsutils.h"
-#include "qgslogger.h"
-#include "qgsreadwritelocker.h"
-#include "qgsblockingnetworkrequest.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsjsonutils.h"
 
 #include <QCryptographicHash>
 #include <QFile>
-#include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
 

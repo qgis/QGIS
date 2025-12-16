@@ -14,14 +14,14 @@
  ***************************************************************************/
 
 #include "qgssettingsentry.h"
-#include "qgssettings.h"
-#include "qgssettingstreenode.h"
-#include "qgssettingsproxy.h"
+
 #include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgssettingsproxy.h"
+#include "qgssettingstreenode.h"
 
-#include <QRegularExpression>
 #include <QDir>
-
+#include <QRegularExpression>
 
 QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parent, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
   : mParentTreeElement( parent )

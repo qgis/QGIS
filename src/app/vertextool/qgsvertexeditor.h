@@ -19,16 +19,16 @@
 #ifndef QGSVERTEXEDITOR_H
 #define QGSVERTEXEDITOR_H
 
+#include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdockwidget.h"
+#include "qgspanelwidget.h"
+#include "qgspoint.h"
+#include "qgsvertexid.h"
+
 #include <QAbstractTableModel>
 #include <QItemSelection>
 #include <QStyledItemDelegate>
-
-#include "qgis_app.h"
-#include "qgsdockwidget.h"
-#include "qgspoint.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvertexid.h"
-#include "qgspanelwidget.h"
 
 class QLabel;
 class QTableView;
@@ -44,8 +44,7 @@ class APP_EXPORT QgsVertexEntry
 {
   public:
     QgsVertexEntry( const QgsPoint &p, QgsVertexId vertexId )
-      : mSelected( false )
-      , mPoint( p )
+      : mPoint( p )
       , mVertexId( vertexId )
     {
     }
@@ -59,7 +58,7 @@ class APP_EXPORT QgsVertexEntry
     void setSelected( bool selected ) { mSelected = selected; }
 
   private:
-    bool mSelected;
+    bool mSelected = false;
     QgsPoint mPoint;
     QgsVertexId mVertexId;
 };

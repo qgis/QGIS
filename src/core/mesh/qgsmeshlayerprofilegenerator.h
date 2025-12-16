@@ -17,15 +17,15 @@
 #ifndef QGSMESHLAYERPROFILEGENERATOR_H
 #define QGSMESHLAYERPROFILEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgstriangularmesh.h"
-
-#include <memory>
 
 class QgsProfileRequest;
 class QgsCurve;
@@ -49,6 +49,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceR
   public:
 
     QString type() const override;
+    using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:

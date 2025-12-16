@@ -82,6 +82,8 @@ Sets vector coordinates
 
     QgsVector3D operator+( const QgsVector3D &other ) const /HoldGIL/;
 
+    QgsVector3D &operator+=( const QgsVector3D &other ) /HoldGIL/;
+
     QgsVector3D operator-( const QgsVector3D &other ) const /HoldGIL/;
 
     const QgsVector3D operator-() const /HoldGIL/;
@@ -102,7 +104,18 @@ Returns the cross product of two vectors
 
     double length() const /HoldGIL/;
 %Docstring
-Returns the length of the vector
+Returns the length of the vector.
+
+.. seealso:: :py:func:`lengthSquared`
+%End
+
+    double lengthSquared() const /HoldGIL/;
+%Docstring
+Returns the squared length of the vector.
+
+.. seealso:: :py:func:`length`
+
+.. versionadded:: 4.0
 %End
 
     void normalize() /HoldGIL/;

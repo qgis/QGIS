@@ -14,12 +14,14 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
-#include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
-#include "moc_qgshanaconnectionpool.cpp"
+
+#include "qgshanaconnection.h"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
+
+#include "moc_qgshanaconnectionpool.cpp"
 
 QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
   : QgsConnectionPoolGroup<QgsHanaConnection *>( name )

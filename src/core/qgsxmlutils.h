@@ -20,14 +20,12 @@ class QDomDocument;
 class QgsRectangle;
 class QgsBox3D;
 
-#include <QDomElement>
-#include <QMetaEnum>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-
+#include <QDomElement>
+#include <QMetaEnum>
 
 /**
  * \ingroup core
@@ -96,6 +94,7 @@ class CORE_EXPORT QgsXmlUtils
      * - QVariant::Int
      * - QVariant::Double
      * - QVariant::String
+     * - QVariant::Rect (since QGIS 4.0)
      * - QgsProperty (since QGIS 3.4)
      * - QgsCoordinateReferenceSystem (since QGIS 3.4)
      */

@@ -12,18 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QCoreApplication>
-
-#include "qgsmapcanvassnappingutils.h"
-#include "qgstest.h"
-#include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgslogger.h"
-#include "qgsannotationlayer.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgsmaptoolcapture.h"
+#include "qgstest.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QCoreApplication>
 
 class TestQgsMapToolCapture : public QObject
 {

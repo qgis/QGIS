@@ -14,23 +14,25 @@
  ***************************************************************************/
 
 #include "qgseffectstackpropertieswidget.h"
-#include "moc_qgseffectstackpropertieswidget.cpp"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-#include "qgspainteffectpropertieswidget.h"
-#include "qgspainteffectwidget.h"
-#include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
-#include "qgspanelwidget.h"
-#include "qgshelp.h"
 
-#include <QPicture>
-#include <QPainter>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "qgsapplication.h"
+#include "qgseffectstack.h"
+#include "qgshelp.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectpropertieswidget.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffectwidget.h"
+#include "qgspanelwidget.h"
+#include "qgssymbollayerutils.h"
+
 #include <QCheckBox>
+#include <QPainter>
+#include <QPicture>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QToolButton>
+
+#include "moc_qgseffectstackpropertieswidget.cpp"
 
 ///@cond PRIVATE
 

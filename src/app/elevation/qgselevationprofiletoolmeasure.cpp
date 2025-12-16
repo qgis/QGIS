@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationprofiletoolmeasure.h"
-#include "moc_qgselevationprofiletoolmeasure.cpp"
-#include "qgselevationprofilecanvas.h"
-#include "qgsunittypes.h"
-#include "qgsplotmouseevent.h"
-#include "qgsguiutils.h"
+
 #include "qgsclipper.h"
+#include "qgselevationprofilecanvas.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgsplotmouseevent.h"
 #include "qgsproject.h"
+#include "qgsunittypes.h"
 
 #include <QGraphicsLineItem>
 #include <QGridLayout>
 #include <QLabel>
+
+#include "moc_qgselevationprofiletoolmeasure.cpp"
 
 //
 // QgsProfileMeasureResultsDialog

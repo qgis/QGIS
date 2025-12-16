@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayer.h"
-#include "moc_qgstiledscenelayer.cpp"
-#include "qgsthreadingutils.h"
+
+#include "qgsapplication.h"
+#include "qgslayermetadataformatter.h"
 #include "qgsmaplayerfactory.h"
 #include "qgspainting.h"
 #include "qgsproviderregistry.h"
-#include "qgslayermetadataformatter.h"
-#include "qgstiledscenerenderer.h"
-#include "qgsxmlutils.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
-#include "qgstiledscenelayerrenderer.h"
-#include "qgstiledscenerendererregistry.h"
+#include "qgsthreadingutils.h"
 #include "qgstiledscenelayerelevationproperties.h"
+#include "qgstiledscenelayerrenderer.h"
+#include "qgstiledscenerenderer.h"
+#include "qgstiledscenerendererregistry.h"
+#include "qgsxmlutils.h"
+
+#include "moc_qgstiledscenelayer.cpp"
 
 QgsTiledSceneLayer::QgsTiledSceneLayer( const QString &uri,
                                         const QString &baseName,

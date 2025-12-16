@@ -17,7 +17,6 @@
 #define QGSVECTORTILELABELING_H
 
 #include "qgis_core.h"
-
 #include "qgsvectorlayerlabelprovider.h"
 
 class QgsVectorTileLayer;

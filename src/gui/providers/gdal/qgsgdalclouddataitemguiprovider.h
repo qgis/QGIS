@@ -18,6 +18,7 @@
 
 ///@cond PRIVATE
 #include "qgsgdalclouddataitems.h"
+
 #define SIP_NO_FILE
 
 #include "qgsdataitemguiprovider.h"

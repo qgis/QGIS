@@ -10,6 +10,7 @@
 
 
 
+
 class QgsTreeWidgetItem : QTreeWidgetItem
 {
 %Docstring(signature="appended")

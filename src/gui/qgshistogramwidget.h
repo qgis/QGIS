@@ -18,14 +18,15 @@
 #define QGSHISTOGRAMWIDGET_H
 
 #include "ui_qgshistogramwidgetbase.h"
-#include "qgis_sip.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsgraduatedsymbolrenderer.h"
-#include <QPen>
+
 #include <QBrush>
-#include "qgis_gui.h"
+#include <QPen>
 
 class QgsVectorLayer;
 class QgsGraduatedSymbolRenderer;

@@ -18,14 +18,15 @@
 #ifndef QGSPROCESSINGMODELCHILDALGORITHM_H
 #define QGSPROCESSINGMODELCHILDALGORITHM_H
 
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgsprocessingmodelcomponent.h"
-#include "qgsprocessingmodelchildparametersource.h"
-#include "qgsprocessingmodeloutput.h"
-#include "qgsprocessingmodelcomment.h"
-#include "qgsprocessingmodelchilddependency.h"
 #include <memory>
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgsprocessingmodelchilddependency.h"
+#include "qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelcomment.h"
+#include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingmodeloutput.h"
 
 class QgsProcessingModelAlgorithm;
 class QgsProcessingAlgorithm;

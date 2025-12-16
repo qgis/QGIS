@@ -17,17 +17,16 @@
 #ifndef QGSMSSQLSOURCESELECT_H
 #define QGSMSSQLSOURCESELECT_H
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsproviderregistry.h"
-#include "qgsabstractdbsourceselect.h"
 #include "qgsmssqltablemodel.h"
+#include "qgsproviderregistry.h"
 
-
-#include <QMap>
-#include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
+#include <QMap>
+#include <QPair>
 
 class QPushButton;
 class QgsMssqlGeomColumnTypeThread;

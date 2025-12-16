@@ -12,24 +12,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgspointxy.h"
 #include "qgstest.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+
+#include <QApplication>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
 #include <QTemporaryFile>
-
-#include "qgsvectorlayer.h"               //defines QgsFieldMap
-#include "qgsvectorfilewriter.h"          //logic for writing shpfiles
-#include "qgsfeature.h"                   //we will need to pass a bunch of these for each rec
-#include "qgsgeometry.h"                  //each feature needs a geometry
-#include "qgspointxy.h"                   //we will use point geometry
-#include "qgscoordinatereferencesystem.h" //needed for creating a srs
-#include "qgscoordinatetransformcontext.h"
-#include "qgsapplication.h" //search path for srs.db
-#include "qgslogger.h"
-#include "qgsfield.h"
-#include "qgis.h" //defines GEOWkt
 
 #if defined( linux )
 #include <langinfo.h>

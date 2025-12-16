@@ -18,8 +18,9 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include <QTreeView>
 #include "qgsprocessingtoolboxmodel.h"
+
+#include <QTreeView>
 
 class QgsProcessingRegistry;
 class QgsProcessingRecentAlgorithmLog;
@@ -89,16 +90,16 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     /**
      * Returns the model parameter at the specified tree view \a index, or NULLPTR
      * if the index does not correspond to a model parameter.
-     * 
-     * \since 3.44
+     *
+     * \since QGIS 3.44
      */
     const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index );
 
     /**
      * Returns the currently selected model parameter in the tree view, or NULLPTR
      * if no model parameter is currently selected.
-     * 
-     * \since 3.44
+     *
+     * \since QGIS 3.44
      */
     const QgsProcessingParameterType *selectedParameterType();
 

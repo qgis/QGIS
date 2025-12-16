@@ -12,18 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolzoom.h"
 #include "qgstest.h"
+
+#include <QCoreApplication>
 #include <QObject>
 #include <QString>
-#include <QCoreApplication>
 #include <QWidget>
-
-#include "qgsmaptoolzoom.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgslogger.h"
-#include "qgsmapmouseevent.h"
-
 
 class TestQgsMapToolZoom : public QObject
 {

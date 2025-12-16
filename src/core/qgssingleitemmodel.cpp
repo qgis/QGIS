@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgssingleitemmodel.h"
-#include "moc_qgssingleitemmodel.cpp"
 
+#include "moc_qgssingleitemmodel.cpp"
 
 QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QString &text, const QMap< int, QVariant > &data, Qt::ItemFlags flags )
   : QAbstractItemModel( parent )

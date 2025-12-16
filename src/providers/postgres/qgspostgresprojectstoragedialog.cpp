@@ -13,16 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresprojectstoragedialog.h"
-#include "moc_qgspostgresprojectstoragedialog.cpp"
 
+#include "qgsapplication.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
-#include "qgspostgresutils.h"
 #include "qgspostgresprojectversionsdialog.h"
-
-
-#include "qgsapplication.h"
+#include "qgspostgresutils.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsguiutils.h"
@@ -30,6 +27,8 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgspostgresprojectstoragedialog.cpp"
 
 QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )

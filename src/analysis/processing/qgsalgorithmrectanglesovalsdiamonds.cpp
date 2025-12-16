@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrectanglesovalsdiamonds.h"
+
 #include "qgsapplication.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"

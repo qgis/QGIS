@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalthinbydecimate.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
@@ -50,6 +50,11 @@ QStringList QgsPdalThinByDecimateAlgorithm::tags() const
 QString QgsPdalThinByDecimateAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a thinned version of the point cloud by keeping only every N-th point." );
+}
+
+QString QgsPdalThinByDecimateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a thinned version of a point cloud by keeping only every N-th point." );
 }
 
 QgsPdalThinByDecimateAlgorithm *QgsPdalThinByDecimateAlgorithm::createInstance() const

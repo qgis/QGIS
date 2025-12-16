@@ -15,12 +15,12 @@
 #ifndef QGSWFSGETCAPABILITIES_H
 #define QGSWFSGETCAPABILITIES_H
 
-#include <QObject>
-#include <QDomElement>
-
-#include "qgswfsrequest.h"
 #include "qgsdataprovider.h"
 #include "qgswfscapabilities.h"
+#include "qgswfsrequest.h"
+
+#include <QDomElement>
+#include <QObject>
 
 //! Manages the GetCapabilities request
 class QgsWfsGetCapabilitiesRequest : public QgsWfsRequest

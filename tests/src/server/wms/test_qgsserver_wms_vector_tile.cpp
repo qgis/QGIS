@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsproject.h"
-#include "qgsvectortilelayer.h"
 #include "qgsserverinterfaceimpl.h"
+#include "qgstest.h"
+#include "qgsvectortilelayer.h"
 #include "qgswmsparameters.h"
-#include "qgswmsrenderer.h"
 #include "qgswmsrendercontext.h"
+#include "qgswmsrenderer.h"
 
 /**
  * \ingroup UnitTests

@@ -12,6 +12,7 @@
 
 
 
+
 class QgsClassificationMethodRegistry
 {
 %Docstring(signature="appended")

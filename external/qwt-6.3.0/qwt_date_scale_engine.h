@@ -43,7 +43,7 @@ class QWT_EXPORT QwtDateScaleEngine : public QwtLinearScaleEngine
 {
   public:
     explicit QwtDateScaleEngine( Qt::TimeSpec = Qt::LocalTime );
-    virtual ~QwtDateScaleEngine();
+    ~QwtDateScaleEngine() override;
 
     void setTimeSpec( Qt::TimeSpec );
     Qt::TimeSpec timeSpec() const;

@@ -18,8 +18,9 @@
 #ifndef QGSNEWARCGISRESTCONNECTION_H
 #define QGSNEWARCGISRESTCONNECTION_H
 
-#include "qgis_sip.h"
 #include "ui_qgsnewarcgisrestconnectionbase.h"
+
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 
 class QgsAuthSettingsWidget;

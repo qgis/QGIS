@@ -18,15 +18,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
+#include "qgsdartmeasurement.h"
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
-#include "qgsdartmeasurement.h"
 
 #include <QDir>
-#include <QString>
-#include <QRegularExpression>
 #include <QList>
+#include <QRegularExpression>
+#include <QString>
 
 class QImage;
 

@@ -29,16 +29,18 @@
 ****************************************************************************/
 
 #include "qgsimagedroptextedit.h"
-#include "moc_qgsimagedroptextedit.cpp"
+
 #include "qgsguiutils.h"
 
-#include <QMimeData>
+#include <QApplication>
 #include <QBuffer>
+#include <QDesktopServices>
 #include <QFileInfo>
 #include <QImageReader>
+#include <QMimeData>
 #include <QMouseEvent>
-#include <QApplication>
-#include <QDesktopServices>
+
+#include "moc_qgsimagedroptextedit.cpp"
 
 ///@cond PRIVATE
 QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )

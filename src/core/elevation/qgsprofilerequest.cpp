@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofilerequest.h"
+
 #include "qgscurve.h"
 #include "qgsterrainprovider.h"
 

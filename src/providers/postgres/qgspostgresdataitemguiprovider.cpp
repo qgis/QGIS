@@ -14,36 +14,36 @@
  ***************************************************************************/
 
 #include "qgspostgresdataitemguiprovider.h"
-#include "moc_qgspostgresdataitemguiprovider.cpp"
 
-#include "qgsapplication.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgspostgresdataitems.h"
-#include "qgspgnewconnection.h"
-#include "qgsnewnamedialog.h"
-#include "qgspgsourceselect.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgssettings.h"
-#include "qgspostgresconn.h"
-#include "qgspostgresutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgstaskmanager.h"
-#include "qgsmessageoutput.h"
-#include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsdbimportvectorlayerdialog.h"
-#include "qgsproject.h"
+#include "qgsapplication.h"
 #include "qgsdatabaseschemaselectiondialog.h"
-#include "qgspostgresimportprojectdialog.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsdbimportvectorlayerdialog.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsmessagelog.h"
+#include "qgsmessageoutput.h"
+#include "qgsnewnamedialog.h"
+#include "qgspgnewconnection.h"
+#include "qgspgsourceselect.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresdataitems.h"
+#include "qgspostgresimportprojectdialog.h"
 #include "qgspostgresprojectversionsdialog.h"
+#include "qgspostgresutils.h"
+#include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgssettings.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerexporter.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPair>
+
+#include "moc_qgspostgresdataitemguiprovider.cpp"
 
 void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -1134,7 +1134,7 @@ void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projec
     else
     {
       notify( tr( "Set Project Comment" ), tr( "Comment updated for project '%1'" ).arg( projectItem->name() ), context, Qgis::MessageLevel::Success );
-      projectItem->parent()->refresh();
+      projectItem->refresh();
     }
   }
 
@@ -1174,6 +1174,21 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
   pgProjectUri.connInfo = conn->uri();
   pgProjectUri.schemaName = schemaItem->name();
   pgProjectUri.projectName = project->title().isEmpty() ? project->baseName() : project->title();
+
+  if ( pgProjectUri.projectName.isEmpty() )
+  {
+    bool ok;
+    const QString projectName = QInputDialog::getText( nullptr, tr( "Set Project Name" ), tr( "Name" ), QLineEdit::Normal, tr( "New Project" ), &ok );
+    if ( ok && !projectName.isEmpty() )
+    {
+      pgProjectUri.projectName = projectName;
+    }
+    else
+    {
+      notify( tr( "Save Project" ), tr( "Unable to save project without name to database." ), context, Qgis::MessageLevel::Warning );
+      return;
+    }
+  }
 
   QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
   const QString sqlProjectExist = QStringLiteral( "SELECT EXISTS( SELECT 1 FROM %1.qgis_projects WHERE name = %2);" )

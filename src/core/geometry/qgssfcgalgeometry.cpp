@@ -18,6 +18,7 @@
 #ifdef WITH_SFCGAL
 
 #include "qgssfcgalgeometry.h"
+
 #include "qgsvector3d.h"
 #include "qgswkbptr.h"
 
@@ -344,7 +345,7 @@ bool QgsSfcgalGeometry::addZValue( double zValue )
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   if ( mIsPrimitive )
-    throw QgsNotSupportedException( QObject::tr( "Operation 'addZValue' does not apply to primitive." ) );
+    throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to primitive." ).arg( "addZValue" ) );
 
   const bool added = QgsSfcgalEngine::addZValue( mSfcgalGeom.get(), zValue, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
@@ -360,7 +361,7 @@ bool QgsSfcgalGeometry::addMValue( double mValue )
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   if ( mIsPrimitive )
-    throw QgsNotSupportedException( QObject::tr( "Operation 'addMValue' does not apply to primitive." ) );
+    throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to primitive." ).arg( "addMValue" ) );
 
   const bool added = QgsSfcgalEngine::addMValue( mSfcgalGeom.get(), mValue, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
@@ -376,7 +377,7 @@ bool QgsSfcgalGeometry::dropZValue()
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   if ( mIsPrimitive )
-    throw QgsNotSupportedException( QObject::tr( "Operation 'dropZValue' does not apply to primitive." ) );
+    throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to primitive." ).arg( "dropZValue" ) );
 
   const bool dropped = QgsSfcgalEngine::dropZValue( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
@@ -392,7 +393,7 @@ bool QgsSfcgalGeometry::dropMValue()
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   if ( mIsPrimitive )
-    throw QgsNotSupportedException( QObject::tr( "Operation 'dropMValue' does not apply to primitive." ) );
+    throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to primitive." ).arg( "dropMValue" ) );
 
   const bool dropped = QgsSfcgalEngine::dropMValue( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
@@ -408,7 +409,7 @@ void QgsSfcgalGeometry::swapXy()
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   if ( mIsPrimitive )
-    throw QgsNotSupportedException( QObject::tr( "Operation 'swapXy' does not apply to primitive." ) );
+    throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to primitive." ).arg( "swapXy" ) );
 
   QgsSfcgalEngine::swapXy( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
@@ -619,7 +620,7 @@ double QgsSfcgalGeometry::length() const
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   if ( mIsPrimitive )
-    throw QgsNotSupportedException( QObject::tr( "Operation 'length' does not apply to primitive." ) );
+    throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to primitive." ).arg( "length" ) );
 
   double result = QgsSfcgalEngine::length( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
@@ -633,7 +634,7 @@ double QgsSfcgalGeometry::volume( bool withDiscretization ) const
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   if ( !mIsPrimitive )
-    throw QgsNotSupportedException( QObject::tr( "Operation 'volume' does not apply to geometry." ) );
+    throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to geometry." ).arg( "volume" ) );
 
   double result;
 #if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )

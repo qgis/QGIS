@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgsreferencedgeometry.h"
+
 #include <QObject>
 #include <QVector>
 
@@ -242,7 +243,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     bool mUseProjectScales = false;
     QgsReferencedRectangle mDefaultViewExtent;
     QgsReferencedRectangle mPresetFullExtent;
-    bool mRestoreProjectExtentOnProjectLoad;
+    bool mRestoreProjectExtentOnProjectLoad = false;
     double mDefaultRotation = 0;
 };
 

@@ -13,18 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmap3dexportwidget.h"
-#include "moc_qgsmap3dexportwidget.cpp"
 #include "ui_map3dexportwidget.h"
-
-#include <QPushButton>
-#include <QFileDialog>
-#include <QtGlobal>
+#include "qgsmap3dexportwidget.h"
 
 #include "qgis.h"
+#include "qgs3dmapexportsettings.h"
 #include "qgs3dmapscene.h"
 #include "qgssettings.h"
-#include "qgs3dmapexportsettings.h"
+
+#include <QFileDialog>
+#include <QPushButton>
+#include <QtGlobal>
+
+#include "moc_qgsmap3dexportwidget.cpp"
 
 QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExportSettings *exportSettings, QWidget *parent )
   : QWidget( parent ), ui( new Ui::Map3DExportWidget ), mScene( scene ), mExportSettings( exportSettings )

@@ -22,7 +22,14 @@
 #ifndef QGSWFSGETFEATURE_H
 #define QGSWFSGETFEATURE_H
 
+#include "qgsfeaturerequest.h"
 #include "qgswfsparameters.h"
+
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
 
 namespace QgsWfs
 {

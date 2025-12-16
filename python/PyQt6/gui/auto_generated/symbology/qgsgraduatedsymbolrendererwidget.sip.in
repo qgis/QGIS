@@ -12,8 +12,6 @@
 
 
 
-
-
 class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")

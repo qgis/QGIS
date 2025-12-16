@@ -12,14 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgeorefconfigdialog.h"
+
+#include "qgis.h"
+#include "qgsgui.h"
+#include "qgssettings.h"
+
 #include <QCloseEvent>
 #include <QSizeF>
 
-#include "qgssettings.h"
-#include "qgsgeorefconfigdialog.h"
 #include "moc_qgsgeorefconfigdialog.cpp"
-#include "qgis.h"
-#include "qgsgui.h"
 
 QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
   : QDialog( parent )

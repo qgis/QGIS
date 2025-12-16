@@ -34,7 +34,7 @@ class QWT_EXPORT QwtSplineCubic : public QwtSplineC2
 {
   public:
     QwtSplineCubic();
-    virtual ~QwtSplineCubic();
+    ~QwtSplineCubic() override;
 
     virtual uint locality() const QWT_OVERRIDE;
 

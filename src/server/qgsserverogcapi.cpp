@@ -14,15 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDir>
+#include "qgsserverogcapi.h"
+
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+#include "qgsserverogcapihandler.h"
+
 #include <QDebug>
+#include <QDir>
 #include <QtGlobal>
 
-#include "qgsserverogcapi.h"
 #include "moc_qgsserverogcapi.cpp"
-#include "qgsserverogcapihandler.h"
-#include "qgsmessagelog.h"
-#include "qgsapplication.h"
 
 QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = []() -> QMap<QgsServerOgcApi::ContentType, QStringList> {
   QMap<QgsServerOgcApi::ContentType, QStringList> map;

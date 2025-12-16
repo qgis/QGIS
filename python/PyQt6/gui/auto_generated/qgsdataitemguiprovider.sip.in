@@ -9,6 +9,7 @@
 
 
 
+
 class QgsDataItemGuiContext
 {
 %Docstring(signature="appended")

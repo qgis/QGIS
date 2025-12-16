@@ -16,13 +16,15 @@
 #ifndef QGSHISTORYENTRYNODE_H
 #define QGSHISTORYENTRYNODE_H
 
+#include <deque>
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QString>
 #include <QVariantMap>
-#include <memory>
-#include <deque>
 
 class QWidget;
 class QAction;
@@ -168,7 +170,7 @@ class GUI_EXPORT QgsHistoryEntryGroup : public QgsHistoryEntryNode
      */
     void clear();
 
-    int childCount() const FINAL;
+    int childCount() const final;
 
   protected:
     std::deque<std::unique_ptr<QgsHistoryEntryNode>> mChildren SIP_SKIP;

@@ -14,13 +14,15 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultipoint.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgspoint.h"
 #include "qgsvertexid.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QRegularExpression>
-#include <nlohmann/json.hpp>
 
 QgsMultiPoint::QgsMultiPoint()
 {

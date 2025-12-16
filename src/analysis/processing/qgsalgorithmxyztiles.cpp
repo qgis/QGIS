@@ -17,13 +17,13 @@
 
 #include "qgsalgorithmxyztiles.h"
 
-#include <QBuffer>
-
+#include "qgsexpressioncontextutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerutils.h"
 #include "qgsprovidermetadata.h"
+
+#include <QBuffer>
 
 ///@cond PRIVATE
 

@@ -16,18 +16,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisappstylesheet.h"
+
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgsproxystyle.h"
+#include "qgssettings.h"
+
 #include <QFont>
 #include <QStyle>
 
-#include "qgisappstylesheet.h"
 #include "moc_qgisappstylesheet.cpp"
-#include "qgsapplication.h"
-#include "qgisapp.h"
-#include "qgsproxystyle.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsguiutils.h"
-
 
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   : QObject( parent )

@@ -16,10 +16,10 @@
 #ifndef QGSGRASS_H
 #define QGSGRASS_H
 
+#include <setjmp.h>
+
 #include <QMutex>
 #include <QPen>
-
-#include <setjmp.h>
 
 // GRASS header files
 extern "C"

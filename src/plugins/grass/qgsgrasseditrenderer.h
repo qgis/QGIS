@@ -19,10 +19,8 @@
 #include "qgis.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsrenderer.h"
-#include "qgssymbol.h"
-
-#include "qgscategorizedsymbolrenderer.h"
 #include "qgsrendererwidget.h"
+#include "qgssymbol.h"
 
 class QgsGrassEditRenderer : public QgsFeatureRenderer
 {

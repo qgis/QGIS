@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgsfilecontentsourcelineedit.h"
-#include "moc_qgsfilecontentsourcelineedit.cpp"
-#include "qgssettings.h"
-#include "qgsmessagebar.h"
+
 #include "qgsfilterlineedit.h"
+#include "qgsmessagebar.h"
 #include "qgspropertyoverridebutton.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -26,9 +26,11 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMenu>
+#include <QMovie>
 #include <QToolButton>
 #include <QUrl>
-#include <QMovie>
+
+#include "moc_qgsfilecontentsourcelineedit.cpp"
 
 //
 // QgsAbstractFileContentSourceLineEdit

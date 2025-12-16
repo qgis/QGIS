@@ -11,7 +11,6 @@
 
 
 
-
 class QgsProcessingUtils
 {
 %Docstring(signature="appended")
@@ -600,6 +599,19 @@ settings, or a fallback value of "gpkg".
 .. seealso:: :py:func:`defaultVectorTileExtension`
 
 .. versionadded:: 3.10
+%End
+
+    static QString defaultRasterFormat();
+%Docstring
+Returns the default raster format to use, in the absence of all other
+constraints (e.g. provider based support for extensions).
+
+This method returns the user-set default format from the processing
+settings, or a fallback value of "GTiff".
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. versionadded:: 4.0
 %End
 
     static QString defaultRasterExtension();

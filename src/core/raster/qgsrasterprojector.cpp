@@ -14,14 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsrasterprojector.h"
+
 #include <algorithm>
 
-#include "qgsrasterdataprovider.h"
-#include "qgslogger.h"
-#include "qgsrasterprojector.h"
-#include "moc_qgsrasterprojector.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
+#include "qgsrasterdataprovider.h"
+
+#include "moc_qgsrasterprojector.cpp"
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsRasterProjector::QgsRasterProjector()
@@ -92,25 +94,10 @@ void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, con
 
 
 ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision, QgsRasterBlockFeedback *feedback )
-  : mApproximate( false )
-  , mInverseCt( inverseCt )
+  : mInverseCt( inverseCt )
   , mDestExtent( extent )
   , mDestRows( height )
   , mDestCols( width )
-  , mDestXRes( 0.0 )
-  , mDestYRes( 0.0 )
-  , mSrcRows( 0 )
-  , mSrcCols( 0 )
-  , mSrcXRes( 0.0 )
-  , mSrcYRes( 0.0 )
-  , mDestRowsPerMatrixRow( 0.0 )
-  , mDestColsPerMatrixCol( 0.0 )
-  , mHelperTopRow( 0 )
-  , mCPCols( 0 )
-  , mCPRows( 0 )
-  , mSqrTolerance( 0.0 )
-  , mMaxSrcXRes( 0 )
-  , mMaxSrcYRes( 0 )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 

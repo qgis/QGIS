@@ -21,7 +21,7 @@ class QStandardItemModel;
 class Qgs3DMapCanvas;
 class QwtCompass;
 
-#include <ui_3dnavigationwidget.h>
+#include "ui_3dnavigationwidget.h"
 
 class Qgs3DNavigationWidget : public QWidget, private Ui::Q3DNavigationWidget
 {

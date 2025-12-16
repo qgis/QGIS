@@ -48,7 +48,7 @@ class QWT_EXPORT QwtPlotTextLabel : public QwtPlotItem
 {
   public:
     QwtPlotTextLabel();
-    virtual ~QwtPlotTextLabel();
+    ~QwtPlotTextLabel() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

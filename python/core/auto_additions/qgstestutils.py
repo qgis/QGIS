@@ -2,5 +2,6 @@
 try:
     QgsTestUtils.testProviderIteratorThreadSafety = staticmethod(QgsTestUtils.testProviderIteratorThreadSafety)
     QgsTestUtils.compareDomElements = staticmethod(QgsTestUtils.compareDomElements)
+    QgsTestUtils.sanitizeFakeHttpEndpoint = staticmethod(QgsTestUtils.sanitizeFakeHttpEndpoint)
 except (NameError, AttributeError):
     pass

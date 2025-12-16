@@ -18,13 +18,13 @@
 #ifndef QGSMAPTOOLLABEL_H
 #define QGSMAPTOOLLABEL_H
 
+#include "qgis_app.h"
+#include "qgscallout.h"
+#include "qgscalloutposition.h"
+#include "qgsdiagramrenderer.h"
+#include "qgslabelposition.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspallabeling.h"
-#include "qgslabelposition.h"
-#include "qgscalloutposition.h"
-#include "qgscallout.h"
-#include "qgsdiagramrenderer.h"
-#include "qgis_app.h"
 
 class QgsRubberBand;
 

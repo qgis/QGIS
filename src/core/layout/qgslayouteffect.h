@@ -18,11 +18,11 @@
 #ifndef QGSLAYOUTEFFECT_H
 #define QGSLAYOUTEFFECT_H
 
-#include <QGraphicsEffect>
-#include <QPainter>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QGraphicsEffect>
+#include <QPainter>
 
 /**
  * \ingroup core

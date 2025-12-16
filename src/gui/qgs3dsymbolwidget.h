@@ -16,10 +16,11 @@
 #ifndef QGS3DSYMBOLWIDGET_H
 #define QGS3DSYMBOLWIDGET_H
 
-#include <QWidget>
-#include <QDialog>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDialog>
+#include <QWidget>
 
 class QgsAbstract3DSymbol;
 class QgsVectorLayer;

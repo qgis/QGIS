@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgroupedfeaturefilterprovider.h"
+
 #include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
 

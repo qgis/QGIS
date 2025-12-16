@@ -16,9 +16,9 @@
 #ifndef QGSGOOCHMATERIALWIDGET_H
 #define QGSGOOCHMATERIALWIDGET_H
 
-#include "qgsmaterialsettingswidget.h"
+#include "ui_goochmaterialwidget.h"
 
-#include <ui_goochmaterialwidget.h>
+#include "qgsmaterialsettingswidget.h"
 
 class QgsGoochMaterialSettings;
 

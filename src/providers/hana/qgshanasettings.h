@@ -18,6 +18,7 @@
 #define QGSHANAPSETTINGS_H
 
 #include "qgsdatasourceuri.h"
+
 #include <QString>
 
 struct QgsHanaIdentifierType

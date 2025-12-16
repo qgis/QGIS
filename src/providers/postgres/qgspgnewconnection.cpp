@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QRegularExpressionValidator>
-#include <QRegularExpression>
-
 #include "qgspgnewconnection.h"
-#include "moc_qgspgnewconnection.cpp"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
-#include "qgspostgresproviderconnection.h"
+
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
-#include "qgspostgresconn.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+
+#include "moc_qgspgnewconnection.cpp"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

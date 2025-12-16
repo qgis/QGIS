@@ -13,9 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QQuickWindow>
-#include <QSGSimpleTextureNode>
-#include <QScreen>
+#include "qgsquickmapcanvasmap.h"
 
 #include "qgis.h"
 #include "qgsannotationlayer.h"
@@ -29,13 +27,15 @@
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
+#include "qgsquickmapsettings.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsquickmapcanvasmap.h"
-#include "moc_qgsquickmapcanvasmap.cpp"
-#include "qgsquickmapsettings.h"
+#include <QQuickWindow>
+#include <QSGSimpleTextureNode>
+#include <QScreen>
 
+#include "moc_qgsquickmapcanvasmap.cpp"
 
 QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   : QQuickItem( parent )

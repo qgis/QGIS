@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgsprojectdisplaysettings.h"
-#include "moc_qgsprojectdisplaysettings.cpp"
+
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscoordinatenumericformat.h"
-#include "qgsnumericformatregistry.h"
-#include "qgsapplication.h"
 #include "qgslocaldefaultsettings.h"
+#include "qgsnumericformatregistry.h"
 #include "qgsproject.h"
 
 #include <QDomElement>
+
+#include "moc_qgsprojectdisplaysettings.cpp"
 
 QgsProjectDisplaySettings::QgsProjectDisplaySettings( QObject *parent )
   : QObject( parent )

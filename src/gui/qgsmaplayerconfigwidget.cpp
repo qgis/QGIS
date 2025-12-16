@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaplayerconfigwidget.h"
-#include "moc_qgsmaplayerconfigwidget.cpp"
-#include "qgspanelwidget.h"
+
 #include "qgslayertreegroup.h"
+#include "qgspanelwidget.h"
+
+#include "moc_qgsmaplayerconfigwidget.cpp"
 
 //
 // QgsMapLayerConfigWidgetContext

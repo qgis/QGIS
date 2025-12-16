@@ -15,18 +15,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle3tangents.h"
-#include "moc_qgsmaptoolshapecircle3tangents.cpp"
-#include "qgsgeometryrubberband.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgslinestring.h"
-#include "qgssnappingutils.h"
-#include "qgsmapcanvas.h"
-#include "qgspoint.h"
+
 #include "qgisapp.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmessagebar.h"
-#include "qgsmaptoolcapture.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
+#include "qgsgeometryrubberband.h"
+#include "qgslinestring.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolcapture.h"
+#include "qgsmessagebar.h"
+#include "qgspoint.h"
+#include "qgssnappingutils.h"
+
+#include "moc_qgsmaptoolshapecircle3tangents.cpp"
 
 const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = QStringLiteral( "circle-from-3-tangents" );
 

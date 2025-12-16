@@ -16,10 +16,11 @@
 #ifndef QGSMAPTOOLMOVEFEATURE_H
 #define QGSMAPTOOLMOVEFEATURE_H
 
-#include "qgsmaptooladvanceddigitizing.h"
 #include "qgis_app.h"
-#include "qgspointxy.h"
 #include "qgsfeatureid.h"
+#include "qgsgeometry.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgspointxy.h"
 
 class QgsSnapIndicator;
 

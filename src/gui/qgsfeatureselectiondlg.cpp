@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsfeatureselectiondlg.h"
-#include "moc_qgsfeatureselectiondlg.cpp"
 
-#include "qgsvectorlayerselectionmanager.h"
-#include "qgsdistancearea.h"
-#include "qgsfeaturerequest.h"
-#include "qgsattributeeditorcontext.h"
 #include "qgsapplication.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsdistancearea.h"
 #include "qgsexpressionselectiondialog.h"
-#include "qgsmapcanvas.h"
+#include "qgsfeaturerequest.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayerselectionmanager.h"
 
 #include <QWindow>
+
+#include "moc_qgsfeatureselectiondlg.cpp"
 
 QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent )
   : QDialog( parent, Qt::Window )

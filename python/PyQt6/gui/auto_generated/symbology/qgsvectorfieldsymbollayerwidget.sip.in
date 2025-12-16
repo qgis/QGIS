@@ -8,6 +8,7 @@
 
 
 
+
 class QgsVectorFieldSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")

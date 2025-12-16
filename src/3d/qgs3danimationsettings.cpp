@@ -15,8 +15,8 @@
 
 #include "qgs3danimationsettings.h"
 
-#include <QEasingCurve>
 #include <QDomDocument>
+#include <QEasingCurve>
 
 Qgs3DAnimationSettings::Qgs3DAnimationSettings() = default;
 

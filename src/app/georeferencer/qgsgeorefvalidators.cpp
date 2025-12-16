@@ -13,10 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QStringList>
-#include <QRegularExpression>
-
 #include "qgsgeorefvalidators.h"
+
+#include <QRegularExpression>
+#include <QStringList>
+
 #include "moc_qgsgeorefvalidators.cpp"
 
 QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject *parent )

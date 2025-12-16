@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassfeatureiterator.h"
+
+#include "qgsgeometry.h"
+#include "qgsgrass.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassvectormap.h"
+#include "qgslogger.h"
+
 #include <QObject>
 #include <QTextCodec>
 
-#include "qgsgrass.h"
-#include "qgsgrassfeatureiterator.h"
 #include "moc_qgsgrassfeatureiterator.cpp"
-#include "qgsgrassprovider.h"
-#include "qgsgrassvectormap.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
 
 extern "C"
 {

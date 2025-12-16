@@ -12,21 +12,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
+#include "qgsdisplayangle.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmeasuretool.h"
-#include "qgsmeasuredialog.h"
-#include "qgsproject.h"
 #include "qgsmapcanvas.h"
-#include "qgsunittypes.h"
 #include "qgsmaptoolmeasurebearing.h"
+#include "qgsmeasuredialog.h"
+#include "qgsmeasuretool.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsunittypes.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
-#include "qgsdisplayangle.h"
 
 /**
  * \ingroup UnitTests

@@ -13,24 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgs3d.h"
-#include "qgs3dutils.h"
-
-#include "qgsbox3d.h"
-#include "qgsray3d.h"
-
 #include "qgs3dexportobject.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dutils.h"
+#include "qgsbox3d.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-#include "qgsraycastcontext.h"
 
 #include <QSize>
 #include <QtMath>

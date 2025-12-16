@@ -15,13 +15,15 @@
  ***************************************************************************/
 
 #include "qgslayoutitemguiregistry.h"
-#include "moc_qgslayoutitemguiregistry.cpp"
-#include "qgslayoutviewrubberband.h"
-#include "qgslayoutitemregistry.h"
+
 #include "qgslayoutframe.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutviewrubberband.h"
+
 #include <QPainter>
 
+#include "moc_qgslayoutitemguiregistry.cpp"
 
 QgsLayoutViewRubberBand *QgsLayoutItemAbstractGuiMetadata::createRubberBand( QgsLayoutView *view )
 {

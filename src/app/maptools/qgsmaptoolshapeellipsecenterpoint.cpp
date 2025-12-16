@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipsecenterpoint.h"
-#include "moc_qgsmaptoolshapeellipsecenterpoint.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshapeellipsecenterpoint.cpp"
 
 const QString QgsMapToolShapeEllipseCenterPointMetadata::TOOL_ID = QStringLiteral( "ellipse-center-point" );
 

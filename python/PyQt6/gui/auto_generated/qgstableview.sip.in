@@ -8,6 +8,7 @@
 
 
 
+
 class QgsTableView : QTableView
 {
 %Docstring(signature="appended")

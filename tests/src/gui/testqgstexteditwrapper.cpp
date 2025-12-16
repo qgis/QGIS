@@ -14,20 +14,21 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include "qgsattributeform.h"
-#include <qgsapplication.h>
-#include <qgsproject.h>
-#include <qgsvectorlayer.h>
-#include "qgseditorwidgetwrapper.h"
-#include "qgsattributeformeditorwidget.h"
-#include <editorwidgets/qgstexteditwrapper.h>
-#include <QTableWidget>
-#include "qgsgui.h"
 #include <nlohmann/json.hpp>
+
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "editorwidgets/qgstexteditwrapper.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
+#include "qgsattributeformeditorwidget.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsgui.h"
 #include "qgsjsonutils.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QTableWidget>
 
 class TestQgsTextEditWrapper : public QgsTest
 {

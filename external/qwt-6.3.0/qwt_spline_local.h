@@ -63,7 +63,7 @@ class QWT_EXPORT QwtSplineLocal : public QwtSplineC1
     };
 
     QwtSplineLocal( Type type );
-    virtual ~QwtSplineLocal();
+    ~QwtSplineLocal() override;
 
     Type type() const;
 

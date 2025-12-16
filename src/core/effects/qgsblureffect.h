@@ -17,11 +17,11 @@
 #ifndef QGSBLUREFFECT_H
 #define QGSBLUREFFECT_H
 
-#include "qgis_core.h"
-#include "qgspainteffect.h"
-#include "qgis_sip.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmapunitscale.h"
+#include "qgspainteffect.h"
 
 #include <QPainter>
 
@@ -57,6 +57,8 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     Qgis::PaintEffectFlags flags() const override;
     QString type() const override { return QStringLiteral( "blur" ); }
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
     QgsBlurEffect *clone() const override SIP_FACTORY;
 

@@ -19,8 +19,8 @@
 #include "qgslogger.h"
 #include "qgssettingseditorwidgetwrapper.h"
 #include "qgssettingseditorwidgetwrapperimpl.h"
-#include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgssettingsentry.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
 
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>

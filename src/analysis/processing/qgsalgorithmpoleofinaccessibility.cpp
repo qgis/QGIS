@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpoleofinaccessibility.h"
+
 #include "qgsapplication.h"
 
 ///@cond PRIVATE

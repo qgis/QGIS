@@ -16,12 +16,12 @@
 #ifndef QGSGRASSPROVIDERMODULE_H
 #define QGSGRASSPROVIDERMODULE_H
 
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitem.h"
+#include "qgsdirectoryitem.h"
 #include "qgsgrass.h"
 #include "qgsgrassimport.h"
-#include "qgsdirectoryitem.h"
 #include "qgslayeritem.h"
-#include "qgsdatacollectionitem.h"
 #include "qgsprovidermetadata.h"
 
 class QTextEdit;
@@ -128,7 +128,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
     QgsGrassItemActions *mActions = nullptr;
     //void showImportError(const QString& error);
     QFileSystemWatcher *mMapsetFileSystemWatcher = nullptr;
-    bool mRefreshLater;
+    bool mRefreshLater = false;
     // running imports
     static QList<QgsGrassImport *> sImports;
 

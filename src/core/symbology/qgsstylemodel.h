@@ -19,10 +19,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsstyle.h"
+
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QIcon>
 #include <QHash>
+#include <QIcon>
+#include <QSortFilterProxyModel>
 
 class QgsSymbol;
 class QgsCombinedStyleModel;

@@ -14,25 +14,28 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputdestinationwidget.h"
-#include "moc_qgsprocessingoutputdestinationwidget.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgsnewdatabasetablenamewidget.h"
-#include "qgssettings.h"
-#include "qgsfileutils.h"
+
+#include "qgsapplication.h"
+#include "qgsdatasourceselectdialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsencodingfiledialog.h"
-#include "qgsdatasourceselectdialog.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsfieldmappingwidget.h"
-#include "qgsapplication.h"
-#include <QMenu>
+#include "qgsfileutils.h"
+#include "qgsnewdatabasetablenamewidget.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingparameters.h"
+#include "qgssettings.h"
+
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QCheckBox>
 #include <QLocale>
+#include <QMenu>
 #include <QTextCodec>
 #include <QUrl>
+
+#include "moc_qgsprocessingoutputdestinationwidget.cpp"
 
 ///@cond NOT_STABLE
 
@@ -177,7 +180,12 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     {
       // output name does not include a folder - use default
       QString defaultFolder = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QStringLiteral( "%1/processing" ).arg( QDir::homePath() ) ).toString();
-      key = QDir( defaultFolder ).filePath( key );
+      QDir destDir( defaultFolder );
+      if ( !destDir.exists() && !QDir().mkpath( defaultFolder ) )
+      {
+        QgsDebugError( QStringLiteral( "Can't create output folder '%1'" ).arg( defaultFolder ) );
+      }
+      key = destDir.filePath( key );
     }
   }
 
@@ -190,6 +198,8 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
   value.createOptions.insert( QStringLiteral( "fileEncoding" ), mEncoding );
   if ( mUseRemapping )
     value.setRemappingDefinition( mRemapDefinition );
+  if ( !mFormat.isEmpty() )
+    value.setFormat( mFormat );
   return value;
 }
 
@@ -375,6 +385,8 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
 
   QString lastExtPath;
   QString lastExt;
+  QString lastFormatPath;
+  QString lastFormat;
   if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() || mParameter->type() == QgsProcessingParameterVectorDestination::typeName() )
   {
     lastExtPath = QStringLiteral( "/Processing/LastVectorOutputExt" );
@@ -382,8 +394,10 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   }
   else if ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
-    lastExtPath = QStringLiteral( "/Processing/LastRasterOutputExt" );
-    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+    const QgsProcessingParameterRasterDestination *dest = dynamic_cast<const QgsProcessingParameterRasterDestination *>( mParameter );
+    Q_ASSERT( dest );
+    lastFormatPath = QStringLiteral( "/Processing/LastRasterOutputFormat" );
+    lastFormat = settings.value( lastFormatPath, dest->defaultFileFormat() ).toString();
   }
   else if ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName() )
   {
@@ -401,7 +415,12 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   QString lastFilter;
   for ( const QString &f : filters )
   {
-    if ( f.contains( QStringLiteral( "*.%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
+    if ( !lastFormat.isEmpty() && f.contains( lastFormat, Qt::CaseInsensitive ) )
+    {
+      lastFilter = f;
+      break;
+    }
+    else if ( !lastExt.isEmpty() && f.contains( QStringLiteral( "*.%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
     {
       lastFilter = f;
       break;
@@ -421,11 +440,21 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   {
     mUseTemporary = false;
     mUseRemapping = false;
+    if ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName() )
+    {
+      int spacePos = static_cast<int>( lastFilter.indexOf( ' ' ) );
+      if ( spacePos > 0 )
+      {
+        mFormat = lastFilter.left( spacePos );
+      }
+    }
     filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
     settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), QFileInfo( filename ).path() );
-    if ( !lastExtPath.isEmpty() )
+    if ( !lastFormatPath.isEmpty() && !mFormat.isEmpty() )
+      settings.setValue( lastFormatPath, mFormat );
+    else if ( !lastExtPath.isEmpty() )
       settings.setValue( lastExtPath, QFileInfo( filename ).suffix().toLower() );
 
     emit skipOutputChanged( false );

@@ -14,17 +14,16 @@
  ***************************************************************************/
 
 #include "qgswmsdataitems.h"
-#include "moc_qgswmsdataitems.cpp"
-
-#include "qgslogger.h"
 
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgsxyzconnection.h"
-#include "qgsproject.h"
 
+#include "moc_qgswmsdataitems.cpp"
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )

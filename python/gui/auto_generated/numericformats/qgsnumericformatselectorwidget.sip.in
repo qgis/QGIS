@@ -9,6 +9,9 @@
 
 
 
+
+
+
 class QgsNumericFormatSelectorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

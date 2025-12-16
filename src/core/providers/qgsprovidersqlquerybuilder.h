@@ -16,10 +16,10 @@ email                : nyall dot dawson at gmail dot com
 #ifndef QGSPROVIDERSQLQUERYBUILDER_H
 #define QGSPROVIDERSQLQUERYBUILDER_H
 
-#include <QString>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QString>
 
 /**
  * \brief Provides an interface for provider-specific creation of SQL queries.

@@ -17,6 +17,7 @@
 #define QGSDECORATIONIMAGEDIALOG_H
 
 #include "ui_qgsdecorationimagedialog.h"
+
 #include "qgis_app.h"
 
 class QgsDecorationImage;

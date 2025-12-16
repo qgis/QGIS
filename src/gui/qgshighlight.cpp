@@ -13,26 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QImage>
-
-#include "qgsmarkersymbollayer.h"
-#include "qgslinesymbollayer.h"
+#include "qgshighlight.h"
 
 #include "qgscoordinatetransform.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsgeometry.h"
-#include "qgshighlight.h"
-#include "moc_qgshighlight.cpp"
+#include "qgslinesymbollayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsrendercontext.h"
-#include "qgssymbollayer.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgsvectorlayer.h"
+
+#include <QImage>
+
+#include "moc_qgshighlight.cpp"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer

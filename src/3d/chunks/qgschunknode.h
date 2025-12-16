@@ -27,10 +27,10 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis.h"
 #include "qgsaabb.h"
 #include "qgsbox3d.h"
 
-#include "qgis.h"
 #include <QTime>
 
 #define SIP_NO_FILE
@@ -269,18 +269,18 @@ class QgsChunkNode
     QVector<QgsChunkNode *> mChildren; //!< Child nodes of this node. Initially children are not be populated
     bool mChildrenPopulated = false;   //!< Whether the child nodes (if any) have been already created
 
-    State mState; //!< State of the node
+    State mState = Skeleton; //!< State of the node
 
     Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement; //!< How to handle display of the node when children get activated
 
-    QgsChunkListEntry *mLoaderQueueEntry;      //!< Not null <=> QueuedForLoad or QueuedForUpdate state
-    QgsChunkListEntry *mReplacementQueueEntry; //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
+    QgsChunkListEntry *mLoaderQueueEntry = nullptr;      //!< Not null <=> QueuedForLoad or QueuedForUpdate state
+    QgsChunkListEntry *mReplacementQueueEntry = nullptr; //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkLoader *mLoader;    //!< Contains extra data necessary for entity creation (not null <=> Loading state)
-    Qt3DCore::QEntity *mEntity; //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
+    QgsChunkLoader *mLoader = nullptr;    //!< Contains extra data necessary for entity creation (not null <=> Loading state)
+    Qt3DCore::QEntity *mEntity = nullptr; //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkQueueJobFactory *mUpdaterFactory; //!< Object that creates updater (not null <=> QueuedForUpdate state)
-    QgsChunkQueueJob *mUpdater;               //!< Object that does update of the chunk (not null <=> Updating state)
+    QgsChunkQueueJobFactory *mUpdaterFactory = nullptr; //!< Object that creates updater (not null <=> QueuedForUpdate state)
+    QgsChunkQueueJob *mUpdater = nullptr;               //!< Object that does update of the chunk (not null <=> Updating state)
 
     QTime mEntityCreatedTime;
     bool mHasData = true; //!< Whether there are (will be) any data in this node and so whether it makes sense to load this node

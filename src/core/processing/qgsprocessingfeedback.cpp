@@ -16,13 +16,16 @@
  ***************************************************************************/
 
 #include "qgsprocessingfeedback.h"
-#include "moc_qgsprocessingfeedback.cpp"
-#include "qgsgeos.h"
-#include "qgsprocessingprovider.h"
-#include "qgsmessagelog.h"
-#include <ogr_api.h>
+
 #include <gdal_version.h>
+#include <ogr_api.h>
 #include <proj.h>
+
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
+#include "qgsprocessingprovider.h"
+
+#include "moc_qgsprocessingfeedback.cpp"
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
@@ -30,6 +33,10 @@
 
 #ifdef WITH_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
+#endif
+
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
 #endif
 
 QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
@@ -154,6 +161,12 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   pushDebugInfo( tr( "SFCGAL version: %1" ).arg( sfcgal_version() ) );
 #else
   pushDebugInfo( tr( "No support for SFCGAL" ) );
+#endif
+
+#ifdef WITH_GEOGRAPHICLIB
+  pushDebugInfo( tr( "GeographicLib version: %1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH ) );
+#else
+  pushDebugInfo( tr( "No support for GeographicLib" ) );
 #endif
 
   if ( provider && !provider->versionInfo().isEmpty() )

@@ -16,41 +16,44 @@
  ***************************************************************************/
 
 #include "qgscesiumtilesdataprovider.h"
-#include "moc_qgscesiumtilesdataprovider.cpp"
-#include "qgsauthmanager.h"
-#include "qgsproviderutils.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
-#include "qgsprovidersublayerdetails.h"
-#include "qgsthreadingutils.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscesiumutils.h"
-#include "qgssphere.h"
-#include "qgslogger.h"
-#include "qgsorientedbox3d.h"
-#include "qgstiledsceneboundingvolume.h"
 #include "qgscoordinatetransform.h"
-#include "qgstiledscenenode.h"
+#include "qgsellipsoidutils.h"
+#include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsorientedbox3d.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+#include "qgsreadwritelocker.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgssphere.h"
+#include "qgsthreadingutils.h"
+#include "qgstiledownloadmanager.h"
+#include "qgstiledsceneboundingvolume.h"
 #include "qgstiledsceneindex.h"
+#include "qgstiledscenenode.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
-#include "qgsreadwritelocker.h"
-#include "qgstiledownloadmanager.h"
-#include "qgsellipsoidutils.h"
 
-#include <QUrl>
+#include <QApplication>
+#include <QFileInfo>
 #include <QIcon>
-#include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QFileInfo>
-#include <QRegularExpression>
+#include <QNetworkRequest>
 #include <QRecursiveMutex>
+#include <QRegularExpression>
+#include <QUrl>
 #include <QUrlQuery>
-#include <QApplication>
-#include <nlohmann/json.hpp>
 #include <qstringliteral.h>
+
+#include "moc_qgscesiumtilesdataprovider.cpp"
 
 ///@cond PRIVATE
 

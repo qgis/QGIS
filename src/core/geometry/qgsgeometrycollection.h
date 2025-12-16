@@ -16,14 +16,13 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYCOLLECTION_H
 #define QGSGEOMETRYCOLLECTION_H
 
-#include <QVector>
-
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgsrectangle.h"
 #include "qgsbox3d.h"
+#include "qgsrectangle.h"
+
+#include <QVector>
 
 class QgsPoint;
 
@@ -189,6 +188,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
+
+    using QgsAbstractGeometry::boundingBoxIntersects;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**
@@ -318,7 +319,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
     const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
-    virtual QgsGeometryCollection *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
+    QgsGeometryCollection *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 

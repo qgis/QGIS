@@ -12,18 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include "ogr/qgsvectorlayersaveasdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "ogr/qgsvectorlayersaveasdialog.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup UnitTests

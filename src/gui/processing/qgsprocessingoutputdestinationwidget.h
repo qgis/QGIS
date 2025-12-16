@@ -16,11 +16,13 @@
 #ifndef QGSPROCESSINGOUTPUTDESTINATIONWIDGET_H
 #define QGSPROCESSINGOUTPUTDESTINATIONWIDGET_H
 
+#include "ui_qgsprocessingdestinationwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingdestinationwidgetbase.h"
-#include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingwidgetwrapper.h"
+
 #include <QWidget>
 
 class QgsProcessingDestinationParameter;
@@ -136,6 +138,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
     QgsRemappingSinkDefinition mRemapDefinition;
     bool mUseRemapping = false;
+
+    QString mFormat;
 
     QgsProcessingContext *mContext = nullptr;
 

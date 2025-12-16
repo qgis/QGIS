@@ -16,9 +16,6 @@
  ***************************************************************************/
 
 #include "qgspdalalgorithms.h"
-#include "moc_qgspdalalgorithms.cpp"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
 
 #include "qgsalgorithmpdalassignprojection.h"
 #include "qgsalgorithmpdalboundary.h"
@@ -37,6 +34,10 @@
 #include "qgsalgorithmpdalthinbydecimate.h"
 #include "qgsalgorithmpdalthinbyradius.h"
 #include "qgsalgorithmpdaltile.h"
+#include "qgsapplication.h"
+#include "qgsruntimeprofiler.h"
+
+#include "moc_qgspdalalgorithms.cpp"
 
 ///@cond PRIVATE
 
@@ -79,9 +80,9 @@ QStringList QgsPdalAlgorithms::supportedOutputVectorLayerExtensions() const
   return QStringList() << QStringLiteral( "gpkg" );
 }
 
-QStringList QgsPdalAlgorithms::supportedOutputRasterLayerExtensions() const
+QList<QPair<QString, QString>> QgsPdalAlgorithms::supportedOutputRasterLayerFormatAndExtensions() const
 {
-  return QStringList() << QStringLiteral( "tif" );
+  return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), QStringLiteral( "tif" ) );
 }
 
 QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const

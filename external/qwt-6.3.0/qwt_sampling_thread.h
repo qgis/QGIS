@@ -30,7 +30,7 @@ class QWT_EXPORT QwtSamplingThread : public QThread
     Q_OBJECT
 
   public:
-    virtual ~QwtSamplingThread();
+    ~QwtSamplingThread() override;
 
     double interval() const;
     double elapsed() const;

@@ -13,23 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresdataitems.h"
-#include "moc_qgspostgresdataitems.cpp"
 
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsfieldsitem.h"
+#include "qgslogger.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
-#include "qgsapplication.h"
-#include "qgsprojectstorageregistry.h"
-#include "qgssettings.h"
-#include "qgsprojectitem.h"
-#include "qgsfieldsitem.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsproject.h"
 #include "qgspostgresutils.h"
+#include "qgsproject.h"
+#include "qgsprojectitem.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+
+#include "moc_qgspostgresdataitems.cpp"
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -428,14 +429,32 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
 
+  refreshTooltip();
+}
+
+QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
+{
+  QgsPostgresProjectUri postgresProjectUri( mProjectUri );
+  postgresProjectUri.projectName = newProjectName;
+  return QgsPostgresProjectStorage::encodeUri( postgresProjectUri );
+}
+
+void QgsPGProjectItem::refresh()
+{
+  QgsProjectItem::refresh();
+  refreshTooltip();
+}
+
+void QgsPGProjectItem::refreshTooltip()
+{
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( "postgres" ) };
   if ( md )
   {
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( postgresProjectUri.connInfo, false );
+    QgsPostgresConn *conn = QgsPostgresConn::connectDb( mProjectUri.connInfo, false );
     if ( conn )
     {
       QString commentColumn;
-      if ( QgsPostgresUtils::columnExists( conn, postgresProjectUri.schemaName, QStringLiteral( "qgis_projects" ), QStringLiteral( "comment" ) ) )
+      if ( QgsPostgresUtils::columnExists( conn, mProjectUri.schemaName, QStringLiteral( "qgis_projects" ), QStringLiteral( "comment" ) ) )
       {
         commentColumn = QStringLiteral( ", comment " );
       }
@@ -443,7 +462,7 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
       const QString sql = QStringLiteral( "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
                                           "metadata->>'last_modified_user' AS user %1"
                                           "FROM %2.qgis_projects WHERE name = %3" )
-                            .arg( commentColumn, QgsPostgresConn::quotedIdentifier( postgresProjectUri.schemaName ), QgsPostgresConn::quotedValue( name ) );
+                            .arg( commentColumn, QgsPostgresConn::quotedIdentifier( mProjectUri.schemaName ), QgsPostgresConn::quotedValue( mName ) );
 
       QgsPostgresResult res( conn->PQexec( sql ) );
 
@@ -458,11 +477,4 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
       conn->unref();
     }
   }
-}
-
-QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
-{
-  QgsPostgresProjectUri postgresProjectUri( mProjectUri );
-  postgresProjectUri.projectName = newProjectName;
-  return QgsPostgresProjectStorage::encodeUri( postgresProjectUri );
 }

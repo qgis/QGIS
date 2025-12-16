@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsuserprofilemanager.h"
-#include "moc_qgsuserprofilemanager.cpp"
-#include "qgsuserprofile.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsuserprofile.h"
 
-#include <QFile>
 #include <QDir>
-#include <QTextStream>
+#include <QFile>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QTextStream>
 
+#include "moc_qgsuserprofilemanager.cpp"
 
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )
@@ -61,7 +64,7 @@ void QgsUserProfileManager::setRootLocation( const QString &rootProfileLocation 
   //updates (or removes) profile file watcher for new root location
   setNewProfileNotificationEnabled( mWatchProfiles );
 
-  mSettings.reset( new QSettings( settingsFile(), QSettings::IniFormat ) );
+  mSettings = std::make_unique<QSettings>( settingsFile(), QSettings::IniFormat );
 }
 
 void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
@@ -69,7 +72,7 @@ void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
   mWatchProfiles = enabled;
   if ( mWatchProfiles && !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
   {
-    mWatcher.reset( new QFileSystemWatcher() );
+    mWatcher = std::make_unique<QFileSystemWatcher>( );
     mWatcher->addPath( mRootProfilePath );
     connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
     {

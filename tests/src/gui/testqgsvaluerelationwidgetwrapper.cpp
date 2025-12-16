@@ -14,23 +14,24 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-#include <QScrollBar>
-#include <QSignalSpy>
+#include <gdal_version.h>
+#include <nlohmann/json.hpp>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <qgsapplication.h>
-#include <qgsproject.h>
-#include <qgsvectorlayer.h>
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "editorwidgets/qgsvaluerelationwidgetwrapper.h"
+#include "qgsapplication.h"
 #include "qgsattributeform.h"
 #include "qgsattributeformeditorwidget.h"
 #include "qgseditorwidgetwrapper.h"
-#include <editorwidgets/qgsvaluerelationwidgetwrapper.h>
 #include "qgsfilterlineedit.h"
-#include <QComboBox>
 #include "qgsgui.h"
-#include <gdal_version.h>
-#include <nlohmann/json.hpp>
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QComboBox>
+#include <QScrollBar>
+#include <QSignalSpy>
 
 class TestQgsValueRelationWidgetWrapper : public QObject
 {

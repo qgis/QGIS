@@ -9,6 +9,7 @@
 
 
 
+
 class QgsShortcutsManager : QObject
 {
 %Docstring(signature="appended")

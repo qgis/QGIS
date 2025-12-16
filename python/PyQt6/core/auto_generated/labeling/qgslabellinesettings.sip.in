@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLabelLineSettings
 {
 %Docstring(signature="appended")

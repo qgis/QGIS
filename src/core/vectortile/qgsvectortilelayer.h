@@ -18,9 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfeatureid.h"
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
-#include "qgsfeatureid.h"
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
@@ -171,8 +171,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
-    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
-    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const FINAL;
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const final;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const final;
     QString htmlMetadata() const override;
 
     // new methods
