@@ -104,8 +104,8 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
 
     /**
      * Returns feature blank segment index closest to \a point, -1 if none could be found (there is
-     * no existing blank segments for instance).
-     * \param distance will be set to the distance between \a point and the returned blank segment
+     * no existing blank segments for instance). \a distance will be set to the distance between
+     * \a point and the returned blank segment
      */
     int getClosestBlankSegmentIndex( const QPointF &point, double &distance ) const;
 
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
 
     /**
      * Update start and end rubber band (anchor points used to resize the blank segment rubber band)
-     * accoring to current map tool state and selected blank segment
+     * according to current map tool state and selected blank segment
      */
     void updateStartEndRubberBand();
 

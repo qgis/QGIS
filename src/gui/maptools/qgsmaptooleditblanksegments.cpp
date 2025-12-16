@@ -52,7 +52,7 @@ namespace
   {
     public:
       /**
-       * Contructor
+       * Constructor
        * \param symbolLayerId symbol layer id to search
        */
       SymbolLayerFinder( const QString &symbolLayerId )
