@@ -41,9 +41,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Returns srsName
     QString srsName() const;
 
-    //! Return provider geometry attribute name
-    const QString &geometryAttribute() const { return mGeometryAttribute; }
-
     //! Return list of layer properties.
     const QList<QgsOgcUtils::LayerProperties> &layerProperties() const { return mLayerPropertiesList; }
 
@@ -100,26 +97,14 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     friend class QgsWFSProvider;
     friend class QgsWFSSingleFeatureRequest;
 
-    //! Datasource URI
-    QgsWFSDataSourceURI mURI;
-
     //! WFS version to use. Comes from GetCapabilities response
     QString mWFSVersion;
-
-    //! Name of geometry attribute
-    QString mGeometryAttribute;
 
     //! Layer properties
     QList<QgsOgcUtils::LayerProperties> mLayerPropertiesList;
 
     //! Map a field name to the pair (typename, fieldname) that describes its source field
     QMap<QString, QPair<QString, QString>> mMapFieldNameToSrcLayerNameFieldName;
-
-    //! Map a field name to the pair (xpath, isNestedContent)
-    QMap<QString, QPair<QString, bool>> mFieldNameToXPathAndIsNestedContentMap;
-
-    //! Map a namespace prefix to its URI
-    QMap<QString, QString> mNamespacePrefixToURIMap;
 
     //! Preferred HTTP method
     Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
@@ -129,9 +114,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     //! Server capabilities
     QgsWfsCapabilities mCaps;
-
-    //! If we have already issued a warning about missing feature ids
-    bool mHasWarnedAboutMissingFeatureId = false;
 
     /**
      * If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
@@ -168,8 +150,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     void invalidateCacheBaseUnderLock() override;
 
     bool supportsLimitedFeatureCountDownloads() const override { return !( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ); }
-
-    QString layerName() const override { return mURI.typeName(); }
 
     bool hasServerSideFilter() const override { return !mWFSFilter.isEmpty(); }
 
