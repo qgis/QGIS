@@ -167,6 +167,55 @@ bool QgsArrowArray::isValid() const
   return mArray.release;
 }
 
+QgsArrowArrayStream::QgsArrowArrayStream( QgsArrowArrayStream &&other )
+{
+  if ( mArrayStream.release )
+  {
+    ArrowArrayStreamRelease( &mArrayStream );
+  }
+
+  ArrowArrayStreamMove( other.array_stream(), &mArrayStream );
+}
+
+QgsArrowArrayStream &QgsArrowArrayStream::operator=( QgsArrowArrayStream &&other )
+{
+  if ( this != &other )
+  {
+    ArrowArrayStreamMove( other.array_stream(), &mArrayStream );
+  }
+
+  return *this;
+}
+
+QgsArrowArrayStream::~QgsArrowArrayStream()
+{
+  if ( mArrayStream.release )
+  {
+    ArrowArrayStreamRelease( &mArrayStream );
+  }
+}
+
+struct ArrowArrayStream *QgsArrowArrayStream::array_stream()
+{
+  return &mArrayStream;
+}
+
+unsigned long long QgsArrowArrayStream::cArrayStreamAddress() const
+{
+  return reinterpret_cast<unsigned long long>( &mArrayStream );
+}
+
+void QgsArrowArrayStream::exportToAddress( unsigned long long otherAddress )
+{
+  struct ArrowArrayStream *otherArrowArrayStream = reinterpret_cast<struct ArrowArrayStream *>( otherAddress );
+  ArrowArrayStreamMove( &mArrayStream, otherArrowArrayStream );
+}
+
+bool QgsArrowArrayStream::isValid() const
+{
+  return mArrayStream.release;
+}
+
 namespace
 {
 

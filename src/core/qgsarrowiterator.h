@@ -259,6 +259,66 @@ class CORE_EXPORT QgsArrowArray
 
 /**
  * \ingroup core
+ * \brief Wrapper around an ArrowArrayStream.
+ *
+ * This object provides a helper to allow array streams to be passed to or returned from
+ * QGIS functions in C++ or Python. See the documentation for the
+ * Arrow C Stream Interface for how to interact with the underlying ArrowArrayStream:
+ * https://arrow.apache.org/docs/format/CStreamInterface.html
+ *
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsArrowArrayStream
+{
+  public:
+    //! Construct invalid array stream holder
+    QgsArrowArrayStream() = default;
+
+    QgsArrowArrayStream &operator=( QgsArrowArrayStream &other ) = delete;
+    QgsArrowArrayStream( const QgsArrowArrayStream &other ) = delete;
+
+#ifndef SIP_RUN
+    //! Move constructor
+    QgsArrowArrayStream( QgsArrowArrayStream &&other );
+
+    //! Move-assign constructor
+    QgsArrowArrayStream &operator=( QgsArrowArrayStream &&other );
+#endif
+
+    ~QgsArrowArrayStream();
+
+#ifndef SIP_RUN
+    //! Access the underlying ArrowArray from C++
+    struct ArrowArrayStream *array_stream();
+#endif
+
+    /**
+     * Returns the address of the underlying ArrowArrayStream for import or export across boundaries
+     *
+     * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
+     */
+    unsigned long long cArrayStreamAddress() const;
+
+    /**
+     * Export this array to the address of an empty ArrowArrayStream for export across boundaries
+     *
+     * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
+     */
+    void exportToAddress( unsigned long long otherAddress );
+
+    //! Returns TRUE if this wrapper object holds a valid ArrowArray
+    bool isValid() const;
+
+  private:
+    struct ArrowArrayStream mArrayStream {};
+
+#ifdef SIP_RUN
+    QgsArrowArrayStream( const QgsArrowArrayStream &other );
+#endif
+};
+
+/**
+ * \ingroup core
  * \brief Wrapper for an Arrow reader of features from vector data provider or vector layer.
  * \since QGIS 4.0
  */
