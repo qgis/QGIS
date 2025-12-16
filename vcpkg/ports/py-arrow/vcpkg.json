@@ -1,0 +1,44 @@
+{
+  "name": "py-arrow",
+  "version": "21.0.0",
+  "description": "Python library for Apache Arrow.",
+  "homepage": "https://arrow.apache.org",
+  "license": "Apache-2.0",
+  "dependencies": [
+    {
+      "name": "arrow",
+      "features": [
+        "compute"
+      ]
+    },
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "py-cython",
+      "host": true
+    },
+    {
+      "name": "py-numpy",
+      "host": true
+    },
+    {
+      "name": "py-setuptools",
+      "host": true
+    },
+    {
+      "name": "py-setuptools-scm",
+      "host": true
+    },
+    {
+      "name": "py-wheel",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    }
+  ]
+}
