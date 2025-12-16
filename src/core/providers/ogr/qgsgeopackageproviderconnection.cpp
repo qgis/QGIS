@@ -214,7 +214,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 {
 
   // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
-  static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
+  static const QStringList excludedTableNames { { QStringLiteral( "'ogr_empty_table'" ) } };
 
   checkCapability( Capability::Tables );
 
