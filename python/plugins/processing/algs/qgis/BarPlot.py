@@ -149,7 +149,7 @@ class BarPlot(QgisAlgorithm):
 
         # 3. REQUEST WITHOUT OPTIMIZATIONS (Prevents Crash)
         req = QgsFeatureRequest()
-        
+
         x_data = []
         y_data = []
 
