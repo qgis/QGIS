@@ -17,7 +17,6 @@
 
 #include "qgisapp.h"
 #include "qgsmaptool.h"
-#include "qgsmaptooldistributefeature.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsmaptooladdpart.h"
 #include "qgsmaptooladdring.h"
@@ -25,6 +24,7 @@
 #include "qgsmaptoolchangelabelproperties.h"
 #include "qgsmaptooldeletepart.h"
 #include "qgsmaptooldeletering.h"
+#include "qgsmaptooldistributefeature.h"
 #include "qgsmaptooleditmeshframe.h"
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmaptoolfillring.h"
