@@ -46,7 +46,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
     }
   }
 
-  std::function mapFn = [attribute]( const NodeProcessData &data )
+  std::function mapFn = [attribute]( const NodeProcessData & data )
   {
     QgsPointCloudIndex index = data.index;
     QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );

@@ -87,7 +87,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
       QgsPointCloudIndex pc = subIndex.index();
       if ( !pc || !pc.isValid() )
         continue;
-      
+
       const QString uri = pc.uri();
       const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas, pc );
       mappedPoints.insert( uri, sel );
@@ -98,7 +98,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
     QgsPointCloudIndex pc = pcLayer->index();
     if ( !pc || !pc.isValid() )
       return;
-    
+
     const QString uri = pc.uri();
     const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas, pc );
     mappedPoints.insert( uri, sel );

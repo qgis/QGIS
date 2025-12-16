@@ -1019,26 +1019,26 @@ bool QgsPointCloudLayer::startEditing()
     QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
     const QVector<QgsPointCloudSubIndex> subIndexes = vpcProvider->subIndexes();
     mEditingSubIndexes.clear();
-    
+
     for ( int i = 0; i < subIndexes.size(); ++i )
     {
       const QgsPointCloudSubIndex &subIndex = subIndexes.at( i );
-      
+
       QgsPointCloudIndex subIndexPtr = subIndex.index();
       QString subIndexUri = subIndex.uri();
-      
+
       if ( !subIndexPtr.isValid() )
       {
         mDataProvider->loadSubIndex( i );
         subIndexPtr = subIndexes.at( i ).index();
-        
+
         if ( !subIndexPtr.isValid() )
         {
           mEditingSubIndexes.clear();
           return false;
         }
       }
-      
+
       QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( subIndexPtr, subIndexUri ) );
       if ( !editIndex.isValid() )
       {
@@ -1047,7 +1047,7 @@ bool QgsPointCloudLayer::startEditing()
       }
       mEditingSubIndexes.append( editIndex );
     }
-    
+
     emit editingStarted();
     return true;
   }
@@ -1059,6 +1059,7 @@ bool QgsPointCloudLayer::startEditing()
       mEditIndex = QgsPointCloudIndex();
       return false;
     }
+
     emit editingStarted();
     return true;
   }
@@ -1080,10 +1081,13 @@ bool QgsPointCloudLayer::commitChanges( bool stopEditing )
 
   if ( mIsVpc )
   {
-    for ( auto index : mEditingSubIndexes )
-      if( index.isModified() )
-        if ( !index.commitChanges( &mCommitError ) )
-          return false;
+    if ( mIsVpc )
+    {
+      for ( QgsPointCloudIndex &index : mEditingSubIndexes )
+        if ( index.isModified() )
+          if ( !index.commitChanges( &mCommitError ) )
+            return false;
+    }
   }
   else
   {
@@ -1126,20 +1130,27 @@ bool QgsPointCloudLayer::rollBack()
     if ( mEditingSubIndexes.isEmpty() )
       return false;
 
-    for ( QgsPointCloudIndex &index : mEditingSubIndexes )
+    QVector<QPair<QString, QList<QgsPointCloudNodeId>>> queuedUpdates;
+    queuedUpdates.reserve( mEditingSubIndexes.size() );
+    for ( const QgsPointCloudIndex &index : mEditingSubIndexes )
     {
+      if ( !index.isValid() )
+        continue;
       const QList<QgsPointCloudNodeId> updatedNodes = index.updatedNodes();
-
-      undoStack()->clear();
-
-      index = QgsPointCloudIndex();
-      emit editingStopped();
-
       if ( !updatedNodes.isEmpty() )
-      {
-        for ( const QgsPointCloudNodeId &n : updatedNodes )
-          emit chunkAttributeValuesChanged( index.uri(), n );
-      }
+        queuedUpdates.push_back( qMakePair( index.uri(), updatedNodes ) );
+    }
+
+    undoStack()->clear();
+    mEditingSubIndexes.clear();
+    emit editingStopped();
+
+    for ( const auto &pair : std::as_const( queuedUpdates ) )
+    {
+      const QString &uri = pair.first;
+      const QList<QgsPointCloudNodeId> &nodes = pair.second;
+      for ( const QgsPointCloudNodeId &n : nodes )
+        emit chunkAttributeValuesChanged( uri, n );
     }
 
     return true;
@@ -1153,13 +1164,14 @@ bool QgsPointCloudLayer::rollBack()
 
     undoStack()->clear();
 
+    const QString uri = mEditIndex.uri();
     mEditIndex = QgsPointCloudIndex();
     emit editingStopped();
 
     if ( !updatedNodes.isEmpty() )
     {
       for ( const QgsPointCloudNodeId &n : updatedNodes )
-        emit chunkAttributeValuesChanged( mEditIndex.uri(), n );
+        emit chunkAttributeValuesChanged( uri, n );
 
       // emitting layerModified() is not required as that's done automatically
       // when undo stack index changes
@@ -1216,7 +1228,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
 {
   if ( mIsVpc )  // we don't know which subindex we are working on
     return false;
-  
+
   const QString uri = mEditIndex.uri();
   return this->changeAttributeValue( { { uri, { { n, points } } } }, attribute, value );
 }
@@ -1253,10 +1265,10 @@ bool QgsPointCloudLayer::changeAttributeValue( const QMap<QString, QHash<QgsPoin
       editIndexPtr = &mEditIndex;
     }
 
-      // Cannot allow x,y,z editing as points may get moved outside the node extents
+    // Cannot allow x,y,z editing as points may get moved outside the node extents
     if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 ||
-        attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 ||
-        attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
+         attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 ||
+         attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
       return false;
 
     const QgsPointCloudAttributeCollection attributeCollection = editIndexPtr->attributes();
@@ -1265,8 +1277,8 @@ bool QgsPointCloudLayer::changeAttributeValue( const QMap<QString, QHash<QgsPoin
     const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
 
     if ( !at ||
-        at->size() != attribute.size() ||
-        at->type() != attribute.type() )
+         at->size() != attribute.size() ||
+         at->type() != attribute.type() )
     {
       return false;
     }
@@ -1314,14 +1326,20 @@ QgsPointCloudIndex QgsPointCloudLayer::index( const QString &uri ) const
   {
     for ( const QgsPointCloudIndex &subIndex : mEditingSubIndexes )
     {
-      QString uriSubIndex = subIndex.uri();
+      if ( !subIndex || !subIndex.isValid() )
+        continue;
+
+      const QString uriSubIndex = subIndex.uri();
       if ( uriSubIndex == uri )
         return subIndex;
     }
 
+    if ( !mDataProvider )
+      return QgsPointCloudIndex();
+
     if ( QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() ) )
     {
-      if ( uri == vpcProvider->overview().uri() )
+      if ( vpcProvider->overview() && uri == vpcProvider->overview().uri() )
         return vpcProvider->overview();
 
       const QVector<QgsPointCloudSubIndex> subIndexes = vpcProvider->subIndexes();
@@ -1337,7 +1355,7 @@ QgsPointCloudIndex QgsPointCloudLayer::index( const QString &uri ) const
   else
   {
     if ( mEditIndex )
-        return mEditIndex;
+      return mEditIndex;
 
     if ( mDataProvider )
       return mDataProvider->index();

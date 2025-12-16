@@ -284,8 +284,8 @@ Stops a current editing operation and discards any uncommitted edits.
 %End
 
 
-    
-    
+
+
 
     QgsPointCloudIndex index( const QString &uri = QString() ) const;
 %Docstring

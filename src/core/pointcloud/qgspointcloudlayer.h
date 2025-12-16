@@ -336,7 +336,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * \since QGIS 3.44
      */
     bool changeAttributeValue( const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
-    
+
     /**
      * Attempts to modify attribute values for specific points in the editing buffer.
      *
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * \since QGIS 4.0
      */
     bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value, const QString uri ) SIP_SKIP;
-    
+
     /**
      * Attempts to modify attribute values for specific points in the editing buffer.
      *

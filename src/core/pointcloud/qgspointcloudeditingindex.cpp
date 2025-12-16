@@ -54,7 +54,7 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &
     return;
 
   mIndex = index;
-  mUri = uri; 
+  mUri = uri;
 
   mAttributes = mIndex.attributes();
   mScale = mIndex.scale();
