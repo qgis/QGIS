@@ -357,6 +357,11 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapture.cpp
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
+
+  maptools/qgsbezierdata.cpp
+  maptools/qgsbeziermarker.cpp
+
+  maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooldigitizefeature.cpp
   maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooleditblanksegments.cpp
@@ -1369,6 +1374,8 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapture.h
   maptools/qgsmaptoolcapturelayergeometry.h
   maptools/qgsmaptoolcapturerubberband.h
+  maptools/qgsbezierdata.h
+  maptools/qgsbeziermarker.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
   maptools/qgsmaptooleditblanksegments.h
