@@ -65,10 +65,7 @@ Qgis::TextHorizontalAlignment QgsAlignmentComboBox::horizontalAlignment() const
     case Qt::AlignAbsolute:
       return Qgis::TextHorizontalAlignment::Left;
 
-    case Qt::AlignTop:
-    case Qt::AlignBottom:
-    case Qt::AlignVCenter:
-    case Qt::AlignBaseline:
+    default:
       break;
   }
 
@@ -79,13 +76,6 @@ Qgis::TextVerticalAlignment QgsAlignmentComboBox::verticalAlignment() const
 {
   switch ( currentAlignment() )
   {
-    case Qt::AlignLeft:
-    case Qt::AlignRight:
-    case Qt::AlignHCenter:
-    case Qt::AlignJustify:
-    case Qt::AlignAbsolute:
-      break;
-
     case Qt::AlignTop:
       return Qgis::TextVerticalAlignment::Top;
     case Qt::AlignBottom:
@@ -94,6 +84,9 @@ Qgis::TextVerticalAlignment QgsAlignmentComboBox::verticalAlignment() const
       return Qgis::TextVerticalAlignment::VerticalCenter;
     case Qt::AlignBaseline:
       return Qgis::TextVerticalAlignment::Bottom; // not yet supported
+
+    default:
+      break;
   }
 
   return Qgis::TextVerticalAlignment::Bottom;
