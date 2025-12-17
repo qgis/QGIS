@@ -25,7 +25,6 @@
 #include "qgsstaccontroller.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
-#include "qgsstacdataitems.h"
 #include "qgstest.h"
 
 #include <QObject>
@@ -287,7 +286,6 @@ void TestQgsStac::testParseLocalCollections()
   QCOMPARE( col->links().size(), 3 );
   QCOMPARE( col->stacExtensions().size(), 0 );
 }
-
 
 void TestQgsStac::testFetchStacObjectAsync()
 {
