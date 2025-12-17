@@ -294,6 +294,7 @@ class CORE_EXPORT Qgis
       MultiSurface = 12, //!< MultiSurface
       PolyhedralSurface = 15, //!< PolyhedralSurface \since QGIS 3.40
       TIN = 16, //!< TIN \since QGIS 3.40
+      NurbsCurve = 21, //!< NurbsCurve \since QGIS 4.0
       NoGeometry = 100, //!< No geometry
       PointZ = 1001, //!< PointZ
       LineStringZ = 1002, //!< LineStringZ
@@ -310,6 +311,7 @@ class CORE_EXPORT Qgis
       MultiSurfaceZ = 1012, //!< MultiSurfaceZ
       PolyhedralSurfaceZ = 1015, //!< PolyhedralSurfaceZ
       TINZ = 1016, //!< TINZ
+      NurbsCurveZ = 1021, //!< NurbsCurveZ \since QGIS 4.0
       PointM = 2001, //!< PointM
       LineStringM = 2002, //!< LineStringM
       PolygonM = 2003, //!< PolygonM
@@ -325,6 +327,7 @@ class CORE_EXPORT Qgis
       MultiSurfaceM = 2012, //!< MultiSurfaceM
       PolyhedralSurfaceM = 2015, //!< PolyhedralSurfaceM
       TINM = 2016, //!< TINM
+      NurbsCurveM = 2021, //!< NurbsCurveM \since QGIS 4.0
       PointZM = 3001, //!< PointZM
       LineStringZM = 3002, //!< LineStringZM
       PolygonZM = 3003, //!< PolygonZM
@@ -340,6 +343,7 @@ class CORE_EXPORT Qgis
       PolyhedralSurfaceZM = 3015, //!< PolyhedralSurfaceM
       TINZM = 3016, //!< TINZM
       TriangleZM = 3017, //!< TriangleZM
+      NurbsCurveZM = 3021, //!< NurbsCurveZM \since QGIS 4.0
       Point25D = 0x80000001, //!< Point25D
       LineString25D, //!< LineString25D
       Polygon25D, //!< Polygon25D
@@ -402,8 +406,21 @@ class CORE_EXPORT Qgis
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
       Shape, //!< Digitize shapes.
+      NurbsCurve, //!< Digitizes NURBS curves with control points. \since QGIS 4.0
     };
     Q_ENUM( CaptureTechnique )
+
+    /**
+     * NURBS digitizing mode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class NurbsMode : int
+    {
+      ControlPoints, //!< Direct control points mode - the curve is attracted to control points but does not pass through them
+      PolyBezier, //!< Poly-Bézier mode (vector graphics style) - anchors with tangent handles, the curve passes through anchor points
+    };
+    Q_ENUM( NurbsMode )
 
     /**
      * Vector layer type flags.
