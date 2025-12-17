@@ -3399,6 +3399,9 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    <property name="text">
     <string>Digitize with NURBS Curve</string>
    </property>
+   <property name="toolTip">
+    <string>Digitizes NURBS curves with control points</string>
+   </property>
   </action>
   <action name="mActionElevationProfile">
    <property name="icon">
