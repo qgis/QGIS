@@ -638,19 +638,12 @@ void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<
   const double *srcXData = ring->xData();
   const double *srcYData = ring->yData();
   const double *srcZData = ring->zData();
-  std::unordered_set<std::pair<float, float>, float_pair_hash> foundPoints;
 
+  // earcut handles duplicates, we do not need to remove them here
   for ( int i = 0; i < pCount - 1; ++i )
   {
     const float x = static_cast<float>( *srcXData++ );
     const float y = static_cast<float>( *srcYData++ );
-
-    const auto res = foundPoints.insert( std::make_pair( x, y ) );
-    if ( !res.second )
-    {
-      // already used this point, don't add a second time
-      continue;
-    }
 
     std::array<double, 2> pt = { x, y };
     polyline.push_back( pt );
