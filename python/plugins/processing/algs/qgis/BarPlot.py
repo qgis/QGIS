@@ -147,7 +147,7 @@ class BarPlot(QgisAlgorithm):
                 self.tr("Field '{}' not found in input layer.").format(valuefieldname)
             )
 
-        # 3. SAFE EXECUTION WITH CANCEL CHECK
+        # 3. SAFE EXECUTION (Convert everything to native Python types)
         req = QgsFeatureRequest()
         x_data = []
         y_data = []
@@ -157,9 +157,23 @@ class BarPlot(QgisAlgorithm):
                 break
 
             attrs = f.attributes()
-            n_val = attrs[name_idx]
-            x_data.append(n_val if n_val is not None else "<NULL>")
-            y_data.append(attrs[value_idx])
+            
+            # SAFE CAST: Force QGIS types into Python str/float
+            # This prevents Plotly from crashing on QVariants
+            raw_name = attrs[name_idx]
+            if raw_name is None:
+                x_data.append("<NULL>")
+            else:
+                x_data.append(str(raw_name))
+
+            raw_val = attrs[value_idx]
+            if raw_val is None:
+                y_data.append(None)
+            else:
+                try:
+                    y_data.append(float(raw_val))
+                except (ValueError, TypeError):
+                    y_data.append(0.0)
 
         data = [go.Bar(x=x_data, y=y_data)]
 
