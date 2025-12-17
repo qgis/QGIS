@@ -20,6 +20,8 @@
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
+#include "qgsbezierdata.h"
+#include "qgsbeziermarker.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
@@ -31,9 +33,11 @@
 #include "qgsmaptoolcapturerubberband.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgsnurbscurve.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
@@ -44,6 +48,7 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QWheelEvent>
 
 #include "moc_qgsmaptoolcapture.cpp"
 
@@ -110,6 +115,7 @@ bool QgsMapToolCapture::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
   BUILTIN_UNREACHABLE
@@ -441,12 +447,22 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
     case Qgis::CaptureTechnique::Shape:
       mLineDigitizingType = Qgis::WkbType::LineString;
       break;
+    case Qgis::CaptureTechnique::NurbsCurve:
+      mLineDigitizingType = Qgis::WkbType::NurbsCurve;
+      break;
   }
 
   if ( mTempRubberBand )
     mTempRubberBand->setStringType( mLineDigitizingType );
 
   mCurrentCaptureTechnique = technique;
+
+  // Emit help message for Poly-Bézier mode
+  if ( technique == Qgis::CaptureTechnique::NurbsCurve
+       && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier )
+  {
+    emit messageEmitted( tr( "Bézier editing: click and drag to add anchor with symmetric handles, click on handle/anchor to edit, Alt+click on anchor to extend handles, right-click to finish" ), Qgis::MessageLevel::Info );
+  }
 
   if ( technique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
   {
@@ -474,6 +490,84 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
     if ( mCurrentShapeMapTool )
       mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
   }
+}
+
+void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
+{
+  // Poly-Bézier mode: handle press to add anchor and start drag
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
+       && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier
+       && ( mode() == CaptureLine || mode() == CapturePolygon ) )
+  {
+    if ( e->button() == Qt::LeftButton )
+    {
+      const QgsPoint mapPoint = QgsPoint( e->mapPoint() );
+
+      // Initialize Bézier structures if needed
+      if ( !mBezierData )
+        mBezierData = std::make_unique<QgsBezierData>();
+      if ( !mBezierMarker )
+        mBezierMarker = std::make_unique<QgsBezierMarker>( mCanvas );
+
+      // Calculate tolerance in map units (10 pixels)
+      const double tolerance = mCanvas->mapUnitsPerPixel() * 10;
+
+      // Reset drag indices
+      mBezierDragAnchorIndex = -1;
+      mBezierDragHandleIndex = -1;
+      mBezierMoveAnchorIndex = -1;
+
+      // First, check if clicking on an existing handle
+      const int handleIdx = mBezierData->findClosestHandle( mapPoint, tolerance );
+      if ( handleIdx >= 0 )
+      {
+        // Start dragging this handle independently
+        mBezierDragHandleIndex = handleIdx;
+        mBezierDragging = true;
+        mBezierMarker->highlightHandle( handleIdx );
+        emit messageEmitted( tr( "Bézier editing: drag to move handle, release to confirm" ), Qgis::MessageLevel::Info );
+        return;
+      }
+
+      // Second, check if clicking on an existing anchor
+      const int anchorIdx = mBezierData->findClosestAnchor( mapPoint, tolerance );
+      if ( anchorIdx >= 0 )
+      {
+        if ( e->modifiers() & Qt::AltModifier )
+        {
+          // Alt+click on anchor: extend handles symmetrically (like creating new anchor)
+          mBezierDragAnchorIndex = anchorIdx;
+          mBezierDragging = true;
+          mBezierMarker->highlightAnchor( anchorIdx );
+          emit messageEmitted( tr( "Bézier editing: drag to extend handles symmetrically, release to confirm" ), Qgis::MessageLevel::Info );
+        }
+        else
+        {
+          // Normal click: start moving this anchor
+          mBezierMoveAnchorIndex = anchorIdx;
+          mBezierDragging = true;
+          mBezierMarker->highlightAnchor( anchorIdx );
+          emit messageEmitted( tr( "Bézier editing: drag to move anchor, release to confirm" ), Qgis::MessageLevel::Info );
+        }
+        return;
+      }
+
+      // Otherwise, add new anchor and start symmetric handle drag
+      mBezierData->addAnchor( mapPoint );
+      mBezierDragAnchorIndex = mBezierData->anchorCount() - 1;
+      mBezierDragging = true;
+      emit messageEmitted( tr( "Bézier editing: drag to define handles, release to confirm anchor" ), Qgis::MessageLevel::Info );
+
+      // Update visualization
+      mBezierMarker->updateFromData( *mBezierData );
+
+      startCapturing();
+      return;
+    }
+  }
+
+  // Default handling for other modes
+  QgsMapToolAdvancedDigitizing::cadCanvasPressEvent( e );
 }
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
@@ -506,6 +600,45 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       mCurrentShapeMapTool->cadCanvasMoveEvent( e, mCaptureMode );
       return;
     }
+  }
+  else if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
+            && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier )
+  {
+    // Poly-Bézier mode handling
+    const QgsPoint mapPoint = QgsPoint( point );
+
+    if ( mBezierDragging && mBezierData )
+    {
+      if ( mBezierDragHandleIndex >= 0 )
+      {
+        // Dragging an existing handle independently
+        mBezierData->moveHandle( mBezierDragHandleIndex, mapPoint );
+      }
+      else if ( mBezierMoveAnchorIndex >= 0 )
+      {
+        // Moving an existing anchor (handles move relatively)
+        mBezierData->moveAnchor( mBezierMoveAnchorIndex, mapPoint );
+      }
+      else if ( mBezierDragAnchorIndex >= 0 )
+      {
+        // Creating new anchor: update both handles symmetrically (like BezierEditing's move_handle2)
+        const QgsPoint &anchor = mBezierData->anchor( mBezierDragAnchorIndex );
+        const int leftHandleIdx = mBezierDragAnchorIndex * 2;
+        const int rightHandleIdx = mBezierDragAnchorIndex * 2 + 1;
+
+        // Right handle follows mouse
+        mBezierData->moveHandle( rightHandleIdx, mapPoint );
+
+        // Left handle goes opposite direction: anchor - (mouse - anchor) = 2*anchor - mouse
+        const QgsPoint leftHandle( anchor.x() * 2 - mapPoint.x(), anchor.y() * 2 - mapPoint.y() );
+        mBezierData->moveHandle( leftHandleIdx, leftHandle );
+      }
+
+      // Update visualization
+      if ( mBezierMarker )
+        mBezierMarker->updateFromData( *mBezierData );
+    }
+    return;
   }
   else
   {
@@ -871,8 +1004,39 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
 {
   mTracingStartPoint = QgsPointXY();
 
+  // Handle Poly-Bézier mode: delete the last anchor with its handles
+  // This must be checked before the standard size() check since Poly-Bézier
+  // doesn't use mCaptureCurve during capture
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
+       && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier
+       && mBezierData && mBezierData->anchorCount() > 0 )
+  {
+    mBezierData->deleteAnchor( mBezierData->anchorCount() - 1 );
+    if ( mBezierMarker )
+      mBezierMarker->updateFromData( *mBezierData );
+    // Reset drag state
+    mBezierDragging = false;
+    mBezierDragAnchorIndex = -1;
+    mBezierDragHandleIndex = -1;
+    mBezierMoveAnchorIndex = -1;
+    mCadDockWidget->removePreviousPoint();
+    return;
+  }
+
   if ( mTempRubberBand )
   {
+    // Handle NURBS ControlPoints mode: remove last control point
+    // This must be checked before the standard size() check since NURBS ControlPoints
+    // doesn't use mCaptureCurve during capture
+    if ( mTempRubberBand->stringType() == Qgis::WkbType::NurbsCurve && mTempRubberBand->pointsCount() > 1 )
+    {
+      const QgsPoint lastPoint = mTempRubberBand->lastPoint();
+      mTempRubberBand->removeLastPoint();
+      mTempRubberBand->movePoint( lastPoint );
+      mCadDockWidget->removePreviousPoint();
+      return;
+    }
+
     if ( size() <= 1 && mTempRubberBand->pointsCount() != 0 )
       return;
 
@@ -990,6 +1154,67 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
     // Override default shortcut management in MapCanvas
     e->ignore();
   }
+  else if ( e->key() == Qt::Key_W && !e->isAutoRepeat() )
+  {
+    // Enable NURBS weight editing mode when W is pressed
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && mTempRubberBand && mTempRubberBand->pointsCount() >= 2 )
+    {
+      mWeightEditMode = true;
+      // Edit the last control point by default (the one being digitized)
+      mWeightEditControlPointIndex = mTempRubberBand->pointsCount() - 2; // -2 because last point is the cursor position
+      emit messageEmitted( tr( "NURBS weight editing: Use mouse wheel to adjust weight (Ctrl=fine, Shift=coarse). Current weight: %1" ).arg( mTempRubberBand->weight( mWeightEditControlPointIndex ), 0, 'f', 2 ), Qgis::MessageLevel::Info );
+      e->ignore();
+    }
+  }
+}
+
+void QgsMapToolCapture::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_W && !e->isAutoRepeat() )
+  {
+    if ( mWeightEditMode )
+    {
+      mWeightEditMode = false;
+      mWeightEditControlPointIndex = -1;
+      emit messageEmitted( QString() ); // Clear the message
+      e->accept();
+      return;
+    }
+  }
+
+  QgsMapToolAdvancedDigitizing::keyReleaseEvent( e );
+}
+
+void QgsMapToolCapture::wheelEvent( QWheelEvent *e )
+{
+  if ( mWeightEditMode && mWeightEditControlPointIndex >= 0 && mTempRubberBand )
+  {
+    // Calculate step based on modifiers
+    double step = 0.1;
+    if ( e->modifiers() & Qt::ControlModifier )
+      step = 0.01; // Fine adjustment
+    else if ( e->modifiers() & Qt::ShiftModifier )
+      step = 1.0; // Coarse adjustment
+
+    // Direction based on wheel delta
+    const int delta = e->angleDelta().y();
+    const double adjustment = ( delta > 0 ) ? step : -step;
+
+    // Get current weight and apply adjustment
+    const double currentWeight = mTempRubberBand->weight( mWeightEditControlPointIndex );
+    const double newWeight = std::max( 0.01, currentWeight + adjustment );
+
+    // Apply the new weight
+    if ( mTempRubberBand->setWeight( mWeightEditControlPointIndex, newWeight ) )
+    {
+      emit messageEmitted( tr( "NURBS weight: %1" ).arg( newWeight, 0, 'f', 2 ), Qgis::MessageLevel::Info );
+    }
+
+    e->accept();
+    return;
+  }
+
+  QgsMapToolAdvancedDigitizing::wheelEvent( e );
 }
 
 void QgsMapToolCapture::startCapturing()
@@ -1021,6 +1246,15 @@ void QgsMapToolCapture::stopCapturing()
   mCaptureCurve.clear();
   updateExtraSnapLayer();
   mSnappingMatches.clear();
+
+  // Clean up Bézier digitizing data
+  if ( mBezierMarker )
+    mBezierMarker->clear();
+  mBezierData.reset();
+  mBezierMarker.reset();
+  mBezierDragging = false;
+  mBezierDragAnchorIndex = -1;
+
   if ( auto *lCurrentVectorLayer = currentVectorLayer() )
     lCurrentVectorLayer->triggerRepaint();
 }
@@ -1237,16 +1471,94 @@ void QgsMapToolCapture::updateExtraSnapLayer()
   if ( !mExtraSnapLayer )
     return;
 
-  if ( canvas()->snappingUtils()->config().selfSnapping() && layer() && mCaptureCurve.numPoints() >= 2 )
+  if ( canvas()->snappingUtils()->config().selfSnapping() && layer() )
   {
     // the current layer may have changed
     mExtraSnapLayer->setCrs( layer()->crs() );
-    QgsGeometry geom = QgsGeometry( mCaptureCurve.clone() );
-    // we close the curve to allow snapping on last segment
-    if ( mCaptureMode == CapturePolygon && mCaptureCurve.numPoints() >= 3 )
+
+    QgsGeometry geom;
+
+    // For NURBS curves, include both the evaluated curve and control points for snapping
+    if ( mLineDigitizingType == Qgis::WkbType::NurbsCurve && mTempRubberBand && mTempRubberBand->pointsCount() >= 2 )
     {
-      qgsgeometry_cast<QgsCompoundCurve *>( geom.get() )->close();
+      // Create a LineString that includes both the interpolated curve points AND control points
+      auto lineForSnap = std::make_unique<QgsLineString>();
+
+      // First, add all control points from the rubber band (for snapping to control points)
+      const int pointCount = mTempRubberBand->pointsCount();
+      // Exclude the last point (cursor position)
+      for ( int i = 0; i < pointCount - 1; ++i )
+      {
+        lineForSnap->addVertex( mTempRubberBand->pointFromEnd( pointCount - 1 - i ) );
+      }
+
+      // Then, try to get the evaluated curve and add its vertices (for snapping to the curve)
+      std::unique_ptr<QgsCurve> nurbsCurve( mTempRubberBand->curve() );
+      if ( nurbsCurve )
+      {
+        std::unique_ptr<QgsLineString> curvePoints( nurbsCurve->curveToLine() );
+        if ( curvePoints )
+        {
+          for ( int i = 0; i < curvePoints->numPoints(); ++i )
+          {
+            lineForSnap->addVertex( curvePoints->pointN( i ) );
+          }
+        }
+      }
+
+      // For polygon mode, close the curve to allow snapping to first point
+      if ( mCaptureMode == CapturePolygon && lineForSnap->numPoints() >= 3 )
+      {
+        lineForSnap->close();
+      }
+
+      geom = QgsGeometry( lineForSnap.release() );
     }
+    else if ( mBezierData && mBezierData->anchorCount() >= 2 )
+    {
+      // Poly-Bézier mode: include anchors, handles, and interpolated curve for snapping
+      auto lineForSnap = std::make_unique<QgsLineString>();
+
+      // Add all anchors for snapping
+      const QVector<QgsPoint> &anchors = mBezierData->anchors();
+      for ( const QgsPoint &pt : anchors )
+      {
+        lineForSnap->addVertex( pt );
+      }
+
+      // Add all handles for snapping
+      const QVector<QgsPoint> &handles = mBezierData->handles();
+      for ( const QgsPoint &pt : handles )
+      {
+        lineForSnap->addVertex( pt );
+      }
+
+      // Add interpolated curve points for snapping to the curve itself
+      const QgsPointSequence interpolated = mBezierData->interpolate();
+      for ( const QgsPoint &pt : interpolated )
+      {
+        lineForSnap->addVertex( pt );
+      }
+
+      // For polygon mode, close the curve to allow snapping to first point
+      if ( mCaptureMode == CapturePolygon && lineForSnap->numPoints() >= 3 )
+      {
+        lineForSnap->close();
+      }
+
+      geom = QgsGeometry( lineForSnap.release() );
+    }
+    else if ( mCaptureCurve.numPoints() >= 2 )
+    {
+      // Standard capture curve
+      geom = QgsGeometry( mCaptureCurve.clone() );
+      // we close the curve to allow snapping on last segment
+      if ( mCaptureMode == CapturePolygon && mCaptureCurve.numPoints() >= 3 )
+      {
+        qgsgeometry_cast<QgsCompoundCurve *>( geom.get() )->close();
+      }
+    }
+
     mExtraSnapLayer->changeGeometry( mExtraSnapFeatureId, geom );
   }
   else
@@ -1324,8 +1636,108 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
     bool digitizingFinished = false;
+    QgsPointSequence nurbsControlPoints;
+    QVector<double> nurbsWeights;
 
-    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
+    // Poly-Bézier mode handling
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
+         && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier )
+    {
+      if ( e->button() == Qt::LeftButton )
+      {
+        // End dragging on mouse release
+        mBezierDragging = false;
+        mBezierDragAnchorIndex = -1;
+        mBezierDragHandleIndex = -1;
+        mBezierMoveAnchorIndex = -1;
+
+        // Clear highlights
+        if ( mBezierMarker )
+        {
+          mBezierMarker->highlightAnchor( -1 );
+          mBezierMarker->highlightHandle( -1 );
+          mBezierMarker->updateFromData( *mBezierData );
+        }
+
+        // Emit help message reminder
+        emit messageEmitted( tr( "Bézier editing: click and drag to add anchor, click on handle/anchor to edit, Alt+click to extend handles, right-click to finish" ), Qgis::MessageLevel::Info );
+        return;
+      }
+      else if ( e->button() == Qt::RightButton )
+      {
+        // End dragging
+        mBezierDragging = false;
+        mBezierDragAnchorIndex = -1;
+        mBezierDragHandleIndex = -1;
+        mBezierMoveAnchorIndex = -1;
+
+        if ( mBezierData && mBezierData->anchorCount() >= 2 )
+        {
+          // Convert Poly-Bézier to NurbsCurve
+          QgsNurbsCurve *nurbsCurve = mBezierData->asNurbsCurve();
+          if ( nurbsCurve )
+          {
+            // Transform to layer coordinates
+            QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+            if ( vlayer )
+            {
+              const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( vlayer );
+              if ( ct.isValid() && !ct.isShortCircuited() )
+              {
+                try
+                {
+                  nurbsCurve->transform( ct, Qgis::TransformDirection::Reverse );
+                }
+                catch ( QgsCsException & )
+                {
+                  delete nurbsCurve;
+                  emit messageEmitted( tr( "Cannot transform the geometry to layer coordinates" ), Qgis::MessageLevel::Warning );
+                  stopCapturing();
+                  return;
+                }
+              }
+
+              // Close for polygon if needed
+              if ( mode() == CapturePolygon )
+              {
+                // For polygon, we need to close the curve - add first anchor as last anchor
+                // The NurbsCurve from asNurbsCurve is already properly formed
+              }
+
+              std::unique_ptr<QgsCurve> curveToAdd( nurbsCurve );
+              QgsGeometry g;
+
+              if ( mode() == CaptureLine )
+              {
+                g = QgsGeometry( curveToAdd->clone() );
+                geometryCaptured( g );
+                lineCaptured( curveToAdd.release() );
+              }
+              else // CapturePolygon
+              {
+                std::unique_ptr<QgsCurvePolygon> poly { new QgsCurvePolygon() };
+                poly->setExteriorRing( curveToAdd.release() );
+                g = QgsGeometry( poly->clone() );
+                geometryCaptured( g );
+                polygonCaptured( poly.get() );
+              }
+
+              digitizingFinished = true;
+            }
+          }
+        }
+
+        // Clean up Bézier data
+        if ( mBezierMarker )
+          mBezierMarker->clear();
+        mBezierData.reset();
+        mBezierMarker.reset();
+        stopCapturing();
+        return;
+      }
+      return;
+    }
+    else if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
     {
       if ( !mCurrentShapeMapTool )
       {
@@ -1364,25 +1776,78 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( e->button() == Qt::RightButton )
       {
         // End of string
-        deleteTempRubberBand();
 
-        //lines: bail out if there are not at least two vertices
-        if ( mode() == CaptureLine && size() < 2 )
+        // Extract NURBS control points and weights from the rubberband
+        if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && mTempRubberBand )
         {
-          stopCapturing();
-          return;
+          const int rbPointCount = mTempRubberBand->pointsCount();
+          if ( rbPointCount > 1 )
+          {
+            // Exclude the last point (cursor position)
+            for ( int i = 0; i < rbPointCount - 1; ++i )
+            {
+              nurbsControlPoints.append( mTempRubberBand->pointFromEnd( rbPointCount - 1 - i ) );
+            }
+            // Also extract weights (in correct order)
+            const QVector<double> &rbWeights = mTempRubberBand->weights();
+            for ( int i = 0; i < rbPointCount - 1; ++i )
+            {
+              if ( i < rbWeights.size() )
+                nurbsWeights.append( rbWeights[i] );
+              else
+                nurbsWeights.append( 1.0 );
+            }
+          }
         }
 
-        //polygons: bail out if there are not at least two vertices
-        if ( mode() == CapturePolygon && size() < 3 )
+        deleteTempRubberBand();
+
+        if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve )
         {
-          stopCapturing();
-          return;
+          // Minimum 4 control points required for degree 3 NURBS
+          if ( mode() == CaptureLine && nurbsControlPoints.count() < 4 )
+          {
+            stopCapturing();
+            return;
+          }
+          if ( mode() == CapturePolygon && nurbsControlPoints.count() < 4 )
+          {
+            stopCapturing();
+            return;
+          }
+        }
+        else
+        {
+          //lines: bail out if there are not at least two vertices
+          if ( mode() == CaptureLine && size() < 2 )
+          {
+            stopCapturing();
+            return;
+          }
+
+          //polygons: bail out if there are not at least two vertices
+          if ( mode() == CapturePolygon && size() < 3 )
+          {
+            stopCapturing();
+            return;
+          }
         }
 
         if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
         {
-          closePolygon();
+          // Close NURBS curve by adding first control point at the end
+          if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && !nurbsControlPoints.isEmpty() )
+          {
+            // Add the first control point as the last to close the curve
+            nurbsControlPoints.append( nurbsControlPoints.first() );
+            // Also duplicate the first weight for closure
+            if ( !nurbsWeights.isEmpty() )
+              nurbsWeights.append( nurbsWeights.first() );
+          }
+          else
+          {
+            closePolygon();
+          }
         }
 
         digitizingFinished = true;
@@ -1392,7 +1857,52 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( digitizingFinished )
     {
       QgsGeometry g;
-      std::unique_ptr<QgsCurve> curveToAdd( captureCurve()->clone() );
+      std::unique_ptr<QgsCurve> curveToAdd;
+
+      // Create a single NurbsCurve from all control points
+      if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve )
+      {
+        const int degree = 3;
+        const int n = nurbsControlPoints.count();
+
+        if ( n >= degree + 1 )
+        {
+          // Generate uniform clamped knot vector
+          const int knotCount = n + degree + 1;
+          QVector<double> knots( knotCount );
+
+          for ( int i = 0; i <= degree; ++i )
+            knots[i] = 0.0;
+          for ( int i = knotCount - degree - 1; i < knotCount; ++i )
+            knots[i] = 1.0;
+          const int numMiddleKnots = n - degree - 1;
+          for ( int i = 0; i < numMiddleKnots; ++i )
+            knots[degree + 1 + i] = static_cast<double>( i + 1 ) / ( numMiddleKnots + 1 );
+
+          // Use weights from rubber band, or default to 1.0
+          QVector<double> weights;
+          if ( nurbsWeights.size() >= n )
+          {
+            weights = nurbsWeights.mid( 0, n );
+          }
+          else
+          {
+            weights = nurbsWeights;
+            while ( weights.size() < n )
+              weights.append( 1.0 );
+          }
+          curveToAdd.reset( new QgsNurbsCurve( nurbsControlPoints, degree, knots, weights ) );
+        }
+        else
+        {
+          // Not enough points for NURBS, fallback to linestring
+          curveToAdd.reset( new QgsLineString( nurbsControlPoints ) );
+        }
+      }
+      else
+      {
+        curveToAdd.reset( captureCurve()->clone() );
+      }
 
       if ( mode() == CaptureLine )
       {
@@ -1402,26 +1912,32 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
-        //does compoundcurve contain circular strings?
-        //does provider support circular strings?
-        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        // For NURBS curves, keep the already-created curve
+        // For other curves, check provider support for curved segments
+        if ( mCurrentCaptureTechnique != Qgis::CaptureTechnique::NurbsCurve )
         {
-          const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-          const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries;
-
-          if ( hasCurvedSegments && providerSupportsCurvedSegments )
+          //does compoundcurve contain circular strings?
+          //does provider support circular strings?
+          if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
           {
-            curveToAdd.reset( captureCurve()->clone() );
+            const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+            const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries;
+
+            if ( hasCurvedSegments && providerSupportsCurvedSegments )
+            {
+              curveToAdd.reset( captureCurve()->clone() );
+            }
+            else
+            {
+              curveToAdd.reset( captureCurve()->curveToLine() );
+            }
           }
           else
           {
-            curveToAdd.reset( captureCurve()->curveToLine() );
+            curveToAdd.reset( captureCurve()->clone() );
           }
         }
-        else
-        {
-          curveToAdd.reset( captureCurve()->clone() );
-        }
+        // curveToAdd is already set for NURBS curves, so we just use it
         std::unique_ptr<QgsCurvePolygon> poly { new QgsCurvePolygon() };
         poly->setExteriorRing( curveToAdd.release() );
         g = QgsGeometry( poly->clone() );

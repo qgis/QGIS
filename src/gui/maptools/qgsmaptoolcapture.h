@@ -17,6 +17,8 @@
 #define QGSMAPTOOLCAPTURE_H
 
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
@@ -36,6 +38,8 @@ class QgsMapToolCaptureRubberBand;
 class QgsCurvePolygon;
 class QgsMapToolShapeAbstract;
 class QgsMapToolShapeMetadata;
+class QgsBezierData;
+class QgsBezierMarker;
 
 
 /**
@@ -138,6 +142,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
+    void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
@@ -146,6 +151,20 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \param e key event
      */
     void keyPressEvent( QKeyEvent *e ) override;
+
+    /**
+     * Intercept key release events for NURBS weight editing mode
+     * \param e key event
+     * \since QGIS 4.0
+     */
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
+    /**
+     * Intercept wheel events for NURBS weight adjustment
+     * \param e wheel event
+     * \since QGIS 4.0
+     */
+    void wheelEvent( QWheelEvent *e ) override;
 
     /**
      * Clean a temporary rubberband
@@ -447,6 +466,24 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mStartNewCurve = false;
 
     bool mIgnoreSubsequentAutoRepeatUndo = false;
+
+    //! Data structure for Poly-Bézier curve digitizing (anchors and handles)
+    std::unique_ptr<QgsBezierData> mBezierData;
+    //! Visualization for Poly-Bézier curve digitizing
+    std::unique_ptr<QgsBezierMarker> mBezierMarker;
+    //! TRUE if user is currently dragging
+    bool mBezierDragging = false;
+    //! Index of the anchor being dragged for new anchor handle definition (-1 if not)
+    int mBezierDragAnchorIndex = -1;
+    //! Index of the handle being dragged independently (-1 if not)
+    int mBezierDragHandleIndex = -1;
+    //! Index of the anchor being moved (-1 if not)
+    int mBezierMoveAnchorIndex = -1;
+
+    //! TRUE if W key is held for NURBS weight editing mode
+    bool mWeightEditMode = false;
+    //! Index of the control point being edited for weight (-1 if none)
+    int mWeightEditControlPointIndex = -1;
 
     friend class TestQgsMapToolCapture;
 };
