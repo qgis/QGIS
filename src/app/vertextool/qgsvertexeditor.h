@@ -83,15 +83,29 @@ class APP_EXPORT QgsVertexEditorModel : public QAbstractTableModel
 
     bool mHasZ = false;
     bool mHasM = false;
-    bool mHasR = true; //always show for now - avoids scanning whole feature for curves TODO - avoid this
+    bool mHasR = true;  //always show for now - avoids scanning whole feature for curves TODO - avoid this
+    bool mHasW = false; // true if geometry contains NURBS curves
 
     int mZCol = -1;
     int mMCol = -1;
     int mRCol = -1;
+    int mWCol = -1; // weight column for NURBS control points
 
     QFont mWidgetFont;
 
     bool calcR( int row, double &r, double &minRadius ) const;
+
+    /**
+     * Returns the weight for the vertex at the specified row.
+     * Returns -1 if the vertex is not a NURBS control point.
+     */
+    double getWeightForVertex( int row ) const;
+
+    /**
+     * Sets the weight for the vertex at the specified row.
+     * Returns true if successful.
+     */
+    bool setWeightForVertex( int row, double weight );
 };
 
 class APP_EXPORT QgsVertexEditorWidget : public QgsPanelWidget

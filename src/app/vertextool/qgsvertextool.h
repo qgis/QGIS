@@ -29,6 +29,7 @@
 class QRubberBand;
 
 class QgsGeometryValidator;
+class QgsNurbsCurve;
 class QgsVertexEditor;
 class QgsLockedFeature;
 class QgsSnapIndicator;
@@ -133,6 +134,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     void addDragStraightBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, bool moving0, bool moving1, const QgsPointXY &mapPoint );
 
     void addDragCircularBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, QgsPointXY v2, bool moving0, bool moving1, bool moving2, const QgsPointXY &mapPoint );
+
+    void addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve *nurbs, const QSet<int> &movingCtrlPointIndices, const QgsPointXY &mapPoint );
 
     void moveDragBands( const QgsPointXY &mapPoint );
 
@@ -297,6 +300,9 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void updateFeatureBand( const QgsPointLocator::Match &m );
 
+    //! Clears Poly-Bézier visual elements (tangent lines, anchor and handle markers)
+    void clearBezierVisuals();
+
     //! Updates vertex band based on the current match
     void updateVertexBand( const QgsPointLocator::Match &m );
 
@@ -381,10 +387,39 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
         void updateRubberBand( const QgsPointXY &mapPoint );
     };
 
+    //! structure to keep information about a rubber band used for dragging of a NURBS curve
+    struct NurbsBand
+    {
+        QgsRubberBand *curveBand = nullptr;   //!< Rubber band for the evaluated NURBS curve
+        QgsRubberBand *controlBand = nullptr; //!< Rubber band for the control polygon
+        QVector<QgsPointXY> controlPoints;    //!< Original control points (in map coordinates)
+        QVector<int> movingIndices;           //!< Indices of control points that are moving
+        QVector<QgsVector> offsets;           //!< Offsets for moving control points from mouse cursor
+        int degree = 3;                       //!< Degree of the NURBS curve
+        QVector<double> knots;                //!< Knot vector
+        QVector<double> weights;              //!< Weights
+
+        //! update geometry of the rubber bands on the current mouse cursor position (in map units)
+        void updateRubberBand( const QgsPointXY &mapPoint );
+    };
+
     //! list of active straight line rubber bands
     QList<StraightBand> mDragStraightBands;
     //! list of active rubber bands for circular segments
     QList<CircularBand> mDragCircularBands;
+    //! list of active rubber bands for NURBS curves
+    QList<NurbsBand> mDragNurbsBands;
+
+    //! rubber band for displaying NURBS control polygon in edit mode
+    QgsRubberBand *mNurbsControlPolygonBand = nullptr;
+
+    //! rubber bands for displaying Poly-Bézier tangent lines (anchor to handle)
+    QList<QgsRubberBand *> mBezierTangentBands;
+    //! markers for Poly-Bézier anchors (squares)
+    QList<QgsVertexMarker *> mBezierAnchorMarkers;
+    //! markers for Poly-Bézier handles (circles)
+    QList<QgsVertexMarker *> mBezierHandleMarkers;
+
     //! instance of Vertex that is being currently moved or nothing
     std::unique_ptr<Vertex> mDraggingVertex;
     //! whether moving a vertex or adding one

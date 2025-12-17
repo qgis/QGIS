@@ -17,8 +17,12 @@
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsavoidintersectionsoperation.h"
+#include "qgscompoundcurve.h"
+#include "qgscoordinatetransform.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
 #include "qgsguiutils.h"
@@ -31,6 +35,8 @@
 #include "qgsmessagelog.h"
 #include "qgsmulticurve.h"
 #include "qgsmultipoint.h"
+#include "qgsnurbscurve.h"
+#include "qgsnurbsutils.h"
 #include "qgspointlocator.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
@@ -56,8 +62,95 @@ uint qHash( const Vertex &v )
 }
 
 //
-// geomutils - may get moved elsewhere
+// geomutils - local helper for flat vertex index lookup
 //
+
+/**
+ * Try to find a NURBS curve in the geometry and return it along with the vertex offset
+ * Returns nullptr if vertex is not part of a NURBS curve
+ */
+static const QgsNurbsCurve *findNurbsCurveForVertex( const QgsAbstractGeometry *geom, int vertexIndex, int &localVertexIndex )
+{
+  if ( !geom )
+    return nullptr;
+
+  if ( const QgsNurbsCurve *nurbs = qgsgeometry_cast<const QgsNurbsCurve *>( geom ) )
+  {
+    if ( vertexIndex < nurbs->numPoints() )
+    {
+      localVertexIndex = vertexIndex;
+      return nurbs;
+    }
+    return nullptr;
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast<const QgsGeometryCollection *>( geom ) )
+  {
+    int offset = 0;
+    for ( int i = 0; i < gc->numGeometries(); ++i )
+    {
+      const QgsAbstractGeometry *part = gc->geometryN( i );
+      int partVertexCount = part->vertexCount();
+      if ( vertexIndex < offset + partVertexCount )
+      {
+        const QgsNurbsCurve *result = findNurbsCurveForVertex( part, vertexIndex - offset, localVertexIndex );
+        if ( result )
+          return result;
+      }
+      offset += partVertexCount;
+    }
+  }
+
+  if ( const QgsCurvePolygon *cp = qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
+  {
+    int offset = 0;
+    if ( const QgsCurve *ext = cp->exteriorRing() )
+    {
+      int extCount = ext->vertexCount();
+      if ( vertexIndex < offset + extCount )
+      {
+        const QgsNurbsCurve *result = findNurbsCurveForVertex( ext, vertexIndex - offset, localVertexIndex );
+        if ( result )
+          return result;
+      }
+      offset += extCount;
+    }
+    for ( int i = 0; i < cp->numInteriorRings(); ++i )
+    {
+      const QgsCurve *ring = cp->interiorRing( i );
+      int ringCount = ring->vertexCount();
+      if ( vertexIndex < offset + ringCount )
+      {
+        const QgsNurbsCurve *result = findNurbsCurveForVertex( ring, vertexIndex - offset, localVertexIndex );
+        if ( result )
+          return result;
+      }
+      offset += ringCount;
+    }
+  }
+
+  if ( const QgsCompoundCurve *cc = qgsgeometry_cast<const QgsCompoundCurve *>( geom ) )
+  {
+    int offset = 0;
+    for ( int i = 0; i < cc->nCurves(); ++i )
+    {
+      const QgsCurve *curve = cc->curveAt( i );
+      int curveCount = curve->vertexCount();
+      // For compound curves, we need to subtract 1 for shared vertices (except first curve)
+      if ( i > 0 )
+        offset--; // Account for shared vertex with previous curve
+      if ( vertexIndex < offset + curveCount )
+      {
+        const QgsNurbsCurve *result = findNurbsCurveForVertex( curve, vertexIndex - offset, localVertexIndex );
+        if ( result )
+          return result;
+      }
+      offset += curveCount;
+    }
+  }
+
+  return nullptr;
+}
 
 
 //! Find out whether vertex at the given index is an endpoint (assuming linear geometry)
@@ -292,6 +385,13 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mEndpointMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
   mEndpointMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
   mEndpointMarker->setVisible( false );
+
+  // Control polygon for NURBS curves (dashed gray line)
+  mNurbsControlPolygonBand = new QgsRubberBand( canvas, Qgis::GeometryType::Line );
+  mNurbsControlPolygonBand->setColor( QColor( 100, 100, 100, 150 ) );
+  mNurbsControlPolygonBand->setWidth( 1 );
+  mNurbsControlPolygonBand->setLineStyle( Qt::DashLine );
+  mNurbsControlPolygonBand->setVisible( false );
 }
 
 QgsVertexTool::~QgsVertexTool()
@@ -302,6 +402,8 @@ QgsVertexTool::~QgsVertexTool()
   delete mVertexBand;
   delete mEdgeBand;
   delete mEndpointMarker;
+  delete mNurbsControlPolygonBand;
+  clearBezierVisuals();
 }
 
 void QgsVertexTool::activate()
@@ -411,6 +513,63 @@ void QgsVertexTool::addDragCircularBand( QgsVectorLayer *layer, QgsPointXY v0, Q
   mDragCircularBands << b;
 }
 
+void QgsVertexTool::addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve *nurbs, const QSet<int> &movingCtrlPointIndices, const QgsPointXY &mapPoint )
+{
+  if ( !nurbs || nurbs->controlPoints().isEmpty() )
+    return;
+
+  // Convert control points to map coordinates
+  QVector<QgsPointXY> mapCtrlPts;
+  mapCtrlPts.reserve( nurbs->controlPoints().size() );
+
+  QgsCoordinateTransform ct;
+  if ( layer )
+    ct = QgsCoordinateTransform( layer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+
+  for ( const QgsPoint &pt : nurbs->controlPoints() )
+  {
+    QgsPointXY mapPt( pt );
+    if ( ct.isValid() )
+    {
+      try
+      {
+        mapPt = ct.transform( mapPt );
+      }
+      catch ( QgsCsException & )
+      {
+        // keep original coordinates
+      }
+    }
+    mapCtrlPts.append( mapPt );
+  }
+
+  NurbsBand b;
+  b.curveBand = createRubberBand( Qgis::GeometryType::Line, true );
+  b.controlBand = createRubberBand( Qgis::GeometryType::Line, true );
+  b.controlBand->setColor( QColor( 100, 100, 100, 150 ) );
+  b.controlBand->setWidth( 1 );
+  b.controlBand->setLineStyle( Qt::DashLine );
+
+  b.controlPoints = mapCtrlPts;
+  b.degree = nurbs->degree();
+  b.knots = nurbs->knots();
+  b.weights = nurbs->weights();
+
+  // Set up moving indices and offsets
+  for ( int idx : movingCtrlPointIndices )
+  {
+    if ( idx >= 0 && idx < mapCtrlPts.size() )
+    {
+      b.movingIndices.append( idx );
+      b.offsets.append( mapCtrlPts[idx] - mapPoint );
+    }
+  }
+
+  b.updateRubberBand( mapPoint );
+
+  mDragNurbsBands << b;
+}
+
 void QgsVertexTool::clearDragBands()
 {
   qDeleteAll( mDragPointMarkers );
@@ -424,6 +583,13 @@ void QgsVertexTool::clearDragBands()
   for ( const CircularBand &b : std::as_const( mDragCircularBands ) )
     delete b.band;
   mDragCircularBands.clear();
+
+  for ( const NurbsBand &b : std::as_const( mDragNurbsBands ) )
+  {
+    delete b.curveBand;
+    delete b.controlBand;
+  }
+  mDragNurbsBands.clear();
 }
 
 void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
@@ -760,6 +926,12 @@ void QgsVertexTool::moveDragBands( const QgsPointXY &mapPoint )
   for ( int i = 0; i < mDragCircularBands.count(); ++i )
   {
     CircularBand &b = mDragCircularBands[i];
+    b.updateRubberBand( mapPoint );
+  }
+
+  for ( int i = 0; i < mDragNurbsBands.count(); ++i )
+  {
+    NurbsBand &b = mDragNurbsBands[i];
     b.updateRubberBand( mapPoint );
   }
 
@@ -1200,7 +1372,10 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
 
     // if we are at an endpoint, let's show also the endpoint indicator
     // so user can possibly add a new vertex at the end
-    if ( isMatchAtEndpoint( m ) )
+    // but not for NURBS curves (endpoint addition not supported)
+    const QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
+    const bool isNurbs = QgsNurbsUtils::containsNurbsCurve( geom.constGet() );
+    if ( isMatchAtEndpoint( m ) && !isNurbs )
     {
       mMouseAtEndpoint = std::make_unique< Vertex >( m.layer(), m.featureId(), m.vertexIndex() );
       mEndpointMarkerCenter = std::make_unique< QgsPointXY >( positionForEndpointMarker( m ) );
@@ -1310,6 +1485,16 @@ void QgsVertexTool::updateVertexBand( const QgsPointLocator::Match &m )
   }
 }
 
+void QgsVertexTool::clearBezierVisuals()
+{
+  qDeleteAll( mBezierTangentBands );
+  mBezierTangentBands.clear();
+  qDeleteAll( mBezierAnchorMarkers );
+  mBezierAnchorMarkers.clear();
+  qDeleteAll( mBezierHandleMarkers );
+  mBezierHandleMarkers.clear();
+}
+
 void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
 {
   // highlight feature
@@ -1318,9 +1503,126 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
     if ( mFeatureBandLayer == m.layer() && mFeatureBandFid == m.featureId() )
       return; // skip regeneration of rubber band if not needed
 
+    // Clear previous Bézier visuals
+    clearBezierVisuals();
+
     QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
-    mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
-    mFeatureBandMarkers->setVisible( true );
+
+    // Check if this is a NURBS curve and if it's a Poly-Bézier
+    const QgsNurbsCurve *nurbs = QgsNurbsUtils::extractNurbsCurve( geom.constGet() );
+    QVector<QgsPoint> ctrlPts = nurbs ? nurbs->controlPoints() : QVector<QgsPoint>();
+
+    if ( nurbs && !ctrlPts.isEmpty() )
+    {
+      QgsCoordinateTransform ct( m.layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+
+      // Convert control points to map coordinates
+      QVector<QgsPointXY> mapCtrlPts;
+      mapCtrlPts.reserve( ctrlPts.size() );
+      for ( const QgsPoint &pt : std::as_const( ctrlPts ) )
+      {
+        QgsPointXY mapPt( pt );
+        try
+        {
+          mapPt = ct.transform( mapPt );
+        }
+        catch ( QgsCsException & )
+        {
+          // keep original coordinates
+        }
+        mapCtrlPts.append( mapPt );
+      }
+
+      if ( QgsNurbsUtils::isPolyBezier( nurbs ) )
+      {
+        // Poly-Bézier mode: show anchors (squares) and handles (circles) separately
+        // Control points layout: [anchor0, handle_right0, handle_left1, anchor1, handle_right1, handle_left2, anchor2, ...]
+        // Anchors at indices: 0, 3, 6, 9, ... (i * 3)
+        // Handle rights at indices: 1, 4, 7, ... (i * 3 + 1)
+        // Handle lefts at indices: 2, 5, 8, ... (i * 3 + 2)
+
+        for ( int i = 0; i < ctrlPts.size(); ++i )
+        {
+          int localIdx = i % 3;
+
+          if ( localIdx == 0 )
+          {
+            // This is an anchor
+            QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
+            marker->setIconType( QgsVertexMarker::ICON_BOX );
+            marker->setColor( QColor( 0, 0, 255 ) ); // Blue for anchors
+            marker->setIconSize( QgsGuiUtils::scaleIconSize( 8 ) );
+            marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+            marker->setCenter( mapCtrlPts[i] );
+            marker->setVisible( true );
+            mBezierAnchorMarkers << marker;
+          }
+          else
+          {
+            // This is a handle
+            QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
+            marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
+            marker->setColor( QColor( 0, 150, 0 ) ); // Green for handles
+            marker->setIconSize( QgsGuiUtils::scaleIconSize( 6 ) );
+            marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+            marker->setCenter( mapCtrlPts[i] );
+            marker->setVisible( true );
+            mBezierHandleMarkers << marker;
+
+            // Create tangent line from anchor to handle
+            int anchorIndex = -1;
+            if ( localIdx == 1 )
+            {
+              // Handle right - connects to anchor at i-1
+              anchorIndex = i - 1;
+            }
+            else if ( localIdx == 2 )
+            {
+              // Handle left - connects to anchor at i+1
+              anchorIndex = i + 1;
+            }
+
+            if ( anchorIndex >= 0 && anchorIndex < mapCtrlPts.size() )
+            {
+              QgsRubberBand *tangentBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Line );
+              tangentBand->setColor( QColor( 100, 100, 100, 150 ) );
+              tangentBand->setWidth( 1 );
+              tangentBand->setLineStyle( Qt::DashLine );
+              tangentBand->addPoint( mapCtrlPts[anchorIndex] );
+              tangentBand->addPoint( mapCtrlPts[i] );
+              tangentBand->setVisible( true );
+              mBezierTangentBands << tangentBand;
+            }
+          }
+        }
+
+        // Hide the standard control polygon band and feature markers for Poly-Bézier
+        mNurbsControlPolygonBand->reset( Qgis::GeometryType::Line );
+        mNurbsControlPolygonBand->setVisible( false );
+        mFeatureBandMarkers->setVisible( false );
+      }
+      else
+      {
+        // CAD/Control Points mode: show simple control polygon
+        mNurbsControlPolygonBand->reset( Qgis::GeometryType::Line );
+        for ( const QgsPointXY &pt : std::as_const( mapCtrlPts ) )
+        {
+          mNurbsControlPolygonBand->addPoint( pt );
+        }
+        mNurbsControlPolygonBand->setVisible( true );
+        mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
+        mFeatureBandMarkers->setVisible( true );
+      }
+    }
+    else
+    {
+      // Not a NURBS curve
+      mNurbsControlPolygonBand->reset( Qgis::GeometryType::Line );
+      mNurbsControlPolygonBand->setVisible( false );
+      mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
+      mFeatureBandMarkers->setVisible( true );
+    }
+
     if ( QgsWkbTypes::isCurvedType( geom.wkbType() ) )
       geom = QgsGeometry( geom.constGet()->segmentize() );
     mFeatureBand->setToGeometry( geom, m.layer() );
@@ -1332,6 +1634,9 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
   {
     mFeatureBand->setVisible( false );
     mFeatureBandMarkers->setVisible( false );
+    mNurbsControlPolygonBand->reset( Qgis::GeometryType::Line );
+    mNurbsControlPolygonBand->setVisible( false );
+    clearBezierVisuals();
     mFeatureBandLayer = nullptr;
     mFeatureBandFid = QgsFeatureId();
   }
@@ -1794,11 +2099,47 @@ void QgsVertexTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertice
   // i.e. every circular band is defined by its middle circular vertex
   QSet<Vertex> verticesInCircularBands;
 
+  // set of NURBS curves already processed (identified by layer + feature id + pointer)
+  QSet<QPair<QPair<QgsVectorLayer *, QgsFeatureId>, const QgsNurbsCurve *>> processedNurbsCurves;
+
   for ( const Vertex &v : std::as_const( movingVertices ) )
   {
     int v0idx, v1idx;
     QgsGeometry geom = cachedGeometry( v.layer, v.fid );
     QgsPointXY pt = geom.vertexAt( v.vertexId );
+
+    // Check if this vertex belongs to a NURBS curve
+    int localIdx = 0;
+    const QgsNurbsCurve *nurbs = findNurbsCurveForVertex( geom.constGet(), v.vertexId, localIdx );
+    if ( nurbs )
+    {
+      auto nurbsKey = qMakePair( qMakePair( v.layer, v.fid ), nurbs );
+      if ( !processedNurbsCurves.contains( nurbsKey ) )
+      {
+        // Build the set of moving control point indices for this NURBS
+        QSet<int> movingCtrlPointIndices;
+        movingCtrlPointIndices.insert( localIdx );
+
+        // Also check other moving vertices that might be on the same NURBS
+        for ( const Vertex &otherV : movingVertices )
+        {
+          if ( otherV.layer == v.layer && otherV.fid == v.fid && otherV != v )
+          {
+            int otherLocalIdx = 0;
+            const QgsNurbsCurve *otherNurbs = findNurbsCurveForVertex( geom.constGet(), otherV.vertexId, otherLocalIdx );
+            if ( otherNurbs == nurbs )
+            {
+              movingCtrlPointIndices.insert( otherLocalIdx );
+            }
+          }
+        }
+
+        addDragNurbsBand( v.layer, nurbs, movingCtrlPointIndices, dragVertexMapPoint );
+        processedNurbsCurves.insert( nurbsKey );
+      }
+      // NURBS vertices don't need straight bands - the NURBS band handles visualization
+      continue;
+    }
 
     geom.adjacentVertices( v.vertexId, v0idx, v1idx );
 
@@ -2923,6 +3264,49 @@ void QgsVertexTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
   band->reset();
   for ( const QgsPoint &p : std::as_const( points ) )
     band->addPoint( p );
+}
+
+
+void QgsVertexTool::NurbsBand::updateRubberBand( const QgsPointXY &mapPoint )
+{
+  // Build updated control points
+  QVector<QgsPoint> updatedCtrlPts;
+  updatedCtrlPts.reserve( controlPoints.size() );
+
+  for ( int i = 0; i < controlPoints.size(); ++i )
+  {
+    int movingIdx = movingIndices.indexOf( i );
+    if ( movingIdx >= 0 )
+    {
+      // This control point is moving
+      QgsPointXY newPt = mapPoint + offsets[movingIdx];
+      updatedCtrlPts.append( QgsPoint( newPt ) );
+    }
+    else
+    {
+      // This control point is static
+      updatedCtrlPts.append( QgsPoint( controlPoints[i] ) );
+    }
+  }
+
+  // Update control polygon rubberband
+  controlBand->reset( Qgis::GeometryType::Line );
+  for ( const QgsPoint &pt : std::as_const( updatedCtrlPts ) )
+    controlBand->addPoint( QgsPointXY( pt ) );
+
+  // Create temporary NURBS curve and evaluate it
+  if ( updatedCtrlPts.size() >= degree + 1 )
+  {
+    QgsNurbsCurve tempCurve( updatedCtrlPts, degree, knots, weights );
+    std::unique_ptr<QgsLineString> line( tempCurve.curveToLine() );
+
+    curveBand->reset( Qgis::GeometryType::Line );
+    if ( line )
+    {
+      for ( int i = 0; i < line->numPoints(); ++i )
+        curveBand->addPoint( line->pointN( i ) );
+    }
+  }
 }
 
 
