@@ -1,0 +1,105 @@
+/***************************************************************************
+                         qgsalgorithmpdalfilternoisestatistical.cpp
+                         ---------------------
+    begin                : December 2025
+    copyright            : (C) 2025 by Jan Caha
+    email                : jan.caha at outlook dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsalgorithmpdalfilternoisestatistical.h"
+
+#include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
+
+///@cond PRIVATE
+
+QString QgsPdalFilterNoiseStatisticalAlgorithm::name() const
+{
+  return QStringLiteral( "filternoisestatistical" );
+}
+
+QString QgsPdalFilterNoiseStatisticalAlgorithm::displayName() const
+{
+  return QObject::tr( "Filter Noise (by statistical algorithm)" );
+}
+
+QString QgsPdalFilterNoiseStatisticalAlgorithm::group() const
+{
+  return QObject::tr( "Point cloud data management" );
+}
+
+QString QgsPdalFilterNoiseStatisticalAlgorithm::groupId() const
+{
+  return QStringLiteral( "pointclouddatamanagement" );
+}
+
+QStringList QgsPdalFilterNoiseStatisticalAlgorithm::tags() const
+{
+  return QObject::tr( "pdal,lidar,filter,noise,statistical" ).split( ',' );
+}
+
+QString QgsPdalFilterNoiseStatisticalAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Filter noise in a point cloud using statistical algorithm." );
+}
+
+QString QgsPdalFilterNoiseStatisticalAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Filter noise in a point cloud using statistical algorithm." );
+}
+
+QgsPdalFilterNoiseStatisticalAlgorithm *QgsPdalFilterNoiseStatisticalAlgorithm::createInstance() const
+{
+  return new QgsPdalFilterNoiseStatisticalAlgorithm();
+}
+
+void QgsPdalFilterNoiseStatisticalAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REMOVE_NOISE_POINTS" ), QObject::tr( "Remove noise points" ), false ) );
+
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MEAN_K" ), QObject::tr( "Mean number of neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 8 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MULTIPLIER" ), QObject::tr( "Standard deviation threshold" ), Qgis::ProcessingNumberParameterType::Double, 2.0 ) );
+
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Filtered (statistical algorithm)" ) ) );
+}
+
+QStringList QgsPdalFilterNoiseStatisticalAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_UNUSED( feedback );
+
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  if ( !layer )
+    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+
+  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFile = fixOutputFileName( layer->source(), outputName, context );
+  checkOutputFormat( layer->source(), outputFile );
+  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+
+  int meanK = parameterAsInt( parameters, QStringLiteral( "MEAN_K" ), context );
+  double multiplier = parameterAsDouble( parameters, QStringLiteral( "MULTIPLIER" ), context );
+
+  QString removeNoisePoints = "false";
+  if ( parameterAsBoolean( parameters, QStringLiteral( "REMOVE_NOISE_POINTS" ), context ) )
+  {
+    removeNoisePoints = "true";
+  }
+
+  QStringList args = { QStringLiteral( "filter_noise" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--algorithm=statistical" ), QStringLiteral( "--remove-noise-points=%1" ).arg( removeNoisePoints ), QStringLiteral( "--statistical-mean-k=%1" ).arg( meanK ), QStringLiteral( "--statistical-multiplier=%1" ).arg( multiplier ) };
+
+  applyCommonParameters( args, layer->crs(), parameters, context );
+  applyThreadsParameter( args, context );
+  return args;
+}
+
+///@endcond
