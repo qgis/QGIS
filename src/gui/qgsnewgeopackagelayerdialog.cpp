@@ -29,6 +29,7 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsiconutils.h"
 #include "qgsogrutils.h"
@@ -458,18 +459,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
     wkbType = OGR_GT_SetM( wkbType );
 
   // Check for non-standard GeoPackage geometry types
-  const OGRwkbGeometryType flatType = OGR_GT_Flatten( wkbType );
-  const bool isNonStandardGeomType = ( flatType == wkbPolyhedralSurface || flatType == wkbTIN || flatType == wkbTriangle );
-  if ( isNonStandardGeomType && !property( "hideDialogs" ).toBool() )
+  const Qgis::WkbType qgisWkbType = static_cast<Qgis::WkbType>( wkbType );
+  bool isNonStandardGeomType = false;
+  if ( !QgsGuiUtils::warnAboutNonStandardGeoPackageGeometryType( qgisWkbType, this, tr( "New GeoPackage Layer" ), !property( "hideDialogs" ).toBool(), &isNonStandardGeomType ) )
   {
-    if ( QMessageBox::question( this, tr( "New GeoPackage Layer" ), tr( "PolyhedralSurface, TIN and Triangle are non-standard GeoPackage geometry types "
-                                                                        "and may not be recognized by other software.\n\n"
-                                                                        "Do you want to continue?" ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
-         == QMessageBox::No )
-    {
-      return false;
-    }
+    return false;
   }
 
   OGRSpatialReferenceH hSRS = nullptr;
