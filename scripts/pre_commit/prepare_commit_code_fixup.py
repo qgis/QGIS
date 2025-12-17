@@ -121,6 +121,95 @@ def qlatin1char_or_string(x):
         return "QLatin1String( " + x + " )"
 
 
+def fix_allows_to(line: str) -> str:
+    """
+    Fixes 'allows to' XXX strings to correct grammar
+    """
+    corrections = {
+        "access": "accessing",
+        "adapt": "adapting",
+        "application": "applying",
+        "apply": "applying",
+        "change": "changing",
+        "choose": "choosing",
+        "combine": "combining",
+        "continue": "continuing",
+        "control": "controlling",
+        "convert": "converting",
+        "create": "creating",
+        "customize": "customizing",
+        "define": "defining",
+        "determine": "determining",
+        "disable": "disabling",
+        "discard": "discarding",
+        "display": "displaying",
+        "drop": "dropping",
+        "edit and save python file": "editing and saving python files",
+        "edit": "editing",
+        "enable or disable": "enabling or disabling",
+        "enable": "enabling",
+        "enter": "entering",
+        "estimate": "estimating",
+        "exit": "exiting",
+        "export": "exporting",
+        "extract": "extracting",
+        "filter": "filtering",
+        "fix": "fixing",
+        "first sub-sample": "sub-sampling first",
+        "fuse": "fusing",
+        "generate": "generating",
+        "handle": "handling",
+        "input": "inputting",
+        "insert": "inserting",
+        "interactively manipulate": "interactive manipulation",
+        "manage": "managing",
+        "map": "mapping",
+        "move": "moving",
+        "ortho-rectify": "ortho-rectifying",
+        "parametrize": "parametrizing",
+        "parse": "parsing",
+        "perform": "performing",
+        "performs": "performing",
+        "reduce": "reducing",
+        "remove": "removing",
+        "render": "rendering",
+        "reproject and rasterize": "reprojecting and rasterizing",
+        "reproject": "reprojecting",
+        "restrict": "restricting",
+        "retrieve": "retrieving",
+        "save": "saving",
+        "scroll": "scrolling",
+        "select": "selecting",
+        "selecting": "selecting",
+        "set": "setting",
+        "shorten": "shortening",
+        "simplify": "simplifying",
+        "speed-up": "speeding up",
+        "split": "splitting",
+        "store": "storing",
+        "suppress": "suppressing",
+        "use": "using",
+        "write": "writing",
+        "you to show": "showing",
+        "compute": "computing",
+        "optimize": "optimizing",
+        "check": "checking",
+        "quickly edit": "quick editing",
+    }
+
+    # ensure longer more specific strings are matched before shorter generic ones
+    sorted_verbs = sorted(corrections.keys(), key=len, reverse=True)
+
+    pattern = r"\b(allows) to (" + "|".join(map(re.escape, sorted_verbs)) + r")\b"
+
+    return re.sub(
+        pattern,
+        lambda m: f"{m.group(1)} {corrections[m.group(2).lower()]}",
+        line,
+        flags=re.IGNORECASE,
+    )
+
+
 i = 0
 while i < len(lines):
     line = lines[i]
@@ -260,6 +349,8 @@ while i < len(lines):
             + m.group(5)
             + ";"
         )
+
+    line = fix_allows_to(line)
 
     print(line)
     i += 1
