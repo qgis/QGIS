@@ -43,6 +43,16 @@ repos:
         always_run: true
         pass_filenames: true
 
+
+  - repo: local
+    hooks:
+      - id: code_fixup
+        name: code_fixup
+        entry: ./scripts/pre_commit/prepare_commit_code_fixup.sh
+        language: system
+        always_run: true
+        pass_filenames: true
+
   - repo: local
     hooks:
       - id: shellcheck
