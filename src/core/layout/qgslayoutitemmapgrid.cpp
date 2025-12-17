@@ -1437,7 +1437,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     distanceToFrameMM /= QVector2D::dotProduct( vector, normalVector );
   }
 
-  const QVector2D annotationPositionMM = annot.position + distanceToFrameMM * vector;
+  const QVector2D annotationPositionMM = annot.position + static_cast< float >( distanceToFrameMM ) * vector;
 
   const bool outside = ( anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame );
 
