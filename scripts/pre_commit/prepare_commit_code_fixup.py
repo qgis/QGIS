@@ -52,46 +52,50 @@ simple_expr = (
     r"""([a-zA-Z0-9_:<>]+(?:\.(?:[a-zA-Z0-9_]+\([^\(\)]*\)|[a-zA-Z0-9_]+))?)"""
 )
 
-qsl = rf"""QStringLiteral\( {string_literal} \)"""
+qsl = rf"""QStringLiteral\( ?{string_literal} ?\)"""
 
 # Find lines like "    foo += QStringLiteral( "bla" );  // optional comment"
-pattern_plus_equal = re.compile(rf"^([ ]*)([^ ]+) \+= {qsl};([ ]*//.*)?$")
+pattern_plus_equal = re.compile(rf"^([ ]*)([^ ]+) \+= ?{qsl};([ ]*//.*)?$")
 
 # Find patterns like "...QString( tr( "foo" ) )..."
-pattern_qstring_tr = re.compile(rf"""(.*)QString\( tr\( {string_literal} \) \)(.*)""")
+pattern_qstring_tr = re.compile(
+    rf"""(.*)QString\( ?tr\( ?{string_literal} ?\) ?\)(.*)"""
+)
 
 # Find patterns like "...== QStringLiteral( "foo" ) something that is not like .arg()"
 pattern_equalequal_qsl = re.compile(
-    r"(.*)(==|!=) " + qsl + r"( \)| \|\|| &&| }|;| \?| ,)(.*)"
+    r"(.*)(==|!=) ?" + qsl + r"( \)| \|\|| &&| }|;| \?| ,)(.*)"
 )
 
 # Find patterns like "...startsWith( QStringLiteral( "foo" ) )..."
 pattern_startswith_qsl = re.compile(
-    rf"(.*)\.(startsWith|endsWith|indexOf|lastIndexOf|compare)\( {qsl} \)(.*)"
+    rf"(.*)\.(startsWith|endsWith|indexOf|lastIndexOf|compare)\( ?{qsl} ?\)(.*)"
 )
 
 # .replace( 'a' or simple_expr or qsl, QStringLiteral( "foo" ) )
-replace_char_qsl = re.compile(rf"""(.*)\.replace\( {char_literal}, {qsl} \)(.*)""")
-replace_str_qsl = re.compile(rf"""(.*)\.replace\( {string_literal}, {qsl} \)(.*)""")
+replace_char_qsl = re.compile(rf"""(.*)\.replace\( ?{char_literal}, ?{qsl} ?\)(.*)""")
+replace_str_qsl = re.compile(rf"""(.*)\.replace\( ?{string_literal}, ?{qsl} ?\)(.*)""")
 # Do not use that: if simple_expr is a QRegExp, there is no QString::replace(QRegExp, QLatin1String)
 # replace_simple_expr_qsl = re.compile(r"""(.*)\.replace\( {simple_expr}, {qsl} \)(.*)""".format(simple_expr=simple_expr, qsl=qsl))
 
 # .replace( QStringLiteral( "foo" ), QStringLiteral( "foo" ) )
-replace_qsl_qsl = re.compile(r"""(.*)\.replace\( {qsl}, {qsl} \)(.*)""".format(qsl=qsl))
+replace_qsl_qsl = re.compile(
+    r"""(.*)\.replace\( ?{qsl}, ?{qsl} ?\)(.*)""".format(qsl=qsl)
+)
 
 # .replace( QStringLiteral( "foo" ), something
-replace_qsl_something = re.compile(rf"""(.*)\.replace\( {qsl}, (.+)""")
+replace_qsl_something = re.compile(rf"""(.*)\.replace\( ?{qsl}, ?(.+)""")
 
 # .arg( QStringLiteral( "foo" ) )
 # note: QString QString::arg(QLatin1String a) added in QT 5.10, but using QLatin1String() will work with older too
-arg_qsl = re.compile(rf"""(.*)\.arg\( {qsl} \)(.*)""")
+arg_qsl = re.compile(rf"""(.*)\.arg\( ?{qsl} ?\)(.*)""")
 
 # .join( QStringLiteral( "foo" ) )
-join = re.compile(rf"""(.*)\.join\( {qsl} \)(.*)""")
+join = re.compile(rf"""(.*)\.join\( ?{qsl} ?\)(.*)""")
 
 # if QT >= 5.14 .compare would be ok
 qlatin1str_single_char = re.compile(
-    r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|\+=) QLatin1String\( ("[^"]") \)(.*)"""
+    r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|\+=) QLatin1String\( ?("[^"]") ?\)(.*)"""
 )
 
 make_unique_shared = re.compile(

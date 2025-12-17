@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    code_fixup.sh
+#    prepare_commit_code_fixup.sh
 #    ---------------
 #    Date                 : October 2020
 #    Copyright            : (C) 2020 by Even Rouault
@@ -26,46 +26,35 @@
 # DEALINGS IN THE SOFTWARE.
 ###########################################################################
 
+set -e
+
 TOPLEVEL=$(git rev-parse --show-toplevel)
 
-cd "$TOPLEVEL" || exit
+# capture files passed by pre-commit
+MODIFIED="$@"
 
-# GNU prefix command for bsd/mac os support (gsed, gsplit)
-GP=
-if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
-  GP=g
-fi
+FILES_TO_CHECK=""
+for f in $MODIFIED; do
+  case "$f" in
+    *.h|*.cpp)
+      FILES_TO_CHECK="$FILES_TO_CHECK $f"
+      ;;
+  esac
+done
 
-if test "$1" == "--all"; then
-    MODIFIED=$(find src tests -name "*.h" -o -name "*.cpp")
-else
-    # determine changed files
-    MODIFIED=$(git status --porcelain| ${GP}sed -ne "s/^ *[MA]  *//p" | sort -u)
-fi
-
-if [ -z "$MODIFIED" ]; then
-  echo nothing was modified
+if [ -z "$FILES_TO_CHECK" ]; then
   exit 0
 fi
 
-for f in $MODIFIED; do
-
-  case "$f" in
-  *.cpp|*.h)
-    ;;
-
-  *)
-    continue
-    ;;
-  esac
-
+for f in $FILES_TO_CHECK; do
   m=$f.code_fixup
-  python "${TOPLEVEL}/scripts/code_fixup.py" "$f" > "$m"
+  python "${TOPLEVEL}/scripts/pre_commit/prepare_commit_code_fixup.py" "$f" > "$m"
   if diff -u "$m" "$f" >/dev/null; then
     # no difference found
     rm "$m"
   else
-    echo "Patching $f"
     mv "$m" "$f"
   fi
 done
+
+exit 0
