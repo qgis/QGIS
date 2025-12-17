@@ -910,7 +910,7 @@ class TestPyQgsProviderConnectionGpkg(
             "",
             "test_spatial_index",
             QgsFields(),
-            QgsWkbTypes.Type.Point,
+            QgsWkbTypes.Type.PolyhedralSurface,
             crs,
             True,
             {"layerOptions": "SPATIAL_INDEX=NO"},
@@ -935,6 +935,41 @@ class TestPyQgsProviderConnectionGpkg(
 
         # Clean up
         conn.dropVectorTable("", "test_spatial_index")
+
+    def test_gpkg_create_spatial_index_automatic(self):
+        """Test that spatial index is created automatically with SPATIAL_INDEX=YES"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        # Create table with automatic spatial index
+        conn.createVectorTable(
+            "",
+            "test_spatial_index_auto",
+            QgsFields(),
+            QgsWkbTypes.Type.PolyhedralSurface,
+            crs,
+            True,
+            {"layerOptions": "SPATIAL_INDEX=YES"},
+        )
+
+        # Reconnect to ensure metadata is flushed
+        del conn
+        conn = md.createConnection(self.uri, {})
+
+        # Verify table was created
+        table_info = conn.table("", "test_spatial_index_auto")
+        geom_column = table_info.geometryColumn()
+        self.assertTrue(geom_column)  # Should have a geometry column
+
+        # Verify spatial index was created automatically
+        self.assertTrue(
+            conn.spatialIndexExists("", "test_spatial_index_auto", geom_column)
+        )
+
+        # Clean up
+        conn.dropVectorTable("", "test_spatial_index_auto")
 
 
 if __name__ == "__main__":
