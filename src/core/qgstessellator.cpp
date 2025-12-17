@@ -838,8 +838,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           case Qgis::TriangulationAlgorithm::Earcut:
             trianglePoints = generateEarcutTriangles( polygonNew.get() );
             break;
-          default:
-            break;
         }
         // NOLINTEND(bugprone-branch-clone)
 
