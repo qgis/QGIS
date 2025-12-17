@@ -1040,7 +1040,7 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
   std::unique_ptr< QgsAbstractGeometry > p( part );
   if ( !d->geometry )
   {
-    switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )
+    switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )  // NOLINT(bugprone-branch-clone)
     {
       case Qgis::WkbType::Point:
         reset( std::make_unique< QgsMultiPoint >() );
@@ -1813,6 +1813,29 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
       }
     }
     newGeom = QgsGeometry( std::move( polySurface ) );
+  }
+
+  //(Multi)Polygon/Triangle to TIN
+  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::TIN &&
+       ( QgsWkbTypes::flatType( QgsWkbTypes::singleType( newGeom.wkbType() ) ) == Qgis::WkbType::Polygon ||
+         QgsWkbTypes::flatType( QgsWkbTypes::singleType( newGeom.wkbType() ) ) == Qgis::WkbType::Triangle ) )
+  {
+    auto tin = std::make_unique< QgsTriangulatedSurface >();
+    const QgsGeometry source = newGeom;
+    for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
+    {
+      if ( const QgsTriangle *triangle = qgsgeometry_cast< const QgsTriangle * >( *part ) )
+      {
+        tin->addPatch( triangle->clone() );
+      }
+      else if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *part ) )
+      {
+        auto triangle = std::make_unique< QgsTriangle >();
+        triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+        tin->addPatch( triangle.release() );
+      }
+    }
+    newGeom = QgsGeometry( std::move( tin ) );
   }
 
   // PolyhedralSurface/TIN to (Multi)Polygon

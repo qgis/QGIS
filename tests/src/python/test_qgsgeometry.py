@@ -12488,6 +12488,36 @@ class TestQgsGeometry(QgisTestCase):
             ["PolyhedralSurface Z (((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2)))"],
         )
 
+        # Polygon/Triangle to TIN
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.TIN,
+            ),
+            ["TIN (((1 1, 1 2, 2 2, 1 1)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon Z((1 1 0, 1 2 0, 2 2 0, 1 1 0))",
+                QgsWkbTypes.Type.TINZ,
+            ),
+            ["TIN Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Triangle ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.TIN,
+            ),
+            ["TIN (((1 1, 1 2, 2 2, 1 1)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.TIN,
+            ),
+            ["TIN (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))"],
+        )
+
         # PolyhedralSurface to MultiPolygon
         self.assertEqual(
             coerce_to_wkt(
