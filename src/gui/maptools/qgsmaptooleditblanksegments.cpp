@@ -198,7 +198,9 @@ namespace
 
 
 /**
- * Rubber band used to draw blank segments on edition
+ * \ingroup gui
+ * \brief Rubber band used to draw blank segments on edition
+ * \since QGIS 4.0
  */
 class QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand : public QgsRubberBand
 {
