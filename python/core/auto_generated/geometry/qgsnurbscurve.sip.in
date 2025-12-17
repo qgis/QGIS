@@ -1,0 +1,314 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsnurbscurve.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsNurbsCurve : QgsCurve
+{
+%Docstring(signature="appended")
+Represents a NURBS (Non-Uniform Rational B-Spline) curve geometry in
+2D/3D.
+
+NURBS curves are a mathematical model commonly used in computer graphics
+for representing curves. They are parametric curves defined by control
+points, weights, knot vectors, and a degree.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsnurbscurve.h"
+%End
+  public:
+
+    QgsNurbsCurve();
+%Docstring
+Constructor for an empty NURBS curve geometry.
+%End
+
+    QgsNurbsCurve( const QVector<QgsPoint> &ctrlPoints, int degree,
+                   const QVector<double> &knots, const QVector<double> &weights,
+                   bool closed = false );
+%Docstring
+Constructs a NURBS curve from control points, degree, knot vector and
+weights.
+
+:param ctrlPoints: control points defining the curve
+:param degree: degree of the NURBS curve (typically 1-3)
+:param knots: knot vector (must have size = control points count +
+              degree + 1)
+:param weights: weight vector for rational curves (same size as control
+                points)
+:param closed: whether the curve should be treated as closed
+%End
+
+    virtual QgsCurve *clone() const /Factory/;
+
+
+     QgsPoint evaluate( double t ) const;
+%Docstring
+Evaluates the NURBS curve at parameter t ∈ [0,1]. Uses the Cox-de Boor
+algorithm for B-spline basis function evaluation.
+
+:param t: parameter value between 0 and 1
+
+:return: point on the curve at parameter t
+%End
+
+    bool isBezier() const;
+%Docstring
+Returns ``True`` if this curve represents a Bézier curve. A Bézier curve
+is a special case of NURBS with uniform weights and specific knot
+vector.
+%End
+
+    bool isBSpline() const;
+%Docstring
+Returns ``True`` if this curve represents a B-spline (non-rational
+NURBS).
+%End
+
+    bool isRational() const;
+%Docstring
+Returns ``True`` if this curve is rational (has non-uniform weights).
+%End
+
+    virtual bool isClosed() const /HoldGIL/;
+
+    virtual bool isClosed2D() const /HoldGIL/;
+
+
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
+    virtual void draw( QPainter &p ) const;
+
+    virtual void drawAsPolygon( QPainter &p ) const;
+
+    virtual QgsPoint endPoint() const /HoldGIL/;
+
+    virtual bool equals( const QgsCurve &other ) const;
+
+    virtual int indexOf( const QgsPoint &point ) const;
+
+    virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
+
+    virtual int numPoints() const /HoldGIL/;
+
+    virtual bool pointAt( int node, QgsPoint &point /Out/, Qgis::VertexType &type /Out/ ) const;
+
+    virtual void points( QgsPointSequence &pts /Out/ ) const;
+
+    virtual QgsCurve *reversed() const /Factory/;
+
+    virtual void scroll( int firstVertexIndex );
+
+    virtual QgsPoint startPoint() const /HoldGIL/;
+
+    virtual void sumUpArea( double &sum /Out/ ) const;
+
+    virtual double xAt( int index ) const;
+
+    virtual double yAt( int index ) const;
+
+    virtual double zAt( int index ) const;
+
+    virtual double mAt( int index ) const;
+
+
+    virtual QPolygonF asQPolygonF() const;
+
+
+    virtual void addToPainterPath( QPainterPath &path ) const;
+
+    virtual QgsCurve *curveSubstring( double startDistance, double endDistance ) const /Factory/;
+
+    virtual double length() const /HoldGIL/;
+
+    virtual double segmentLength( QgsVertexId startVertex ) const;
+
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
+
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
+
+    virtual QgsAbstractGeometry *simplifyByDistance( double tolerance ) const /Factory/;
+
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual double vertexAngle( QgsVertexId vertex ) const;
+
+    virtual void swapXy();
+
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+    virtual QgsAbstractGeometry *createEmptyWithSameType() const /Factory/;
+
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
+
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
+
+    virtual QgsRectangle boundingBox() const;
+
+    virtual QgsBox3D boundingBox3D() const;
+
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QString asWkt( int precision = 17 ) const;
+
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QString asKml( int precision = 17 ) const;
+
+    virtual int dimension() const /HoldGIL/;
+
+    virtual bool isEmpty() const /HoldGIL/;
+
+    virtual void clear();
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+
+    virtual QgsPoint centroid() const;
+
+
+    virtual bool addZValue( double zValue = 0 );
+
+    virtual bool addMValue( double mValue = 0 );
+
+    virtual bool dropZValue();
+
+    virtual bool dropMValue();
+
+    virtual bool deleteVertex( QgsVertexId position );
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual bool fromWkt( const QString &wkt );
+
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual QString geometryType() const /HoldGIL/;
+
+    virtual bool hasCurvedSegments() const /HoldGIL/;
+
+    virtual int partCount() const /HoldGIL/;
+
+    virtual QgsCurve *toCurveType() const;
+
+    virtual QgsPoint vertexAt( QgsVertexId id ) const;
+
+    virtual int vertexCount( int part = 0, int ring = 0 ) const /HoldGIL/;
+
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
+     virtual bool isValid( QString &error /Out/,
+                  Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
+
+    int degree() const /HoldGIL/;
+%Docstring
+Returns the degree of the NURBS curve.
+%End
+
+    void setDegree( int degree );
+%Docstring
+Sets the degree of the NURBS curve.
+
+:param degree: curve degree (typically 1-3)
+%End
+
+    const QVector<QgsPoint> &controlPoints() const /HoldGIL/;
+%Docstring
+Returns the control points of the NURBS curve.
+%End
+
+    void setControlPoints( const QVector<QgsPoint> &points );
+%Docstring
+Sets the control points of the NURBS curve.
+
+:param points: control points
+%End
+
+    const QVector<double> &knots() const /HoldGIL/;
+%Docstring
+Returns the knot vector of the NURBS curve.
+%End
+
+    void setKnots( const QVector<double> &knots );
+%Docstring
+Sets the knot vector of the NURBS curve.
+
+:param knots: knot vector (must have size = control points count +
+              degree + 1)
+%End
+
+    const QVector<double> &weights() const /HoldGIL/;
+%Docstring
+Returns the weight vector of the NURBS curve.
+%End
+
+    void setWeights( const QVector<double> &weights );
+%Docstring
+Sets the weight vector of the NURBS curve.
+
+:param weights: weight vector (same size as control points)
+%End
+
+    double weight( int index ) const /HoldGIL/;
+%Docstring
+Returns the weight at the specified control point ``index``. Returns 1.0
+if index is out of range.
+
+.. versionadded:: 4.0
+%End
+
+    bool setWeight( int index, double weight );
+%Docstring
+Sets the ``weight`` at the specified control point ``index``. Weight
+must be positive (> 0).
+
+:return: ``True`` if successful, ``False`` if index is out of range or
+         weight is invalid.
+
+.. versionadded:: 4.0
+%End
+
+
+
+  protected:
+
+    virtual void clearCache() const;
+
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsnurbscurve.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -1,0 +1,76 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsnurbsutils.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsNurbsUtils
+{
+%Docstring(signature="appended")
+Utility functions for working with NURBS curves.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsnurbsutils.h"
+%End
+  public:
+
+    static bool containsNurbsCurve( const QgsAbstractGeometry *geom );
+%Docstring
+Returns ``True`` if the ``geom`` contains a NURBS curve (recursively).
+%End
+
+    static const QgsNurbsCurve *extractNurbsCurve( const QgsAbstractGeometry *geom );
+%Docstring
+Extracts the first NURBS curve found in the ``geom`` (recursively).
+Returns ``None`` if no NURBS curve is found.
+%End
+
+    static bool isPolyBezier( const QgsNurbsCurve *nurbs );
+%Docstring
+Returns ``True`` if the NURBS curve is a Poly-Bézier.
+
+A Poly-Bézier has degree 3 and control points count = 3*segments + 1.
+%End
+
+    static const QgsNurbsCurve *findNurbsCurveForVertex(
+      const QgsAbstractGeometry *geom,
+      const QgsVertexId &vid,
+      int &localIndex /Out/ );
+%Docstring
+Finds the NURBS curve containing the vertex identified by ``vid``.
+
+Returns the NURBS curve and sets ``localIndex`` to the control point
+index within that curve. Returns ``None`` if the vertex is not part of a
+NURBS curve.
+%End
+
+    static QgsNurbsCurve *findMutableNurbsCurveForVertex(
+      QgsAbstractGeometry *geom,
+      const QgsVertexId &vid,
+      int &localIndex /Out/ );
+%Docstring
+Mutable version of :py:func:`~QgsNurbsUtils.findNurbsCurveForVertex`.
+
+Finds the NURBS curve containing the vertex identified by ``vid``.
+Returns the NURBS curve and sets ``localIndex`` to the control point
+index within that curve. Returns ``None`` if the vertex is not part of a
+NURBS curve.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsnurbsutils.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -52,6 +52,18 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing stream tolerance
     static const QgsSettingsEntryInteger *settingsDigitizingStreamTolerance;
 
+    /**
+     * Settings entry digitizing NURBS curve degree
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryInteger *settingsDigitizingNurbsDegree;
+
+    /**
+     * Settings entry digitizing NURBS mode (ControlPoints or PolyBezier)
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *settingsDigitizingNurbsMode;
+
     //! Settings entry digitizing line width
     static const QgsSettingsEntryInteger *settingsDigitizingLineWidth;
 
