@@ -545,7 +545,7 @@ void QgsCustomization::addActions( Item *item, QWidget *widget ) const
   if ( !item || !widget )
     return;
 
-  for ( QgsCustomization::QWidgetIterator::Infos it : QgsCustomization::QWidgetIterator( widget ) )
+  for ( QgsCustomization::QWidgetIterator::Info it : QgsCustomization::QWidgetIterator( widget ) )
   {
     if ( it.name.isEmpty() )
       continue;
@@ -770,7 +770,7 @@ QgsCustomization::QWidgetIterator::QWidgetIterator( QWidget *widget )
 QgsCustomization::QWidgetIterator::Iterator::Iterator( QWidget *ptr, qsizetype idx )
   : idx( idx ), mActions( ptr->actions() ) {}
 
-QgsCustomization::QWidgetIterator::Infos QgsCustomization::QWidgetIterator::Iterator::operator*() const
+QgsCustomization::QWidgetIterator::Info QgsCustomization::QWidgetIterator::Iterator::operator*() const
 {
   if ( idx < 0 || idx >= mActions.count() )
     throw std::out_of_range {
@@ -778,7 +778,7 @@ QgsCustomization::QWidgetIterator::Infos QgsCustomization::QWidgetIterator::Iter
     };
 
   QAction *act = mActions.at( idx );
-  Infos infos;
+  Info infos;
 
   // submenu
   if ( QMenu *menu = act->menu() )
@@ -835,7 +835,7 @@ void QgsCustomization::updateActionVisibility( QgsCustomization::Item *item, QWi
     return;
 
   QSet<QgsCustomization::Item *> treatedChildItems;
-  for ( QgsCustomization::QWidgetIterator::Infos it : QgsCustomization::QWidgetIterator( widget ) )
+  for ( QgsCustomization::QWidgetIterator::Info it : QgsCustomization::QWidgetIterator( widget ) )
   {
     if ( QgsCustomization::Item *childItem = item->getChild( it.name ) )
     {

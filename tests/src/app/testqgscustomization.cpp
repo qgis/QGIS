@@ -125,7 +125,7 @@ QWidget *TestQgsCustomization::findQWidget( const QString &path )
          || dynamic_cast<QMenu *>( currentWidget )
          || dynamic_cast<QMenuBar *>( currentWidget ) )
     {
-      for ( QgsCustomization::QWidgetIterator::Infos it : QgsCustomization::QWidgetIterator( currentWidget ) )
+      for ( QgsCustomization::QWidgetIterator::Info it : QgsCustomization::QWidgetIterator( currentWidget ) )
       {
         if ( it.name == pathElem )
         {
