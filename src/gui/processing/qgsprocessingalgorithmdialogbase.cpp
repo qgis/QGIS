@@ -27,7 +27,6 @@
 #include "qgsmessagebar.h"
 #include "qgsnative.h"
 #include "qgspanelwidget.h"
-#include "qgsprocessingtaskqueue.h"
 #include "qgssettings.h"
 #include "qgsstringutils.h"
 #include "qgstaskmanager.h"

@@ -48,6 +48,7 @@ from qgis.core import (
 
 from qgis.testing import QgisTestCase, start_app
 
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
@@ -103,6 +104,11 @@ class TestGdalAlgorithms(QgisTestCase):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         for a in p.algorithms():
+
+            # there are some algorithms that are in the gdal provider but do not subclass GdalAlgorithm, like CreateCloudOptimizedGeoTIFF
+            if not isinstance(a, GdalAlgorithm):
+                continue
+
             try:
                 a.getConsoleCommands({}, context, feedback)
             except QgsProcessingException:
