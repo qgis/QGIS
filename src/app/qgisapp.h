@@ -181,13 +181,13 @@ class QgsCustomizationDialog;
 #include "qgsmaptoolselect.h"
 #include "qgsmasterlayoutinterface.h"
 #include "qgsmimedatautils.h"
-#include "qobjectuniqueptr.h"
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgspointxy.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsrecentprojectsitemsmodel.h"
 #include "qgsvectorlayersaveasdialog.h"
+#include "qobjectuniqueptr.h"
 
 #include <QAbstractSocket>
 #include <QDateTime>
