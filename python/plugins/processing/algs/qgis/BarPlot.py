@@ -133,11 +133,16 @@ class BarPlot(QgisAlgorithm):
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        # 1. GET FIELD INDICES
-        name_idx = source.fields().indexFromName(namefieldname)
-        value_idx = source.fields().indexFromName(valuefieldname)
+        # 1. MATERIALIZE SOURCE (The Nuclear Option)
+        # This converts the input (which might be a buggy mock provider) into
+        # a safe, stable Memory Layer. This prevents Segfaults during iteration.
+        clean_layer = source.materialize(QgsFeatureRequest())
 
-        # 2. VALIDATE INDICES
+        # 2. GET FIELD INDICES FROM SAFE LAYER
+        name_idx = clean_layer.fields().indexFromName(namefieldname)
+        value_idx = clean_layer.fields().indexFromName(valuefieldname)
+
+        # 3. VALIDATE INDICES
         if name_idx == -1:
             raise QgsProcessingException(
                 self.tr("Field '{}' not found in input layer.").format(namefieldname)
@@ -147,18 +152,17 @@ class BarPlot(QgisAlgorithm):
                 self.tr("Field '{}' not found in input layer.").format(valuefieldname)
             )
 
-        # 3. SAFE EXECUTION (Convert everything to native Python types)
-        req = QgsFeatureRequest()
+        # 4. SAFE EXECUTION
         x_data = []
         y_data = []
 
-        for f in source.getFeatures(req):
+        for f in clean_layer.getFeatures():
             if feedback.isCanceled():
                 break
 
             attrs = f.attributes()
-            # SAFE CAST: Force QGIS types into Python str/float
-            # This prevents Plotly from crashing on QVariants
+            
+            # Type Firewall: Convert everything to Python types
             raw_name = attrs[name_idx]
             if raw_name is None:
                 x_data.append("<NULL>")
