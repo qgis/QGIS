@@ -58,13 +58,12 @@ bool QgsStacAssetItem::hasDragEnabled() const
 
 QgsStacController *QgsStacAssetItem::stacController() const
 {
-  if ( const QgsStacItemItem *itemItem = qobject_cast<const QgsStacItemItem *>( parent() ) )
+  const QgsDataItem *item = this;
+  while ( item )
   {
-    return itemItem->stacController();
-  }
-  else if ( const QgsStacCatalogItem *catalogItem = qobject_cast<const QgsStacCatalogItem *>( parent() ) )
-  {
-    return catalogItem->stacController();
+    if ( const QgsStacConnectionItem *ci = qobject_cast<const QgsStacConnectionItem *>( item ) )
+      return ci->controller();
+    item = item->parent();
   }
   Q_ASSERT( false );
   return nullptr;
