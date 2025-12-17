@@ -206,6 +206,7 @@ class TestQgsTessellator : public QgsTest
     void testCrash2DTriangle();
     void narrowPolygon();
     void testOutputZUp();
+    void testDuplicatePoints();
 
   private:
 };
@@ -1066,6 +1067,31 @@ void TestQgsTessellator::testOutputZUp()
 
   QCOMPARE( tZUp.data(), expectedOutputZUp );
   QCOMPARE( tYUp.data(), expectedOutputYUp );
+}
+
+void TestQgsTessellator::testDuplicatePoints()
+{
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 3, 1 1 3, 2 1 3, 2 1 3, 3 2 3, 1 2 3, 1 1 3))" );
+
+  QList<TriangleCoords> trianglesZCD;
+  trianglesZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
+  trianglesZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ) );
+
+  QList<TriangleCoords> trianglesZEarcut;
+  trianglesZEarcut << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ) );
+  trianglesZEarcut << TriangleCoords( QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
+
+  QgsTessellator tesZCD;
+  tesZCD.setOutputZUp( true );
+  tesZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
+
+  QgsTessellator tesZEarcut;
+  tesZEarcut.setOutputZUp( true );
+  tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesZEarcut.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesZEarcut.data(), false, trianglesZEarcut ) );
 }
 
 QGSTEST_MAIN( TestQgsTessellator )
