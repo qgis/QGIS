@@ -1109,3 +1109,26 @@ bool QgsGdalUtils::applyVsiCredentialOptions( const QString &prefix, const QStri
   return true;
 }
 #endif
+
+QgsGdalProgressAdapter::QgsGdalProgressAdapter( QgsFeedback *feedback, double startPercentage, double endPercentage ): mFeedback( feedback ), mStartPercentage( startPercentage ), mEndPercentage( endPercentage )
+{
+}
+
+/* static */
+int CPL_STDCALL QgsGdalProgressAdapter::progressCallback( double dfComplete,
+    const char * /* pszMessage */,
+    void *pProgressArg )
+{
+  const QgsGdalProgressAdapter *adapter = static_cast<QgsGdalProgressAdapter *>( pProgressArg );
+
+  if ( QgsFeedback *feedback = adapter->mFeedback )
+  {
+    feedback->setProgress( adapter->mStartPercentage +
+                           ( adapter->mEndPercentage - adapter->mStartPercentage ) * dfComplete );
+
+    if ( feedback->isCanceled() )
+      return false;
+  }
+
+  return true;
+}

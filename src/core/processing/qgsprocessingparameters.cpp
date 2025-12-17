@@ -975,6 +975,23 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   return parameterAsOutputLayer( definition, val, context );
 }
 
+QString QgsProcessingParameters::parameterAsOutputFormat( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext & )
+{
+  QString format;
+  QVariant val;
+  if ( definition )
+  {
+    val = parameters.value( definition->name() );
+    if ( val.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
+    {
+      // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+      const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+      format = fromVar.format();
+    }
+  }
+  return format;
+}
+
 QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly )
 {
   QVariant val = value;
@@ -7105,46 +7122,72 @@ QgsProcessingOutputDefinition *QgsProcessingParameterRasterDestination::toOutput
   return new QgsProcessingOutputRasterLayer( name(), description() );
 }
 
-QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
+QString QgsProcessingParameterRasterDestination::defaultFileFormat() const
 {
   if ( auto *lOriginalProvider = originalProvider() )
   {
-    return lOriginalProvider->defaultRasterFileExtension();
+    return lOriginalProvider->defaultRasterFileFormat();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
-    return p->defaultRasterFileExtension();
+    return p->defaultRasterFileFormat();
   }
   else
   {
-    return QgsProcessingUtils::defaultRasterExtension();
+    return QgsProcessingUtils::defaultRasterFormat();
   }
+}
+
+QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
+{
+  QString format = defaultFileFormat();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( format );
+  if ( !extensions.isEmpty() )
+    return extensions[0];
+
+  return QStringLiteral( "tif" );
 }
 
 QString QgsProcessingParameterRasterDestination::createFileFilter() const
 {
-  const QStringList exts = supportedOutputRasterLayerExtensions();
   QStringList filters;
-  for ( const QString &ext : exts )
+  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
   {
-    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+    QString format = formatAndExt.first;
+    const QString &extension = formatAndExt.second;
+    if ( format.isEmpty() )
+      format = extension;
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( format.toUpper(), extension.toLower() );
   }
+
   return filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 }
 
 QStringList QgsProcessingParameterRasterDestination::supportedOutputRasterLayerExtensions() const
 {
+  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  QSet< QString > extensions;
+  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  {
+    extensions.insert( formatAndExt.second );
+  }
+  return QStringList( extensions.constBegin(), extensions.constEnd() );
+}
+
+QList<QPair<QString, QString>>  QgsProcessingParameterRasterDestination::supportedOutputRasterLayerFormatAndExtensions() const
+{
   if ( auto *lOriginalProvider = originalProvider() )
   {
-    return lOriginalProvider->supportedOutputRasterLayerExtensions();
+    return lOriginalProvider->supportedOutputRasterLayerFormatAndExtensions();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
-    return p->supportedOutputRasterLayerExtensions();
+    return p->supportedOutputRasterLayerFormatAndExtensions();
   }
   else
   {
-    return QgsRasterFileWriter::supportedFormatExtensions();
+    return QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault();
   }
 }
 

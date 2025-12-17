@@ -68,6 +68,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     bool supportsSubsetString() const override;
     QString subsetStringDialect() const override;
     QString subsetStringHelpUrl() const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;

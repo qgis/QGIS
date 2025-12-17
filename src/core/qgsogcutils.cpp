@@ -1780,8 +1780,6 @@ QDomElement QgsOgcUtils::createGMLPositions( const QgsPolylineXY &points, QDomDo
   return posElem;
 }
 
-
-
 // -----------------------------------------
 
 QColor QgsOgcUtils::colorFromOgcFill( const QDomElement &fillElement )
@@ -2089,39 +2087,26 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
   if ( !node )
     return QDomElement();
 
-  switch ( node->nodeType() )
+  QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
+  const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
+
+  if ( errorMessage )
   {
-    case QgsExpressionNode::ntFunction:
-    case QgsExpressionNode::ntLiteral:
-    case QgsExpressionNode::ntColumnRef:
-    case QgsExpressionNode::ntUnaryOperator:
-    {
-      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
-      const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
-
-      if ( errorMessage )
-        *errorMessage = utils.errorMessage();
-
-      if ( !exprRootElem.isNull() )
-      {
-        if ( requiresFilterElement )
-        {
-          QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
-
-          filterElem.appendChild( exprRootElem );
-          return filterElem;
-        }
-        return exprRootElem;
-      }
-      break;
-    }
-    default:
-    {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Node type not supported in expression translation: %1" ).arg( node->nodeType() );
-    }
+    *errorMessage = utils.errorMessage();
   }
-  // got an error
+
+  if ( !exprRootElem.isNull() )
+  {
+    if ( requiresFilterElement )
+    {
+      QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
+
+      filterElem.appendChild( exprRootElem );
+      return filterElem;
+    }
+    return exprRootElem;
+  }
+
   return QDomElement();
 }
 
@@ -2165,6 +2150,25 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
   }
   filterElem.appendChild( exprRootElem );
   return filterElem;
+}
+
+//
+
+/* static */ Qgis::WkbType QgsOgcUtils::geomTypeFromPropertyType( const QString &gmlGeomType )
+{
+  if ( gmlGeomType == QLatin1String( "Point" ) )
+    return Qgis::WkbType::Point;
+  if ( gmlGeomType == QLatin1String( "LineString" ) || gmlGeomType == QLatin1String( "Curve" ) )
+    return Qgis::WkbType::LineString;
+  if ( gmlGeomType == QLatin1String( "Polygon" ) || gmlGeomType == QLatin1String( "Surface" ) )
+    return Qgis::WkbType::Polygon;
+  if ( gmlGeomType == QLatin1String( "MultiPoint" ) )
+    return Qgis::WkbType::MultiPoint;
+  if ( gmlGeomType == QLatin1String( "MultiLineString" ) || gmlGeomType == QLatin1String( "MultiCurve" ) )
+    return Qgis::WkbType::MultiLineString;
+  if ( gmlGeomType == QLatin1String( "MultiPolygon" ) || gmlGeomType == QLatin1String( "MultiSurface" ) )
+    return Qgis::WkbType::MultiPolygon;
+  return Qgis::WkbType::Unknown;
 }
 
 //
@@ -3776,8 +3780,6 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
       }
 
       operand = std::make_unique<QgsExpressionNodeLiteral>( value );
-      if ( !operand )
-        continue;
     }
 
     // use the concat operator to merge the ogc:Literal children

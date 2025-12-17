@@ -133,19 +133,19 @@ class GUI_EXPORT QgsLayoutMapGridWidget : public QgsLayoutItemBaseWidget, privat
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
 
-    void handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
-    void handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
-    void handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationPosition position );
-    void handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction );
+    void handleChangedFrameDisplay( Qgis::MapGridBorderSide border, Qgis::MapGridComponentVisibility mode );
+    void handleChangedAnnotationDisplay( Qgis::MapGridBorderSide border, Qgis::MapGridComponentVisibility mode );
+    void handleChangedAnnotationPosition( Qgis::MapGridBorderSide border, Qgis::MapGridAnnotationPosition position );
+    void handleChangedAnnotationDirection( Qgis::MapGridBorderSide border, Qgis::MapGridAnnotationDirection direction );
 
     void insertFrameDisplayEntries( QComboBox *c );
     void insertAnnotationDisplayEntries( QComboBox *c );
     void insertAnnotationPositionEntries( QComboBox *c );
     void insertAnnotationDirectionEntries( QComboBox *c );
 
-    void initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
-    void initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos );
-    void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
+    void initFrameDisplayBox( QComboBox *c, Qgis::MapGridComponentVisibility display );
+    void initAnnotationPositionBox( QComboBox *c, Qgis::MapGridAnnotationPosition pos );
+    void initAnnotationDirectionBox( QComboBox *c, Qgis::MapGridAnnotationDirection dir );
 
     //! Enables/disables grid frame related controls
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled, bool ticksRotationEnabled );

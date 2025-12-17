@@ -44,11 +44,10 @@ const QString QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SO
 QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
-  setFlag( QgsLayerTreeModel::AllowNodeReorder );
-  setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
-  setFlag( QgsLayerTreeModel::ShowLegendAsTree );
+  setAllowModifications( true );
+
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
-  setFlag( QgsLayerTreeModel::AllowNodeRename );
+  setFlag( QgsLayerTreeModel::ShowLegendAsTree );
 }
 
 QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int role ) const
@@ -251,6 +250,9 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
 bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  if ( !mAllowModifications )
+    return false;
+
   if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( index2node( index ) ) )
   {
     if ( role == Qt::CheckStateRole )
@@ -273,7 +275,7 @@ Qt::ItemFlags QgsElevationProfileLayerTreeModel::flags( const QModelIndex &index
   // the elevation tree model only supports group renames, not layer renames (otherwise
   // we'd be renaming the actual layer, which is likely NOT what users expect)
   QgsLayerTreeNode *node = index2node( index );
-  if ( !QgsLayerTree::isGroup( node ) )
+  if ( !mAllowModifications || !QgsLayerTree::isGroup( node ) )
   {
     f.setFlag( Qt::ItemFlag::ItemIsEditable, false );
   }
@@ -282,6 +284,9 @@ Qt::ItemFlags QgsElevationProfileLayerTreeModel::flags( const QModelIndex &index
 
 bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const
 {
+  if ( !mAllowModifications )
+    return false;
+
   if ( action == Qt::IgnoreAction )
     return true;
 
@@ -303,6 +308,9 @@ bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, 
 
 bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
+  if ( !mAllowModifications )
+    return false;
+
   if ( action == Qt::IgnoreAction )
     return true;
 
@@ -357,12 +365,23 @@ bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt:
 
 QMimeData *QgsElevationProfileLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 {
+  if ( !mAllowModifications )
+    return nullptr;
+
   QMimeData *mimeData = QgsLayerTreeModel::mimeData( indexes );
   if ( mimeData )
   {
     mimeData->setData( QStringLiteral( "application/qgis.restrictlayertreemodelsubclass" ), "QgsElevationProfileLayerTreeModel" );
   }
   return mimeData;
+}
+
+void QgsElevationProfileLayerTreeModel::setAllowModifications( bool allow )
+{
+  setFlag( QgsLayerTreeModel::AllowNodeReorder, allow );
+  setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, allow );
+  setFlag( QgsLayerTreeModel::AllowNodeRename, allow );
+  mAllowModifications = allow;
 }
 
 
@@ -438,15 +457,25 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
 
 QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
   : QgsLayerTreeViewBase( parent )
-  , mLayerTree( rootNode )
 {
-  mModel = new QgsElevationProfileLayerTreeModel( rootNode, this );
+  setLayerTree( rootNode );
+}
+
+void QgsElevationProfileLayerTreeView::setLayerTree( QgsLayerTree *rootNode )
+{
+  QgsElevationProfileLayerTreeModel *oldModel = mModel;
+
+  mLayerTree = rootNode;
+
+  mModel = new QgsElevationProfileLayerTreeModel( mLayerTree, this );
 
   connect( mModel, &QgsElevationProfileLayerTreeModel::addLayers, this, &QgsElevationProfileLayerTreeView::addLayers );
   mProxyModel = new QgsElevationProfileLayerTreeProxyModel( mModel, this );
 
   setModel( mProxyModel );
   setLayerTreeModel( mModel );
+
+  delete oldModel;
 }
 
 void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *project )

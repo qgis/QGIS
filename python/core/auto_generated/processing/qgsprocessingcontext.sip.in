@@ -549,10 +549,10 @@ creating these outputs.
 %Docstring
 Returns the preferred raster format to use for raster outputs.
 
-This method returns a file extension to use when creating raster outputs
-(e.g. "tif"). Generally, it is preferable to use the extension
-associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`.
+This method returns a file format to use when creating raster outputs
+(e.g. "GTiff"). Generally, it is preferable to use the format associated
+with a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingParameterRasterDestination.defaultFileFormat()`.
 However, in some cases, a specific parameter may not be available to
 call this method on (e.g. for an algorithm which has only an output
 folder parameter and which creates multiple output layers in that
@@ -567,6 +567,10 @@ fallback when the returned format is not usable.
 
 .. seealso:: :py:func:`preferredVectorFormat`
 
+.. note::
+
+   Since QGIS 4.0, this method returns a GDAL format name. In prior versions, this was a file extension.
+
 .. versionadded:: 3.10
 %End
 
@@ -574,10 +578,10 @@ fallback when the returned format is not usable.
 %Docstring
 Sets the preferred raster ``format`` to use for raster outputs.
 
-This method sets a file extension to use when creating raster outputs
-(e.g. "tif"). Generally, it is preferable to use the extension
-associated with a particular parameter, which can be retrieved through
-:py:func:`QgsProcessingDestinationParameter.defaultFileExtension()`.
+This method sets a file format to use when creating raster outputs (e.g.
+"GTiff"). Generally, it is preferable to use the format associated with
+a particular parameter, which can be retrieved through
+:py:func:`QgsProcessingParameterRasterDestination.defaultFileFormat()`.
 However, in some cases, a specific parameter may not be available to
 call this method on (e.g. for an algorithm which has only an output
 folder parameter and which creates multiple output layers in that
@@ -587,6 +591,10 @@ creating these outputs.
 .. seealso:: :py:func:`preferredRasterFormat`
 
 .. seealso:: :py:func:`setPreferredVectorFormat`
+
+.. note::
+
+   Since QGIS 4.0, this method expects a GDAL format name. In prior versions, this was a file extension.
 
 .. versionadded:: 3.10
 %End

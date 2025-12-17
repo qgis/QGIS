@@ -49,6 +49,84 @@ void QgsAlignmentComboBox::setCurrentAlignment( Qt::Alignment alignment )
     setCurrentIndex( index );
 }
 
+Qgis::TextHorizontalAlignment QgsAlignmentComboBox::horizontalAlignment() const
+{
+  switch ( currentAlignment() )
+  {
+    case Qt::AlignLeft:
+      return Qgis::TextHorizontalAlignment::Left;
+    case Qt::AlignRight:
+      return Qgis::TextHorizontalAlignment::Right;
+
+    case Qt::AlignHCenter:
+      return Qgis::TextHorizontalAlignment::Center;
+    case Qt::AlignJustify:
+      return Qgis::TextHorizontalAlignment::Justify;
+    case Qt::AlignAbsolute:
+      return Qgis::TextHorizontalAlignment::Left;
+
+    default:
+      break;
+  }
+
+  return Qgis::TextHorizontalAlignment::Left;
+}
+
+Qgis::TextVerticalAlignment QgsAlignmentComboBox::verticalAlignment() const
+{
+  switch ( currentAlignment() )
+  {
+    case Qt::AlignTop:
+      return Qgis::TextVerticalAlignment::Top;
+    case Qt::AlignBottom:
+      return Qgis::TextVerticalAlignment::Bottom;
+    case Qt::AlignVCenter:
+      return Qgis::TextVerticalAlignment::VerticalCenter;
+    case Qt::AlignBaseline:
+      return Qgis::TextVerticalAlignment::Bottom; // not yet supported
+
+    default:
+      break;
+  }
+
+  return Qgis::TextVerticalAlignment::Bottom;
+}
+
+void QgsAlignmentComboBox::setCurrentAlignment( Qgis::TextHorizontalAlignment alignment )
+{
+  switch ( alignment )
+  {
+    case Qgis::TextHorizontalAlignment::Left:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignLeft );
+      break;
+    case Qgis::TextHorizontalAlignment::Center:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignHCenter );
+      break;
+    case Qgis::TextHorizontalAlignment::Right:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignRight );
+      break;
+    case Qgis::TextHorizontalAlignment::Justify:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignJustify );
+      break;
+  }
+}
+
+void QgsAlignmentComboBox::setCurrentAlignment( Qgis::TextVerticalAlignment alignment )
+{
+  switch ( alignment )
+  {
+    case Qgis::TextVerticalAlignment::Top:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignTop );
+      break;
+    case Qgis::TextVerticalAlignment::VerticalCenter:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignVCenter );
+      break;
+    case Qgis::TextVerticalAlignment::Bottom:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignBottom );
+      break;
+  }
+}
+
 void QgsAlignmentComboBox::customizeAlignmentDisplay( Qt::Alignment alignment, const QString &text, const QIcon &icon )
 {
   const int index = findData( QVariant( alignment ) );

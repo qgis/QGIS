@@ -37,6 +37,10 @@
 #include <geos_c.h>
 #include <ogr_api.h>
 
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
+
 #define qgis_xstr(x) qgis_str(x)
 #define qgis_str(x) #x
 
@@ -716,6 +720,24 @@ int Qgis::sfcgalVersionInt()
   return SFCGAL_VERSION_MAJOR_INT * 10000 + SFCGAL_VERSION_MINOR_INT * 100 + SFCGAL_VERSION_PATCH_INT;
 #else
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based SFCGAL." ) );
+#endif
+}
+
+bool Qgis::hasGeographicLib()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return true;
+#else
+  return false;
+#endif
+}
+
+int Qgis::geographicLibVersion()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return GEOGRAPHICLIB_VERSION_MAJOR * 10000 + GEOGRAPHICLIB_VERSION_MINOR * 100 + GEOGRAPHICLIB_VERSION_PATCH;
+#else
+  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
 #endif
 }
 

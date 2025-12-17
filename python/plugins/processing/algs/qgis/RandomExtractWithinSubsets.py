@@ -97,6 +97,22 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
     def displayName(self):
         return self.tr("Random extract within subsets")
 
+    def shortDescription(self):
+        return self.tr(
+            "Generates a new vector layer that contains only a subset of the features in the input layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm takes a vector layer and generates a new one "
+            "that contains only a subset of the features in the input layer.\n"
+            "The subset is defined randomly, using a percentage or count value "
+            "to define the total number of features in the subset.\n"
+            "The percentage/count value is not applied to the whole layer, but instead to each category. "
+            "Categories are defined according to a given attribute, which is also specified as "
+            "an input parameter for the algorithm."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

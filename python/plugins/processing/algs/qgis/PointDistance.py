@@ -148,6 +148,16 @@ class PointDistance(QgisAlgorithm):
     def displayName(self):
         return self.tr("Distance matrix")
 
+    def shortDescription(self):
+        return self.tr(
+            "Creates a table containing a matrix of distances between all the points in a points layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

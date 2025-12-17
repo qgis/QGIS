@@ -3022,6 +3022,105 @@ The development version
       CenteredSegment,
     };
 
+
+    enum class MapGridUnit
+      {
+      MapUnits,
+      Millimeters,
+      Centimeters,
+      DynamicPageSizeBased,
+    };
+
+    enum class MapGridStyle
+      {
+      Lines,
+      LineCrosses,
+      Markers,
+      FrameAndAnnotationsOnly
+    };
+
+    enum class MapGridComponentVisibility
+      {
+      ShowAll,
+      LatitudeOnly,
+      LongitudeOnly,
+      HideAll
+    };
+
+    enum class MapGridAnnotationPosition
+      {
+      InsideMapFrame,
+      OutsideMapFrame,
+    };
+
+    enum class MapGridAnnotationDirection
+      {
+      Horizontal,
+      Vertical,
+      VerticalDescending,
+      BoundaryDirection,
+      AboveTick,
+      OnTick,
+      UnderTick,
+    };
+
+    enum class MapGridAnnotationFormat
+      {
+      Decimal,
+      DegreeMinute,
+      DegreeMinuteSecond,
+      DecimalWithSuffix,
+      DegreeMinuteNoSuffix,
+      DegreeMinutePadded,
+      DegreeMinuteSecondNoSuffix,
+      DegreeMinuteSecondPadded,
+      CustomFormat
+    };
+
+    enum class MapGridBorderSide
+      {
+      Left,
+      Right,
+      Bottom,
+      Top,
+    };
+
+    enum class MapGridFrameStyle
+      {
+      NoFrame,
+      Zebra,
+      InteriorTicks,
+      ExteriorTicks,
+      InteriorExteriorTicks,
+      LineBorder,
+      LineBorderNautical,
+      ZebraNautical,
+    };
+
+    enum class MapGridTickLengthMode
+      {
+      OrthogonalTicks,
+      NormalizedTicks,
+    };
+
+
+    enum class MapGridFrameSideFlag
+    {
+      Left,
+      Right,
+      Top,
+      Bottom
+    };
+
+    typedef QFlags<Qgis::MapGridFrameSideFlag> MapGridFrameSideFlags;
+
+
+    enum class MapGridAnnotationType
+      {
+      Longitude,
+      Latitude
+    };
+
     enum class InputControllerType
     {
       Map2D,
@@ -3589,6 +3688,24 @@ Else throws an exception.
 .. versionadded:: 4.0
 %End
 
+    static bool hasGeographicLib();
+%Docstring
+Returns ``True`` if the QGIS build contains GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
+    static int geographicLibVersion();
+%Docstring
+Returns the version of the GeographicLib library if QGIS is built with
+GeographicLib support.
+
+:raises QgsNotSupportedException: on QGIS builds based without
+                                  GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
     static bool hasQtWebkit();
 %Docstring
 Returns ``True`` if the QGIS build contains QtWebkit.
@@ -3809,6 +3926,8 @@ QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Q
 QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::CurvedTextFlag> f2);
 
 QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::ExtrusionFace> f2);
+
+QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFlags<Qgis::MapGridFrameSideFlag> f2);
 
 
 

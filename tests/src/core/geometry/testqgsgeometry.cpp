@@ -2345,8 +2345,7 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point EMPTY" ) );
   result = geomTest.orientedMinimumBoundingBox();
-  resultTestWKT = QLatin1String( "" );
-  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( result.asWkt( 2 ), QString() );
 }
 
 void TestQgsGeometry::boundingBox()
@@ -2356,7 +2355,8 @@ void TestQgsGeometry::boundingBox()
   QCOMPARE( geomTest.boundingBox(), nullRect );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(-1 -2, 4 5)" ) );
-  QCOMPARE( geomTest.boundingBox3D(), QgsRectangle( -1, -2, 4, 5 ) );
+  QCOMPARE( geomTest.boundingBox(), QgsRectangle( -1, -2, 4, 5 ) );
+  QCOMPARE( geomTest.boundingBox3D(), QgsBox3D( QgsRectangle( -1, -2, 4, 5 ) ) );
 }
 
 void TestQgsGeometry::boundingBox3D()
@@ -3195,7 +3195,7 @@ void TestQgsGeometry::chamferFillet()
 
   g = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) );
   QCOMPARE( g.lastError(), "" );
-  g.chamfer( 1, 0.5, 0.5 );
+  g.chamfer( 0, 0.5, 0.5 );
   QCOMPARE( g.lastError(), "Operation 'Chamfer' needs curve geometry." );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
@@ -3206,7 +3206,7 @@ void TestQgsGeometry::chamferFillet()
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 5, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Vertex index out of range. -1 must be in (0, 2). Requested vertex: 5 was resolved as: [part: -1, ring: -1, vertex: -1]" );
+  QCOMPARE( g.lastError(), "Invalid vertex index" );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );

@@ -20,31 +20,39 @@ TODO:
 #include <vector>
 
 #include <pdal/util/FileUtils.hpp>
+#include <pdal/pdal_config.hpp>
+
+#include "gdal_version.h"
 
 #include "alg.hpp"
 #include "vpc.hpp"
 
 extern int runTile(std::vector<std::string> arglist);  // tile/tile.cpp
 
+std::string WRENCH_VERSION = "1.3.0";
 
 void printUsage()
 {
     std::cout << "usage: pdal_wrench <command> [<args>]" << std::endl;
     std::cout << "       pdal_wrench [--help]" << std::endl;
+    std::cout << "       pdal_wrench [--version]" << std::endl;
     std::cout << std::endl;
     std::cout << "Available commands:" << std::endl;
-    std::cout << "   boundary        Exports a polygon file containing boundary" << std::endl;
-    std::cout << "   build_vpc       Creates a virtual point cloud" << std::endl;
-    std::cout << "   clip            Outputs only points that are inside of the clipping polygons" << std::endl;
-    std::cout << "   density         Exports a raster where each cell contains number of points" << std::endl;
-    std::cout << "   info            Prints basic metadata from the point cloud file" << std::endl;
-    std::cout << "   merge           Merges multiple point cloud files to a single one" << std::endl;
-    std::cout << "   thin            Creates a thinned version of the point cloud (with fewer points)" << std::endl;
-    std::cout << "   tile            Creates square tiles from input data" << std::endl;
-    std::cout << "   to_raster       Exports point cloud data to a 2D raster grid" << std::endl;
-    std::cout << "   to_raster_tin   Exports point cloud data to a 2D raster grid using triangulation" << std::endl;
-    std::cout << "   to_vector       Exports point cloud data to a vector layer with 3D points" << std::endl;
-    std::cout << "   translate       Converts to a different file format, reproject, and more" << std::endl;
+    std::cout << "   boundary               Exports a polygon file containing boundary" << std::endl;
+    std::cout << "   build_vpc              Creates a virtual point cloud" << std::endl;
+    std::cout << "   classify_ground        Classify ground points" << std::endl;
+    std::cout << "   clip                   Outputs only points that are inside of the clipping polygons" << std::endl;
+    std::cout << "   density                Exports a raster where each cell contains number of points" << std::endl;
+    std::cout << "   filter_noise           Classify noise points" << std::endl;
+    std::cout << "   height_above_ground    Calculates height above ground for each point" << std::endl;
+    std::cout << "   info                   Prints basic metadata from the point cloud file" << std::endl;
+    std::cout << "   merge                  Merges multiple point cloud files to a single one" << std::endl;
+    std::cout << "   thin                   Creates a thinned version of the point cloud (with fewer points)" << std::endl;
+    std::cout << "   tile                   Creates square tiles from input data" << std::endl;
+    std::cout << "   to_raster              Exports point cloud data to a 2D raster grid" << std::endl;
+    std::cout << "   to_raster_tin          Exports point cloud data to a 2D raster grid using triangulation" << std::endl;
+    std::cout << "   to_vector              Exports point cloud data to a vector layer with 3D points" << std::endl;
+    std::cout << "   translate              Converts to a different file format, reproject, and more" << std::endl;
 }
 
 
@@ -68,6 +76,10 @@ int main(int argc, char* argv[])
     if (cmd == "--help" || cmd == "help")
     {
         printUsage();
+    }
+    else if (cmd == "--version" || cmd == "version")
+    {
+        std::cout << "pdal_wrench version: " << WRENCH_VERSION << " (PDAL version: " << pdal::Config::versionString() << ", GDAL version: "<<  GDAL_RELEASE_NAME << ")"  << std::endl;
     }
     else if (cmd == "density")
     {
@@ -123,9 +135,24 @@ int main(int argc, char* argv[])
         Translate translate;
         runAlg(args, translate);
     }
+    else if (cmd == "height_above_ground")
+    {
+        HeightAboveGround heightAboveGround;
+        runAlg(args, heightAboveGround);
+    }
     else if (cmd == "tile")
     {
       runTile(args);
+    }
+    else if (cmd == "filter_noise")
+    {
+        FilterNoise filterNoise;
+        runAlg(args, filterNoise);
+    }
+    else if (cmd == "classify_ground")
+    {
+        ClassifyGround classifyGround;
+        runAlg(args, classifyGround);
     }
     else
     {

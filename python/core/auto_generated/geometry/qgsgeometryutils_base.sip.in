@@ -461,6 +461,15 @@ specified tolerance ``epsilon``.
 .. versionadded:: 3.32
 %End
 
+    static bool points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon );
+%Docstring
+Given the points (``x1``, ``y1``, ``z1``), (``x2``, ``y2``, ``z2``) and
+(``x3``, ``y3``, ``z3``) returns ``True`` if these points can be
+considered collinear with a specified tolerance ``epsilon``.
+
+.. versionadded:: 4.0
+%End
+
 
     static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
                                double &pointX /Out/, double &pointY /Out/, double &angle /Out/ ) /HoldGIL/;

@@ -111,6 +111,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
     bool isValid() const override;
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
