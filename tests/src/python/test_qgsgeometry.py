@@ -12488,6 +12488,66 @@ class TestQgsGeometry(QgisTestCase):
             ["PolyhedralSurface Z (((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2)))"],
         )
 
+        # PolyhedralSurface to MultiPolygon
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.MultiPolygon,
+            ),
+            ["MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))",
+                QgsWkbTypes.Type.MultiPolygonZ,
+            ),
+            [
+                "MultiPolygon Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))"
+            ],
+        )
+        # PolyhedralSurface to Polygon (single patch)
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface (((1 1, 1 2, 2 2, 1 1)))",
+                QgsWkbTypes.Type.Polygon,
+            ),
+            ["Polygon ((1 1, 1 2, 2 2, 1 1))"],
+        )
+        # PolyhedralSurface to Polygon (multi patches -> multiple results)
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.Polygon,
+            ),
+            ["Polygon ((1 1, 1 2, 2 2, 1 1))", "Polygon ((3 3, 4 3, 4 4, 3 3))"],
+        )
+
+        # TIN to MultiPolygon
+        self.assertEqual(
+            coerce_to_wkt(
+                "TIN (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.MultiPolygon,
+            ),
+            ["MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "TIN Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))",
+                QgsWkbTypes.Type.MultiPolygonZ,
+            ),
+            [
+                "MultiPolygon Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))"
+            ],
+        )
+        # TIN to Polygon (single patch)
+        self.assertEqual(
+            coerce_to_wkt(
+                "TIN (((1 1, 1 2, 2 2, 1 1)))",
+                QgsWkbTypes.Type.Polygon,
+            ),
+            ["Polygon ((1 1, 1 2, 2 2, 1 1))"],
+        )
+
         # GeometryCollection of Point to MultiPoint
         self.assertEqual(
             coerce_to_wkt(
