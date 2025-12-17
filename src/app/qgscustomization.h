@@ -640,9 +640,9 @@ class APP_EXPORT QgsCustomization
         QWidgetIterator( QWidget *widget );
 
         /**
-         * Iterator informations
+         * Iterator information
          */
-        struct Infos
+        struct Info
         {
             QWidget *widget = nullptr;
             QAction *action = nullptr;
@@ -657,7 +657,7 @@ class APP_EXPORT QgsCustomization
         {
             Iterator( QWidget *ptr, qsizetype idx );
 
-            Infos operator*() const;
+            Info operator*() const;
             Iterator &operator++();
             bool operator==( const Iterator &b ) const;
 
@@ -676,7 +676,7 @@ class APP_EXPORT QgsCustomization
     };
 
     /**
-     * Backward compatiblity method to import old QGIS3 ini file
+     * Backward compatibility method to import old QGIS3 ini file
      */
     void loadOldIniFile( const QString &filePath );
 
