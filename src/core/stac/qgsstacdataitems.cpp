@@ -470,16 +470,13 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
     }
   }
 
-  if ( mIsCollection )
+  if ( QgsStacCollection *collection = qobject_cast<QgsStacCollection *>( mStacCatalog.get() ) )
   {
-    if ( QgsStacCollection *collection = dynamic_cast<QgsStacCollection *>( mStacCatalog.get() ) )
+    const QMap<QString, QgsStacAsset> assets = collection->assets();
+    for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
     {
-      const QMap<QString, QgsStacAsset> assets = collection->assets();
-      for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
-      {
-        QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
-        contents.append( assetItem );
-      }
+      QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
+      contents.append( assetItem );
     }
   }
 
