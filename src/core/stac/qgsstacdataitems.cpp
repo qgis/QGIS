@@ -56,17 +56,23 @@ bool QgsStacAssetItem::hasDragEnabled() const
   return mStacAsset->isCloudOptimized();
 }
 
+QgsStacController *QgsStacAssetItem::stacController() const
+{
+  if ( const QgsStacItemItem *itemItem = qobject_cast<const QgsStacItemItem *>( parent() ) )
+  {
+    return itemItem->stacController();
+  }
+  else if ( const QgsStacCatalogItem *catalogItem = qobject_cast<const QgsStacCatalogItem *>( parent() ) )
+  {
+    return catalogItem->stacController();
+  }
+  Q_ASSERT( false );
+  return nullptr;
+}
+
 QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
 {
-  QgsStacController *controller = nullptr;
-  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( parent() ) )
-  {
-    controller = itemItem->stacController();
-  }
-  else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( parent() ) )
-  {
-    controller = catalogItem->stacController();
-  }
+  QgsStacController *controller = stacController();
 
   const QString authcfg = controller ? controller->authCfg() : QString();
 
