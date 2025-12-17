@@ -18,8 +18,9 @@
 #ifndef QGSWEBENGINEVIEW_H
 #define QGSWEBENGINEVIEW_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QWidget>
 
 SIP_IF_MODULE( HAVE_WEBENGINE_SIP )

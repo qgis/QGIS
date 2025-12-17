@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgswebengineview.h"
-#include "moc_qgswebengineview.cpp"
-#include <QWebEngineView>
-#include <QWebEnginePage>
-#include <QVBoxLayout>
-#include <QUrl>
+
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QEvent>
-#include <QDialog>
-#include <QDialogButtonBox>
+#include <QUrl>
+#include <QVBoxLayout>
+#include <QWebEnginePage>
+#include <QWebEngineView>
 
+#include "moc_qgswebengineview.cpp"
 
 QgsWebEngineView::QgsWebEngineView( QWidget *parent )
   : QWidget( parent )

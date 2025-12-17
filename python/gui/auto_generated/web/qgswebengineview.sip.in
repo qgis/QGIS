@@ -11,6 +11,7 @@
 
 
 
+
 class QgsWebEngineView : QWidget
 {
 %Docstring(signature="appended")
