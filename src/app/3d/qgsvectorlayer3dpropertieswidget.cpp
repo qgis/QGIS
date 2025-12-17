@@ -27,7 +27,7 @@ QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *par
   constexpr int MAX_CHUNK_FEATURES = 1'000;
   mMaxFeaturesSpinBox->setValue( MAX_CHUNK_FEATURES );
   mMaxFeaturesSpinBox->setClearValue( MAX_CHUNK_FEATURES );
-  mMaxFeaturesSpinBox->setToolTip( tr( "This is the maximum number of features that any node will attempt to load.\nFeatures beyond that number will be fetched by child nodes when Maximum Screen Space Error is reached." ) );
+  mMaxFeaturesSpinBox->setToolTip( tr( "This is the maximum number of features that any node will attempt to load.\nIf this number is reached, you will need to zoom further in to load more features." ) );
 
   groupLayerRendering->setCollapsed( true );
 
