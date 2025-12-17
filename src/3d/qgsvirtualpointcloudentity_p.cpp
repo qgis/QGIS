@@ -58,7 +58,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     createChunkedEntityForSubIndex( i );
   }
 
-  if ( provider()->overview() )
+  if ( provider()->overview() && provider()->overview().isValid() )
   {
     mOverviewEntity = new QgsPointCloudLayerChunkedEntity(
       mapSettings(),
@@ -166,7 +166,7 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   updateBboxEntity();
 
   const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-  if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
+  if ( mOverviewEntity && provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
     mOverviewEntity->handleSceneUpdate( sceneContext );
   }
