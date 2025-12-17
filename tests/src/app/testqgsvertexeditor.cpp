@@ -17,7 +17,9 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgscompoundcurve.h"
 #include "qgsmapcanvas.h"
+#include "qgsnurbscurve.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "vertextool/qgslockedfeature.h"
@@ -42,6 +44,8 @@ class TestQgsVertexEditor : public QgsTest
     void testColumnZMR_data();
     void testColumnZMR();
 
+    void testNurbsWeightColumn();
+
   private:
     std::unique_ptr<QgsMapCanvas> mCanvas;
     QgisApp *mQgisApp = nullptr;
@@ -49,6 +53,7 @@ class TestQgsVertexEditor : public QgsTest
     std::unique_ptr<QgsVectorLayer> mLayerLineZ;
     std::unique_ptr<QgsVectorLayer> mLayerLineM;
     std::unique_ptr<QgsVectorLayer> mLayerLineZM;
+    std::unique_ptr<QgsVectorLayer> mLayerNurbs;
     std::unique_ptr<QgsVertexEditorWidget> mVertexEditor;
 };
 
@@ -101,6 +106,22 @@ void TestQgsVertexEditor::initTestCase()
   line.setGeometry( QgsGeometry::fromWkt( "LineStringZM (5 5 1, 6 6 1, 7 5 1)" ) );
   mLayerLineZM->dataProvider()->addFeature( line );
   QCOMPARE( mLayerLineZM->featureCount(), 1 );
+
+  mLayerNurbs = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurve?crs=EPSG:27700" ), QStringLiteral( "layer nurbs" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerNurbs->isValid() );
+
+  QgsNurbsCurve *nurbs = new QgsNurbsCurve(
+    QVector<QgsPoint> { QgsPoint( 0, 0 ), QgsPoint( 5, 10 ), QgsPoint( 10, 5 ), QgsPoint( 15, 10 ) },
+    3,
+    QVector<double> { 0, 0, 0, 0, 1, 1, 1, 1 },
+    QVector<double> { 1.0, 2.0, 1.5, 1.0 }
+  );
+  QgsCompoundCurve *cc = new QgsCompoundCurve();
+  cc->addCurve( nurbs );
+  QgsFeature nurbsFeature;
+  nurbsFeature.setGeometry( QgsGeometry( cc ) );
+  mLayerNurbs->dataProvider()->addFeature( nurbsFeature );
+  QCOMPARE( mLayerNurbs->featureCount(), 1 );
 }
 
 void TestQgsVertexEditor::testColumnZMR_data()
@@ -108,10 +129,10 @@ void TestQgsVertexEditor::testColumnZMR_data()
   QTest::addColumn<QgsVectorLayer *>( "layer" );
   QTest::addColumn<QStringList>( "headers" );
 
-  QTest::newRow( "Line" ) << mLayerLine.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "r" ) );
-  QTest::newRow( "LineZ" ) << mLayerLineZ.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "z" ) << QStringLiteral( "r" ) );
-  QTest::newRow( "LineM" ) << mLayerLineM.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "m" ) << QStringLiteral( "r" ) );
-  QTest::newRow( "LineZM" ) << mLayerLineZM.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "z" ) << QStringLiteral( "m" ) << QStringLiteral( "r" ) );
+  QTest::newRow( "Line" ) << mLayerLine.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) );
+  QTest::newRow( "LineZ" ) << mLayerLineZ.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "z" ) );
+  QTest::newRow( "LineM" ) << mLayerLineM.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "m" ) );
+  QTest::newRow( "LineZM" ) << mLayerLineZM.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "z" ) << QStringLiteral( "m" ) );
 }
 
 void TestQgsVertexEditor::testColumnZMR()
@@ -129,6 +150,35 @@ void TestQgsVertexEditor::testColumnZMR()
     hdrs << mVertexEditor->mVertexModel->headerData( i, Qt::Horizontal, Qt::DisplayRole ).toString();
 
   QCOMPARE( headers, hdrs );
+}
+
+void TestQgsVertexEditor::testNurbsWeightColumn()
+{
+  QgsLockedFeature feat( 1, mLayerNurbs.get(), mCanvas.get() );
+  feat.selectVertex( 0 );
+
+  mVertexEditor->updateEditor( &feat );
+
+  QStringList hdrs;
+  for ( int i = 0; i < mVertexEditor->mVertexModel->columnCount(); i++ )
+    hdrs << mVertexEditor->mVertexModel->headerData( i, Qt::Horizontal, Qt::DisplayRole ).toString();
+
+  QVERIFY( hdrs.contains( QStringLiteral( "w" ) ) );
+
+  QCOMPARE( mVertexEditor->mVertexModel->rowCount(), 4 );
+
+  const int wCol = hdrs.indexOf( QLatin1Char( 'w' ) );
+  QVERIFY( wCol >= 0 );
+
+  const QModelIndex idx0 = mVertexEditor->mVertexModel->index( 0, wCol );
+  const QModelIndex idx1 = mVertexEditor->mVertexModel->index( 1, wCol );
+  const QModelIndex idx2 = mVertexEditor->mVertexModel->index( 2, wCol );
+  const QModelIndex idx3 = mVertexEditor->mVertexModel->index( 3, wCol );
+
+  QCOMPARE( mVertexEditor->mVertexModel->data( idx0, Qt::DisplayRole ).toDouble(), 1.0 );
+  QCOMPARE( mVertexEditor->mVertexModel->data( idx1, Qt::DisplayRole ).toDouble(), 2.0 );
+  QCOMPARE( mVertexEditor->mVertexModel->data( idx2, Qt::DisplayRole ).toDouble(), 1.5 );
+  QCOMPARE( mVertexEditor->mVertexModel->data( idx3, Qt::DisplayRole ).toDouble(), 1.0 );
 }
 
 //runs after all tests
