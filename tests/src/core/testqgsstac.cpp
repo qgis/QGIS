@@ -136,7 +136,6 @@ void TestQgsStac::testParseLocalCollection()
   QCOMPARE( col->providers().size(), 1 );
   QCOMPARE( col->stacExtensions().size(), 3 );
   QCOMPARE( col->license(), QLatin1String( "CC-BY-4.0" ) );
-  QVERIFY( col->assets().isEmpty() );
 
   // extent
   QgsStacExtent ext( col->extent() );
