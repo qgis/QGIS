@@ -17,8 +17,8 @@
 #define QGSGEOPACKAGEPROJECTSTORAGEGUIPROVIDER_H
 
 
-#include "qgsprojectstorageguiprovider.h"
 #include "qgis_sip.h"
+#include "qgsprojectstorageguiprovider.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

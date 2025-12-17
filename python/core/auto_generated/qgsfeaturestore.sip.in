@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsFeatureStore : QgsFeatureSink
 {
 %Docstring(signature="appended")
@@ -54,6 +55,7 @@ Sets the store's ``crs``.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 

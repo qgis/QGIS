@@ -17,6 +17,10 @@
 
 #include <limits>
 
+#include <QRegularExpression>
+
+const QString OAPIF_PROVIDER_DEFAULT_CRS = QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
+
 std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
 {
   std::vector<Link> links;
@@ -94,4 +98,82 @@ QString QgsOAPIFJson::findLink( const std::vector<QgsOAPIFJson::Link> &links, co
     }
   }
   return resultHref;
+}
+
+QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHeaderPair> &responseHeaders, const QString &formatType )
+{
+  QString nextUrl;
+  for ( const auto &headerKeyValue : responseHeaders )
+  {
+    if ( headerKeyValue.first.compare( QByteArray( "Link" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+    {
+      // Parse stuff like:
+      //  <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=html>; rel="alternate"; title="This document as HTML"; type="text/html", <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=fgb&offset=10>; rel="next"; title="Next page"; type="application/flatgeobuf"
+
+      // Split on commas, except when they are in double quotes or between <...>, and skip padding space before/after separator
+      const thread_local QRegularExpression splitOnComma( R"(\s*,\s*(?=(?:[^"<]|"[^"]*"|<[^>]*>)*$))" );
+      const QStringList links = QString::fromUtf8( headerKeyValue.second ).split( splitOnComma );
+      QString nextUrlCandidate;
+      for ( const QString &link : std::as_const( links ) )
+      {
+        if ( link.isEmpty() || link[0] != QLatin1Char( '<' ) )
+          continue;
+        const int idxClosingBracket = static_cast<int>( link.indexOf( QLatin1Char( '>' ) ) );
+        if ( idxClosingBracket < 0 )
+          continue;
+        const QString href = link.mid( 1, idxClosingBracket - 1 );
+        const int idxSemiColon = static_cast<int>( link.indexOf( QLatin1Char( ';' ), idxClosingBracket ) );
+        if ( idxSemiColon < 0 )
+          continue;
+        // Split on semi-colon, except when they are in double quotes, and skip padding space before/after separator
+        const thread_local QRegularExpression splitOnSemiColon( R"(\s*;\s*(?=(?:[^"]*"[^"]*")*[^"]*$))" );
+        const QStringList linkParts = link.mid( idxSemiColon + 1 ).split( splitOnSemiColon );
+        QString rel, type;
+        for ( const QString &linkPart : std::as_const( linkParts ) )
+        {
+          // Split on equal, except when they are in double quotes, and skip padding space before/after separator
+          const thread_local QRegularExpression splitOnEqual( R"(\s*\=\s*(?=(?:[^"]*"[^"]*")*[^"]*$))" );
+          const QStringList keyValue = linkPart.split( splitOnEqual );
+          if ( keyValue.size() == 2 )
+          {
+            const QString key = keyValue[0].trimmed();
+            QString value = keyValue[1].trimmed();
+            if ( !value.isEmpty() && value[0] == QLatin1Char( '"' ) && value.back() == QLatin1Char( '"' ) )
+            {
+              value = value.mid( 1, value.size() - 2 );
+            }
+            if ( key == QLatin1String( "rel" ) )
+            {
+              rel = value;
+            }
+            else if ( key == QLatin1String( "type" ) )
+            {
+              type = value;
+            }
+          }
+        }
+        if ( rel == QLatin1String( "next" ) )
+        {
+          if ( type == formatType )
+          {
+            nextUrl = href;
+            break;
+          }
+          else if ( nextUrlCandidate.isEmpty() && !href.contains( QLatin1String( "f=" ) ) )
+          {
+            // Some servers return a "next" link but advertizing only application/geojson
+            // whereas they actually support paging for other types
+            // So use that URL if it doesn't include a f= parameter
+            nextUrlCandidate = href;
+          }
+        }
+      }
+
+      if ( nextUrl.isEmpty() && !nextUrlCandidate.isEmpty() )
+        nextUrl = nextUrlCandidate;
+      break;
+    }
+  }
+
+  return nextUrl;
 }

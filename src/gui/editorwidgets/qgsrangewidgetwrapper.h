@@ -16,11 +16,11 @@
 #ifndef QGSRANGEWIDGETWRAPPER_H
 #define QGSRANGEWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
-#include <QSpinBox>
 #include <QDoubleSpinBox>
-#include "qgis_gui.h"
+#include <QSpinBox>
 
 SIP_NO_FILE
 

@@ -16,20 +16,21 @@
  ***************************************************************************/
 
 #include "qgscredentialdialog.h"
-#include "moc_qgscredentialdialog.cpp"
 
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
 #include "qgsgui.h"
+#include "qgslogger.h"
 
-#include <QPushButton>
+#include <QGlobalStatic>
 #include <QMenu>
-#include <QToolButton>
+#include <QPushButton>
 #include <QThread>
 #include <QTimer>
-#include <QGlobalStatic>
+#include <QToolButton>
+
+#include "moc_qgscredentialdialog.cpp"
 
 QMutex QgsCredentialDialog::sIgnoredConnectionsCacheMutex;
 typedef QSet<QString> IgnoredConnectionsSet;

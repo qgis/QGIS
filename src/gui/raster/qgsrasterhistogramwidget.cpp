@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsguiutils.h"
-#include "qgsrasterrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
-#include "moc_qgsrasterhistogramwidget.cpp"
-#include "qgsrasterminmaxwidget.h"
-#include "qgsdoublevalidator.h"
-#include "qgssettings.h"
-#include "qgsrasterlayer.h"
 
-#include <QMenu>
-#include <QFileInfo>
-#include <QDir>
-#include <QPainter>
+#include "qgsapplication.h"
+#include "qgsdoublevalidator.h"
+#include "qgsguiutils.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterminmaxwidget.h"
+#include "qgsrasterrendererwidget.h"
+#include "qgssettings.h"
+
 #include <QActionGroup>
+#include <QDir>
+#include <QFileInfo>
+#include <QMenu>
+#include <QPainter>
 #include <QRandomGenerator>
+
+#include "moc_qgsrasterhistogramwidget.cpp"
 
 // QWT Charting widget
 #include <qwt_global.h>

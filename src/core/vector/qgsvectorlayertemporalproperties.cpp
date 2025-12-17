@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsvectorlayertemporalproperties.h"
-#include "moc_qgsvectorlayertemporalproperties.cpp"
-#include "qgsvectordataprovidertemporalcapabilities.h"
+
 #include "qgsexpression.h"
-#include "qgsvectorlayer.h"
-#include "qgsfields.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfields.h"
 #include "qgsunittypes.h"
+#include "qgsvectordataprovidertemporalcapabilities.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorlayertemporalproperties.cpp"
 
 QgsVectorLayerTemporalProperties::QgsVectorLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )

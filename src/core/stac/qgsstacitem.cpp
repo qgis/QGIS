@@ -15,7 +15,6 @@
 
 #include "qgsstacitem.h"
 
-
 QgsStacItem::QgsStacItem( const QString &id,
                           const QString &version,
                           const QgsGeometry &geometry,

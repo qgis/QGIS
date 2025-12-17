@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsjsoneditwidget.h"
-#include "moc_qgsjsoneditwidget.cpp"
 
 #include <QAction>
 #include <QClipboard>
@@ -24,6 +23,8 @@
 #include <QPushButton>
 #include <QToolTip>
 #include <QUrl>
+
+#include "moc_qgsjsoneditwidget.cpp"
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   : QWidget( parent )

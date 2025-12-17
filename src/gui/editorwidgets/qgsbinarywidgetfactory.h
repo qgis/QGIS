@@ -16,8 +16,8 @@
 #ifndef QGSBINARYWIDGETFACTORY_H
 #define QGSBINARYWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 class QgsMessageBar;
 

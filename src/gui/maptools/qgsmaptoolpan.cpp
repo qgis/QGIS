@@ -13,19 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QBitmap>
-#include <QCursor>
 #include "qgsmaptoolpan.h"
-#include "moc_qgsmaptoolpan.cpp"
+
 #include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaptopixel.h"
 #include "qgsproject.h"
 
+#include <QBitmap>
+#include <QCursor>
+
+#include "moc_qgsmaptoolpan.cpp"
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mDragging( false )
 {
   mToolName = tr( "Pan" );
   // set cursor

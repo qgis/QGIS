@@ -16,83 +16,85 @@
  ***************************************************************************/
 
 #include "qgsproject.h"
-#include "moc_qgsproject.cpp"
 
+#include <algorithm>
+
+#include "qgsannotationlayer.h"
+#include "qgsannotationmanager.h"
+#include "qgsapplication.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsauxiliarystorage.h"
+#include "qgsbookmarkmanager.h"
+#include "qgscolorutils.h"
+#include "qgscombinedstylemodel.h"
 #include "qgsdatasourceuri.h"
+#include "qgselevationprofilemanager.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgrouplayer.h"
 #include "qgslabelingenginesettings.h"
+#include "qgslayerdefinition.h"
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
 #include "qgslayertreeregistrybridge.h"
+#include "qgslayertreeutils.h"
+#include "qgslayoutmanager.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
 #include "qgsmaplayerfactory.h"
-#include "qgspluginlayerregistry.h"
-#include "qgsprojectfiletransform.h"
-#include "qgssnappingconfig.h"
+#include "qgsmaplayerstore.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmapviewsmanager.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
+#include "qgsobjectvisitor.h"
 #include "qgspathresolver.h"
+#include "qgspluginlayer.h"
+#include "qgspluginlayerregistry.h"
+#include "qgspointcloudlayer.h"
+#include "qgsprojectbadlayerhandler.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsprojectfiletransform.h"
+#include "qgsprojectgpssettings.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsprojecttimesettings.h"
 #include "qgsprojectutils.h"
 #include "qgsprojectversion.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsproviderregistry.h"
+#include "qgspythonrunner.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrelationmanager.h"
-#include "qgsannotationmanager.h"
-#include "qgsvectorlayerjoinbuffer.h"
-#include "qgsmapthemecollection.h"
-#include "qgslayerdefinition.h"
-#include "qgsunittypes.h"
+#include "qgsrunnableprovidercreator.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssensormanager.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsthreadingutils.h"
+#include "qgstiledscenelayer.h"
 #include "qgstransaction.h"
 #include "qgstransactiongroup.h"
+#include "qgsunittypes.h"
 #include "qgsvectordataprovider.h"
-#include "qgsprojectbadlayerhandler.h"
-#include "qgsmeshlayer.h"
-#include "qgslayoutmanager.h"
-#include "qgselevationprofilemanager.h"
-#include "qgsbookmarkmanager.h"
-#include "qgsmaplayerstore.h"
-#include "qgsziputils.h"
-#include "qgsauxiliarystorage.h"
-#include "qgscolorutils.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsprojectviewsettings.h"
-#include "qgsprojectstylesettings.h"
-#include "qgsprojecttimesettings.h"
+#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectortilelayer.h"
-#include "qgstiledscenelayer.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsannotationlayer.h"
-#include "qgspointcloudlayer.h"
-#include "qgsattributeeditorcontainer.h"
-#include "qgsgrouplayer.h"
-#include "qgsmapviewsmanager.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgscombinedstylemodel.h"
-#include "qgsprojectgpssettings.h"
-#include "qgsthreadingutils.h"
-#include "qgssensormanager.h"
-#include "qgsproviderregistry.h"
-#include "qgsrunnableprovidercreator.h"
-#include "qgssettingsregistrycore.h"
-#include "qgspluginlayer.h"
-#include "qgspythonrunner.h"
-#include "qgsobjectvisitor.h"
+#include "qgsziputils.h"
 
-#include <algorithm>
 #include <QApplication>
-#include <QFileInfo>
-#include <QDomNode>
-#include <QObject>
-#include <QTextStream>
-#include <QTemporaryFile>
 #include <QDir>
-#include <QUrl>
-#include <QStandardPaths>
-#include <QUuid>
+#include <QDomNode>
+#include <QFileInfo>
+#include <QObject>
 #include <QRegularExpression>
+#include <QStandardPaths>
+#include <QTemporaryFile>
+#include <QTextStream>
 #include <QThreadPool>
+#include <QUrl>
+#include <QUuid>
+
+#include "moc_qgsproject.cpp"
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -4844,6 +4846,10 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
     if ( addToLegend )
     {
       emit legendLayersAdded( myResultList );
+    }
+    else
+    {
+      emit layersAddedWithoutLegend( myResultList );
     }
   }
 

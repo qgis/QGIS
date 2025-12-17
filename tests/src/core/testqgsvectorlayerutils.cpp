@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include <memory>
 
-#include "qgsvectorlayerutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QMetaType>
 #include <QThread>
-
-#include <memory>
+#include <QtGlobal>
 
 /**
  * \ingroup UnitTests
@@ -142,7 +142,7 @@ void TestQgsVectorLayerUtils::testGetValues()
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
 
-  std::unique_ptr<QgsVectorLayer> pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  auto pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
 
   // from an attribute
@@ -150,7 +150,9 @@ void TestQgsVectorLayerUtils::testGetValues()
   QList<QVariant> valuesAttr = QgsVectorLayerUtils::getValues( pointsLayer.get(), QStringLiteral( "Class" ), retrievedValues );
   QVERIFY( retrievedValues );
   QCOMPARE( valuesAttr.size(), 17 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+#endif
 
   int nrJet = 0;
   int nrBiPlane = 0;
@@ -180,7 +182,10 @@ void TestQgsVectorLayerUtils::testGetValues()
   QList<QVariant> valuesExp = QgsVectorLayerUtils::getValues( pointsLayer.get(), QStringLiteral( "Pilots+4" ), retrievedValues );
   QVERIFY( retrievedValues );
   QCOMPARE( valuesExp.size(), 17 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+#endif
+
   double minVal = std::numeric_limits<int>::max();
   double maxVal = -std::numeric_limits<int>::max();
   for ( const QVariant &value : valuesExp )
@@ -205,7 +210,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
 
-  std::unique_ptr<QgsVectorLayer> pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  auto pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // from an attribute
   {
@@ -213,7 +218,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Class" ), retrievedValues );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesAttr.size(), 3 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+#endif
 
     std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
       return a.toString() < b.toString();
@@ -230,7 +237,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Class" ), retrievedValues, false, 2 );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesAttr.size(), 2 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+#endif
 
     std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
       return a.toString() < b.toString();
@@ -252,7 +261,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Class" ), retrievedValues, true );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesAttr.size(), 2 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+#endif
 
     std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
       return a.toString() < b.toString();
@@ -277,7 +288,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     const QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Class" ), retrievedValues, true, 1 );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesAttr.size(), 1 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+#endif
 
     QList<QVariant> expectedAttr = { QStringLiteral( "Biplane" ) };
     QCOMPARE( valuesAttr, expectedAttr );
@@ -288,7 +301,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
 
   // from an attribute - layer with a null value
   {
-    std::unique_ptr<QgsVectorLayer> uniqueLayer = std::make_unique<QgsVectorLayer>( "Point?crs=EPSG:4326", "points_test", "memory" );
+    auto uniqueLayer = std::make_unique<QgsVectorLayer>( "Point?crs=EPSG:4326", "points_test", "memory" );
     QVERIFY( uniqueLayer->isValid() );
     uniqueLayer->dataProvider()->addAttributes( { QgsField( "name", QMetaType::Type::QString ) } );
     uniqueLayer->updateFields();
@@ -325,7 +338,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Pilots+4" ), retrievedValues );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesExp.size(), 3 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+#endif
     std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
       return a.toInt() < b.toInt();
     } );
@@ -340,7 +355,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Pilots+4" ), retrievedValues, false, 2 );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesExp.size(), 2 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+#endif
     std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
       return a.toInt() < b.toInt();
     } );
@@ -360,7 +377,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Pilots+4" ), retrievedValues, true );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesExp.size(), 2 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+#endif
     std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
       return a.toInt() < b.toInt();
     } );
@@ -383,7 +402,9 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), QStringLiteral( "Pilots+4" ), retrievedValues, true, 1 );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesExp.size(), 1 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+#endif
     QList<QVariant> expectedExp = { 7 };
     QCOMPARE( valuesExp, expectedExp );
 

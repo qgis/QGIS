@@ -14,25 +14,27 @@
  ***************************************************************************/
 
 #include "qgsmaplayerlegend.h"
-#include "moc_qgsmaplayerlegend.cpp"
+
+#include "qgscolorramplegendnode.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsiconutils.h"
 #include "qgsimagecache.h"
-#include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsmeshlayer.h"
 #include "qgspluginlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgspointcloudlayer.h"
-#include "qgsdiagramrenderer.h"
-#include "qgssymbollayerutils.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgscolorramplegendnode.h"
-#include "qgsvectorlayerlabeling.h"
+#include "qgsrenderer.h"
 #include "qgsrulebasedlabeling.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include "moc_qgsmaplayerlegend.cpp"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )

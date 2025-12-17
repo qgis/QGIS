@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsambientocclusionrenderentity.h"
-#include "moc_qgsambientocclusionrenderentity.cpp"
 
 #include <random>
 
 #include <Qt3DRender/QParameter>
+
+#include "moc_qgsambientocclusionrenderentity.cpp"
 
 QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QTexture2D *depthTexture, Qt3DRender::QLayer *layer, Qt3DRender::QCamera *camera, QNode *parent )
   : QgsRenderPassQuad( layer, parent )

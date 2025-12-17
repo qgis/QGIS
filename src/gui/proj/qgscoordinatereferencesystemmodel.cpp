@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatereferencesystemmodel.h"
-#include "moc_qgscoordinatereferencesystemmodel.cpp"
-#include "qgscoordinatereferencesystemutils.h"
+
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgsstringutils.h"
 
 #include <QFont>
+
+#include "moc_qgscoordinatereferencesystemmodel.cpp"
 
 QgsCoordinateReferenceSystemModel::QgsCoordinateReferenceSystemModel( QObject *parent )
   : QAbstractItemModel( parent )

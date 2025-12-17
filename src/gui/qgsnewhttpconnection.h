@@ -18,11 +18,12 @@
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 
-#include "qgis_sip.h"
 #include "ui_qgsnewhttpconnectionbase.h"
-#include "qgsguiutils.h"
-#include "qgsauthorizationsettings.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthorizationsettings.h"
+#include "qgsguiutils.h"
 #include "qgssettingstree.h"
 
 class QgsAuthSettingsWidget;
@@ -107,6 +108,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void updateOkButtonState();
     void wfsVersionCurrentIndexChanged( int index );
     void wfsFeaturePagingCurrentIndexChanged( int index );
+    void featureFormatCurrentIndexChanged( int index );
 
   protected:
     //! Index of wfsVersionComboBox

@@ -17,16 +17,16 @@
 #define QGSABSTRACTGEOPDFEXPORTER_H
 
 #include "qgis_core.h"
-#include <QList>
-#include <QTemporaryDir>
-#include <QMutex>
-#include <QDateTime>
-#include <QPainter>
-
-#include "qgsfeature.h"
 #include "qgsabstractmetadatabase.h"
-#include "qgspolygon.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgspolygon.h"
+
+#include <QDateTime>
+#include <QList>
+#include <QMutex>
+#include <QPainter>
+#include <QTemporaryDir>
 
 #define SIP_NO_FILE
 

@@ -12,6 +12,7 @@
 
 
 
+
 class QgsLabelSearchTree
 {
 %Docstring(signature="appended")

@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgdalcloudconnection.h"
+#include "qgssettings.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QtConcurrent>
-#include "qgsgdalcloudconnection.h"
-#include "qgssettings.h"
 
 class TestQgsGdalCloudConnection : public QObject
 {

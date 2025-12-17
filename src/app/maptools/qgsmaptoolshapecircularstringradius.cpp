@@ -14,19 +14,22 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircularstringradius.h"
-#include "moc_qgsmaptoolshapecircularstringradius.cpp"
+
+#include <cmath>
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgscircularstring.h"
-#include "qgsgeometryutils.h"
+#include "qgsdoublespinbox.h"
 #include "qgsgeometryrubberband.h"
+#include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
-#include "qgsstatusbar.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsdoublespinbox.h"
-#include <cmath>
-#include "qgsapplication.h"
+#include "qgspoint.h"
+#include "qgsstatusbar.h"
+
+#include "moc_qgsmaptoolshapecircularstringradius.cpp"
 
 const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = QStringLiteral( "circular-string-by-radius" );
 

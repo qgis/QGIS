@@ -18,14 +18,14 @@
 #ifndef QGSGENERICPROJECTIONSELECTOR_H
 #define QGSGENERICPROJECTIONSELECTOR_H
 #include "ui_qgsgenericprojectionselectorbase.h"
-#include "qgis_sip.h"
-#include "qgsguiutils.h"
-
-#include <QSet>
-#include <QDialog>
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsguiutils.h"
+
+#include <QDialog>
+#include <QSet>
 
 class QDialogButtonBox;
 

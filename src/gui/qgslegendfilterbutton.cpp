@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgslegendfilterbutton.h"
-#include "moc_qgslegendfilterbutton.cpp"
-
-#include <QMenu>
-#include <QAction>
 
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
+
+#include <QAction>
+#include <QMenu>
+
+#include "moc_qgslegendfilterbutton.cpp"
 
 QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
   : QToolButton( parent )

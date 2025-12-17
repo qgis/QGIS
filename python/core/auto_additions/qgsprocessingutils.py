@@ -72,6 +72,7 @@ try:
     QgsProcessingUtils.fieldNamesToIndices = staticmethod(QgsProcessingUtils.fieldNamesToIndices)
     QgsProcessingUtils.indicesToFields = staticmethod(QgsProcessingUtils.indicesToFields)
     QgsProcessingUtils.defaultVectorExtension = staticmethod(QgsProcessingUtils.defaultVectorExtension)
+    QgsProcessingUtils.defaultRasterFormat = staticmethod(QgsProcessingUtils.defaultRasterFormat)
     QgsProcessingUtils.defaultRasterExtension = staticmethod(QgsProcessingUtils.defaultRasterExtension)
     QgsProcessingUtils.defaultPointCloudExtension = staticmethod(QgsProcessingUtils.defaultPointCloudExtension)
     QgsProcessingUtils.defaultVectorTileExtension = staticmethod(QgsProcessingUtils.defaultVectorTileExtension)

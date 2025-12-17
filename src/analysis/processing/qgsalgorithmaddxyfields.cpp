@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaddxyfields.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

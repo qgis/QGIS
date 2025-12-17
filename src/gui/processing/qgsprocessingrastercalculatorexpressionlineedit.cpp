@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
-#include "moc_qgsprocessingrastercalculatorexpressionlineedit.cpp"
-#include "qgsgui.h"
+
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"
+#include "qgsgui.h"
 #include "qgsmaplayer.h"
 
 #include <QHBoxLayout>
-#include <QToolButton>
 #include <QListWidgetItem>
+#include <QToolButton>
+
+#include "moc_qgsprocessingrastercalculatorexpressionlineedit.cpp"
 
 /// @cond PRIVATE
 

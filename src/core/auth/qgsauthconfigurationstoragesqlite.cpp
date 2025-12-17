@@ -14,16 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthconfigurationstoragesqlite.h"
-#include "moc_qgsauthconfigurationstoragesqlite.cpp"
-#include "qgslogger.h"
-#include "qgsauthcertutils.h"
 
-#include <QFileInfo>
+#include "qgsauthcertutils.h"
+#include "qgslogger.h"
+
+#include <QCoreApplication>
 #include <QDir>
+#include <QFileInfo>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QThread>
-#include <QCoreApplication>
+
+#include "moc_qgsauthconfigurationstoragesqlite.cpp"
 
 ///@cond PRIVATE
 

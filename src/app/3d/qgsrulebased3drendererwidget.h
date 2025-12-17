@@ -16,15 +16,14 @@
 #ifndef QGSRULEBASED3DRENDERERWIDGET_H
 #define QGSRULEBASED3DRENDERERWIDGET_H
 
-#include <QWidget>
-
-#include "qgspanelwidget.h"
+#include "ui_qgsrulebased3drendererwidget.h"
 
 #include <memory>
 
-#include "ui_qgsrulebased3drendererwidget.h"
-
+#include "qgspanelwidget.h"
 #include "qgsrulebased3drenderer.h"
+
+#include <QWidget>
 
 class QgsVectorLayer;
 class QgsRuleBased3DRenderer;

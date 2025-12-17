@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutGridSettings : QgsLayoutSerializableObject
 {
 %Docstring(signature="appended")

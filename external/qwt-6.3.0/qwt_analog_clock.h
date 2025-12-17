@@ -65,7 +65,7 @@ class QWT_EXPORT QwtAnalogClock : public QwtDial
     };
 
     explicit QwtAnalogClock( QWidget* parent = NULL );
-    virtual ~QwtAnalogClock();
+    ~QwtAnalogClock() override;
 
     void setHand( Hand, QwtDialNeedle* );
 

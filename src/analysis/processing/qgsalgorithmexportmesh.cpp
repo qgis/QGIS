@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexportmesh.h"
-#include "qgsprocessingparametermeshdataset.h"
+
+#include "qgslinestring.h"
 #include "qgsmeshcontours.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshlayerinterpolator.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsmeshlayerutils.h"
 #include "qgspolygon.h"
+#include "qgsprocessingparametermeshdataset.h"
 #include "qgsrasterfilewriter.h"
-#include "qgslinestring.h"
 
 #include <QTextStream>
 
@@ -865,8 +866,7 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     creationOptions = optionsString;
 
   const QString fileName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fileInfo( fileName );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fileInfo.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
   QgsRasterFileWriter rasterFileWriter( fileName );
   rasterFileWriter.setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !creationOptions.isEmpty() )

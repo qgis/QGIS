@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgstextmasksettings.h"
-#include "qgstextrenderer_p.h"
+
+#include "qgsapplication.h"
+#include "qgspainteffectregistry.h"
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
-#include "qgspainteffectregistry.h"
-#include "qgsapplication.h"
+#include "qgstextrenderer_p.h"
 #include "qgsunittypes.h"
 
 QgsTextMaskSettings::QgsTextMaskSettings()

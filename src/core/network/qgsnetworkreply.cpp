@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsnetworkreply.h"
+
 #include <QNetworkReply>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>

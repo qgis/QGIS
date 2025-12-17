@@ -16,12 +16,12 @@
 #ifndef QGSVALUERELATIONWIDGETWRAPPER_H
 #define QGSVALUERELATIONWIDGETWRAPPER_H
 
-#include <QTableWidget>
-
-#include "qgseditorwidgetwrapper.h"
-#include "qgsvaluerelationfieldformatter.h"
-#include "qgstooltipcombobox.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgstooltipcombobox.h"
+#include "qgsvaluerelationfieldformatter.h"
+
+#include <QTableWidget>
 
 class QLineEdit;
 class QgsValueRelationWidgetFactory;

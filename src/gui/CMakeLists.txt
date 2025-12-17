@@ -414,6 +414,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
   processing/qgsprocessingbatchalgorithmdialogbase.cpp
+  processing/qgsprocessingtaskqueuedialog.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
@@ -1424,6 +1425,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingbatchalgorithmdialogbase.h
+  processing/qgsprocessingtaskqueuedialog.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
@@ -1805,6 +1807,17 @@ if(WITH_INTERNAL_QWT)
       ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_cubic.cpp
       PROPERTIES COMPILE_FLAGS "-Wno-implicit-fallthrough -Wno-unused-function -Wno-unused-private-field"
     )
+  endif()
+
+  set(QWT_COMPILE_OPTIONS)
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (QWT_COMPILE_OPTIONS)
+    set_source_files_properties($QGIS_QWT_SRCS PROPERTIES COMPILE_OPTIONS "${QWT_COMPILE_OPTIONS}")
   endif()
 
   set(QGIS_GUI_SRCS

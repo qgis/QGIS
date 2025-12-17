@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
-#include "qgsninecellfilter.h"
-#include "qgslogger.h"
-#include "cpl_string.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsmessagelog.h"
 #include "qgsconfig.h"
+#include "qgsninecellfilter.h"
+
+#include <cpl_string.h>
+
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogrutils.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -208,6 +210,13 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
     return QgsNineCellFilter::Result::RasterSizeError;
   }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
+
   // Prepare context and queue
   const cl::Context ctx = QgsOpenClUtils::context();
   cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
@@ -263,7 +272,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast<double>( i ) / ySize );
+      feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( i ) / ySize );
     }
 
     if ( i == 0 )
@@ -330,6 +339,20 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return QgsNineCellFilter::Result::Canceled;
   }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  else if ( closeReportsProgress && feedback )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      return feedback->isCanceled() ? QgsNineCellFilter::Result::Canceled : QgsNineCellFilter::Result::CreateOutputError;
+    }
+  }
+#endif
+
   return QgsNineCellFilter::Result::Success;
 }
 #endif
@@ -359,6 +382,13 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
   {
     return QgsNineCellFilter::Result::CreateOutputError; //create operation on output file failed
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
 
   //open first raster band for reading (operation is only for single band raster)
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset.get(), 1 );
@@ -399,7 +429,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast<double>( yIndex ) / ySize );
+      feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( yIndex ) / ySize );
     }
 
     if ( yIndex == 0 )
@@ -469,5 +499,19 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return QgsNineCellFilter::Result::Canceled;
   }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  else if ( closeReportsProgress && feedback )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      return feedback->isCanceled() ? QgsNineCellFilter::Result::Canceled : QgsNineCellFilter::Result::OutputBandError;
+    }
+  }
+#endif
+
   return QgsNineCellFilter::Result::Success;
 }

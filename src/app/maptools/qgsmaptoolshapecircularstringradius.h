@@ -17,10 +17,10 @@
 #ifndef QGSMAPTOOLSHAPECIRCULARSTRINGRADIUS_H
 #define QGSMAPTOOLSHAPECIRCULARSTRINGRADIUS_H
 
-#include "qgsmaptoolshapecircularstringabstract.h"
-#include "qgspoint.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapecircularstringabstract.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgspoint.h"
 
 class QDoubleSpinBox;
 
@@ -47,7 +47,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringRadius : public QgsMapToolShapeCir
     QgsMapToolShapeCircularStringRadius( QgsMapToolCapture *parentTool )
       : QgsMapToolShapeCircularStringAbstract( QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID, parentTool )
       , mTemporaryEndPoint( QgsPoint() )
-      , mRadius( 0.0 )
+
     {}
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
@@ -59,7 +59,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringRadius : public QgsMapToolShapeCir
 
   private:
     QgsPoint mTemporaryEndPoint;
-    double mRadius;
+    double mRadius = 0.0;
     QDoubleSpinBox *mRadiusSpinBox = nullptr;
     QgsMapToolCapture::CaptureMode mCaptureMode = QgsMapToolCapture::CaptureMode::CaptureLine;
 

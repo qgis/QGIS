@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeopackageprojectstorage.h"
+
 ///@cond PRIVATE
 
 #include <sqlite3.h>

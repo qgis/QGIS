@@ -20,22 +20,22 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsvariantutils.h"
 
+#include <QCache>
+#include <QDateTime>
+#include <QFile>
+#include <QFileInfo>
+#include <QList>
+#include <QNetworkReply>
 #include <QObject>
 #include <QRecursiveMutex>
-#include <QCache>
 #include <QSet>
-#include <QDateTime>
-#include <QList>
-#include <QFile>
-#include <QNetworkReply>
-#include <QFileInfo>
 #include <QUrl>
 
 /**

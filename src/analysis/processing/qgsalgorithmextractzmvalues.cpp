@@ -15,8 +15,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextractzmvalues.h"
-#include "qgsfeaturerequest.h"
+
 #include <vector>
+
+#include "qgsfeaturerequest.h"
 
 ///@cond PRIVATE
 

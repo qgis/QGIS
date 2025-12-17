@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsprocessingcontext.h"
-#include "qgsprocessingutils.h"
-#include "qgsunittypes.h"
-#include "qgsproviderregistry.h"
+
 #include "qgsprocessing.h"
+#include "qgsprocessingutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsunittypes.h"
 
 //
 // QgsProcessingContext
@@ -27,7 +28,7 @@
 
 QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
-  , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterExtension() )
+  , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterFormat() )
 {
   auto callback = [this]( const QgsFeature & feature )
   {

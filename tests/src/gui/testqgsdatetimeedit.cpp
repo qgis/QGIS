@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 
+#include "qgsdatetimeedit.h"
+#include "qgsdatetimeeditwrapper.h"
+#include "qgsdatetimefieldformatter.h"
 #include "qgstest.h"
-#include "qdatetime.h"
 
-#include <qgsdatetimeedit.h>
-#include <qgsdatetimeeditwrapper.h>
-#include <qgsdatetimefieldformatter.h>
+#include <qdatetime.h>
 
 class TestQgsDateTimeEdit : public QObject
 {

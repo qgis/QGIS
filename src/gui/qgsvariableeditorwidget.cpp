@@ -14,23 +14,27 @@
  ***************************************************************************/
 
 #include "qgsvariableeditorwidget.h"
-#include "moc_qgsvariableeditorwidget.cpp"
-#include "qgsexpressioncontext.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgsexpression.h"
-#include "qgsrendercontext.h"
 
-#include <QVBoxLayout>
-#include <QTreeWidget>
-#include <QPainter>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QHeaderView>
-#include <QMessageBox>
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsrendercontext.h"
+#include "qgssettings.h"
+
 #include <QClipboard>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include "moc_qgsvariableeditorwidget.cpp"
 
 //
 // QgsVariableEditorWidget
@@ -103,7 +107,7 @@ void QgsVariableEditorWidget::showEvent( QShowEvent *event )
 
 void QgsVariableEditorWidget::setContext( QgsExpressionContext *context )
 {
-  mContext.reset( new QgsExpressionContext( *context ) );
+  mContext = std::make_unique<QgsExpressionContext>( *context );
   reloadContext();
 }
 

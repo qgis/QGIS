@@ -12,14 +12,12 @@ Email                : wonder dot sk at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgselevationmap.h"
 #include "qgselevationshadingrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
-
+#include "qgstest.h"
 
 class TestQgsElevationMap : public QgsTest
 {

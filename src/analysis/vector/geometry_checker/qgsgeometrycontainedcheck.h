@@ -19,8 +19,8 @@
 #define QGS_GEOMETRY_COVER_CHECK_H
 
 #include "qgsgeometrycheck.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup analysis
@@ -46,8 +46,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
 
 /**
  * \ingroup analysis
- * \brief A contained check.  QMap<QString, QSet<QVariant>> uniqueIds;
-  const QString uniqueIdFieldName = context()->uniqueIdFieldName;
+ * \brief A contained check.
  */
 class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 {

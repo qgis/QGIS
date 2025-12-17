@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscacheindex.h"
+
 #include "qgsfeaturerequest.h"
 
 void QgsAbstractCacheIndex::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )

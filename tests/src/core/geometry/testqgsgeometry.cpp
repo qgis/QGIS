@@ -12,21 +12,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include <cmath>
-#include <memory>
 #include <limits>
+#include <memory>
+
+#include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QImage>
 #include <QObject>
+#include <QPainter>
+#include <QPointF>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
 #include <QVector>
-#include <QPointF>
-#include <QImage>
-#include <QPainter>
 
 //qgis includes...
 #include <qgsapplication.h>
@@ -1051,11 +1053,11 @@ namespace
     std::unique_ptr<QgsAbstractGeometry> created { TestQgsGeometry::createEmpty( geom.get() ) };
     QVERIFY( created->isEmpty() );
 #if defined( __clang__ ) || defined( __GNUG__ )
-    srand( ( unsigned ) time( NULL ) );
+    srand( ( unsigned ) time( nullptr ) );
 
     const std::type_info &ti = typeid( T );
     int status;
-    char *realname = abi::__cxa_demangle( ti.name(), 0, 0, &status );
+    char *realname = abi::__cxa_demangle( ti.name(), nullptr, nullptr, &status );
 
     QString type = realname;
     // remove Qgs prefix
@@ -2343,8 +2345,7 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point EMPTY" ) );
   result = geomTest.orientedMinimumBoundingBox();
-  resultTestWKT = QLatin1String( "" );
-  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( result.asWkt( 2 ), QString() );
 }
 
 void TestQgsGeometry::boundingBox()
@@ -2354,7 +2355,8 @@ void TestQgsGeometry::boundingBox()
   QCOMPARE( geomTest.boundingBox(), nullRect );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(-1 -2, 4 5)" ) );
-  QCOMPARE( geomTest.boundingBox3D(), QgsRectangle( -1, -2, 4, 5 ) );
+  QCOMPARE( geomTest.boundingBox(), QgsRectangle( -1, -2, 4, 5 ) );
+  QCOMPARE( geomTest.boundingBox3D(), QgsBox3D( QgsRectangle( -1, -2, 4, 5 ) ) );
 }
 
 void TestQgsGeometry::boundingBox3D()
@@ -3193,7 +3195,7 @@ void TestQgsGeometry::chamferFillet()
 
   g = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) );
   QCOMPARE( g.lastError(), "" );
-  g.chamfer( 1, 0.5, 0.5 );
+  g.chamfer( 0, 0.5, 0.5 );
   QCOMPARE( g.lastError(), "Operation 'Chamfer' needs curve geometry." );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
@@ -3204,7 +3206,7 @@ void TestQgsGeometry::chamferFillet()
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 5, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Vertex index out of range. -1 must be in (0, 2). Requested vertex: 5 was resolved as: [part: -1, ring: -1, vertex: -1]" );
+  QCOMPARE( g.lastError(), "Invalid vertex index" );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );

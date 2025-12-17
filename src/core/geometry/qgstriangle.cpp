@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgstriangle.h"
+
+#include <memory>
+
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
-
-#include <memory>
 
 QgsTriangle::QgsTriangle()
 {

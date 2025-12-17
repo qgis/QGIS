@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgsconnectionregistry.h"
-#include "moc_qgsconnectionregistry.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 #include <QRegularExpression>
+
+#include "moc_qgsconnectionregistry.cpp"
 
 QgsConnectionRegistry::QgsConnectionRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )

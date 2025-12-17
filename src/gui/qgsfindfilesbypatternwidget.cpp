@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsfindfilesbypatternwidget.h"
-#include "moc_qgsfindfilesbypatternwidget.cpp"
+
 #include "qgsgui.h"
 #include "qgssettings.h"
 
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QDirIterator>
-#include <QDialogButtonBox>
 
+#include "moc_qgsfindfilesbypatternwidget.cpp"
 
 QgsFindFilesByPatternWidget::QgsFindFilesByPatternWidget( QWidget *parent )
   : QWidget( parent )

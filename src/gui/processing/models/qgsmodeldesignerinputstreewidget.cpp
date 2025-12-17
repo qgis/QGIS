@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmodeldesignerinputstreewidget.h"
-#include "moc_qgsmodeldesignerinputstreewidget.cpp"
 
 #include <QMimeData>
+
+#include "moc_qgsmodeldesignerinputstreewidget.cpp"
 
 ///@cond NOT_STABLE
 

@@ -9,6 +9,7 @@
 
 
 
+
 class Qgs3DSymbolWidget : QWidget
 {
 %Docstring(signature="appended")

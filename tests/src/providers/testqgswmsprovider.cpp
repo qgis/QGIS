@@ -12,21 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgshillshaderenderer.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+#include "qgsrasterlayer.h"
+#include "qgssinglebandgrayrenderer.h"
+#include "qgstest.h"
+#include "qgswmsprovider.h"
+#include "qgsxyzconnection.h"
+
 #include <QFile>
 #include <QObject>
 #include <QUrlQuery>
-
-#include "qgstest.h"
-#include "qgswmsprovider.h"
-#include "qgsapplication.h"
-#include "qgsrasterlayer.h"
-#include "qgsproviderregistry.h"
-#include "qgsxyzconnection.h"
-#include "qgssinglebandgrayrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgshillshaderenderer.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayerdetails.h"
 
 /**
  * \ingroup UnitTests
@@ -454,7 +453,7 @@ void TestQgsWmsProvider::providerUriLocalFile()
   sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ) );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QLatin1String( "" ) );
+  QCOMPARE( sublayers.at( 0 ).name(), QString() );
   QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );

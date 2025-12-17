@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgsnullsymbolrenderer.h"
-#include "qgssymbol.h"
+
 #include "qgsgeometry.h"
+#include "qgssymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>

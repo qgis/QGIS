@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrange.h"
+
 #include <QWidget>
 #include <QWidgetAction>
 

@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsterraintextureimage_p.h"
-#include "moc_qgsterraintextureimage_p.cpp"
+
+#include "qgsterraintexturegenerator_p.h"
 
 #include <Qt3DRender/QTextureImageDataGenerator>
 
-#include "qgsterraintexturegenerator_p.h"
+#include "moc_qgsterraintextureimage_p.cpp"
 
 ///@cond PRIVATE
 

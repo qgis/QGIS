@@ -17,13 +17,12 @@
 #define QGSVALUERELATIONFIELDKIT_H
 
 #include "qgis_core.h"
-#include "qgsfieldformatter.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfieldformatter.h"
 
-#include <QVector>
 #include <QVariant>
-
+#include <QVector>
 
 /**
  * \ingroup core

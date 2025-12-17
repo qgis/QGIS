@@ -19,7 +19,6 @@
 #include "qgsconnectionpool.h"
 #include "qgspostgresconn.h"
 
-
 inline QString qgsConnectionPool_ConnectionToName( QgsPostgresConn *c )
 {
   return c->connInfo();

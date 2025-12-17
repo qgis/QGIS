@@ -50,16 +50,14 @@ except (NameError, AttributeError):
     pass
 try:
     QgsRandomMarkerFillSymbolLayer.create = staticmethod(QgsRandomMarkerFillSymbolLayer.create)
-    QgsRandomMarkerFillSymbolLayer.__virtual_methods__ = ['setSubSymbol']
-    QgsRandomMarkerFillSymbolLayer.__overridden_methods__ = ['layerType', 'startRender', 'stopRender', 'renderPolygon', 'properties', 'clone', 'canCauseArtifactsBetweenAdjacentTiles', 'rendersIdenticallyTo', 'setColor', 'color', 'subSymbol', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'hasDataDefinedProperties', 'startFeatureRender', 'stopFeatureRender']
+    QgsRandomMarkerFillSymbolLayer.__overridden_methods__ = ['layerType', 'startRender', 'stopRender', 'renderPolygon', 'properties', 'clone', 'canCauseArtifactsBetweenAdjacentTiles', 'rendersIdenticallyTo', 'setColor', 'color', 'subSymbol', 'setSubSymbol', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'hasDataDefinedProperties', 'startFeatureRender', 'stopFeatureRender']
     QgsRandomMarkerFillSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
     QgsCentroidFillSymbolLayer.create = staticmethod(QgsCentroidFillSymbolLayer.create)
     QgsCentroidFillSymbolLayer.createFromSld = staticmethod(QgsCentroidFillSymbolLayer.createFromSld)
-    QgsCentroidFillSymbolLayer.__virtual_methods__ = ['setSubSymbol']
-    QgsCentroidFillSymbolLayer.__overridden_methods__ = ['layerType', 'startRender', 'stopRender', 'renderPolygon', 'properties', 'clone', 'toSld', 'setColor', 'color', 'subSymbol', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'hasDataDefinedProperties', 'canCauseArtifactsBetweenAdjacentTiles', 'startFeatureRender', 'stopFeatureRender']
+    QgsCentroidFillSymbolLayer.__overridden_methods__ = ['layerType', 'startRender', 'stopRender', 'renderPolygon', 'properties', 'clone', 'toSld', 'setColor', 'color', 'subSymbol', 'setSubSymbol', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'hasDataDefinedProperties', 'canCauseArtifactsBetweenAdjacentTiles', 'startFeatureRender', 'stopFeatureRender']
     QgsCentroidFillSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

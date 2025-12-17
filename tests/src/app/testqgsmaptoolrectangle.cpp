@@ -13,21 +13,18 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsgeometryutils.h"
-
-#include "testqgsmaptoolutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptooladdfeature.h"
+#include "qgsmaptoolshaperectangle3points.h"
 #include "qgsmaptoolshaperectanglecenter.h"
 #include "qgsmaptoolshaperectangleextent.h"
-#include "qgsmaptoolshaperectangle3points.h"
-
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolRectangle : public QObject
 {

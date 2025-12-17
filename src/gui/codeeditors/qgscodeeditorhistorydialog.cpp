@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgscodeeditorhistorydialog.h"
-#include "moc_qgscodeeditorhistorydialog.cpp"
+
 #include "qgscodeeditor.h"
-#include <QStandardItemModel>
+
 #include <QShortcut>
+#include <QStandardItemModel>
+
+#include "moc_qgscodeeditorhistorydialog.cpp"
 
 QgsCodeEditorHistoryDialog::QgsCodeEditorHistoryDialog( QgsCodeEditor *editor, QWidget *parent )
   : QDialog( parent )

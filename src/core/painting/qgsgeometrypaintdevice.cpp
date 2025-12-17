@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsgeometrypaintdevice.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
+
 #include "qgsgeos.h"
-#include "qgsmultipolygon.h"
+#include "qgslinestring.h"
 #include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
 #include "qgspainting.h"
+#include "qgspolygon.h"
 #include "qgssymbollayerutils.h"
 
 //

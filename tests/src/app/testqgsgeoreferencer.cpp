@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include "qgisapp.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
-#include "georeferencer/qgsgeoreftransform.h"
-#include "georeferencer/qgsgeorefdatapoint.h"
 #include "georeferencer/qgsgcplist.h"
 #include "georeferencer/qgsgcplistmodel.h"
+#include "georeferencer/qgsgeorefdatapoint.h"
 #include "georeferencer/qgsgeorefmainwindow.h"
+#include "georeferencer/qgsgeoreftransform.h"
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgstest.h"
 
 /**
  * \ingroup UnitTests

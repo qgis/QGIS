@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsimplify.h"
+
+#include <memory>
+
 #include "qgsmaptopixelgeometrysimplifier.h"
 
 ///@cond PRIVATE
@@ -103,7 +106,7 @@ bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
 
   mMethod = static_cast<Qgis::VectorSimplificationAlgorithm>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
   if ( mMethod != Qgis::VectorSimplificationAlgorithm::Distance )
-    mSimplifier.reset( new QgsMapToPixelSimplifier( QgsMapToPixelSimplifier::SimplifyGeometry, mTolerance, mMethod ) );
+    mSimplifier = std::make_unique<QgsMapToPixelSimplifier>( QgsMapToPixelSimplifier::SimplifyGeometry, mTolerance, mMethod );
 
   return true;
 }

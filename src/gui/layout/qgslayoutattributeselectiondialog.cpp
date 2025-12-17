@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgslayoutattributeselectiondialog.h"
-#include "moc_qgslayoutattributeselectiondialog.cpp"
-#include "qgslayoutitemattributetable.h"
-#include "qgsvectorlayer.h"
-#include "qgsfieldexpressionwidget.h"
+
 #include "qgsdoublespinbox.h"
-#include "qgssettings.h"
+#include "qgsfieldexpressionwidget.h"
 #include "qgsgui.h"
-#include "qgslayouttablecolumn.h"
 #include "qgshelp.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayouttablecolumn.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QCheckBox>
 #include <QDialogButtonBox>
@@ -32,9 +32,10 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QSpinBox>
 #include <QSortFilterProxyModel>
+#include <QSpinBox>
 
+#include "moc_qgslayoutattributeselectiondialog.cpp"
 
 // QgsLayoutAttributeTableColumnModelBase
 

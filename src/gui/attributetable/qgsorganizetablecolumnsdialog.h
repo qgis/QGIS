@@ -17,13 +17,13 @@
 #ifndef QGSORGANIZEFILTERTABLESDIALOG_H_
 #define QGSORGANIZEFILTERTABLESDIALOG_H_
 
-#include <QDialog>
-
 #include "ui_qgsorganizetablecolumnsdialog.h"
 
-#include "qgsattributetableconfig.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributetableconfig.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 

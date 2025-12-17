@@ -14,17 +14,21 @@
  ***************************************************************************/
 
 #include "qgswfsshareddata.h"
-#include "moc_qgswfsshareddata.cpp"
-#include "qgswfsprovider.h"
-#include "qgsogcutils.h"
+
 #include "qgsexpression.h"
-#include "qgsmessagelog.h"
+#include "qgsgml.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogcutils.h"
+#include "qgswfsfeaturedownloaderimpl.h"
+#include "qgswfsprovider.h"
+
 #include <QUrlQuery>
 
+#include "moc_qgswfsshareddata.cpp"
+
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
-  : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )
-  , mURI( uri )
+  : QgsBackgroundCachedSharedData( uri, "wfs", tr( "WFS" ) )
   , mHttpMethod( mURI.httpMethod() )
 {
   mHideProgressDialog = mURI.hideDownloadProgressDialog();

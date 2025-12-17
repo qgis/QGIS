@@ -15,14 +15,15 @@
 
 #include "qgspropertytransformer.h"
 
-#include "qgslogger.h"
-#include "qgsexpression.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgssymbollayerutils.h"
+#include <memory>
+
 #include "qgscolorramp.h"
 #include "qgscolorutils.h"
+#include "qgsexpression.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgslogger.h"
 #include "qgspointxy.h"
-
+#include "qgssymbollayerutils.h"
 
 //
 // QgsPropertyTransformer
@@ -82,7 +83,7 @@ bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 
   if ( !curve.isEmpty() )
   {
-    mCurveTransform.reset( new QgsCurveTransform() );
+    mCurveTransform = std::make_unique<QgsCurveTransform>( );
     mCurveTransform->loadVariant( curve );
   }
 
@@ -181,8 +182,10 @@ bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 
 double QgsGenericNumericTransformer::value( double input ) const
 {
-  if ( qgsDoubleNear( mMaxValue, mMinValue ) )
-    return std::clamp( input, mMinOutput, mMaxOutput );
+  if ( mMinValue >= mMaxValue || qgsDoubleNear( mMaxValue, mMinValue ) )
+  {
+    return mMinOutput;
+  }
 
   input = transformNumeric( input );
   if ( qgsDoubleNear( mExponent, 1.0 ) )
@@ -360,6 +363,11 @@ bool QgsSizeScaleTransformer::loadVariant( const QVariant &transformer )
 double QgsSizeScaleTransformer::size( double value ) const
 {
   value = transformNumeric( value );
+
+  if ( mMinValue >= mMaxValue || qgsDoubleNear( mMaxValue, mMinValue ) )
+  {
+    return mMinSize;
+  }
 
   switch ( mType )
   {
@@ -639,6 +647,11 @@ QString QgsColorRampTransformer::toExpression( const QString &baseExpression ) c
 
 QColor QgsColorRampTransformer::color( double value ) const
 {
+  if ( mMinValue >= mMaxValue || qgsDoubleNear( mMaxValue, mMinValue ) )
+  {
+    return mGradientRamp ? mGradientRamp->color( 0 ) : mNullColor;
+  }
+
   value = transformNumeric( value );
   double scaledVal = std::clamp( ( value - mMinValue ) / ( mMaxValue - mMinValue ), 0.0, 1.0 );
 

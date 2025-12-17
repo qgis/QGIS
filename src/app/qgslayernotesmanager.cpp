@@ -14,15 +14,18 @@
  ***************************************************************************/
 
 #include "qgslayernotesmanager.h"
-#include "moc_qgslayernotesmanager.cpp"
-#include "qgslayernotesutils.h"
-#include "qgsmaplayer.h"
-#include "qgsrichtexteditor.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgslayernotesutils.h"
+#include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgsrichtexteditor.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+#include "moc_qgslayernotesmanager.cpp"
 
 void QgsLayerNotesManager::editLayerNotes( QgsMapLayer *layer, QWidget *parent )
 {

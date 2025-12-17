@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgsdelimitedtextfile.h"
-#include "moc_qgsdelimitedtextfile.cpp"
+
 #include "qgslogger.h"
 
-#include <QtGlobal>
+#include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
-#include <QDataStream>
 #include <QFileSystemWatcher>
-#include <QTextCodec>
-#include <QStringList>
 #include <QRegularExpression>
+#include <QStringList>
+#include <QTextCodec>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QtGlobal>
+
+#include "moc_qgsdelimitedtextfile.cpp"
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )

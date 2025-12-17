@@ -17,11 +17,11 @@
 #ifndef QGSSUBSETSTRINGEDITORPROVIDERREGISTRY_H
 #define QGSSUBSETSTRINGEDITORPROVIDERREGISTRY_H
 
-#include <QWidget>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
+
+#include <QWidget>
 
 class QgsSubsetStringEditorInterface;
 class QgsSubsetStringEditorProvider;

@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsopacitywidgetplugin.h"
+
 #include "qgiscustomwidgets.h"
 #include "qgsopacitywidget.h"
-#include "qgsopacitywidgetplugin.h"
-#include "moc_qgsopacitywidgetplugin.cpp"
 
+#include "moc_qgsopacitywidgetplugin.cpp"
 
 QgsOpacityWidgetPlugin::QgsOpacityWidgetPlugin( QObject *parent )
   : QObject( parent )

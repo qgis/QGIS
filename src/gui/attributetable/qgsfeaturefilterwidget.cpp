@@ -24,19 +24,18 @@
 // version without notice, or even be removed.
 //
 
-#include "qgsfeaturefilterwidget_p.h"
-
 #include "qgsapplication.h"
-#include "qgssearchwidgetwrapper.h"
-#include "qgsdualview.h"
-#include "qgsstoredexpressionmanager.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsgui.h"
 #include "qgsdialog.h"
+#include "qgsdualview.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionlineedit.h"
+#include "qgsfeaturefilterwidget_p.h"
+#include "qgsgui.h"
 #include "qgsmessagebar.h"
+#include "qgssearchwidgetwrapper.h"
+#include "qgsstoredexpressionmanager.h"
 
 #include <QMenu>
 

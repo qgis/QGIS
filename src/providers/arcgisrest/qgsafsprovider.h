@@ -19,17 +19,17 @@
 #define QGSAFSPROVIDER_H
 
 #include <memory>
-#include "qgsvectordataprovider.h"
+
+#include "geometry/qgswkbtypes.h"
 #include "qgsafsshareddata.h"
 #include "qgscoordinatereferencesystem.h"
-#include "geometry/qgswkbtypes.h"
 #include "qgsfields.h"
+#include "qgshttpheaders.h"
 #include "qgslayermetadata.h"
+#include "qgsprovidermetadata.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
-
-#include "qgsprovidermetadata.h"
-#include "qgshttpheaders.h"
+#include "qgsvectordataprovider.h"
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
@@ -53,6 +53,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometryMap ) override;

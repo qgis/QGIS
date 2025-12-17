@@ -14,31 +14,35 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithmdialogbase.h"
-#include "moc_qgsprocessingalgorithmdialogbase.cpp"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsmessagebar.h"
-#include "qgsgui.h"
-#include "processing/qgsprocessingalgorithm.h"
-#include "processing/qgsprocessingprovider.h"
-#include "qgstaskmanager.h"
-#include "processing/qgsprocessingalgrunnertask.h"
-#include "qgsstringutils.h"
-#include "qgsapplication.h"
-#include "qgspanelwidget.h"
-#include "qgsjsonutils.h"
-#include "qgsunittypes.h"
-#include "qgsnative.h"
-#include <QToolButton>
-#include <QDesktopServices>
-#include <QScrollBar>
-#include <QApplication>
-#include <QClipboard>
-#include <QFileDialog>
-#include <QMimeData>
-#include <QMenu>
+
 #include <nlohmann/json.hpp>
 
+#include "processing/qgsprocessingalgorithm.h"
+#include "processing/qgsprocessingalgrunnertask.h"
+#include "processing/qgsprocessingprovider.h"
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsjsonutils.h"
+#include "qgsmessagebar.h"
+#include "qgsnative.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingtaskqueue.h"
+#include "qgssettings.h"
+#include "qgsstringutils.h"
+#include "qgstaskmanager.h"
+#include "qgsunittypes.h"
+
+#include <QApplication>
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMimeData>
+#include <QScrollBar>
+#include <QToolButton>
+
+#include "moc_qgsprocessingalgorithmdialogbase.cpp"
 
 ///@cond NOT_STABLE
 
@@ -280,6 +284,13 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       } );
 
       mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
+
+      mButtonAddToQueue = new QPushButton( tr( "Add to Queue…" ) );
+      mButtonBox->addButton( mButtonAddToQueue, QDialogButtonBox::ResetRole );
+      connect( mButtonAddToQueue, &QPushButton::clicked, this, [this] {
+        addToQueue();
+      } );
+
       break;
     }
 
@@ -857,6 +868,24 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
 
 void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
 {
+}
+
+void QgsProcessingAlgorithmDialogBase::addToQueue()
+{
+  if ( !mAlgorithm )
+    return;
+
+  try
+  {
+    const QVariantMap parameters = createProcessingParameters();
+    QgsProcessingTaskQueue::instance()->addTask( mAlgorithm->id(), parameters, mAlgorithm->displayName() );
+
+    mMessageBar->pushMessage( tr( "Added to Queue" ), tr( "'%1' has been added to the processing queue." ).arg( mAlgorithm->displayName() ), Qgis::MessageLevel::Info );
+  }
+  catch ( QgsProcessingException & )
+  {
+    // Invalid parameters, do nothing
+  }
 }
 
 void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()

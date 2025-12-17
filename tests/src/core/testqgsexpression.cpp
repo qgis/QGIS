@@ -12,14 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QtConcurrentMap>
-#include <QSignalSpy>
-#include <QTextDocument>
 
-#include <qgsapplication.h>
+#include <QObject>
+#include <QSignalSpy>
+#include <QString>
+#include <QTextDocument>
+#include <QtConcurrentMap>
+
 //header for class being tested
 #include "qgsexpression.h"
 #include "qgsfeature.h"
@@ -1195,6 +1196,36 @@ class TestQgsExpression : public QObject
       QTest::newRow( "Y coordinate to degree minute second" ) << "to_dms(6.3545681,'y',2)" << false << QVariant( "6°21′16.45″" );
       QTest::newRow( "degree minute second string to decimal" ) << "to_decimal('6°21′16.45″N')" << false << QVariant( 6.35456944444 );
       QTest::newRow( "wrong degree minute second string to decimal" ) << "to_decimal('qgis')" << false << QVariant();
+
+      QTest::newRow( "extract degrees positive int" ) << "extract_degrees(135)" << false << QVariant( 135 );
+      QTest::newRow( "extract degrees negative int" ) << "extract_degrees(-135)" << false << QVariant( -135 );
+      // make sure these aren't rounding, but should instead truncate towards zero
+      QTest::newRow( "extract degrees positive float low" ) << "extract_degrees(135.112341)" << false << QVariant( 135 );
+      QTest::newRow( "extract degrees negative float low" ) << "extract_degrees(-135.11234)" << false << QVariant( -135 );
+      QTest::newRow( "extract degrees positive float high" ) << "extract_degrees(135.78785)" << false << QVariant( 135 );
+      QTest::newRow( "extract degrees negative float high" ) << "extract_degrees(-135.7878)" << false << QVariant( -135 );
+
+      QTest::newRow( "extract minutes positive int" ) << "extract_minutes(135)" << false << QVariant( 0 );
+      QTest::newRow( "extract minutes negative int" ) << "extract_minutes(-135)" << false << QVariant( 0 );
+      QTest::newRow( "extract minutes positive round minutes" ) << "extract_minutes(135 + 45/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes negative round minutes" ) << "extract_minutes(-135 - 45/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes positive with low seconds" ) << "extract_minutes(135 + 45.123/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes negative with low seconds" ) << "extract_minutes(-135 - 45.123/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes positive with high seconds" ) << "extract_minutes(135 + 45.888/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes negative with high seconds" ) << "extract_minutes(-135 - 45.888/60)" << false << QVariant( 45 );
+
+      QTest::newRow( "extract seconds positive int" ) << "extract_seconds(135)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds negative int" ) << "extract_seconds(-135)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds positive round minutes" ) << "extract_seconds(135 + 45/60)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds negative round minutes" ) << "extract_seconds(-135 - 45/60)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds positive with round low seconds" ) << "extract_seconds(135 + 45/60 + 12/3600)" << false << QVariant( 12.0 );
+      QTest::newRow( "extract seconds negative with round low seconds" ) << "extract_seconds(-135 - 45/60 - 12/3600)" << false << QVariant( 12.0 );
+      QTest::newRow( "extract seconds positive with round high seconds" ) << "extract_seconds(135 + 45/60 + 58/3600)" << false << QVariant( 58.0 );
+      QTest::newRow( "extract seconds negative with round high seconds" ) << "extract_seconds(-135 - 45/60 - 58/3600)" << false << QVariant( 58.0 );
+      QTest::newRow( "extract seconds positive with decimal low seconds" ) << "round(extract_seconds(135 + 45/60 + 12.222/3600), 3)" << false << QVariant( 12.222 );
+      QTest::newRow( "extract seconds negative with decimal low seconds" ) << "round(extract_seconds(-135 - 45/60 - 12.222/3600), 3)" << false << QVariant( 12.222 );
+      QTest::newRow( "extract seconds positive with decimal high seconds" ) << "round(extract_seconds(135 + 45/60 + 58.222/3600), 3)" << false << QVariant( 58.222 );
+      QTest::newRow( "extract seconds negative with decimal high seconds" ) << "round(extract_seconds(-135 - 45/60 - 58.222/3600), 3)" << false << QVariant( 58.222 );
 
       // geometry functions
       QTest::newRow( "geom_to_wkb" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb(make_point(4,5))))" << false << QVariant( "Point (4 5)" );
@@ -4553,9 +4584,9 @@ class TestQgsExpression : public QObject
       concatExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" );
       QCOMPARE( QgsExpression( "array_cat(\"strings\", array('a', 'b'), array('c'))" ).evaluate( &context ), QVariant( concatExpected ) );
 
-      QVariantList foreachExpected;
-      foreachExpected << QStringLiteral( "ABC" ) << QStringLiteral( "HELLO" );
-      QCOMPARE( QgsExpression( "array_foreach(array:=array('abc', 'hello'), expression:=upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) );
+      QVariantList foreachExpected;                                                                                                                              // skip-keyword-check
+      foreachExpected << QStringLiteral( "ABC" ) << QStringLiteral( "HELLO" );                                                                                   // skip-keyword-check
+      QCOMPARE( QgsExpression( "array_foreach(array:=array('abc', 'hello'), expression:=upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) ); // skip-keyword-check
 
       QVariantList filterExpected = QVariantList() << QStringLiteral( "A: a" ) << QStringLiteral( "A: d" );
       QCOMPARE( QgsExpression( "array_filter(array:=array('A: a', 'B: b', 'C: c', 'A: d'), expression:=substr(@element, 1, 2) = 'A:')" ).evaluate( &context ), QVariant( filterExpected ) );
@@ -4657,10 +4688,10 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression( "array_sort(array(1,10,2,30,4))" ).evaluate( &context ), QVariant( QVariantList() << 1 << 2 << 4 << 10 << 30 ) );
       QCOMPARE( QgsExpression( "array_sort(array(1,10,2,30,4),false)" ).evaluate( &context ), QVariant( QVariantList() << 30 << 10 << 4 << 2 << 1 ) );
 
-      QVariantList foreachExpected;
-      foreachExpected << 10 << 20 << 40;
-      QCOMPARE( QgsExpression( "array_foreach(array(1, 2, 4), @element * 10)" ).evaluate( &context ), QVariant( foreachExpected ) );
-      QCOMPARE( QgsExpression( "array_foreach(array(10, 19, 38), @element + @counter)" ).evaluate( &context ), QVariant( foreachExpected ) );
+      QVariantList foreachExpected;                                                                                                           // skip-keyword-check
+      foreachExpected << 10 << 20 << 40;                                                                                                      // skip-keyword-check
+      QCOMPARE( QgsExpression( "array_foreach(array(1, 2, 4), @element * 10)" ).evaluate( &context ), QVariant( foreachExpected ) );          // skip-keyword-check
+      QCOMPARE( QgsExpression( "array_foreach(array(10, 19, 38), @element + @counter)" ).evaluate( &context ), QVariant( foreachExpected ) ); // skip-keyword-check
 
       QVariantList filterExpected = QVariantList() << 1 << 2;
       QCOMPARE( QgsExpression( "array_filter(array(1, 2, 4), @element < 3)" ).evaluate( &context ), QVariant( filterExpected ) );

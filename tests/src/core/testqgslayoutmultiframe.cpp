@@ -15,21 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutframe.h"
-#include "qgslayoutmultiframe.h"
-#include "qgslayoutitemlabel.h"
 #include "qgsapplication.h"
-#include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutmultiframe.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgstest.h"
 
 #include <QObject>
 #include <QSignalSpy>
-
-#include "qgstest.h"
 
 class TestQgsLayoutMultiFrame : public QgsTest
 {

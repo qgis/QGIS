@@ -25,7 +25,7 @@ namespace
     {
       public:
         LayoutItem( const QwtPlotLegendItem*, const QwtPlotItem* );
-        virtual ~LayoutItem();
+        ~LayoutItem() override;
 
         const QwtPlotItem* plotItem() const;
 

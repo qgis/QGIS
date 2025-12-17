@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include "qgsbearingnumericformat.h"
-#include "qgis.h"
 
+#include "qgis.h"
 
 QgsBearingNumericFormat::QgsBearingNumericFormat()
 {

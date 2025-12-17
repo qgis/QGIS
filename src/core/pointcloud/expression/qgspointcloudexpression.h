@@ -19,12 +19,12 @@
 #define QGSPOINTCLOUDEXPRESSION_H
 
 #include "qgis_core.h"
-#include <QMetaType>
-#include <QList>
-#include <QSet>
-
-#include "qgspointcloudexpressionnode.h"
 #include "qgsexpression.h"
+#include "qgspointcloudexpressionnode.h"
+
+#include <QList>
+#include <QMetaType>
+#include <QSet>
 
 class QgsPointCloudExpressionPrivate;
 class QgsPointCloudBlock;

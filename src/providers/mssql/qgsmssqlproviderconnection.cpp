@@ -14,26 +14,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSqlRecord>
-#include <QSqlField>
-
 #include "qgsmssqlproviderconnection.h"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsmssqlutils.h"
-#include "qgssettings.h"
-#include "qgsmssqlprovider.h"
-#include "qgsexception.h"
-#include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgsfeedback.h"
-#include "qgsmssqlsqlquerybuilder.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgsvectorlayer.h"
-#include <QIcon>
 
 #include <chrono>
+
+#include "qgsapplication.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsexception.h"
+#include "qgsfeedback.h"
+#include "qgsmessagelog.h"
+#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlprovider.h"
+#include "qgsmssqlsqlquerybuilder.h"
+#include "qgsmssqlutils.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QIcon>
+#include <QSqlField>
+#include <QSqlRecord>
 
 const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS {
   QStringLiteral( "geometryColumnsOnly" ),

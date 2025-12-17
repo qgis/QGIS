@@ -22,11 +22,11 @@
 #ifndef QGSWFSDESCRIBEFEATURETYPEGML_H
 #define QGSWFSDESCRIBEFEATURETYPEGML_H
 
-#include <QDomDocument>
-#include <QDomElement>
-
 #include "qgsserverinterface.h"
 #include "qgswfsparameters.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 
 /**
  * \ingroup server

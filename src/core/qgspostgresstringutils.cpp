@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgspostgresstringutils.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsmessagelog.h"
 
 #include <QRegularExpression>
-
-#include <nlohmann/json.hpp>
 
 using namespace nlohmann;
 

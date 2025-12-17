@@ -14,23 +14,22 @@
  ***************************************************************************/
 
 #include "qgs3dterrainregistry.h"
-#include "qgis.h"
 
-#include "qgsflatterrainsettings.h"
-#include "qgsdemterrainsettings.h"
-#include "qgsonlinedemterrainsettings.h"
-#include "qgsmeshterrainsettings.h"
-#include "qgsquantizedmeshterrainsettings.h"
-#include "qgsflatterraingenerator.h"
+#include "qgis.h"
 #include "qgsdemterraingenerator.h"
-#include "qgsonlineterraingenerator.h"
+#include "qgsdemterrainsettings.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsflatterrainsettings.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsquantizedmeshterraingenerator.h"
+#include "qgsmeshterrainsettings.h"
+#include "qgsonlinedemterrainsettings.h"
+#include "qgsonlineterraingenerator.h"
 #include "qgsprojectelevationproperties.h"
+#include "qgsquantizedmeshterraingenerator.h"
+#include "qgsquantizedmeshterrainsettings.h"
 #include "qgsterrainprovider.h"
 
 #include <QDomElement>
-
 
 Qgs3DTerrainRegistry::Qgs3DTerrainRegistry()
 {

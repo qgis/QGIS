@@ -15,9 +15,10 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include <QUrl>
+
 #include <QTemporaryFile>
 #include <QTextCodec>
+#include <QUrl>
 
 //qgis includes...
 #include <qgsgeometry.h>
@@ -187,7 +188,7 @@ void TestQgsGML::testStreamingParser()
   QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
-  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:27700" ) );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
   delete features[0].first;
 }
@@ -468,7 +469,7 @@ void TestQgsGML::testPointGML3()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:27700" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -498,7 +499,7 @@ void TestQgsGML::testPointGML3_EPSG_4326()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:4326" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -528,7 +529,7 @@ void TestQgsGML::testPointGML3_uri_EPSG_4326()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:4326" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -558,7 +559,7 @@ void TestQgsGML::testPointGML3_urn_EPSG_4326()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:4326" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -588,7 +589,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:4326" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -618,7 +619,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG_invert()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:4326" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -974,7 +975,7 @@ void TestQgsGML::testPointGML3_2()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:27700" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -1190,7 +1191,7 @@ void TestQgsGML::testTuple()
             true );
   QCOMPARE( gmlParser.isException(), false );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:27700" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QCOMPARE( features[0].first->attributes().size(), 2 );
@@ -1231,7 +1232,7 @@ void TestQgsGML::testRenamedFields()
             true );
   QCOMPARE( gmlParser.isException(), false );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:27700" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QCOMPARE( features[0].first->attributes().size(), 1 );
@@ -1300,7 +1301,7 @@ void TestQgsGML::testThroughOGRGeometry()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Polygon );
-  QCOMPARE( gmlParser.getEPSGCode(), 27700 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:27700" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -1338,7 +1339,7 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
                                    true ),
             true );
   QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Polygon );
-  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QCOMPARE( QgsCoordinateReferenceSystem::fromOgcWmsCrs( gmlParser.srsName() ).authid(), QStringLiteral( "EPSG:4326" ) );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
@@ -1659,6 +1660,10 @@ void TestQgsGML::testZ_data()
                                              << static_cast<int>( Qgis::WkbType::LineStringZ )
                                              << QStringLiteral( "LINESTRING Z (0 1 2, 3 4 5)" );
 
+  QTest::newRow( "linestring with z gml 3 with implicit srsDimension" ) << QStringLiteral( R"gml(<gml:LineString srsName="EPSG:4979"><gml:posList>0 1 2 3 4 5</gml:posList></gml:LineString>)gml" )
+                                                                        << static_cast<int>( Qgis::WkbType::LineStringZ )
+                                                                        << QStringLiteral( "LINESTRING Z (0 1 2, 3 4 5)" );
+
   QTest::newRow( "polygon with z gml 2" ) << QStringLiteral( R"gml(<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,1,2 3,4,5 6,7,8 0,1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>)gml" )
                                           << static_cast<int>( Qgis::WkbType::PolygonZ )
                                           << QStringLiteral( "POLYGON Z ((0 1 2, 3 4 5, 6 7 8, 0 1 2))" );
@@ -1683,6 +1688,18 @@ void TestQgsGML::testZ_data()
   QTest::newRow( "multilinestring with z gml 3" ) << QStringLiteral( R"gml(<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">0 1 2 3 4 5</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">6 7 8 9 10 11</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>)gml" )
                                                   << static_cast<int>( Qgis::WkbType::MultiLineStringZ )
                                                   << QStringLiteral( "MULTILINESTRING Z ((0 1 2, 3 4 5),(6 7 8, 9 10 11))" );
+
+  QTest::newRow( "multilinestring with z gml 3 with implicit srsDimension (variant 1)" ) << QStringLiteral( R"gml(<gml:MultiLineString srsName="EPSG:4979"><gml:lineStringMember><gml:LineString srsName="EPSG:4979"><gml:posList>0 1 2 3 4 5</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString>)gml" )
+                                                                                         << static_cast<int>( Qgis::WkbType::MultiLineStringZ )
+                                                                                         << QStringLiteral( "MULTILINESTRING Z ((0 1 2, 3 4 5))" );
+
+  QTest::newRow( "multilinestring with z gml 3 with implicit srsDimension (variant 2)" ) << QStringLiteral( R"gml(<gml:MultiLineString><gml:lineStringMember><gml:LineString srsName="EPSG:4979"><gml:posList>0 1 2 3 4 5</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString>)gml" )
+                                                                                         << static_cast<int>( Qgis::WkbType::MultiLineStringZ )
+                                                                                         << QStringLiteral( "MULTILINESTRING Z ((0 1 2, 3 4 5))" );
+
+  QTest::newRow( "multilinestring with z gml 3 with implicit srsDimension (variant 3)" ) << QStringLiteral( R"gml(<gml:MultiLineString srsName="EPSG:4979"><gml:lineStringMember><gml:LineString><gml:posList>0 1 2 3 4 5</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString>)gml" )
+                                                                                         << static_cast<int>( Qgis::WkbType::MultiLineStringZ )
+                                                                                         << QStringLiteral( "MULTILINESTRING Z ((0 1 2, 3 4 5))" );
 
   QTest::newRow( "multipolygon with z gml 2" ) << QStringLiteral( R"gml(<gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,1,2 3,4,5 6,7,8 0,1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>9,10,11 12,13,14 15,16,17 9,10,11</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>)gml" )
                                                << static_cast<int>( Qgis::WkbType::MultiPolygonZ )

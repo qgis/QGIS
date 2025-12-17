@@ -19,9 +19,10 @@
 #define QGSELEVATIONPROFILELAYERTREEVIEW_H
 
 #include "qgsconfig.h"
+
+#include "qgis_gui.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgis_gui.h"
 
 #include <QSortFilterProxyModel>
 #include <QTreeView>
@@ -61,6 +62,20 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
+    /**
+     * Sets whether modifications like renaming, reordering nodes are supported.
+     *
+     * \since QGIS 4.0
+     */
+    void setAllowModifications( bool allow );
+
+    /**
+     * Returns TRUE if modifications like renaming, reordering nodes are supported.
+     *
+     * \since QGIS 4.0
+     */
+    bool allowModifications() const { return mAllowModifications; }
+
   signals:
 
     /**
@@ -74,6 +89,8 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
 #ifdef SIP_RUN
     QgsElevationProfileLayerTreeModel( const QgsElevationProfileLayerTreeModel &other );
 #endif
+
+    bool mAllowModifications = true;
 };
 
 /**
@@ -118,9 +135,16 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
 
     /**
      * Construct a new tree view with given layer tree (root node must not be NULLPTR).
-     * The root node is not transferred by the view.
+     * The root node is not transferred to the view.
      */
     explicit QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent = nullptr );
+
+    /**
+     * Sets a new layer tree root node to use for the view.
+     *
+     * The root node is not transferred to the view.
+     */
+    void setLayerTree( QgsLayerTree *rootNode );
 
     /**
      * Initially populates the tree view using layers from a \a project, as well as sources from the source registry.
@@ -135,6 +159,7 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
 
   public slots:
+
     /**
      * Adds a custom node in the layer tree corresponding to a registered profile source.
      *

@@ -15,17 +15,19 @@
 #ifndef QGSAPPLICATION_H
 #define QGSAPPLICATION_H
 
-#include "qgis_core.h"
-#include <QApplication>
-#include <QEvent>
-#include <QStringList>
-#include <QColor>
+#include "qgsconfig.h"
 
 #include <memory>
+
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsconfig.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstranslationcontext.h"
+
+#include <QApplication>
+#include <QColor>
+#include <QEvent>
+#include <QStringList>
 
 class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;

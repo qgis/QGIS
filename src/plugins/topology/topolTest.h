@@ -18,12 +18,11 @@
 #ifndef TOPOLTEST_H
 #define TOPOLTEST_H
 
-#include <QObject>
-
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
-
 #include "topolError.h"
+
+#include <QObject>
 
 class topolTest;
 class QgisInterface;

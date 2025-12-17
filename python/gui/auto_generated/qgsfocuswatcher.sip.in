@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFocusWatcher : QObject
 {
 %Docstring(signature="appended")

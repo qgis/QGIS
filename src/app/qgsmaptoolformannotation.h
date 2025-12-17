@@ -18,8 +18,8 @@
 #ifndef QGSMAPTOOFORMANNOTATION_H
 #define QGSMAPTOOFORMANNOTATION_H
 
-#include "qgsmaptoolannotation.h"
 #include "qgis_app.h"
+#include "qgsmaptoolannotation.h"
 
 class APP_EXPORT QgsMapToolFormAnnotation : public QgsMapToolAnnotation
 {

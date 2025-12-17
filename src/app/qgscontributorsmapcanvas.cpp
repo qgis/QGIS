@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "moc_qgscontributorsmapcanvas.cpp"
 #include "qgscontributorsmapcanvas.h"
+
 #include "qgsapplication.h"
+#include "qgsfeaturerequest.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapmouseevent.h"
-#include "qgsfeaturerequest.h"
 
 #include <QCursor>
 #include <QFrame>
 #include <QVBoxLayout>
+
+#include "moc_qgscontributorsmapcanvas.cpp"
 
 QgsContributorsMapTool::QgsContributorsMapTool( QgsMapCanvas *canvas, QgsVectorLayer *layer )
   : QgsMapToolPan( canvas )

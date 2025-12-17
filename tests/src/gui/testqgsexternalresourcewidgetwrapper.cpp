@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgsvectorlayer.h"
-#include "qgsexternalresourcewidgetwrapper.h"
 #include "qgsexternalresourcewidget.h"
+#include "qgsexternalresourcewidgetwrapper.h"
 #include "qgsexternalstorage.h"
+#include "qgsexternalstoragefilewidget.h"
 #include "qgsexternalstorageregistry.h"
-#include "qgspixmaplabel.h"
 #include "qgsmediawidget.h"
 #include "qgsmessagebar.h"
-#include "qgsexternalstoragefilewidget.h"
+#include "qgspixmaplabel.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QLineEdit>
-#include <QSignalSpy>
 #include <QMovie>
+#include <QSignalSpy>
 
 #ifdef WITH_QTWEBKIT
 #include <QWebFrame>
@@ -39,7 +39,6 @@
 #define OTHER_SAMPLE_IMAGE QStringLiteral( "%1/sample_image2.png" ).arg( TEST_DATA_DIR )
 
 /**
- * @ingroup UnitTests
  * This is a unit test for the external resource widget wrapper
  *
  * \see QgsExternalResourceWidgetWrapper

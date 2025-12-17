@@ -14,18 +14,13 @@
  ***************************************************************************/
 #include <cmath>
 
-#include <QApplication>
-#include <QDir>
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QTemporaryFile>
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgsgrass.h"
+#include "qgsgrassimport.h"
+#include "qgsgrassprovider.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
@@ -34,12 +29,16 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
+#include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsgrass.h"
-#include "qgsgrassimport.h"
-#include "qgsgrassprovider.h"
+#include <QApplication>
+#include <QDir>
+#include <QObject>
+#include <QString>
+#include <QStringList>
+#include <QTemporaryFile>
 
 extern "C"
 {
@@ -123,7 +122,7 @@ QString TestQgsGrassCommand::toString() const
   else if ( command == AddFeature )
   {
     string += QLatin1String( "AddFeature " );
-    Q_FOREACH ( const TestQgsGrassFeature &grassFeature, grassFeatures )
+    for ( const TestQgsGrassFeature &grassFeature : grassFeatures )
     {
       if ( grassFeature.hasGeometry() )
       {
@@ -224,7 +223,7 @@ class TestQgsGrassProvider : public QgsTest
     // compare with tolerance
     bool compare( double expected, double got, bool &ok );
     bool copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error );
-    bool removeRecursively( const QString &filePath, QString *error = 0 );
+    bool removeRecursively( const QString &filePath, QString *error = nullptr );
     bool copyLocation( QString &tmpGisdbase );
     bool createTmpLocation( QString &tmpGisdbase, QString &tmpLocation, QString &tmpMapset );
     bool equal( QgsFeature feature, QgsFeature expectedFeatures );
@@ -299,7 +298,7 @@ bool TestQgsGrassProvider::verify( bool ok )
 {
   if ( !ok )
   {
-    reportRow( QLatin1String( "" ) );
+    reportRow( QString() );
     reportRow( QStringLiteral( "Test result: " ) + ( ok ? "ok" : "error" ) );
   }
   return ok;
@@ -392,7 +391,7 @@ void TestQgsGrassProvider::mapsets()
   QgsGrass::setLocation( tmpGisdbase, mLocation ); // for G_is_mapset_in_search_path
   // Disabled because adding of all mapsets to search path was disabled in setLocation()
 #if 0
-  Q_FOREACH ( QString expectedMapset, expectedMapsets )
+  for ( const QString &expectedMapset : expectedMapsets )
   {
     if ( G_is_mapset_in_search_path( expectedMapset.toLatin1().data() ) != 1 )
     {
@@ -405,7 +404,7 @@ void TestQgsGrassProvider::mapsets()
   // open/close mapset try twice to be sure that lock was not left etc.
   for ( int i = 1; i < 3; i++ )
   {
-    reportRow( QLatin1String( "" ) );
+    reportRow( QString() );
     reportRow( "Open/close mapset " + mBuildMapset + " for the " + QString::number( i ) + ". time" );
     QString error = QgsGrass::openMapset( tmpGisdbase, mLocation, mBuildMapset );
     if ( !error.isEmpty() )
@@ -456,7 +455,7 @@ void TestQgsGrassProvider::maps()
   reportRow( "vectors: " + vectors.join( QLatin1String( ", " ) ) );
   compare( expectedVectors, vectors, ok );
 
-  reportRow( QLatin1String( "" ) );
+  reportRow( QString() );
   QStringList expectedRasters;
   expectedRasters << QStringLiteral( "cell" ) << QStringLiteral( "dcell" ) << QStringLiteral( "fcell" );
   QStringList rasters = QgsGrass::rasters( mGisdbase, mLocation, QStringLiteral( "test" ) );
@@ -558,7 +557,7 @@ void TestQgsGrassProvider::info()
   es.minimumValue = -20.25;
   es.maximumValue = 20.25;
   expectedStats.insert( QStringLiteral( "fcell" ), es );
-  Q_FOREACH ( const QString &map, expectedStats.keys() )
+  for ( const QString &map : expectedStats.keys() )
   {
     es = expectedStats.value( map );
     // TODO: QgsGrass::info() may open dialog window on error which blocks tests
@@ -595,7 +594,7 @@ void TestQgsGrassProvider::info()
     }
   }
 
-  reportRow( QLatin1String( "" ) );
+  reportRow( QString() );
   QgsCoordinateReferenceSystem expectedCrs( QStringLiteral( "EPSG:4326" ) );
 
   reportRow( "expectedCrs: " + expectedCrs.toWkt() );
@@ -653,7 +652,7 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
     }
     QDir sourceDir( srcFilePath );
     QStringList fileNames = sourceDir.entryList( QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System );
-    Q_FOREACH ( const QString &fileName, fileNames )
+    for ( const QString &fileName : fileNames )
     {
       const QString newSrcFilePath
         = srcFilePath + QLatin1Char( '/' ) + fileName;
@@ -689,7 +688,7 @@ bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *
   {
     QDir dir( filePath );
     QStringList fileNames = dir.entryList( QDir::Files | QDir::Hidden | QDir::System | QDir::Dirs | QDir::NoDotAndDotDot );
-    Q_FOREACH ( const QString &fileName, fileNames )
+    for ( const QString &fileName : fileNames )
     {
       if ( !removeRecursively( filePath + QLatin1Char( '/' ) + fileName, error ) )
         return false;
@@ -764,7 +763,7 @@ bool TestQgsGrassProvider::createTmpLocation( QString &tmpGisdbase, QString &tmp
   QStringList cpFiles;
   cpFiles << QStringLiteral( "DEFAULT_WIND" ) << QStringLiteral( "WIND" ) << QStringLiteral( "PROJ_INFO" ) << QStringLiteral( "PROJ_UNITS" ) << QStringLiteral( "PROJ_SRID" );
   QString templateMapsetPath = mGisdbase + "/" + mLocation + "/PERMANENT";
-  Q_FOREACH ( const QString &cpFile, cpFiles )
+  for ( const QString &cpFile : cpFiles )
   {
     if ( !QFile::copy( templateMapsetPath + "/" + cpFile, tmpMapsetPath + "/" + cpFile ) )
     {
@@ -799,7 +798,7 @@ void TestQgsGrassProvider::rasterImport()
   rasterFiles << QStringLiteral( "raster/band1_float32_noct_epsg4326.tif" ) << QStringLiteral( "raster/band3_int16_noct_epsg4326.tif" );
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
-  Q_FOREACH ( const QString &rasterFile, rasterFiles )
+  for ( const QString &rasterFile : rasterFiles )
   {
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + rasterFile;
     QString name = QFileInfo( uri ).baseName();
@@ -871,7 +870,7 @@ void TestQgsGrassProvider::vectorImport()
   files << QStringLiteral( "polys_overlapping.shp" ) << QStringLiteral( "bug5598.shp" );
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
-  Q_FOREACH ( const QString &file, files )
+  for ( const QString &file : files )
   {
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + file;
     QString name = QFileInfo( uri ).baseName();
@@ -1108,7 +1107,7 @@ QList<TestQgsGrassCommandGroup> TestQgsGrassProvider::createCommands()
 bool TestQgsGrassProvider::setAttributes( QgsFeature &feature, const QMap<QString, QVariant> &attributes )
 {
   bool attributesSet = true;
-  Q_FOREACH ( const QString fieldName, attributes.keys() )
+  for ( const QString &fieldName : attributes.keys() )
   {
     int index = feature.fields().indexFromName( fieldName );
     if ( index < 0 )
@@ -1162,13 +1161,13 @@ void TestQgsGrassProvider::edit()
     // map of expected layers with grass uri as key
     QMap<QString, QgsVectorLayer *> expectedLayers;
 
-    QgsVectorLayer *grassLayer = 0;
-    QgsGrassProvider *grassProvider = 0;
-    QgsVectorLayer *expectedLayer = 0;
+    QgsVectorLayer *grassLayer = nullptr;
+    QgsGrassProvider *grassProvider = nullptr;
+    QgsVectorLayer *expectedLayer = nullptr;
 
     QList<TestQgsGrassCommand> editCommands; // real edit
 
-    Q_FOREACH ( const TestQgsGrassCommand &command, commandGroup.commands )
+    for ( const TestQgsGrassCommand &command : commandGroup.commands )
     {
       reportRow( "command: " + command.toString() );
       bool commandOk = true;
@@ -1242,7 +1241,7 @@ void TestQgsGrassProvider::edit()
       }
       else if ( command.command == TestQgsGrassCommand::AddFeature )
       {
-        Q_FOREACH ( TestQgsGrassFeature grassFeature, command.grassFeatures ) // copy feature, not reference
+        for ( TestQgsGrassFeature grassFeature : command.grassFeatures ) // copy feature, not reference
         {
           QgsFeatureId fid = grassFeature.id();
           grassProvider->setNewFeatureType( grassFeature.grassType );
@@ -1458,7 +1457,7 @@ void TestQgsGrassProvider::edit()
     }
 
     delete grassLayer;
-    Q_FOREACH ( QgsVectorLayer *layer, expectedLayers.values() )
+    for ( QgsVectorLayer *layer : expectedLayers.values() )
     {
       delete layer;
     }
@@ -1526,7 +1525,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
   {
     // unexpected attribute in feature
     QStringList names;
-    Q_FOREACH ( int i, indexes )
+    for ( int i : indexes )
     {
       names << feature.fields().at( i ).name();
     }
@@ -1546,10 +1545,10 @@ bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature
     return false;
   }
   // Check if each expected feature exists in features
-  Q_FOREACH ( const QgsFeature &expectedFeature, expectedFeatures )
+  for ( const QgsFeature &expectedFeature : expectedFeatures )
   {
     bool found = false;
-    Q_FOREACH ( const QgsFeature &feature, features )
+    for ( const QgsFeature &feature : features )
     {
       if ( equal( feature, expectedFeature ) )
       {
@@ -1569,7 +1568,7 @@ bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature
 
 bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool &ok )
 {
-  Q_FOREACH ( const QString &grassUri, layers.keys() )
+  for ( const QString &grassUri : layers.keys() )
   {
     QgsVectorLayer *layer = layers.value( grassUri );
     Q_ASSERT( layer );
@@ -1597,7 +1596,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   }
   QList<QgsFeature> features = getFeatures( layer );
   delete layer;
-  layer = 0;
+  layer = nullptr;
 
   bool sharedOk = compare( features, expectedFeatures, ok );
   if ( sharedOk )
@@ -1653,7 +1652,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   }
   features = getFeatures( layer );
   delete layer;
-  QgsGrassVectorMapStore::setStore( 0 );
+  QgsGrassVectorMapStore::setStore( nullptr );
   delete mapStore;
 
   independentOk = compare( features, expectedFeatures, ok );

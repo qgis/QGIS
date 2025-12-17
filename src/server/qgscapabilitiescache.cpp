@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgscapabilitiescache.h"
-#include "moc_qgscapabilitiescache.cpp"
 
 #include <QCoreApplication>
 #include <QFileInfo>
+
+#include "moc_qgscapabilitiescache.cpp"
 
 #if defined( Q_OS_LINUX )
 #include <sys/vfs.h>

@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmhillshade.h"
-#include "qgsrasterfilewriter.h"
+
 #include "qgshillshadefilter.h"
+#include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 
@@ -70,26 +71,48 @@ void QgsHillshadeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "AZIMUTH" ), QObject::tr( "Azimuth (horizontal angle)" ), Qgis::ProcessingNumberParameterType::Double, 300, false, 0, 360 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "V_ANGLE" ), QObject::tr( "Vertical angle" ), Qgis::ProcessingNumberParameterType::Double, 40, false, 0, 90 ) );
 
+  auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NODATA" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );
+  outputNodataParam->setFlags( outputNodataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( outputNodataParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Hillshade" ) ) );
+}
+
+bool QgsHillshadeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  if ( !layer )
+  {
+    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+  }
+
+  mLayerSource = layer->source();
+  return true;
 }
 
 QVariantMap QgsHillshadeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-
-  if ( !inputLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
-
   const double zFactor = parameterAsDouble( parameters, QStringLiteral( "Z_FACTOR" ), context );
   const double azimuth = parameterAsDouble( parameters, QStringLiteral( "AZIMUTH" ), context );
   const double vAngle = parameterAsDouble( parameters, QStringLiteral( "V_ANGLE" ), context );
+  const QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  const double outputNodata = parameterAsDouble( parameters, QStringLiteral( "NODATA" ), context );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
-  QgsHillshadeFilter hillshade( inputLayer->source(), outputFile, outputFormat, azimuth, vAngle );
+  QgsHillshadeFilter hillshade( mLayerSource, outputFile, outputFormat, azimuth, vAngle );
   hillshade.setZFactor( zFactor );
+  if ( !creationOptions.isEmpty() )
+  {
+    hillshade.setCreationOptions( creationOptions.split( '|' ) );
+  }
+  hillshade.setOutputNodataValue( outputNodata );
   hillshade.processRaster( feedback );
 
   QVariantMap outputs;

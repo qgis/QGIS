@@ -17,14 +17,13 @@
 #ifndef QGSGLOWEFFECT_H
 #define QGSGLOWEFFECT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgspainteffect.h"
+#include "qgis_core.h"
 #include "qgscolorramp.h"
 #include "qgsmapunitscale.h"
+#include "qgspainteffect.h"
 
 #include <QPainter>
-
 
 /**
  * \ingroup core
@@ -52,6 +51,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
     Qgis::PaintEffectFlags flags() const override;
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
 
     /**

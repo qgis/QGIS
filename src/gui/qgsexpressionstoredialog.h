@@ -16,10 +16,11 @@
 #ifndef QGSEXPRESSIONSTOREDIALOG_H
 #define QGSEXPRESSIONSTOREDIALOG_H
 
-#include "qgis_gui.h"
-#include <QDialog>
 #include "ui_qgsexpressionstoredialogbase.h"
 
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 /**
  * \ingroup gui

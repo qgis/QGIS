@@ -120,7 +120,7 @@ class QWT_EXPORT QwtKnob : public QwtAbstractSlider
     };
 
     explicit QwtKnob( QWidget* parent = NULL );
-    virtual ~QwtKnob();
+    ~QwtKnob() override;
 
     void setAlignment( Qt::Alignment );
     Qt::Alignment alignment() const;

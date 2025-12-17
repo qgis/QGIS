@@ -16,14 +16,15 @@
 #ifndef QGSPOINTMARKERITEM_H
 #define QGSPOINTMARKERITEM_H
 
-#include <QFontMetricsF>
-#include <QPixmap>
 #include <memory>
 
 #include "qgis_app.h"
-#include "qgsmapcanvasitem.h"
 #include "qgsfeature.h"
+#include "qgsmapcanvasitem.h"
 #include "qgspainteffect.h"
+
+#include <QFontMetricsF>
+#include <QPixmap>
 
 class QgsMarkerSymbol;
 class QgsLineSymbol;
@@ -39,6 +40,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem : public QgsMapCanvasItem
     QgsMapCanvasSymbolItem( QgsMapCanvas *canvas = nullptr );
     ~QgsMapCanvasSymbolItem() override;
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     /**

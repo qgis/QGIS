@@ -14,32 +14,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
 #include "qgsmeshcalculatordialog.h"
-#include "moc_qgsmeshcalculatordialog.cpp"
-#include "qgsproject.h"
-#include "qgsmeshcalcnode.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsproviderregistry.h"
-#include "qgsmeshlayer.h"
-#include "qgssettings.h"
+
+#include <cpl_string.h>
+#include <gdal.h>
+#include <memory>
+
+#include "qgis.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgdalutils.h"
 #include "qgsgui.h"
-#include "qgsvectorlayer.h"
+#include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerproxymodel.h"
-#include "qgswkbtypes.h"
-#include "qgsfeatureiterator.h"
+#include "qgsmeshcalcnode.h"
+#include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgrouptreeview.h"
-#include "qgshelp.h"
+#include "qgsmeshlayer.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
-#include "cpl_string.h"
-#include "gdal.h"
-#include "qgis.h"
-
-#include <QMessageBox>
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QMap>
+#include <QMessageBox>
+
+#include "moc_qgsmeshcalculatordialog.cpp"
 
 QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -211,62 +214,62 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
     case QgsMeshDatasetGroup::Persistent:
       if ( useExtentCb->isChecked() )
       {
-        calc.reset(
-          new QgsMeshCalculator(
-            formulaString(),
-            driver(),
-            groupName(),
-            outputFile(),
-            outputExtent(),
-            startTime(),
-            endTime(),
-            meshLayer()
-          )
+        calc = std::make_unique<QgsMeshCalculator>(
+
+          formulaString(),
+          driver(),
+          groupName(),
+          outputFile(),
+          outputExtent(),
+          startTime(),
+          endTime(),
+          meshLayer()
+
         );
       }
       else
       {
-        calc.reset(
-          new QgsMeshCalculator(
-            formulaString(),
-            driver(),
-            groupName(),
-            outputFile(),
-            maskGeometry(),
-            startTime(),
-            endTime(),
-            meshLayer()
-          )
+        calc = std::make_unique<QgsMeshCalculator>(
+
+          formulaString(),
+          driver(),
+          groupName(),
+          outputFile(),
+          maskGeometry(),
+          startTime(),
+          endTime(),
+          meshLayer()
+
         );
       }
       break;
     case QgsMeshDatasetGroup::Virtual:
       if ( useExtentCb->isChecked() )
       {
-        calc.reset(
-          new QgsMeshCalculator(
-            formulaString(),
-            groupName(),
-            outputExtent(),
-            destination,
-            meshLayer(),
-            startTime(),
-            endTime()
-          )
+        calc = std::make_unique<QgsMeshCalculator>(
+
+          formulaString(),
+          groupName(),
+          outputExtent(),
+          destination,
+          meshLayer(),
+          startTime(),
+          endTime()
+
         );
       }
       else
       {
-        calc.reset(
-          new QgsMeshCalculator(
-            formulaString(),
-            groupName(),
-            maskGeometry(),
-            destination,
-            meshLayer(),
-            startTime(),
-            endTime()
-          )
+        calc = std::make_unique<QgsMeshCalculator>(
+
+          formulaString(),
+          groupName(),
+          maskGeometry(),
+          destination,
+          meshLayer(),
+          startTime(),
+          endTime()
+
         );
       }
       break;

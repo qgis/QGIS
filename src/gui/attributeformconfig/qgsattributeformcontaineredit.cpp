@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsattributeformcontaineredit.h"
-#include "moc_qgsattributeformcontaineredit.cpp"
 #include "ui_qgsattributeformcontaineredit.h"
-#include "qgsattributesformproperties.h"
+#include "qgsattributeformcontaineredit.h"
+
 #include "qgsattributesformmodel.h"
+#include "qgsattributesformproperties.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsattributeformcontaineredit.cpp"
 
 QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )

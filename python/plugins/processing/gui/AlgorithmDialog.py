@@ -79,6 +79,14 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().addButton(
                 self.runAsBatchButton, QDialogButtonBox.ButtonRole.ResetRole
             )  # reset role to ensure left alignment
+
+            self.addToQueueButton = QPushButton(
+                QCoreApplication.translate("AlgorithmDialog", "Add to Queue…")
+            )
+            self.addToQueueButton.clicked.connect(self.addToQueue)
+            self.buttonBox().addButton(
+                self.addToQueueButton, QDialogButtonBox.ButtonRole.ResetRole
+            )  # reset role to ensure left alignment
         else:
             in_place_input_parameter_name = "INPUT"
             if hasattr(alg, "inputParameterName"):
@@ -115,13 +123,38 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg.show()
         dlg.exec()
 
+    def addToQueue(self):
+        from processing.gui.TaskQueue import ProcessingTaskQueue
+        from qgis.PyQt.QtWidgets import QMessageBox
+
+        parameters, ok = self.mainWidget().getParameterValues()
+        if not ok:
+            QMessageBox.warning(
+                self,
+                self.tr("Invalid Parameters"),
+                self.tr("Please check your input parameters before adding to queue."),
+            )
+            return
+
+        queue = ProcessingTaskQueue.instance()
+        alg_name = self.algorithm().displayName()
+        queue.add_task(self.algorithm().id(), parameters, alg_name)
+
+        QMessageBox.information(
+            self,
+            self.tr("Added to Queue"),
+            self.tr("'{}' has been added to the processing queue.").format(alg_name),
+        )
+
     def resetAdditionalGui(self):
         if not self.in_place:
             self.runAsBatchButton.setEnabled(True)
+            self.addToQueueButton.setEnabled(True)
 
     def blockAdditionalControlsWhileRunning(self):
         if not self.in_place:
             self.runAsBatchButton.setEnabled(False)
+            self.addToQueueButton.setEnabled(False)
 
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)

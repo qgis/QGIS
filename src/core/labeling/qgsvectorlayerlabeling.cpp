@@ -14,16 +14,16 @@
  ***************************************************************************/
 #include "qgsvectorlayerlabeling.h"
 
+#include "qgis.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgspallabeling.h"
 #include "qgsrulebasedlabeling.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgis.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsmarkersymbol.h"
 #include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {

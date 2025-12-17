@@ -12471,6 +12471,40 @@ class TestQgsGeometry(QgisTestCase):
             ["PolyhedralSurface Z (((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2)))"],
         )
 
+        # GeometryCollection of Point to MultiPoint
+        self.assertEqual(
+            coerce_to_wkt(
+                "GeometryCollection (Point(0 0),Point(1 1))",
+                QgsWkbTypes.Type.MultiPoint,
+            ),
+            ["MultiPoint ((0 0),(1 1))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "GeometryCollection (Point (0 0),LineString (1 1, 2 2))",
+                QgsWkbTypes.Type.MultiPoint,
+            ),
+            ["GeometryCollection (Point (0 0),LineString (1 1, 2 2))"],
+        )
+
+        # GeometryCollection of LineString to MultiLineString
+        self.assertEqual(
+            coerce_to_wkt(
+                "GeometryCollection (LineString(0 0,1 1))",
+                QgsWkbTypes.Type.MultiLineString,
+            ),
+            ["MultiLineString ((0 0, 1 1))"],
+        )
+
+        # GeometryCollection of Polygon to MultiPolygon
+        self.assertEqual(
+            coerce_to_wkt(
+                "GeometryCollection (Polygon((0 0,0 1,1 1,0 0)))",
+                QgsWkbTypes.Type.MultiPolygon,
+            ),
+            ["MultiPolygon (((0 0, 0 1, 1 1, 0 0)))"],
+        )
+
     def testTriangularWaves(self):
         """Test triangular waves"""
         self.assertEqual(

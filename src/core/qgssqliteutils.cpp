@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgssqliteutils.h"
+
+#include <cstdarg>
+#include <sqlite3.h>
+
 #include "qgsvariantutils.h"
 
-#include <sqlite3.h>
-#include <cstdarg>
-#include <QVariant>
 #include <QSet>
+#include <QVariant>
 
 // Temporary solution until GDAL Unique support is available
 #include <regex>
@@ -125,7 +127,7 @@ int sqlite3_database_unique_ptr::exec( const QString &sql, QString &errorMessage
 QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage )
 {
   QSet<QString> uniqueFieldsResults;
-  char *zErrMsg = 0;
+  char *zErrMsg = nullptr;
   std::vector<std::string> rows;
   const QByteArray tableNameUtf8 = tableName.toUtf8();
   QString sql = qgs_sqlite3_mprintf( "select sql from sqlite_master "

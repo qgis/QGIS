@@ -18,14 +18,14 @@
  ***************************************************************************/
 
 #include "qgsserverapiutils.h"
-#include "qgsrectangle.h"
-#include "qgsvectorlayer.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgsserverprojectutils.h"
 #include "qgsmessagelog.h"
-
-
-#include "nlohmann/json.hpp"
+#include "qgsrectangle.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QUrl>
 #include <QUrlQuery>

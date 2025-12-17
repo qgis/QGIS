@@ -13,36 +13,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometryutils.h"
 #include "qgslinesymbollayer.h"
+
+#include <algorithm>
+#include <cmath>
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
+#include "qgscolorutils.h"
 #include "qgscurvepolygon.h"
 #include "qgsdxfexport.h"
-#include "qgssymbollayerutils.h"
-#include "qgsrendercontext.h"
-#include "qgslogger.h"
-#include "qgsgeometrysimplifier.h"
-#include "qgsunittypes.h"
-#include "qgsproperty.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsapplication.h"
-#include "qgsimagecache.h"
 #include "qgsfeedback.h"
-#include "qgsimageoperation.h"
-#include "qgscolorrampimpl.h"
 #include "qgsfillsymbol.h"
-#include "qgscolorutils.h"
+#include "qgsgeometrysimplifier.h"
+#include "qgsgeometryutils.h"
 #include "qgsgeos.h"
-#include "qgspolygon.h"
+#include "qgsimagecache.h"
+#include "qgsimageoperation.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgsproperty.h"
+#include "qgsrendercontext.h"
 #include "qgssldexportcontext.h"
-#include <algorithm>
-#include <QPainter>
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+
 #include <QDomDocument>
 #include <QDomElement>
-
-#include <cmath>
+#include <QPainter>
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
   : mPenStyle( penStyle )
@@ -1190,10 +1193,6 @@ class MyLine
 {
   public:
     MyLine( QPointF p1, QPointF p2 )
-      : mVertical( false )
-      , mIncreasing( false )
-      , mT( 0.0 )
-      , mLength( 0.0 )
     {
       if ( p1 == p2 )
         return; // invalid
@@ -1243,10 +1242,10 @@ class MyLine
     double length() const { return mLength; }
 
   protected:
-    bool mVertical;
-    bool mIncreasing;
-    double mT;
-    double mLength;
+    bool mVertical = false;
+    bool mIncreasing = false;
+    double mT = 0.0;
+    double mLength = 0.0;
 };
 
 ///@endcond
@@ -1820,7 +1819,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     painterUnitInterval = std::min( std::max( rc.convertToPainterUnits( interval, Qgis::RenderUnit::Millimeters ), 10.0 ), 100.0 );
   }
 
-  if ( painterUnitInterval < 0 )
+  constexpr double EPSILON = 1e-5;
+  if ( painterUnitInterval < EPSILON )
     return;
 
   double painterUnitOffsetAlongLine = 0;
@@ -2765,7 +2765,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   {
     QgsSymbolLayerList layers;
     layers.append( l.release() );
-    marker.reset( new QgsMarkerSymbol( layers ) );
+    marker = std::make_unique<QgsMarkerSymbol>( layers );
   }
 
   if ( !marker )

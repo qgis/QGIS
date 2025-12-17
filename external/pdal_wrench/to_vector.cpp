@@ -53,7 +53,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const st
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Stage& r = manager->makeReader( tile->inputFilenames[0], "");
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 

@@ -14,28 +14,30 @@
  ***************************************************************************/
 
 #include "qgstextrenderer.h"
-#include "qgstextformat.h"
-#include "qgstextdocument.h"
-#include "qgstextdocumentmetrics.h"
-#include "qgstextfragment.h"
-#include "qgspallabeling.h"
-#include "qgspainteffect.h"
-#include "qgspainterswapper.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsunittypes.h"
-#include "qgstextmetrics.h"
-#include "qgstextrendererutils.h"
-#include "qgsgeos.h"
-#include "qgspainting.h"
-#include "qgsapplication.h"
-#include "qgsimagecache.h"
+
+#include <memory>
 #include <optional>
 
-#include <QTextBoundaryFinder>
+#include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgsimagecache.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainteffect.h"
+#include "qgspainterswapper.h"
+#include "qgspainting.h"
+#include "qgspallabeling.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
+#include "qgstextformat.h"
+#include "qgstextfragment.h"
+#include "qgstextmetrics.h"
+#include "qgstextrendererutils.h"
+#include "qgsunittypes.h"
 
+#include <QTextBoundaryFinder>
 
 Qgis::TextHorizontalAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
 {
@@ -1189,7 +1191,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
         renderedSymbol.reset( );
 
         QgsSymbolLayer *symL = QgsSvgMarkerSymbolLayer::create( map );
-        renderedSymbol.reset( new QgsMarkerSymbol( QgsSymbolLayerList() << symL ) );
+        renderedSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList() << symL );
       }
       else
       {

@@ -17,12 +17,14 @@
  ***************************************************************************/
 
 #include "qgsdecorationoverlay.h"
-#include "moc_qgsdecorationoverlay.cpp"
-#include "qgsmapdecoration.h"
-#include "qgsmapcanvas.h"
+
 #include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapdecoration.h"
 
 #include <QPainter>
+
+#include "moc_qgsdecorationoverlay.cpp"
 
 QgsDecorationOverlay::QgsDecorationOverlay( QWidget *parent )
   : QWidget( parent )

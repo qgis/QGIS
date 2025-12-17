@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QUrl>
+#include "qgsglobematerial.h"
 
+#include <QUrl>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
@@ -23,7 +24,6 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
 
-#include "qgsglobematerial.h"
 #include "moc_qgsglobematerial.cpp"
 
 ///@cond PRIVATE

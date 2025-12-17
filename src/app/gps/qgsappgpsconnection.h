@@ -15,8 +15,8 @@
 #ifndef QGSAPPGPSCONNECTION_H
 #define QGSAPPGPSCONNECTION_H
 
-#include "qgis_app.h"
 #include "qgis.h"
+#include "qgis_app.h"
 
 #include <QObject>
 #include <QPointer>

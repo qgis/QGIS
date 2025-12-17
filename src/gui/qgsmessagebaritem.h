@@ -18,11 +18,11 @@
 #define QGSMESSAGEBARITEM_H
 
 #include "qgis.h"
-
-#include <QWidget>
-#include <QIcon>
-#include <QHBoxLayout>
 #include "qgis_gui.h"
+
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QWidget>
 
 class QTextBrowser;
 class QLabel;

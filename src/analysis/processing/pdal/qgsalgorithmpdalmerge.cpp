@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalmerge.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 

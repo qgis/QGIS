@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSingleBandGrayRendererWidget : QgsRasterRendererWidget
 {
 %Docstring(signature="appended")

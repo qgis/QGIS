@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelGraphicsView : QGraphicsView
 {
 %Docstring(signature="appended")
@@ -141,6 +142,7 @@ Pastes items from clipboard, using the specified ``mode``.
 %End
 
   public slots:
+
     void snapSelected();
 %Docstring
 Snaps the selected items to the grid.

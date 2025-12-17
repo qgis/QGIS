@@ -15,6 +15,7 @@
 
 
 #include "qgstest.h"
+
 #include <QObject>
 #include <QTemporaryFile>
 
@@ -30,7 +31,6 @@
 #include <QDebug>
 
 /**
- * @ingroup UnitTests
  * This is a unit test for the vector layer cache
  *
  * \see QgsVectorLayerCache

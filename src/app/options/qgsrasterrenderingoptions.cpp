@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsrasterrenderingoptions.h"
-#include "moc_qgsrasterrenderingoptions.cpp"
-#include "qgssettings.h"
+
 #include "qgsapplication.h"
-#include "qgssettingsregistrycore.h"
 #include "qgscontrastenhancement.h"
-#include "qgsrasterminmaxorigin.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
+
+#include "moc_qgsrasterrenderingoptions.cpp"
 
 //
 // QgsRasterRenderingOptionsWidget

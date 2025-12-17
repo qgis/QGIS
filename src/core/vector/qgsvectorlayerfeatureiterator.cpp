@@ -12,29 +12,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include "qgsdistancearea.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfieldbuffer.h"
+#include "qgsgeometryengine.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
 #include "qgssimplifymethod.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
-#include "qgsexpressioncontext.h"
-#include "qgsdistancearea.h"
-#include "qgsproject.h"
-#include "qgsmessagelog.h"
-#include "qgsexception.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsgeometryengine.h"
-#include "qgsconfig.h"
 
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>
 #endif
 
 #include <deque>
+#include <memory>
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
@@ -61,7 +62,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     }
   }
 
-  mExpressionFieldBuffer.reset( new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer ) );
+  mExpressionFieldBuffer = std::make_unique<QgsExpressionFieldBuffer>( *layer->mExpressionFieldBuffer );
   mCrs = layer->crs();
 
   mHasEditBuffer = layer->editBuffer();
@@ -136,7 +137,6 @@ QString QgsVectorLayerFeatureSource::id() const
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
-  , mFetchedFid( false )
 {
   mTransform = mRequest.calculateTransform( mSource->mCrs );
   mHasValidTransform = mTransform.isValid();

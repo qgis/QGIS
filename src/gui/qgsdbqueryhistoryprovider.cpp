@@ -15,19 +15,21 @@
  ***************************************************************************/
 
 #include "qgsdbqueryhistoryprovider.h"
-#include "moc_qgsdbqueryhistoryprovider.cpp"
+
+#include "qgsapplication.h"
 #include "qgscodeeditorsql.h"
 #include "qgshistoryentry.h"
+#include "qgshistorywidgetcontext.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsapplication.h"
-#include "qgshistorywidgetcontext.h"
 
-#include <QIcon>
 #include <QAction>
+#include <QClipboard>
+#include <QIcon>
 #include <QMenu>
 #include <QMimeData>
-#include <QClipboard>
+
+#include "moc_qgsdbqueryhistoryprovider.cpp"
 
 ///@cond PRIVATE
 

@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgscubicrasterresampler.h"
-#include "qgsgdalutils.h"
-#include <QImage>
+
 #include <cmath>
+
+#include "qgsgdalutils.h"
+
+#include <QImage>
 
 QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
 {

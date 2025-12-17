@@ -21,7 +21,6 @@
 
 #include <QtEndian>
 
-
 // Mega ewwww. all this is taken from Qt's QUrl::addEncodedQueryItem compatibility helper.
 // (I can't see any way to port the below code to NOT require this without breaking
 // existing projects.)

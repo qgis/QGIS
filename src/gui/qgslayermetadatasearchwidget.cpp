@@ -14,15 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadatasearchwidget.h"
-#include "moc_qgslayermetadatasearchwidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgshelp.h"
+#include "qgsiconutils.h"
 #include "qgslayermetadataresultsmodel.h"
 #include "qgslayermetadataresultsproxymodel.h"
-#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectviewsettings.h"
-#include "qgsiconutils.h"
-#include "qgshelp.h"
 
+#include "moc_qgslayermetadatasearchwidget.cpp"
 
 QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

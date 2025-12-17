@@ -17,11 +17,11 @@
 #ifndef QGSANNOTATIONITEMEDITNODE_H
 #define QGSANNOTATIONITEMEDITNODE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspointxy.h"
 #include "qgsvertexid.h"
-#include "qgis.h"
 
 /**
  * \ingroup core

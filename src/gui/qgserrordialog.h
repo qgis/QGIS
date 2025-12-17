@@ -17,13 +17,14 @@
 #ifndef QGSERRORDIALOG_H
 #define QGSERRORDIALOG_H
 
-#include <QDialog>
-
 #include "ui_qgserrordialogbase.h"
-#include "qgsguiutils.h"
-#include "qgserror.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgserror.h"
+#include "qgsguiutils.h"
+
+#include <QDialog>
 
 /**
  * \ingroup gui

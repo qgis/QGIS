@@ -108,7 +108,7 @@ class QWT_EXPORT QwtPlot : public QFrame, public QwtPlotDict
     explicit QwtPlot( QWidget* = NULL );
     explicit QwtPlot( const QwtText& title, QWidget* = NULL );
 
-    virtual ~QwtPlot();
+    ~QwtPlot() override;
 
     void setAutoReplot( bool = true );
     bool autoReplot() const;

@@ -13,14 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsattributesforminitcode.h"
-#include "moc_qgsattributesforminitcode.cpp"
 #include "ui_qgsattributesforminitcode.h"
-#include "qgssettings.h"
+#include "qgsattributesforminitcode.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
+
+#include "moc_qgsattributesforminitcode.cpp"
 
 QgsAttributesFormInitCode::QgsAttributesFormInitCode()
 {

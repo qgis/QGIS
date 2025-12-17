@@ -16,10 +16,10 @@
 #ifndef QGSWFSDATASOURCEURI_H
 #define QGSWFSDATASOURCEURI_H
 
-#include "qgsdatasourceuri.h"
-#include "qgsrectangle.h"
 #include "qgsapplication.h"
 #include "qgsauthorizationsettings.h"
+#include "qgsdatasourceuri.h"
+#include "qgsrectangle.h"
 
 #include <QNetworkRequest>
 #include <QSet>

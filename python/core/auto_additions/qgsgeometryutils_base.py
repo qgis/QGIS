@@ -30,6 +30,7 @@ try:
     QgsGeometryUtilsBase.pointFractionAlongLine = staticmethod(QgsGeometryUtilsBase.pointFractionAlongLine)
     QgsGeometryUtilsBase.weightedPointInTriangle = staticmethod(QgsGeometryUtilsBase.weightedPointInTriangle)
     QgsGeometryUtilsBase.pointsAreCollinear = staticmethod(QgsGeometryUtilsBase.pointsAreCollinear)
+    QgsGeometryUtilsBase.points3DAreCollinear = staticmethod(QgsGeometryUtilsBase.points3DAreCollinear)
     QgsGeometryUtilsBase.angleBisector = staticmethod(QgsGeometryUtilsBase.angleBisector)
     QgsGeometryUtilsBase.bisector = staticmethod(QgsGeometryUtilsBase.bisector)
     QgsGeometryUtilsBase.lineIntersection = staticmethod(QgsGeometryUtilsBase.lineIntersection)

@@ -18,11 +18,13 @@
 #ifndef QGSNATIVE_H
 #define QGSNATIVE_H
 
-#include "qgis_native.h"
-#include <QImage>
-#include <QVariant>
 #include <vector>
+
+#include "qgis_native.h"
+
+#include <QImage>
 #include <QObject>
+#include <QVariant>
 
 class QString;
 class QWindow;
@@ -47,7 +49,7 @@ class NATIVE_EXPORT QgsNative : public QObject
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
-    virtual ~QgsNative() = default;
+    ~QgsNative() override = default;
 
     /**
      * Called on QGIS exit, allowing the native interface to gracefully

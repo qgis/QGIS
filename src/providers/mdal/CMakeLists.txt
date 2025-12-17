@@ -158,6 +158,16 @@ if (WITH_INTERNAL_MDAL)
     set (HAVE_XML TRUE)
   endif()
 
+  set(MDAL_LIB_COMPILE_OPTIONS)
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND MDAL_LIB_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND MDAL_LIB_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (MDAL_LIB_COMPILE_OPTIONS)
+    set_source_files_properties(${MDAL_LIB_SRCS} PROPERTIES COMPILE_OPTIONS "${MDAL_LIB_COMPILE_OPTIONS}")
+  endif()
 
   # create mdal_config.h
   set (BUILD_PLY TRUE)

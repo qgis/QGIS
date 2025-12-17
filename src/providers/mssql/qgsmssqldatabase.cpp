@@ -15,17 +15,19 @@
 
 #include "qgsmssqldatabase.h"
 
+#include <memory>
+
 #include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsvariantutils.h"
-#include "qgsmssqlprovider.h"
 #include "qgsdbquerylog.h"
+#include "qgslogger.h"
+#include "qgsmssqlprovider.h"
 #include "qgsmssqlutils.h"
+#include "qgsvariantutils.h"
 
 #include <QCoreApplication>
-#include <QtDebug>
 #include <QFile>
 #include <QThread>
+#include <QtDebug>
 
 constexpr int sMssqlDatabaseQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define LoggedExec( query, sql ) execLogged( query, sql, QString( QString( __FILE__ ).mid( sMssqlDatabaseQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
@@ -102,7 +104,7 @@ QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, const QgsDataSourceU
 
   if ( mTransaction )
   {
-    mTransactionMutex.reset( new QRecursiveMutex );
+    mTransactionMutex = std::make_unique<QRecursiveMutex>();
   }
 
   if ( !mDB.isOpen() )

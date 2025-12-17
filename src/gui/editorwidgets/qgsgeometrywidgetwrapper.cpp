@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsgeometrywidgetwrapper.h"
-#include "moc_qgsgeometrywidgetwrapper.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsmessagebar.h"
+
 #include "qgsgeometrywidget.h"
-#include <QHBoxLayout>
-#include <QFileDialog>
-#include <QLabel>
-#include <QToolButton>
+#include "qgsmessagebar.h"
+#include "qgsvectorlayer.h"
+
 #include <QAction>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QToolButton>
 #include <QUrl>
+
+#include "moc_qgsgeometrywidgetwrapper.cpp"
 
 QgsGeometryWidgetWrapper::QgsGeometryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

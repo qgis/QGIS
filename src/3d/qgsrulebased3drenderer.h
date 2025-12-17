@@ -17,11 +17,11 @@
 #define QGSRULEBASED3DRENDERER_H
 
 #include "qgis_3d.h"
-
 #include "qgs3drendererregistry.h"
-#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsmaplayerref.h"
+
 #include <QUuid>
 
 class Qgs3DRenderContext;

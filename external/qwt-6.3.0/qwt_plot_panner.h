@@ -35,7 +35,7 @@ class QWT_EXPORT QwtPlotPanner : public QwtPanner
 
   public:
     explicit QwtPlotPanner( QWidget* );
-    virtual ~QwtPlotPanner();
+    ~QwtPlotPanner() override;
 
     QWidget* canvas();
     const QWidget* canvas() const;

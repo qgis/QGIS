@@ -32,10 +32,10 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@628dd514bed37cb0a609e84a6186cbbaa2fc0140 # latest
+        uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -94,6 +94,7 @@ jobs:
                 -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
+                -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
@@ -154,7 +155,7 @@ jobs:
     needs: build
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🔨 Prepare build env
         run: |

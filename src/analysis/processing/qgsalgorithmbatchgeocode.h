@@ -18,8 +18,8 @@
 #ifndef QGSALGORITHMBATCHGEOCODE_H
 #define QGSALGORITHMBATCHGEOCODE_H
 
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 class QgsGeocoderInterface;

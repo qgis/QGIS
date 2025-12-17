@@ -14,51 +14,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-#include <QUuid>
-
 #include "qgscompositionconverter.h"
-#include "qgsreadwritecontext.h"
-#include "qgslayertree.h"
-#include "qgslayoutmodel.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutobject.h"
-#include "qgsfontutils.h"
-#include "qgspainting.h"
-#include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbollayer.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgslinesymbol.h"
+
 #include "qgsfillsymbol.h"
-#include "qgsmaplayerstyle.h"
-#include "qgslayoutrendercontext.h"
-#include "qgsunittypes.h"
-
-#include "qgsprintlayout.h"
+#include "qgsfontutils.h"
+#include "qgslayertree.h"
 #include "qgslayoutatlas.h"
-
-#include "qgslayoutundostack.h"
-#include "qgslayoutpagecollection.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutguidecollection.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemhtml.h"
 #include "qgslayoutitemlabel.h"
-#include "qgslayoutitemshape.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayouttable.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgslayouttablecolumn.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutmultiframe.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutguidecollection.h"
 #include "qgslayoutnortharrowhandler.h"
+#include "qgslayoutobject.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayouttable.h"
+#include "qgslayouttablecolumn.h"
+#include "qgslayoutundostack.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmaplayerstyle.h"
+#include "qgspainting.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgsproperty.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
+#include <QUuid>
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
 
@@ -962,13 +961,13 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     const QDomElement gridElem = gridNodeList.at( 0 ).toElement();
     QgsLayoutItemMapGrid *mapGrid = new QgsLayoutItemMapGrid( QObject::tr( "Grid %1" ).arg( 1 ), layoutItem );
     mapGrid->setEnabled( gridElem.attribute( QStringLiteral( "show" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-    mapGrid->setStyle( QgsLayoutItemMapGrid::GridStyle( gridElem.attribute( QStringLiteral( "gridStyle" ), QStringLiteral( "0" ) ).toInt() ) );
+    mapGrid->setStyle( static_cast< Qgis::MapGridStyle >( gridElem.attribute( QStringLiteral( "gridStyle" ), QStringLiteral( "0" ) ).toInt() ) );
     mapGrid->setIntervalX( gridElem.attribute( QStringLiteral( "intervalX" ), QStringLiteral( "0" ) ).toDouble() );
     mapGrid->setIntervalY( gridElem.attribute( QStringLiteral( "intervalY" ), QStringLiteral( "0" ) ).toDouble() );
     mapGrid->setOffsetX( gridElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble() );
     mapGrid->setOffsetY( gridElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble() );
     mapGrid->setCrossLength( gridElem.attribute( QStringLiteral( "crossLength" ), QStringLiteral( "3" ) ).toDouble() );
-    mapGrid->setFrameStyle( static_cast< QgsLayoutItemMapGrid::FrameStyle >( gridElem.attribute( QStringLiteral( "gridFrameStyle" ), QStringLiteral( "0" ) ).toInt() ) );
+    mapGrid->setFrameStyle( static_cast< Qgis::MapGridFrameStyle >( gridElem.attribute( QStringLiteral( "gridFrameStyle" ), QStringLiteral( "0" ) ).toInt() ) );
     mapGrid->setFrameWidth( gridElem.attribute( QStringLiteral( "gridFrameWidth" ), QStringLiteral( "2.0" ) ).toDouble() );
     mapGrid->setFramePenSize( gridElem.attribute( QStringLiteral( "gridFramePenThickness" ), QStringLiteral( "0.5" ) ).toDouble() );
     mapGrid->setFramePenColor( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( QStringLiteral( "framePenColor" ), QStringLiteral( "0,0,0" ) ) ) );
@@ -998,15 +997,15 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     {
       const QDomElement annotationElem = annotationNodeList.at( 0 ).toElement();
       mapGrid->setAnnotationEnabled( annotationElem.attribute( QStringLiteral( "show" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-      mapGrid->setAnnotationFormat( QgsLayoutItemMapGrid::AnnotationFormat( annotationElem.attribute( QStringLiteral( "format" ), QStringLiteral( "0" ) ).toInt() ) );
-      mapGrid->setAnnotationPosition( QgsLayoutItemMapGrid::AnnotationPosition( annotationElem.attribute( QStringLiteral( "leftPosition" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Left );
-      mapGrid->setAnnotationPosition( QgsLayoutItemMapGrid::AnnotationPosition( annotationElem.attribute( QStringLiteral( "rightPosition" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Right );
-      mapGrid->setAnnotationPosition( QgsLayoutItemMapGrid::AnnotationPosition( annotationElem.attribute( QStringLiteral( "topPosition" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Top );
-      mapGrid->setAnnotationPosition( QgsLayoutItemMapGrid::AnnotationPosition( annotationElem.attribute( QStringLiteral( "bottomPosition" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Bottom );
-      mapGrid->setAnnotationDirection( QgsLayoutItemMapGrid::AnnotationDirection( annotationElem.attribute( QStringLiteral( "leftDirection" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Left );
-      mapGrid->setAnnotationDirection( QgsLayoutItemMapGrid::AnnotationDirection( annotationElem.attribute( QStringLiteral( "rightDirection" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Right );
-      mapGrid->setAnnotationDirection( QgsLayoutItemMapGrid::AnnotationDirection( annotationElem.attribute( QStringLiteral( "topDirection" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Top );
-      mapGrid->setAnnotationDirection( QgsLayoutItemMapGrid::AnnotationDirection( annotationElem.attribute( QStringLiteral( "bottomDirection" ), QStringLiteral( "0" ) ).toInt() ), QgsLayoutItemMapGrid::Bottom );
+      mapGrid->setAnnotationFormat( static_cast< Qgis::MapGridAnnotationFormat >( annotationElem.attribute( QStringLiteral( "format" ), QStringLiteral( "0" ) ).toInt() ) );
+      mapGrid->setAnnotationPosition( static_cast< Qgis::MapGridAnnotationPosition >( annotationElem.attribute( QStringLiteral( "leftPosition" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Left );
+      mapGrid->setAnnotationPosition( static_cast< Qgis::MapGridAnnotationPosition >( annotationElem.attribute( QStringLiteral( "rightPosition" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Right );
+      mapGrid->setAnnotationPosition( static_cast< Qgis::MapGridAnnotationPosition >( annotationElem.attribute( QStringLiteral( "topPosition" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Top );
+      mapGrid->setAnnotationPosition( static_cast< Qgis::MapGridAnnotationPosition >( annotationElem.attribute( QStringLiteral( "bottomPosition" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Bottom );
+      mapGrid->setAnnotationDirection( static_cast< Qgis::MapGridAnnotationDirection >( annotationElem.attribute( QStringLiteral( "leftDirection" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Left );
+      mapGrid->setAnnotationDirection( static_cast< Qgis::MapGridAnnotationDirection >( annotationElem.attribute( QStringLiteral( "rightDirection" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Right );
+      mapGrid->setAnnotationDirection( static_cast< Qgis::MapGridAnnotationDirection >( annotationElem.attribute( QStringLiteral( "topDirection" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Top );
+      mapGrid->setAnnotationDirection( static_cast< Qgis::MapGridAnnotationDirection >( annotationElem.attribute( QStringLiteral( "bottomDirection" ), QStringLiteral( "0" ) ).toInt() ), Qgis::MapGridBorderSide::Bottom );
       mapGrid->setAnnotationFrameDistance( annotationElem.attribute( QStringLiteral( "frameDistance" ), QStringLiteral( "0" ) ).toDouble() );
       QFont annotationFont;
       annotationFont.fromString( annotationElem.attribute( QStringLiteral( "font" ), QString() ) );

@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
-#include "qgslocatorfilter.h"
-#include "qgslocator.h"
-#include "qgsprintlayout.h"
 #include "qgslayoutmanager.h"
+#include "qgslocator.h"
+#include "qgslocatorfilter.h"
+#include "qgsprintlayout.h"
+#include "qgstest.h"
+
 //#include "qgsactionlocatorfilter.h"
 #include "qgsactivelayerfeatureslocatorfilter.h"
 #include "qgsalllayersfeatureslocatorfilter.h"
@@ -253,7 +254,7 @@ void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
   QVERIFY( isRestricting );
   QCOMPARE( restr, QStringLiteral( "home" ) );
-  QCOMPARE( search, QLatin1String( "" ) );
+  QCOMPARE( search, QString() );
 
   search = QStringLiteral( "@" );
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
@@ -280,7 +281,7 @@ void TestQgsAppLocatorFilters::testActiveLayerCompletion()
   QgsLocatorContext context;
   context.usingPrefix = true;
 
-  QCOMPARE( filter.prepare( QLatin1String( "" ), context ), QStringList( { "@pk ", "@my_text ", "@my_integer ", "@my_double " } ) );
+  QCOMPARE( filter.prepare( QString(), context ), QStringList( { "@pk ", "@my_text ", "@my_integer ", "@my_double " } ) );
   QCOMPARE( filter.prepare( QStringLiteral( "@my_i" ), context ), QStringList( { "@my_integer " } ) );
 
   QgsProject::instance()->removeAllMapLayers();
