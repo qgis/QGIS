@@ -241,7 +241,7 @@ void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemG
   if ( itemItem )
   {
     dialog.setStacItem( itemItem->stacItem() );
-    authcfg = itemItem->stacController()->authCfg()
+    authcfg = itemItem->stacController()->authCfg();
   }
   else if ( assetItem )
   {
