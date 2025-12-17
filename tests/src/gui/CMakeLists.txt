@@ -24,6 +24,7 @@ set(TESTS
   testqgsadvanceddigitizingdockwidget.cpp
   testqgsadvanceddigitizingtoolsregistry.cpp
   testqgsannotationitemguiregistry.cpp
+  testqgsbezierdata.cpp
   testqgsmaptoolzoom.cpp
   testqgsmaptooledit.cpp
   testqgscategorizedrendererwidget.cpp
