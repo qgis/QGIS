@@ -147,26 +147,37 @@ class BarPlot(QgisAlgorithm):
                 self.tr("Field '{}' not found in input layer.").format(valuefieldname)
             )
 
-        # 3. OPTIMIZED REQUEST (NoGeometry to prevent crash on bad shapes)
+        # 3. LIGHTWEIGHT MATERIALIZATION (The Hybrid Fix)
+        # We copy ONLY the 2 fields we need, and NO geometry.
+        # This creates a tiny, safe memory layer that won't crash the test runner.
         req = QgsFeatureRequest()
         req.setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        req.setSubsetOfAttributes([name_idx, value_idx])
 
+        clean_layer = source.materialize(req)
+
+        # 4. SAFE EXECUTION ON CLEAN LAYER
         x_data = []
         y_data = []
 
-        for f in source.getFeatures(req):
+        # We must re-fetch indices because the clean_layer might have different field order
+        clean_name_idx = clean_layer.fields().indexFromName(namefieldname)
+        clean_value_idx = clean_layer.fields().indexFromName(valuefieldname)
+
+        for f in clean_layer.getFeatures():
             if feedback.isCanceled():
                 break
 
             attrs = f.attributes()
+            
             # SAFE CAST: Force QGIS types into Python str/float
-            raw_name = attrs[name_idx]
+            raw_name = attrs[clean_name_idx]
             if raw_name is None:
                 x_data.append("<NULL>")
             else:
                 x_data.append(str(raw_name))
 
-            raw_val = attrs[value_idx]
+            raw_val = attrs[clean_value_idx]
             if raw_val is None:
                 y_data.append(None)
             else:
