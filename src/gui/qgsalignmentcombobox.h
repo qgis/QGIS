@@ -16,6 +16,7 @@
 #ifndef QGSALIGNMENTCOMBOBOX_H
 #define QGSALIGNMENTCOMBOBOX_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
