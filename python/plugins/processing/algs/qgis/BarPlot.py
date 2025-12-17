@@ -157,7 +157,6 @@ class BarPlot(QgisAlgorithm):
                 break
 
             attrs = f.attributes()
-            
             # SAFE CAST: Force QGIS types into Python str/float
             # This prevents Plotly from crashing on QVariants
             raw_name = attrs[name_idx]
