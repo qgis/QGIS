@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgslinesymbollayer.h"
-#include "qgssymbollayer.h"
-#include "qgstest.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooleditblanksegments.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayer.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
-#include "qgssinglesymbolrenderer.h"
+
 #include <qstringliteral.h>
 
 class TestQgsMapToolEditBlankSegments : public QgsTest

@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     /**
      * Destructor
      */
-    ~QgsMapToolEditBlankSegmentsBase();
+    ~QgsMapToolEditBlankSegmentsBase() override;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
@@ -111,6 +111,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
 
     /**
      * Returns rendered point closest to \a point
+     * \param point point we want to be the closest to
      * \param distance updated with the distance between \a point and the returned rendered point
      * \param partIndex will be set to the geometry part index of the returned point
      * \param ringIndex will be set to the geometry ring index of the returned point

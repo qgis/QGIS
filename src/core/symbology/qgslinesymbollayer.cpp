@@ -13,12 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "line_p.h"
-#include "qgsgeometryutils.h"
 #include "qgslinesymbollayer.h"
 
 #include <algorithm>
 #include <cmath>
+#include <line_p.h>
 #include <memory>
 
 #include "qgsapplication.h"
