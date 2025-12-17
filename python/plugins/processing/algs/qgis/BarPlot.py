@@ -161,7 +161,6 @@ class BarPlot(QgisAlgorithm):
                 break
 
             attrs = f.attributes()
-            
             # Type Firewall: Convert everything to Python types
             raw_name = attrs[name_idx]
             if raw_name is None:
