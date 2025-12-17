@@ -1467,6 +1467,29 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static bool pointsAreCollinear( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon );
 
+
+    /**
+     * Checks if a 3D geometry has a plane defined by at least 3 non-collinear points.
+     * If successful, the points are returned in ptA, ptB, and ptC.
+     *
+     * \param geom The input 3D geometry.
+     * \param pt1 The first point found, if a plane exists.
+     * \param pt2 The second point found, if a plane exists.
+     * \param pt3 The third point found, if a plane exists.
+     * \param epsilon The tolerance used to account for floating-point inaccuracies.
+     * \return true if a plane is found, false otherwise.
+     *
+     * \note This function does not handle geometry collections.
+     * \note This function stops as soon as three suitable non-collinear points are
+     *       found; it does not perform an exhaustive verification of all geometry
+     *       vertices.
+     * \note For polygon geometries, only the exterior ring is inspected when
+     *       searching for candidate points.
+     *
+     * \since QGIS 4.0
+     */
+    static bool checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, QgsPoint &pt1 SIP_OUT, QgsPoint &pt2 SIP_OUT, QgsPoint &pt3 SIP_OUT, double epsilon = std::numeric_limits<double>::epsilon() );
+
   private:
 
     /**
