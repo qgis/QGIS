@@ -3371,6 +3371,21 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Digitize Shape</string>
    </property>
   </action>
+  <action name="mActionDigitizeWithNurbs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithNURBS.svg</normaloff>:/images/themes/default/mActionDigitizeWithNURBS.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with NURBS</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitizes NURBS curves with control points</string>
+   </property>
+  </action>
   <action name="mActionElevationProfile">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

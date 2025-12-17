@@ -45,6 +45,26 @@ class APP_EXPORT QgsStreamDigitizingSettingsAction : public QWidgetAction
     QgsSpinBox *mStreamToleranceSpinBox = nullptr;
 };
 
+class QComboBox;
+class QLabel;
+
+class APP_EXPORT QgsNurbsDigitizingSettingsAction : public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+    QgsNurbsDigitizingSettingsAction( QWidget *parent = nullptr );
+    ~QgsNurbsDigitizingSettingsAction() override;
+
+  private slots:
+    void updateDegreeEnabled( int modeIndex );
+
+  private:
+    QComboBox *mNurbsModeComboBox = nullptr;
+    QgsSpinBox *mNurbsDegreeSpinBox = nullptr;
+    QLabel *mNurbsDegreeLabel = nullptr;
+};
+
 class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 {
     Q_OBJECT
@@ -83,6 +103,7 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 
     QToolButton *mDigitizeModeToolButton = nullptr;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
+    QgsNurbsDigitizingSettingsAction *mNurbsDigitizingSettingsAction = nullptr;
 };
 
 #endif // QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H
