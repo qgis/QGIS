@@ -162,7 +162,6 @@ void TestQgsStac::testParseLocalCollection()
   QCOMPARE( asset.uri().layerType, QStringLiteral( "vector" ) );
   QVERIFY( asset.isDownloadable() );
   QVERIFY( asset.isCloudOptimized() );
-
 }
 
 void TestQgsStac::testParseLocalItem()
