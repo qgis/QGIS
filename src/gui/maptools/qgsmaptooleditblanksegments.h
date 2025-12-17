@@ -39,9 +39,7 @@ class QgsSymbolLayer;
  * This tool allows to:
  *
  * - Click in the neighborhood of the rendered line to start creating a blank segment, click again to
- *
- * finish editing the segment.
- *
+ *   finish editing the segment.
  * - Select a blank segment, press Del key to remove it
  * - Drag the start/end of an already existing blank segment and move it along the line to
  *
@@ -136,7 +134,9 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     void setCurrentBlankSegment( int currentBlankSegmentIndex );
 
     /**
-     * Rubber band used to draw blank segments on edition
+     * \ingroup gui
+     * \brief Rubber band used to draw blank segments on edition
+     * \since QGIS 4.0
      */
     class BlankSegmentRubberBand;
 
