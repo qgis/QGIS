@@ -2958,7 +2958,7 @@ void QgsIdentifyResultsDialog::updateTextDisplay()
 QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
 {
   QLabel *valueLabel = new QLabel();
-  valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignTop );
+  valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; padding-left: 2px; }" ) );
   valueLabel->setContentsMargins( 0, 0, 0, 0 );
   valueLabel->setMargin( 0 );
@@ -2967,7 +2967,7 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
   valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
   valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
   valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
-  valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+  valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
   QString wrapped = text;
   wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
@@ -3000,8 +3000,10 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
   {
     QLabel *valueLabel = createStyledLabel( fullText );
     if ( treeWidget )
+    {
       treeWidget->setItemWidget( item, 1, valueLabel );
-    item->setData( 1, REPRESENTED_VALUE_ROLE, fullText );
+      item->setData( 1, Qt::DisplayRole, QString() );
+    }
   }
   else
   {
@@ -3011,7 +3013,6 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
       QTimer::singleShot( 0, treeWidget, &QTreeWidget::doItemsLayout );
     }
     item->setText( 1, fullText );
-    item->setData( 1, REPRESENTED_VALUE_ROLE, fullText );
   }
 
   for ( int i = 0; i < item->childCount(); ++i )
