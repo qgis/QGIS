@@ -29,6 +29,7 @@
 #include "qgspostgresconn.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresimportprojectdialog.h"
+#include "qgspostgresprojectversionsdialog.h"
 #include "qgspostgresutils.h"
 #include "qgsproject.h"
 #include "qgsprovidermetadata.h"
@@ -138,6 +139,14 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QAction *actionImportProject = new QAction( tr( "Import Projects…" ), projectMenu );
       projectMenu->addAction( actionImportProject );
       connect( actionImportProject, &QAction::triggered, this, [schemaItem, context] { saveProjects( schemaItem, context ); } );
+
+      QAction *enableAllowProjectVersioning = new QAction( tr( "Enable Projects Versioning…" ), projectMenu );
+      projectMenu->addAction( enableAllowProjectVersioning );
+      enableAllowProjectVersioning->setEnabled( !schemaItem->projectVersioningEnabled() );
+      connect( enableAllowProjectVersioning, &QAction::triggered, this, [schemaItem, context] {
+        bool enabled = enableProjectsVersioning( schemaItem->connectionName(), schemaItem->name(), context );
+        schemaItem->setProjectVersioningEnabled( enabled );
+      } );
     }
   }
 
@@ -196,6 +205,31 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QAction *setProjectCommentAction = new QAction( tr( "Set Comment…" ), menu );
       connect( setProjectCommentAction, &QAction::triggered, this, [projectItem, context] { setProjectComment( projectItem, context ); } );
       menu->addAction( setProjectCommentAction );
+
+      // Project versioning
+      QgsPGSchemaItem *parentSchemaItem = qobject_cast<QgsPGSchemaItem *>( item->parent() );
+
+      if ( parentSchemaItem && parentSchemaItem->projectVersioningEnabled() )
+      {
+        QAction *showProjectVersions = new QAction( tr( "Show Project Versions…" ), menu );
+        menu->addAction( showProjectVersions );
+        connect( showProjectVersions, &QAction::triggered, this, [projectItem] {
+          QgsPostgresProjectVersionsDialog dlg = QgsPostgresProjectVersionsDialog( projectItem->connectionName(), projectItem->schemaName(), projectItem->name(), nullptr );
+          dlg.exec();
+        } );
+      }
+      else
+      {
+        QAction *enableAllowProjectVersioning = new QAction( tr( "Enable Projects Versioning…" ), menu );
+        menu->addAction( enableAllowProjectVersioning );
+        connect( enableAllowProjectVersioning, &QAction::triggered, this, [projectItem, parentSchemaItem, context] {
+          bool enabled = enableProjectsVersioning( projectItem->connectionName(), projectItem->schemaName(), context );
+          if ( parentSchemaItem )
+          {
+            parentSchemaItem->setProjectVersioningEnabled( enabled );
+          }
+        } );
+      }
     }
     else
     {
@@ -1261,4 +1295,37 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
   }
 
   conn->unref();
+}
+
+
+bool QgsPostgresDataItemGuiProvider::enableProjectsVersioning( const QString connectionName, const QString schemaName, QgsDataItemGuiContext context )
+{
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( connectionName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+
+  if ( QgsPostgresUtils::qgisProjectVersioningEnabled( conn, schemaName ) )
+  {
+    notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects already active in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Info );
+    conn->unref();
+    return false;
+  }
+
+  QMessageBox::StandardButton result = QMessageBox::question( nullptr, tr( "Enable versioning of QGIS projects" ), tr( "Do you want to enable versioning of QGIS projects in schema “%1”? This will create new table in the schema and store older versions of QGIS projects there." ).arg( schemaName ) );
+
+  if ( result == QMessageBox::StandardButton::Yes )
+  {
+    if ( !QgsPostgresUtils::setupQgisProjectVersioning( conn, schemaName ) )
+    {
+      notify( tr( "QGIS Project Versioning" ), tr( "Cannot setup versioning of QGIS projects in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Critical );
+      conn->unref();
+      return false;
+    }
+
+    notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects setup in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
+    conn->unref();
+    return true;
+  }
+
+  conn->unref();
+  return false;
 }
