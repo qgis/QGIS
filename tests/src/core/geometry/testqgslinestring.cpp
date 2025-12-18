@@ -89,6 +89,7 @@ class TestQgsLineString : public QObject
     void centroid();
     void closestSegment();
     void sumUpArea();
+    void sumUpArea3D();
     void boundingBox();
     void boundingBox3D();
     void angle();
@@ -2130,6 +2131,59 @@ void TestQgsLineString::sumUpArea()
     QGSCOMPARENEAR( area, accuracyMeterPow, epsilonArea );
     shift = shift * 10.0;
   }
+}
+
+void TestQgsLineString::sumUpArea3D()
+{
+  QgsLineString ls;
+
+  double area3D = 0.0;
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 0.0 );
+
+  ls.setPoints( QgsPointSequence() << QgsPoint( 5, 10, 3 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 0.0 );
+
+  ls.setPoints( QgsPointSequence() << QgsPoint( 5, 10, 1 ) << QgsPoint( 10, 10, 2 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 0.0 );
+
+  // Cube 5x5 positive
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 5, 5, 0 ) << QgsPoint( 0, 5, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 25.0 );
+
+  // Cube 5x5 invert points : negative
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 5, 0 ) << QgsPoint( 5, 5, 0 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 0, 0, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, -25.0 );
+
+  // Cube 5x5 - X rotation - negative normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 5, 0, 5 ) << QgsPoint( 0, 0, 5 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, -25.0 );
+
+  // Cube 5x5 - X rotation - invert points: positive normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 5 ) << QgsPoint( 5, 0, 5 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 0, 0, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 25.0 );
+
+  // Cube 5x5 - Y rotation - positive normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 0, 0, -5 ) << QgsPoint( 0, 5, -5 ) << QgsPoint( 0, 5, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 25.0 );
+
+  // Cube 5x5 - Y rotation - invert points: negative normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 5, 0 ) << QgsPoint( 0, 5, -5 ) << QgsPoint( 0, 0, -5 ) << QgsPoint( 0, 0, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, -25.0 );
 }
 
 void TestQgsLineString::boundingBox()
