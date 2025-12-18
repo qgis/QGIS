@@ -151,8 +151,8 @@ class CORE_EXPORT QgsProcessingTaskQueue : public QObject
 
   private:
 
-    QgsProcessingTaskQueue();
-    ~QgsProcessingTaskQueue() override;
+    QgsProcessingTaskQueue() SIP_FORCE;
+    ~QgsProcessingTaskQueue() override SIP_FORCE;
 
     QgsProcessingTaskQueue( const QgsProcessingTaskQueue &other ) = delete;
     QgsProcessingTaskQueue &operator=( const QgsProcessingTaskQueue &other ) = delete;

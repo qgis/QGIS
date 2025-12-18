@@ -138,6 +138,9 @@ Returns ``True`` if the queue is empty.
 Emitted when the queue changes (tasks added, removed, or reordered).
 %End
 
+  private:
+    QgsProcessingTaskQueue();
+    ~QgsProcessingTaskQueue();
 };
 
 /************************************************************************
