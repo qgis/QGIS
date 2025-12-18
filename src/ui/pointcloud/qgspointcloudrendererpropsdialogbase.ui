@@ -198,7 +198,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Zoomed out treshold:</string>
+             <string>Level of Detail:</string>
             </property>
            </widget>
           </item>

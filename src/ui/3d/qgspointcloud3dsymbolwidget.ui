@@ -207,7 +207,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Zoomed out treshold:</string>
+            <string>Level of Detail:</string>
            </property>
           </widget>
          </item>
