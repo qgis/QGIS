@@ -716,7 +716,7 @@ Qgis::PointCloudZoomOutRenderBehavior QgsPointCloud3DSymbolWidget::zoomOutBehavi
 
 void QgsPointCloud3DSymbolWidget::setZoomOutMultiplier( double multiplier )
 {
-  int idx = 0;
+  size_t idx = 0;
   for ( size_t i = 0; i < mZoomOutScale.size(); ++i )
   {
     if ( multiplier <= mZoomOutScale[i] )
