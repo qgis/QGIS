@@ -5677,8 +5677,11 @@ void QgisApp::setCustomization( std::unique_ptr<QgsCustomization> customization 
 {
   mCustomization = std::move( customization );
   mCustomization->setQgisApp( this );
+}
 
-  mCustomizationDialog.reset();
+const std::unique_ptr<QgsCustomization> &QgisApp::customization() const
+{
+  return mCustomization;
 }
 
 QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const
@@ -12519,7 +12522,7 @@ void QgisApp::customize()
 
   if ( !mCustomizationDialog )
   {
-    mCustomizationDialog.reset( new QgsCustomizationDialog( mCustomization.get(), this ) );
+    mCustomizationDialog.reset( new QgsCustomizationDialog( this ) );
   }
 
   mCustomizationDialog->show();
