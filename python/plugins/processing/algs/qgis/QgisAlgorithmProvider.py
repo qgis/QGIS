@@ -47,7 +47,6 @@ from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
-from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
@@ -103,7 +102,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             RandomPointsAlongLines(),
             RandomPointsLayer(),
             RandomPointsPolygons(),
-            RandomSelection(),
             RandomSelectionWithinSubsets(),
             RasterCalculator(),
             RasterLayerHistogram(),
