@@ -386,11 +386,9 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mEndpointMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
   mEndpointMarker->setVisible( false );
 
-  // Control polygon for NURBS curves (dashed gray line)
+  // Control polygon for NURBS curves
   mNurbsControlPolygonBand = new QgsRubberBand( canvas, Qgis::GeometryType::Line );
-  mNurbsControlPolygonBand->setColor( QColor( 100, 100, 100, 150 ) );
-  mNurbsControlPolygonBand->setWidth( 1 );
-  mNurbsControlPolygonBand->setLineStyle( Qt::DashLine );
+  applyControlPolygonStyle( mNurbsControlPolygonBand );
   mNurbsControlPolygonBand->setVisible( false );
 }
 
@@ -546,9 +544,7 @@ void QgsVertexTool::addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve
   NurbsBand b;
   b.curveBand = createRubberBand( Qgis::GeometryType::Line, true );
   b.controlBand = createRubberBand( Qgis::GeometryType::Line, true );
-  b.controlBand->setColor( QColor( 100, 100, 100, 150 ) );
-  b.controlBand->setWidth( 1 );
-  b.controlBand->setLineStyle( Qt::DashLine );
+  applyControlPolygonStyle( b.controlBand );
 
   b.controlPoints = mapCtrlPts;
   b.degree = nurbs->degree();
@@ -1585,9 +1581,7 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
             if ( anchorIndex >= 0 && anchorIndex < mapCtrlPts.size() )
             {
               QgsRubberBand *tangentBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Line );
-              tangentBand->setColor( QColor( 100, 100, 100, 150 ) );
-              tangentBand->setWidth( 1 );
-              tangentBand->setLineStyle( Qt::DashLine );
+              applyControlPolygonStyle( tangentBand );
               tangentBand->addPoint( mapCtrlPts[anchorIndex] );
               tangentBand->addPoint( mapCtrlPts[i] );
               tangentBand->setVisible( true );

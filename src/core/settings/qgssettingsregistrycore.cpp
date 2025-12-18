@@ -59,6 +59,10 @@ const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingLineCol
 
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingFillColor = new QgsSettingsEntryColor( QStringLiteral( "fill-color" ), QgsSettingsTree::sTreeDigitizing, QColor( 255, 0, 0, 30 ) );
 
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingControlPolygonColor = new QgsSettingsEntryColor( QStringLiteral( "control-polygon-color" ), QgsSettingsTree::sTreeDigitizing, QColor( 100, 100, 100, 150 ) );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingControlPolygonWidth = new QgsSettingsEntryInteger( QStringLiteral( "control-polygon-width" ), QgsSettingsTree::sTreeDigitizing, 1 );
+
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingLineGhost = new QgsSettingsEntryBool( QStringLiteral( "line-ghost" ), QgsSettingsTree::sTreeDigitizing, false );
 
 const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultZValue = new QgsSettingsEntryDouble( QStringLiteral( "default-z-value" ), QgsSettingsTree::sTreeDigitizing, Qgis::DEFAULT_Z_COORDINATE );

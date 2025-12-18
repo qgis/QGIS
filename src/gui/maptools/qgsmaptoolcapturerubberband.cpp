@@ -16,6 +16,7 @@
 #include "qgsmaptoolcapturerubberband.h"
 
 #include "qgsgeometryrubberband.h"
+#include "qgsmaptooledit.h"
 #include "qgsnurbscurve.h"
 #include "qgsrubberband.h"
 #include "qgssettingsentryimpl.h"
@@ -31,9 +32,7 @@ QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanva
 
   // Create control polygon rubberband for NURBS visualization
   mControlPolygonRubberBand = new QgsRubberBand( mapCanvas, Qgis::GeometryType::Line );
-  mControlPolygonRubberBand->setColor( QColor( 100, 100, 100, 150 ) );
-  mControlPolygonRubberBand->setWidth( 1 );
-  mControlPolygonRubberBand->setLineStyle( Qt::DashLine );
+  QgsMapToolEdit::applyControlPolygonStyle( mControlPolygonRubberBand );
   mControlPolygonRubberBand->setVisible( false );
 }
 

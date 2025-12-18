@@ -2,6 +2,7 @@
 try:
     QgsMapToolEdit.defaultZValue = staticmethod(QgsMapToolEdit.defaultZValue)
     QgsMapToolEdit.defaultMValue = staticmethod(QgsMapToolEdit.defaultMValue)
+    QgsMapToolEdit.applyControlPolygonStyle = staticmethod(QgsMapToolEdit.applyControlPolygonStyle)
     QgsMapToolEdit.digitizingStrokeColor = staticmethod(QgsMapToolEdit.digitizingStrokeColor)
     QgsMapToolEdit.digitizingStrokeWidth = staticmethod(QgsMapToolEdit.digitizingStrokeWidth)
     QgsMapToolEdit.digitizingFillColor = staticmethod(QgsMapToolEdit.digitizingFillColor)

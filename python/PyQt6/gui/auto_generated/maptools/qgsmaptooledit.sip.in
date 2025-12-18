@@ -46,6 +46,16 @@ settings. The caller takes ownership of the returned object
                         ``False``.
 %End
 
+    static void applyControlPolygonStyle( QgsRubberBand *rubberBand );
+%Docstring
+Applies the control polygon style to a rubber band (for NURBS/Bézier
+visualization). Uses settings for color and width, with dash line style.
+
+:param rubberBand: the rubber band to style
+
+.. versionadded:: 4.0
+%End
+
   protected:
     static QColor digitizingStrokeColor();
 %Docstring

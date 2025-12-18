@@ -61,6 +61,14 @@ class GUI_EXPORT QgsMapToolEdit : public QgsMapTool
      */
     QgsGeometryRubberBand *createGeometryRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) const SIP_FACTORY;
 
+    /**
+     * Applies the control polygon style to a rubber band (for NURBS/Bézier visualization).
+     * Uses settings for color and width, with dash line style.
+     * \param rubberBand the rubber band to style
+     * \since QGIS 4.0
+     */
+    static void applyControlPolygonStyle( QgsRubberBand *rubberBand );
+
   private slots:
     //! Vector layers' editingStopped SIGNAL will eventually trigger a clean
     void connectLayers( const QList<QgsMapLayer *> &layers );

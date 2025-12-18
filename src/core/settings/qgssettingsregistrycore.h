@@ -76,6 +76,18 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing fill color
     static const QgsSettingsEntryColor *settingsDigitizingFillColor;
 
+    /**
+     * Settings entry digitizing control polygon color (for NURBS/Bézier visualization)
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryColor *settingsDigitizingControlPolygonColor;
+
+    /**
+     * Settings entry digitizing control polygon width (for NURBS/Bézier visualization)
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryInteger *settingsDigitizingControlPolygonWidth;
+
     //! Settings entry digitizing line ghost
     static const QgsSettingsEntryBool *settingsDigitizingLineGhost;
 
