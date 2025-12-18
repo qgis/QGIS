@@ -17,6 +17,9 @@
 
 #include "ui_qgspostgresprojectstoragedialog.h"
 
+#include "qgspostgresprojectversionsdialog.h"
+#include "qgspostgresprojectversionsmodel.h"
+
 #include <QDialog>
 
 class QgsPostgresProjectStorageDialog : public QDialog, private Ui::QgsPostgresProjectStorageDialog
@@ -41,9 +44,13 @@ class QgsPostgresProjectStorageDialog : public QDialog, private Ui::QgsPostgresP
     void removeProject();
 
   private:
+    void onSchemaChanged();
+    void setupQgisProjectVersioning();
+
     bool mSaving = false; //!< Whether using this dialog for loading or saving a project
     QAction *mActionRemoveProject = nullptr;
     QStringList mExistingProjects;
+    QgsPostgresProjectVersionsModel *mVersionsModel = nullptr;
 };
 
 #endif // QGSPOSTGRESPROJECTSTORAGEDIALOG_H
