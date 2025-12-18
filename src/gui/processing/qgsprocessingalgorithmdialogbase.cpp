@@ -20,6 +20,7 @@
 #include "processing/qgsprocessingalgorithm.h"
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "processing/qgsprocessingprovider.h"
+#include "processing/qgsprocessingtaskqueue.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
