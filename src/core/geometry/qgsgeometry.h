@@ -2262,7 +2262,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.14
      */
-    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true ) const;
+    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true, QString *errorMessage SIP_OUT = nullptr ) const;
 
     /**
      * Try to convert the geometry to the requested type

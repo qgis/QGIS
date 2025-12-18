@@ -1059,6 +1059,12 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
       case Qgis::WkbType::CircularString:
         reset( std::make_unique< QgsMultiCurve >() );
         break;
+      case Qgis::WkbType::PolyhedralSurface:
+        reset( std::make_unique< QgsPolyhedralSurface >() );
+        break;
+      case Qgis::WkbType::TIN:
+        reset( std::make_unique< QgsTriangulatedSurface >() );
+        break;
       default:
         reset( nullptr );
         return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
@@ -1067,7 +1073,12 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
   else
   {
     detach();
-    convertToMultiType();
+    // For TIN and PolyhedralSurface, they already support multiple patches, no conversion needed
+    const Qgis::WkbType flatType = QgsWkbTypes::flatType( d->geometry->wkbType() );
+    if ( flatType != Qgis::WkbType::TIN && flatType != Qgis::WkbType::PolyhedralSurface )
+    {
+      convertToMultiType();
+    }
   }
 
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( p ) );
@@ -1718,7 +1729,7 @@ json QgsGeometry::asJsonObject( int precision ) const
 
 }
 
-QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates ) const
+QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates, QString *errorMessage ) const
 {
   QVector< QgsGeometry > res;
   if ( isNull() )
@@ -1830,9 +1841,20 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
       }
       else if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *part ) )
       {
-        auto triangle = std::make_unique< QgsTriangle >();
-        triangle->setExteriorRing( polygon->exteriorRing()->clone() );
-        tin->addPatch( triangle.release() );
+        // Validate that the polygon can be converted to a triangle (must have exactly 3 vertices + closing point)
+        if ( polygon->exteriorRing() )
+        {
+          const int numPoints = polygon->exteriorRing()->numPoints();
+          if ( numPoints > 4 || numPoints < 3 )
+          {
+            if ( errorMessage )
+              *errorMessage = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
+            return res;
+          }
+          auto triangle = std::make_unique< QgsTriangle >();
+          triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+          tin->addPatch( triangle.release() );
+        }
       }
     }
     newGeom = QgsGeometry( std::move( tin ) );
@@ -1865,13 +1887,23 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::Triangle &&
        QgsWkbTypes::flatType( newGeom.wkbType() ) == Qgis::WkbType::Polygon )
   {
-    auto triangle = std::make_unique< QgsTriangle >();
-    const QgsGeometry source = newGeom;
     if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( newGeom.constGet() ) )
     {
-      triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+      // Validate that the polygon can be converted to a triangle (must have exactly 3 vertices + closing point)
+      if ( polygon->exteriorRing() )
+      {
+        const int numPoints = polygon->exteriorRing()->numPoints();
+        if ( numPoints > 4 || numPoints < 3 )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
+          return res;
+        }
+        auto triangle = std::make_unique< QgsTriangle >();
+        triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+        newGeom = QgsGeometry( std::move( triangle ) );
+      }
     }
-    newGeom = QgsGeometry( std::move( triangle ) );
   }
 
 
@@ -3833,6 +3865,27 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
       partIndex++;
     }
   }
+  else if ( const QgsPolyhedralSurface *polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( g ) )
+  {
+    // PolyhedralSurface: patches are the parts
+    partIndex = 0;
+    for ( int i = 0; i < polySurface->numPatches(); ++i )
+    {
+      const QgsPolygon *patch = polySurface->patchN( i );
+      // count total number of vertices in the patch
+      int numPoints = 0;
+      for ( int k = 0; k < patch->ringCount(); ++k )
+        numPoints += patch->vertexCount( 0, k );
+
+      if ( vertexIndex < numPoints )
+      {
+        int nothing;
+        return vertexIndexInfo( patch, vertexIndex, nothing, ringIndex, vertex );
+      }
+      vertexIndex -= numPoints;
+      partIndex++;
+    }
+  }
   else if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( g ) )
   {
     const QgsCurve *ring = curvePolygon->exteriorRing();
@@ -3900,6 +3953,10 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId &id ) const
   if ( const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
   {
     g = geomCollection->geometryN( id.part );
+  }
+  else if ( const QgsPolyhedralSurface *polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( g ) )
+  {
+    g = polySurface->patchN( id.part );
   }
 
   if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( g ) )

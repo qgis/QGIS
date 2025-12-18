@@ -2329,7 +2329,7 @@ Exports the geometry to a GeoJSON string.
 %End
 
 
-    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true ) const;
+    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true, QString *errorMessage /Out/ = 0 ) const;
 %Docstring
 Attempts to coerce this geometry into the specified destination
 ``type``.
