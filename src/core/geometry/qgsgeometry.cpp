@@ -1851,10 +1851,10 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
               *errorMessage = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
             return res;
           }
+          auto triangle = std::make_unique< QgsTriangle >();
+          triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+          tin->addPatch( triangle.release() );
         }
-        auto triangle = std::make_unique< QgsTriangle >();
-        triangle->setExteriorRing( polygon->exteriorRing()->clone() );
-        tin->addPatch( triangle.release() );
       }
     }
     newGeom = QgsGeometry( std::move( tin ) );
@@ -1899,10 +1899,10 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
             *errorMessage = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
           return res;
         }
+        auto triangle = std::make_unique< QgsTriangle >();
+        triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+        newGeom = QgsGeometry( std::move( triangle ) );
       }
-      auto triangle = std::make_unique< QgsTriangle >();
-      triangle->setExteriorRing( polygon->exteriorRing()->clone() );
-      newGeom = QgsGeometry( std::move( triangle ) );
     }
   }
 
