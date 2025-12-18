@@ -173,6 +173,8 @@ Converts the vertex at the given position from/to circular
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 
+    virtual void sumUpArea3D( double &sum /Out/ ) const;
+
 
     void close();
 %Docstring
