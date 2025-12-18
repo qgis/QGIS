@@ -179,6 +179,34 @@ class QgsPostgresUtils
     * \since QGIS 4.0
     */
     static bool addCommentColumnToProjectsTable( QgsPostgresConn *conn, const QString &schemaName );
+
+    /*
+    * Sets up the necessary database structures for QGIS project versioning in \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool setupQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
+
+    /*
+    * Disables QGIS project versioning for the specified \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool disableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
+
+    /*
+    * Check if QGIS project versioning is active for the specified \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool qgisProjectVersioningEnabled( QgsPostgresConn *conn, const QString &schema );
+
+    /*
+     * Move project versions to \a targetSchema
+     *
+     * \since QGIS 4.0
+     */
+    static bool moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema );
 };
 
 #endif

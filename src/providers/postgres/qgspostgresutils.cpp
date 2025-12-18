@@ -611,6 +611,19 @@ bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString
     return false;
   }
 
+  if ( QgsPostgresUtils::qgisProjectVersioningEnabled( conn, originalSchema ) )
+  {
+    if ( !QgsPostgresUtils::setupQgisProjectVersioning( conn, targetSchema ) )
+    {
+      return false;
+    }
+
+    if ( !QgsPostgresUtils::moveProjectVersions( conn, originalSchema, projectName, targetSchema ) )
+    {
+      return false;
+    }
+  }
+
   if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectName, originalSchema ) )
   {
     return false;
@@ -691,4 +704,115 @@ bool QgsPostgresUtils::addCommentColumnToProjectsTable( QgsPostgresConn *conn, c
 
   QgsPostgresResult resAddColumn( conn->PQexec( sqlAddColumn ) );
   return resAddColumn.PQresultStatus() == PGRES_COMMAND_OK;
+}
+
+bool QgsPostgresUtils::setupQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema )
+{
+  // create the necessary table for project versioning
+  const QString sqlCreateTable = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1.qgis_projects_versions ("
+                                                 "id SERIAL PRIMARY KEY, "
+                                                 "name TEXT, "
+                                                 "metadata JSONB, "
+                                                 "content BYTEA, "
+                                                 "date_saved TEXT NOT NULL, "
+                                                 "comment TEXT"
+                                                 ")" )
+                                   .arg( QgsPostgresConn::quotedIdentifier( schema ) );
+
+  QgsPostgresResult resultCreateTable( conn->PQexec( sqlCreateTable ) );
+  if ( resultCreateTable.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  const QString sqlFunctionTrigger = QStringLiteral( R"(
+CREATE OR REPLACE FUNCTION %1.sync_qgis_project_version()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        DELETE FROM %1.qgis_projects_versions
+        WHERE name = OLD.NAME;
+
+    ELSIF TG_OP = 'UPDATE' THEN
+      IF NEW.content IS DISTINCT FROM OLD.content THEN
+          INSERT INTO %1.qgis_projects_versions ( name, metadata, content, comment, date_saved )
+            VALUES (OLD.name, OLD.metadata, OLD.content, OLD.comment,
+            NOW()::TIMESTAMP(0)::TEXT
+          );
+
+          DELETE FROM %1.qgis_projects_versions
+          WHERE id IN(
+            SELECT id FROM %1.qgis_projects_versions
+            WHERE name = NEW.name
+            ORDER BY (metadata->>'last_modified_time')::TIMESTAMP DESC
+            OFFSET 10
+          );
+      END IF;
+  END IF;
+
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER qgis_project_versions
+    BEFORE UPDATE OR DELETE ON %1.qgis_projects
+    FOR EACH ROW EXECUTE FUNCTION %1.sync_qgis_project_version();
+)" )
+                                       .arg( QgsPostgresConn::quotedIdentifier( schema ) );
+
+  QgsPostgresResult resultCreateTrigger( conn->PQexec( sqlFunctionTrigger ) );
+  return resultCreateTrigger.PQresultStatus() == PGRES_COMMAND_OK;
+}
+
+bool QgsPostgresUtils::disableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema )
+{
+  const QString sqlDropTrigger = QStringLiteral( "DROP TRIGGER IF EXISTS qgis_project_versions ON %1.qgis_projects;" )
+                                   .arg( QgsPostgresConn::quotedIdentifier( schema ) );
+
+  QgsPostgresResult result( conn->PQexec( sqlDropTrigger ) );
+  return result.PQresultStatus() == PGRES_COMMAND_OK;
+}
+
+bool QgsPostgresUtils::qgisProjectVersioningEnabled( QgsPostgresConn *conn, const QString &schema )
+{
+  const QString sqlCheckTrigger = QStringLiteral( "SELECT EXISTS ("
+                                                  "SELECT 1 "
+                                                  "FROM information_schema.triggers "
+                                                  "WHERE trigger_schema = %1 "
+                                                  "AND trigger_name = 'qgis_project_versions' "
+                                                  "AND event_object_table = 'qgis_projects'"
+                                                  ");" )
+                                    .arg( QgsPostgresConn::quotedValue( schema ) );
+
+  QgsPostgresResult res( conn->PQexec( sqlCheckTrigger ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( QLatin1Char( 't' ) );
+}
+
+bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema )
+{
+  const QString sqlCopy = QStringLiteral( "INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;" )
+                            .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) )
+                            .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
+                            .arg( QgsPostgresConn::quotedValue( project ) );
+
+  QgsPostgresResult resCopy( conn->PQexec( sqlCopy ) );
+
+  if ( resCopy.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  const QString sqlDelete = QStringLiteral( "DELETE FROM %1.qgis_projects_versions WHERE name=%2;" )
+                              .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
+                              .arg( QgsPostgresConn::quotedValue( project ) );
+  ;
+
+  QgsPostgresResult resDelete( conn->PQexec( sqlDelete ) );
+
+  if ( resDelete.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
 }
