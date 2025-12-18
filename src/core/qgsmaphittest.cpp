@@ -315,7 +315,7 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
     const int band,
     const QgsRasterMinMaxOrigin minMaxOrigin,
     const Qgis::RasterRangeLimit rangeLimit,
-    QgsRenderContext &context,
+    const QgsRenderContext &context,
     QgsFeedback *feedback,
     const QgsGeometry &visibleExtent )
 {
@@ -362,7 +362,7 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
 void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
     const QString &layerId,
     const QgsMeshDatasetIndex datasetIndex,
-    QgsRenderContext &context,
+    const QgsRenderContext &context,
     QgsFeedback *feedback,
     const QgsGeometry &visibleExtent )
 {
