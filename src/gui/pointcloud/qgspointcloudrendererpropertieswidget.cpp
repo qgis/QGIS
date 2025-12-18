@@ -227,7 +227,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
-    mZoomOutMultiplier->setValue( mLayer->renderer()->zoomOutMultiplier() );
+    setZoomOutMultiplier( mLayer->renderer()->zoomOutMultiplier() );
 
     mTriangulateGroupBox->setChecked( mLayer->renderer()->renderAsTriangles() );
     mHorizontalTriangleCheckBox->setChecked( mLayer->renderer()->horizontalTriangleFilter() );
@@ -373,12 +373,12 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
     emit widgetChanged();
 }
 
-void QgsPointCloudRendererPropertiesWidget::setZoomOutMultiplier( double threshold )
+void QgsPointCloudRendererPropertiesWidget::setZoomOutMultiplier( double multiplier )
 {
-  int idx = 0;
+  size_t idx = 0;
   for ( size_t i = 0; i < mZoomOutScale.size(); ++i )
   {
-    if ( threshold <= mZoomOutScale[i] )
+    if ( multiplier <= mZoomOutScale[i] )
     {
       idx = i;
       break;
