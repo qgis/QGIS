@@ -370,7 +370,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mSourceLayer != nullptr )
         {
           const bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
-          const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
+          const bool hasM = QgsWkbTypes::hasM( mSourceLayer->wkbType() );
           if ( hasZ || hasM )
           {
             emit messageEmitted( QStringLiteral( "Layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
