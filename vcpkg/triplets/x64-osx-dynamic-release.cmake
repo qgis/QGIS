@@ -9,3 +9,7 @@ set(VCPKG_BUILD_TYPE release)
 set(VCPKG_FIXUP_MACHO_RPATH ON)
 set(VCPKG_OSX_DEPLOYMENT_TARGET 10.15)
 
+set(VCPKG_OSX_DEPLOYMENT_TARGET 10.15)
+# See https://github.com/microsoft/vcpkg/issues/10038
+set(VCPKG_C_FLAGS -mmacosx-version-min=${VCPKG_OSX_DEPLOYMENT_TARGET})
+set(VCPKG_CXX_FLAGS -mmacosx-version-min=${VCPKG_OSX_DEPLOYMENT_TARGET})
