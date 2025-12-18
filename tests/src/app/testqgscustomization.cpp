@@ -18,10 +18,12 @@
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowserwidget.h"
 #include "qgscustomization.h"
+#include "qgscustomizationdialog.h"
 #include "qgslayertreeview.h"
 #include "qgsstatusbar.h"
 #include "qgstest.h"
 
+#include <QAbstractItemModelTester>
 #include <QDockWidget>
 
 class TestQgsCustomization : public QgsTest
@@ -42,6 +44,8 @@ class TestQgsCustomization : public QgsTest
     void testActionPosition();
     void testEnabled();
     void testBackwardCompatibility();
+    void testClone();
+    void testModel();
 
   private:
     template<class T>
@@ -55,7 +59,7 @@ class TestQgsCustomization : public QgsTest
     T *getItem( const QString &path ) const { return dynamic_cast<T *>( getItem( path ) ); }
     QgsCustomization::Item *getItem( const QString &path ) const
     {
-      return getItem( mQgisApp->mCustomization, path );
+      return getItem( mQgisApp->customization(), path );
     }
 
     static QWidget *findQWidget( const QString &path );
@@ -240,7 +244,7 @@ void TestQgsCustomization::cleanup()
 
 void TestQgsCustomization::testLoadApply()
 {
-  mQgisApp->mCustomization->setEnabled( true );
+  mQgisApp->customization()->setEnabled( true );
 
   // Make some modifications to the current customization
   auto setAllVisible = [this]( bool visible ) {
@@ -265,7 +269,7 @@ void TestQgsCustomization::testLoadApply()
 
   setAllVisible( false );
 
-  mQgisApp->mCustomization->write();
+  mQgisApp->customization()->write();
 
   // re-read written customization
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
@@ -321,8 +325,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QToolBar>( "ToolBars/mFileToolBar" )->isVisible() );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
-  // QVERIFY( getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" ) );
-  // getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" )->setIsVisible( visible );
+  QVERIFY( !mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
@@ -331,7 +334,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
 
   // apply modification
-  mQgisApp->mCustomization->apply();
+  mQgisApp->customization()->apply();
 
   QVERIFY( !findQWidget<QMenu>( "Menus/mHelpMenu" ) );
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
@@ -347,12 +350,12 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
   QVERIFY( !findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
-  mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" );
+  QVERIFY( mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
 
   // go back to initial situation
   setAllVisible( true );
 
-  mQgisApp->mCustomization->apply();
+  mQgisApp->customization()->apply();
 
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
   QVERIFY( !findQWidget<QMenu>( "Menus/mHelpMenu" )->isVisible() );
@@ -377,7 +380,7 @@ void TestQgsCustomization::testLoadApply()
 
 void TestQgsCustomization::testActionPosition()
 {
-  mQgisApp->mCustomization->setEnabled( true );
+  mQgisApp->customization()->setEnabled( true );
 
   // test initial situation
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
@@ -399,7 +402,7 @@ void TestQgsCustomization::testActionPosition()
   getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRotatePointSymbols" )->setVisible( false );
 
   // apply modification
-  mQgisApp->mCustomization->apply();
+  mQgisApp->customization()->apply();
 
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" )->isVisible() );
@@ -416,7 +419,7 @@ void TestQgsCustomization::testActionPosition()
   QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRotatePointSymbols" ) );
   getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRotatePointSymbols" )->setVisible( true );
 
-  mQgisApp->mCustomization->apply();
+  mQgisApp->customization()->apply();
 
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" )->isVisible() );
@@ -435,7 +438,7 @@ void TestQgsCustomization::testActionPosition()
   QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" ) );
   getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" )->setVisible( false );
 
-  mQgisApp->mCustomization->apply();
+  mQgisApp->customization()->apply();
 
   QVERIFY( !findQAction( "Menus/mEditMenu/mActionRedo" ) );
   QVERIFY( findQAction( "Menus/mEditMenu/mActionRotatePointSymbols" ) );
@@ -448,7 +451,7 @@ void TestQgsCustomization::testEnabled()
   QVERIFY( getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" ) );
   getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" )->setVisible( false );
 
-  mQgisApp->mCustomization->write();
+  mQgisApp->customization()->write();
 
   // re-read written customization
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
@@ -458,17 +461,17 @@ void TestQgsCustomization::testEnabled()
 
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
 
-  mQgisApp->mCustomization->apply();
+  mQgisApp->customization()->apply();
 
   // still visible because we didn't  enabled customization
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
 
-  mQgisApp->mCustomization->setEnabled( true );
+  mQgisApp->customization()->setEnabled( true );
 
-  mQgisApp->mCustomization->apply();
+  mQgisApp->customization()->apply();
   QVERIFY( !findQWidget<QMenu>( "Menus/mHelpMenu" ) );
 
-  mQgisApp->mCustomization->write();
+  mQgisApp->customization()->write();
 
   // re-read written customization
   customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
@@ -557,6 +560,253 @@ void TestQgsCustomization::testBackwardCompatibility()
   QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" )->isVisible() );
   QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/MSSQL" ) );
   QVERIFY( !getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/MSSQL" )->isVisible() );
+}
+
+void TestQgsCustomization::testClone()
+{
+  mQgisApp->customization()->setEnabled( true );
+
+  // Make some modifications to the current customization
+  auto setAllVisible = [this]( bool visible ) {
+    QVERIFY( getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" ) );
+    getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" ) );
+    getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::ToolBar>( "ToolBars/mFileToolBar" ) );
+    getItem<QgsCustomization::ToolBar>( "ToolBars/mFileToolBar" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+    getItem<QgsCustomization::Action>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" ) );
+    getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::Dock>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+    getItem<QgsCustomization::Dock>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::StatusBarWidget>( "StatusBarWidgets/LocatorWidget" ) );
+    getItem<QgsCustomization::StatusBarWidget>( "StatusBarWidgets/LocatorWidget" )->setVisible( visible );
+
+    QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+    getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
+  };
+
+  setAllVisible( false );
+
+  // copy customization
+  std::unique_ptr<QgsCustomization> customization( new QgsCustomization( *mQgisApp->customization() ) );
+
+  // test item visiblity
+  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mProjectMenu" ) );
+  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mProjectMenu" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" ) );
+  QVERIFY( !getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" )->isVisible() );
+
+  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionUndo" ) );
+  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionUndo" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionRedo" ) );
+  QVERIFY( !getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionRedo" )->isVisible() );
+
+  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mFileToolBar" ) );
+  QVERIFY( !getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mFileToolBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mAttributesToolBar" ) );
+  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mAttributesToolBar" )->isVisible() );
+
+  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddVirtualLayer" ) );
+  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddVirtualLayer" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( !getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+
+  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/special:Home" ) );
+  QVERIFY( !getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/special:Home" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" ) );
+  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" )->isVisible() );
+
+  QVERIFY( getItem<QgsCustomization::Dock>( customization, "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+  QVERIFY( !getItem<QgsCustomization::Dock>( customization, "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
+
+  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mProgressBar" ) );
+  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mProgressBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( !getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" )->isVisible() );
+
+  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+  QVERIFY( !getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
+  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
+
+  // test initial situation
+  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" )->isVisible() );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionRedo" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionRedo" )->isVisible() );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" ) );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mFileToolBar" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mFileToolBar" )->isVisible() );
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( !mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
+  QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+  QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+  QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
+
+  // apply modification
+  mQgisApp->customization()->apply();
+
+  QVERIFY( !findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" )->isVisible() );
+  QVERIFY( !findQAction( "Menus/mEditMenu/mActionRedo" ) );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" ) );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mFileToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mFileToolBar" )->isVisible() );
+  QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+  QVERIFY( !findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( !findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( !findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+  QVERIFY( mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
+
+  // go back to initial situation
+  setAllVisible( true );
+
+  mQgisApp->customization()->apply();
+
+  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( !findQWidget<QMenu>( "Menus/mHelpMenu" )->isVisible() );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" )->isVisible() );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionRedo" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionRedo" )->isVisible() );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" ) );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mFileToolBar" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mFileToolBar" )->isVisible() );
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( !mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
+  QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+  QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+  QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
+
+  // restore clone
+  mQgisApp->setCustomization( std::move( customization ) );
+
+  // check our modifications are here
+  QVERIFY( !findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
+  QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" )->isVisible() );
+  QVERIFY( !findQAction( "Menus/mEditMenu/mActionRedo" ) );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" ) );
+  QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mFileToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mFileToolBar" )->isVisible() );
+  QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+  QVERIFY( !findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( !findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( !findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+  QVERIFY( mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
+}
+
+void TestQgsCustomization::testModel()
+{
+  mQgisApp->customization()->setEnabled( true );
+
+  QgsCustomizationDialog::QgsCustomizationModel model( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
+  QAbstractItemModelTester modelTester( &model, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  QCOMPARE( model.rowCount(), 5 );
+
+  // Uncheck ToolBars/mLayerToolBar/mActionAddRasterLayer item
+  {
+    QModelIndex toolBarsIndex = model.index( 4, 0 );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex layerToolBarIndex = items.first();
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex addRasterLayerIndex = items.first();
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+
+    model.setData( addRasterLayerIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+  }
+
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+
+  // revert values
+  model.reset();
+
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+
+  {
+    QModelIndex toolBarsIndex = model.index( 4, 0 );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex layerToolBarIndex = items.first();
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex addRasterLayerIndex = items.first();
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Checked );
+  }
+
+  // Uncheck ToolBars/mLayerToolBar/mActionAddRasterLayer item
+  {
+    QModelIndex toolBarsIndex = model.index( 4, 0 );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex layerToolBarIndex = items.first();
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex addRasterLayerIndex = items.first();
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+
+    model.setData( addRasterLayerIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+  }
+
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+
+  // revert values
+  model.apply();
+
+  {
+    QModelIndex toolBarsIndex = model.index( 4, 0 );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex layerToolBarIndex = items.first();
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex addRasterLayerIndex = items.first();
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+
+    model.setData( addRasterLayerIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+  }
+
+  // the action is no longer visible
+  QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
 }
 
 

@@ -197,6 +197,17 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Item::createChildItem(
   return nullptr;
 }
 
+void QgsCustomization::Item::copyItemAttributes( const QgsCustomization::Item *other )
+{
+  mName = other->mName;
+  mTitle = other->mTitle;
+  mVisible = other->mVisible;
+  for ( const std::unique_ptr<QgsCustomization::Item> &otherChildItem : other->mChildItemList )
+  {
+    addItem( otherChildItem->clone( this ) );
+  }
+}
+
 ////////////////
 
 QgsCustomization::Action::Action( QgsCustomization::Item *parent )
@@ -230,6 +241,13 @@ qsizetype QgsCustomization::Action::qActionIndex() const
   return mQActionIndex;
 }
 
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::Action>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
+
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::createChildItem( const QDomElement &childElem )
 {
   // Action with a menu can have child action
@@ -247,6 +265,13 @@ QgsCustomization::Menu::Menu( Item *parent )
 QgsCustomization::Menu::Menu( const QString &name, const QString &title, Item *parent )
   : Action( name, title, parent )
 {}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menu::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::Menu>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
 
 QString QgsCustomization::Menu::xmlTag() const
 {
@@ -282,6 +307,13 @@ bool QgsCustomization::ToolBar::wasVisible() const
   return mWasVisible;
 }
 
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBar::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::ToolBar>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
+
 QString QgsCustomization::ToolBar::xmlTag() const
 {
   return QStringLiteral( "ToolBar" );
@@ -297,6 +329,15 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBar::createChildIt
     return nullptr;
 }
 
+void QgsCustomization::ToolBar::copyItemAttributes( const Item *other )
+{
+  Item::copyItemAttributes( other );
+  if ( const ToolBar *tb = dynamic_cast<const ToolBar *>( other ) )
+  {
+    mWasVisible = tb->mWasVisible;
+  }
+}
+
 ////////////////
 
 QgsCustomization::ToolBars::ToolBars()
@@ -304,6 +345,13 @@ QgsCustomization::ToolBars::ToolBars()
 {
   mName = "ToolBars";
   mTitle = QObject::tr( "ToolBars" );
+}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBars::clone( QgsCustomization::Item * ) const
+{
+  auto clone = std::make_unique<QgsCustomization::ToolBars>();
+  clone->copyItemAttributes( this );
+  return clone;
 }
 
 QString QgsCustomization::ToolBars::xmlTag() const
@@ -326,6 +374,13 @@ QgsCustomization::Menus::Menus()
 {
   mName = "Menus";
   mTitle = QObject::tr( "Menus" );
+}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menus::clone( QgsCustomization::Item * ) const
+{
+  auto clone = std::make_unique<QgsCustomization::Menus>();
+  clone->copyItemAttributes( this );
+  return clone;
 }
 
 QString QgsCustomization::Menus::xmlTag() const
@@ -358,6 +413,14 @@ QString QgsCustomization::Dock::xmlTag() const
   return QStringLiteral( "Dock" );
 };
 
+void QgsCustomization::Dock::copyItemAttributes( const Item *other )
+{
+  Item::copyItemAttributes( other );
+  if ( const Dock *dock = dynamic_cast<const Dock *>( other ) )
+  {
+    mWasVisible = dock->mWasVisible;
+  }
+}
 
 void QgsCustomization::Dock::setWasVisible( const bool &wasVisible )
 {
@@ -369,6 +432,14 @@ bool QgsCustomization::Dock::wasVisible() const
   return mWasVisible;
 }
 
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::Dock::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::Dock>( parent );
+  clone->copyItemAttributes( this );
+  clone->mWasVisible = mWasVisible;
+  return clone;
+}
+
 ////////////////
 
 QgsCustomization::Docks::Docks()
@@ -376,6 +447,13 @@ QgsCustomization::Docks::Docks()
 {
   mName = "Docks";
   mTitle = QObject::tr( "Docks" );
+}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::Docks::clone( QgsCustomization::Item * ) const
+{
+  auto clone = std::make_unique<QgsCustomization::Docks>();
+  clone->copyItemAttributes( this );
+  return clone;
 }
 
 QString QgsCustomization::Docks::xmlTag() const
@@ -403,6 +481,14 @@ QgsCustomization::BrowserItem::BrowserItem( const QString &name, const QString &
 {
 }
 
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItem::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::BrowserItem>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
+
+
 QString QgsCustomization::BrowserItem::xmlTag() const
 {
   return QStringLiteral( "BrowserItem" );
@@ -415,6 +501,13 @@ QgsCustomization::BrowserItems::BrowserItems()
 {
   mName = "BrowserItems";
   mTitle = QObject::tr( "Browser" );
+}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItems::clone( QgsCustomization::Item * ) const
+{
+  auto clone = std::make_unique<QgsCustomization::BrowserItems>();
+  clone->copyItemAttributes( this );
+  return clone;
 }
 
 QString QgsCustomization::BrowserItems::xmlTag() const
@@ -439,6 +532,13 @@ QgsCustomization::StatusBarWidget::StatusBarWidget( Item *parent )
 QgsCustomization::StatusBarWidget::StatusBarWidget( const QString &name, Item *parent )
   : Item( name, QString(), parent ) {}
 
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidget::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::StatusBarWidget>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
+
 QString QgsCustomization::StatusBarWidget::xmlTag() const
 {
   return QStringLiteral( "StatusBarWidget" );
@@ -451,6 +551,13 @@ QgsCustomization::StatusBarWidgets::StatusBarWidgets()
 {
   mName = "StatusBarWidgets";
   mTitle = QObject::tr( "Status Bar" );
+}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidgets::clone( QgsCustomization::Item * ) const
+{
+  auto clone = std::make_unique<QgsCustomization::StatusBarWidgets>();
+  clone->copyItemAttributes( this );
+  return clone;
 }
 
 QString QgsCustomization::StatusBarWidgets::xmlTag() const
@@ -484,12 +591,53 @@ QgsCustomization::QgsCustomization( const QString &customizationFile )
 
 void QgsCustomization::setQgisApp( QgisApp *qgisApp )
 {
+  const bool newApp = mQgisApp != qgisApp;
+
   mQgisApp = qgisApp;
-  load();
+  if ( newApp )
+    load();
+
   apply();
 }
 
 QgsCustomization::~QgsCustomization() = default;
+
+/**
+ * Copy constructor
+ */
+QgsCustomization::QgsCustomization( const QgsCustomization &other )
+  : mBrowserItems( dynamic_cast<BrowserItems *>( other.mBrowserItems->clone().release() ) )
+  , mDocks( dynamic_cast<Docks *>( other.mDocks->clone().release() ) )
+  , mMenus( dynamic_cast<Menus *>( other.mMenus->clone().release() ) )
+  , mStatusBarWidgets( dynamic_cast<StatusBarWidgets *>( other.mStatusBarWidgets->clone().release() ) )
+  , mToolBars( dynamic_cast<ToolBars *>( other.mToolBars->clone().release() ) )
+  , mEnabled( other.mEnabled )
+  , mSplashPath( other.mSplashPath )
+  , mQgisApp( other.mQgisApp )
+  , mCustomizationFile( other.mCustomizationFile )
+{
+}
+
+/**
+ * Assignment operator
+ */
+QgsCustomization &QgsCustomization::operator=( const QgsCustomization &other )
+{
+  if ( this == &other )
+    return *this;
+
+  mBrowserItems.reset( dynamic_cast<BrowserItems *>( other.mBrowserItems->clone().release() ) );
+  mDocks.reset( dynamic_cast<Docks *>( other.mDocks->clone().release() ) );
+  mMenus.reset( dynamic_cast<Menus *>( other.mMenus->clone().release() ) );
+  mStatusBarWidgets.reset( dynamic_cast<StatusBarWidgets *>( other.mStatusBarWidgets->clone().release() ) );
+  mToolBars.reset( dynamic_cast<ToolBars *>( other.mToolBars->clone().release() ) );
+  mEnabled = other.mEnabled;
+  mSplashPath = other.mSplashPath;
+  mQgisApp = other.mQgisApp;
+  mCustomizationFile = other.mCustomizationFile;
+
+  return *this;
+}
 
 void QgsCustomization::load()
 {

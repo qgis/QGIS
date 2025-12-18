@@ -983,7 +983,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QString getVersionString();
 
+    /**
+     * Sets customization
+     */
     void setCustomization( std::unique_ptr<QgsCustomization> customization );
+
+    /**
+     * Returns customization
+     */
+    const std::unique_ptr<QgsCustomization> &customization() const;
 
   public slots:
     //! save current vector layer

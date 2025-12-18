@@ -54,6 +54,16 @@ class APP_EXPORT QgsCustomization
     ~QgsCustomization();
 
     /**
+     * Copy constructor
+     */
+    QgsCustomization( const QgsCustomization &other );
+
+    /**
+     * Assignment operator
+     */
+    QgsCustomization &operator=( const QgsCustomization &other );
+
+    /**
      * Set QGIS main window \a qgisApp
      * Customization model is updated according to main window menus, toolbars, dock widgets ..
      */
@@ -200,6 +210,11 @@ class APP_EXPORT QgsCustomization
          */
         QString readXml( const QDomElement &elem );
 
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        virtual std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const = 0;
+
       protected:
         /**
          * Returns XML tag
@@ -210,6 +225,11 @@ class APP_EXPORT QgsCustomization
          * Creates child item from \a childElem element
          */
         virtual std::unique_ptr<Item> createChildItem( const QDomElement &childElem );
+
+        /**
+         * Copy \a other item attributes to this item
+         */
+        virtual void copyItemAttributes( const QgsCustomization::Item *other );
 
         QString mName;
         QString mTitle;
@@ -258,9 +278,21 @@ class APP_EXPORT QgsCustomization
          */
         qsizetype qActionIndex() const;
 
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+
       protected:
         QString xmlTag() const override;
         std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+
+        void copyItemAttributes( const Item *other ) override
+        {
+          Item::copyItemAttributes( other );
+          if ( const Action *action = dynamic_cast<const Action *>( other ) )
+          {
+            mQAction = action->mQAction;
+            mQActionIndex = action->mQActionIndex;
+          }
+        }
 
       private:
         QAction *mQAction = nullptr;
@@ -288,12 +320,11 @@ class APP_EXPORT QgsCustomization
          */
         Menu( const QString &name, const QString &title, Item *parent );
 
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+
       protected:
         QString xmlTag() const override;
         std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
-
-      private:
-        QIcon mIcon;
     };
 
     /**
@@ -328,9 +359,12 @@ class APP_EXPORT QgsCustomization
          */
         bool wasVisible() const;
 
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+
       protected:
         QString xmlTag() const override;
         std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+        void copyItemAttributes( const Item *other ) override;
 
       private:
         // used to backup the original visibility state when we change visibility state
@@ -348,6 +382,8 @@ class APP_EXPORT QgsCustomization
          */
         ToolBars();
 
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
+
       protected:
         QString xmlTag() const override;
         std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
@@ -363,6 +399,8 @@ class APP_EXPORT QgsCustomization
          * Constructor
          */
         Menus();
+
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
 
       protected:
         QString xmlTag() const override;
@@ -401,8 +439,13 @@ class APP_EXPORT QgsCustomization
          */
         bool wasVisible() const;
 
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+
       protected:
         QString xmlTag() const override;
+        void copyItemAttributes( const Item *other ) override;
+
+      private:
         // used to backup the original visibility state when we change visibility state
         bool mWasVisible = false;
     };
@@ -417,6 +460,8 @@ class APP_EXPORT QgsCustomization
          * Constructor
          */
         Docks();
+
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
 
       protected:
         QString xmlTag() const override;
@@ -443,6 +488,8 @@ class APP_EXPORT QgsCustomization
          */
         BrowserItem( const QString &name, const QString &title, Item *parent );
 
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+
       protected:
         QString xmlTag() const override;
     };
@@ -457,6 +504,8 @@ class APP_EXPORT QgsCustomization
          * Constructor
          */
         BrowserItems();
+
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
 
       protected:
         QString xmlTag() const override;
@@ -482,6 +531,8 @@ class APP_EXPORT QgsCustomization
          */
         StatusBarWidget( const QString &name, Item *parent );
 
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+
       protected:
         QString xmlTag() const override;
     };
@@ -496,6 +547,8 @@ class APP_EXPORT QgsCustomization
          * Constructor
          */
         StatusBarWidgets();
+
+        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
 
       protected:
         QString xmlTag() const override;
@@ -693,7 +746,6 @@ class APP_EXPORT QgsCustomization
     QString mSplashPath;
 
     QgisApp *mQgisApp = nullptr;
-    QList<QgsBrowserDockWidget *> mBrowserWidgets;
     QString mCustomizationFile;
 
     friend class TestQgsCustomization;

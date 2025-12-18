@@ -18,8 +18,11 @@
 
 #include "ui_qgscustomizationdialogbase.h"
 
+#include "qgis_app.h"
 #include "qgscustomization.h"
 #include "qgssettingstree.h"
+
+class QgisApp;
 
 /**
  * \ingroup app
@@ -35,7 +38,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
      * \param customization object to customize the application
      * \param parent parent widget
      */
-    QgsCustomizationDialog( QgsCustomization *customization, QWidget *parent );
+    QgsCustomizationDialog( QgisApp *qgisApp );
 
     static inline QgsSettingsTreeNode *sTreeCustomization = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "customization" ) );
     static const QgsSettingsEntryString *sSettingLastSaveDir;
@@ -120,12 +123,72 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
      */
     bool selectWidget( QWidget *widget );
 
-    class QgsCustomizationModel;
+    const std::unique_ptr<QgsCustomization> &customization() const;
+
+    /**
+     * \ingroup app
+     * \brief tree view to edit a customization
+     * \since QGIS 4.0
+     */
+    class QgsCustomizationModel : public QAbstractItemModel
+    {
+      public:
+        enum class Mode
+        {
+          ActionSelector, //!< Use to select actions
+          ItemVisibility  //!< Use to change item visibility
+        };
+
+        QgsCustomizationModel( QgisApp *qgisApp, Mode mode, QObject *parent = nullptr );
+
+        QVariant data( const QModelIndex &index, int role ) const override;
+        bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+        Qt::ItemFlags flags( const QModelIndex &index ) const override;
+        QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+        QModelIndex index( int row, int column, const QModelIndex &parent = {} ) const override;
+        QModelIndex parent( const QModelIndex &index ) const override;
+        int rowCount( const QModelIndex &parent = {} ) const override;
+        int columnCount( const QModelIndex &parent = {} ) const override;
+
+        /**
+       * Initialize (or reinitialize if already initialized) model
+       */
+        void init();
+
+        /**
+       * Reset all current modifications
+       */
+        void reset();
+
+        /**
+       * Apply modification to the application
+       */
+        void apply();
+
+        /**
+       * Read new customization model file and reset model
+       * Returns error string. An empty string is returned if no error occurred
+       */
+        QString readFile( const QString &filePath );
+
+        /**
+       * Returns current customization
+       */
+        const std::unique_ptr<QgsCustomization> &customization() const;
+
+      private:
+        Mode mMode = Mode::ActionSelector;
+        QgisApp *mQgisApp = nullptr;
+        std::unique_ptr<QgsCustomization> mCustomization; // current customization, copy of the application one
+        QList<QgsCustomization::Item *> mRootItems;
+    };
 
     QString mLastDirSettingsName;
 
-    QgsCustomization *mCustomization = nullptr;
+    QgisApp *mQgisApp = nullptr;
     QgsCustomizationModel *mItemsVisibilityModel = nullptr;
+
+    friend class TestQgsCustomization;
 };
 
 #endif
