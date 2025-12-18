@@ -15,7 +15,9 @@
 
 #include "qgscustomizationdialog.h"
 
+#include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgscustomization.h"
 #include "qgsfileutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
@@ -24,80 +26,27 @@
 #include <QAbstractItemModel>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QToolButton>
 #include <QWidgetAction>
-#include <qmessagebox.h>
 #include <qnamespace.h>
 
 #include "moc_qgscustomizationdialog.cpp"
 
+#ifdef QGIS_DEBUG
+#include <QAbstractItemModelTester>
+#endif
+
 const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir = new QgsSettingsEntryString( QStringLiteral( "last-save-directory" ), sTreeCustomization, QDir::homePath(), QStringLiteral( "Last directory used when saving a customization XML file" ) );
 
-class QgsCustomizationDialog::QgsCustomizationModel : public QAbstractItemModel
-{
-  public:
-    enum class Mode
-    {
-      ActionSelector, //!< Use to select actions
-      ItemVisibility  //!< Use to change item visibility
-    };
-
-    QgsCustomizationModel( QgsCustomization *customization, Mode mode, QObject *parent = nullptr );
-    ~QgsCustomizationModel() override = default;
-
-    QVariant data( const QModelIndex &index, int role ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = {} ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int rowCount( const QModelIndex &parent = {} ) const override;
-    int columnCount( const QModelIndex &parent = {} ) const override;
-
-    /**
-     * Reset all current modifications
-     */
-    void reset();
-
-    /**
-     * Validate all current modifications
-     */
-    void validate();
-
-    /**
-     * Read new customization model file and reset model
-     * Returns error string. An empty string is returned if no error occurred
-     */
-    QString readFile( const QString &filePath );
-
-  private:
-    Mode mMode = Mode::ActionSelector;
-    QgsCustomization *mCustomization = nullptr;
-    QHash<QgsCustomization::Item *, bool> mOldVisibleState;
-    QList<QgsCustomization::Item *> mRootItems;
-};
-
-QgsCustomizationDialog::QgsCustomizationModel::QgsCustomizationModel( QgsCustomization *customization, Mode mode, QObject *parent )
+QgsCustomizationDialog::QgsCustomizationModel::QgsCustomizationModel( QgisApp *qgisApp, Mode mode, QObject *parent )
   : QAbstractItemModel( parent )
   , mMode( mode )
-  , mCustomization( customization )
+  , mQgisApp( qgisApp )
 {
-  switch ( mMode )
-  {
-    case Mode::ActionSelector:
-      mRootItems << mCustomization->menus().get()
-                 << mCustomization->toolBars().get();
-      break;
-
-    case Mode::ItemVisibility:
-      mRootItems << mCustomization->browserItems().get()
-                 << mCustomization->docks().get()
-                 << mCustomization->menus().get()
-                 << mCustomization->statusBarWidgets().get()
-                 << mCustomization->toolBars().get();
-  };
+  init();
 }
 
 QVariant QgsCustomizationDialog::QgsCustomizationModel::data( const QModelIndex &index, int role ) const
@@ -137,7 +86,6 @@ bool QgsCustomizationDialog::QgsCustomizationModel::setData( const QModelIndex &
   QgsCustomization::Item *item = static_cast<QgsCustomization::Item *>( index.internalPointer() );
   if ( item )
   {
-    mOldVisibleState[item] = item->isVisible();
     item->setVisible( value.value<Qt::CheckState>() == Qt::CheckState::Checked );
     emit dataChanged( index, index, QList<int>() << Qt::CheckStateRole );
     return true;
@@ -223,32 +171,53 @@ int QgsCustomizationDialog::QgsCustomizationModel::columnCount( const QModelInde
   return 2;
 }
 
+void QgsCustomizationDialog::QgsCustomizationModel::init()
+{
+  mCustomization.reset( new QgsCustomization( *mQgisApp->customization() ) );
+  mRootItems.clear();
+  switch ( mMode )
+  {
+    case Mode::ActionSelector:
+      mRootItems << mCustomization->menus().get()
+                 << mCustomization->toolBars().get();
+      break;
+
+    case Mode::ItemVisibility:
+      mRootItems << mCustomization->browserItems().get()
+                 << mCustomization->docks().get()
+                 << mCustomization->menus().get()
+                 << mCustomization->statusBarWidgets().get()
+                 << mCustomization->toolBars().get();
+  };
+}
+
 void QgsCustomizationDialog::QgsCustomizationModel::reset()
 {
-  // restore old visible states
+  // restore application state
   beginResetModel();
-  for ( auto it = mOldVisibleState.cbegin(); it != mOldVisibleState.cend(); it++ )
-  {
-    it.key()->setVisible( it.value() );
-  }
-
-  mOldVisibleState.clear();
+  init();
   endResetModel();
 }
 
-void QgsCustomizationDialog::QgsCustomizationModel::validate()
+void QgsCustomizationDialog::QgsCustomizationModel::apply()
 {
-  mOldVisibleState.clear();
+  mQgisApp->setCustomization( std::unique_ptr<QgsCustomization>( new QgsCustomization( *mCustomization ) ) );
+
+  const QString error = mCustomization->write();
+  if ( !error.isEmpty() )
+  {
+    QMessageBox::warning( mQgisApp, tr( "Error writing customization XML file" ), error );
+  }
 }
 
 
-QgsCustomizationDialog::QgsCustomizationDialog( QgsCustomization *customization, QWidget *parent )
+QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
 #ifdef Q_OS_MACOS
-  : QMainWindow( parent, Qt::WindowSystemMenuHint ) // Modeless dialog with close button only
+  : QMainWindow( qgisApp, Qt::WindowSystemMenuHint ) // Modeless dialog with close button only
 #else
-  : QMainWindow( parent )
+  : QMainWindow( qgisApp )
 #endif
-  , mCustomization( customization )
+  , mQgisApp( qgisApp )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -267,12 +236,16 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgsCustomization *customization,
   connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::reset );
   connect( buttonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::showHelp );
 
-  mItemsVisibilityModel = new QgsCustomizationModel( mCustomization, QgsCustomizationModel::Mode::ItemVisibility, this );
+  mItemsVisibilityModel = new QgsCustomizationModel( mQgisApp, QgsCustomizationModel::Mode::ItemVisibility, this );
   QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );
   proxyModel->sort( 0 );
   proxyModel->setFilterKeyColumn( 0 );
   proxyModel->setFilterCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
   proxyModel->setSortCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
+
+#ifdef QGIS_DEBUG
+  new QAbstractItemModelTester( mItemsVisibilityModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
 
   proxyModel->setRecursiveFilteringEnabled( true );
   proxyModel->setSourceModel( mItemsVisibilityModel );
@@ -284,7 +257,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgsCustomization *customization,
   mTreeView->setEnabled( false );
   toolBar->setEnabled( false );
   mFilterLe->setEnabled( false );
-  mCustomizationEnabledCheckBox->setChecked( mCustomization->isEnabled() );
+  mCustomizationEnabledCheckBox->setChecked( customization()->isEnabled() );
 }
 
 void QgsCustomizationDialog::reset()
@@ -300,15 +273,7 @@ void QgsCustomizationDialog::ok()
 
 void QgsCustomizationDialog::apply()
 {
-  mCustomization->apply();
-
-  const QString error = mCustomization->write();
-  if ( !error.isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "Error writing customization XML file" ), error );
-  }
-
-  mItemsVisibilityModel->validate();
+  mItemsVisibilityModel->apply();
 }
 
 void QgsCustomizationDialog::cancel()
@@ -326,6 +291,11 @@ QString QgsCustomizationDialog::QgsCustomizationModel::readFile( const QString &
   return error;
 }
 
+const std::unique_ptr<QgsCustomization> &QgsCustomizationDialog::QgsCustomizationModel::customization() const
+{
+  return mCustomization;
+}
+
 void QgsCustomizationDialog::onSaveFile( bool )
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Choose a customization XML file" ), sSettingLastSaveDir->value(), tr( "Customization files (*.xml)" ) );
@@ -334,7 +304,7 @@ void QgsCustomizationDialog::onSaveFile( bool )
   if ( fileName.isEmpty() )
     return;
 
-  const QString error = mCustomization->writeFile( fileName );
+  const QString error = customization()->writeFile( fileName );
   if ( !error.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Error writing customization XML file" ), error );
@@ -395,8 +365,8 @@ void QgsCustomizationDialog::enableCustomization( bool checked )
   toolBar->setEnabled( checked );
   mFilterLe->setEnabled( checked );
 
-  if ( checked != mCustomization->isEnabled() )
-    mCustomization->setEnabled( checked );
+  if ( checked != customization()->isEnabled() )
+    customization()->setEnabled( checked );
 }
 
 void QgsCustomizationDialog::showHelp()
@@ -467,10 +437,7 @@ bool QgsCustomizationDialog::selectWidget( QWidget *widget )
 
 void QgsCustomizationDialog::preNotify( QObject *receiver, QEvent *event, bool *done )
 {
-  if ( !actionCatch->isChecked() )
-    return;
-
-  if ( !mCustomization )
+  if ( !actionCatch->isChecked() || !customization() )
     return;
 
   QWidget *widget = qobject_cast<QWidget *>( receiver );
@@ -482,4 +449,9 @@ void QgsCustomizationDialog::preNotify( QObject *receiver, QEvent *event, bool *
   {
     *done = selectWidget( widget );
   }
+}
+
+const std::unique_ptr<QgsCustomization> &QgsCustomizationDialog::customization() const
+{
+  return mItemsVisibilityModel->customization();
 }
