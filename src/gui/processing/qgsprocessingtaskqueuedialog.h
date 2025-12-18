@@ -22,6 +22,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsprocessingtaskqueue.h"
 
 #include <QDialog>
 #include <QPointer>
