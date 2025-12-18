@@ -189,7 +189,7 @@ class CORE_EXPORT QgsMapHitTest
                                  const int band,
                                  const QgsRasterMinMaxOrigin minMaxOrigin,
                                  const Qgis::RasterRangeLimit rangeLimit,
-                                 QgsRenderContext &context,
+                                 const QgsRenderContext &context,
                                  QgsFeedback *feedback,
                                  const QgsGeometry &visibleExtent );
 
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsMapHitTest
     void runHitTestMeshSource( QgsMeshLayer *layer,
                                const QString &layerId,
                                const QgsMeshDatasetIndex datasetIndex,
-                               QgsRenderContext &context,
+                               const QgsRenderContext &context,
                                QgsFeedback *feedback,
                                const QgsGeometry &visibleExtent );
     //! The hit test
