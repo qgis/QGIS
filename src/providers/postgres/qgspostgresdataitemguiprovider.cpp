@@ -1320,9 +1320,9 @@ void QgsPostgresDataItemGuiProvider::allowProjectsVersioning( const QString conn
       conn->unref();
       return;
     }
-  }
 
-  notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects setup in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
+    notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects setup in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
+  }
 
   conn->unref();
 }
