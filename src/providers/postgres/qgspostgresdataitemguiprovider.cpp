@@ -144,8 +144,8 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       projectMenu->addAction( enableAllowProjectVersioning );
       enableAllowProjectVersioning->setEnabled( !schemaItem->projectVersioningEnabled() );
       connect( enableAllowProjectVersioning, &QAction::triggered, this, [schemaItem, context] {
-        allowProjectsVersioning( schemaItem->connectionName(), schemaItem->name(), context );
-        schemaItem->setProjectVersioningEnabled( true );
+        bool enabled = enableProjectsVersioning( schemaItem->connectionName(), schemaItem->name(), context );
+        schemaItem->setProjectVersioningEnabled( enabled );
       } );
     }
   }
@@ -223,10 +223,10 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
         QAction *enableAllowProjectVersioning = new QAction( tr( "Enable Projects Versioning…" ), menu );
         menu->addAction( enableAllowProjectVersioning );
         connect( enableAllowProjectVersioning, &QAction::triggered, this, [projectItem, parentSchemaItem, context] {
-          allowProjectsVersioning( projectItem->connectionName(), projectItem->schemaName(), context );
+          bool enabled = enableProjectsVersioning( projectItem->connectionName(), projectItem->schemaName(), context );
           if ( parentSchemaItem )
           {
-            parentSchemaItem->( true );
+            parentSchemaItem->setProjectVersioningEnabled( enabled );
           }
         } );
       }
@@ -1298,7 +1298,7 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
 }
 
 
-void QgsPostgresDataItemGuiProvider::allowProjectsVersioning( const QString connectionName, const QString schemaName, QgsDataItemGuiContext context )
+bool QgsPostgresDataItemGuiProvider::enableProjectsVersioning( const QString connectionName, const QString schemaName, QgsDataItemGuiContext context )
 {
   const QgsDataSourceUri uri = QgsPostgresConn::connUri( connectionName );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
@@ -1307,7 +1307,7 @@ void QgsPostgresDataItemGuiProvider::allowProjectsVersioning( const QString conn
   {
     notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects already active in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Info );
     conn->unref();
-    return;
+    return false;
   }
 
   QMessageBox::StandardButton result = QMessageBox::question( nullptr, tr( "Enable versioning of QGIS projects" ), tr( "Do you want to enable versioning of QGIS projects in schema “%1”? This will create new table in the schema and store older versions of QGIS projects there." ).arg( schemaName ) );
@@ -1318,11 +1318,14 @@ void QgsPostgresDataItemGuiProvider::allowProjectsVersioning( const QString conn
     {
       notify( tr( "QGIS Project Versioning" ), tr( "Cannot setup versioning of QGIS projects in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Critical );
       conn->unref();
-      return;
+      return false;
     }
 
     notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects setup in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
+    conn->unref();
+    return true;
   }
 
   conn->unref();
+  return false;
 }
