@@ -3260,14 +3260,27 @@ void TestQgsGeometry::chamferFillet()
   QCOMPARE( g.lastError(), "" );
   g2 = g.fillet( 1, 2.0, 4 );
   QCOMPARE( g.lastError(), "" );
-  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 8 15, 8.62 15.1, 9.18 15.38, 9.62 15.82, 9.9 16.38, 10 17, 10 20, 5 20, 5 15))" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 8 15, 8.77 15.15, 9.41 15.59, 9.85 16.23, 10 17, 10 20, 5 20, 5 15))" );
+
+  // check fillet discretisation respect segment number
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 12 20, 7 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  for ( int nbSegment = 1; nbSegment < 5; ++nbSegment )
+  {
+    for ( int vertIdx = 0; vertIdx < 5; ++vertIdx )
+    {
+      g2 = g.fillet( vertIdx, 3.0, nbSegment );
+      QCOMPARE( g.lastError(), "" );
+      QCOMPARE( qgsgeometry_cast<const QgsPolygon *>( g2.get() )->exteriorRing()->childCount(), 5 + nbSegment );
+    }
+  }
 
   // with Z coordinates
   g = QgsGeometry::fromWkt( QStringLiteral( "PolygonZ(( 5 15 0, 10 15 10, 10 20 -5, 5 20 -1 , 5 15 0))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.fillet( 1, 2.0, 4 );
   QCOMPARE( g.lastError(), "" );
-  QCOMPARE( g2.asWkt( 2 ), "Polygon Z ((5 15 0, 8 15 6, 8.62 15.1 5.6, 9.18 15.38 5.2, 9.62 15.82 4.8, 9.9 16.38 4.4, 10 17 4, 10 20 -5, 5 20 -1, 5 15 0))" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon Z ((5 15 0, 8 15 6, 8.77 15.15 5.5, 9.41 15.59 5, 9.85 16.23 4.5, 10 17 4, 10 20 -5, 5 20 -1, 5 15 0))" );
 
   // Compound curve
   g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
