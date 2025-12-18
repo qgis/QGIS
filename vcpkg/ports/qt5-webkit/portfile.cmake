@@ -38,6 +38,7 @@ vcpkg_cmake_configure(
       "-DUSE_WOFF2=FALSE"
       "-DPORT=Qt"
       "-DENABLE_QT_WEBCHANNEL=FALSE"
+      "-DENABLE_API_TESTS=FALSE"
 )
 
 vcpkg_cmake_install()
