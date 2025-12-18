@@ -232,14 +232,14 @@ class APP_EXPORT QgsCustomization
         virtual void copyItemAttributes( const QgsCustomization::Item *other );
 
         QString mName;
+
+      private:
         QString mTitle;
         bool mVisible = true;
         Item *mParent = nullptr;
+        QIcon mIcon;
         QMap<QString, Item *> mChildItems; // for name quick access
         std::vector<std::unique_ptr<Item>> mChildItemList;
-
-      private:
-        QIcon mIcon;
     };
 
     /**
@@ -283,16 +283,7 @@ class APP_EXPORT QgsCustomization
       protected:
         QString xmlTag() const override;
         std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
-
-        void copyItemAttributes( const Item *other ) override
-        {
-          Item::copyItemAttributes( other );
-          if ( const Action *action = dynamic_cast<const Action *>( other ) )
-          {
-            mQAction = action->mQAction;
-            mQActionIndex = action->mQActionIndex;
-          }
-        }
+        void copyItemAttributes( const Item *other ) override;
 
       private:
         QAction *mQAction = nullptr;
