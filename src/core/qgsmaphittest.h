@@ -181,7 +181,7 @@ class CORE_EXPORT QgsMapHitTest
      * \param rangeLimit range limit settings
      * \param context render context
      * \param feedback optional feedback argument for cancel support
-     * \param visibleExtent total visible area of layer
+     * \param visibleExtent total visible area of layer in layer's CRS
      * \note not available in Python bindings
      */
     void runHitTestRasterSource( QgsRasterDataProvider *provider,
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsMapHitTest
      * \param datasetIndex dataset index within the mesh layer
      * \param context render context
      * \param feedback optional feedback argument for cancel support
-     * \param visibleExtent total visible area of layer
+     * \param visibleExtent total visible area of layer in layer's CRS
      * \note not available in Python bindings
      */
     void runHitTestMeshSource( QgsMeshLayer *layer,
