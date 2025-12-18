@@ -52,7 +52,7 @@ Returns the task description.
 
 };
 
-class QgsProcessingTaskQueue : QObject
+class QgsProcessingTaskQueue : QObject /NoDefaultCtors/
 {
 %Docstring(signature="appended")
 Singleton manager for a queue of processing tasks to be executed
