@@ -86,8 +86,8 @@ QStringList QgsPdalFilterNoiseStatisticalAlgorithm::createArgumentLists( const Q
   checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  int meanK = parameterAsInt( parameters, QStringLiteral( "MEAN_K" ), context );
-  double multiplier = parameterAsDouble( parameters, QStringLiteral( "MULTIPLIER" ), context );
+  const int meanK = parameterAsInt( parameters, QStringLiteral( "MEAN_K" ), context );
+  const double multiplier = parameterAsDouble( parameters, QStringLiteral( "MULTIPLIER" ), context );
 
   QString removeNoisePoints = "false";
   if ( parameterAsBoolean( parameters, QStringLiteral( "REMOVE_NOISE_POINTS" ), context ) )

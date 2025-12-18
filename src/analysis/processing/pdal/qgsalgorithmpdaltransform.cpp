@@ -96,43 +96,43 @@ QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &p
   checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  double translateX = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_X" ), context );
-  double translateY = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_Y" ), context );
-  double translateZ = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_Z" ), context );
-  double scaleX = parameterAsDouble( parameters, QStringLiteral( "SCALE_X" ), context );
-  double scaleY = parameterAsDouble( parameters, QStringLiteral( "SCALE_Y" ), context );
-  double scaleZ = parameterAsDouble( parameters, QStringLiteral( "SCALE_Z" ), context );
-  float rotateX = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_X" ), context ) );
-  float rotateY = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_Y" ), context ) );
-  float rotateZ = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_Z" ), context ) );
+  const double translateX = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_X" ), context );
+  const double translateY = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_Y" ), context );
+  const double translateZ = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_Z" ), context );
+  const double scaleX = parameterAsDouble( parameters, QStringLiteral( "SCALE_X" ), context );
+  const double scaleY = parameterAsDouble( parameters, QStringLiteral( "SCALE_Y" ), context );
+  const double scaleZ = parameterAsDouble( parameters, QStringLiteral( "SCALE_Z" ), context );
+  const float rotateX = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_X" ), context ) );
+  const float rotateY = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_Y" ), context ) );
+  const float rotateZ = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_Z" ), context ) );
 
-  QMatrix3x3 rotation3x3 = QQuaternion::fromEulerAngles( rotateX, rotateY, rotateZ ).toRotationMatrix();
+  const QMatrix3x3 rotation3x3 = QQuaternion::fromEulerAngles( rotateX, rotateY, rotateZ ).toRotationMatrix();
 
-  QgsMatrix4x4 rotateMatrix = QgsMatrix4x4( rotation3x3( 0, 0 ), rotation3x3( 0, 1 ), rotation3x3( 0, 2 ), 0, rotation3x3( 1, 0 ), rotation3x3( 1, 1 ), rotation3x3( 1, 2 ), 0, rotation3x3( 2, 0 ), rotation3x3( 2, 1 ), rotation3x3( 2, 2 ), 0, 0, 0, 0, 1 );
+  const QgsMatrix4x4 rotateMatrix = QgsMatrix4x4( rotation3x3( 0, 0 ), rotation3x3( 0, 1 ), rotation3x3( 0, 2 ), 0, rotation3x3( 1, 0 ), rotation3x3( 1, 1 ), rotation3x3( 1, 2 ), 0, rotation3x3( 2, 0 ), rotation3x3( 2, 1 ), rotation3x3( 2, 2 ), 0, 0, 0, 0, 1 );
 
-  QgsMatrix4x4 translateMatrix = QgsMatrix4x4( 1, 0, 0, translateX, 0, 1, 0, translateY, 0, 0, 1, translateZ, 0, 0, 0, 1 );
+  const QgsMatrix4x4 translateMatrix = QgsMatrix4x4( 1, 0, 0, translateX, 0, 1, 0, translateY, 0, 0, 1, translateZ, 0, 0, 0, 1 );
 
-  QgsMatrix4x4 scaleMatrix = QgsMatrix4x4( scaleX, 0, 0, 0, 0, scaleY, 0, 0, 0, 0, scaleZ, 0, 0, 0, 0, 1 );
+  const QgsMatrix4x4 scaleMatrix = QgsMatrix4x4( scaleX, 0, 0, 0, 0, scaleY, 0, 0, 0, 0, scaleZ, 0, 0, 0, 0, 1 );
 
   QgsMatrix4x4 transformMatrix = translateMatrix * rotateMatrix * scaleMatrix;
 
-  QString transformString = QStringLiteral( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15 %16" )
-                              .arg( transformMatrix.data()[0] )
-                              .arg( transformMatrix.data()[4] )
-                              .arg( transformMatrix.data()[8] )
-                              .arg( transformMatrix.data()[12] )
-                              .arg( transformMatrix.data()[1] )
-                              .arg( transformMatrix.data()[5] )
-                              .arg( transformMatrix.data()[9] )
-                              .arg( transformMatrix.data()[13] )
-                              .arg( transformMatrix.data()[2] )
-                              .arg( transformMatrix.data()[6] )
-                              .arg( transformMatrix.data()[10] )
-                              .arg( transformMatrix.data()[14] )
-                              .arg( transformMatrix.data()[3] )
-                              .arg( transformMatrix.data()[7] )
-                              .arg( transformMatrix.data()[11] )
-                              .arg( transformMatrix.data()[15] );
+  const QString transformString = QStringLiteral( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15 %16" )
+                                    .arg( transformMatrix.data()[0] )
+                                    .arg( transformMatrix.data()[4] )
+                                    .arg( transformMatrix.data()[8] )
+                                    .arg( transformMatrix.data()[12] )
+                                    .arg( transformMatrix.data()[1] )
+                                    .arg( transformMatrix.data()[5] )
+                                    .arg( transformMatrix.data()[9] )
+                                    .arg( transformMatrix.data()[13] )
+                                    .arg( transformMatrix.data()[2] )
+                                    .arg( transformMatrix.data()[6] )
+                                    .arg( transformMatrix.data()[10] )
+                                    .arg( transformMatrix.data()[14] )
+                                    .arg( transformMatrix.data()[3] )
+                                    .arg( transformMatrix.data()[7] )
+                                    .arg( transformMatrix.data()[11] )
+                                    .arg( transformMatrix.data()[15] );
 
   QStringList args = { QStringLiteral( "translate" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--transform-matrix=%1" ).arg( transformString ) };
 

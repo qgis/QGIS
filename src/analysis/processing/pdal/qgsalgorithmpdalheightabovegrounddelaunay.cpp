@@ -84,7 +84,7 @@ QStringList QgsPdalHeightAboveGroundDelaunayAlgorithm::createArgumentLists( cons
   checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  int count = parameterAsInt( parameters, QStringLiteral( "COUNT" ), context );
+  const int count = parameterAsInt( parameters, QStringLiteral( "COUNT" ), context );
 
   QString replaceZ = "false";
   if ( parameterAsBoolean( parameters, QStringLiteral( "REPLACE_Z" ), context ) )

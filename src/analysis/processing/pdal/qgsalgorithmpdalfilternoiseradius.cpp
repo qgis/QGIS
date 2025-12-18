@@ -86,8 +86,8 @@ QStringList QgsPdalFilterNoiseRadiusAlgorithm::createArgumentLists( const QVaria
   checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  double minK = parameterAsDouble( parameters, QStringLiteral( "MIN_K" ), context );
-  double radius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
+  const double minK = parameterAsDouble( parameters, QStringLiteral( "MIN_K" ), context );
+  const double radius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
 
   QString removeNoisePoints = "false";
   if ( parameterAsBoolean( parameters, QStringLiteral( "REMOVE_NOISE_POINTS" ), context ) )
