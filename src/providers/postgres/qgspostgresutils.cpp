@@ -785,7 +785,7 @@ bool QgsPostgresUtils::qgisProjectVersioningActive( QgsPostgresConn *conn, const
                                     .arg( QgsPostgresConn::quotedValue( schema ) );
 
   QgsPostgresResult res( conn->PQexec( sqlCheckTrigger ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( QStringLiteral( "t" ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( QLatin1Char( 't' ) );
 }
 
 bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema )
