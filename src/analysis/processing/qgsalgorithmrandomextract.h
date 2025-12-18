@@ -21,22 +21,39 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
 /**
+ * Base class for random extraction/selection algorithms.
+ */
+class QgsRandomExtractSelectAlgorithmBase : public QgsProcessingAlgorithm
+{
+  public:
+    QString group() const override;
+    QString groupId() const override;
+
+  protected:
+    /**
+     * Selectes \a count random feature IDs from the \a source.
+     */
+    void sampleFeatureIds( QgsFeatureSource *source, const long long count, QgsProcessingFeedback *feedback );
+
+    QgsFeatureIds mSelectedFeatureIds;
+};
+
+/**
  * Native random extract algorithm.
  */
-class QgsRandomExtractAlgorithm : public QgsProcessingAlgorithm
+class QgsRandomExtractAlgorithm : public QgsRandomExtractSelectAlgorithmBase
 {
   public:
     QgsRandomExtractAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
@@ -45,6 +62,32 @@ class QgsRandomExtractAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+};
+
+/**
+ * Native random selection algorithm.
+ */
+class QgsRandomSelectionAlgorithm : public QgsRandomExtractSelectAlgorithmBase
+{
+  public:
+    QgsRandomSelectionAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSelectRandom.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSelectRandom.svg"_s ); }
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsRandomSelectionAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QVariant mInput;
+    QgsVectorLayer *mTargetLayer = nullptr;
 };
 
 ///@endcond PRIVATE
