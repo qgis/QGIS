@@ -987,9 +987,14 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
         if ( subIndex.at( i ).index() )
           continue;
 
+
+        const double zoomOutMultiplier = mRenderer ? mRenderer->zoomOutMultiplier() : 1.0;
+        const double widthThreshold = vpcProvider->averageSubIndexWidth()  * zoomOutMultiplier;
+        const double heightThreshold = vpcProvider->averageSubIndexHeight() * zoomOutMultiplier;
+
         if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
-             ( renderExtent.width() < vpcProvider->averageSubIndexWidth() ||
-               renderExtent.height() < vpcProvider->averageSubIndexHeight() ) )
+             ( renderExtent.width() < widthThreshold ||
+               renderExtent.height() < heightThreshold ) )
         {
           mDataProvider->loadSubIndex( i );
         }
