@@ -20,14 +20,14 @@ __author__ = "Tudor Bărăscu"
 __date__ = "November 2025"
 __copyright__ = "(C) 2025, Tudor Bărăscu"
 
-from pathlib import Path
 import re
 import sys
 
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RULES_FILE = ROOT / "resources" / "unaccent.rules"
-OUT_FILE = ROOT / "src" / "core" / "qgsunaccent_generated_rules.cpp"
+OUT_FILE = ROOT / "src" / "core" / "qgsunaccentrules.cpp"
 
 
 def decode_quoted(dst: str) -> str:
@@ -137,9 +137,7 @@ def write_cpp(path: Path, rules):
             esc_src = cpp_escape(src)
 
             if dst == "":
-                f.write(
-                    f'  map.insert( QStringLiteral( "{esc_src}" ), QString() );\n'
-                )
+                f.write(f'  map.insert( QStringLiteral( "{esc_src}" ), QString() );\n')
             else:
                 esc_dst = cpp_escape(dst)
                 f.write(
