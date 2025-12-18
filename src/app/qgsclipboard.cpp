@@ -673,7 +673,9 @@ std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessage
     }
   }
 
-  if ( !layer->addFeatures( convertedFeatures ) || !layer->commitChanges() )
+  if ( !layer->addFeatures( convertedFeatures )
+  || !QgisApp::instance()->tryCommitChanges(layer.get())
+  || !layer->commitChanges() )
   {
     QgsDebugError( QStringLiteral( "Cannot add features or commit changes" ) );
     return nullptr;
