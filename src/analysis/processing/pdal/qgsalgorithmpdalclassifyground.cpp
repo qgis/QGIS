@@ -100,11 +100,11 @@ QStringList QgsPdalClassifyGroundAlgorithm::createArgumentLists( const QVariantM
   checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  double cellSize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
-  double scalar = parameterAsDouble( parameters, QStringLiteral( "SCALAR" ), context );
-  double slope = parameterAsDouble( parameters, QStringLiteral( "SLOPE" ), context );
-  double threshold = parameterAsDouble( parameters, QStringLiteral( "THRESHOLD" ), context );
-  double windowSize = parameterAsDouble( parameters, QStringLiteral( "WINDOW_SIZE" ), context );
+  const double cellSize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
+  const double scalar = parameterAsDouble( parameters, QStringLiteral( "SCALAR" ), context );
+  const double slope = parameterAsDouble( parameters, QStringLiteral( "SLOPE" ), context );
+  const double threshold = parameterAsDouble( parameters, QStringLiteral( "THRESHOLD" ), context );
+  const double windowSize = parameterAsDouble( parameters, QStringLiteral( "WINDOW_SIZE" ), context );
 
   QStringList args = { QStringLiteral( "classify_ground" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--cell-size=%1" ).arg( cellSize ), QStringLiteral( "--scalar=%1" ).arg( scalar ), QStringLiteral( "--slope=%1" ).arg( slope ), QStringLiteral( "--threshold=%1" ).arg( threshold ), QStringLiteral( "--window-size=%1" ).arg( windowSize ) };
 
