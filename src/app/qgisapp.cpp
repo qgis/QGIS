@@ -93,6 +93,9 @@
 #include "qgsfixattributedialog.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsgeometrycollection.h"
+#include "qgspolyhedralsurface.h"
+#include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsauxiliarystorage.h"
@@ -8877,6 +8880,61 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
   if ( !featureList.at( 0 ).hasGeometry() )
     return QgsGeometry();
 
+  const Qgis::WkbType layerFlatType = QgsWkbTypes::flatType( vl->wkbType() );
+
+  // Special handling for TIN: collect patches instead of geometric union
+  if ( layerFlatType == Qgis::WkbType::TIN )
+  {
+    QProgressDialog progress( tr( "Collecting patches…" ), tr( "Abort" ), 0, featureList.size(), this );
+    progress.setWindowModality( Qt::WindowModal );
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    auto resultTin = std::make_unique<QgsTriangulatedSurface>();
+    // Preserve Z/M from layer type
+    if ( QgsWkbTypes::hasZ( vl->wkbType() ) )
+      resultTin->addZValue( 0 );
+    if ( QgsWkbTypes::hasM( vl->wkbType() ) )
+      resultTin->addMValue( 0 );
+
+    for ( int i = 0; i < featureList.size(); ++i )
+    {
+      if ( progress.wasCanceled() )
+      {
+        QApplication::restoreOverrideCursor();
+        canceled = true;
+        return QgsGeometry();
+      }
+      progress.setValue( i );
+
+      const QgsGeometry &geom = featureList.at( i ).geometry();
+      if ( geom.isNull() )
+        continue;
+
+      const QgsAbstractGeometry *abstractGeom = geom.constGet();
+      if ( const QgsTriangulatedSurface *tin = qgsgeometry_cast<const QgsTriangulatedSurface *>( abstractGeom ) )
+      {
+        // Copy all patches (triangles) from the TIN
+        for ( int j = 0; j < tin->numPatches(); ++j )
+        {
+          if ( const QgsPolygon *patch = tin->patchN( j ) )
+          {
+            resultTin->addPatch( patch->clone() );
+          }
+        }
+      }
+      else if ( const QgsTriangle *triangle = qgsgeometry_cast<const QgsTriangle *>( abstractGeom ) )
+      {
+        resultTin->addPatch( triangle->clone() );
+      }
+    }
+
+    QApplication::restoreOverrideCursor();
+    progress.setValue( featureList.size() );
+    return QgsGeometry( std::move( resultTin ) );
+  }
+
+  // Standard handling for other geometry types: use GEOS combine
   QgsGeometry unionGeom = featureList.at( 0 ).geometry();
 
   QProgressDialog progress( tr( "Merging features…" ), tr( "Abort" ), 0, featureList.size(), this );
@@ -8909,6 +8967,16 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
   if ( QgsWkbTypes::isMultiType( vl->wkbType() ) && !unionGeom.isMultipart() )
   {
     unionGeom.convertToMultiType();
+  }
+
+  // Convert result to PolyhedralSurface if layer type requires it
+  if ( layerFlatType == Qgis::WkbType::PolyhedralSurface )
+  {
+    QVector<QgsGeometry> converted = unionGeom.coerceToType( vl->wkbType() );
+    if ( !converted.isEmpty() )
+    {
+      unionGeom = converted.at( 0 );
+    }
   }
 
   QApplication::restoreOverrideCursor();
