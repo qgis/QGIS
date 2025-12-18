@@ -84,7 +84,7 @@ void QgsMapHitTest::run()
 
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      if ( !vl || !vl->renderer() )
+      if ( !vl->renderer() )
         continue;
 
       context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
@@ -103,23 +103,16 @@ void QgsMapHitTest::run()
     }
     else if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
     {
-      if ( !rl || !rl->renderer() || !rl->dataProvider() )
+      if ( !rl->renderer() || !rl->dataProvider() )
         continue;
 
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
-
-      QgsCoordinateTransform transform = QgsCoordinateTransform( mapSettings.destinationCrs(), rl->crs(), mapSettings.transformContext() );
 
       runHitTestRasterSource( rl->dataProvider(), rl->id(), rl->renderer()->inputBand(), minMaxOrigin, minMaxOrigin.limits(),
                               context, nullptr, extent );
     }
     else if ( QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( layer ) )
     {
-      if ( !ml )
-        continue;
-
-      QgsCoordinateTransform transform = QgsCoordinateTransform( mapSettings.destinationCrs(), ml->crs(), mapSettings.transformContext() );
-
       QgsMeshDatasetIndex datasetIndex = ml->activeScalarDatasetIndex( context );
       QgsMeshRendererScalarSettings scalarSettings = ml->rendererSettings().scalarSettings( datasetIndex.dataset() );
 
@@ -474,7 +467,7 @@ void QgsMapHitTestTask::prepare()
 
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      if ( !vl || !vl->renderer() )
+      if ( !vl->renderer() )
         continue;
 
       QgsMapLayerStyleOverride styleOverride( vl );
@@ -494,7 +487,7 @@ void QgsMapHitTestTask::prepare()
     }
     else if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
     {
-      if ( !rl || !rl->dataProvider() || !rl->renderer() )
+      if ( !rl->dataProvider() || !rl->renderer() )
         continue;
 
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
@@ -514,9 +507,6 @@ void QgsMapHitTestTask::prepare()
     }
     else if ( QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( layer ) )
     {
-      if ( !ml )
-        continue;
-
       PreparedMeshData meshData;
       meshData.layer = std::unique_ptr< QgsMeshLayer >( ml->clone() );
       meshData.layer->moveToThread( nullptr );
@@ -589,7 +579,7 @@ bool QgsMapHitTestTask::run()
   }
 
   layerIdx = 0;
-  for ( auto &rasterData : mPreparedRasterData )
+  for ( PreparedRasterData &rasterData : mPreparedRasterData )
   {
     rasterData.provider->moveToThread( QThread:: currentThread() );
 
@@ -612,7 +602,7 @@ bool QgsMapHitTestTask::run()
   }
 
   layerIdx = 0;
-  for ( auto &meshData : mPreparedMeshData )
+  for ( PreparedMeshData &meshData : mPreparedMeshData )
   {
     mFeedback->setProgress( ( static_cast<double>( mPreparedData.size() ) + static_cast<double>( mPreparedRasterData.size() ) + static_cast< double >( layerIdx ) ) / static_cast< double >( totalCount ) * 100.0 );
     if ( mFeedback->isCanceled() )
