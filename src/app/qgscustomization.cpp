@@ -202,6 +202,7 @@ void QgsCustomization::Item::copyItemAttributes( const QgsCustomization::Item *o
   mName = other->mName;
   mTitle = other->mTitle;
   mVisible = other->mVisible;
+  mIcon = other->mIcon;
   for ( const std::unique_ptr<QgsCustomization::Item> &otherChildItem : other->mChildItemList )
   {
     addItem( otherChildItem->clone( this ) );
@@ -255,6 +256,16 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::createChildIte
     return std::make_unique<Action>( this );
   else
     return nullptr;
+}
+
+void QgsCustomization::Action::copyItemAttributes( const Item *other )
+{
+  Item::copyItemAttributes( other );
+  if ( const Action *action = dynamic_cast<const Action *>( other ) )
+  {
+    mQAction = action->mQAction;
+    mQActionIndex = action->mQActionIndex;
+  }
 }
 
 ////////////////
@@ -344,7 +355,7 @@ QgsCustomization::ToolBars::ToolBars()
   : Item()
 {
   mName = "ToolBars";
-  mTitle = QObject::tr( "ToolBars" );
+  setTitle( QObject::tr( "ToolBars" ) );
 }
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBars::clone( QgsCustomization::Item * ) const
@@ -373,7 +384,7 @@ QgsCustomization::Menus::Menus()
   : Item()
 {
   mName = "Menus";
-  mTitle = QObject::tr( "Menus" );
+  setTitle( QObject::tr( "Menus" ) );
 }
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menus::clone( QgsCustomization::Item * ) const
@@ -446,7 +457,7 @@ QgsCustomization::Docks::Docks()
   : Item()
 {
   mName = "Docks";
-  mTitle = QObject::tr( "Docks" );
+  setTitle( QObject::tr( "Docks" ) );
 }
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Docks::clone( QgsCustomization::Item * ) const
@@ -500,7 +511,7 @@ QgsCustomization::BrowserItems::BrowserItems()
   : Item()
 {
   mName = "BrowserItems";
-  mTitle = QObject::tr( "Browser" );
+  setTitle( QObject::tr( "Browser" ) );
 }
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItems::clone( QgsCustomization::Item * ) const
@@ -550,7 +561,7 @@ QgsCustomization::StatusBarWidgets::StatusBarWidgets()
   : Item()
 {
   mName = "StatusBarWidgets";
-  mTitle = QObject::tr( "Status Bar" );
+  setTitle( QObject::tr( "Status Bar" ) );
 }
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidgets::clone( QgsCustomization::Item * ) const
@@ -699,28 +710,21 @@ void QgsCustomization::addActions( Item *item, QWidget *widget ) const
       continue;
 
     // submenu
-    Action *childItem = nullptr;
-    if ( it.isMenu )
+    Action *childItem = item->getChild<Action>( it.name );
+    if ( !childItem )
     {
-      childItem = item->getChild<Menu>( it.name );
-      if ( !childItem )
+      if ( it.isMenu )
       {
-        auto menuItem = std::make_unique<QgsCustomization::Menu>( it.name, it.title, item );
-        childItem = menuItem.get();
+        auto menuItem = std::make_unique<Menu>( it.name, it.title, item );
         item->addItem( std::move( menuItem ) );
       }
-    }
-    // ordinary action
-    else
-    {
-      childItem = item->getChild<Action>( it.name );
-      if ( !childItem )
+      else
       {
-        // remove '&' which are used to mark shortcut key
         std::unique_ptr<Action> action = std::make_unique<Action>( it.name, it.title, item );
         item->addItem( std::move( action ) );
-        childItem = item->lastChild<Action>();
       }
+
+      childItem = item->lastChild<Action>();
     }
 
     childItem->setIcon( it.icon );
