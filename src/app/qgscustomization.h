@@ -554,10 +554,10 @@ class APP_EXPORT QgsCustomization
      */
     QString writeFile( const QString &filePath ) const;
 
-  protected:
+  private:
     /**
-   * Add action items as children of \a item for each \a widget actions
-   */
+     * Add action items as children of \a item for each \a widget actions
+     */
     void addActions( Item *item, QWidget *widget ) const;
 
     /**
@@ -626,10 +626,9 @@ class APP_EXPORT QgsCustomization
      */
     QString readXml( const QString &fileName );
 
-  private:
     /**
-   * Helper class to iterate over widget actions
-   */
+     * Helper class to iterate over widget actions
+     */
     class QWidgetIterator
     {
       public:
