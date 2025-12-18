@@ -42,7 +42,6 @@ from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PolarPlot import PolarPlot
-from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsLayer import RandomPointsLayer
@@ -98,7 +97,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             PointsDisplacement(),
             PointsFromLines(),
             PolarPlot(),
-            PostGISExecuteAndLoadSQL(),
             RandomExtractWithinSubsets(),
             RandomPointsAlongLines(),
             RandomPointsLayer(),
