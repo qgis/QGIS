@@ -775,17 +775,23 @@ bool QgsPostgresUtils::disableQgisProjectVersioning( QgsPostgresConn *conn, cons
 
 bool QgsPostgresUtils::qgisProjectVersioningEnabled( QgsPostgresConn *conn, const QString &schema )
 {
-  const QString sqlCheckTrigger = QStringLiteral( "SELECT EXISTS ("
-                                                  "SELECT 1 "
-                                                  "FROM information_schema.triggers "
-                                                  "WHERE trigger_schema = %1 "
-                                                  "AND trigger_name = 'qgis_project_versions' "
-                                                  "AND event_object_table = 'qgis_projects'"
-                                                  ");" )
-                                    .arg( QgsPostgresConn::quotedValue( schema ) );
+  const QString sqlCheck = QStringLiteral( "SELECT EXISTS ("
+                                           "SELECT 1 "
+                                           "FROM information_schema.triggers "
+                                           "WHERE trigger_schema = %1 "
+                                           "AND trigger_name = 'qgis_project_versions' "
+                                           "AND event_object_table = 'qgis_projects'"
+                                           ") AS trigger_exists, "
+                                           "EXISTS ("
+                                           "SELECT 1 "
+                                           "FROM information_schema.tables "
+                                           "WHERE table_schema = %1 "
+                                           "AND table_name = 'qgis_projects_versions' "
+                                           ") AS table_exists;" )
+                             .arg( QgsPostgresConn::quotedValue( schema ) );
 
-  QgsPostgresResult res( conn->PQexec( sqlCheckTrigger ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( QLatin1Char( 't' ) );
+  QgsPostgresResult res( conn->PQexec( sqlCheck ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( QLatin1Char( 't' ) ) && res.PQgetvalue( 0, 1 ).startsWith( QLatin1Char( 't' ) );
 }
 
 bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema )
