@@ -82,7 +82,7 @@ class CORE_EXPORT QgsProcessingQueuedTask
  *
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsProcessingTaskQueue : public QObject
+class CORE_EXPORT QgsProcessingTaskQueue : public QObject SIP_NODEFAULTCTORS
 {
     Q_OBJECT
 
