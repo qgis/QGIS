@@ -142,10 +142,10 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
       QAction *enableAllowProjectVersioning = new QAction( tr( "Enable Projects Versioning…" ), projectMenu );
       projectMenu->addAction( enableAllowProjectVersioning );
-      enableAllowProjectVersioning->setEnabled( !schemaItem->projectVersioning() );
+      enableAllowProjectVersioning->setEnabled( !schemaItem->projectVersioningEnabled() );
       connect( enableAllowProjectVersioning, &QAction::triggered, this, [schemaItem, context] {
         allowProjectsVersioning( schemaItem->connectionName(), schemaItem->name(), context );
-        schemaItem->setProjectVersioning( true );
+        schemaItem->setProjectVersioningEnabled( true );
       } );
     }
   }
@@ -209,7 +209,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       // Project versioning
       QgsPGSchemaItem *parentSchemaItem = qobject_cast<QgsPGSchemaItem *>( item->parent() );
 
-      if ( parentSchemaItem && parentSchemaItem->projectVersioning() )
+      if ( parentSchemaItem && parentSchemaItem->projectVersioningEnabled() )
       {
         QAction *showProjectVersions = new QAction( tr( "Show Project Versions…" ), menu );
         menu->addAction( showProjectVersions );
@@ -226,7 +226,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
           allowProjectsVersioning( projectItem->connectionName(), projectItem->schemaName(), context );
           if ( parentSchemaItem )
           {
-            parentSchemaItem->setProjectVersioning( true );
+            parentSchemaItem->( true );
           }
         } );
       }
