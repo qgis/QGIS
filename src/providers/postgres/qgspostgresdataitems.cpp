@@ -269,7 +269,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     }
   }
 
-  mProjectVersioningActive = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mName );
+  mProjectVersioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mName );
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
