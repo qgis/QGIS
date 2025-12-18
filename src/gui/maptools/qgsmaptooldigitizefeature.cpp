@@ -80,13 +80,21 @@ void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geomet
     {
       double defaultZ = QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->value();
       double defaultM = QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value();
-      QVector<QgsGeometry> layerGeometries = geometry.coerceToType( layerWKBType, defaultZ, defaultM );
+      QString coerceError;
+      QVector<QgsGeometry> layerGeometries = geometry.coerceToType( layerWKBType, defaultZ, defaultM, true, &coerceError );
       if ( layerGeometries.count() > 0 )
         layerGeometry = layerGeometries.at( 0 );
 
       if ( layerGeometry.wkbType() != layerWKBType && layerGeometry.wkbType() != QgsWkbTypes::linearType( layerWKBType ) )
       {
-        emit messageEmitted( tr( "The digitized geometry type (%1) does not correspond to the layer geometry type (%2)." ).arg( QgsWkbTypes::displayString( layerGeometry.wkbType() ), QgsWkbTypes::displayString( layerWKBType ) ), Qgis::MessageLevel::Warning );
+        if ( !coerceError.isEmpty() )
+        {
+          emit messageEmitted( coerceError, Qgis::MessageLevel::Warning );
+        }
+        else
+        {
+          emit messageEmitted( tr( "The digitized geometry type (%1) does not correspond to the layer geometry type (%2)." ).arg( QgsWkbTypes::displayString( layerGeometry.wkbType() ), QgsWkbTypes::displayString( layerWKBType ) ), Qgis::MessageLevel::Warning );
+        }
         return;
       }
     }
