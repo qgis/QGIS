@@ -29,6 +29,7 @@
 #include "qgspostgresconn.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresimportprojectdialog.h"
+#include "qgspostgresprojectstoragedialog.h"
 #include "qgspostgresprojectversionsdialog.h"
 #include "qgspostgresutils.h"
 #include "qgsproject.h"
@@ -1310,7 +1311,7 @@ bool QgsPostgresDataItemGuiProvider::enableProjectsVersioning( const QString con
     return false;
   }
 
-  QMessageBox::StandardButton result = QMessageBox::question( nullptr, tr( "Enable versioning of QGIS projects" ), tr( "Do you want to enable versioning of QGIS projects in schema “%1”? This will create new table in the schema and store older versions of QGIS projects there." ).arg( schemaName ) );
+  QMessageBox::StandardButton result = QgsPostgresProjectStorageDialog::questionAllowProjectVersioning( nullptr, schemaName );
 
   if ( result == QMessageBox::StandardButton::Yes )
   {

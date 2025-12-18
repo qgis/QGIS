@@ -21,6 +21,7 @@
 #include "qgspostgresprojectversionsmodel.h"
 
 #include <QDialog>
+#include <QMessageBox>
 
 class QgsPostgresProjectStorageDialog : public QDialog, private Ui::QgsPostgresProjectStorageDialog
 {
@@ -33,6 +34,8 @@ class QgsPostgresProjectStorageDialog : public QDialog, private Ui::QgsPostgresP
     QString projectName() const;
 
     QString currentProjectUri( bool schemaOnly = false );
+
+    static QMessageBox::StandardButton questionAllowProjectVersioning( QWidget *parent, const QString &schemaName );
 
   signals:
 

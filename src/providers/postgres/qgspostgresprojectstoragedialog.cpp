@@ -25,7 +25,6 @@
 #include "qgsprojectstorageregistry.h"
 
 #include <QMenu>
-#include <QMessageBox>
 #include <QPushButton>
 
 #include "moc_qgspostgresprojectstoragedialog.cpp"
@@ -265,7 +264,7 @@ void QgsPostgresProjectStorageDialog::setupQgisProjectVersioning()
 {
   if ( mEnableProjectVersions->isChecked() )
   {
-    QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Enable versioning of QGIS projects" ), tr( "Do you want to enable versioning of QGIS projects in this schema?\nThis will create new table in the schema and store older versions of QGIS projects there." ) );
+    QMessageBox::StandardButton result = QgsPostgresProjectStorageDialog::questionAllowProjectVersioning( this, mCboSchema->currentText() );
 
     if ( result == QMessageBox::StandardButton::Yes )
     {
@@ -302,4 +301,9 @@ void QgsPostgresProjectStorageDialog::setupQgisProjectVersioning()
       QgsSignalBlocker( mEnableProjectVersions )->setChecked( false );
     }
   }
+}
+
+QMessageBox::StandardButton QgsPostgresProjectStorageDialog::questionAllowProjectVersioning( QWidget *parent, const QString &schemaName )
+{
+  return QMessageBox::question( parent, tr( "Enable versioning of QGIS projects" ), tr( "Do you want to enable versioning of QGIS projects in the schema `%1`?\nThis will create new table in the schema and store older versions of QGIS projects there." ).arg( schemaName ) );
 }
