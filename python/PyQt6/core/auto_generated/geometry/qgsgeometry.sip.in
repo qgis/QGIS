@@ -2848,14 +2848,11 @@ This convention matches the OGC Simple Features specification.
 %End
 
     class Error
-{
+    {
 %Docstring(signature="appended")
 A geometry error.
 %End
 
-%TypeHeaderCode
-#include "qgsgeometry.h"
-%End
       public:
         Error();
 
