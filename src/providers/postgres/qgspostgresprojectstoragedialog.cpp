@@ -192,16 +192,6 @@ void QgsPostgresProjectStorageDialog::projectChanged()
   {
     QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
-    QString name = mCboConnection->currentText();
-    QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
-
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), false );
-    if ( !conn )
-    {
-      QMessageBox::critical( this, tr( "Error" ), tr( "Connection failed" ) + "\n" + QgsPostgresConn::connectionInfo( uri, false ) );
-      return;
-    }
-
     mVersionsModel->populateVersions( mCboSchema->currentText(), mCboProject->currentText() );
   }
 }
