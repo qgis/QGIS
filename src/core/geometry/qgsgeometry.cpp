@@ -1040,7 +1040,7 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
   std::unique_ptr< QgsAbstractGeometry > p( part );
   if ( !d->geometry )
   {
-    switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )
+    switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )  // NOLINT(bugprone-branch-clone)
     {
       case Qgis::WkbType::Point:
         reset( std::make_unique< QgsMultiPoint >() );
