@@ -60,6 +60,7 @@ set(TESTS
   testqgsfiledownloader.cpp
   testqgslayoutgui.cpp
   testqgslayoutview.cpp
+  testqgsmaptooleditblanksegments.cpp
   testqgsvaluemapwidgetwrapper.cpp
   testqgsvaluemapconfigdlg.cpp
   testqgsvaluerelationwidgetwrapper.cpp
