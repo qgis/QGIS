@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsauthpkipathsmethod.h"
-#include "moc_qgsauthpkipathsmethod.cpp"
 
+#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsauthpkipathsmethod.cpp"
+
 #ifdef HAVE_GUI
 #include "qgsauthpkipathsedit.h"
 #endif

@@ -31,7 +31,7 @@ class QWT_EXPORT QwtPolarPicker : public QwtPicker
 
   public:
     explicit QwtPolarPicker( QwtPolarCanvas* );
-    virtual ~QwtPolarPicker();
+    ~QwtPolarPicker() override;
 
     explicit QwtPolarPicker(
         RubberBand rubberBand, DisplayMode trackerMode,

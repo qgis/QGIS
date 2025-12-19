@@ -16,9 +16,9 @@
 #ifndef QGSMESHDATASETGROUPTREEWIDGET_H
 #define QGSMESHDATASETGROUPTREEWIDGET_H
 
-#include "qgis_gui.h"
 #include "ui_qgsmeshdatasetgrouptreewidgetbase.h"
 
+#include "qgis_gui.h"
 #include "qgsmeshdataset.h"
 
 SIP_NO_FILE

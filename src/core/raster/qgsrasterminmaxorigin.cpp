@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgsrasterminmaxorigin.h"
+
+#include <cmath>
+
 #include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
-#include <cmath>
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )

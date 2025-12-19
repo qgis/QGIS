@@ -20,12 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvectorlayerjoininfo.h"
 #include "qgsfeaturesink.h"
+#include "qgsvectorlayerjoininfo.h"
 
 #include <QHash>
 #include <QString>
-
 
 typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 
@@ -142,6 +141,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      */
     QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;
 
+    using QgsFeatureSink::addFeatures;
     /**
      * Adds a list of features in joined layers. Features given in parameter
      * are those added in target layer. If a corresponding joined feature yet

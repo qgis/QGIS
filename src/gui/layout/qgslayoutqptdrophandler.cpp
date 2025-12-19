@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgslayoutqptdrophandler.h"
-#include "moc_qgslayoutqptdrophandler.cpp"
-#include "qgslayoutdesignerinterface.h"
+
 #include "qgslayout.h"
-#include "qgsreadwritecontext.h"
-#include "qgsproject.h"
+#include "qgslayoutdesignerinterface.h"
 #include "qgslayoutview.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+
 #include <QMessageBox>
+
+#include "moc_qgslayoutqptdrophandler.cpp"
 
 QgsLayoutQptDropHandler::QgsLayoutQptDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )

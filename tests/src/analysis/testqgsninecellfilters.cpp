@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsalignraster.h"
-#include "qgsaspectfilter.h"
-#include "qgsslopefilter.h"
-#include "qgshillshadefilter.h"
-#include "qgsruggednessfilter.h"
-#include "qgstotalcurvaturefilter.h"
 #include "qgsapplication.h"
+#include "qgsaspectfilter.h"
+#include "qgshillshadefilter.h"
 #include "qgsrasterlayer.h"
+#include "qgsruggednessfilter.h"
+#include "qgsslopefilter.h"
+#include "qgstest.h"
+#include "qgstotalcurvaturefilter.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -212,8 +212,7 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAl
     const int y = cp.second;
     const double outVal = out.identify( x, y );
     const double refVal = ref.identify( x, y );
-    const double diff( qAbs( outVal - refVal ) );
-    QVERIFY( diff <= tolerance );
+    QGSCOMPARENEAR( outVal, refVal, tolerance );
   }
 }
 

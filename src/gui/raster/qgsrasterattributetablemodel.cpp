@@ -14,10 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetablemodel.h"
-#include "moc_qgsrasterattributetablemodel.cpp"
+
 #include <QColor>
 #include <QFont>
 
+#include "moc_qgsrasterattributetablemodel.cpp"
 
 QgsRasterAttributeTableModel::QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent )
   : QAbstractTableModel( parent )

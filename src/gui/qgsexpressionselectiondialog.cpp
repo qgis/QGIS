@@ -14,18 +14,18 @@
  ***************************************************************************/
 
 #include "qgsexpressionselectiondialog.h"
-#include "moc_qgsexpressionselectiondialog.cpp"
 
 #include "qgsapplication.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometry.h"
+#include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
-#include "qgsvectorlayer.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayer.h"
 
+#include "moc_qgsexpressionselectiondialog.cpp"
 
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
   : QDialog( parent )

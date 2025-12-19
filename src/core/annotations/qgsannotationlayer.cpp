@@ -15,21 +15,24 @@
  ***************************************************************************/
 
 #include "qgsannotationlayer.h"
-#include "moc_qgsannotationlayer.cpp"
-#include "qgsannotationlayerrenderer.h"
+
+#include "RTree.h"
 #include "qgsannotationitem.h"
-#include "qgsannotationitemregistry.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgspainting.h"
-#include "qgsmaplayerfactory.h"
-#include "qgsfeedback.h"
 #include "qgsannotationitemeditoperation.h"
+#include "qgsannotationitemregistry.h"
+#include "qgsannotationlayerrenderer.h"
+#include "qgsapplication.h"
+#include "qgsfeedback.h"
+#include "qgslogger.h"
+#include "qgsmaplayerfactory.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
+#include "qgspainting.h"
 #include "qgsthreadingutils.h"
+
 #include <QUuid>
-#include "RTree.h"
+
+#include "moc_qgsannotationlayer.cpp"
 
 ///@cond PRIVATE
 class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>

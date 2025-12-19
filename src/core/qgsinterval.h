@@ -22,12 +22,13 @@
  * See details in QEP #17
  ****************************************************************************/
 
-#include <QVariant>
 #include <chrono>
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QVariant>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

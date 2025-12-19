@@ -263,6 +263,110 @@ class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
     def accepted_slot(self):
         self.accepted = True
 
+    def test_create_tin_layer(self):
+        """Test creating a TIN layer - should succeed with a warning, not fail"""
+
+        # Skip if GDAL python bindings are not available
+        try:
+            from osgeo import gdal, ogr
+        except:
+            return
+
+        dialog = QgsNewGeoPackageLayerDialog()
+        dialog.setProperty("hideDialogs", True)
+
+        mFileName = dialog.findChild(QgsFileWidget, "mFileName")
+        buttonBox = dialog.findChild(QDialogButtonBox, "buttonBox")
+        ok_button = buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        mTableNameEdit = dialog.findChild(QLineEdit, "mTableNameEdit")
+        mGeometryTypeBox = dialog.findChild(QComboBox, "mGeometryTypeBox")
+        dialog.accepted.connect(self.accepted_slot)
+
+        # Set TIN geometry type
+        tin_index = mGeometryTypeBox.findData(ogr.wkbTIN)
+        self.assertGreaterEqual(tin_index, 0, "TIN geometry type should be available")
+        mGeometryTypeBox.setCurrentIndex(tin_index)
+        self.assertEqual(mGeometryTypeBox.currentText(), "TIN")
+
+        dbname = os.path.join(self.basetestpath, "test_tin.gpkg")
+        mFileName.setFilePath(dbname)
+        self.assertEqual(mTableNameEdit.text(), "test_tin")
+        self.assertTrue(ok_button.isEnabled())
+
+        # Create the layer - should succeed (GDAL warning is not an error)
+        self.accepted = False
+        QTest.mouseClick(ok_button, Qt.MouseButton.LeftButton)
+        self.assertTrue(self.accepted, "TIN layer creation should succeed")
+
+        # Verify layer was created
+        layers = QgsProject.instance().mapLayers()
+        self.assertEqual(len(layers), 1)
+        layer = layers[list(layers.keys())[0]]
+        self.assertEqual(layer.name(), "test_tin")
+        QgsProject.instance().removeAllMapLayers()
+
+        # Verify with OGR
+        ds = ogr.Open(dbname)
+        self.assertIsNotNone(ds)
+        lyr = ds.GetLayer(0)
+        self.assertIsNotNone(lyr)
+        self.assertEqual(lyr.GetGeomType(), ogr.wkbTIN)
+        ds = None
+
+    def test_create_polyhedral_surface_layer(self):
+        """Test creating a PolyhedralSurface layer - should succeed with a warning, not fail"""
+
+        # Skip if GDAL python bindings are not available
+        try:
+            from osgeo import gdal, ogr
+        except:
+            return
+
+        dialog = QgsNewGeoPackageLayerDialog()
+        dialog.setProperty("hideDialogs", True)
+
+        mFileName = dialog.findChild(QgsFileWidget, "mFileName")
+        buttonBox = dialog.findChild(QDialogButtonBox, "buttonBox")
+        ok_button = buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        mTableNameEdit = dialog.findChild(QLineEdit, "mTableNameEdit")
+        mGeometryTypeBox = dialog.findChild(QComboBox, "mGeometryTypeBox")
+        dialog.accepted.connect(self.accepted_slot)
+
+        # Set PolyhedralSurface geometry type
+        polyhedral_index = mGeometryTypeBox.findData(ogr.wkbPolyhedralSurface)
+        self.assertGreaterEqual(
+            polyhedral_index, 0, "PolyhedralSurface geometry type should be available"
+        )
+        mGeometryTypeBox.setCurrentIndex(polyhedral_index)
+        self.assertEqual(mGeometryTypeBox.currentText(), "PolyhedralSurface")
+
+        dbname = os.path.join(self.basetestpath, "test_polyhedral.gpkg")
+        mFileName.setFilePath(dbname)
+        self.assertEqual(mTableNameEdit.text(), "test_polyhedral")
+        self.assertTrue(ok_button.isEnabled())
+
+        # Create the layer - should succeed (GDAL warning is not an error)
+        self.accepted = False
+        QTest.mouseClick(ok_button, Qt.MouseButton.LeftButton)
+        self.assertTrue(
+            self.accepted, "PolyhedralSurface layer creation should succeed"
+        )
+
+        # Verify layer was created
+        layers = QgsProject.instance().mapLayers()
+        self.assertEqual(len(layers), 1)
+        layer = layers[list(layers.keys())[0]]
+        self.assertEqual(layer.name(), "test_polyhedral")
+        QgsProject.instance().removeAllMapLayers()
+
+        # Verify with OGR
+        ds = ogr.Open(dbname)
+        self.assertIsNotNone(ds)
+        lyr = ds.GetLayer(0)
+        self.assertIsNotNone(lyr)
+        self.assertEqual(lyr.GetGeomType(), ogr.wkbPolyhedralSurface)
+        ds = None
+
 
 if __name__ == "__main__":
     unittest.main()

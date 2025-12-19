@@ -13,36 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererpropertiesdialog.h"
-#include "moc_qgsrendererpropertiesdialog.cpp"
 
-#include "qgsrenderer.h"
-#include "qgsrendererregistry.h"
-
-#include "qgsrendererwidget.h"
-#include "qgssinglesymbolrendererwidget.h"
-#include "qgscategorizedsymbolrendererwidget.h"
-#include "qgsgraduatedsymbolrendererwidget.h"
-#include "qgsrulebasedrendererwidget.h"
-#include "qgspointdisplacementrendererwidget.h"
-#include "qgspointclusterrendererwidget.h"
-#include "qgsinvertedpolygonrendererwidget.h"
-#include "qgsmergedfeaturerendererwidget.h"
-#include "qgsheatmaprendererwidget.h"
 #include "qgs25drendererwidget.h"
-#include "qgsnullsymbolrendererwidget.h"
+#include "qgsapplication.h"
+#include "qgscategorizedsymbolrendererwidget.h"
 #include "qgsembeddedsymbolrendererwidget.h"
-#include "qgspanelwidget.h"
+#include "qgsgraduatedsymbolrendererwidget.h"
+#include "qgsheatmaprendererwidget.h"
+#include "qgsinvertedpolygonrendererwidget.h"
+#include "qgslogger.h"
+#include "qgsmergedfeaturerendererwidget.h"
+#include "qgsnullsymbolrendererwidget.h"
+#include "qgsorderbydialog.h"
 #include "qgspainteffect.h"
+#include "qgspanelwidget.h"
+#include "qgspointclusterrendererwidget.h"
+#include "qgspointdisplacementrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
-
-#include "qgsorderbydialog.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
+#include "qgsrenderer.h"
+#include "qgsrendererregistry.h"
+#include "qgsrendererwidget.h"
+#include "qgsrulebasedrendererwidget.h"
+#include "qgssinglesymbolrendererwidget.h"
 #include "qgsvectorlayer.h"
 
 #include <QKeyEvent>
 #include <QMessageBox>
+
+#include "moc_qgsrendererpropertiesdialog.cpp"
 
 static bool initVectorLayerRenderer( const QString &name, QgsRendererWidgetFunc f, const QString &iconName = QString() )
 {

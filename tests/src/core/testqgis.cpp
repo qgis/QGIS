@@ -12,13 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <memory>
+
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
+
 #include <QApplication>
 #include <QCheckBox>
-#include <memory>
+#include <QObject>
 #include <QSignalSpy>
+#include <QString>
 
 //qgis includes...
 #include "qgis.h"

@@ -14,18 +14,18 @@
  ***************************************************************************/
 #include "qgsoracleprojectstorage.h"
 
-#include "qgsoracleconn.h"
 #include "qgsdbquerylog.h"
+#include "qgslogger.h"
+#include "qgsoracleconn.h"
 #include "qgsoracleprovider.h"
 #include "qgsreadwritecontext.h"
-#include "qgslogger.h"
 
 #include <QIODevice>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSqlError>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QSqlError>
 
 #define ORIGINATOR_CLASS QStringLiteral( "QgsOracleProjectStorage" )
 #define QUERY_ORIGIN QString( QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" )

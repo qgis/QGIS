@@ -20,12 +20,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslayoutitem.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreefilterproxymodel.h"
-#include "qgslegendsettings.h"
-#include "qgslayertree.h"
 #include "qgsexpressioncontext.h"
+#include "qgslayertree.h"
+#include "qgslayertreefilterproxymodel.h"
+#include "qgslayertreemodel.h"
+#include "qgslayoutitem.h"
+#include "qgslegendsettings.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;

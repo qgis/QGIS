@@ -18,13 +18,13 @@
 #ifndef QGSCOLLAPSIBLEGROUPBOX_H
 #define QGSCOLLAPSIBLEGROUPBOX_H
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgssettings.h"
+
 #include <QGroupBox>
 #include <QPointer>
 #include <QToolButton>
-
-#include "qgis_sip.h"
-#include "qgssettings.h"
-#include "qgis_gui.h"
 
 class QMouseEvent;
 class QToolButton;

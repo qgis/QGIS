@@ -16,14 +16,15 @@
 #ifndef QGSOAPIFCOLLECTION_H
 #define QGSOAPIFCOLLECTION_H
 
+#include <nlohmann/json.hpp>
+
+#include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+#include "qgslayermetadata.h"
+#include "qgsrectangle.h"
+
 #include <QObject>
 
-#include "qgsdatasourceuri.h"
-#include "qgsbasenetworkrequest.h"
-#include "qgsrectangle.h"
-#include "qgslayermetadata.h"
-
-#include <nlohmann/json.hpp>
 using namespace nlohmann;
 #include <vector>
 
@@ -59,6 +60,13 @@ struct QgsOapifCollection
 
     //! Map of media type to /items url
     QMap<QString, QString> mMapFeatureFormatToUrl;
+
+    //! Map of media type to url for rel=enclosure
+    // Cf https://geonovum.github.io/ogc-api-features-guideline
+    QMap<QString, QString> mMapFeatureFormatToBulkDownloadUrl;
+
+    //! URL to XML Schema describing the items (optional)
+    QString mXmlSchemaUrl;
 
     //! Fills a collection from its JSON serialization
     bool deserialize( const json &j, const json &jCollections );

@@ -1,5 +1,6 @@
-#include <QCoreApplication>
 #include "qgspluginmanager.h"
+
+#include <QCoreApplication>
 
 // QMap<QString, QString> QgsPluginManager::mTabDescriptions;
 

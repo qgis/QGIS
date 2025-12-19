@@ -288,7 +288,10 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
   processing/qgsalgorithmtinmeshcreation.cpp
+  processing/qgsalgorithmtotalcurvature.cpp
   processing/qgsalgorithmtransect.cpp
+  processing/qgsalgorithmtransectbase.cpp
+  processing/qgsalgorithmtransectfixeddistance.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
   processing/qgsalgorithmtruncatetable.cpp
@@ -623,7 +626,7 @@ if(HAVE_GSL)
 endif()
 
 if(HAVE_OPENCL)
-    target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
+    target_link_libraries(qgis_analysis OpenCL::OpenCL)
 endif()
 
 if (WITH_DRACO)

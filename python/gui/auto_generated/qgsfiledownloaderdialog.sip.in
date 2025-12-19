@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFileDownloaderDialog : QProgressDialog
 {
 %Docstring(signature="appended")

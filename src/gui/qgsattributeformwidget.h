@@ -15,13 +15,13 @@
 #ifndef QGSATTRIBUTEFORMWIDGET_H
 #define QGSATTRIBUTEFORMWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"
 
-#include <QWidget>
 #include <QVariant>
+#include <QWidget>
 
 class QgsAttributeForm;
 class QStackedWidget;

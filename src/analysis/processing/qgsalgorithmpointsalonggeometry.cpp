@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpointsalonggeometry.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurve.h"
+
 #include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 

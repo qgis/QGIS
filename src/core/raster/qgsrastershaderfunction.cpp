@@ -15,9 +15,9 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslogger.h"
-
 #include "qgsrastershaderfunction.h"
+
+#include "qgslogger.h"
 
 QgsRasterShaderFunction::QgsRasterShaderFunction( double minimumValue, double maximumValue )
   : mMaximumValue( maximumValue )

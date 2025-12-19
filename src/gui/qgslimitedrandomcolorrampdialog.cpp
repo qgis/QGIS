@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 #include "qgslimitedrandomcolorrampdialog.h"
-#include "moc_qgslimitedrandomcolorrampdialog.cpp"
 
-#include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 #include "qgshelp.h"
+#include "qgssymbollayerutils.h"
 
 #include <QColorDialog>
 #include <QDialogButtonBox>
 
+#include "moc_qgslimitedrandomcolorrampdialog.cpp"
 
 QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent )
   : QgsPanelWidget( parent )

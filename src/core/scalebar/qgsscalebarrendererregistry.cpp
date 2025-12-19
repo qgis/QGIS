@@ -15,13 +15,14 @@
  ***************************************************************************/
 
 #include "qgsscalebarrendererregistry.h"
-#include "qgsscalebarrenderer.h"
+
 #include "qgsdoubleboxscalebarrenderer.h"
-#include "qgsnumericscalebarrenderer.h"
-#include "qgssingleboxscalebarrenderer.h"
-#include "qgsticksscalebarrenderer.h"
-#include "qgssteppedlinescalebarrenderer.h"
 #include "qgshollowscalebarrenderer.h"
+#include "qgsnumericscalebarrenderer.h"
+#include "qgsscalebarrenderer.h"
+#include "qgssingleboxscalebarrenderer.h"
+#include "qgssteppedlinescalebarrenderer.h"
+#include "qgsticksscalebarrenderer.h"
 
 QgsScaleBarRendererRegistry::QgsScaleBarRendererRegistry()
 {

@@ -14,13 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsnewconnection.h"
-#include "qgsowsconnection.h"
-#include "qgswmsprovider.h"
-#include "moc_qgswmsnewconnection.cpp"
-#include "qgsproject.h"
+
+#include <memory>
+
 #include "qgsguiutils.h"
+#include "qgsowsconnection.h"
+#include "qgsproject.h"
+#include "qgswmsprovider.h"
 
 #include <QMessageBox>
+
+#include "moc_qgswmsnewconnection.cpp"
 
 QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName )
   : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), connName )
@@ -49,7 +53,7 @@ void QgsWmsNewConnection::detectFormat()
   }
 
   const QgsWmsParserSettings wmsParserSettings { ignoreAxisOrientation(), invertAxisOrientation() };
-  mCapabilities.reset( new QgsWmsCapabilities { QgsProject::instance()->transformContext(), preparedUrl } );
+  mCapabilities = std::make_unique<QgsWmsCapabilities>( QgsProject::instance()->transformContext(), preparedUrl );
   if ( !mCapabilities->parseResponse( capDownload.response(), wmsParserSettings ) )
   {
     QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ), tr( "The server you are trying to connect to does not seem to be a WMS server. Please check the URL." ), QMessageBox::Ok, this );

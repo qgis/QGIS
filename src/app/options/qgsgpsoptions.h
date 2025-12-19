@@ -16,8 +16,9 @@
 #define QGSGPSOPTIONS_H
 
 #include "ui_qgsgpsoptionswidgetbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgis_app.h"
+#include "qgsoptionswidgetfactory.h"
 
 /**
  * \ingroup app

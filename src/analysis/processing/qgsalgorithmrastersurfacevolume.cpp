@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrastersurfacevolume.h"
+
 #include "qgsstringutils.h"
 #include "qgsunittypes.h"
 

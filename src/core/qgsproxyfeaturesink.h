@@ -18,10 +18,9 @@
 #ifndef QGSPROXYFEATURESINK_H
 #define QGSPROXYFEATURESINK_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsfeaturesink.h"
-
 
 /**
  * \class QgsProxyFeatureSink

@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgspostgrestransaction.h"
-#include "moc_qgspostgrestransaction.cpp"
-#include "qgspostgresconn.h"
-#include "qgslogger.h"
+
 #include "qgis.h"
+#include "qgslogger.h"
+#include "qgspostgresconn.h"
+
+#include "moc_qgspostgrestransaction.cpp"
 
 QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
   : QgsTransaction( connString )

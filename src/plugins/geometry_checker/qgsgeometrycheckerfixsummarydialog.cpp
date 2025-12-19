@@ -14,16 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerfixsummarydialog.h"
-#include "moc_qgsgeometrycheckerfixsummarydialog.cpp"
-#include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeaturepool.h"
+
 #include "qgisinterface.h"
+#include "qgsfeaturepool.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheckerror.h"
+
+#include "moc_qgsgeometrycheckerfixsummarydialog.cpp"
 
 QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent )
   : QDialog( parent )

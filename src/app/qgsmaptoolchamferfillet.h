@@ -16,12 +16,13 @@
 #ifndef QGSMAPTOOLCHAMFERFILLET_H
 #define QGSMAPTOOLCHAMFERFILLET_H
 
-#include "qgsmaptooledit.h"
-#include "qgsgeometry.h"
-#include "qgis_app.h"
 #include "ui_qgschamferfilletuserinputwidget.h"
-#include "qgspointlocator.h"
+
+#include "qgis_app.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsmaptooledit.h"
+#include "qgspointlocator.h"
 
 class QGridLayout;
 
@@ -35,7 +36,8 @@ class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
 template<class T> class QgsSettingsEntryEnumFlag;
 
-class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsChamferFilletUserInputBase
+class APP_EXPORT QgsChamferFilletUserWidget : public QWidget,
+                                              private Ui::QgsChamferFilletUserInputBase
 {
     Q_OBJECT
 
@@ -47,6 +49,7 @@ class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsCha
     void setValue2( double value2 );
     double value2() const;
     void setMaximumValue1( double maximum );
+    void setMaximumValue2( double maximum );
     QDoubleSpinBox *editor() const { return mValue1SpinBox; }
     QgsGeometry::ChamferFilletOperationType operation() const;
 
@@ -95,7 +98,7 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     void applyOperationFromWidget( Qt::KeyboardModifiers modifiers );
 
     //! Apply the chamfer either from the spin box or from the mouse event
-    void applyOperation( double value1, double value2, Qt::KeyboardModifiers modifiers );
+    void applyOperation( double value1, double value2 );
 
     void cancel();
 
@@ -133,7 +136,14 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     //! limits number of call to updateGeometryAndRubberBand
     QElapsedTimer mLastMouseMove;
 
+    double mMaxValue1 = -1.0;
+    double mMaxValue2 = -1.0;
+
     void calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 );
+    void computeValuesFromMousePos( const QgsPointXY &mapPoint, bool isShiftKeyPressed, double &value1, double &value2 );
+    void computeMaxValues();
+    void handleModifier( bool isShiftKeyPressed, double &value1, double &value2 );
+    void handleMaxAndLock( double &value1, double &value2 );
 
     void createUserInputWidget();
     void deleteUserInputWidget();

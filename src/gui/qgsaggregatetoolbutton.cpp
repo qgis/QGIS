@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsaggregatetoolbutton.h"
-#include "moc_qgsaggregatetoolbutton.cpp"
-#include "qgsaggregatecalculator.h"
+
 #include "qgis.h"
+#include "qgsaggregatecalculator.h"
 
 #include <QMenu>
+
+#include "moc_qgsaggregatetoolbutton.cpp"
 
 QgsAggregateToolButton::QgsAggregateToolButton()
 {

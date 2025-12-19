@@ -21,7 +21,6 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
-
 class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
@@ -29,9 +28,9 @@ class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
   public:
     QgsGotoLocatorFilter( QObject *parent = nullptr );
     QgsGotoLocatorFilter *clone() const override;
-    virtual QString name() const override { return QStringLiteral( "goto" ); }
-    virtual QString displayName() const override { return tr( "Go to Coordinate" ); }
-    virtual Priority priority() const override { return Medium; }
+    QString name() const override { return QStringLiteral( "goto" ); }
+    QString displayName() const override { return tr( "Go to Coordinate" ); }
+    Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "go" ); }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 

@@ -17,9 +17,9 @@
 #ifndef QGSMAPTOOLSHAPEREGULARPOLYGONCENTERPOINT_H
 #define QGSMAPTOOLSHAPEREGULARPOLYGONCENTERPOINT_H
 
-#include "qgsmaptoolshaperegularpolygonabstract.h"
 #include "qgis_app.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgsmaptoolshaperegularpolygonabstract.h"
 
 class APP_EXPORT QgsMapToolShapeRegularPolygonCenterPointMetadata : public QgsMapToolShapeMetadata
 {

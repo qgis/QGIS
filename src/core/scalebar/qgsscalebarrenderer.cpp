@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsscalebarrenderer.h"
-#include "qgsscalebarsettings.h"
-#include "qgslayoututils.h"
-#include "qgstextrenderer.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgslayoututils.h"
+#include "qgslinesymbol.h"
 #include "qgsnumericformat.h"
+#include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgslinesymbol.h"
+#include "qgstextrenderer.h"
 
 #include <QFontMetricsF>
 #include <QPainter>

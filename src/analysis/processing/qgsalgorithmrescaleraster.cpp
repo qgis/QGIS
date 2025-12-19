@@ -15,9 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
-#include "math.h"
 #include "qgsalgorithmrescaleraster.h"
+
+#include <limits>
+#include <math.h>
+
 #include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
@@ -152,8 +154,7 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
     creationOptions = optionsString;
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !creationOptions.isEmpty() )

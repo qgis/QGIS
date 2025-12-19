@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmoffsetlines.h"
+
 #include "qgsapplication.h"
 
 ///@cond PRIVATE

@@ -15,31 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgslayout.h"
-#include "qgslayoutitemmap.h"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsproject.h"
-#include "qgsmapthemecollection.h"
-#include "qgsproperty.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutitempolyline.h"
-#include "qgsreadwritecontext.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgspallabeling.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsfontutils.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
+#include "qgsapplication.h"
+#include "qgsfontutils.h"
 #include "qgslabelingresults.h"
+#include "qgslayout.h"
 #include "qgslayoutexporter.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutpagecollection.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgspallabeling.h"
+#include "qgsproject.h"
+#include "qgsproperty.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsLayoutMap : public QgsTest
 {
@@ -561,10 +561,10 @@ void TestQgsLayoutMap::rasterized()
   grid->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   grid->setBlendMode( QPainter::CompositionMode_Darken );
   grid->setAnnotationEnabled( true );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Top );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Right );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Bottom );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Left );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Top );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Right );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Bottom );
   map->grids()->addGrid( grid );
   map->updateBoundingRect();
 
@@ -733,7 +733,7 @@ void TestQgsLayoutMap::expressionContext()
   QgsExpression e10( QStringLiteral( "@map_layer_ids" ) );
   r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
-  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
+  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) ); // skip-keyword-check
   r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
 

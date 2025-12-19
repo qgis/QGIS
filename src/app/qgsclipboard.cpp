@@ -15,38 +15,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <fstream>
-
-#include <QApplication>
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QClipboard>
-#include <QMimeData>
-#include <QTextCodec>
-
 #include "qgsclipboard.h"
-#include "moc_qgsclipboard.cpp"
+
+#include <fstream>
+#include <nlohmann/json.hpp>
+
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsogrutils.h"
 #include "qgsjsonutils.h"
-#include "qgssettings.h"
-#include "qgisapp.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsapplication.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsmessagebar.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+#include "qgsvectortilelayer.h"
 
-#include <nlohmann/json.hpp>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
+#include <QObject>
+#include <QString>
+#include <QStringList>
+#include <QTextCodec>
+
+#include "moc_qgsclipboard.cpp"
 
 QgsClipboard::QgsClipboard()
 {

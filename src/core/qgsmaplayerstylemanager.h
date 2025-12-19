@@ -22,9 +22,8 @@
 
 #include <QByteArray>
 #include <QMap>
-#include <QStringList>
 #include <QObject>
-
+#include <QStringList>
 
 class QDomElement;
 

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsCharacterSelectorDialog : QDialog
 {
 %Docstring(signature="appended")

@@ -18,9 +18,10 @@
 #ifndef QGSPROCESSINGMODELCHILDPARAMETERSOURCE_H
 #define QGSPROCESSINGMODELCHILDPARAMETERSOURCE_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprocessing.h"
+
 class QgsProcessingParameterDefinition;
 class QgsProcessingModelAlgorithm;
 

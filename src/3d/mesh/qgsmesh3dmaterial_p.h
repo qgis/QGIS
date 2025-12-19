@@ -19,14 +19,14 @@
 #define QGSMESH3DMATERIAL_H
 
 
-#include <Qt3DRender/QRenderPassFilter>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QAbstractTextureImage>
-
 #include "qgsmaterial.h"
 #include "qgsmesh3dsymbol.h"
-#include "qgsvector3d.h"
 #include "qgsrange.h"
+#include "qgsvector3d.h"
+
+#include <Qt3DRender/QAbstractTextureImage>
+#include <Qt3DRender/QRenderPassFilter>
+#include <Qt3DRender/QTechnique>
 
 ///@cond PRIVATE
 

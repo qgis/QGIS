@@ -16,24 +16,25 @@
  ***************************************************************************/
 
 #include "qgscircularstring.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsgeometrytransformer.h"
 #include "qgsgeometryutils.h"
-
 #include "qgsgeometryutils_base.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsfeedback.h"
 
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsCircularString::QgsCircularString()
 {
@@ -1140,7 +1141,7 @@ void QgsCircularString::transform( const QgsCoordinateTransform &ct, Qgis::Trans
   std::unique_ptr< double[] > dummyZ;
   if ( !hasZ || !transformZ )
   {
-    dummyZ.reset( new double[nPoints]() );
+    dummyZ = std::make_unique<double[]>( nPoints );
     zArray = dummyZ.get();
   }
   else

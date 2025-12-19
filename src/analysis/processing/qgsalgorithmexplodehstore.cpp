@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsalgorithmexplodehstore.h"
+
+#include "qgis.h"
 #include "qgshstoreutils.h"
 #include "qgsprocessingutils.h"
 

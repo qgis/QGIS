@@ -19,29 +19,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgswcsprovider.h"
-#include "moc_qgswcsprovider.cpp"
+
+#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsexception.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkreplyparser.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsnetworkreplyparser.h"
-#include "qgsmessagelog.h"
-#include "qgsexception.h"
 #include "qgswcsdataitems.h"
 
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkProxy>
-
-#include <QUrl>
 #include <QEventLoop>
 #include <QFile>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgswcsprovider.cpp"
 
 #ifdef QGISDEBUG
 #include <QDir>

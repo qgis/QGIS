@@ -14,22 +14,22 @@
  ***************************************************************************/
 
 #include "qgswmsdataitemguiproviders.h"
-#include "moc_qgswmsdataitemguiproviders.cpp"
-
-#include "qgswmsdataitems.h"
 
 #include "qgsapplication.h"
-#include "qgswmsconnection.h"
-#include "qgsxyzconnectiondialog.h"
-#include "qgsxyzconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgswmssourceselect.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgswmsconnection.h"
+#include "qgswmsdataitems.h"
 #include "qgswmsnewconnection.h"
+#include "qgswmssourceselect.h"
+#include "qgsxyzconnection.h"
+#include "qgsxyzconnectiondialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgswmsdataitemguiproviders.cpp"
 
 static QWidget *_paramWidget( QgsDataItem *root )
 {

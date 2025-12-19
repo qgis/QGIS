@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgslayertreenode.h"
-#include "moc_qgslayertreenode.cpp"
 
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
 #include "qgslayertreecustomnode.h"
+#include "qgslayertreeutils.h"
 
 #include <QDomElement>
 #include <QStringList>
 
+#include "moc_qgslayertreenode.cpp"
+
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
   : mNodeType( t )
   , mChecked( checked )
-  , mExpanded( true )
+
 {
 }
 

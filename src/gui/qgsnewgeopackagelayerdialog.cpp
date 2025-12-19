@@ -18,32 +18,34 @@
 
 
 #include "qgsnewgeopackagelayerdialog.h"
-#include "moc_qgsnewgeopackagelayerdialog.cpp"
+
+#include <cpl_error.h>
+#include <cpl_string.h>
+#include <gdal_version.h>
+#include <ogr_api.h>
+#include <ogr_srs_api.h>
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsogrutils.h"
 #include "qgsgui.h"
-#include "qgsproviderconnectionmodel.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgsiconutils.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
+#include "qgsproviderconnectionmodel.h"
+#include "qgssettings.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
 
-#include <QPushButton>
+#include <QCompleter>
+#include <QFileDialog>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QFileDialog>
-#include <QCompleter>
+#include <QPushButton>
 
-#include <ogr_api.h>
-#include <ogr_srs_api.h>
-#include <gdal_version.h>
-#include <cpl_error.h>
-#include <cpl_string.h>
+#include "moc_qgsnewgeopackagelayerdialog.cpp"
 
 #define DEFAULT_OGR_FID_COLUMN_TITLE "fid" // default value from OGR
 
@@ -91,6 +93,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   addGeomItem( wkbCurvePolygon );
   addGeomItem( wkbMultiCurve );
   addGeomItem( wkbMultiSurface );
+  addGeomItem( wkbPolyhedralSurface );
+  addGeomItem( wkbTIN );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
@@ -454,6 +458,14 @@ bool QgsNewGeoPackageLayerDialog::apply()
   if ( mGeometryWithMCheckBox->isChecked() )
     wkbType = OGR_GT_SetM( wkbType );
 
+  // Check for non-standard GeoPackage geometry types
+  const Qgis::WkbType qgisWkbType = static_cast<Qgis::WkbType>( wkbType );
+  bool isNonStandardGeomType = false;
+  if ( !QgsGuiUtils::warnAboutNonStandardGeoPackageGeometryType( qgisWkbType, this, tr( "New GeoPackage Layer" ), !property( "hideDialogs" ).toBool(), &isNonStandardGeomType ) )
+  {
+    return false;
+  }
+
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
   const QgsCoordinateReferenceSystem srs = mCrsSelector->crs();
@@ -554,12 +566,20 @@ bool QgsNewGeoPackageLayerDialog::apply()
   // issue a command that will force table creation
   CPLErrorReset();
   OGR_L_ResetReading( hLayer );
-  if ( CPLGetLastErrorType() != CE_None )
+  const CPLErr errorType = CPLGetLastErrorType();
+  if ( errorType == CE_Failure || errorType == CE_Fatal )
   {
     const QString msg( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "New GeoPackage Layer" ), msg );
     return false;
+  }
+  else if ( errorType == CE_Warning && !isNonStandardGeomType )
+  {
+    // Show OGR warning only if user was not already warned about non-standard geometry types
+    const QString msg( tr( "Layer created with warning (OGR warning: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    if ( !property( "hideDialogs" ).toBool() )
+      QMessageBox::warning( this, tr( "New GeoPackage Layer" ), msg );
   }
   hDS.reset();
 

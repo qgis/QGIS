@@ -84,6 +84,12 @@ class VectorLayerHistogram(QgisAlgorithm):
             "Generates a histogram with the values of the attribute of a vector layer."
         )
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm generates a histogram with the values of the attribute of a vector layer.\n"
+            "The attribute to use for computing the histogram must be a numeric attribute."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

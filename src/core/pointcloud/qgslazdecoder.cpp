@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslazdecoder.h"
-#include "qgspointcloudattribute.h"
-#include "qgsvector3d.h"
 #include "qgsconfig.h"
-#include "qgslogger.h"
-#include "qgslazinfo.h"
-#include "qgspointcloudexpression.h"
+#include "qgslazdecoder.h"
 
-#include <QFile>
-#include <QDir>
-#include <QElapsedTimer>
-#include <QTemporaryFile>
+#include <cstring>
 #include <iostream>
 #include <memory>
-#include <cstring>
 #include <string>
-
 #include <zstd.h>
 
 #include "lazperf/las.hpp"
 #include "lazperf/readers.hpp"
+#include "qgslazinfo.h"
+#include "qgslogger.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudexpression.h"
+#include "qgsvector3d.h"
+
+#include <QDir>
+#include <QElapsedTimer>
+#include <QFile>
+#include <QTemporaryFile>
 
 #if defined(_MSC_VER)
 #ifndef UNICODE

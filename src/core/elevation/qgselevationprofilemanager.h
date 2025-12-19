@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsprojectstoredobjectmanager.h"
+
 #include <QObject>
 
 class QDomElement;

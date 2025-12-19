@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 #include "qgshttpheaders.h"
+
 #include "qgssettings.h"
 
-
 #include <QDir>
+#include <QDomElement>
 #include <QNetworkRequest>
 #include <QUrlQuery>
-#include <QDomElement>
 
 //
 // QgsHttpHeaders

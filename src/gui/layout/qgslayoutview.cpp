@@ -16,30 +16,33 @@
  ***************************************************************************/
 
 #include "qgslayoutview.h"
+
+#include <memory>
+
 #include "qgslayoutframe.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutmultiframe.h"
-#include "qgslayoutviewtool.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutreportsectionlabel.h"
+#include "qgslayoutruler.h"
+#include "qgslayoutundostack.h"
 #include "qgslayoutviewmouseevent.h"
+#include "qgslayoutviewtool.h"
 #include "qgslayoutviewtooltemporarykeypan.h"
 #include "qgslayoutviewtooltemporarykeyzoom.h"
 #include "qgslayoutviewtooltemporarymousepan.h"
-#include "qgslayoutruler.h"
-#include "qgslayoutmodel.h"
-#include "qgssettings.h"
-#include "qgsrectangle.h"
 #include "qgsproject.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
-#include "qgslayoutreportsectionlabel.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
 #include "qgsscreenhelper.h"
-#include "moc_qgslayoutview.cpp"
+#include "qgssettings.h"
 
-#include <memory>
-#include <QMenu>
 #include <QClipboard>
+#include <QMenu>
 #include <QMimeData>
+
+#include "moc_qgslayoutview.cpp"
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0

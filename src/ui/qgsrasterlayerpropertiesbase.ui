@@ -1524,7 +1524,20 @@ li.checked::marker { content: &quot;\2612&quot;; }
                     <property name="title">
                      <string>Map Tips Preview</string>
                     </property>
-                    <layout class="QVBoxLayout" name="mMapTipPreviewLayout"/>
+                    <layout class="QVBoxLayout" name="mMapTipPreviewLayout">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                    </layout>
                    </widget>
                   </widget>
                  </item>

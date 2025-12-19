@@ -14,26 +14,29 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicsview.h"
-#include "moc_qgsmodelgraphicsview.cpp"
-#include "qgssettings.h"
-#include "qgsmodelviewtool.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelviewtooltemporarykeypan.h"
-#include "qgsmodelviewtooltemporarymousepan.h"
-#include "qgsmodelviewtooltemporarykeyzoom.h"
+
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewtool.h"
+#include "qgsmodelviewtooltemporarykeypan.h"
+#include "qgsmodelviewtooltemporarykeyzoom.h"
+#include "qgsmodelviewtooltemporarymousepan.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelparameter.h"
-#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgssettings.h"
 #include "qgsxmlutils.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include <QDragEnterEvent>
-#include <QScrollBar>
+
 #include <QApplication>
 #include <QClipboard>
+#include <QDragEnterEvent>
 #include <QMimeData>
+#include <QScrollBar>
 #include <QTimer>
+
+#include "moc_qgsmodelgraphicsview.cpp"
 
 ///@cond NOT_STABLE
 

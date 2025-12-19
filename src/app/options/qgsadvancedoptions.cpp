@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsadvancedoptions.h"
-#include "moc_qgsadvancedoptions.cpp"
+
+#include "qgis.h"
+#include "qgsapplication.h"
 #include "qgssettingstreewidget.h"
 #include "qgssettingstreewidgetold.h"
-#include "qgsapplication.h"
-#include "qgis.h"
+
+#include "moc_qgsadvancedoptions.cpp"
 
 //
 // QgsAdvancedSettingsWidget

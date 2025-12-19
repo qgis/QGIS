@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsenumerationwidgetwrapper.h"
-#include "moc_qgsenumerationwidgetwrapper.cpp"
 
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsenumerationwidgetwrapper.cpp"
 
 QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

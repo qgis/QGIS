@@ -15,26 +15,27 @@
  *
  ***************************************************************************/
 
-#include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
-#include "moc_qgshanadataitemguiprovider.cpp"
+
 #include "qgsapplication.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsdbimportvectorlayerdialog.h"
+#include "qgshanadataitems.h"
 #include "qgshananewconnection.h"
 #include "qgshanaproviderconnection.h"
 #include "qgshanasourceselect.h"
-#include "qgsnewnamedialog.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgssettings.h"
 #include "qgshanautils.h"
-#include "qgsapplication.h"
+#include "qgsmessageoutput.h"
+#include "qgsnewnamedialog.h"
+#include "qgssettings.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
-#include "qgsmessageoutput.h"
-#include "qgsdbimportvectorlayerdialog.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
+
+#include "moc_qgshanadataitemguiprovider.cpp"
 
 void QgsHanaDataItemGuiProvider::populateContextMenu(
   QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context

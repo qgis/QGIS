@@ -14,23 +14,23 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-
-#include "qgsexternalstoragefilewidget.h"
-#include "qgsmimedatautils.h"
-#include "qgsdataitem.h"
-#include "qgsbrowsermodel.h"
-#include "qgslayeritem.h"
-#include "qgsdirectoryitem.h"
-#include "qgsexternalstorage.h"
-#include "qgsexternalstorageregistry.h"
-#include "qgsmessagebar.h"
-#include "qgsexpressioncontextutils.h"
 #include <memory>
 
+#include "qgsbrowsermodel.h"
+#include "qgsdataitem.h"
+#include "qgsdirectoryitem.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexternalstorage.h"
+#include "qgsexternalstoragefilewidget.h"
+#include "qgsexternalstorageregistry.h"
+#include "qgslayeritem.h"
+#include "qgsmessagebar.h"
+#include "qgsmimedatautils.h"
+#include "qgstest.h"
+
 #include <QLabel>
-#include <QToolButton>
 #include <QProgressBar>
+#include <QToolButton>
 
 class TestQgsExternalStorageFileWidget : public QObject
 {

@@ -15,25 +15,24 @@
 
 #include "qgssinglesymbolrenderer.h"
 
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-
 #include "qgsdatadefinedsizelegend.h"
-#include "qgslogger.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayer.h"
-#include "qgsogcutils.h"
-#include "qgspointdisplacementrenderer.h"
+#include "qgsfillsymbol.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsogcutils.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgsproperty.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
 #include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>

@@ -15,14 +15,16 @@
  ***************************************************************************/
 
 #include "qgslayoutpagecollection.h"
-#include "moc_qgslayoutpagecollection.cpp"
+
+#include "qgsfillsymbol.h"
 #include "qgslayout.h"
-#include "qgsreadwritecontext.h"
-#include "qgssymbollayerutils.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutundostack.h"
-#include "qgsfillsymbol.h"
 #include "qgsmargins.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgslayoutpagecollection.cpp"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )

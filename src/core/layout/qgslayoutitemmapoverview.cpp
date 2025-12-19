@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmapoverview.h"
-#include "moc_qgslayoutitemmapoverview.cpp"
-#include "qgslayoutitemmap.h"
+
+#include "qgsexception.h"
+#include "qgsfillsymbol.h"
 #include "qgslayout.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoututils.h"
 #include "qgspainting.h"
 #include "qgsreadwritecontext.h"
-#include "qgslayoututils.h"
-#include "qgsexception.h"
-#include "qgsvectorlayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsstyleentityvisitor.h"
-#include "qgsfillsymbol.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
+
+#include "moc_qgslayoutitemmapoverview.cpp"
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )

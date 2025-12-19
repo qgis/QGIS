@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
-#include "moc_qgsnewhttpconnection.cpp"
-#include "qgsauthsettingswidget.h"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
+
 #include "fromencodedcomponenthelper.h"
+#include "qgsauthsettingswidget.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsowsconnection.h"
-#include "qgssettingsentryimpl.h"
+#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QMessageBox>
-#include <QUrl>
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsnewhttpconnection.cpp"
 
 const QgsSettingsEntryBool *QgsNewHttpConnection::settingsIgnoreReportedLayerExtentsDefault = new QgsSettingsEntryBool( QStringLiteral( "ignore-reported-layer-extents-default" ), sTreeHttpConnectionDialog, false );
 
@@ -99,6 +101,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
   mFeatureFormatComboBox->clear();
   mFeatureFormatComboBox->addItem( tr( "Default" ), QStringLiteral( "default" ) );
+  connect( mFeatureFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::featureFormatCurrentIndexChanged );
 
   mComboWfsFeatureMode->clear();
   mComboWfsFeatureMode->addItem( tr( "Default" ), QStringLiteral( "default" ) );
@@ -214,9 +217,13 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
   cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES_1_0 );
   cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
   wfsUseGml2EncodingForTransactions()->setEnabled( index == WFS_VERSION_1_1 );
+  cbxWfsForceInitialGetFeature->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
 
   featureFormatComboBox()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
   featureFormatDetectButton()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
+  mComboWfsFeatureMode->setEnabled(
+    index != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( QLatin1String( "gml" ) ) >= 0
+  );
 }
 
 void QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged( int index )
@@ -224,6 +231,14 @@ void QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged( int index )
   const bool pagingNotDisabled = index != static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED );
   lblPageSize->setEnabled( pagingNotDisabled );
   txtPageSize->setEnabled( pagingNotDisabled );
+}
+
+void QgsNewHttpConnection::featureFormatCurrentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  mComboWfsFeatureMode->setEnabled(
+    wfsVersionComboBox()->currentIndex() != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( QLatin1String( "gml" ) ) >= 0
+  );
 }
 
 QString QgsNewHttpConnection::name() const

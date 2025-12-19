@@ -84,7 +84,7 @@ class QWT_EXPORT QwtPolarPlot : public QFrame, public QwtPolarItemDict
     explicit QwtPolarPlot( QWidget* parent = NULL );
     QwtPolarPlot( const QwtText& title, QWidget* parent = NULL );
 
-    virtual ~QwtPolarPlot();
+    ~QwtPolarPlot() override;
 
     void setTitle( const QString& );
     void setTitle( const QwtText& );

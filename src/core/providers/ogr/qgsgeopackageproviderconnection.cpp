@@ -14,20 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <sqlite3.h>
-
 #include "qgsgeopackageproviderconnection.h"
-#include "qgssettings.h"
-#include "qgsmessagelog.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgscoordinatetransform.h"
-
-#include <QTextCodec>
-#include <QRegularExpression>
 
 #include <chrono>
+#include <sqlite3.h>
+
+#include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsmessagelog.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QRegularExpression>
+#include <QTextCodec>
 
 ///@cond PRIVATE
 
@@ -214,7 +214,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 {
 
   // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
-  static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
+  static const QStringList excludedTableNames { { QStringLiteral( "'ogr_empty_table'" ) } };
 
   checkCapability( Capability::Tables );
 
@@ -359,7 +359,8 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SingleLineString,
     GeometryColumnCapability::SinglePoint,
     GeometryColumnCapability::SinglePolygon,
-    GeometryColumnCapability::Curves
+    GeometryColumnCapability::Curves,
+    GeometryColumnCapability::PolyhedralSurfaces
   };
   mSqlLayerDefinitionCapabilities =
   {

@@ -47,7 +47,7 @@ class QWT_EXPORT QwtAbstractScale : public QWidget
 
   public:
     explicit QwtAbstractScale( QWidget* parent = NULL );
-    virtual ~QwtAbstractScale();
+    ~QwtAbstractScale() override;
 
     void setScale( double lowerBound, double upperBound );
     void setScale( const QwtInterval& );

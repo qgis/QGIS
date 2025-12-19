@@ -17,10 +17,11 @@
 #ifndef QGSAUTHMASTERPASSWORDRESETDIALOG_H
 #define QGSAUTHMASTERPASSWORDRESETDIALOG_H
 
-#include <QDialog>
-
 #include "ui_qgsauthmasterpassresetdialog.h"
+
 #include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 

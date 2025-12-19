@@ -18,12 +18,13 @@
 #ifndef QGSSERVERPARAMETERS_H
 #define QGSSERVERPARAMETERS_H
 
+#include "qgis_server.h"
+#include "qgsgeometry.h"
+
+#include <QColor>
 #include <QMap>
 #include <QMetaEnum>
 #include <QUrlQuery>
-#include <QColor>
-#include "qgsgeometry.h"
-#include "qgis_server.h"
 
 /**
  * \ingroup server

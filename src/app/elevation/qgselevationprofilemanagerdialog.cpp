@@ -15,14 +15,14 @@
  ***************************************************************************/
 
 #include "qgselevationprofilemanagerdialog.h"
-#include "moc_qgselevationprofilemanagerdialog.cpp"
+
 #include "qgisapp.h"
+#include "qgselevationprofile.h"
 #include "qgselevationprofilemanager.h"
 #include "qgselevationprofilemanagermodel.h"
-#include "qgsproject.h"
 #include "qgsgui.h"
-#include "qgselevationprofile.h"
 #include "qgsnewnamedialog.h"
+#include "qgsproject.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -32,6 +32,8 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QUrl>
+
+#include "moc_qgselevationprofilemanagerdialog.cpp"
 
 QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

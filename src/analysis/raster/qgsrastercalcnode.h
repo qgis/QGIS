@@ -19,12 +19,12 @@
 #ifndef QGSRASTERCALCNODE_H
 #define QGSRASTERCALCNODE_H
 
-#include <QMap>
-#include "qgis_sip.h"
 #include "qgis.h"
-#include <QString>
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 
+#include <QMap>
+#include <QString>
 #include <QVector>
 
 class QgsRasterBlock;

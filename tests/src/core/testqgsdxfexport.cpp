@@ -13,30 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgsdxfexport.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsfontutils.h"
-#include "qgsmaplayerstyle.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgspallabeling.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgslinesymbollayer.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsfontutils.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmaplayerstyle.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgslinesymbol.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgspallabeling.h"
+#include "qgsproject.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayerutils.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QBuffer>
-#include <QTemporaryFile>
 #include <QRegularExpression>
+#include <QTemporaryFile>
 
 Q_DECLARE_METATYPE( QgsDxfExport::HAlign )
 Q_DECLARE_METATYPE( QgsDxfExport::VAlign )
@@ -2104,7 +2103,7 @@ bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &tex
   {
     while ( debugLines.size() > 10 )
       debugLines.removeFirst();
-    debugInfo->append( debugLines.join( QLatin1String( "" ) ) );
+    debugInfo->append( debugLines.join( QString() ) );
     debugInfo->append( QStringLiteral( "\n  Failed on line %1" ).arg( failedLine ) );
     debugInfo->append( QStringLiteral( "\n  Candidate line %1" ).arg( failedCandidateLine ) );
   }

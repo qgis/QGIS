@@ -15,21 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgsscalerangewidget.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-
-#include <QObject>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QtTest/QSignalSpy>
-
 #include <memory>
 
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsscalerangewidget.h"
+#include "qgstest.h"
+
+#include <QComboBox>
+#include <QLineEdit>
+#include <QObject>
+#include <QtTest/QSignalSpy>
+
 /**
- * @ingroup UnitTests
  * This is a unit test for the scale range widget
  *
  * \see QgsScaleRangeWidget
@@ -61,7 +59,7 @@ void TestQgsScaleRangeWidget::cleanupTestCase()
 
 void TestQgsScaleRangeWidget::init()
 {
-  widget.reset( new QgsScaleRangeWidget() );
+  widget = std::make_unique<QgsScaleRangeWidget>();
 }
 
 void TestQgsScaleRangeWidget::cleanup()

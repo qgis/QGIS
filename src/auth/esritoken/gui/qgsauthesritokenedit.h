@@ -17,12 +17,12 @@
 #ifndef QGSAUTHESRITOKENEDIT_H
 #define QGSAUTHESRITOKENEDIT_H
 
-#include <QWidget>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthesritokenedit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 
+#include <QWidget>
 
 class QgsAuthEsriTokenEdit : public QgsAuthMethodEdit, private Ui::QgsAuthEsriTokenEdit
 {

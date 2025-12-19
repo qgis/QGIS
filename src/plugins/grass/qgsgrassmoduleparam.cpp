@@ -14,31 +14,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QRegularExpressionMatch>
-
-#include "qgssettings.h"
+#include "qgsgrassmoduleparam.h"
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-
 #include "qgsgrass.h"
 #include "qgsgrassfeatureiterator.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassmoduleinput.h"
-#include "qgsgrassmoduleparam.h"
-#include "moc_qgsgrassmoduleparam.cpp"
 #include "qgsgrassplugin.h"
 #include "qgsgrassprovider.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QRegularExpressionValidator>
+
+#include "moc_qgsgrassmoduleparam.cpp"
 
 #if 0
 extern "C"
@@ -51,9 +51,6 @@ extern "C"
 QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct )
   : mModule( module )
   , mKey( key )
-  , mMultiple( false )
-  , mHidden( false )
-  , mRequired( false )
   , mDirect( direct )
 {
   Q_UNUSED( gdesc )
@@ -260,14 +257,8 @@ void QgsGrassModuleMultiParam::showAddRemoveButtons()
 
 QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mControlType( NoControl )
-  , mValueType( String )
-  , mOutputType( None )
-  , mHaveLimits( false )
   , mMin( std::numeric_limits<int>::max() )
   , mMax( std::numeric_limits<int>::min() )
-  , mIsOutput( false )
-  , mUsesRegion( false )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
 
@@ -1384,7 +1375,6 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent
 )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mType( Old )
 {
   if ( mTitle.isEmpty() )
   {

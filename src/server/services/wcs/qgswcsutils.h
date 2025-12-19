@@ -22,10 +22,9 @@
 #define QGSWCSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswcsserviceexception.h"
-#include "qgsserversettings.h"
-
 #include "qgsrasterlayer.h"
+#include "qgsserversettings.h"
+#include "qgswcsserviceexception.h"
 
 #include <QDomDocument>
 

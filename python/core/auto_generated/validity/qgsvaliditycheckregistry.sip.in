@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+
+
 class QgsValidityCheckRegistry
 {
 %Docstring(signature="appended")

@@ -21,9 +21,11 @@ class QDomElement;
 class QDomDocument;
 class QString;
 
+#include <list>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <list>
+
 #include <QVector>
 
 class QgsExpression;
@@ -299,6 +301,14 @@ class CORE_EXPORT QgsOgcUtils
         const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
         const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() ) SIP_SKIP;
 
+    /**
+     * Returns the Qgis::WkbType corresponding to a GML geometry type.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static Qgis::WkbType geomTypeFromPropertyType( const QString &gmlGeomType ) SIP_SKIP;
+
   private:
 
     //! Static method that creates geometry from GML Point
@@ -419,7 +429,7 @@ class QgsOgcUtilsExprToFilter
 
   private:
     QDomDocument &mDoc;
-    bool mGMLUsed;
+    bool mGMLUsed = false;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
     QString mNamespacePrefix;
@@ -432,7 +442,7 @@ class QgsOgcUtilsExprToFilter
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
-    int mGeomId;
+    int mGeomId = 1;
 
     QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
     QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
@@ -559,7 +569,7 @@ class QgsOgcUtilsSQLStatementToFilter
 
   private:
     QDomDocument &mDoc;
-    bool mGMLUsed;
+    bool mGMLUsed = false;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
     const QList<QgsOgcUtils::LayerProperties> &mLayerProperties;
@@ -568,7 +578,7 @@ class QgsOgcUtilsSQLStatementToFilter
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
-    int mGeomId;
+    int mGeomId =  1 ;
     QString mCurrentSRSName;
     QMap<QString, QString> mMapTableAliasToNames;
     const QMap< QString, QString> &mMapUnprefixedTypenameToPrefixedTypename;

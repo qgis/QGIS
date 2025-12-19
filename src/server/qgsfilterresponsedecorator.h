@@ -22,9 +22,9 @@
 #define SIP_NO_FILE
 
 
-#include "qgsserverresponse.h"
-#include "qgsserverfilter.h"
 #include "qgsserverexception.h"
+#include "qgsserverfilter.h"
+#include "qgsserverresponse.h"
 
 /**
  * \ingroup server

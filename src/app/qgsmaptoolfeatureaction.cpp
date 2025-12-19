@@ -14,27 +14,28 @@
  ***************************************************************************/
 
 #include "qgsmaptoolfeatureaction.h"
-#include "moc_qgsmaptoolfeatureaction.cpp"
 
-#include "qgsfeatureiterator.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
+#include "qgisapp.h"
 #include "qgsactionmanager.h"
 #include "qgsexception.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgisapp.h"
-#include "qgsgui.h"
-#include "qgsstatusbar.h"
-#include "qgsmapmouseevent.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayeraction.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptopixel.h"
 #include "qgsmessagebar.h"
+#include "qgsproject.h"
+#include "qgsstatusbar.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 #include <QStatusBar>
+
+#include "moc_qgsmaptoolfeatureaction.cpp"
 
 QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

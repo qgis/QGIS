@@ -15,11 +15,12 @@ email                : loic dot bartoletti at oslandia dot com
 
 #pragma once
 
+#include <iterator>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgsvector.h"
-#include <iterator>
+#include "qgsvector3d.h"
 
 /**
  * \ingroup core
@@ -397,6 +398,14 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon );
 
     /**
+     * Given the points (\a x1, \a y1, \a z1), (\a x2, \a y2, \a z2) and (\a x3, \a y3, \a z3)
+     * returns TRUE if these points can be considered collinear with a specified tolerance \a epsilon.
+     *
+     * \since QGIS 4.0
+     */
+    static bool points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon );
+
+    /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
      * and segment (\a bX, \a bY) (\a dX, \a dY).
      * The bisector segment of AB-CD is (point, projection of point by \a angle)
@@ -598,9 +607,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static double maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
-                                   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
-                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
+    static double maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY, double epsilon = 1e-8 ) SIP_HOLDGIL;
 
     /**
      * Creates a chamfer (angled corner) between two line segments.

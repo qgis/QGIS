@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsspatialitetablemodel.h"
-#include "moc_qgsspatialitetablemodel.cpp"
+
 #include "qgsiconutils.h"
+
+#include "moc_qgsspatialitetablemodel.cpp"
 
 QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

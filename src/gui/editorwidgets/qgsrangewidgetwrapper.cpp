@@ -13,17 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrangewidgetwrapper.h"
+
+#include "qgsapplication.h"
+#include "qgsdial.h"
+#include "qgsdoublespinbox.h"
+#include "qgsslider.h"
+#include "qgsspinbox.h"
+#include "qgsvectorlayer.h"
+
 #include <QSettings>
 
-#include "qgsrangewidgetwrapper.h"
 #include "moc_qgsrangewidgetwrapper.cpp"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
-#include "qgsvectorlayer.h"
-#include "qgsdial.h"
-#include "qgsslider.h"
-#include "qgsapplication.h"
-
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

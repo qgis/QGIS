@@ -16,10 +16,10 @@
 #ifndef QGSMAPTOOLSHAPEREGULARPOLYGONABSTRACT_H
 #define QGSMAPTOOLSHAPEREGULARPOLYGONABSTRACT_H
 
+#include "qgis_app.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsregularpolygon.h"
 #include "qgsspinbox.h"
-#include "qgis_app.h"
 
 class QSpinBox;
 

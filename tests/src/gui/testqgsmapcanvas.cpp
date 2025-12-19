@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgscustomdrophandler.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolpan.h"
+#include "qgsproject.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsrenderchecker.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QSignalSpy>
 #include <QtMath>
-
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsrenderchecker.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmaptoolpan.h"
-#include "qgscustomdrophandler.h"
-#include "qgsreferencedgeometry.h"
 
 namespace QTest
 {
@@ -526,7 +526,7 @@ void TestQgsMapCanvas::testZoomResolutions()
   const double wheelFactor = 2.0;
   mCanvas->setWheelFactor( wheelFactor );
 
-  const double nextResolution = qCeil( resolution ) + 1;
+  const double nextResolution = std::ceil( resolution ) + 1;
   QList<double> resolutions = QList<double>() << nextResolution << ( 2.5 * nextResolution ) << ( 3.6 * nextResolution ) << ( 4.7 * nextResolution );
   mCanvas->setZoomResolutions( resolutions );
 

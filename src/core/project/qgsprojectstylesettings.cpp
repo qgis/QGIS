@@ -13,23 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscolorutils.h"
 #include "qgsprojectstylesettings.h"
-#include "moc_qgsprojectstylesettings.cpp"
+
 #include "qgis.h"
+#include "qgscolorramp.h"
+#include "qgscolorutils.h"
+#include "qgscombinedstylemodel.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgsproject.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgscolorramp.h"
 #include "qgstextformat.h"
-#include "qgsstyle.h"
-#include "qgscombinedstylemodel.h"
 #include "qgsxmlutils.h"
 
 #include <QDomElement>
+
+#include "moc_qgsprojectstylesettings.cpp"
 
 QgsProjectStyleSettings::QgsProjectStyleSettings( QgsProject *project )
   : QObject( project )

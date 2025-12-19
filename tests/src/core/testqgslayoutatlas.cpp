@@ -16,22 +16,23 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemmapoverview.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemlabel.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgssymbol.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsfontutils.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemmapoverview.h"
+#include "qgslayoutrendercontext.h"
 #include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
 #include <QtTest/QSignalSpy>
-#include "qgstest.h"
-#include "qgsfillsymbol.h"
-#include "qgslayoutrendercontext.h"
 
 class TestQgsLayoutAtlas : public QgsTest
 {

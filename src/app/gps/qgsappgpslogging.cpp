@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsappgpslogging.h"
-#include "moc_qgsappgpslogging.cpp"
-#include "qgsgui.h"
-#include "qgisapp.h"
-#include "qgsmessagebar.h"
-#include "qgsgpsconnection.h"
-#include "qgsappgpsconnection.h"
-#include "qgsvectorlayergpslogger.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgssettingstree.h"
-#include "qgssettingsentryimpl.h"
 
+#include "qgisapp.h"
+#include "qgsappgpsconnection.h"
+#include "qgsgpsconnection.h"
+#include "qgsgui.h"
+#include "qgsmessagebar.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgsvectorlayergpslogger.h"
+
+#include "moc_qgsappgpslogging.cpp"
 
 const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
 

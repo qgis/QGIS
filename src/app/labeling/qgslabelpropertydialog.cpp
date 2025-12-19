@@ -16,27 +16,28 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
-#include "moc_qgslabelpropertydialog.cpp"
-#include "qgscallout.h"
-#include "qgsfontutils.h"
-#include "qgslogger.h"
-#include "qgsfeatureiterator.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+
 #include "qgisapp.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsproperty.h"
-#include "qgssettings.h"
+#include "qgscallout.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfontutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsexpressionnodeimpl.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsproperty.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QColorDialog>
-#include <QFontDatabase>
 #include <QDialogButtonBox>
+#include <QFontDatabase>
 
+#include "moc_qgslabelpropertydialog.cpp"
 
 QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

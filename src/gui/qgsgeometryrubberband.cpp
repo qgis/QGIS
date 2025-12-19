@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgsgeometryrubberband.h"
+
 #include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgsrendercontext.h"
 #include "qgspoint.h"
+#include "qgsrendercontext.h"
+
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType )
-  : QgsMapCanvasItem( mapCanvas ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
+  : QgsMapCanvasItem( mapCanvas ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );

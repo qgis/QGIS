@@ -15,21 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
 #include "qgsrastercalculator.h"
+
+#include <cpl_string.h>
+#include <gdalwarper.h>
+
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsproject.h"
 
 #include <QFile>
-
-#include <cpl_string.h>
-#include <gdalwarper.h>
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -192,6 +193,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
   GDALSetRasterNoDataValue( outputRasterBand, mNoDataValue );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
+
   // Take the fast route (process one line at a time) if we can
   if ( !requiresMatrix )
   {
@@ -225,7 +233,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     {
       if ( feedback )
       {
-        feedback->setProgress( 100.0 * static_cast<double>( row ) / mNumOutputRows );
+        feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( row ) / mNumOutputRows );
       }
 
       if ( feedback && feedback->isCanceled() )
@@ -283,7 +291,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 );
+      feedback->setProgress( maxProgressDuringBlockWriting );
     }
   }
   else // Original code (memory inefficient route)
@@ -331,7 +339,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     {
       if ( feedback )
       {
-        feedback->setProgress( 100.0 * static_cast<double>( i ) / mNumOutputRows );
+        feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( i ) / mNumOutputRows );
       }
 
       if ( feedback && feedback->isCanceled() )
@@ -368,7 +376,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 );
+      feedback->setProgress( maxProgressDuringBlockWriting );
     }
 
     //close datasets and release memory
@@ -385,6 +393,20 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   }
 
   GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  if ( closeReportsProgress && feedback )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      return feedback->isCanceled() ? QgsRasterCalculator::Result::Canceled : QgsRasterCalculator::Result::CreateOutputError;
+    }
+  }
+#endif
 
   return QgsRasterCalculator::Result::Success;
 }
@@ -578,6 +600,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       return QgsRasterCalculator::Result::CreateOutputError;
     }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+    const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+    const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+#else
+    constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
+
     GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().data() );
 
 
@@ -601,7 +630,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
 
       if ( feedback )
       {
-        feedback->setProgress( 100.0 * static_cast<double>( line ) / mNumOutputRows );
+        feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( line ) / mNumOutputRows );
       }
 
       // Read lines from rasters into the buffers
@@ -663,6 +692,20 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     inputBuffers.clear();
 
     GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+    if ( closeReportsProgress && feedback )
+    {
+      QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+      if ( GDALDatasetRunCloseWithoutDestroyingEx(
+             outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+           )
+           != CE_None )
+      {
+        return feedback->isCanceled() ? QgsRasterCalculator::Result::Canceled : QgsRasterCalculator::Result::CreateOutputError;
+      }
+    }
+#endif
   }
   catch ( cl::Error &e )
   {

@@ -16,11 +16,11 @@
 #ifndef QGSMAPLAYERRENDERER_H
 #define QGSMAPLAYERRENDERER_H
 
-#include <QStringList>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
+#include <QStringList>
 
 class QgsFeedback;
 class QgsRenderContext;

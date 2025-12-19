@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsdashspacedialog.h"
-#include "moc_qgsdashspacedialog.cpp"
-#include "qgsdoublevalidator.h"
+
 #include "qgsapplication.h"
+#include "qgsdoublevalidator.h"
 
 #include <QDialogButtonBox>
 #include <QFile>
+
+#include "moc_qgsdashspacedialog.cpp"
 
 QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent )
   : QgsPanelWidget( parent )

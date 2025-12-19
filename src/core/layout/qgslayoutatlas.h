@@ -17,10 +17,11 @@
 #define QGSLAYOUTATLAS_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayerref.h"
-#include "qgslayoutserializableobject.h"
 #include "qgsabstractlayoutiterator.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgslayoutserializableobject.h"
+#include "qgsvectorlayerref.h"
+
 #include <QObject>
 
 class QgsLayout;

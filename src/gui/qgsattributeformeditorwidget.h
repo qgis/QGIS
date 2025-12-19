@@ -16,10 +16,10 @@
 #ifndef QGSATTRIBUTEFORMEDITORWIDGET_H
 #define QGSATTRIBUTEFORMEDITORWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgseditorwidgetwrapper.h"
+#include "qgis_sip.h"
 #include "qgsattributeformwidget.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsEditorWidgetWrapper;
 class QgsMultiEditToolButton;
@@ -164,9 +164,9 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
     QVariantList mPreviousAdditionalValues;
-    bool mBlockValueUpdate;
-    bool mIsMixed;
-    bool mIsChanged;
+    bool mBlockValueUpdate = false;
+    bool mIsMixed = false;
+    bool mIsChanged = false;
     bool mIsConstraintResultVisible = false;
 
     void updateWidgets() final;

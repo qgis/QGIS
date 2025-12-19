@@ -15,14 +15,12 @@
 
 #include "qgsmeshlayer3drenderer.h"
 
-#include "qgsmeshlayer3drenderer.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
+#include "qgsmesh3dentity_p.h"
 #include "qgsmesh3dsymbol.h"
-
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
-#include "qgsmesh3dentity_p.h"
-#include "qgs3drendercontext.h"
-#include "qgs3dmapsettings.h"
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "mesh" ) )

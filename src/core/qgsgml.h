@@ -15,22 +15,22 @@
 #ifndef QGSGML_H
 #define QGSGML_H
 
-#include "qgis_core.h"
 #include <expat.h>
+#include <string>
+
+#include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"
-#include "qgsfeature.h"
 
-#include <QPair>
 #include <QByteArray>
 #include <QDomElement>
-#include <QStringList>
+#include <QPair>
 #include <QStack>
+#include <QStringList>
 #include <QVector>
-
-#include <string>
 
 #ifndef SIP_RUN
 #include <nlohmann/json.hpp>
@@ -131,9 +131,6 @@ class CORE_EXPORT QgsGmlStreamingParser
     */
     QVector<QgsGmlFeaturePtrGmlIdPair> getAndStealReadyFeatures();
 
-    //! Returns the EPSG code, or 0 if unknown
-    int getEPSGCode() const { return mEpsg; }
-
     //! Returns the value of the srsName attribute
     QString srsName() const { return mSrsName; }
 
@@ -209,12 +206,11 @@ class CORE_EXPORT QgsGmlStreamingParser
     //helper routines
 
     /**
-     * Reads attribute srsName="EpsgCrsId:..."
-     * \param epsgNr result
+     * Reads srsName and srsDimension attributes
      * \param attr attribute strings
-     * \returns 0 in case of success
+     * \return the SRS dimension if known, or 0 otherwise
       */
-    int readEpsgFromAttribute( int &epsgNr, const XML_Char **attr );
+    int readSrsNameAndDimensionAttributes( const XML_Char **attr );
 
     /**
      * Reads attribute as string
@@ -348,10 +344,10 @@ class CORE_EXPORT QgsGmlStreamingParser
     int mDimension;
     //! Coordinates mode, coordinate or posList
     ParseMode mCoorMode;
-    //! EPSG of parsed features geometries
-    int mEpsg;
     //! Literal srsName attribute
     QString mSrsName;
+    //! Dimension (2 or 3 when valid) corresponding to the current value of mSrsName.
+    int mDimensionForCurSrsName = 0;
     //! Layer bounding box
     QgsRectangle mLayerExtent;
     //! GML namespace URI
@@ -480,7 +476,7 @@ class CORE_EXPORT QgsGml : public QObject
     QString mTypeName;
 
     //! True if the request is finished
-    bool mFinished;
+    bool mFinished = false;
 
     //! The features of the layer, map of feature maps for each feature type
     //QMap<QgsFeatureId, QgsFeature* > &mFeatures;

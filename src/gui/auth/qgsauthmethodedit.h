@@ -17,10 +17,10 @@
 #ifndef QGSAUTHMETHODEDIT_H
 #define QGSAUTHMETHODEDIT_H
 
-#include <QWidget>
-
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QWidget>
 
 /**
  * \ingroup gui

@@ -14,19 +14,19 @@
  ***************************************************************************/
 #include "qgsguiutils.h"
 
-#include "qgsapplication.h"
-#include "qgsfileutils.h"
-#include "qgssettings.h"
-#include "qgsencodingfiledialog.h"
-#include "qgslogger.h"
-#include "qgis_gui.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgsapplication.h"
+#include "qgsencodingfiledialog.h"
+#include "qgsfileutils.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QFontDialog>
 #include <QImageWriter>
+#include <QMessageBox>
 #include <QRegularExpression>
-
 
 namespace QgsGuiUtils
 {
@@ -343,6 +343,38 @@ namespace QgsGuiUtils
       }
     }
     return 0;
+  }
+
+  bool isNonStandardGeoPackageGeometryType( Qgis::WkbType wkbType )
+  {
+    const Qgis::WkbType flatType = QgsWkbTypes::flatType( wkbType );
+    return ( flatType == Qgis::WkbType::PolyhedralSurface || flatType == Qgis::WkbType::TIN || flatType == Qgis::WkbType::Triangle );
+  }
+
+  bool warnAboutNonStandardGeoPackageGeometryType( Qgis::WkbType wkbType, QWidget *parent, const QString &dialogTitle, bool showDialog, bool *isNonStandard )
+  {
+    const bool nonStandard = isNonStandardGeoPackageGeometryType( wkbType );
+
+    if ( isNonStandard )
+    {
+      *isNonStandard = nonStandard;
+    }
+
+    if ( !nonStandard )
+    {
+      return true;
+    }
+
+    if ( !showDialog )
+    {
+      return true;
+    }
+
+    return QMessageBox::question( parent, dialogTitle, QObject::tr( "PolyhedralSurface, TIN and Triangle are non-standard GeoPackage geometry types "
+                                                                    "and may not be recognized by other software.\n\n"
+                                                                    "Do you want to continue?" ),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+           == QMessageBox::Yes;
   }
 } // namespace QgsGuiUtils
 

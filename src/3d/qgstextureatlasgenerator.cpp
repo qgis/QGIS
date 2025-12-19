@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgstextureatlasgenerator.h"
+
 #include "qgscolorrampimpl.h"
+
 #include <QPainter>
 
 // rectpack2D library

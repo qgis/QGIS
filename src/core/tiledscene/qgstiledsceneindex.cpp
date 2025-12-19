@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledsceneindex.h"
+
 #include "qgsfeedback.h"
 #include "qgstiledscenetile.h"
 

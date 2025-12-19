@@ -15,26 +15,25 @@
 
 #include "qgshelp.h"
 
-#include "qgis.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontext.h"
-#include "qgsmessagelog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-
-#include <QUrl>
-#include <QFileInfo>
-#include <QTcpSocket>
-#include <QDesktopServices>
-#include <QRegularExpression>
-#include <QNetworkProxy>
-#include <QNetworkProxyFactory>
-
 #include <memory>
 
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgssettings.h"
+
+#include <QDesktopServices>
+#include <QFileInfo>
+#include <QNetworkProxy>
+#include <QNetworkProxyFactory>
+#include <QRegularExpression>
+#include <QTcpSocket>
+#include <QUrl>
 
 void QgsHelp::openHelp( const QString &key )
 {

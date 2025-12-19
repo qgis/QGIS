@@ -9,7 +9,6 @@
 
 
 
-
 class QgsPolyhedralSurface: QgsSurface
 {
 %Docstring(signature="appended")
@@ -88,6 +87,7 @@ Creates a polyhedral surface from a multiPolygon.
     virtual QgsPolyhedralSurface *simplifyByDistance( double tolerance ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
 
     virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 

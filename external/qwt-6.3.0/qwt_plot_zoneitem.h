@@ -35,7 +35,7 @@ class QWT_EXPORT QwtPlotZoneItem :
 {
   public:
     explicit QwtPlotZoneItem();
-    virtual ~QwtPlotZoneItem();
+    ~QwtPlotZoneItem() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

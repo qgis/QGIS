@@ -21,42 +21,41 @@
 #ifndef QGSPROJECT_H
 #define QGSPROJECT_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+#include "qgsabstractsensor.h"
+#include "qgsarchive.h"
+#include "qgscolorscheme.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
+#include "qgsmaplayerstore.h"
+#include "qgsmapthemecollection.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsprojectmetadata.h"
+#include "qgsprojectproperty.h"
+#include "qgsprojecttranslator.h"
+#include "qgsprojectversion.h"
+#include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrelationmanager.h"
+#include "qgssettings.h"
+#include "qgssnappingconfig.h"
+#include "qgstranslationcontext.h"
+#include "qgsvectorlayereditbuffergroup.h"
 
-#include <memory>
+#include <QFileInfo>
 #include <QHash>
 #include <QList>
 #include <QObject>
 #include <QPair>
-#include <QFileInfo>
 #include <QStringList>
 #include <QTranslator>
-
-#include "qgssnappingconfig.h"
-#include "qgsprojectversion.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsexpressioncontextscopegenerator.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgsprojectproperty.h"
-#include "qgsmaplayerstore.h"
-#include "qgsarchive.h"
-#include "qgsreadwritecontext.h"
-#include "qgsprojectmetadata.h"
-#include "qgstranslationcontext.h"
-#include "qgsprojectdisplaysettings.h"
-#include "qgsprojecttranslator.h"
-#include "qgscolorscheme.h"
-#include "qgssettings.h"
-#include "qgspropertycollection.h"
-#include "qgsvectorlayereditbuffergroup.h"
-#include "qgselevationshadingrenderer.h"
-#include "qgsabstractsensor.h"
-
-#include "qgsrelationmanager.h"
-#include "qgsmapthemecollection.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -2220,14 +2219,27 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void layerWasAdded( QgsMapLayer *layer );
 
     /**
-     * Emitted, when a layer was added to the registry and the legend.
+     * Emitted when \a layers were added to the registry and the legend.
+     *
      * Layers can also be private layers, which are signalled by
      * layersAdded() and layerWasAdded() but will not be
      * advertised by this signal.
      *
      * \param layers List of QgsMapLayer which were added to the legend.
+     *
+     * \see layersAddedWithoutLegend()
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Emitted when \a layers were added to the registry without adding to the legend.
+     *
+     * \param layers List of QgsMapLayer which were added to the project but not the legend.
+     *
+     * \see legendLayersAdded()
+     * \since QGIS 4.0
+     */
+    void layersAddedWithoutLegend( const QList<QgsMapLayer *> &layers );
 
     /**
      * Emitted when the project dirty status changes.

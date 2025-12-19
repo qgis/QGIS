@@ -17,10 +17,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QDomElement>
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
-#include <QDomElement>
 
 // #include "qgis.h"
 #include "qgswkbtypes.h"

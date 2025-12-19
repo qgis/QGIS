@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractproviderconnection.h"
+
 #include <QIcon>
 
 QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name )

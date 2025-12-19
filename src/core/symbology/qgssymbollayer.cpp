@@ -14,26 +14,27 @@
  ***************************************************************************/
 
 #include "qgssymbollayer.h"
-#include "qgsrendercontext.h"
+
 #include "qgsdxfexport.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgsgeos.h"
+#include "qgslegendpatchshape.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
-#include "qgsexpressioncontext.h"
-#include "qgssymbollayerutils.h"
-#include "qgslegendpatchshape.h"
+#include "qgsrendercontext.h"
+#include "qgssldexportcontext.h"
 #include "qgsstyle.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
-#include "qgsgeos.h"
-#include "qgssldexportcontext.h"
+#include "qgssymbollayerutils.h"
 
-#include <QSize>
 #include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
+#include <QSize>
 #include <QUuid>
 
 QgsPropertiesDefinition QgsSymbolLayer::sPropertyDefinitions;

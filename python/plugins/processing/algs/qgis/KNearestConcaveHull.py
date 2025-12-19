@@ -64,7 +64,19 @@ class KNearestConcaveHull(QgisAlgorithm):
         return self.tr("Concave hull (k-nearest neighbor)")
 
     def shortDescription(self):
-        return self.tr("Creates a concave hull using the k-nearest neighbor algorithm.")
+        return self.tr("Generates a concave hull polygon from a set of points.")
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm generates a concave hull polygon from a set of points. "
+            "If the input layer is a line or polygon layer, it will use the nodes.\n"
+            "The number of neighbours to consider determines the concaveness of the output polygon. "
+            "A lower number will result in a concave hull that follows the points very closely, "
+            "while a higher number will have a smoother shape. The minimum number of neighbour points to consider is 3. "
+            "A value equal to or greater than the number of points will result in a convex hull.\n"
+            "If a field is selected, the algorithm will group the features in the input layer "
+            "using unique values in that field and generate individual polygons in the output layer for each group."
+        )
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")

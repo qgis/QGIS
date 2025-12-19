@@ -15,29 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgspdalprovider.h"
-#include "moc_qgspdalprovider.cpp"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsjsonutils.h"
+
 #include <nlohmann/json.hpp>
-#include "qgspdalindexingtask.h"
+#include <pdal/Options.hpp>
+#include <pdal/Reader.hpp>
+#include <pdal/StageFactory.hpp>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscopcpointcloudindex.h"
 #include "qgseptpointcloudindex.h"
-#include "qgstaskmanager.h"
+#include "qgsjsonutils.h"
+#include "qgslogger.h"
+#include "qgspdalindexingtask.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsruntimeprofiler.h"
+#include "qgstaskmanager.h"
 #include "qgsthreadingutils.h"
-#include "qgscopcpointcloudindex.h"
 
-#include <pdal/Options.hpp>
-#include <pdal/StageFactory.hpp>
-#include <pdal/Reader.hpp>
-
-#include <QQueue>
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
+#include <QQueue>
+
+#include "moc_qgspdalprovider.cpp"
 
 #define PROVIDER_KEY QStringLiteral( "pdal" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "PDAL point cloud data provider" )

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPercentageWidget : QWidget
 {
 %Docstring(signature="appended")

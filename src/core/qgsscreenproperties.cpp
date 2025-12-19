@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsscreenproperties.h"
+
 #include "qgsrendercontext.h"
 
 #include <QScreen>

@@ -17,66 +17,70 @@
 
 
 #include "qgsinbuiltdataitemproviders.h"
-#include "moc_qgsinbuiltdataitemproviders.cpp"
+
+#include <memory>
+
+#include "processing/qgsprojectstylealgorithms.h"
+#include "qgisapp.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsaddattrdialog.h"
+#include "qgsapplication.h"
+#include "qgsbrowserdockwidget_p.h"
+#include "qgsbrowserguimodel.h"
+#include "qgscolordialog.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatabaseschemaitem.h"
+#include "qgsdatabaseschemaselectiondialog.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitem.h"
 #include "qgsdataitemguiproviderregistry.h"
-#include "qgssettings.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsdbqueryhistoryprovider.h"
+#include "qgsdbrelationshipwidget.h"
+#include "qgsdirectoryitem.h"
+#include "qgsfavoritesitem.h"
+#include "qgsfielddomain.h"
+#include "qgsfielddomainsitem.h"
+#include "qgsfielddomainwidget.h"
+#include "qgsfieldsitem.h"
+#include "qgsfilebaseddataitemprovider.h"
+#include "qgsfileutils.h"
+#include "qgsgeopackagedataitems.h"
 #include "qgsgui.h"
-#include "qgsnative.h"
-#include "qgisapp.h"
+#include "qgsguiutils.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgslayeritem.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
-#include "qgsnewnamedialog.h"
-#include "qgsbrowserguimodel.h"
-#include "qgsbrowserdockwidget_p.h"
-#include "qgsrasterlayer.h"
-#include "qgsnewvectorlayerdialog.h"
-#include "qgsfileutils.h"
-#include "qgsapplication.h"
-#include "processing/qgsprojectstylealgorithms.h"
-#include "qgsstylemanagerdialog.h"
-#include "qgsproviderregistry.h"
-#include "qgsaddattrdialog.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsprovidermetadata.h"
-#include "qgssourceselectproviderregistry.h"
-#include "qgssourceselectprovider.h"
-#include "qgsnewvectortabledialog.h"
-#include "qgscolordialog.h"
-#include "qgsdirectoryitem.h"
-#include "qgsdatacollectionitem.h"
-#include "qgsdatabaseschemaitem.h"
-#include "qgsfavoritesitem.h"
-#include "qgslayeritem.h"
-#include "qgsprojectitem.h"
-#include "qgsfieldsitem.h"
-#include "qgsfielddomainsitem.h"
-#include "qgsfielddomain.h"
-#include "qgsconnectionsitem.h"
-#include "qgsqueryresultwidget.h"
-#include "qgsprojectutils.h"
-#include "qgsvariantutils.h"
-#include "qgsfielddomainwidget.h"
-#include "qgsgeopackagedataitems.h"
-#include "qgsfilebaseddataitemprovider.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
-#include "qgsrelationshipsitem.h"
+#include "qgsnative.h"
+#include "qgsnewnamedialog.h"
+#include "qgsnewvectorlayerdialog.h"
+#include "qgsnewvectortabledialog.h"
+#include "qgsprojectitem.h"
+#include "qgsprojectutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsprovidersqlquerybuilder.h"
-#include "qgsdbrelationshipwidget.h"
-#include "qgsdbqueryhistoryprovider.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgsdatabaseschemaselectiondialog.h"
+#include "qgsqueryresultwidget.h"
+#include "qgsrasterlayer.h"
+#include "qgsrelationshipsitem.h"
+#include "qgssettings.h"
+#include "qgssourceselectprovider.h"
+#include "qgssourceselectproviderregistry.h"
+#include "qgsstylemanagerdialog.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayerexporter.h"
 
-#include <QFileInfo>
-#include <QMenu>
-#include <QInputDialog>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QUrl>
-#include <memory>
+
+#include "moc_qgsinbuiltdataitemproviders.cpp"
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -1690,6 +1694,12 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             options[QStringLiteral( "geometryColumn" )] = geometryColumn;
           }
 
+          // Check for non-standard GeoPackage geometry types
+          if ( !QgsGuiUtils::warnAboutNonStandardGeoPackageGeometryType( geometryType, nullptr, QObject::tr( "New Table" ) ) )
+          {
+            return;
+          }
+
           try
           {
             conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
@@ -1697,7 +1707,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             {
               try
               {
-                conn2->createSpatialIndex( schemaName, tableName );
+                QgsAbstractDatabaseProviderConnection::SpatialIndexOptions spatialIndexOptions;
+                spatialIndexOptions.geometryColumnName = geometryColumn;
+                conn2->createSpatialIndex( schemaName, tableName, spatialIndexOptions );
               }
               catch ( QgsProviderConnectionException &ex )
               {
@@ -2407,7 +2419,8 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
 {
   if ( qobject_cast<QgsFieldDomainsItem *>( item )
        || qobject_cast<QgsGeoPackageCollectionItem *>( item )
-       || qobject_cast<QgsFileDataCollectionItem *>( item ) )
+       || qobject_cast<QgsFileDataCollectionItem *>( item )
+       || qobject_cast<QgsFieldDomainItem *>( item ) )
   {
     QString providerKey;
     QString connectionUri;
@@ -2416,6 +2429,11 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     {
       providerKey = fieldDomainsItem->providerKey();
       connectionUri = fieldDomainsItem->connectionUri();
+    }
+    else if ( QgsFieldDomainItem *fieldDomainItem = qobject_cast<QgsFieldDomainItem *>( item ) )
+    {
+      providerKey = fieldDomainItem->providerKey();
+      connectionUri = fieldDomainItem->connectionUri();
     }
     else if ( QgsGeoPackageCollectionItem *gpkgItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
     {
@@ -2433,60 +2451,134 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     if ( md )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
-      {
-        QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
-        menu->addMenu( createFieldDomainMenu );
 
-        auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
-          QgsFieldDomainDialog dialog( type, QgisApp::instance() );
-          dialog.setWindowTitle( tr( "New Field Domain" ) );
-          if ( dialog.exec() )
-          {
-            std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-            try
+      // for every object besides field domain item the menu actions are creation of field domain (different types)
+      if ( !qobject_cast<QgsFieldDomainItem *>( item ) )
+      {
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
+        {
+          QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
+          menu->addMenu( createFieldDomainMenu );
+
+          auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
+            QgsFieldDomainDialog dialog( type, QgisApp::instance() );
+            dialog.setWindowTitle( tr( "New Field Domain" ) );
+            if ( dialog.exec() )
             {
-              conn->addFieldDomain( *newDomain, QString() );
-              notify( QObject::tr( "New Field Domain Created" ), QObject::tr( "Field domain '%1' was created successfully." ).arg( newDomain->name() ), context, Qgis::MessageLevel::Success );
-              if ( itemWeakPointer )
+              std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+              try
               {
-                itemWeakPointer->refresh();
+                conn->addFieldDomain( *newDomain, QString() );
+                notify( QObject::tr( "New Field Domain Created" ), QObject::tr( "Field domain '%1' was created successfully." ).arg( newDomain->name() ), context, Qgis::MessageLevel::Success );
+                if ( itemWeakPointer )
+                {
+                  itemWeakPointer->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Field Domain Creation Error" ), QObject::tr( "Error creating new field domain '%1': %2" ).arg( newDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
               }
             }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              notify( QObject::tr( "Field Domain Creation Error" ), QObject::tr( "Error creating new field domain '%1': %2" ).arg( newDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
-            }
+          };
+
+          const QList<Qgis::FieldDomainType> supportedDomainTypes = conn->supportedFieldDomainTypes();
+
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Range ) )
+          {
+            QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
+            createFieldDomainMenu->addAction( rangeDomainAction );
+            connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Range );
+            } );
           }
-        };
 
-        const QList<Qgis::FieldDomainType> supportedDomainTypes = conn->supportedFieldDomainTypes();
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
+          {
+            QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
+            createFieldDomainMenu->addAction( codedDomainAction );
+            connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Coded );
+            } );
+          }
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Range ) )
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
+          {
+            QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
+            createFieldDomainMenu->addAction( globDomainAction );
+            connect( globDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Glob );
+            } );
+          }
+        }
+      }
+      // for field domain item the menu actions are edit and delete
+      else
+      {
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain ) )
         {
-          QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
-          createFieldDomainMenu->addAction( rangeDomainAction );
-          connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Range );
-          } );
+          std::unique_ptr<QgsFieldDomain> fieldDomain( conn->fieldDomain( item->name() ) );
+
+          if ( fieldDomain )
+          {
+            QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ), menu );
+            menu->addAction( editFieldDomainAction );
+
+            connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, fieldDomainLambda = std::move( fieldDomain )] {
+              QgsFieldDomainDialog dialog( fieldDomainLambda->type(), QgisApp::instance() );
+              dialog.setWindowTitle( tr( "Edit Field Domain" ) );
+              dialog.setFieldDomain( fieldDomainLambda.get() );
+              dialog.setNameEditable( false );
+
+              if ( dialog.exec() )
+              {
+                std::unique_ptr<QgsFieldDomain> updatedDomain( dialog.createFieldDomain() );
+                std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+                try
+                {
+                  conn->updateFieldDomain( updatedDomain.get(), QString() );
+                  notify( QObject::tr( "Field Domain Updated" ), QObject::tr( "Field domain '%1' was updated successfully." ).arg( updatedDomain->name() ), context, Qgis::MessageLevel::Success );
+                  if ( item )
+                  {
+                    item->refresh();
+                  }
+                }
+                catch ( QgsProviderConnectionException &ex )
+                {
+                  notify( QObject::tr( "Field Domain Update Error" ), QObject::tr( "Error updating field domain '%1': %2" ).arg( updatedDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+                }
+              }
+            } );
+          }
         }
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain ) )
         {
-          QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
-          createFieldDomainMenu->addAction( codedDomainAction );
-          connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Coded );
-          } );
-        }
+          QAction *deleteFieldDomainAction = new QAction( tr( "Delete Field Domain…" ), menu );
+          menu->addAction( deleteFieldDomainAction );
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
-        {
-          QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
-          createFieldDomainMenu->addAction( globDomainAction );
-          connect( globDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Glob );
+          connect( deleteFieldDomainAction, &QAction::triggered, this, [md, item, connectionUri, context] {
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+            QMessageBox msgbox { QMessageBox::Icon::Question, tr( "Delete Field Domain" ), tr( "Delete field domain %1" ).arg( item->name() ), QMessageBox::Ok | QMessageBox::Cancel };
+
+            if ( msgbox.exec() == QMessageBox::Ok )
+            {
+              try
+              {
+                conn->deleteFieldDomain( item->name(), QString() );
+                notify( QObject::tr( "Delete Field Domain" ), QObject::tr( "Field domain '%1' was deleted successfully." ).arg( item->name() ), context, Qgis::MessageLevel::Success );
+                if ( item->parent() )
+                {
+                  item->parent()->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Delete Field Domain Error" ), QObject::tr( "Error deleting field domain '%1': %2" ).arg( item->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
           } );
         }
       }

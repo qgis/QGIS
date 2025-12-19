@@ -16,12 +16,12 @@
 #ifndef QGSOPTIONSDIALOGHIGHLIGHTWIDGET_H
 #define QGSOPTIONSDIALOGHIGHLIGHTWIDGET_H
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QObject>
 #include <QPointer>
 #include <QWidget>
-
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 
 class QgsOptionsDialogHighlightWidget;
 

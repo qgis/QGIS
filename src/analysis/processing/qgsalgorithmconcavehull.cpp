@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmconcavehull.h"
-#include "qgsspatialindex.h"
+
 #include "qgsmultipoint.h"
 #include "qgsprocessingregistry.h"
+#include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

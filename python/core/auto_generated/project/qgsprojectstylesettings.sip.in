@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProjectStyleSettings : QObject
 {
 %Docstring(signature="appended")

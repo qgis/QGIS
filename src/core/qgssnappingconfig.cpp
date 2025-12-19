@@ -14,19 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssnappingconfig.h"
+
+#include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgsproject.h"
-#include "moc_qgssnappingconfig.cpp"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomElement>
 #include <QHeaderView>
 #include <QRegularExpression>
 
-#include "qgssettingsregistrycore.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgssettingsentryenumflag.h"
-
+#include "moc_qgssnappingconfig.cpp"
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, Qgis::MapToolUnit units, double minScale, double maxScale )
   : mValid( true )

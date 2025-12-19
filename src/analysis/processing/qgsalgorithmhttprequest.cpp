@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmhttprequest.h"
-#include "moc_qgsalgorithmhttprequest.cpp"
-#include "qgsprocessingparameters.h"
-#include "qgis.h"
 
+#include "qgis.h"
 #include "qgsblockingnetworkrequest.h"
-#include <QUrl>
-#include <QNetworkRequest>
+#include "qgsprocessingparameters.h"
+
 #include <QDesktopServices>
-#include <QUrlQuery>
 #include <QMimeDatabase>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QUrlQuery>
+
+#include "moc_qgsalgorithmhttprequest.cpp"
 
 ///@cond PRIVATE
 

@@ -14,19 +14,19 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidgetwrapper.h"
-#include "moc_qgsexternalresourcewidgetwrapper.cpp"
 
-#include <QPushButton>
-#include <QSettings>
-#include <QLabel>
-
-#include "qgsproject.h"
-#include "qgsexternalresourcewidget.h"
-#include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexternalresourcewidget.h"
 #include "qgsexternalstoragefilewidget.h"
+#include "qgsfilterlineedit.h"
+#include "qgsproject.h"
 
+#include <QLabel>
+#include <QPushButton>
+#include <QSettings>
+
+#include "moc_qgsexternalresourcewidgetwrapper.cpp"
 
 QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

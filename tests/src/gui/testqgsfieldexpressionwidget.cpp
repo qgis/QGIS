@@ -15,6 +15,7 @@
 
 
 #include "qgstest.h"
+
 #include <QObject>
 #include <QSignalSpy>
 
@@ -26,7 +27,6 @@
 #include <qgsproject.h>
 
 /**
- * @ingroup UnitTests
  * This is a unit test for the field expression widget
  *
  * \see QgsFieldExpressionWidget

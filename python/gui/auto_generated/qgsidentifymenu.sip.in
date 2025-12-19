@@ -178,6 +178,7 @@ Applies style from the settings to the highlight
 %End
 
   signals:
+
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
 Emitted when a ``message`` should be shown to the user in the

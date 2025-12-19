@@ -17,6 +17,7 @@ from osgeo import gdal  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.core import (
     Qgis,
+    QgsGeometry,
     QgsAbstractDatabaseProviderConnection,
     QgsCodedFieldDomain,
     QgsCodedValue,
@@ -413,8 +414,11 @@ class TestPyQgsProviderConnectionGpkg(
         results = conn.executeSql(sql)
         self.assertEqual(results[0][:2], [8, "Sülfeld"])
         self.assertEqual(results[1][:2], [16, "Steimker Berg"])
-        self.assertEqual(results[0][2][:20], "Polygon ((612694.674")
-        self.assertEqual(results[1][2][:20], "Polygon ((622042.427")
+        g = QgsGeometry()
+        g.fromWkb(results[0][2])
+        self.assertIn("POLYGON ((612694", g.asWkt().upper())
+        g.fromWkb(results[1][2])
+        self.assertIn("POLYGON ((622042.427", g.asWkt().upper())
 
         sql = "SELECT name, st_astext(geom) FROM cdb_lines WHERE name LIKE 'S%' LIMIT 2"
         results = conn.executeSql(sql)
@@ -464,6 +468,8 @@ class TestPyQgsProviderConnectionGpkg(
         self.assertEqual(
             fields.names(), ["fid", "id", "typ", "name3", "ortsrat", "id_long", "geom"]
         )
+        # Restore
+        conn.renameField("", "cdb_lines", "name3", "name")
 
     def test_searchLayerMetadata_buggy_extent(self):
         """Test fix for https://github.com/qgis/QGIS/issues/56203"""
@@ -634,6 +640,336 @@ class TestPyQgsProviderConnectionGpkg(
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0]["name"], "Sülfeld")
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 12, 0),
+        "GDAL 3.12 required",
+    )
+    def test_gpkg_field_domain_update(self):
+        """
+        Test update field domains
+        """
+        gpkg_domains_original_path = f"{TEST_DATA_DIR}/domains.gpkg"
+        temp_domains_path = f"{self.temp_dir.path()}/domains_delete.gpkg"
+        shutil.copy(gpkg_domains_original_path, temp_domains_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(temp_domains_path, {})
+
+        domain = QgsRangeFieldDomain(
+            "my new domain", "my new domain desc", QVariant.Int, 5, True, 15, True
+        )
+        conn.addFieldDomain(domain, "")
+
+        # try retrieving result
+        del conn
+        conn = md.createConnection(temp_domains_path, {})
+
+        # get domain for modification
+        read_domain = conn.fieldDomain("my new domain")
+
+        # modify the field domain
+        read_domain.setMinimum(7.5)
+        read_domain.setMaximum(12.5)
+        read_domain.setDescription("my updated domain desc")
+
+        # update the field domain
+        conn.updateFieldDomain(read_domain, "")
+
+        # get the updated domain
+        read_domain = conn.fieldDomain("my new domain")
+
+        self.assertEqual(read_domain.type(), Qgis.FieldDomainType.Range)
+        self.assertEqual(read_domain.name(), "my new domain")
+        self.assertEqual(read_domain.description(), "my updated domain desc")
+
+        self.assertEqual(read_domain.minimum(), 7.5)
+        self.assertEqual(read_domain.maximum(), 12.5)
+
+        # rename the domain
+        read_domain.setName("my renamed domain")
+
+        # try updating domain that does not exist, should fail
+        with self.assertRaises(QgsProviderConnectionException) as e:
+            conn.updateFieldDomain(read_domain, "")
+        self.assertEqual(
+            str(e.exception),
+            "Could not update field domain: The domain should already exist to be updated",
+        )
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 12, 0),
+        "GDAL 3.12 required",
+    )
+    def test_gpkg_field_domain_delete(self):
+        """
+        Test delete field domains
+        """
+        temp_domains_path = f"{self.temp_dir.path()}/domains_delete.gpkg"
+        shutil.copy(self.gpkg_domains_path, temp_domains_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(temp_domains_path, {})
+
+        # delete the field domain
+        conn.deleteFieldDomain("enum_domain", "")
+        conn.deleteFieldDomain("glob_domain", "")
+
+        # try updating domain that does not exist, should fail
+        with self.assertRaises(QgsProviderConnectionException) as e:
+            conn.deleteFieldDomain("non_existing_field_domain", "")
+        self.assertEqual(
+            str(e.exception),
+            "Could not delete field domain: Domain does not exist",
+        )
+
+    def test_select_geometry(self):
+        """Test complex queries and multiple geometries retrieval"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        # This would be a SQL parser error, test the fallback path
+        sql = "SELECT HasSpatialIndex('cdb_lines', 'geom')"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["HasSpatialIndex"])
+        results = exec_results.rows()
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0], [1])
+
+        sql = "SELECT ST_StartPoint(ST_ExteriorRing(geom)) AS start_point, geom FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["start_point", "geom"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        self.assertEqual(len(results[0]), 2)
+        g_start = QgsGeometry()
+        g_start.fromWkb(results[0][0])
+        g = QgsGeometry()
+        g.fromWkb(results[0][1])
+        self.assertTrue(g_start.asWkt().upper().startswith("POINT (625971"))
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+
+        # Swapping the order of selected fields
+        sql = "SELECT geom, ST_StartPoint(ST_ExteriorRing(geom)) AS start_point FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["geom", "start_point"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        self.assertEqual(len(results[0]), 2)
+        g = QgsGeometry()
+        g.fromWkb(results[0][0])
+        g_start = QgsGeometry()
+        g_start.fromWkb(results[0][1])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+        self.assertTrue(g_start.asWkt().upper().startswith("POINT (625971"))
+
+        # Fields as reported by SQLite: fid, geom, id, typ, name, ortsrat, id_long
+        # but Qgis internal OGR does not expose the geometry as a normal field
+        # so we have it appended at the end of the field list
+        # (fid, id, typ, name, ortsrat, id_long, geom)
+        sql = "SELECT * FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(
+            exec_results.columns(),
+            ["fid", "id", "typ", "name", "ortsrat", "id_long", "geom"],
+        )
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        self.assertEqual(results[0][0], 1)  # fid
+        self.assertEqual(results[0][1], 1)  # id
+        self.assertEqual(results[0][2], "Ortsteil")
+        self.assertEqual(results[0][3], "Neindorf")
+        self.assertEqual(results[0][4], "Almke/Neindorf")
+        self.assertEqual(results[0][5], None)
+        g = QgsGeometry()
+        g.fromWkb(results[0][6])  # geom
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+
+        sql = "SELECT geom, name FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["geom", "name"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        g = QgsGeometry()
+        g.fromWkb(results[0][0])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+        self.assertEqual(results[0][1], "Neindorf")
+
+        sql = "SELECT name, geom FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["name", "geom"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+        g = QgsGeometry()
+        g.fromWkb(results[0][1])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+        self.assertEqual(results[0][0], "Neindorf")
+
+        sql = "SELECT name, geom, fid FROM cdb_lines ORDER BY fid LIMIT 1"
+        exec_results = conn.execSql(sql)
+        self.assertEqual(exec_results.columns(), ["name", "geom", "fid"])
+        results = exec_results.rows()
+        self.assertGreater(len(results), 0)
+
+        self.assertEqual(results[0][2], 1)  # fid
+        self.assertEqual(results[0][0], "Neindorf")
+        g = QgsGeometry()
+        g.fromWkb(results[0][1])
+        self.assertIn("POLYGON ((625971", g.asWkt().upper())
+
+    def test_gpkg_geometry_column_capabilities(self):
+        """Test that GeoPackage provider has PolyhedralSurfaces geometry column capability"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+
+        geom_caps = conn.geometryColumnCapabilities()
+
+        # Check standard capabilities
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.Z
+            )
+        )
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.M
+            )
+        )
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.Curves
+            )
+        )
+        # Check PolyhedralSurfaces capability
+        self.assertTrue(
+            bool(
+                geom_caps
+                & QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.PolyhedralSurfaces
+            )
+        )
+
+    def test_gpkg_create_polyhedral_surface_and_tin(self):
+        """Test creating tables with PolyhedralSurface and TIN geometry types"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        # Test PolyhedralSurface
+        conn.createVectorTable(
+            "",
+            "test_polyhedral",
+            QgsFields(),
+            QgsWkbTypes.Type.PolyhedralSurface,
+            crs,
+            True,
+            {"geometryColumn": "geom"},
+        )
+
+        tables = conn.tables("")
+        table_names = [t.tableName() for t in tables]
+        self.assertIn("test_polyhedral", table_names)
+
+        # Verify geometry type
+        table_info = conn.table("", "test_polyhedral")
+        self.assertEqual(table_info.geometryColumn(), "geom")
+
+        # Test TIN
+        conn.createVectorTable(
+            "",
+            "test_tin",
+            QgsFields(),
+            QgsWkbTypes.Type.TIN,
+            crs,
+            True,
+            {"geometryColumn": "geom"},
+        )
+
+        tables = conn.tables("")
+        table_names = [t.tableName() for t in tables]
+        self.assertIn("test_tin", table_names)
+
+        # Clean up
+        conn.dropVectorTable("", "test_polyhedral")
+        conn.dropVectorTable("", "test_tin")
+
+    def test_gpkg_create_spatial_index_with_geometry_column(self):
+        """Test creating spatial index with explicit geometry column name"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        # Create table without spatial index
+        conn.createVectorTable(
+            "",
+            "test_spatial_index",
+            QgsFields(),
+            QgsWkbTypes.Type.PolyhedralSurface,
+            crs,
+            True,
+            {"layerOptions": "SPATIAL_INDEX=NO"},
+        )
+
+        # Reconnect to ensure metadata is flushed
+        del conn
+        conn = md.createConnection(self.uri, {})
+
+        # Verify table was created
+        table_info = conn.table("", "test_spatial_index")
+        geom_column = table_info.geometryColumn()
+        self.assertTrue(geom_column)  # Should have a geometry column
+
+        # Create spatial index with explicit geometry column name
+        options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
+        options.geometryColumnName = geom_column
+        conn.createSpatialIndex("", "test_spatial_index", options)
+
+        # Verify spatial index exists
+        self.assertTrue(conn.spatialIndexExists("", "test_spatial_index", geom_column))
+
+        # Clean up
+        conn.dropVectorTable("", "test_spatial_index")
+
+    def test_gpkg_create_spatial_index_automatic(self):
+        """Test that spatial index is created automatically with SPATIAL_INDEX=YES"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(self.uri, {})
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        # Create table with automatic spatial index
+        conn.createVectorTable(
+            "",
+            "test_spatial_index_auto",
+            QgsFields(),
+            QgsWkbTypes.Type.PolyhedralSurface,
+            crs,
+            True,
+            {"layerOptions": "SPATIAL_INDEX=YES"},
+        )
+
+        # Reconnect to ensure metadata is flushed
+        del conn
+        conn = md.createConnection(self.uri, {})
+
+        # Verify table was created
+        table_info = conn.table("", "test_spatial_index_auto")
+        geom_column = table_info.geometryColumn()
+        self.assertTrue(geom_column)  # Should have a geometry column
+
+        # Verify spatial index was created automatically
+        self.assertTrue(
+            conn.spatialIndexExists("", "test_spatial_index_auto", geom_column)
+        )
+
+        # Clean up
+        conn.dropVectorTable("", "test_spatial_index_auto")
 
 
 if __name__ == "__main__":
