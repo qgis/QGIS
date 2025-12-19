@@ -17,6 +17,9 @@
 
 struct QgsPointCloudAttributeStatistics
 {
+%TypeHeaderCode
+#include "qgspointcloudstatistics.h"
+%End
   double minimum;
   double maximum;
   double mean;

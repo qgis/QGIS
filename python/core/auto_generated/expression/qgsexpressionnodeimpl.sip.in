@@ -582,15 +582,12 @@ An expression node for CASE WHEN clauses.
   public:
 
     class WhenThen
-{
+    {
 %Docstring(signature="appended")
 Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an
 expression.
 %End
 
-%TypeHeaderCode
-#include "qgsexpressionnodeimpl.h"
-%End
       public:
 
         WhenThen( QgsExpressionNode *whenExp, QgsExpressionNode *thenExp );
