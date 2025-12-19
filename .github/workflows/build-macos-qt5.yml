@@ -96,7 +96,7 @@ jobs:
           cmake -S . \
                 -G Ninja \
                 -B build \
-                -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
+                -D QGIS_APP_NAME="${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
                 -D WITH_QTWEBENGINE=OFF \
                 -D BUILD_WITH_QT6=OFF \
@@ -193,7 +193,7 @@ jobs:
 
       - name: Create dmg
         run: |
-          QGIS_APP_NAME=QGIS-"${{steps.workflow-artifact-ids.outputs.display-name}}"
+          QGIS_APP_NAME="${{steps.workflow-artifact-ids.outputs.display-name}}"
           create-dmg --volname "${QGIS_APP_NAME} Installer" \
             --hide-extension ${QGIS_APP_NAME}.app \
             --volicon "$(pwd)/images/icons/mac/qgis.icns" \

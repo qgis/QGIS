@@ -6,7 +6,7 @@ outputs:
     description: 'Filename to use for artifacts (e.g. pr123)'
     value: ${{ steps.generate-ids.outputs.filename }}
   display-name:
-    description: 'Human readable name (e.g. PR123)'
+    description: 'Human readable name (e.g. QGIS or QGIS-LTR)'
     value: ${{ steps.generate-ids.outputs.display_name }}
 
 runs:
@@ -15,20 +15,39 @@ runs:
     - id: generate-ids
       shell: bash
       run: |
+        set -euo pipefail
+
         if [ "${{ github.event_name }}" = "pull_request" ]; then
           ID="pr${{ github.event.pull_request.number }}"
-          DISPLAY_ID="PR${{ github.event.pull_request.number }}"
+          DISPLAY_ID="QGIS-PR${{ github.event.pull_request.number }}"
+
         elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
-          TAG=${GITHUB_REF#refs/tags/}
+          TAG="${GITHUB_REF#refs/tags/}"
+
+          # Example tag: final-3_40_13 → 34013
+          TAG_VERSION=$(echo "$TAG" | sed -E 's/.*-([0-9]+)_([0-9]+)_([0-9]+)/\1\2\3/')
+
+          # Fetch LTR version info
+          LTR_TXT=$(curl -fsSL https://qgis.org/version-ltr.txt)
+
+          # Extract version from: #QGIS Version 34013
+          LTR_VERSION=$(echo "$LTR_TXT" | sed -nE 's/^#QGIS Version ([0-9]+)\|.*/\1/p')
+
+          if [ "$TAG_VERSION" = "$LTR_VERSION" ]; then
+            DISPLAY_ID="QGIS-LTR"
+          else
+            DISPLAY_ID="QGIS"
+          fi
+
           ID="$TAG"
-          DISPLAY_ID="$TAG"
+
         else
-          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           ID="$BRANCH_NAME-$SHORT_SHA"
           DISPLAY_ID="$BRANCH_NAME-$SHORT_SHA"
         fi
 
         # Set outputs
-        echo "filename=$ID" >> $GITHUB_OUTPUT
-        echo "display_name=$DISPLAY_ID" >> $GITHUB_OUTPUT
+        echo "filename=$ID" >> "$GITHUB_OUTPUT"
+        echo "display_name=$DISPLAY_ID" >> "$GITHUB_OUTPUT"
