@@ -1299,7 +1299,7 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
 }
 
 
-bool QgsPostgresDataItemGuiProvider::enableProjectsVersioning( const QString connectionName, const QString schemaName, QgsDataItemGuiContext context )
+bool QgsPostgresDataItemGuiProvider::enableProjectsVersioning( const QString connectionName, const QString &schemaName, QgsDataItemGuiContext context )
 {
   const QgsDataSourceUri uri = QgsPostgresConn::connUri( connectionName );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
