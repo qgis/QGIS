@@ -76,7 +76,7 @@ class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 
     QString connectionName() const { return mConnectionName; }
 
-    /*
+    /**
      * Set if versioning of QGIS projects is enabled for this schema.
      *
      * \since QGIS 4.0
