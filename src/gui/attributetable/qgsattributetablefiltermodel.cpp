@@ -242,7 +242,9 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   }
 
   if ( !config.sortExpression().isEmpty() )
+  {
     sort( config.sortExpression(), config.sortOrder() );
+  }
 }
 
 void QgsAttributeTableFilterModel::setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context )

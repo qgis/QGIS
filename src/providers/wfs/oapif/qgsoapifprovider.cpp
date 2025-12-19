@@ -200,8 +200,9 @@ bool QgsOapifProvider::init()
   }
   else if ( implementsPart2 && mLayerMetadata.crs().isValid() )
   {
-    // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copying the
-    // CRS his mPj pointer gets deleted and it is impossible to create a transform
+    // Recreate a CRS object with fromOgcWmsCrs  because its mPj pointer got
+    // deleted because it got acquired by a thread that has now disappeared
+    // and without it, it is impossible to create a transform
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mLayerMetadata.crs().authid() );
     mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
   }
@@ -216,7 +217,13 @@ bool QgsOapifProvider::init()
   // Reproject extent of /collection request to the layer CRS
   if ( !mShared->mCapabilityExtent.isNull() && collectionDesc.mBboxCrs != mShared->mSourceCrs )
   {
-    QgsCoordinateTransform ct( collectionDesc.mBboxCrs, mShared->mSourceCrs, transformContext() );
+    // Recreate a CRS object with fromOgcWmsCrs because its mPj pointer got
+    // deleted because it got acquired by a thread that has now disappeared
+    // and without it, it is impossible to create a transform
+    QgsCoordinateReferenceSystem bboxCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( collectionDesc.mBboxCrs.authid() );
+    bboxCrs.setCoordinateEpoch( collectionDesc.mBboxCrs.coordinateEpoch() );
+
+    QgsCoordinateTransform ct( bboxCrs, mShared->mSourceCrs, transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
     try

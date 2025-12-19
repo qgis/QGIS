@@ -405,7 +405,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   else
   {
     geometry = f.geometry();
-    if ( ring->orientation() != geometry.polygonOrientation() )
+    if ( mLayer->geometryType() == Qgis::GeometryType::Polygon && ring->orientation() != geometry.polygonOrientation() )
     {
       ring = ring->reversed();
     }

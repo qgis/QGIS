@@ -526,7 +526,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         }
         if ( mAlphaBand > 0 )
         {
-          currentAlpha *= alphaBlock->value( row ) / 255.0;
+          currentAlpha *= alphaBlock->value( static_cast<qgssize>( row ) * width + col ) / 255.0;
         }
 
         if ( qgsDoubleNear( currentAlpha, 1.0 ) )

@@ -21095,10 +21095,6 @@ Dit kan onverwachte resultaten opleveren.</translation>
         <translation>Fout tijdens voorbereiden bestand…</translation>
     </message>
     <message>
-        <source>Hey, type something to run!</source>
-        <translation>Tik iets in om uit te laten voeren!</translation>
-    </message>
-    <message>
         <source>Python Console: Save file</source>
         <translation>Python Console: Opslaan bestand</translation>
     </message>
@@ -21310,6 +21306,10 @@ In de console kunt u de volgende speciale opdrachten typen:
     - ?: Geef deze Help weer
 </translation>
     </message>
+    <message>
+        <source>Empty scripts cannot be run!</source>
+        <translation>Lege scripts kunnen niet uitgevoerd worden!</translation>
+    </message>
 </context>
 <context>
     <name>PythonConsoleWidget</name>
@@ -21481,107 +21481,107 @@ In de console kunt u de volgende speciale opdrachten typen:
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="319"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="316"/>
         <source>Count</source>
         <translation>Aantal</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="332"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="329"/>
         <source>Count Distinct</source>
         <translation>Aantal afzonderlijk</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="345"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="342"/>
         <source>Count Missing</source>
         <translation>Aantal ontbrekende</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="357"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="354"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="371"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="368"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="385"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="382"/>
         <source>Sum</source>
         <translation>Som</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="396"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="393"/>
         <source>Mean</source>
         <translation>Gemiddelde</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="407"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="404"/>
         <source>Median</source>
         <translation>Mediaan</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="416"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="413"/>
         <source>Stdev</source>
         <translation>Stdev</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="427"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="424"/>
         <source>Stdev Sample</source>
         <translation>Stdev monster</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="438"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="435"/>
         <source>Range</source>
         <translation>Bereik</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="451"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="448"/>
         <source>Minority</source>
         <translation>Minderheid</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="463"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="460"/>
         <source>Majority</source>
         <translation>Meerderheid</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="475"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="472"/>
         <source>Q1</source>
         <translation>Kw1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="486"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="483"/>
         <source>Q3</source>
         <translation>Kw3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="497"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="494"/>
         <source>InterQuartileRange</source>
         <translation>InterQuartileRange</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="508"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="505"/>
         <source>Min Length</source>
         <translation>Min lengte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="515"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="512"/>
         <source>Max Length</source>
         <translation>Max lengte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="522"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="519"/>
         <source>Concatenate</source>
         <translation>Samenvoegen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="529"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="526"/>
         <source>Collect</source>
         <translation>Collect</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="535"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="532"/>
         <source>Array Aggregate</source>
         <translation>Array samengevoegd</translation>
     </message>
@@ -22057,7 +22057,7 @@ Het resultaat van de query zal worden toegevoegd als een nieuwe laag.
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/app/main.cpp" line="923"/>
+        <location filename="../src/app/main.cpp" line="924"/>
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
@@ -22066,22 +22066,22 @@ U ziet deze melding waarschijnlijk omdat u geen variabele DISPLAY in uw (unix)-o
 </translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1014"/>
+        <location filename="../src/app/main.cpp" line="1015"/>
         <source>Invalid globalsettingsfile path: %1</source>
         <translation>Ongeldig pad globalsettingsfile: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1018"/>
+        <location filename="../src/app/main.cpp" line="1019"/>
         <source>Successfully loaded globalsettingsfile path: %1</source>
         <translation>Pad voor globalsettingsfile met succes geladem: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1824"/>
+        <location filename="../src/app/main.cpp" line="1825"/>
         <source>Profile not found</source>
         <translation>Profiel niet gevonden</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1824"/>
+        <location filename="../src/app/main.cpp" line="1825"/>
         <source>The last used profile &apos;%1&apos; was not found. The default profile was used instead.</source>
         <translation>Het laatst gebruikte profiel &apos;%1&apos; werd niet gevonden. In plaats daarvan werd het standaard profiel gebruikt.</translation>
     </message>
@@ -23163,9 +23163,9 @@ De afstand wordt gespecificeerd in laageenheden, en de richting in graden met de
         <translation>Laag &apos;%1&apos; kon niet worden geladen.</translation>
     </message>
     <message>
-        <location filename="../src/core/pal/feature.cpp" line="426"/>
-        <location filename="../src/core/pal/feature.cpp" line="2430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2471"/>
+        <location filename="../src/core/pal/feature.cpp" line="430"/>
+        <location filename="../src/core/pal/feature.cpp" line="2434"/>
+        <location filename="../src/core/pal/feature.cpp" line="2475"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23187,9 +23187,9 @@ De afstand wordt gespecificeerd in laageenheden, en de richting in graden met de
         <translation>Fout: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/pal/feature.cpp" line="426"/>
-        <location filename="../src/core/pal/feature.cpp" line="2430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2471"/>
+        <location filename="../src/core/pal/feature.cpp" line="430"/>
+        <location filename="../src/core/pal/feature.cpp" line="2434"/>
+        <location filename="../src/core/pal/feature.cpp" line="2475"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23237,100 +23237,100 @@ De afstand wordt gespecificeerd in laageenheden, en de richting in graden met de
         <translation>De optie Samengevouwen behouden om geometrieën geldig te maken vereist een QGIS die is gebouwd gebaseerd op GEOS 3.10 of later</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2248"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2251"/>
         <source>Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later</source>
         <translation>Berekenen van concaveHull vereist een QGIS die is gebouwd gebaseerd op GEOS 3.11 of later</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2271"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2274"/>
         <source>Validating coverages requires a QGIS build based on GEOS 3.12 or later</source>
         <translation>Valideren van bedekkingen vereist een QGIS die is gebouwd gebaseerd op GEOS 3.12 of later</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2316"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2319"/>
         <source>Simplifying coverages requires a QGIS build based on GEOS 3.12 or later</source>
         <translation>Vereenvoudigen van bedekkingen vereist een QGIS die is gebouwd gebaseerd op GEOS 3.12 of later</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2358"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2361"/>
         <source>QGIS geometry cannot be converted to a GEOS geometry</source>
         <comment>GEOS Error</comment>
         <translation>Geometrie van QGIS kan niet worden geconverteerd naar een geometrie van GEOS</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2382"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2385"/>
         <source>Topology validation error</source>
         <comment>GEOS Error</comment>
         <translation>Fout bij valideren van topologie</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2383"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2386"/>
         <source>Repeated point</source>
         <comment>GEOS Error</comment>
         <translation>Herhaald punt</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2384"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2387"/>
         <source>Hole lies outside shell</source>
         <comment>GEOS Error</comment>
         <translation>Gat ligt buiten schil</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2385"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2388"/>
         <source>Holes are nested</source>
         <comment>GEOS Error</comment>
         <translation>Gaten zijn genest</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2386"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2389"/>
         <source>Interior is disconnected</source>
         <comment>GEOS Error</comment>
         <translation>Interieur is niet verbonden</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2387"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2390"/>
         <source>Self-intersection</source>
         <comment>GEOS Error</comment>
-        <translation>Zelf kruisend</translation>
+        <translation>Zelf doorsnijdend</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2388"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2391"/>
         <source>Ring self-intersection</source>
         <comment>GEOS Error</comment>
-        <translation>Ring is zelf kruisend</translation>
+        <translation>Ring is zelf doorsnijdend</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2389"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2392"/>
         <source>Nested shells</source>
         <comment>GEOS Error</comment>
         <translation>Geneste schillen</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2390"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2393"/>
         <source>Duplicate rings</source>
         <comment>GEOS Error</comment>
         <translation>Duplicaatringen</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2391"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2394"/>
         <source>Too few points in geometry component</source>
         <comment>GEOS Error</comment>
         <translation>Te weinig punten in component van geometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2392"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2395"/>
         <source>Invalid coordinate</source>
         <comment>GEOS Error</comment>
         <translation>Ongeldig coördinaat</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2393"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2396"/>
         <source>Ring is not closed</source>
         <comment>GEOS Error</comment>
         <translation>Ring is niet gesloten</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="3348"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="3342"/>
         <source>Calculating constrainedDelaunayTriangulation requires a QGIS build based on GEOS 3.11 or later</source>
         <translation>Berekenen van constrainedDelaunayTriangulation vereist een QGIS die is gebouwd gebaseerd op GEOS 3.11 of later</translation>
     </message>
@@ -24108,7 +24108,7 @@ De afstand wordt gespecificeerd in laageenheden, en de richting in graden met de
         <translation>Verticale afstand is te groot voor het bedekte gebied.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgrid.cpp" line="477"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgrid.cpp" line="479"/>
         <source>To preserve symmetry, hspacing is fixed relative to vspacing
  hspacing is fixed at: %1 and hoverlay is fixed at: %2 hoverlay cannot be negative. Increase hoverlay.</source>
         <translation>Voor het behouden van de symmetrie is hspacing relatief vastgezet ten opzichte van vspacing
@@ -24480,25 +24480,25 @@ hspacing is vastgezet op: %1 en hoverlay is vastgezet op: %2. hoverlay mag niet 
         <translation>Object-aanmaak fout (OGR fout: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3583"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3588"/>
         <source>Cannot overwrite an OGR layer in place</source>
         <translation>Kan geen OGR laag op zijn plaats overschrijven</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3734"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3739"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="547"/>
         <source>Failed to transform feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation>Fout bij de transformatie van object met ID &apos;%1&apos;. Wegschrijven gestopt. (Uitzondering: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3759"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3764"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="502"/>
         <source>Feature write errors:</source>
         <translation>Object-opslaan fouten:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3783"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4413"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3788"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4418"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>Slechts %1 van de %2 objecten opgeslagen.
@@ -25198,13 +25198,13 @@ Indien ingesteld op YES:  RFC 8142 standaard: GeoJSON Text Sequences  (geojsons)
         <translation>Standaard zal het stuurprogramma proberen het gegevenstype van de velden te detecteren. Indien ingesteld op STRING, zullen alle velden van het type String zijn.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3769"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3774"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="525"/>
         <source>Stopping after %n error(s)</source>
         <translation><numerusform>Gestopt na %n fout</numerusform><numerusform>Gestopt na %n fouten</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4320"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4325"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
         <translation>Fout tijdens transformatie, wegschrijven gestopt. (Uitzondering: %1)</translation>
     </message>
@@ -26533,7 +26533,7 @@ stderr: %4</translation>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1803"/>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2268"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3346"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4675"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4682"/>
         <source>Unsupported type for field %1</source>
         <translation>Niet-ondersteund type voor veld %1</translation>
     </message>
@@ -26640,7 +26640,7 @@ stderr: %4</translation>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="348"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="351"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1618"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5554"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5588"/>
         <location filename="../src/gui/providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp" line="23"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="57"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="95"/>
@@ -26890,7 +26890,7 @@ geef een andere naam op:</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="712"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6502"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
         <source>Cannot open transaction on %1, since it is not currently opened</source>
         <translation>Kan geen transactie openen op %1, omdat het momenteel niet geopend is</translation>
     </message>
@@ -27019,10 +27019,10 @@ Fout: %2</translation>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1659"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="51"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3095"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4413"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5159"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5219"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5373"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4420"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5166"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5226"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5380"/>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
@@ -27031,11 +27031,11 @@ Fout: %2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2695"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6023"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6098"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6273"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6332"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6437"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6025"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6100"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6275"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6334"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6439"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="186"/>
         <source>Connection to database failed</source>
         <translation>Verbinding met database mislukt</translation>
@@ -27047,7 +27047,7 @@ Fout: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3236"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4595"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4602"/>
         <source>Creation of data source %1 failed: 
 %2</source>
         <translation>verbinden met databron %1 mislukt:
@@ -27056,7 +27056,7 @@ Fout: %2</translation>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1780"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3274"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4615"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4622"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Laden van laag is %1 mislukt</translation>
     </message>
@@ -27195,13 +27195,13 @@ Databasefout: %2</translation>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="313"/>
+        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="321"/>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="483"/>
         <source>Infinite filter rectangle specified</source>
         <translation>Oneindige rechthoek filter gespecificeerd</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="313"/>
+        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="321"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="97"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="106"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="115"/>
@@ -27226,7 +27226,7 @@ Databasefout: %2</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5227"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2535"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Het is niet mogelijk om de laagstijl op te slaan. Het is niet mogelijk om de doeltabel in de database aan te maken. Wellicht is dit een probleem met rechten voor de tabel (gebruiker=%1). Neem contact op met uw beheerder van de database</translation>
@@ -27257,28 +27257,28 @@ Databasefout: %2</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4690"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4697"/>
         <source>Creation of fields failed:
 %1</source>
         <translation>Maken van velden mislukt:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2547"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Niet mogelijk om type kolom toe te voegen aan de tabel layer_styles. Misschien is dit een probleem met rechten voor de tabel (gebruiker=%1). Neem contact op met uw beheerder van de database </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5351"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2673"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Het is niet mogelijk om de laagstijl op te slaan. Het is niet mogelijk om een nieuw record op te slaan in de stijltabel. Wellicht is dit een probleem met rechten voor de tabel (gebruiker=%1). Neem contact op met uw beheerder van de database.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5453"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5539"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5574"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2769"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2859"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2894"/>
@@ -27286,49 +27286,49 @@ Databasefout: %2</translation>
         <translation>Connectie naar database mislukt bij gebruik van gebruikersname: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5486"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5513"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5554"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5590"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5493"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2806"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2833"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2874"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2910"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6078"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6244"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6080"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6246"/>
         <source>Error executing query: %1</source>
         <translation>Fout tijdens uitvoeren van query: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5487"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2807"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Fout tijdens uitvoeren van de geselecteerde query om gerelateerde stijlen te selecteren. De query is gelogd</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5514"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6410"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6412"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Fout tijdens uitvoeren van de query om niet-gerelateerde stijlen te selecteren. De query is gelogd</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5555"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2875"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>Fout tijdens uitvoeren van de query voor verwijderen. De query is gelogd</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5591"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2911"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6463"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Fout tijdens uitvoeren van de query om te selecteren. De query is gelogd</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5586"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2906"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6455"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6457"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Consistentiefout in tabel &apos;%1&apos;. Stijl-ID dient uniek te zijn</translation>
     </message>
@@ -27362,14 +27362,14 @@ SQL: %1</translation>
         <translation>aanmaken van velden mislukt</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6041"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6115"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6197"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
         <source>Error executing query %1: %2</source>
         <translation>Fout tijdens uitvoeren van query %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6502"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
         <source>spatialite</source>
         <translation>SpatiaLite</translation>
     </message>
@@ -27394,31 +27394,31 @@ SQL: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="46"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="196"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="195"/>
         <source>Unable to delete table %1
 </source>
         <translation>Kan tabel %1 niet verwijderen
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6459"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
         <source>Style with id %1 not found in %2 (Query: %3)</source>
         <translation>Stijl met ID %1 niet gevonden in %2 (Query: %3)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="3063"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6245"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6350"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6045"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6119"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6201"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6247"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6352"/>
         <source>Error looking for style. The query was logged</source>
         <translation>Fout bij het ophalen van de stijlen. De query is gelogd</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="2901"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2964"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6151"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6153"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
         <translation>Het is niet mogelijk om de kaartlaagstijl op te slaan. Het is niet mogelijk om de doeltabel in de database aan te maken.</translation>
     </message>
@@ -27454,7 +27454,7 @@ SQL: %1</translation>
         <translation>Kan %1 niet openen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6309"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6311"/>
         <source>Error executing loading style. The query was logged</source>
         <translation>Fout tijdens het laden van de stijlen. De query is gelogd</translation>
     </message>
@@ -27463,12 +27463,12 @@ SQL: %1</translation>
         <location filename="../src/core/qgsogrutils.cpp" line="2658"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2769"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2830"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6364"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6366"/>
         <source>No styles available on DB</source>
         <translation>Geen stijlen beschikbaar in database</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6384"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6386"/>
         <source>Error loading styles. The query was logged</source>
         <translation>Fout tijdens het laden van stijlen. De query is gelogd</translation>
     </message>
@@ -28338,7 +28338,7 @@ De aanvullende attributen en hun waarden worden uit een tweede vectorlaag genome
     </message>
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="154"/>
-        <location filename="../src/core/actions/qgsaction.cpp" line="429"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="435"/>
         <source>Open URL</source>
         <translation>URL openen</translation>
     </message>
@@ -28541,7 +28541,7 @@ De aanvullende attributen en hun waarden worden uit een tweede vectorlaag genome
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="319"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2887"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2889"/>
         <source>Project</source>
         <translation>Project</translation>
     </message>
@@ -29858,8 +29858,8 @@ Afhankelijk van de attributen van de geometrieën voor de invoer en de gebruikte
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="57"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="97"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="779"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="784"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="782"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="787"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="56"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="61"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="77"/>
@@ -31145,39 +31145,39 @@ Deze bewerking kan NIET ongedaan worden gemaakt!
         <translation>Kon hoofd-annotatielaag voor het project niet laden.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1073"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1075"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="1345"/>
         <source>Specified CRS is a %1 CRS, not a Vertical CRS</source>
         <translation>Gespecificeerd CRS is een %1 CRS, geen verticaal CRS</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1089"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1091"/>
         <source>Project CRS is a Compound CRS, specified Vertical CRS will be ignored</source>
         <translation>Project-CRS is een samengesteld CRS, het gespecificeerde verticale CRS zal worden genegeerd</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1098"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1100"/>
         <source>Project CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored</source>
         <translation>Project-CRS is een geografisch 3D CRS, het gespecificeerde verticale CRS zal worden genegeerd</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1107"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1109"/>
         <source>Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored</source>
         <translation>Project-CRS is een geocentrisch CRS, het gespecificeerde verticale CRS zal worden genegeerd</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1116"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1118"/>
         <source>Project CRS is a Projected 3D CRS, specified Vertical CRS will be ignored</source>
         <translation>Project-CRS is een geprojecteerd 3D CRS, het gespecificeerde verticale CRS zal worden genegeerd</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2684"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2688"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2686"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2690"/>
         <source>Project translation</source>
         <translation>Project vertaling</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="5030"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="5032"/>
         <source>WMS Online Resource</source>
         <translation>WMS online-bron</translation>
     </message>
@@ -31618,29 +31618,29 @@ Waarden Z en M aan het begin en einde van de nieuwe lijn substukken zijn lineair
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="264"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="322"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="374"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="325"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="380"/>
         <source>Count: %1</source>
         <translation>Aantal: %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="265"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="323"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="375"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="326"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="381"/>
         <source>Unique values: %1</source>
         <translation>Unieke waarden: %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="266"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="324"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="376"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="327"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="382"/>
         <source>NULL (missing) values: %1</source>
         <translation>NULL (ontbrekende) waarden: %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="267"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="325"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="377"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="328"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="383"/>
         <source>NOT NULL (filled) values: %1</source>
         <translation>NIET NULL (gevulde) waarden: %1</translation>
     </message>
@@ -31700,32 +31700,32 @@ Waarden Z en M aan het begin en einde van de nieuwe lijn substukken zijn lineair
         <translation>Interkwartiel bereik (IQR): %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="328"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="331"/>
         <source>Range (seconds): %1</source>
         <translation>Bereik (seconden): %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="380"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="386"/>
         <source>Minimum length: %1</source>
         <translation>Minimumlengte: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="381"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="387"/>
         <source>Maximum length: %1</source>
         <translation>Maximumlengte: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="382"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="388"/>
         <source>Mean length: %1</source>
         <translation>Gemiddelde lengte: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="383"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="389"/>
         <source>Minority: %1</source>
         <translation>Minderheid: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="384"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="390"/>
         <source>Majority: %1</source>
         <translation>Meerderheid: %1</translation>
     </message>
@@ -31775,7 +31775,7 @@ Waarden Z en M aan het begin en einde van de nieuwe lijn substukken zijn lineair
         <translation><numerusform>%n argument of meer</numerusform><numerusform>%n argumenten of meer</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="987"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="989"/>
         <source>Style Manager</source>
         <translation>Stijlmanager</translation>
     </message>
@@ -31806,8 +31806,8 @@ Waarden Z en M aan het begin en einde van de nieuwe lijn substukken zijn lineair
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="42"/>
         <location filename="../src/analysis/processing/qgsalgorithmdensifygeometriesbycount.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmdensifygeometriesbyinterval.cpp" line="40"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="231"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="334"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="228"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="331"/>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="26"/>
         <location filename="../src/analysis/processing/qgsalgorithmdropmzvalues.cpp" line="39"/>
         <location filename="../src/analysis/processing/qgsalgorithmexplode.cpp" line="44"/>
@@ -32267,19 +32267,19 @@ Attributen worden door dit algoritme niet aangepast.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="51"/>
         <location filename="../src/analysis/processing/qgsalgorithmcalculateoverlaps.cpp" line="53"/>
         <location filename="../src/analysis/processing/qgsalgorithmcategorizeusingstyle.cpp" line="32"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="78"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="83"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="79"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="79"/>
@@ -32299,8 +32299,8 @@ Attributen worden door dit algoritme niet aangepast.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsalgorithmdeleteduplicategeometries.cpp" line="52"/>
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="88"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="242"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="350"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="239"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="347"/>
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmexplodehstore.cpp" line="68"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="71"/>
@@ -32314,16 +32314,16 @@ Attributen worden door dit algoritme niet aangepast.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="49"/>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="261"/>
         <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="71"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="75"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="69"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="54"/>
@@ -32366,7 +32366,7 @@ Attributen worden door dit algoritme niet aangepast.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmuniquevalueindex.cpp" line="49"/>
         <location filename="../src/analysis/processing/qgsalgorithmvoronoipolygons.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="170"/>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1108"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1119"/>
         <source>Input layer</source>
         <translation>Invoerlaag</translation>
     </message>
@@ -32608,9 +32608,9 @@ De parameter begrenzing hoek is alleen van toepassing voor stijlen van afgeschui
         <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="701"/>
         <location filename="../src/core/processing/qgsprocessingalgrunnertask.cpp" line="47"/>
         <location filename="../src/core/processing/qgsprocessingalgrunnertask.cpp" line="74"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3848"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4646"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8629"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3855"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4653"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8636"/>
         <location filename="../src/core/processing/qgsprocessingprovider.cpp" line="108"/>
         <source>Processing</source>
         <translation>Processing</translation>
@@ -32784,22 +32784,22 @@ De met elk punt geassocieerde attributen in de uitvoerlaag zijn dezelfde als die
         <translation>Kan geen convex hull berekenen voor één enkel puntobject (probeer in plaats daarvan het algoritme &apos;Minimum bounding geometry&apos;).</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="221"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="218"/>
         <source>Dissolve</source>
         <translation>Samenvoegen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="226"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="223"/>
         <source>dissolve,union,combine,collect</source>
         <translation>oplossen,verenigen,combineren,verzamelen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="243"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="240"/>
         <source>Dissolve field(s)</source>
         <translation>Attributen voor samenvoegen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="351"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="348"/>
         <source>Unique ID fields</source>
         <translation>Unieke ID-velden</translation>
     </message>
@@ -32815,7 +32815,7 @@ De met elk punt geassocieerde attributen in de uitvoerlaag zijn dezelfde als die
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcoverageunion.cpp" line="54"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="249"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="246"/>
         <source>Dissolved</source>
         <translation>Samengevoegd</translation>
     </message>
@@ -32849,12 +32849,12 @@ Het verschaft een enorm geoptimaliseerde benadering voor het verenigen van deze 
         <translation>Uitvoer opslaan</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="242"/>
         <source>Keep disjoint features separate</source>
         <translation>Niet-aangrenzende objecten afzonderlijk houden</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="254"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="251"/>
         <source>This algorithm takes a vector layer and combines their features into new features. One or more attributes can be specified to dissolve features belonging to the same class (having the same value for the specified attributes), alternatively all features can be dissolved in a single one.
 
 All output geometries will be converted to multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
@@ -32867,52 +32867,52 @@ Alle uitgevoerde geometrieën zullen worden geconverteerd naar geometrieën met 
 Indien ingeschakeld zal de optie &quot;Niet-aangrenzende objecten afzonderlijk houden&quot; ervoor zorgen dat objecten en delen die niet overlappen of elkaar raken worden geëxporteerd als afzonderlijke objecten (in plaats van als delen van één enkel meerdelig object).</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="265"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="262"/>
         <source>Combines features of a vector layer into new features, optionally grouped by common attributes.</source>
         <translation>Combineert objecten van een vectorlaag naar nieuwe objecten, optioneel gegroepeerd op gemeenschappelijke attributen.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="293"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="290"/>
         <source>GEOS exception: taking the slower route ...</source>
         <translation>GEOS-uitzondering: via de langzamere route …</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="308"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="305"/>
         <source>The algorithm returned no output.</source>
         <translation>Het algoritme gaf geen uitvoer terug.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="324"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="321"/>
         <source>Collect geometries</source>
         <translation>Geometrieën verzamelen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="326"/>
         <source>union,combine,collect,multipart,parts,single</source>
         <translation>verenigen,combineren,verzamelen,meerdere delen,delen,enkel</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="353"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="350"/>
         <source>Collected</source>
         <translation>Collected</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="358"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="355"/>
         <source>This algorithm takes a vector layer and collects its geometries into new multipart geometries. One or more attributes can be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively all geometries can be collected.</source>
         <translation>Dit algoritme neemt een vectorlaag en verzamelt hun geometrieën naar nieuwe geometrieën met meerdere delen. Eén of meer attributen kunnen worden gespecificeerd om alleen geometrieën te verzamelen die behoren tot dezelfde klasse (die dezelfde waarde hebben voor de gespecificeerde attributen), als alternatief kunnen alle geometrieën worden verzameld</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="361"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="358"/>
         <source>All output geometries will be converted to multi geometries, even those with just a single part. This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part.</source>
         <translation>Alle uitgevoerde geometrieën zullen worden geconverteerd naar geometrieën met meerdere delen, zelfs die met slechts één enkel deel. Dit algoritme voegt geen overlappende geometrieën samen - zij zullen worden verzameld zonder de vorm van elke deelgeometrie aan te passen.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="363"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="360"/>
         <source>See the &apos;Promote to multipart&apos; or &apos;Aggregate&apos; algorithms for alternative options.</source>
         <translation>Bekijk de algoritmes &apos;Promote to multipart&apos; of &apos;Aggregate&apos; voor alternatieve opties.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="368"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="365"/>
         <source>Collects geometries of a vector layer into new multipart geometries, optionally grouped by common attributes.</source>
         <translation>Verzamelt geometrieën van een vectorlaag naar nieuwe meerdelige geometrieën, optioneel gegroepeerd op gemeenschappelijke attributen.</translation>
     </message>
@@ -32981,7 +32981,7 @@ Indien ingeschakeld zal de optie &quot;Niet-aangrenzende objecten afzonderlijk h
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="91"/>
         <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="75"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="515"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="773"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="776"/>
         <location filename="../src/analysis/processing/qgsalgorithmextentfromlayer.cpp" line="85"/>
         <location filename="../src/analysis/processing/qgsalgorithmextenttolayer.cpp" line="29"/>
         <location filename="../src/analysis/processing/qgsalgorithmextenttolayer.cpp" line="30"/>
@@ -33112,7 +33112,7 @@ Optioneel kunnen object-geometrieën ook worden geclipt naar het bereik. Als dez
         <location filename="../src/analysis/processing/qgsalgorithmextractbylocation.cpp" line="66"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="107"/>
         <source>intersect</source>
-        <translation>kruisen met</translation>
+        <translation>doorsnijden</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbylocation.cpp" line="67"/>
@@ -33335,30 +33335,30 @@ Optioneel kunnen object-geometrieën ook worden geclipt naar het bereik. Als dez
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="253"/>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="98"/>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="282"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3279"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3282"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4040"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4136"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4138"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4140"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4552"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4555"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3286"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3289"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4047"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4143"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4145"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4147"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4559"/>
         <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4562"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4565"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4568"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4988"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5749"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5874"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6431"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6663"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6888"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6915"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7004"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7041"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7387"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9329"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9527"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9874"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4569"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4572"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4575"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4995"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5756"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5881"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6438"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6670"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6895"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6922"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7011"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7048"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7394"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9336"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9534"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9881"/>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="52"/>
         <location filename="../src/gui/processing/qgsprocessingmaplayercombobox.cpp" line="683"/>
         <location filename="../src/gui/processing/qgsprocessingmultipleselectiondialog.cpp" line="347"/>
@@ -33765,7 +33765,7 @@ Optioneel kunnen geodetische lijnen gemaakt worden, deze representeren het korts
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="87"/>
         <location filename="../src/analysis/processing/qgsalgorithmmultiintersection.cpp" line="82"/>
         <source>Intersection</source>
-        <translation>Kruising</translation>
+        <translation>Doorsnijding</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="47"/>
@@ -33814,7 +33814,7 @@ Optioneel kunnen geodetische lijnen gemaakt worden, deze representeren het korts
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="99"/>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1050"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1060"/>
         <source>Could not write feature</source>
         <translation>Kon object niet schrijven</translation>
     </message>
@@ -33842,7 +33842,7 @@ Optioneel kunnen geodetische lijnen gemaakt worden, deze representeren het korts
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlineintersection.cpp" line="71"/>
         <source>Intersections</source>
-        <translation>Kruisingen</translation>
+        <translation>Doorsnijdingen</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlineintersection.cpp" line="76"/>
@@ -34677,19 +34677,19 @@ Angles below the minimum angle are errors.</source>
 Hoeken, kleiner dan de minimale hoek, zijn fouten.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="87"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="85"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="85"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="86"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="88"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="83"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="85"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="87"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="86"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="87"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="82"/>
@@ -34702,29 +34702,29 @@ Hoeken, kleiner dan de minimale hoek, zijn fouten.</translation>
         <translation>Unieke identificatie object</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="88"/>
         <source>Minimum angle (in degrees)</source>
         <translation>Minimale hoek (in graden)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="92"/>
         <source>Small angle errors</source>
         <translation>Fouten kleine hoeken</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="93"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="92"/>
@@ -34735,15 +34735,15 @@ Hoeken, kleiner dan de minimale hoek, zijn fouten.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="104"/>
         <location filename="../src/analysis/processing/qgsalgorithmcoveragesimplify.cpp" line="54"/>
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="68"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="124"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="108"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="108"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="109"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="95"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="103"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="107"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="130"/>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="113"/>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="115"/>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatevertices.cpp" line="79"/>
@@ -34755,19 +34755,19 @@ Hoeken, kleiner dan de minimale hoek, zijn fouten.</translation>
         <translation>Tolerantie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="104"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="104"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="95"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="101"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="115"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="95"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="95"/>
@@ -34776,115 +34776,190 @@ Hoeken, kleiner dan de minimale hoek, zijn fouten.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="107"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="114"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="127"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="115"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="106"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="110"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="133"/>
         <source>The &quot;Tolerance&quot; advanced parameter defines the numerical precision of geometric operations, given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero.</source>
         <translation>De geavanceerde parameter &quot;Tolerantie&quot; definieert de numerieke precisie van geometrische bewerkingen, gegeven als een integer n, wat betekent dat elk verschil, kleiner dan 10⁻ⁿ (in kaarteenheden), als nul wordt beschouwd.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="146"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="134"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="135"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="143"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="133"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="128"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="133"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="132"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="132"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="139"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="132"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="131"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="131"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="144"/>
         <source>Missing field %1 in input layer</source>
         <translation>Ontbrekend veld %1 in invoerlaag</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="167"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="177"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="158"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="169"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="165"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="162"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="162"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="170"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="156"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="166"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="178"/>
         <source>Preparing features…</source>
         <translation>Objecten voorbereiden…</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="182"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="196"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="177"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="213"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="187"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="179"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="181"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="179"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="174"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="186"/>
         <source>Collecting errors…</source>
         <translation>Fouten verzamelen…</translation>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="195"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="214"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="190"/>
+        <source>Errors collected successfully.</source>
+        <translation>Fouten met succes verzameld.</translation>
+    </message>
+    <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="179"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="200"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="170"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="178"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="181"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="217"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="218"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="192"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="178"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="185"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="184"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="186"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="194"/>
+        <source>Operation was canceled.</source>
+        <translation>Bewerking werd geannuleerd.</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="186"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="222"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="196"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="198"/>
+        <source>Field &apos;%1&apos; contains non-unique values and can not be used as unique ID.</source>
+        <translation>Veld &apos;%1&apos; bevat geen unieke waarden en kan niet worden gebruikt als unieke ID.</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="207"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="230"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="200"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="192"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="193"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="192"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="202"/>
         <source>Exporting errors…</source>
         <translation>Fouten rapporteren…</translation>
     </message>
@@ -35686,7 +35761,7 @@ Aanvullend kan een gegevenstype worden gespecificeerd voor de uitvoer. Het algor
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="774"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="777"/>
         <location filename="../src/analysis/processing/qgsalgorithmlinedensity.cpp" line="55"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="43"/>
         <source>Pixel size</source>
@@ -36342,7 +36417,7 @@ Attributen worden door dit algoritme niet aangepast.</translation>
     <message>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="91"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="54"/>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2275"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2282"/>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="89"/>
         <source>Opacity</source>
         <translation>Opaciteit</translation>
@@ -37553,7 +37628,17 @@ Uitgenomen informatie van labels omvat: positie (opgeslagen als geometrieën pun
         <translation>Kon doellaag voor %1 niet maken: ongeldige waarde</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1048"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1051"/>
+        <source>Could not write feature into %1: %2</source>
+        <translation>Kon object niet schrijven naar %1: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1053"/>
+        <source>Could not write feature: %1</source>
+        <translation>Kon object niet schrijven: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1058"/>
         <source>Could not write feature into %1</source>
         <translation>Kon object niet schrijven naar %1</translation>
     </message>
@@ -37566,99 +37651,99 @@ Uitgenomen informatie van labels omvat: positie (opgeslagen als geometrieën pun
         <translation>Kwam een fout met transformeren tegen bij opnieuw projecteren van object met ID %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="709"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="716"/>
         <source>No parameter definition for the sink</source>
         <translation>Geen definitie voor parameter voor de afvoer</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1110"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1172"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1196"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1225"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1284"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1317"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1117"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1179"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1203"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1232"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1291"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1324"/>
         <source>Error transforming extent geometry</source>
         <translation>Fout bij transformeren geometrie bereik</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1444"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1482"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1567"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1451"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1489"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1574"/>
         <source>Error transforming point geometry</source>
         <translation>Fout bij transformeren puntgeometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1587"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1594"/>
         <source>Error transforming rectangle geometry</source>
         <translation>Fout bij transformeren geometrie rechthoek</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1605"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1636"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1612"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1643"/>
         <source>Error transforming geometry</source>
         <translation>Fout bij transformeren geometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3011"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3018"/>
         <source>Python identifier: ‘%1’</source>
         <translation>Python identificatie: ‘%1’</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3848"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3855"/>
         <source>Error creating geometry: &quot;%1&quot;</source>
         <translation>Fout bij maken van geometrie &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4138"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4145"/>
         <source>%1 files</source>
         <translation>%1 bestanden</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4646"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4653"/>
         <source>Invalid number parameter &quot;%1&quot;: min value %2 is &gt;= max value %3!</source>
         <translation>Ongeldige parameter voor getal &quot;%1&quot;: minimale waarde %2 is &gt;= maximale waarde %3!</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="268"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="326"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="378"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4695"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8738"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="384"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4702"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8745"/>
         <source>Minimum value: %1</source>
         <translation>Minimum waarde: %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="269"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="327"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="379"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4697"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8740"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="330"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="385"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4704"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8747"/>
         <source>Maximum value: %1</source>
         <translation>Maximum waarde: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4699"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8742"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4706"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8749"/>
         <source>Default value: %1</source>
         <translation>Standaard waarde: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6661"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6886"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7385"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9525"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9872"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6668"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6893"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7392"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9532"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9879"/>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="50"/>
         <source>%1 files (*.%2)</source>
         <translation>%1 bestanden (*.%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7183"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7190"/>
         <source>Default extension</source>
         <translation>Standaard extensie</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8629"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8636"/>
         <source>Invalid datetime parameter &quot;%1&quot;: min value %2 is &gt;= max value %3!</source>
         <translation>Ongeldige parameter datetime &quot;%1&quot;: min waarde %2 is &gt;= max waarde %3!</translation>
     </message>
@@ -40353,27 +40438,27 @@ Laatste frames:
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="49"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="265"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="262"/>
         <source>count</source>
         <translation>aantal</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="267"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="264"/>
         <source>count distinct</source>
         <translation>aantal afzonderlijk</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="269"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="266"/>
         <source>count missing</source>
         <translation>aantal ontbrekende</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="271"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="268"/>
         <source>minimum</source>
         <translation>minimum</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="273"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="270"/>
         <source>maximum</source>
         <translation>maximum</translation>
     </message>
@@ -40404,19 +40489,19 @@ Laatste frames:
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="54"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="275"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="272"/>
         <source>sum</source>
         <translation>sum</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="55"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="277"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="274"/>
         <source>mean</source>
         <translation>mean</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="56"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="279"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="276"/>
         <source>median</source>
         <translation>mediaan</translation>
     </message>
@@ -40495,18 +40580,18 @@ Het algoritme berekent een statistisch overzicht voor de waarden uit overeenkome
         <translation>Berekent samenvattingen van attributen van de ene vectorlaag naar een andere op basis van plaats.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="281"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="278"/>
         <source>standard deviation</source>
         <translation>standaard afwijking</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="283"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="280"/>
         <source>standard deviation (sample)</source>
         <translation>standaardafwijking (monster)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="53"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="285"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="282"/>
         <source>range</source>
         <translation>bereik</translation>
     </message>
@@ -40517,109 +40602,109 @@ Het algoritme berekent een statistisch overzicht voor de waarden uit overeenkome
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="58"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="287"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="284"/>
         <source>minority</source>
         <translation>minority</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="59"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="289"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="286"/>
         <source>majority</source>
         <translation>meerderheid</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="291"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="288"/>
         <source>first quartile</source>
         <translation>eerste kwartiel</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="293"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="290"/>
         <source>third quartile</source>
         <translation>derde kwartiel</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="295"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="292"/>
         <source>inter quartile range</source>
         <translation>bereik tussen kwartielen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="297"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="294"/>
         <source>minimum length</source>
         <translation>minimumlengte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="299"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="296"/>
         <source>maximum length</source>
         <translation>maximumlengte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="301"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="298"/>
         <source>concatenate</source>
         <translation>samenvoegen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="303"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="300"/>
         <source>collection</source>
         <translation>collectie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="305"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="302"/>
         <source>array aggregate</source>
         <translation>array samengevoegd</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="307"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="304"/>
         <source>concatenate (unique)</source>
         <translation>samenvoegen (uniek)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="568"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="565"/>
         <source>Cannot calculate %1 on numeric values</source>
         <translation>Kan %1 niet berekenen voor numerieke waarden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="569"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="566"/>
         <source>Cannot calculate %1 on numeric fields</source>
         <translation>Kan %1 niet berekenen voor numerieke velden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="586"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="583"/>
         <source>Cannot calculate %1 on %2 values</source>
         <translation>Kan %1 niet berekenen voor waarden %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>Cannot calculate %1 on %2 fields</source>
         <translation>Kan %1 niet berekenen voor velden %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>date</source>
         <translation>datum</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>datetime</source>
         <translation>datetime</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="634"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="631"/>
         <source>null</source>
         <translation>null</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="638"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="633"/>
         <location filename="../src/gui/editorwidgets/core/qgswidgetwrapper.cpp" line="31"/>
         <source>string</source>
         <translation>tekenreeks</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="641"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="636"/>
         <source>Cannot calculate %1 on %3 values</source>
         <translation>Kan %1 niet berekenen voor waarden %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="642"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="637"/>
         <source>Cannot calculate %1 on %3 fields</source>
         <translation>Kan %1 niet berekenen voor velden %3</translation>
     </message>
@@ -42053,7 +42138,7 @@ Standaard wordt alleen de M-waarde uit het eerste punt van elk object uitgenomen
         <translation>.|:</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1514"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1517"/>
         <source>Reset to Defaults</source>
         <translation>Herstellen naar standaarden</translation>
     </message>
@@ -42868,7 +42953,7 @@ Alle pixels met Geen gegevens worden in de uitvoer overgeslagen.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="100"/>
-        <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="120"/>
         <source>Error reversing line</source>
         <translation>Fout bij omdraaien lijn</translation>
     </message>
@@ -42901,10 +42986,10 @@ Alle pixels met Geen gegevens worden in de uitvoer overgeslagen.</translation>
         <location filename="../src/3d/terrain/qgs3dterrainregistry.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="165"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="474"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="727"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="949"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1250"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1473"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="730"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="952"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1253"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1476"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="54"/>
         <location filename="../src/analysis/processing/qgsalgorithmtinmeshcreation.cpp" line="31"/>
         <location filename="../src/providers/mdal/qgsmdalprovidergui.cpp" line="29"/>
@@ -42929,10 +43014,10 @@ Alle pixels met Geen gegevens worden in de uitvoer overgeslagen.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="207"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="499"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="756"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="976"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1278"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1501"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="759"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="979"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1281"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1504"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="71"/>
         <source>Input mesh layer</source>
         <translation>Invoer laag met mazen</translation>
@@ -42940,27 +43025,27 @@ Alle pixels met Geen gegevens worden in de uitvoer overgeslagen.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="212"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="503"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="760"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="980"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1282"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1505"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="763"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="983"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1285"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1508"/>
         <source>Dataset groups</source>
         <translation>Groepen gegevenssets</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="219"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="510"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="768"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="987"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1289"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="771"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="990"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1292"/>
         <source>Dataset time</source>
         <translation>Tijd gegevensset</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="224"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="519"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="775"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1009"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="778"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1012"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmtinmeshcreation.cpp" line="89"/>
         <source>Output coordinate system</source>
@@ -43006,10 +43091,10 @@ Alle pixels met Geen gegevens worden in de uitvoer overgeslagen.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="285"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="574"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="812"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1087"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1330"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1561"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="815"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1090"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1333"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1564"/>
         <source>Preparing data</source>
         <translation>Gegevens voorbereiden</translation>
     </message>
@@ -43070,12 +43155,12 @@ Voor gegevens over volume (3D gestapelde waarden voor de gegevensset) worden de 
         <translation>Gerasterde punten maken</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="722"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="725"/>
         <source>Rasterize mesh dataset</source>
         <translation>Gegevensset laag met mazen rasteriseren</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="737"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="740"/>
         <source>This algorithm creates a raster layer from a mesh dataset.
 For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).
 1D meshes are not supported.</source>
@@ -43084,22 +43169,22 @@ Voor gegevens over volume (3D gestapelde waarden voor de gegevensset) worden de 
 1D-mazen worden niet ondersteund.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="789"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="792"/>
         <source>Output raster layer</source>
         <translation>Uitvoer rasterlaag</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="833"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="836"/>
         <source>Creating raster layer</source>
         <translation>Rasterlaag maken</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="944"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="947"/>
         <source>Export contours</source>
         <translation>Contouren exporteren </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="959"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="962"/>
         <source>This algorithm creates contours as a vector layer from a mesh scalar dataset.</source>
         <translation>Dit algoritme maakt contouren als vectorlaag uit een scalaire gegevensset voor mazen</translation>
     </message>
@@ -43129,225 +43214,225 @@ Voor gegevens over volume (3D gestapelde waarden voor de gegevensset) worden de 
         <translation>Rasterafstand mag niet 0 zijn</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="744"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="747"/>
         <source>Creates a raster layer from a mesh dataset.</source>
         <translation>Maakt een rasterlaag uit een gegevensset met mazen.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="848"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="851"/>
         <source>Pixel size cannot be 0</source>
         <translation>Pixelgrootte mag niet 0 zijn</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="964"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="967"/>
         <source>Creates contours as vector layer from mesh scalar dataset.</source>
         <translation>Maakt contouren als vectorlaag uit scalaire gegevensset voor mazen.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="993"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="996"/>
         <source>Increment between contour levels</source>
         <translation>Verhogen tussen contourniveaus</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="997"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1000"/>
         <source>Minimum contour level</source>
         <translation>Minimum contourniveau</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1000"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1003"/>
         <source>Maximum contour level</source>
         <translation>Maximum contourniveau</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1004"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1007"/>
         <source>List of contours level</source>
         <translation>Lijst van niveaus contouren</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1006"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1009"/>
         <source>Comma separated list of values to export. If filled, the increment, minimum and maximum settings are ignored.</source>
         <translation>Kommagescheiden lijst met waarden om te exporteren. Indien gevuld worden de instellingen voor verhoging, minimum en maximum genegeerd.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1012"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1015"/>
         <source>Exported contour lines</source>
         <translation>Geëxporteerde contourlijnen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1013"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1016"/>
         <source>Exported contour polygons</source>
         <translation>Geëxporteerde contourpolygonen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1049"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1052"/>
         <source>Invalid format for level values, must be numbers separated with comma</source>
         <translation>Ongeldige indeling voor waarden niveau, moeten getallen zijn die zijn gescheiden door komma&apos;s</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1053"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1056"/>
         <source>Invalid format for level values, must be different numbers and in increasing order</source>
         <translation>Ongeldige indeling voor waarden niveau, moeten verschillende getallen en in oplopende volgorde</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1065"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1068"/>
         <source>Invalid interval value, must be greater than zero</source>
         <translation>Ongeldige waarde interval, moet groter zijn dan nul</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1068"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1071"/>
         <source>Invalid minimum and maximum values, minimum must be lesser than maximum</source>
         <translation>Ongeldige waarden minimum en maximum, minimum moet kleiner zijn dan maximum</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1071"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1074"/>
         <source>Invalid minimum, maximum and interval values, difference between minimum and maximum must be greater or equal than interval</source>
         <translation>Ongeldige waarden minimum, maximum en interval, verschil tussen minimum en maximum moet groter of gelijk zijn aan interval</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1116"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1123"/>
         <source>group</source>
         <translation>groep</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1117"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1121"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1702"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1705"/>
         <source>time</source>
         <translation>tijd</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1118"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1121"/>
         <source>min_value</source>
         <translation>min_waarde</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1122"/>
         <source>max_value</source>
         <translation>max_waarde</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1122"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1125"/>
         <source>value</source>
         <translation>waarde</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1248"/>
         <source>Export cross section dataset values on lines from mesh</source>
         <translation>Exporteert waarden van gegevensset die gedeelte kruisen op lijnen uit de mazen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1260"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1263"/>
         <source>This algorithm extracts mesh's dataset values from line contained in a vector layer.
 Each line is discretized with a resolution distance parameter for extraction of values on its vertices.</source>
         <translation>Dit algoritme neemt waarden van de gegevensset van de mazen uit de lijn die is opgenomen in een vectorlaag.
 Elke lijn wordt afzonderlijk gemaakt met een parameter voor de afstand van de resolutie voor het uitnemen van waarden op zijn punten.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1266"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1269"/>
         <source>Extracts a mesh dataset&apos;s values from lines contained in a vector layer.</source>
         <translation>Neemt waarden van een gegevensset met mazen uit die zijn opgenomen in een vectorlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1489"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1492"/>
         <source>Extracts a mesh dataset&apos;s time series values from points contained in a vector layer.</source>
         <translation>Neemt waarden van een tijdreeks van een gegevensset met mazen uit die zijn opgenomen in een vectorlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1297"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1300"/>
         <source>Lines for data export</source>
         <translation>Lijnen voor exporteren van gegevens</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1301"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1304"/>
         <source>Line segmentation resolution</source>
         <translation>Resolutie voor segmenteren lijn</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1305"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1535"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1308"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1538"/>
         <source>Digits count for coordinates</source>
         <translation>Telling getallen voor coördinaten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1309"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1539"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1312"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1542"/>
         <source>Digits count for dataset value</source>
         <translation>Telling getallen voor waarden gegevensset</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1313"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1543"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1546"/>
         <source>Exported data CSV file</source>
         <translation>Geëxporteerd CSV-bestand gegevens</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1313"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1543"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1546"/>
         <source>CSV file (*.csv)</source>
         <translation>CSV-bestand (*.csv)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1361"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1364"/>
         <source>Input lines vector layer required</source>
         <translation>Invoer lijnen vectorlaag vereist</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1368"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1695"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1371"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1698"/>
         <source>Unable to create the output file</source>
         <translation>Niet mogelijk om uitvoerbestand te maken</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1375"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1378"/>
         <source>offset</source>
         <translation>verschuiving</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1395"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1724"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1398"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1727"/>
         <source>Could not transform line to mesh CRS</source>
         <translation>Kon lijn niet transformeren naar CRS van laag met mazen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1468"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1471"/>
         <source>Export time series values from points of a mesh dataset</source>
         <translation>Waarden van tijdreeksen van punten van een gegevensset met mazen exporteren</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1483"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1486"/>
         <source>This algorithm extracts mesh's dataset time series values from points contained in a vector layer.
 If the time step is kept to its default value (0 hours), the time step used is the one of the two first datasets of the first selected dataset group.</source>
         <translation>Dit algoritme neemt waarden van de tijdreeksen van de gegevensset van de mazen uit punten die zijn opgenomen in een vectorlaag.
 Als de tijdstap wordt behouden op zijn standaardwaarde (0 uren), is de gebruikte tijdstap die van de eerste twee gegevenssets van de eerste geselecteerde groep van de gegevensset.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1512"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1515"/>
         <source>Starting time</source>
         <translation>Begintijd</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1519"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1522"/>
         <source>Finishing time</source>
         <translation>Eindtijd</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1525"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1528"/>
         <source>Time step (hours)</source>
         <translation>Tijdstap (uren)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1531"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1534"/>
         <source>Points for data export</source>
         <translation>Punten voor exporteren van gegevens</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1688"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1691"/>
         <source>Input points vector layer required</source>
         <translation>Invoer punten vectorlaag vereist</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1775"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1778"/>
         <source>static dataset</source>
         <translation>statische gegevensset</translation>
     </message>
@@ -44174,7 +44259,7 @@ Indien gewenst kunnen tabellen ook lijsten uitvoeren van de categorieën die nie
     </message>
     <message>
         <location filename="../src/3d/qgs3dutils.cpp" line="254"/>
-        <location filename="../src/core/qgstemporalutils.cpp" line="112"/>
+        <location filename="../src/core/qgstemporalutils.cpp" line="115"/>
         <source>Export canceled</source>
         <translation>Export geannulleerd</translation>
     </message>
@@ -44407,6 +44492,7 @@ Bestandsnamen kunnen worden gegenereerd met waarden uit een attribuut in de bron
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbinary.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="173"/>
         <source>Could not open %1 for writing</source>
         <translation>Kon %1 niet openen om naar te schrijven</translation>
     </message>
@@ -44601,9 +44687,9 @@ Het kan in modellen worden gebruikt om een punt naar een laag te converteren die
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="740"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckvalidity.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="78"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="88"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="91"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmkmeansclustering.cpp" line="59"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="75"/>
@@ -45032,7 +45118,7 @@ De uitgenomen symbolen worden opgeslagen naar een stijldatabase van QGIS (XML-in
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsprojectstylealgorithms.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="193"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="196"/>
         <source>Error saving style database as %1</source>
         <translation>Fout bij opslaan stijldatabase als %1</translation>
     </message>
@@ -45072,12 +45158,12 @@ De uitgenomen symbolen worden opgeslagen naar een stijldatabase van QGIS (XML-in
         <translation>Importeren %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="138"/>
         <source>Could not read %1</source>
         <translation>Kon niet lezen %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="190"/>
         <source>Writing output file</source>
         <translation>Uitvoerbestand schrijven</translation>
     </message>
@@ -45231,7 +45317,7 @@ De uitgenomen symbolen worden opgeslagen naar een stijldatabase van QGIS (XML-in
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="369"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="215"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="214"/>
         <source>Error deleting vector/aspatial table %1: %2</source>
         <translation>Fout bij verwijderen vector-/niet ruimtelijke tabel %1: %2</translation>
     </message>
@@ -45407,7 +45493,7 @@ De uitgenomen symbolen worden opgeslagen naar een stijldatabase van QGIS (XML-in
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="183"/>
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="683"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="289"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="288"/>
         <source>Geometry column name not specified while creating spatial index</source>
         <translation>Naam van geometriekolom niet gespecificeerd bij maken van de ruimtelijke index</translation>
     </message>
@@ -45423,18 +45509,18 @@ De uitgenomen symbolen worden opgeslagen naar een stijldatabase van QGIS (XML-in
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="298"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="436"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="435"/>
         <source>Error listing tables from %1: %2</source>
         <translation>Fout bij vermelden van tabellen uit %1: %2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="787"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="562"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="561"/>
         <source>Error executing SQL statement %1: %2</source>
         <translation>Fout bij uitvoeren van argument SQL %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="578"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="577"/>
         <source>There was an error opening GPKG %1!</source>
         <translation>Er trad een fout op bij het openen van GPKG %1!</translation>
     </message>
@@ -45445,9 +45531,9 @@ De uitgenomen symbolen worden opgeslagen naar een stijldatabase van QGIS (XML-in
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="811"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="584"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="687"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="694"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="583"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="686"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="693"/>
         <source>Error executing SQL %1: %2</source>
         <translation>Fout bij uitvoeren van SQL %1: %2</translation>
     </message>
@@ -46265,6 +46351,11 @@ Een attribuut of expressie kan worden geselecteerd om punten die dezelfde waarde
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="292"/>
         <source>Error evaluating group expression: %1</source>
         <translation>Fout bij evalueren van groeperen expressie: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="326"/>
+        <source>Invalid bookmark destination</source>
+        <translation>Ongeldig doel bladwijzer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="605"/>
@@ -48920,38 +49011,48 @@ Een thema voor de kaart kan worden geselecteerd om een vooraf gedefinieerde set 
 Het minimale ingevoerde bereik zal intern worden uitgebreid tot een meervoud van de tegelgrootte.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="208"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="152"/>
+        <source>Tile size must be &gt; 0</source>
+        <translation>Celgrootte moet &gt; 0 zijn</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="158"/>
+        <source>Map units per pixel must be &gt; 0</source>
+        <translation>Kaarteenheden per pixel moeten &gt; 0 zijn</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="216"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="217"/>
         <source>Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3</source>
         <translation>Laag %1 zal worden overgeslagen als het algoritme leidt tot gedrag voor downloaden in bulk, wat is verboden door het %2OpenStreetMap Foundation beleid voor gebruik van tegels%3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="224"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="232"/>
         <source>Invalid output raster format</source>
         <translation>Ongeldige indeling rasteruitvoer</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="230"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="238"/>
         <source>Error creating GDAL driver</source>
         <translation>Fout bij maken stuurprogramma GDAL</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="236"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="244"/>
         <source>Error creating GDAL output layer</source>
         <translation>Fout bij maken uitvoerlaag GDAL</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="306"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="314"/>
         <source>Error reading tiles from the temporary image</source>
         <translation>Fout bij lezen van tegels uit de tijdelijke afbeelding</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="324"/>
         <source>Error reading intermediate raster</source>
         <translation>Fout bij lezen tussenliggend raster</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="327"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="335"/>
         <source>Error writing output raster</source>
         <translation>Fout bij schrijven van uitvoerraster</translation>
     </message>
@@ -50875,8 +50976,8 @@ De gemaakte puntenlaag zal in hetzelfde ruimtelijke referentiesysteem zijn als d
         <translation>Lijn-eindpunten</translation>
     </message>
     <message>
-        <location filename="../src/core/qgssqliteutils.cpp" line="235"/>
-        <location filename="../src/core/qgssqliteutils.cpp" line="244"/>
+        <location filename="../src/core/qgssqliteutils.cpp" line="234"/>
+        <location filename="../src/core/qgssqliteutils.cpp" line="243"/>
         <source>Error retrieving default value for %1</source>
         <translation>Fout bij ophalen standaardwaarde voor %1</translation>
     </message>
@@ -51490,42 +51591,42 @@ Try to remove them before trying deleting these components.</source>
 Probeer ze te verwijderen voordat geprobeerd wordt deze componenten te verwijderen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4941"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4969"/>
         <source>Name of field (separate field names with ; for multiple field parameters)</source>
         <translation>Naam van het veld (afzonderlijke veldnamen met ; voor parameters voor meerdere velden)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5091"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5119"/>
         <source>Could not load selected layer/table. Dependent field could not be populated</source>
         <translation>Kon geselecteerde laag/tabel niet laden. Het afhankelijke veld kon niet worden gevuld</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5553"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5587"/>
         <source>Postgres</source>
         <translation>Postgres</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5555"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5589"/>
         <source>Spatialite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6875"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6921"/>
         <source>Band number (separate bands with ; for multiple band parameters)</source>
         <translation>Bandnummer (afzonderlijke banden met ; parameters voor meerdere banden)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6975"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7021"/>
         <source>Could not load selected layer/table. Dependent bands could not be populated</source>
         <translation>Kon geen geselecteerde laag/tabel laden. Afhankelijke banden konden niet worden gevuld</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7831"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7880"/>
         <source>Name of attribute (separate attribute names with ; for multiple attribute parameters)</source>
         <translation>Naam van het attribuut (afzonderlijke namen van attributen met ; voor parameters voor meerdere attributen)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7919"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7968"/>
         <source>Could not load selected layer/table. Dependent attributes could not be populated</source>
         <translation>Kon geen geselecteerde laag/tabel laden. Afhankelijke attributen konden niet worden gevuld</translation>
     </message>
@@ -51935,47 +52036,47 @@ SQL: %1</source>
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="327"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="326"/>
         <source>Database does not exist</source>
         <translation>Database bestaat niet</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="330"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="329"/>
         <source>Failed to open database</source>
         <translation>Kan database niet openen</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="333"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="332"/>
         <source>Failed to check metadata</source>
         <translation>Check metadata mislukt</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="336"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="335"/>
         <source>Failed to get list of tables</source>
         <translation>Kan geen lijst van tabellen verkrijgen</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="339"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="338"/>
         <source>Unknown error</source>
         <translation>Onbekende fout</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="347"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="346"/>
         <source>Error fetching table information for connection: %1</source>
         <translation>Fout bij ophalen tabelinformatie voor verbinding: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1146"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1145"/>
         <source>Could not create a valid layer for table &apos;%1&apos;</source>
         <translation>Kon geen geldige laag maken voor tabel &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1150"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1149"/>
         <source>Could not delete field &apos;%1&apos; of table &apos;%2&apos;: field does not exist</source>
         <translation>Kon veld &apos;%1&apos; van tabel &apos;%2&apos; niet verwijderen: veld bestaat niet</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1154"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1153"/>
         <source>Unknown error deleting field &apos;%1&apos; of table &apos;%2&apos;</source>
         <translation>Onbekende fout bij verwijderen veld &apos;%1&apos; in tabel &apos;%2&apos;</translation>
     </message>
@@ -53299,47 +53400,52 @@ Bekijk de volgende verhandelingen voor meer details:
         <translation>Entwine-puntenwolken</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="257"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="258"/>
+        <source>Could not open temporary file for writing</source>
+        <translation>Kon geen tijdelijk bestand openen om naar te schrijven</translation>
+    </message>
+    <message>
+        <location filename="../src/core/actions/qgsaction.cpp" line="263"/>
         <source>Redirect is not supported!</source>
         <translation>Doorsturen wordt niet ondersteund!</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="404"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="410"/>
         <source>Generic</source>
         <translation>Algemeen</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="409"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="415"/>
         <source>Generic Python</source>
         <translation>Algemene Python</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="414"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="420"/>
         <source>macOS</source>
         <translation>macOS</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="419"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="425"/>
         <source>Windows</source>
         <translation>Windows</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="424"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="430"/>
         <source>Unix</source>
         <translation>Unix</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="434"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="440"/>
         <source>Submit URL (urlencoded or JSON)</source>
         <translation>URL indienen (urlencoded of JSON)</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="439"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="445"/>
         <source>Submit URL (multipart)</source>
         <translation>URL indienen (meerdelig)</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="443"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="449"/>
         <source>
 &lt;h2&gt;Action Details&lt;/h2&gt;
 &lt;p&gt;
@@ -53420,7 +53526,7 @@ Bekijk de volgende verhandelingen voor meer details:
         <translation>Hybride</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2276"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2283"/>
         <source>Extent buffer</source>
         <translation>Bereik buffer</translation>
     </message>
@@ -53430,7 +53536,7 @@ Bekijk de volgende verhandelingen voor meer details:
         <translation>BestandsWidget</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="1049"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="1055"/>
         <source>Relation Editor</source>
         <translation>Relatiebewerker</translation>
     </message>
@@ -54819,7 +54925,7 @@ Bekijk de volgende verhandelingen voor meer details:
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultiintersection.cpp" line="33"/>
         <source>Intersection (multiple)</source>
-        <translation>Kruising (meerdere)</translation>
+        <translation>Doorsnijdingen (meerdere)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultiintersection.cpp" line="38"/>
@@ -54902,100 +55008,100 @@ Alleen de eerste 999 klassen zijn gegenereerd.</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="404"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1137"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1118"/>
         <source>Remote layer</source>
         <translation>Externe laag</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="404"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1137"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1118"/>
         <source>loading %1, please wait …</source>
         <translation>laden van %1, even wachten …</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="485"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1073"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1407"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="475"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1054"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1387"/>
         <source>%1 is not a valid or recognized data source.</source>
         <translation>%1 is geen geldige of herkende databron.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="487"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="495"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="577"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1074"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1408"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="485"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="567"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1055"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1388"/>
         <source>Invalid Data Source</source>
         <translation>Ongeldige databron</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="487"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
         <source>Download with &quot;Protocol&quot; source type has failed, do you want to try the &quot;File&quot; source type?</source>
         <translation>Downloaden met brontype &quot;Protocol&quot; is mislukt, wilt u het brontype &quot;Bestand&quot; proberen?</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="576"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="566"/>
         <source>%1 is not a valid or recognized data source, error: &quot;%2&quot;</source>
         <translation>%1 is geen geldige of herkende databron, fout: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1071"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1052"/>
         <source>Unable to load %1</source>
         <translation>Laden mislukt van  %1</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1188"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1169"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 is geen geldige ondersteunde raster databron</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1192"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1173"/>
         <source>Unsupported Data Source</source>
         <translation>Niet ondersteunde databron</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1212"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1193"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>De kaartlaag is geen geldige laag en kan niet worden toegevoegd aan de kaart</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1213"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1194"/>
         <source>Layer is not valid</source>
         <translation>Ongeldige kaartlaag</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1266"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1247"/>
         <source>Error loading layer definition</source>
         <translation>Fout bij het laden van laagdefinitie</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1329"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1310"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 is een ongeldige laag - niet geladen</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1330"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1311"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 is een ongeldige laag en kan niet worden geladen. Controleer het &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; voor verdere informatie.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1690"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1670"/>
         <source>layer &apos;%1&apos; requires layer &apos;%2&apos; to be loaded but &apos;%2&apos; could not be found, please load it manually if possible.</source>
         <translation>laag &apos;%1&apos; vereist dat laag &apos;%2&apos; wordt geladen, maar &apos;%2&apos; kon niet worden gevonden. Laad die handmatig, indien mogelijk.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1691"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1695"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1671"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1675"/>
         <source>Missing layer form dependency</source>
         <translation>Ontbrekende laag vanuit afhankelijkheid</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1695"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1675"/>
         <source>Layer dependency &apos;%2&apos; required by &apos;%1&apos; was automatically loaded.</source>
         <translation>Laag van afhankelijkheid &apos;%2&apos;, vereist door &apos;%1&apos;, werd automatisch geladen.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1726"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1706"/>
         <source>Invalid relationship %1</source>
         <translation>Ongeldige relatie %1</translation>
     </message>
@@ -55006,7 +55112,7 @@ Alleen de eerste 999 klassen zijn gegenereerd.</translation>
         <translation>, </translation>
     </message>
     <message>
-        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="386"/>
+        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="389"/>
         <source>Canceled by user</source>
         <translation>Afgebroken door gebruiker</translation>
     </message>
@@ -55173,7 +55279,7 @@ Alleen de eerste 999 klassen zijn gegenereerd.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="682"/>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="838"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="222"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="902"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="905"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="171"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="188"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="415"/>
@@ -55194,7 +55300,7 @@ Alleen de eerste 999 klassen zijn gegenereerd.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmrescaleraster.cpp" line="215"/>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="196"/>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="250"/>
-        <location filename="../src/analysis/processing/qgsrasteranalysisutils.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsrasteranalysisutils.cpp" line="279"/>
         <location filename="../src/analysis/processing/qgsreclassifyutils.cpp" line="106"/>
         <source>Could not write raster block: %1</source>
         <translation>Kon geen rasterblok schrijven: %1</translation>
@@ -55437,17 +55543,17 @@ Areas below the area threshold are errors.</source>
 Gebieden onder de drempel voor het gebied zijn fouten.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="88"/>
         <source>Area threshold</source>
         <translation>Drempel gebied</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="92"/>
         <source>Small polygons errors</source>
         <translation>Fouten kleine polygonen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="97"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="95"/>
         <source>Small polygons features</source>
         <translation>Objecten kleine polygonen</translation>
     </message>
@@ -55478,18 +55584,18 @@ Invoerobjecten die zijn opgenomen in de objecten van de polygonenlagen zijn fout
 </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="89"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="85"/>
         <source>Polygon layers</source>
         <translation>Polygonelagen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="93"/>
         <source>Errors from contained features</source>
         <translation>Fouten uit opgenomen objecten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="96"/>
         <source>Contained features</source>
         <translation>Opgenomen objecten</translation>
     </message>
@@ -55653,6 +55759,11 @@ Polygonen die de grenzen van de verwijzing niet volgen zijn fouten.</translation
         <translation>Objecten die grenzen overschrijden</translation>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="190"/>
+        <source>Invalid reference layer.</source>
+        <translation>Ongeldige verwijzingslaag.</translation>
+    </message>
+    <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="35"/>
         <source>Small gaps</source>
         <translation>Kleine gaten</translation>
@@ -55701,7 +55812,7 @@ De uitvoerlaag van buren is nodig voor het algoritme voor het repareren van de g
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="102"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="75"/>
         <source>Neighbors layer</source>
         <translation>Laag met buren</translation>
     </message>
@@ -55714,6 +55825,11 @@ De uitvoerlaag van buren is nodig voor het algoritme voor het repareren van de g
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="108"/>
         <source>Gap features</source>
         <translation>Objecten gat</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="226"/>
+        <source>Failed to perform geometry overlay operation.</source>
+        <translation>Uitvoeren van bewerking van overleggen geometrie mislukt.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="35"/>
@@ -55737,12 +55853,12 @@ Holes are errors.</source>
         <translation>Dit algoritme controleert de gaten van geometrieën polygoon. Gaten zijn fouten.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="89"/>
         <source>Holes errors</source>
         <translation>Fouten gaten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="92"/>
         <source>Polygons with holes</source>
         <translation>Polygonen met gaten</translation>
     </message>
@@ -55836,12 +55952,12 @@ To be topologically correct, a vertex at the junction of two polygons must be pr
 Een punt, op de kruising van twee polygonen, moet aanwezig zijn op beide polygonen om topologisch correct te zijn. Ontbrekende punten zijn fouten.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="90"/>
         <source>Missing vertices errors</source>
         <translation>Fouten ontbrekende punten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="93"/>
         <source>Missing vertices features</source>
         <translation>Objecten ontbrekende punten</translation>
     </message>
@@ -56733,7 +56849,7 @@ Het algoritme werkt door het bereik van de laag te testen met bekende referentie
         <translation>Gevonden kandidaat CRS: %1.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="177"/>
         <source>No matching projections found.</source>
         <translation>Geen overeenkomende projecties gevonden.</translation>
     </message>
@@ -56774,191 +56890,191 @@ When deletion of a vertex results in a duplicate vertex (when a spike vertex is 
 Wanneer verwijderen van een punt resulteert in een gedupliceerd punt (als een piekpunt wordt verwijderd), wordt het gedupliceerde punt verwijderd om een enkel punt te houden en topologie te behouden.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="79"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="78"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="79"/>
         <source>Error layer</source>
         <translation>Fout in laag</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="83"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="96"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="85"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="93"/>
         <source>Field of original feature unique identifier</source>
         <translation>Veld van originele unieke identificatie object</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="87"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="100"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="84"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="84"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="85"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="97"/>
         <source>Field of part index</source>
         <translation>Veld van index van deel</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="92"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="105"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="89"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="89"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="90"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="103"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="102"/>
         <source>Field of ring index</source>
         <translation>Veld van index van ring</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="97"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="110"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="95"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="108"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="107"/>
         <source>Field of vertex index</source>
         <translation>Veld van index van punt</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="102"/>
         <source>Small angle fixed layer</source>
         <translation>Gerepareerde laag kleine hoeken </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="107"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="105"/>
         <source>Report layer from fixing small angles</source>
         <translation>Rapportlaag van het repareren van kleine hoeken</translation>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="136"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="138"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="140"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="142"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="155"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="157"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="159"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="161"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="113"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="152"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="154"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="156"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="158"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="111"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="135"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="137"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="141"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="133"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="135"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="137"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="141"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="134"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="136"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="138"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="142"/>
         <source>Field %1 does not exist in the error layer.</source>
         <translation>Veld %1 bestaat niet in foutenlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="147"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="116"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="143"/>
         <source>Field %1 does not exist in input layer.</source>
         <translation>Veld %1 bestaat niet in invoerlaag </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="151"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="148"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="149"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="149"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="146"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="147"/>
         <source>Field %1 does not have the same type as in the error layer.</source>
         <translation>Veld %1 heeft niet hetzelfde type als in de foutenlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="192"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="215"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="182"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="187"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="185"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="224"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="211"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="219"/>
         <source>Fixing errors...</source>
         <translation>Fouten repareren...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="208"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="235"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="202"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="198"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="206"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="205"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="231"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="195"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="204"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="240"/>
         <source>Source feature not found or invalid</source>
         <translation>Bronobject niet gevonden of ongeldig.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="211"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="238"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="201"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="210"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="274"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="208"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="234"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="198"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="207"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="269"/>
         <source>More than one feature found in input layer with value %1 in unique field %2</source>
         <translation>Meer dan een object gevonden in invoerlaag met waarde %1 in uniek veld %2</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="214"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="241"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="208"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="204"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="213"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="218"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="211"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="237"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="205"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="275"/>
         <source>Feature geometry is null</source>
         <translation>Objectgeometrie is null</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="217"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="244"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="283"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="214"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="240"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="204"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="278"/>
         <source>Feature geometry part is null</source>
         <translation>Deel objectgeometrie is null</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="240"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="267"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="262"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="236"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="204"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="241"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="315"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="237"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="263"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="256"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="233"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="238"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="310"/>
         <source>Error is obsolete</source>
         <translation>Fout is verouderd</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="253"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="280"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="242"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="281"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="243"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="249"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="253"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="330"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="276"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="239"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="275"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="240"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="246"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="213"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="325"/>
         <source>Exporting fixed layer...</source>
         <translation>Gerepareerde laag exporteren....</translation>
     </message>
@@ -56983,33 +57099,33 @@ Wanneer verwijderen van een punt resulteert in een gedupliceerd punt (als een pi
         <translation>Dit algoritme voegt naburige polygonen samen, overeenkomstig de gekozen methode, gebaseerd op een foutenlaag uit het algoritme &quot;Kleine polygonen&quot; in het gedeelte &quot;Geometrie controleren&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="88"/>
         <source>Field to consider when merging polygons with the identical attribute method</source>
         <translation>Veld om rekening mee te houden bij het samenvoegen van polygonen met de methode van identieke attributen.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="117"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="114"/>
         <source>Small polygons merged layer</source>
         <translation>Samengevoegde laag kleine polygonen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="117"/>
         <source>Report layer from merging small polygons</source>
         <translation>Rapportlaag van het repareren van kleine polygonen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="197"/>
         <source>Merge field to merge polygons with identical attribute method is empty</source>
         <translation>Veld voor samenvoegen van polygonen met de methode van identieke attributen is leeg.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="199"/>
         <source>Merge field %1 does not exist in input layer</source>
         <translation>Veld voor samenvoegen %1 bestaat niet in invoerlaag </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="227"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="223"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="196"/>
         <source>NULL or invalid value found in unique field %1</source>
         <translation>NULL of ongeldige waarde gevonden in uniek veld %1</translation>
     </message>
@@ -57040,17 +57156,17 @@ De vereiste invoeren zijn de originele laag die werd gebruikt in het algoritme v
 Het kan, bijvoorbeeld, worden gebruikt na de volgende algoritmes voor het controleren om foute objecten te verwijderen:&lt;html&gt;&lt;ul&gt;&lt;li&gt;Object binnen polygoon&lt;/li&gt;&lt;li&gt;Polygonen degenereren&lt;/li&gt;&lt;li&gt;Korte segmenten&lt;/li&gt;&lt;li&gt;Gedupliceerde geometrieën&lt;/li&gt;&lt;li&gt;etc.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="89"/>
         <source>Cleaned layer</source>
         <translation>Opgeschoonde laag</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="92"/>
         <source>Report layer from deleting features</source>
         <translation>Rapportlaag van het verwijderen van objecten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="119"/>
         <source>Input field %1 does not have the same type as in the error layer.</source>
         <translation>Invoerveld %1 heeft niet hetzelfde type als in de foutenlaag.</translation>
     </message>
@@ -57075,51 +57191,51 @@ Het kan, bijvoorbeeld, worden gebruikt na de volgende algoritmes voor het contro
         <translation>Dit algoritme verwijdert gedupliceerde punten, gebaseerd op een foutenlaag van het algoritme &quot;Gedupliceerde punten&quot;, uit het gedeelte &quot;Geometrie controleren&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="99"/>
         <source>Fixed duplicate vertices layer</source>
         <translation>Gerepareerde laag gedupliceerde punten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="102"/>
         <source>Report layer from fixing duplicate vertices</source>
         <translation>Rapportlaag van het repareren van gedupliceerde punten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="135"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="117"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="127"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="129"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="131"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="134"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="132"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="163"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="165"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="167"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="169"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="173"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="175"/>
         <source>Field &quot;%1&quot; does not exist in the error layer.</source>
         <translation>Veld &quot;%1&quot; bestaat niet in foutenlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="122"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="135"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="174"/>
         <source>Field &quot;%1&quot; does not exist in input layer.</source>
         <translation>Veld &quot;%1&quot; bestaat niet in invoerlaag </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="148"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="126"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="142"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="146"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="140"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="179"/>
         <source>Field &quot;%1&quot; does not have the same type as in the error layer.</source>
         <translation>Veld &quot;%1&quot; heeft niet hetzelfde type als in de foutenlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="212"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="209"/>
         <source>More than one feature found in input layer with value &quot;%1&quot; in unique field &quot;%2&quot;</source>
         <translation>Meer dan een object gevonden in invoerlaag met waarde &quot;%1&quot; in uniek veld &quot;%2&quot;</translation>
     </message>
@@ -57148,58 +57264,58 @@ Het kan, bijvoorbeeld, worden gebruikt na de volgende algoritmes voor het contro
 3 verschillende methoden voor repareren zijn beschikbaar, die allemaal verschillende resultaten zullen geven.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="78"/>
         <source>Gaps layer</source>
         <translation>Laag met gaten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="96"/>
         <source>Field of error id</source>
         <translation>Veld van ID fout</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="102"/>
         <source>Gaps-filled layer</source>
         <translation>Laag met gevulde gaten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="108"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="105"/>
         <source>Report layer from fixing gaps</source>
         <translation>Rapportlaag van het repareren van gaten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="153"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="150"/>
         <source>Unknown resolution method</source>
         <translation>Onbekend methode resolutie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="158"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="155"/>
         <source>Field &quot;%1&quot; does not exist in the gaps layer.</source>
         <translation>Veld &quot;%1&quot; bestaat niet in de laag met gaten.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="157"/>
         <source>Field &quot;%1&quot; does not exist in the neighbors layer.</source>
         <translation>Veld &quot;%1&quot; bestaat niet in burenlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="165"/>
         <source>Field &quot;%1&quot; does not have the same type as in the neighbors layer.</source>
         <translation>Veld &quot;%1&quot; heeft niet hetzelfde type als in de burenlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="196"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="209"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="204"/>
         <source>Preparing features...</source>
         <translation>Objecten voorbereiden…</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="228"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="222"/>
         <source>NULL or invalid value found in field &quot;%1&quot;</source>
         <translation>NULL of ongeldige waarde gevonden in veld &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="274"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="268"/>
         <source>Unable to add gap features</source>
         <translation>Kan geen objecten gat toevoegen</translation>
     </message>
@@ -57225,12 +57341,12 @@ Het kan, bijvoorbeeld, worden gebruikt na de volgende algoritmes voor het contro
         <translation>Dit algoritme verwijdert gaten, gebaseerd op een foutenlaag van het algoritme &quot;Gaten&quot;, uit het gedeelte &quot;Geometrie controleren&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="99"/>
         <source>Holes-filled layer</source>
         <translation>Laag met gevulde gaten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="102"/>
         <source>Report layer from fixing holes</source>
         <translation>Rapportlaag van het repareren van gaten</translation>
     </message>
@@ -57255,12 +57371,12 @@ Het kan, bijvoorbeeld, worden gebruikt na de volgende algoritmes voor het contro
         <translation>Dit algoritme voegt de ontbrekende punten langs randen van polygonen, gebaseerd op een foutenlaag van het algoritme &quot;Ontbrekende punten langs randen&quot;, uit het gedeelte &quot;Geometrie controleren&quot; toe.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="100"/>
         <source>Border vertices fixed layer</source>
         <translation>Gerepareerde laag punten langs randen </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="103"/>
         <source>Report layer from fixing border vertices</source>
         <translation>Rapportlaag van het repareren van punten langs randen</translation>
     </message>
@@ -57289,12 +57405,12 @@ This algorithm does not change the layer geometry type, which will remain multip
 Dit algoritme wijzigt niet het type geometrie van de laag, dat zal meerdelig blijven.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="86"/>
         <source>Strictly-multipart layer</source>
         <translation>Laag Strikt meerdelig</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="89"/>
         <source>Report layer from fixing multiparts</source>
         <translation>Rapportlaag van het repareren van meerdelig</translation>
     </message>
@@ -57320,42 +57436,42 @@ Dit algoritme wijzigt niet het type geometrie van de laag, dat zal meerdelig bli
         <translation>Dit algoritme verwijdert overlappende gedeelten, gebaseerd op een foutenlaag van het algoritme &quot;Overlappingen&quot;, uit het gedeelte &quot;Geometrie controleren&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="83"/>
         <source>Field of overlap feature unique identifier</source>
         <translation>Veld van unieke identificatie overlappend object</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="88"/>
         <source>Field of error value</source>
         <translation>Veld van foutwaarde</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="94"/>
         <source>No-overlap layer</source>
         <translation>Laag zonder overlappingen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="97"/>
         <source>Report layer from fixing overlaps</source>
         <translation>Rapportlaag van het repareren van overlappingen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="147"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="145"/>
         <source>Field &quot;%1&quot; does not have the same type as &quot;%2&quot; in the input layer.</source>
         <translation>Veld &quot;%1&quot; heeft niet hetzelfde type als &quot;%2&quot; in de invoerlaag.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="209"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="206"/>
         <source>Overlap feature not found or invalid</source>
         <translation>Overlappend object niet gevonden of ongeldig.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="212"/>
         <source>More than one overlap feature found in input layer with value &quot;%1&quot; in unique field &quot;%2&quot;</source>
         <translation>Meer dan een overlappend object gevonden in invoerlaag met waarde &quot;%1&quot; in uniek veld &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="221"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="218"/>
         <source>Overlap feature geometry is null</source>
         <translation>Overlappende objectgeometrie is null</translation>
     </message>
@@ -57380,27 +57496,27 @@ Dit algoritme wijzigt niet het type geometrie van de laag, dat zal meerdelig bli
         <translation>Dit algoritme splitst zelfkruisende lijnen of polygonen, overeenkomstig de gekozen methode, gebaseerd op een foutenlaag uit het algoritme &quot;Zelf kruisend&quot; in het gedeelte &quot;Geometrie controleren&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="112"/>
         <source>Field of segment 1</source>
         <translation>Veld van segment 1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="117"/>
         <source>Field of segment 2</source>
         <translation>Veld van segment 2</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="126"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="123"/>
         <source>Self-intersections fixed layer</source>
         <translation>Gerepareerde laag zelfkruisend</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="129"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="126"/>
         <source>Report layer from fixing self-intersections</source>
         <translation>Rapportlaag van het repareren van zelf kruisend</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="236"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="231"/>
         <source>NULL or invalid value found in unique field &quot;%1&quot;</source>
         <translation>NULL of ongeldige waarde gevonden in uniek veld &quot;%1&quot;</translation>
     </message>
@@ -57904,7 +58020,7 @@ Als rasters multiband worden gebruikt in de stapel rastergegevens, zal het algor
         <translation>Of het lokale scheidingsteken moet worden gebruikt of altijd de decimale punt. Nodig om gegevens te exporteren als csv met een locale die een komma gebruikt als zijn decimale scheidingsteken.</translation>
     </message>
     <message>
-        <location filename="../src/core/dxf/qgsdxfexport.cpp" line="302"/>
+        <location filename="../src/core/dxf/qgsdxfexport.cpp" line="304"/>
         <source>The following empty layers were skipped: %1</source>
         <translation>De volgende lege lagen werden overgeslagen: %1</translation>
     </message>
@@ -58093,7 +58209,7 @@ Als rasters multiband worden gebruikt in de stapel rastergegevens, zal het algor
         <translation>Kan statistieken niet schrijven naar bestand &quot;%1&quot;: Bestand bevat al statistieken van COPC!</translation>
     </message>
     <message>
-        <location filename="../src/core/pointcloud/qgscopcpointcloudindex.cpp" line="306"/>
+        <location filename="../src/core/pointcloud/qgscopcpointcloudindex.cpp" line="307"/>
         <source>Couldn&apos;t open COPC file &quot;%1&quot; to write statistics</source>
         <translation>Kan COPC-bestand &quot;%1&quot; niet openen voor schrijven van statistieken</translation>
     </message>
@@ -58422,18 +58538,18 @@ Als rasters multiband worden gebruikt in de stapel rastergegevens, zal het algor
         <translation>Vectorveld symboollagen kunnen niet worden geconverteerd naar SLD</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="729"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="739"/>
         <source>JSON is not a valid Cesium 3D Tiles source (does not contain &quot;root&quot; value)</source>
         <translation>JSON is geen geldige bron voor Cesium 3D Tiles (bevat geen waarde &quot;root&quot;)</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="887"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="897"/>
         <source>JSON is not a valid Cesium 3D Tiles source (unsupported boundingVolume format)</source>
         <translation>JSON is geen geldige bron voor Cesium 3D Tiles (niet ondersteunde indeling boundingVolume)</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1161"/>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1361"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1171"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1371"/>
         <source>Cesium 3D Tiles</source>
         <translation>Cesium 3D-tegels</translation>
     </message>
@@ -58590,37 +58706,37 @@ Als rasters multiband worden gebruikt in de stapel rastergegevens, zal het algor
         <translation>Renderen van webpagina&apos;s vereist een bouw van QGIS met ondersteuning voor bibliotheek PDF4Qt</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="184"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="186"/>
         <source>Polygon Annotation</source>
         <translation>Polygoon-annotatie</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="189"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="191"/>
         <source>Line Annotation</source>
         <translation>Lijn-annotatie</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="194"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="196"/>
         <source>Marker Annotation</source>
         <translation>Markering-annotatie</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="199"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="201"/>
         <source>Text Annotation at Point</source>
         <translation>Tekst-annotatie op punt</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="204"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="206"/>
         <source>Text Annotation along Line</source>
         <translation>Tekst-annotatie langs lijn</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="209"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="211"/>
         <source>Text Annotation in Rectangle</source>
         <translation>Tekst-annotatie in rechthoek</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="214"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="216"/>
         <source>Picture Annotation</source>
         <translation>Annotatie afbeelding</translation>
     </message>
@@ -59049,13 +59165,13 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3378"/>
-        <location filename="../src/app/qgisapp.cpp" line="16938"/>
+        <location filename="../src/app/qgisapp.cpp" line="16941"/>
         <source>Panels</source>
         <translation>Panelen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3380"/>
-        <location filename="../src/app/qgisapp.cpp" line="16958"/>
+        <location filename="../src/app/qgisapp.cpp" line="16961"/>
         <source>Toolbars</source>
         <translation>Werkbalken</translation>
     </message>
@@ -59354,74 +59470,74 @@ Als alternatief kunt u een nieuwe laag met mazen maken uit die.</translation>
         <translation>Kon %1 niet wijzigen naar laag %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="11637"/>
         <source>No legend entries selected</source>
         <translation>Geen legenda items geselecteerd</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="11637"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>Selecteer de lagen en groepen die je wilt verplaatsen naar de legenda.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11679"/>
+        <location filename="../src/app/qgisapp.cpp" line="11682"/>
         <source>(%n more hidden layer(s))</source>
         <comment>number of hidden layers not shown</comment>
         <translation><numerusform>(%n meer verborgen laag)</numerusform><numerusform>(%n meer verborgen lagen)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11681"/>
+        <location filename="../src/app/qgisapp.cpp" line="11684"/>
         <source>The following hidden layers will be removed:
 %1</source>
         <translation>De volgende verborgen lagen zullen worden verwijderd:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11684"/>
+        <location filename="../src/app/qgisapp.cpp" line="11687"/>
         <source>Remove layers and groups</source>
         <translation>Lagen en groepen verwijderen </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11672"/>
+        <location filename="../src/app/qgisapp.cpp" line="11675"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation><numerusform>%n legenda-items verwijderen?</numerusform><numerusform>%n legenda-items verwijderen?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11703"/>
+        <location filename="../src/app/qgisapp.cpp" line="11706"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation><numerusform>%n legenda-item verwijderd.</numerusform><numerusform>%n legenda-items verwijderd.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11783"/>
+        <location filename="../src/app/qgisapp.cpp" line="11786"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 type niet ondersteund)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11825"/>
+        <location filename="../src/app/qgisapp.cpp" line="11828"/>
         <source>Cannot copy style to duplicated layer.</source>
         <translation>Kan stijl niet kopiëren naar gedupliceerde laag.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13076"/>
+        <location filename="../src/app/qgisapp.cpp" line="13079"/>
         <source>Map %1</source>
         <translation>Kaart %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13274"/>
+        <location filename="../src/app/qgisapp.cpp" line="13277"/>
         <source>3D Map %1</source>
         <translation>3D-kaart %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13499"/>
+        <location filename="../src/app/qgisapp.cpp" line="13502"/>
         <source>Do you want to save the current project? %1</source>
         <translation>Wilt u het huidige project opslaan? %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5751"/>
-        <location filename="../src/app/qgisapp.cpp" line="11625"/>
-        <location filename="../src/app/qgisapp.cpp" line="13707"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
+        <location filename="../src/app/qgisapp.cpp" line="13710"/>
         <source>Active Tasks</source>
         <translation>Actieve taken</translation>
     </message>
@@ -59562,27 +59678,27 @@ Als alternatief kunt u een nieuwe laag met mazen maken uit die.</translation>
         <translation>Bewerken stoppen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12759"/>
+        <location filename="../src/app/qgisapp.cpp" line="12762"/>
         <source>https://qgis.org/resources/support/bug-reporting/</source>
         <translation>https://qgis.org/resources/support/bug-reporting/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12766"/>
+        <location filename="../src/app/qgisapp.cpp" line="12769"/>
         <source>https://qgis.org/community/involve/</source>
         <translation>https://qgis.org/community/involve/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12773"/>
+        <location filename="../src/app/qgisapp.cpp" line="12776"/>
         <source>https://qgis.org/funding/donate/</source>
         <translation>https://qgis.org/funding/donate/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12780"/>
+        <location filename="../src/app/qgisapp.cpp" line="12783"/>
         <source>https://qgis.org/resources/support/commercial-support/</source>
         <translation>https://qgis.org/resources/support/commercial-support/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13707"/>
+        <location filename="../src/app/qgisapp.cpp" line="13710"/>
         <source>The following tasks are currently running which depend on layers in this project:
 
 %1
@@ -59595,42 +59711,42 @@ Please cancel these tasks and retry.</source>
 Annuleer deze taken probeer opnieuw.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14429"/>
+        <location filename="../src/app/qgisapp.cpp" line="14432"/>
         <source>Current CRS: %1</source>
         <translation>Huidig CRS: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14436"/>
+        <location filename="../src/app/qgisapp.cpp" line="14439"/>
         <source>No projection</source>
         <translation>Geen projectie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15242"/>
+        <location filename="../src/app/qgisapp.cpp" line="15245"/>
         <source>Add Point Feature</source>
         <translation>Object punt toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15272"/>
+        <location filename="../src/app/qgisapp.cpp" line="15275"/>
         <source>Add Line Feature</source>
         <translation>Object lijn toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15291"/>
+        <location filename="../src/app/qgisapp.cpp" line="15294"/>
         <source>Add Polygon Feature</source>
         <translation>Object polygoon toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15308"/>
+        <location filename="../src/app/qgisapp.cpp" line="15311"/>
         <source>Add Record</source>
         <translation>Record toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15864"/>
+        <location filename="../src/app/qgisapp.cpp" line="15867"/>
         <source>Map Views</source>
         <translation>Kaartweergaven</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15867"/>
+        <location filename="../src/app/qgisapp.cpp" line="15870"/>
         <source>A view with this name already exists</source>
         <translation>Er bestaat al een weergave met deze naam</translation>
     </message>
@@ -59722,7 +59838,7 @@ Annuleer deze taken probeer opnieuw.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6624"/>
         <location filename="../src/app/qgisapp.cpp" line="6712"/>
-        <location filename="../src/app/qgisapp.cpp" line="17267"/>
+        <location filename="../src/app/qgisapp.cpp" line="17270"/>
         <source>Saved project to: %1</source>
         <translation>Sla project op naar: %1</translation>
     </message>
@@ -60149,12 +60265,12 @@ in plaats daarvan openen?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8589"/>
-        <location filename="../src/app/qgisapp.cpp" line="12603"/>
-        <location filename="../src/app/qgisapp.cpp" line="12610"/>
-        <location filename="../src/app/qgisapp.cpp" line="12670"/>
-        <location filename="../src/app/qgisapp.cpp" line="12677"/>
-        <location filename="../src/app/qgisapp.cpp" line="12723"/>
-        <location filename="../src/app/qgisapp.cpp" line="12730"/>
+        <location filename="../src/app/qgisapp.cpp" line="12606"/>
+        <location filename="../src/app/qgisapp.cpp" line="12613"/>
+        <location filename="../src/app/qgisapp.cpp" line="12673"/>
+        <location filename="../src/app/qgisapp.cpp" line="12680"/>
+        <location filename="../src/app/qgisapp.cpp" line="12726"/>
+        <location filename="../src/app/qgisapp.cpp" line="12733"/>
         <source>No Layer Selected</source>
         <translation>Geen kaartlaag geselecteerd</translation>
     </message>
@@ -60272,8 +60388,8 @@ in plaats daarvan openen?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5740"/>
-        <location filename="../src/app/qgisapp.cpp" line="11618"/>
-        <location filename="../src/app/qgisapp.cpp" line="13700"/>
+        <location filename="../src/app/qgisapp.cpp" line="11621"/>
+        <location filename="../src/app/qgisapp.cpp" line="13703"/>
         <source> • %1</source>
         <translation> • %1</translation>
     </message>
@@ -61077,32 +61193,32 @@ Fouten: %3
         <translation>%1 huidige wijzigingen voor %2 laag/lagen?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11399"/>
+        <location filename="../src/app/qgisapp.cpp" line="11402"/>
         <source>Error Setting Filter</source>
         <translation>Fout bij instellen van filter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11399"/>
+        <location filename="../src/app/qgisapp.cpp" line="11402"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
         <translation>De gefilterde laag gaf geen rijen terug. De rasterprovider PostgreSQL vereist tenminste één rij in om de vereiste informatie uit te kunnen nemen om een geldige laag te maken.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11429"/>
+        <location filename="../src/app/qgisapp.cpp" line="11432"/>
         <source>Filter on Joined Fields</source>
         <translation>Op samengevoegde velden filteren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11429"/>
+        <location filename="../src/app/qgisapp.cpp" line="11432"/>
         <source>You are about to set a subset filter on a layer that has joined fields. Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. Would you like to create a virtual layer out of this layer first?</source>
         <translation>U staat op het punt om een filter voor een subset in te stellen voor een laag die samengevoegde velden heeft. Samengevoegde velden kunnen niet worden gefilterd, tenzij u de laag eerst converteert naar een virtuele laag. Wilt u eerst een virtuele laag uit deze laag maken?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11598"/>
+        <location filename="../src/app/qgisapp.cpp" line="11601"/>
         <source>Required Layers</source>
         <translation>Vereiste lagen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11598"/>
+        <location filename="../src/app/qgisapp.cpp" line="11601"/>
         <source>The following layers are marked as required by the project:
 
 %1
@@ -61115,7 +61231,7 @@ Please deselect them (or unmark as required) and retry.</source>
 Deselecteer ze (of verwijder de vereiste markering) en probeer opnieuw.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11625"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
         <source>The following tasks are currently running which depend on this layer:
 
 %1
@@ -61128,436 +61244,436 @@ Please cancel these tasks and retry.</source>
 Annuleer deze taken probeer opnieuw.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11732"/>
+        <location filename="../src/app/qgisapp.cpp" line="11735"/>
         <source>copy</source>
         <translation>kopie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11737"/>
+        <location filename="../src/app/qgisapp.cpp" line="11740"/>
         <source>Plugin layer</source>
         <translation>Plug-in laag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11741"/>
+        <location filename="../src/app/qgisapp.cpp" line="11744"/>
         <source>Group layer</source>
         <translation>Laag met groepen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11771"/>
-        <location filename="../src/app/qgisapp.cpp" line="11782"/>
+        <location filename="../src/app/qgisapp.cpp" line="11774"/>
+        <location filename="../src/app/qgisapp.cpp" line="11785"/>
         <source>Duplicate layer: </source>
         <translation>Duplicaat laag: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11772"/>
+        <location filename="../src/app/qgisapp.cpp" line="11775"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (duplicaat resulteert in invalide laag)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11827"/>
+        <location filename="../src/app/qgisapp.cpp" line="11830"/>
         <source>Layer duplication complete</source>
         <translation>Dupliceren van laag voltooid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11827"/>
+        <location filename="../src/app/qgisapp.cpp" line="11830"/>
         <source>Note that it&apos;s using the same data source.</source>
         <translation>Onthoud dat het dezelfde databron gebruikt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11856"/>
+        <location filename="../src/app/qgisapp.cpp" line="11859"/>
         <source>Set scale visibility for selected layers</source>
         <translation>Zichtbaarheidsschaal instellen voor geselecteerde lagen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11914"/>
+        <location filename="../src/app/qgisapp.cpp" line="11917"/>
         <source>Set CRS for %1</source>
         <translation>CRS instellen voor %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12247"/>
+        <location filename="../src/app/qgisapp.cpp" line="12250"/>
         <source>Loading Python support</source>
         <translation>Ondersteuning voor Python laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12267"/>
+        <location filename="../src/app/qgisapp.cpp" line="12270"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Kan benodigde Python module niet laden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12278"/>
+        <location filename="../src/app/qgisapp.cpp" line="12281"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Probleem bij het instance()-symbol niet vinden in de python module.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12340"/>
+        <location filename="../src/app/qgisapp.cpp" line="12343"/>
         <source>There is a new version of QGIS available</source>
         <translation>Er is een recentere versie van QGIS beschikbaar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12344"/>
+        <location filename="../src/app/qgisapp.cpp" line="12347"/>
         <source>You are running a development version of QGIS</source>
         <translation>U gebruikt een ontwikkel-versie van QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12348"/>
+        <location filename="../src/app/qgisapp.cpp" line="12351"/>
         <source>You are running the current version of QGIS</source>
         <translation>U gebruikt de laatste versie van QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12356"/>
-        <location filename="../src/app/qgisapp.cpp" line="12362"/>
+        <location filename="../src/app/qgisapp.cpp" line="12359"/>
+        <location filename="../src/app/qgisapp.cpp" line="12365"/>
         <source>QGIS Version Information</source>
         <translation>QGIS Versie Informatie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12362"/>
+        <location filename="../src/app/qgisapp.cpp" line="12365"/>
         <source>Unable to get current version information from server</source>
         <translation>Ophalen van versieinformatie op dit moment niet mogelijk</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12426"/>
+        <location filename="../src/app/qgisapp.cpp" line="12429"/>
         <source>Style Manager</source>
         <translation>Stijlmanager</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12427"/>
+        <location filename="../src/app/qgisapp.cpp" line="12430"/>
         <source>Keyboard Shortcuts</source>
         <translation>Toetsenbord sneltoetsen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12428"/>
+        <location filename="../src/app/qgisapp.cpp" line="12431"/>
         <source>Custom Projections</source>
         <translation>Aangepaste projecties</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12429"/>
+        <location filename="../src/app/qgisapp.cpp" line="12432"/>
         <source>Interface Customization</source>
         <translation>Aanpassen van de interface</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12603"/>
-        <location filename="../src/app/qgisapp.cpp" line="12610"/>
+        <location filename="../src/app/qgisapp.cpp" line="12606"/>
+        <location filename="../src/app/qgisapp.cpp" line="12613"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>Voor een  &apos;full histogram stretch&apos; moet een rasterlaag geselecteerd zijn.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12670"/>
-        <location filename="../src/app/qgisapp.cpp" line="12677"/>
+        <location filename="../src/app/qgisapp.cpp" line="12673"/>
+        <location filename="../src/app/qgisapp.cpp" line="12680"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>Om de lichtsterkte of contrast te wijzigen, moet een rasterlaag geselecteerd zijn.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12723"/>
-        <location filename="../src/app/qgisapp.cpp" line="12730"/>
+        <location filename="../src/app/qgisapp.cpp" line="12726"/>
+        <location filename="../src/app/qgisapp.cpp" line="12733"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
         <translation>Om gamma te wijzigen, moet een rasterlaag geselecteerd zijn.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12910"/>
+        <location filename="../src/app/qgisapp.cpp" line="12913"/>
         <source>Map tool handler is not properly constructed</source>
         <translation>Afhandeling van kaartgereedschap is niet juist geconstrueerd</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13132"/>
-        <location filename="../src/app/qgisapp.cpp" line="13139"/>
+        <location filename="../src/app/qgisapp.cpp" line="13135"/>
+        <location filename="../src/app/qgisapp.cpp" line="13142"/>
         <source>3D Map</source>
         <translation>3D-kaart</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13132"/>
+        <location filename="../src/app/qgisapp.cpp" line="13135"/>
         <source>3D Maps</source>
         <translation>3d-Kaarten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13159"/>
+        <location filename="../src/app/qgisapp.cpp" line="13162"/>
         <source>No Elevation Profiles Found</source>
         <translation>Geen hoogteprofielen gevonden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13167"/>
+        <location filename="../src/app/qgisapp.cpp" line="13170"/>
         <source>Copy From %1</source>
         <translation>Kopiëren van %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13216"/>
+        <location filename="../src/app/qgisapp.cpp" line="13219"/>
         <source>Elevation Profile</source>
         <translation>Hoogteprofiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13220"/>
+        <location filename="../src/app/qgisapp.cpp" line="13223"/>
         <source>Elevation Profile (%1)</source>
         <translation>Hoogteprofiel  (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13264"/>
+        <location filename="../src/app/qgisapp.cpp" line="13267"/>
         <source>New 3D Map View</source>
         <translation>Nieuwe 3D-kaartweergave</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13264"/>
+        <location filename="../src/app/qgisapp.cpp" line="13267"/>
         <source>Project extent is not valid. Please add or activate a layer to render.</source>
         <translation>Bereik van het project is niet geldig. Voeg een nieuwe laag toe of activeer er een om te renderen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13277"/>
+        <location filename="../src/app/qgisapp.cpp" line="13280"/>
         <source>3D Globe %1</source>
         <translation>3D-globe %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13499"/>
-        <location filename="../src/app/qgisapp.cpp" line="17276"/>
+        <location filename="../src/app/qgisapp.cpp" line="13502"/>
+        <location filename="../src/app/qgisapp.cpp" line="17279"/>
         <source>Save Project</source>
         <translation>Project opslaan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13601"/>
+        <location filename="../src/app/qgisapp.cpp" line="13604"/>
         <source>Save Raster Attribute Table</source>
         <translation>Raster-attributentabel opslaan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13601"/>
+        <location filename="../src/app/qgisapp.cpp" line="13604"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
         <translation>Wilt u de wijzigingen aan de attributentabellen opslaan (banden: %1, geassocieerd met laag &apos;%2&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
-        <location filename="../src/app/qgisapp.cpp" line="13620"/>
+        <location filename="../src/app/qgisapp.cpp" line="13615"/>
+        <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>Fout bij opslaan raster-attributentabel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
+        <location filename="../src/app/qgisapp.cpp" line="13615"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
         <translation>Er trad een fout op bij het opslaan van raster-attributentabel voor laag &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13620"/>
+        <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
         <translation>Er trad een fout op bij het opslaan van raster-attributentabel voor laag &apos;%1&apos; naar het bestand VAT.DBF &apos;%2&apos;: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13668"/>
         <location filename="../src/app/qgisapp.cpp" line="13671"/>
+        <location filename="../src/app/qgisapp.cpp" line="13674"/>
         <source>Close Project</source>
         <translation>Project sluiten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13668"/>
+        <location filename="../src/app/qgisapp.cpp" line="13671"/>
         <source>This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?</source>
         <translation>Dit project bevat één of meer tijdelijke tekenlagen. Deze lagen zijn niet permanent opgeslagen en hun inhoud zal verloren gaan. Weet u zeker dat u door wilt gaan?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13671"/>
+        <location filename="../src/app/qgisapp.cpp" line="13674"/>
         <source>This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?</source>
         <translation>Dit project bevat één of meer tijdelijke tekenlagen. Deze lagen zijn niet op de schijf opgeslagen en hun inhoud zal permanent verloren gaan. Weet u zeker dat u door wilt gaan?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14426"/>
+        <location filename="../src/app/qgisapp.cpp" line="14429"/>
         <source>Unknown CRS</source>
         <translation>Onbekend CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14558"/>
+        <location filename="../src/app/qgisapp.cpp" line="14561"/>
         <source>Pan distance %1 (%2)</source>
         <translation>Afstand verschuiven %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14569"/>
+        <location filename="../src/app/qgisapp.cpp" line="14572"/>
         <source>Add to the current selection</source>
         <translation>Aan huidige selectie toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14573"/>
+        <location filename="../src/app/qgisapp.cpp" line="14576"/>
         <source>Subtract from the current selection</source>
         <translation>Uit huidige selectie verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14577"/>
+        <location filename="../src/app/qgisapp.cpp" line="14580"/>
         <source>Intersect with the current selection</source>
         <translation>Met huidige selectie kruisen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14581"/>
+        <location filename="../src/app/qgisapp.cpp" line="14584"/>
         <source>Select features completely within</source>
         <translation>Objecten volledig binnen selecteren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14585"/>
+        <location filename="../src/app/qgisapp.cpp" line="14588"/>
         <source>Add features completely within to the current selection</source>
         <translation>Objecten toevoegen die volledig binnen de huidige selectie liggen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14589"/>
+        <location filename="../src/app/qgisapp.cpp" line="14592"/>
         <source>Subtract features completely within from the current selection</source>
         <translation>Objecten verwijderen die volledig binnen de huidige selectie liggen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14593"/>
+        <location filename="../src/app/qgisapp.cpp" line="14596"/>
         <source>Intersect features completely within with the current selection</source>
         <translation>Objecten kruisen die volledig binnen de huidige selectie liggen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14738"/>
+        <location filename="../src/app/qgisapp.cpp" line="14741"/>
         <source>1 feature selected on layer %1 (%2).</source>
         <translation>1 object geselecteerd op laag %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15941"/>
+        <location filename="../src/app/qgisapp.cpp" line="15944"/>
         <source>A profile with this name already exists</source>
         <translation>Er bestaat al een profiel met deze naam.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15944"/>
+        <location filename="../src/app/qgisapp.cpp" line="15947"/>
         <source>New Profile Name</source>
         <translation>Naam voor nieuwe profiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15960"/>
+        <location filename="../src/app/qgisapp.cpp" line="15963"/>
         <source>New Profile</source>
         <translation>Nieuw profiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15960"/>
+        <location filename="../src/app/qgisapp.cpp" line="15963"/>
         <source>Cannot create folder &apos;%1&apos;</source>
         <translation>Kan map niet maken &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15981"/>
+        <location filename="../src/app/qgisapp.cpp" line="15984"/>
         <source>Task failed</source>
         <translation>Taak mislukt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16057"/>
+        <location filename="../src/app/qgisapp.cpp" line="16060"/>
         <source>New bookmark</source>
         <translation>Nieuwe Favoriete plaats</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16133"/>
+        <location filename="../src/app/qgisapp.cpp" line="16136"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
         <translation>Dit projectbestand werd gemaakt met een nieuwere versie van QGIS (%1) en kon niet volledig worden geladen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16359"/>
+        <location filename="../src/app/qgisapp.cpp" line="16362"/>
         <source>Select Transformation for %1</source>
         <translation>Transformatie voor %1 selecteren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16753"/>
+        <location filename="../src/app/qgisapp.cpp" line="16756"/>
         <source>Network request to %1 timed out, any data received is likely incomplete.</source>
         <translation>Time-out netwerkverzoek voor %1, waarschijnlijk zijn niet alle gegevens ontvangen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16816"/>
+        <location filename="../src/app/qgisapp.cpp" line="16819"/>
         <source>QGIS Authentication</source>
         <translation>QGIS Authenticatie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16951"/>
+        <location filename="../src/app/qgisapp.cpp" line="16954"/>
         <source>%1 Panel</source>
         <translation>%1 paneel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17043"/>
+        <location filename="../src/app/qgisapp.cpp" line="17046"/>
         <source>Transaction</source>
         <translation>Transaction</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17056"/>
-        <location filename="../src/app/qgisapp.cpp" line="17106"/>
+        <location filename="../src/app/qgisapp.cpp" line="17059"/>
+        <location filename="../src/app/qgisapp.cpp" line="17109"/>
         <source>Cannot duplicate feature in not editable mode on layer %1</source>
         <translation>Kan object niet dupliceren in modus Bewerken op laag %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17086"/>
+        <location filename="../src/app/qgisapp.cpp" line="17089"/>
         <source>%1 children on layer %2 duplicated</source>
         <translation>%1 kinderen op laag %2 gedupliceerd</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17090"/>
+        <location filename="../src/app/qgisapp.cpp" line="17093"/>
         <source>%1 features on layer %2 duplicated
 %3</source>
         <translation>%1 objecten op laag %2 gedupliceerd
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17119"/>
+        <location filename="../src/app/qgisapp.cpp" line="17122"/>
         <source>Digitize the duplicate on layer %1</source>
         <translation>Duplicaat op laag %1 digitaliseren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17123"/>
+        <location filename="../src/app/qgisapp.cpp" line="17126"/>
         <source>Duplicate digitized</source>
         <translation>Duplicaat gedigitaliseerd</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="17136"/>
+        <location filename="../src/app/qgisapp.cpp" line="17139"/>
         <source>%n children on layer %1 duplicated</source>
         <translation><numerusform>%n kind op laag %1 gedupliceerd</numerusform><numerusform>%n kinderen op laag %1 gedupliceerd</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17139"/>
+        <location filename="../src/app/qgisapp.cpp" line="17142"/>
         <source>Feature on layer %1 duplicated
 %2</source>
         <translation>Object op laag %1 gedupliceerd
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17157"/>
+        <location filename="../src/app/qgisapp.cpp" line="17160"/>
         <source>Templates</source>
         <translation>Sjablonen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17168"/>
+        <location filename="../src/app/qgisapp.cpp" line="17171"/>
         <source>Template Name</source>
         <translation>Naam sjabloon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17168"/>
+        <location filename="../src/app/qgisapp.cpp" line="17171"/>
         <source>Name for the template</source>
         <translation>Naam voor de sjabloon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17177"/>
         <source>Template not saved</source>
         <translation>Sjabloon niet opgeslagen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17177"/>
         <source>The template can not have an empty name.</source>
         <translation>De sjabloon mag geen lege naam hebben.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17181"/>
+        <location filename="../src/app/qgisapp.cpp" line="17184"/>
         <source>Overwrite Template</source>
         <translation>Sjabloon overschrijven</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17182"/>
+        <location filename="../src/app/qgisapp.cpp" line="17185"/>
         <source>The template %1 already exists, do you want to replace it?</source>
         <translation>De sjabloon %1 bestaat al, wilt u die vervangen?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17183"/>
+        <location filename="../src/app/qgisapp.cpp" line="17186"/>
         <source>Overwrite</source>
         <translation>Overschrijf</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17195"/>
+        <location filename="../src/app/qgisapp.cpp" line="17198"/>
         <source>Template saved</source>
         <translation>Sjabloon opgeslagen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17195"/>
+        <location filename="../src/app/qgisapp.cpp" line="17198"/>
         <source>Template %1 was saved</source>
         <translation>Sjabloon %1 werd opgeslagen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17281"/>
+        <location filename="../src/app/qgisapp.cpp" line="17284"/>
         <source>Save as Local File</source>
         <translation>Als lokaal bestand opslaan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17012"/>
+        <location filename="../src/app/qgisapp.cpp" line="17015"/>
         <source>Layer %1</source>
         <translation>Laag %1</translation>
     </message>
@@ -61598,64 +61714,64 @@ Annuleer deze taken probeer opnieuw.</translation>
         <translation>Kies een vectorlaag in de legenda om objecten te selecteren.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13481"/>
+        <location filename="../src/app/qgisapp.cpp" line="13484"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>Het project heeft laag/lagen in modus bewerken met nog niet opgeslagen wijzigingen die NIET zullen worden opgeslagen!</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="14744"/>
-        <location filename="../src/app/qgisapp.cpp" line="14753"/>
+        <location filename="../src/app/qgisapp.cpp" line="14747"/>
+        <location filename="../src/app/qgisapp.cpp" line="14756"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation><numerusform>%n object geselecteerd in laag %1.</numerusform><numerusform>%n objecten geselecteerd in laag %1.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15896"/>
+        <location filename="../src/app/qgisapp.cpp" line="15899"/>
         <source>Exit QGIS</source>
         <translation>QGIS afsluiten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15896"/>
+        <location filename="../src/app/qgisapp.cpp" line="15899"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Weet u zeker dat u QGIS wilt afsluiten?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15943"/>
+        <location filename="../src/app/qgisapp.cpp" line="15946"/>
         <source>New profile name</source>
         <translation>Naam voor nieuwe profiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15979"/>
+        <location filename="../src/app/qgisapp.cpp" line="15982"/>
         <source>Task complete</source>
         <translation>Taak voltooid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16121"/>
+        <location filename="../src/app/qgisapp.cpp" line="16124"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
         <translation>Dit projectbestand werd opgeslagen met QGIS versie %1. Bij het opslaan van dit projectbestand zal QGIS het bijwerken naar versie %2, waardoor renderen waarschijnlijk onbruikbaar is met oudere versies van QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16126"/>
+        <location filename="../src/app/qgisapp.cpp" line="16129"/>
         <source>Project file is older</source>
         <translation>Projectbestand is ouder</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16753"/>
+        <location filename="../src/app/qgisapp.cpp" line="16756"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>Controleer &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; voor meer informatie.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16659"/>
+        <location filename="../src/app/qgisapp.cpp" line="16662"/>
         <source>Warning</source>
         <translation>Waarschuwing</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16659"/>
+        <location filename="../src/app/qgisapp.cpp" line="16662"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Deze laag heeft geen dialoogvenster Eigenschappen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16724"/>
+        <location filename="../src/app/qgisapp.cpp" line="16727"/>
         <source>Proxy authentication required</source>
         <translation>Proxy-authenticatie vereist</translation>
     </message>
@@ -62923,9 +63039,14 @@ Annuleer deze taken probeer opnieuw.</translation>
         <translation>Ingebed bestand</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="232"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="233"/>
         <source>Successfully extracted file to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Bestand met succes uitgenomen naar &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="238"/>
+        <source>Error opening %1 for write</source>
+        <translation>Fout bij openen van %1 voor schrijven</translation>
     </message>
 </context>
 <context>
@@ -64317,6 +64438,11 @@ Doorlopende Y-coördinaat voor vastzetten
         <source>Set to the project fixed time extent or the extent from the project&apos;s layers</source>
         <translation>Ingesteld op het vaste tijdbereik voor het project of het bereik vanuit de lagen van het project</translation>
     </message>
+    <message>
+        <location filename="../src/ui/qgsanimationexportdialogbase.ui"/>
+        <source>Cumulative range</source>
+        <translation>Cumulatief bereik</translation>
+    </message>
 </context>
 <context>
     <name>QgsAnnotation</name>
@@ -64407,37 +64533,37 @@ Doorlopende Y-coördinaat voor vastzetten
 <context>
     <name>QgsAnnotationLayer</name>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="626"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="627"/>
         <source>General</source>
         <translation>Algemeen</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="628"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="629"/>
         <source>Name</source>
         <translation>Naam</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="631"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="632"/>
         <source>Extent</source>
         <translation>Bereik</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="638"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="639"/>
         <source>Item count</source>
         <translation>Aantal items</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="647"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="648"/>
         <source>Items</source>
         <translation>Items</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="650"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="651"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="650"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="651"/>
         <source>Count</source>
         <translation>Aantal</translation>
     </message>
@@ -66026,14 +66152,14 @@ Fouten:  %2
 <context>
     <name>QgsApplication</name>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="641"/>
-        <location filename="../src/core/qgsapplication.cpp" line="647"/>
-        <location filename="../src/core/qgsapplication.cpp" line="653"/>
+        <location filename="../src/core/qgsapplication.cpp" line="663"/>
+        <location filename="../src/core/qgsapplication.cpp" line="669"/>
+        <location filename="../src/core/qgsapplication.cpp" line="675"/>
         <source>Exception</source>
         <translation>Fout</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="653"/>
+        <location filename="../src/core/qgsapplication.cpp" line="675"/>
         <source>unknown exception</source>
         <translation>onbekende fout</translation>
     </message>
@@ -66044,22 +66170,22 @@ Fouten:  %2
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="470"/>
+        <location filename="../src/core/qgsapplication.cpp" line="483"/>
         <source>Load user fonts</source>
         <translation>Lettertypen van gebruiker laden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="480"/>
+        <location filename="../src/core/qgsapplication.cpp" line="493"/>
         <source>Load color schemes</source>
         <translation>Kleurenschema&apos;s laden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="486"/>
+        <location filename="../src/core/qgsapplication.cpp" line="499"/>
         <source>Load bookmarks</source>
         <translation>Favoriete plaatsen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1623"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1645"/>
         <source>QgsApplication state:
  - QGIS_PREFIX_PATH env var:   %1
  - Prefix:                     %2
@@ -66086,7 +66212,7 @@ Fouten:  %2
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1641"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1663"/>
         <source>
                                </source>
         <comment>match indentation of application state</comment>
@@ -66094,251 +66220,251 @@ Fouten:  %2
                                </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2207"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2229"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
         <translation>[FOUT] Kan geen eigen kopie maken van qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2219"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2241"/>
         <source>Can not make &apos;%1&apos; user writable</source>
         <translation>Kan &apos;%1&apos; niet beschrijfbaar voor de gebruiker maken</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2233"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2255"/>
         <source>Could not open qgis.db</source>
         <translation>Probleem bij het openen van qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2263"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2285"/>
         <source>Creation of missing tbl_srs in the private qgis.db failed.
 %1</source>
         <translation>Maken van ontbrekende tbl_srs in de private qgis.db mislukt.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2299"/>
-        <location filename="../src/core/qgsapplication.cpp" line="2356"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2321"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2378"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>Migratie van de eigen qgis.db mislukt.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2323"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2345"/>
         <source>Creation of missing tbl_projection in the private qgis.db failed.
 %1</source>
         <translation>Maken van ontbrekende tbl_projection in de private qgis.db mislukt.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2389"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2411"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
         <translation>Bijwerken van view in eigen qgis.db mislukt.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2677"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2699"/>
         <source>Create query logger</source>
         <translation>Querylogger maken</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2682"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2704"/>
         <source>Setup coordinate reference system registry</source>
         <translation>Register coördinaten referentiesysteem instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2687"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2709"/>
         <source>Create connection registry</source>
         <translation>Verbindingsregister maken</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2692"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2714"/>
         <source>Create project storage registry</source>
         <translation>Register voor projectopslag maken</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2697"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2719"/>
         <source>Create layer metadata provider registry</source>
         <translation>Register voor provider metadata laag maken</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2702"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2724"/>
         <source>Create font manager</source>
         <translation>Beheer voor lettertype maken</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2707"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2729"/>
         <source>Setup task manager</source>
         <translation>Taakbeheer instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2712"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2734"/>
         <source>Setup action scope registry</source>
         <translation>Register voor bereik acties instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2717"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2739"/>
         <source>Setup numeric formats</source>
         <translation>Numerieke indelingen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2722"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2744"/>
         <source>Setup field formats</source>
         <translation>Veldindelingen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2727"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2749"/>
         <source>Setup SVG cache</source>
         <translation>SVG-cache instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2732"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2754"/>
         <source>Setup image cache</source>
         <translation>Afbeeldingencache instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2737"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2759"/>
         <source>Setup source cache</source>
         <translation>Cache voor bron instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2742"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2764"/>
         <source>Setup color scheme registry</source>
         <translation>Register voor kleurenschema instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2747"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2769"/>
         <source>Setup paint effect</source>
         <translation>Tekeneffect instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2752"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2774"/>
         <source>Setup symbol layer registry</source>
         <translation>Register van symboollagen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2757"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2779"/>
         <source>Recent style handler</source>
         <translation>Afhandeling recente stijl</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2762"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2784"/>
         <source>Setup callout registry</source>
         <translation>Register voor tekstballonnen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2767"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2789"/>
         <source>Setup renderer registry</source>
         <translation>Register voor renderer instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2772"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2794"/>
         <source>Setup raster renderer registry</source>
         <translation>Register voor rasterrenderer instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2777"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2799"/>
         <source>Setup point cloud renderer registry</source>
         <translation>Register voor renderer van puntwolken instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2782"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2804"/>
         <source>Setup tiled scene renderer registry</source>
         <translation>Register voor renderer getegelde scene instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2787"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2809"/>
         <source>Setup GPS registry</source>
         <translation>Register voor GPS instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2792"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2814"/>
         <source>Setup GPSBabel format registry</source>
         <translation>Register van GPSBabel voor indelingen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2797"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2819"/>
         <source>Setup plugin layer registry</source>
         <translation>Register van plug-inlagen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2802"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2824"/>
         <source>Setup Processing registry</source>
         <translation>Register voor Processing instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2808"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2830"/>
         <source>Setup layout item registry</source>
         <translation>Register voor lay-outitems instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2814"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2836"/>
         <source>Setup annotation registry</source>
         <translation>Register voor annotaties instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2819"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2841"/>
         <source>Setup annotation item registry</source>
         <translation>Register voor items annotatie instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2825"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2847"/>
         <source>Setup labeling engine rule registry</source>
         <translation>Register van regels voor labels instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2830"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2852"/>
         <source>Setup sensor registry</source>
         <translation>Register voor sensor instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2836"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2858"/>
         <source>Setup 3D symbol registry</source>
         <translation>Register voor 3D-symbolen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2841"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2863"/>
         <source>Setup 3D renderer registry</source>
         <translation>Register voor 3D-renderer instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2846"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2868"/>
         <source>Setup external storage registry</source>
         <translation>Register voor externe opslag instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2851"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2873"/>
         <source>Setup profile source registry</source>
         <translation>Register voor bron profiel instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2856"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2878"/>
         <source>Setup network content cache</source>
         <translation>Cache voor inhoud netwerk instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2861"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2883"/>
         <source>Setup layout check registry</source>
         <translation>Register voor controle lay-out instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2866"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2888"/>
         <source>Setup classification registry</source>
         <translation>Register voor classificeren instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2871"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2893"/>
         <source>Setup bookmark manager</source>
         <translation>Favoriete plaatsen beheren instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2876"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2898"/>
         <source>Setup tile download manager</source>
         <translation>Tegels downloaden beheren instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2881"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2903"/>
         <source>Setup scalebar registry</source>
         <translation>Register voor schaalbalk instellen</translation>
     </message>
@@ -68007,22 +68133,22 @@ Dit object verwijderen?</translation>
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="654"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="651"/>
         <source>extra column</source>
         <translation>extra kolom</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="662"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="659"/>
         <source>Feature ID: %1</source>
         <translation>Object-ID: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="733"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="730"/>
         <source>... truncated ...</source>
         <translation>… afgebroken …</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="743"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="740"/>
         <source>%1 (Ctrl+click to open)</source>
         <translation>%1 (Ctrl+klik om te openen)</translation>
     </message>
@@ -68213,71 +68339,71 @@ Dit object verwijderen?</translation>
         <translation>Instellen op NULL</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="275"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="278"/>
         <source>The provider for this layer has a NOT NULL constraint set on the field.</source>
         <translation>De provider voor deze laag heeft een beperking NOT NULL ingesteld voor het veld.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="282"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="285"/>
         <source>The provider for this layer has a UNIQUE constraint set on the field.</source>
         <translation>De provider voor deze laag heeft een UNIQUE beperking ingesteld voor het veld.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="556"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="580"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="559"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="583"/>
         <source>Resets the field by recalculating its default value.</source>
         <translation>Herstelt het veld door zijn standaardwaarde te berekenen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="560"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="584"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="563"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="587"/>
         <source>Copies the current field value without change.</source>
         <translation>Kopieert de huidige veldwaarde zonder wijziging.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="564"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="567"/>
         <source>Recalculates the field value for all split portions by multiplying the existing value by the ratio of the split parts lengths or areas.</source>
         <translation>Berekent de veldwaarde opnieuw voor alle gesplitste gedeelten door de bestaande waarde te vermenigvuldigen met de verhouding tussen de lengtes of gebieden van de gesplitste gedeelten.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="568"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="588"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="612"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="571"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="591"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="615"/>
         <source>Clears the field to an unset state.</source>
         <translation>Maakt het veld leeg naar een niet ingestelde staat.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="600"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="603"/>
         <source>Use default field value.</source>
         <translation>Standaard veldwaarde gebruiken</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="604"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="607"/>
         <source>Sum of values.</source>
         <translation>Som van de waarden</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="608"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="611"/>
         <source>New values are computed as the weighted average of the source values.</source>
         <translation>Nieuwe waarden worden berekend als het gewogen gemiddelde van de bronwaarden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="616"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="619"/>
         <source>Use value from feature with the largest geometry.</source>
         <translation>Waarde uit object met de grootste geometrie gebruiken.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="620"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="623"/>
         <source>Use the lowest value from the selected features.</source>
         <translation>De laagste waarde uit de geselecteerde objecten gebruiken.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="624"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="627"/>
         <source>Use the highest value from the selected features.</source>
         <translation>De hoogste waarde uit de geselecteerde objecten gebruiken.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="628"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="631"/>
         <source>Set attribute to NULL.</source>
         <translation>Attribuut instellen op NULL.</translation>
     </message>
@@ -70790,9 +70916,9 @@ Autoriteiten/uitgevers: %1%2</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="557"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3635"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3659"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3754"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3639"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3663"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3758"/>
         <source>Master password: FAILED to access database</source>
         <translation>Hoofdwachtwoord: toegang tot database MISLUKT</translation>
     </message>
@@ -70912,7 +71038,7 @@ Autoriteiten/uitgevers: %1%2</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="1192"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3923"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3927"/>
         <source>Store config: FAILED to store config in default storage: %1</source>
         <translation>Configuratie opslaan: MISLUKT om configuratie op te slaan in standaard opslag: %1</translation>
     </message>
@@ -70933,10 +71059,10 @@ Autoriteiten/uitgevers: %1%2</translation>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2730"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2810"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="3063"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3675"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3706"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3735"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3768"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3679"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3710"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3739"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3772"/>
         <source>Could not connect to the default storage.</source>
         <translation>Kon niet verbinden met de standaard opslag</translation>
     </message>
@@ -71076,10 +71202,10 @@ Autoriteiten/uitgevers: %1%2</translation>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2869"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2959"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3618"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3858"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3939"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4104"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3606"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3862"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3943"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4108"/>
         <source>Could not connect to any authentication configuration storage.</source>
         <translation>Kon niet verbinden met een opslag voor configuratie voor authenticatie.</translation>
     </message>
@@ -71109,17 +71235,17 @@ Autoriteiten/uitgevers: %1%2</translation>
         <translation>Hoofdwachtwoord dat is opgeslagen in de %1 is niet geldig</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3799"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3803"/>
         <source>Config id %1 is already in the list</source>
         <translation>Configuratie ID %1 staat al in de lijst</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3943"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3947"/>
         <source>Reencrypt FAILED, could not find config (id: %1)</source>
         <translation>Opnieuw versleutelen MISLUKT, kon geen configuratie vinden (ID: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4108"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4112"/>
         <source>Reencrypt FAILED, could not find identity (id: %1)</source>
         <translation>Opnieuw versleutelen MISLUKT, kon geen identiteit vinden (ID: %1)</translation>
     </message>
@@ -71189,7 +71315,7 @@ Autoriteiten/uitgevers: %1%2</translation>
         <translation>Hoofdwachtwoord dat is opgeslagen in uw %1 is niet geldig</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4027"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4031"/>
         <source>Authentication database contains duplicate setting keys</source>
         <translation>Database voor authenticatie bevat duplicaat instellingen voor sleutels</translation>
     </message>
@@ -72571,27 +72697,32 @@ Deze bewerking kan NIET ongedaan worden gemaakt!</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="145"/>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="172"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="178"/>
         <source>All files</source>
         <translation>Alle bestanden</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="161"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="162"/>
         <source>Saved content to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Inhoud opgeslagen naar &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="172"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="166"/>
+        <source>Error opening %1 for write</source>
+        <translation>Fout bij openen van %1 voor schrijven</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="178"/>
         <source>Embed File</source>
         <translation>Ingebed bestand</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="197"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="203"/>
         <source>Clear Contents</source>
         <translation>Inhoud opruimen</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="197"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="203"/>
         <source>Are you sure you want the clear this field&apos;s content?</source>
         <translation>Weet u zeker dat u de inhoud van dit veld wilt opruimen?</translation>
     </message>
@@ -72697,33 +72828,33 @@ Deze bewerking kan NIET ongedaan worden gemaakt!</translation>
 <context>
     <name>QgsBlockingNetworkRequest</name>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="149"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="189"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="356"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="368"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="399"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="458"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="469"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="153"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="193"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="360"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="372"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="403"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="462"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="473"/>
         <source>Network</source>
         <translation>Netwerk</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="355"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="359"/>
         <source>Redirect loop detected: %1</source>
         <translation>Verwezen loop gedetecteerd: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="456"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="460"/>
         <source>empty response: %1</source>
         <translation>leeg antwoord: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="492"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="496"/>
         <source>network request update failed for authentication config</source>
         <translation>bijwerken verzoek netwerk mislukt voor configuratie van authenticatie</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="502"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="506"/>
         <source>The server does not support range requests</source>
         <translation>De server ondersteunt geen verzoeken voor bereiken</translation>
     </message>
@@ -73630,42 +73761,42 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe classificatie?</tra
 <context>
     <name>QgsCesiumTilesDataProvider</name>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="987"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="997"/>
         <source>Only ion 3D Tiles content can be accessed, not %1</source>
         <translation>Alleen toegang tot inhoud van ion 3D-tegels kan worden verkregen, niet %1</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1094"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1104"/>
         <source>Source</source>
         <translation>Bron</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1177"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1187"/>
         <source>3D Tiles Version</source>
         <translation>Versie 3D-tegels</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1185"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1195"/>
         <source>Tileset Version</source>
         <translation>Versie tegelset</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1196"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1206"/>
         <source>Tileset Generator</source>
         <translation>Tegelset genereren</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1208"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1218"/>
         <source>Extensions Required</source>
         <translation>Vereiste uitbreidingen </translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1220"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1230"/>
         <source>Extensions Used</source>
         <translation>Gebruikte uitbreidingen </translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1226"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1236"/>
         <source>Z Range</source>
         <translation>Bereik Z</translation>
     </message>
@@ -74055,29 +74186,29 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe classificatie?</tra
         <translation>Python-bewerker</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="458"/>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="504"/>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="509"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="457"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="503"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="508"/>
         <source>Reformat Code</source>
         <translation>Code opnieuw opmaken</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="458"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="457"/>
         <source>Code formatting failed -- the code contains syntax errors</source>
         <translation>Opmaken van code mislukt -- de code bevat fouten in de syntaxis</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="504"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="503"/>
         <source>The Python module %1 is missing</source>
         <translation>De module voor Python %1 ontbreekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="509"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="508"/>
         <source>The Python modules %1 are missing</source>
         <translation>De modules voor Python %1 ontbreken</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="532"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="531"/>
         <source>Search Selection in PyQGIS Documentation</source>
         <translation>Zoeken naar Selectie in documentatie van PyQGIS</translation>
     </message>
@@ -75943,63 +76074,63 @@ bestand worden getransformeerd).</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="290"/>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="368"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="371"/>
         <source>User-defined</source>
         <translation>Door gebruiker gedefinieerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="385"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="388"/>
         <source>Geodetic</source>
         <translation>Geodetisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="389"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="392"/>
         <source>Geocentric</source>
         <translation>Geocentrisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="393"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="396"/>
         <source>Geographic (2D)</source>
         <translation>Geografisch (2D)</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="398"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="401"/>
         <source>Geographic (3D)</source>
         <translation>Geografisch (3D)</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="403"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="406"/>
         <source>Vertical</source>
         <translation>Verticaal</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="408"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="411"/>
         <source>Projected</source>
         <translation>Geprojecteerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="413"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="416"/>
         <source>Compound</source>
         <translation>Verbinding</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="417"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="420"/>
         <source>Temporal</source>
         <translation>Tijdbeheer</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="421"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="424"/>
         <source>Engineering</source>
         <translation>Engineering</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="425"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="428"/>
         <source>Bound</source>
         <translation>Gebonden</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="429"/>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="450"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="432"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="452"/>
         <source>Other</source>
         <translation>Anders</translation>
     </message>
@@ -76040,12 +76171,22 @@ bestand worden getransformeerd).</translation>
         <translation>Doelmap &apos;%1&apos; bestaat niet</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscopyfiletask.cpp" line="70"/>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="59"/>
+        <source>Could not open &apos;%1&apos; for reading</source>
+        <translation>Kon &apos;%1&apos; niet openen voor lezen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="64"/>
+        <source>Could not open &apos;%1&apos; for writing</source>
+        <translation>Kon %1 niet openen om naar te schrijven</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="78"/>
         <source>Fail reading from &apos;%1&apos;</source>
         <translation>Lezen van &apos;%1&apos; mislukt</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscopyfiletask.cpp" line="80"/>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="88"/>
         <source>Fail writing to &apos;%1&apos;</source>
         <translation>Schrijven naar &apos;%1&apos; mislukt</translation>
     </message>
@@ -80678,192 +80819,197 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="616"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="625"/>
         <source>(disabled when attribute table only shows features visible in the current map canvas extent)</source>
         <translation>(uitgeschakeld als de attributentabel alleen objecten weergeeft die zichtbaar zijn in het huidige bereik van het kaartvenster)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="752"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="761"/>
         <source>Expression Based Preview</source>
         <translation>Op expressie gebaseerd voorbeeld</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="769"/>
-        <source>Column Preview</source>
-        <translation>Kolom voorbeeld</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="769"/>
-        <source>Could not set column '%1' as preview column.
-Parser error:
-%2</source>
-        <translation>Kolom &apos;%1&apos; kan niet worden gebruik als voorbeeldkolom.
-Parser fout:
-%2</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="952"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="964"/>
         <source>&amp;Set All Column Widths…</source>
         <translation>Alle kolombreedten in&amp;stellen…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="962"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="974"/>
         <source>&amp;Autosize All Columns</source>
         <translation>&amp;Automatische grootte alle kolommen</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="971"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="983"/>
         <source>&amp;Sort…</source>
         <translation>&amp;Sorteren…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="957"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="969"/>
         <source>&amp;Autosize</source>
         <translation>&amp;Autom. grootte</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="252"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="256"/>
         <source>Sort…</source>
         <translation>Sorteren…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="255"/>
-        <source>By Preview Expression (ascending)</source>
-        <translation>Op voorbeeld expressie (oplopend)</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="260"/>
-        <source>By Preview Expression (descending)</source>
-        <translation>Op voorbeeld expressie (aflopend)</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="265"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="269"/>
         <source>By Custom Expression</source>
         <translation>Op aangepaste expressie</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="285"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="294"/>
         <source>&apos;[Please define preview text]&apos;</source>
         <translation>&apos;[Definieer voorbeeldtekst]&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="618"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="627"/>
         <source>Automatically pan to the current feature</source>
         <translation>Automatisch verschuiven naar huidige object</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="619"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="628"/>
         <source>Automatically zoom to the current feature</source>
         <translation>Automatisch zoomen naar huidige object</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="659"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="668"/>
         <source>An error occurred while filtering features</source>
         <translation>Er trad een fout op bij het filteren van objecten</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="838"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="780"/>
+        <source>Column Display Name</source>
+        <translation>Naam kolom weergeven</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="780"/>
+        <source>Could not set column '%1' as display name.
+Parser error:
+%2</source>
+        <translation>Kon kolom &apos;%1&apos; kan niet instellen als weergavenaam.
+Parser fout:
+%2</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="784"/>
+        <source>Expression</source>
+        <translation>Expressie</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="850"/>
         <source>Copy Cell Content</source>
         <translation>Celinhoud kopiëren</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="849"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="861"/>
         <source>Zoom to Feature</source>
         <translation>Naar object zoomen</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="852"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="864"/>
         <source>Pan to Feature</source>
         <translation>Naar object verplaatsen</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="855"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="867"/>
         <source>Flash Feature</source>
         <translation>Flitsmogelijkheid</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="863"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="875"/>
         <source>Run Layer Action</source>
         <translation>Laag-actie uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="908"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="920"/>
         <source>Actions on Selection (%1)</source>
         <translation>Acties bij selecteren (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="925"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="937"/>
         <source>Open Form</source>
         <translation>Formulier openen</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="926"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="938"/>
         <source>Open Form…</source>
         <translation>Formulier openen…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="943"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="955"/>
         <source>&amp;Hide Column</source>
         <translation>Kolom &amp;verbergen</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="947"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="959"/>
         <source>&amp;Set Width…</source>
         <translation>Breedte in&amp;stellen…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1365"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1377"/>
         <source>%L1 features loaded.</source>
         <translation>%L1 objecten geladen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="968"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="980"/>
         <source>&amp;Organize Columns…</source>
         <translation>Kol&amp;ommen beheren…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1029"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="259"/>
+        <source>By Display Name (Ascending)</source>
+        <translation>Op weergavenaam (oplopend)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="264"/>
+        <source>By Display Name (Descending)</source>
+        <translation>Op weergavenaam (aflopend)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1041"/>
         <source>Set column width</source>
         <translation>Breedte kolom instellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1029"/>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1041"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1060"/>
         <source>Enter column width</source>
         <translation>Breedte kolom invoeren</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1060"/>
         <source>Set Column Width</source>
         <translation>Kolombreedte instellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1083"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1095"/>
         <source>Configure Attribute Table Sort Order</source>
         <translation>Sorteervolgorde van de attributentabel configureren</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1359"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1371"/>
         <source>Loading features…</source>
         <translation>Objecten laden…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1360"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1372"/>
         <source>Attribute Table</source>
         <translation>Attributentabel</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1091"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1103"/>
         <source>Defined sort order in attribute table</source>
         <translation>Gedefinieerde sorteervolgorde in attributentabel</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1105"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1117"/>
         <source>Sort ascending</source>
         <translation>Oplopend sorteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1359"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1371"/>
         <source>Abort</source>
         <translation>Afbreken</translation>
     </message>
@@ -80879,11 +81025,6 @@ Parser fout:
         <location filename="../src/ui/qgsdualviewbase.ui"/>
         <source>Expression</source>
         <translation>Expressie</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdualviewbase.ui"/>
-        <source>Column Preview</source>
-        <translation>Kolom voorbeeld</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdualviewbase.ui"/>
@@ -80919,6 +81060,11 @@ Parser fout:
         <location filename="../src/ui/qgsdualviewbase.ui"/>
         <source>Navigate to last feature</source>
         <translation>Ga naar laatste object</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdualviewbase.ui"/>
+        <source>Columns</source>
+        <translation>Kolommen</translation>
     </message>
 </context>
 <context>
@@ -99993,32 +100139,32 @@ Controleer de rechten voor het bestand en de map voor
 <context>
     <name>QgsGeometryAngleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="131"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="149"/>
         <source>Resulting geometry is degenerate</source>
         <translation>Resulterende geometrie is gedegenereerd</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="135"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="153"/>
         <source>Failed to delete vertex</source>
         <translation>Punt verwijderen mislukt</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="152"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="170"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="158"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="176"/>
         <source>Delete node with small angle</source>
         <translation>Knoop met een kleine hoek verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="158"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="176"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="169"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="187"/>
         <source>Minimal angle</source>
         <translation>Minimale hoek</translation>
     </message>
@@ -100026,37 +100172,37 @@ Controleer de rechten voor het bestand en de map voor
 <context>
     <name>QgsGeometryAreaCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="94"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="112"/>
         <source>Failed to merge with neighbor: %1</source>
         <translation>Samenvoegen met buur mislukt: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="99"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="117"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="210"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="228"/>
         <source>Merge with neighboring polygon with longest shared edge</source>
         <translation>Samenvoegen met naastgelegen polygoon met langste gedeelde rand</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="211"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="229"/>
         <source>Merge with neighboring polygon with largest area</source>
         <translation>Samenvoegen met naastgelegen polygoon met de grootste oppervlakte</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="212"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="230"/>
         <source>Merge with neighboring polygon with identical attribute value, if any, or leave as is</source>
         <translation>Samenvoegen met naastgelegen polygoon met identieke waarde voor attribuut, als die er is, of laat zoals het is</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="213"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="231"/>
         <source>Delete feature</source>
         <translation>Object verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="214"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="232"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -100708,33 +100854,33 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryContainedCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="33"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="46"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="49"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="67"/>
         <source>Contained check failed for (%1): the geometry is invalid</source>
         <translation>Opgenomen controle mislukte voor (%1): de geometrie is ongeldig</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="57"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="78"/>
         <source>Contained check failed for (%1, %2): %3</source>
         <translation>Opgenomen controle mislukte voor (%1, %2): %3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="103"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="110"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="132"/>
         <source>Delete feature</source>
         <translation>Object verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="111"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="133"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.h" line="73"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.h" line="74"/>
         <source>Within</source>
         <translation>binnen</translation>
     </message>
@@ -100742,12 +100888,12 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryDangleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="107"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="130"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="113"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="136"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -100760,17 +100906,17 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryDegeneratePolygonCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="84"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="101"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="90"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="107"/>
         <source>Delete feature</source>
         <translation>Object verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="90"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="107"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -100783,27 +100929,27 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryDuplicateCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="57"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="73"/>
         <source>Duplicate check failed for (%1): the geometry is invalid</source>
         <translation>Duplicatencontrole mislukt voor (%1): de geometrie is ongeldig</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="102"/>
         <source>Duplicate check failed for (%1, %2): %3</source>
         <translation>Duplicatencontrole mislukt voor (%1, %2): %3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="137"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="159"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="144"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="166"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="145"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="167"/>
         <source>Remove duplicates</source>
         <translation>Duplicaten verwijderen</translation>
     </message>
@@ -100816,27 +100962,27 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryDuplicateNodesCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="93"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="109"/>
         <source>Resulting geometry is degenerate</source>
         <translation>Resulterende geometrie is gedegenereerd</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="97"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="113"/>
         <source>Failed to delete vertex</source>
         <translation>Punt verwijderen mislukt</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="109"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="115"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="131"/>
         <source>Delete duplicate node</source>
         <translation>Duplicaat-knoop verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="115"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="131"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -100849,12 +100995,12 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryFollowBoundariesCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="104"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="126"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="110"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="132"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -100867,111 +101013,111 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryGapCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="113"/>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="123"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="139"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="133"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="149"/>
         <source>Gap check: %1</source>
         <translation>Controle op gaten: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="220"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="290"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="241"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="310"/>
         <source>Failed to merge with neighbor: %1</source>
         <translation>Samenvoegen met buur mislukt: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="200"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="221"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="232"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="253"/>
         <source>Could not start editing layer %1</source>
         <translation>Kon niet beginnen met bewerken van laag %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="240"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="261"/>
         <source>Could not add feature to layer %1</source>
         <translation>Kon geen object toevoegen aan laag %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="250"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="271"/>
         <source>Allowed gaps layer could not be resolved</source>
         <translation>Laag met toegestane gaten kon niet worden opgelost.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="267"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="287"/>
         <source>Could not add feature</source>
         <translation>Kon object niet toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="276"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="296"/>
         <source>Could not resolve target layer %1 to add feature</source>
         <translation>Kon doellaag %1 niet oplossen om object toe te voegen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="428"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="452"/>
         <source>Add gap area to neighboring polygon with longest shared edge</source>
         <translation>Voeg gebied van gat toe aan naburige polygoon met langste gedeelde rand</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="429"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="447"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="453"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="471"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="431"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="455"/>
         <source>Add gap to allowed exceptions</source>
         <translation>Gat toevoegen aan toegestane uitzonderingen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="439"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="463"/>
         <source>Add to longest shared edge</source>
         <translation>Aan langste gedeelde rand toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="439"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="463"/>
         <source>Add the gap area to the neighbouring polygon with the longest shared edge.</source>
         <translation>Voeg gebied van gat toe aan naburige polygoon met de langste gedeelde rand.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="440"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="464"/>
         <source>Create new feature</source>
         <translation>Nieuw object maken</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="440"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="464"/>
         <source>Create a new feature from the gap area.</source>
         <translation>Maak een nieuw object uit het oppervlak van het gat.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="441"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="465"/>
         <source>Add to largest neighbouring area</source>
         <translation>Aan grootste naburige gebied toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="441"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="465"/>
         <source>Add the gap area to the neighbouring polygon with the largest area.</source>
         <translation>Voeg oppervlak van gat toe aan de naburige polygoon met de grootste oppervlakte.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="445"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
         <source>Add Gap to Allowed Exceptions</source>
         <translation>Gat toevoegen aan Toegestane uitzonderingen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="445"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
         <source>Create a new feature from the gap geometry on the allowed exceptions layer.</source>
         <translation>Maak een nieuw object uit de geometrie van het gat op de laag met toegestane uitzonderingen.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="447"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="471"/>
         <source>Do not perform any action and mark this error as fixed.</source>
         <translation>Geen actie uitvoeren en deze fout als opgelost markeren.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="470"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="494"/>
         <source>Gap</source>
         <translation>Gat</translation>
     </message>
@@ -100997,17 +101143,17 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryHoleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="98"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="104"/>
         <source>Remove hole</source>
         <translation>Gat verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="104"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -101028,58 +101174,58 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryLineIntersectionCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="88"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="110"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="94"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="116"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.h" line="40"/>
         <source>Intersection</source>
-        <translation>Kruising</translation>
+        <translation>Doorsnijding</translation>
     </message>
 </context>
 <context>
     <name>QgsGeometryLineLayerIntersectionCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="86"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="107"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="92"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="113"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.h" line="41"/>
         <source>Intersection</source>
-        <translation>Kruising</translation>
+        <translation>Doorsnijding</translation>
     </message>
 </context>
 <context>
     <name>QgsGeometryMissingVertexCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="94"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="119"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="132"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="120"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="133"/>
         <source>Add missing vertex</source>
         <translation>Ontbrekend punt toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="250"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="263"/>
         <source>Missing Vertex</source>
         <translation>Ontbrekend punt</translation>
     </message>
@@ -101115,42 +101261,42 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryOverlapCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="50"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="61"/>
         <source>Overlap check failed for (%1): the geometry is invalid</source>
         <translation>Controle op overlappen mislukt voor (%1): de geometrie is omgeldig</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="98"/>
         <source>Overlap check between features %1 and %2 %3</source>
         <translation>Controle op overlappen tussen objecten %1 en %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="125"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="137"/>
         <source>Failed to compute intersection between overlapping features: %1</source>
         <translation>Berekening van kruising tussen overlappende objecten mislukt: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="177"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="189"/>
         <source>Could not find shared edges between intersection and overlapping features</source>
         <translation>Kon geen gedeelde randen vinden tussen kruising en overlappende objecten</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="205"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="217"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="212"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="224"/>
         <source>Remove overlapping area from neighboring polygon with shortest shared edge</source>
         <translation>Verwijder overlappend deel uit naburige polygoon met kortste gedeelde rand</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="213"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="225"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="235"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="247"/>
         <source>Overlap</source>
         <translation>Overlapt</translation>
     </message>
@@ -101158,12 +101304,12 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryPointCoveredByLineCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="83"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="104"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="89"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="110"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -101176,17 +101322,17 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryPointInPolygonCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="49"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="69"/>
         <source>Point in polygon check failed for (%1): the geometry is invalid</source>
         <translation>Controle op Punt in polygoon mislukt voor (%1): de geometrie is ongeldig</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="75"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="96"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="102"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -101199,12 +101345,12 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometrySegmentLengthCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="108"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>Onbekende methode</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="114"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="131"/>
         <source>No action</source>
         <translation>Geen actie</translation>
     </message>
@@ -101246,13 +101392,13 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="300"/>
-        <source>Split feature into a multi-object feature</source>
+        <source>Split feature into a multi-part feature</source>
         <translation>Object naar een meerdelig object splitsen</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="301"/>
-        <source>Split feature into multiple single-object features</source>
-        <translation>Object naar meerdere ééndelige objecten splitsen</translation>
+        <source>Split feature into multiple single-part features</source>
+        <translation>Object naar meerdere eendelige objecten splitsen</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="302"/>
@@ -101262,7 +101408,7 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="336"/>
         <source>Self intersection</source>
-        <translation>Zelf kruisend</translation>
+        <translation>Zelf doorsnijdend</translation>
     </message>
 </context>
 <context>
@@ -101309,7 +101455,7 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
 <context>
     <name>QgsGeometryTypeCheckError</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="297"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="309"/>
         <source>Overlap with %1 at feature %2</source>
         <translation>Overlapping met %1 op object %2</translation>
     </message>
@@ -101903,10 +102049,10 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="179"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="232"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1732"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1792"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2446"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2453"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1735"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1795"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2449"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2456"/>
         <source>Georeferencer</source>
         <translation>&apos;Georeferencer&apos;</translation>
     </message>
@@ -101942,29 +102088,29 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
         <translation>Georeferencer - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="938"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="941"/>
         <source>Please load file to be georeferenced.</source>
         <translation>Laad het raster voor de geo-verwijzingen.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1544"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1547"/>
         <source>Source coordinate</source>
         <translation>Broncoördinaat</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1547"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1550"/>
         <source>Coordinate of image (column/line)</source>
         <translation>Coördinaat van afbeelding (kolom/regel)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1841"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1844"/>
         <source>Georeference Successful</source>
         <translation>Geo-verwijzing gelukt</translation>
     </message>
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="496"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1439"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2270"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1442"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2273"/>
         <source>Transform: </source>
         <translation>Transformeren: </translation>
     </message>
@@ -101979,371 +102125,371 @@ De controle van de geometrie kan worden uitgevoerd, maar het zal niet mogelijk z
         <translation>Bron geladen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="589"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="592"/>
         <source>Invalid Transform</source>
         <translation>Ongeldige transformatie</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="589"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="592"/>
         <source>GDAL scripting is not supported for %1 transformation.</source>
         <translation>GDAL-scripten wordt niet ondersteund voor %1 transformatie.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="895"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="902"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="906"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="898"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="905"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="909"/>
         <source>Load GCP Points</source>
         <translation>GCP-punten laden </translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="895"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="919"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="898"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="922"/>
         <source>GCP file</source>
         <translation>GCP bestand</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="906"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="909"/>
         <source>GCP file successfully loaded.</source>
         <translation>Het GCP-bestand is met succes geladen.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="914"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="919"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="917"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="922"/>
         <source>Save GCP Points</source>
         <translation>GCP-punten opslaan</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="914"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="917"/>
         <source>No GCP points are available to save.</source>
         <translation>Geen GCP-punten beschikbaar om op te slaan</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1232"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1235"/>
         <source>Snapping Type</source>
         <translation>Type snappen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1234"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1237"/>
         <source>Set Snapping Mode</source>
         <translation>Modus Snappen instellen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1347"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1350"/>
         <source>Panels</source>
         <translation>Panelen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1351"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1354"/>
         <source>Toolbars</source>
         <translation>Werkbalken</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1421"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1424"/>
         <source>Rotation</source>
         <translation>Rotatie</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1422"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1435"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1425"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1438"/>
         <source>Current clockwise map rotation in degrees</source>
         <translation>Huidige rotatie met de klok mee in graden</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1434"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1437"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1443"/>
         <source>Current transform parametrisation</source>
         <translation>Huidige transformatie-parameters</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1445"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1448"/>
         <source>Coordinate: </source>
         <translation>Coördinaat: </translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1446"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1449"/>
         <source>Current map coordinate</source>
         <translation>Huidige kaartcoördinaten</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1539"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1542"/>
         <source>None</source>
         <translation>Geen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1627"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1630"/>
         <source>Write Error</source>
         <translation>Schrijffout</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1638"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1641"/>
         <source>Save GCPs</source>
         <translation>GPC&apos;s Opslaan</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1638"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1641"/>
         <source>Save GCP points?</source>
         <translation>GCP-punten opslaan?</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1662"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1763"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1665"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1813"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2467"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1778"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1816"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2470"/>
         <source>Transform Failed</source>
         <translation>Transformatie mislukt</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1662"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1665"/>
         <source>Failed to calculate linear transform parameters.</source>
         <translation>Bepalen van de lineaire transformatie parameters mislukt.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1670"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1673"/>
         <source>Georeference</source>
         <translation>Geoverwijzing</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1670"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1673"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Het geselecteerde bestand heeft kennelijk al een world file! Wilt u dit vervangen door het nieuwe world file?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1731"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1791"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1734"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1794"/>
         <source>Georeferencing layer…</source>
         <translation>Laag voorzien van geo-verwijzingen…</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1731"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1791"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1734"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1794"/>
         <source>Abort</source>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1763"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2467"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2470"/>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
         <translation>Fout bij de berekening van de GCP-transformatie: Transformatie is niet oplosbaar.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
         <source>Could not read source image.</source>
         <translation>Kon bronafbeelding niet lezen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
         <source>Error creating GDAL transformation.</source>
         <translation>Fout bij maken transformatie GDAL</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
         <source>Could not create destination file.</source>
         <translation>Kon geen bestemmingsbestand maken.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1778"/>
         <source>Error occurred while warping image.</source>
         <translation>Er trad een fout op bij het warpen van de afbeelding.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1841"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1844"/>
         <source>The layer was successfully georeferenced.</source>
         <translation>De laag werd met succes van geoverwijzingen voorzien.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1873"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1876"/>
         <source>Save World File</source>
         <translation>World file opslaan</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1873"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1876"/>
         <source>Could not write to %1.</source>
         <translation>Kon niet schrijven naar %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2001"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2014"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2111"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2192"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2004"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2017"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2114"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2195"/>
         <source>map units</source>
         <translation>kaarteenheden</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2005"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2115"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2008"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2118"/>
         <source>pixels</source>
         <translation>pixels</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2122"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2125"/>
         <source>Transformation parameters</source>
         <translation>Transformatie instellingen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2126"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2129"/>
         <source>Transformation parameter</source>
         <translation>Parameter Transformatie</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2148"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2151"/>
         <source>Translation x</source>
         <translation>Translatie x</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2149"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2152"/>
         <source>Translation y</source>
         <translation>Translatie y</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2150"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2153"/>
         <source>Scale x</source>
         <translation>Schaal x</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2151"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2154"/>
         <source>Scale y</source>
         <translation>Schaal y</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2152"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2155"/>
         <source>Rotation [degrees]</source>
         <translation>Rotatie [graden]</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2154"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2157"/>
         <source>Mean error [%1]</source>
         <translation>Gemiddelde fout [%1]</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2179"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2182"/>
         <source>Residuals</source>
         <translation>Residuen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2199"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2202"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2200"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2203"/>
         <source>Enabled</source>
         <translation>Ingeschakeld</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2201"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2204"/>
         <source>Pixel X</source>
         <translation>Pixel X</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2202"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2205"/>
         <source>Pixel Y</source>
         <translation>Pixel Y</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2203"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2206"/>
         <source>Map X</source>
         <translation>Kaart X</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2204"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2207"/>
         <source>Map Y</source>
         <translation>Kaart Y</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2205"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2208"/>
         <source>Res X (%1)</source>
         <translation>Res X (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2206"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2209"/>
         <source>Res Y (%1)</source>
         <translation>Res Y (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2207"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2210"/>
         <source>Res Total (%1)</source>
         <translation>Res Totaal (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2222"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2225"/>
         <source>yes</source>
         <translation>ja</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2226"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2229"/>
         <source>no</source>
         <translation>nee</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2277"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2280"/>
         <source>Translation (%1, %2)</source>
         <translation>Translatie (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2279"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2282"/>
         <source>Scale (%1, %2)</source>
         <translation>Schaal (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2281"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2284"/>
         <source>Rotation: %1</source>
         <translation>Rotatie: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2288"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2291"/>
         <source>Mean error: %1</source>
         <translation>Gemiddelde fout: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2299"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2302"/>
         <source>Copy to Clipboard</source>
         <translation>Kopiëren naar klembord</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2305"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2308"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2312"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2315"/>
         <source>GDAL Script</source>
         <translation>GDAL-script</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2443"/>
         <source>No Layer Loaded</source>
         <translation>Geen laag geladen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2443"/>
         <source>Please load layer to be georeferenced.</source>
         <translation>Laad laag voor de geoverwijzingen</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2453"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2456"/>
         <source>Please set output file name.</source>
         <translation>Geef naam voor uitvoerbestand op.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2446"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2449"/>
         <source>Please set transformation type.</source>
         <translation>Kies type transformatie.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2460"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2463"/>
         <source>Not Enough GCPs</source>
         <translation>Niet voldoende GCP&apos;s</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2460"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2463"/>
         <source>%1 transformation requires at least %n GCPs. Please define more.</source>
         <translation><numerusform>%1 transformatie heeft minstens %n GCP nodig. Definieer er meer.</numerusform><numerusform>%1 transformatie heeft minstens %n GCP&apos;s nodig. Definieer er meer.</numerusform></translation>
     </message>
@@ -103502,82 +103648,82 @@ grijs = geen data
         <translation>Object maken</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="366"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="364"/>
         <source>Create Point Feature at Location</source>
         <translation>Objetc punt op locatie maken</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="367"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="365"/>
         <source>Create a new point feature at the current GPS location</source>
         <translation>Maak een nieuw object punt op de huidige GPS-locatie</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="372"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="370"/>
         <source>Create Line Feature from Track</source>
         <translation>Lijn-object uit track maken</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="373"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="371"/>
         <source>Create a new line feature using the current GPS track</source>
         <translation>Maak een nieuw lijn-object met het huidige GPS-track</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="378"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="376"/>
         <source>Create Polygon Feature from Track</source>
         <translation>Object polygoon uit track maken</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="379"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="377"/>
         <source>Create a new polygon feature using the current GPS track</source>
         <translation>Maak een nieuw object polygoon met het huidige GPS-track</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="406"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="400"/>
         <source>Follow Active Layer</source>
         <translation>Actieve laag volgen</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="407"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="401"/>
         <source>Always add GPS digitized features to the active layer</source>
         <translation>Voeg altijd GPS-gedigitaliseerde objecten toe aan de actieve laag</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="454"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="448"/>
         <source>Current GPS Information</source>
         <translation>Huidige GPS-informatie</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="461"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="455"/>
         <source>Show Location</source>
         <translation>Locatie weergeven</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="462"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="456"/>
         <source>Show Altitude (Geoid)</source>
         <translation>Hoogte weergeven (geoid)</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="463"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="457"/>
         <source>Show Altitude (WGS-84 Ellipsoid)</source>
         <translation>Hoogte weergeven (ellipsoïde WGS 84)</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="464"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="458"/>
         <source>Show Ground Speed</source>
         <translation>Grondsnelheid weergeven</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="465"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="459"/>
         <source>Show Bearing</source>
         <translation>Richting weergeven</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="466"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="460"/>
         <source>Show Total Track Length</source>
         <translation>Totale lengte track weergeven</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="467"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="461"/>
         <source>Show Distance from Start of Track</source>
         <translation>Afstand vanaf begin van track weergeven</translation>
     </message>
@@ -104238,12 +104384,12 @@ Press cancel to abort breaks calculation or OK to continue.</source>
 <context>
     <name>QgsGrassImportItem</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1183"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1182"/>
         <source>Cancel</source>
         <translation>Annuleren</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1216"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1215"/>
         <source>canceling</source>
         <translation>annuleren</translation>
     </message>
@@ -104769,29 +104915,29 @@ op regel %2 kolom %3</translation>
         <translation>Kan geen regio als standaard locatie verkrijgen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="898"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="897"/>
         <source>Cannot delete %1</source>
         <translation>Kan niet verwijderen %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="924"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="923"/>
         <source>Import to GRASS mapset</source>
         <translation>Naar GRASS-mapset importeren</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="924"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="923"/>
         <source>Failed to import some layers!
 
 </source>
         <translation>Import van sommige lagen mislukt!</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="935"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="934"/>
         <source>Import to GRASS mapset failed</source>
         <translation>Naar GRASS-mapset importeren mislukt</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="936"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="935"/>
         <source>Failed to import %1 to %2: %3</source>
         <translation>Importeren %1 naar %2: %3 mislukt</translation>
     </message>
@@ -105815,17 +105961,17 @@ op regel %2 kolom %3</translation>
 <context>
     <name>QgsGrassRasterImport</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="291"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="290"/>
         <source>Data type %1 not supported</source>
         <translation>Gegevenstype %1 niet ondersteund</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="324"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="323"/>
         <source>Writing band %1/%2</source>
         <translation>Schrijven van band %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="363"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="362"/>
         <source>Cannot convert block (%1) to data type %2</source>
         <translation>Kan blok (%1) niet converteren naar gegevenstype %2</translation>
     </message>
@@ -106162,7 +106308,7 @@ op regel %2 kolom %3</translation>
 <context>
     <name>QgsGrassVectorImport</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="617"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="616"/>
         <source>Writing features</source>
         <translation>Objecten schrijven</translation>
     </message>
@@ -107393,17 +107539,17 @@ b) Gebruik de tab Configuration om uw inloggegevens in te voeren in een methode 
         <translation>Tabellen scannen op %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="457"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="458"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="476"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="480"/>
         <source>Failed to retrieve tables for %1</source>
         <translation>Ophalen van tabellen voor %1 mislukt</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="478"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="482"/>
         <source>Connect</source>
         <translation>Verbinden</translation>
     </message>
@@ -107981,12 +108127,12 @@ Standaard zal het algoritme waarschuwen bij fouten. Optioneel kan het algoritme 
         <translation>Verzoek met succes afgesloten met code %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="178"/>
         <source>Result data written to %1</source>
         <translation>Resultaatgegevens geschreven naar %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="183"/>
         <source>Request failed with code %1</source>
         <translation>Verzoek gefaald met code %1</translation>
     </message>
@@ -110559,16 +110705,16 @@ CTRL + klik om link te openen</translation>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="199"/>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="227"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="257"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="277"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="258"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="278"/>
         <source>Symbology</source>
         <translation>Symbologie</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="203"/>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="236"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="261"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="281"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="262"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="282"/>
         <source>Labels</source>
         <translation>Labels</translation>
     </message>
@@ -110579,7 +110725,7 @@ CTRL + klik om link te openen</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="213"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="267"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="268"/>
         <source>3D View</source>
         <translation>3D-weergave</translation>
     </message>
@@ -110594,22 +110740,22 @@ CTRL + klik om link te openen</translation>
         <translation>Transparantie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="244"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="245"/>
         <source>Histogram</source>
         <translation>Histogram</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="248"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="249"/>
         <source>Raster Attribute Tables</source>
         <translation>Raster attributentabellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="307"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="308"/>
         <source>History</source>
         <translation>Geschiedenis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="714"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="716"/>
         <source>There are no raster attribute tables associated with this data source.&lt;br&gt;If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree or in the layer properties dialog.</source>
         <translation>Er zijn geen raster-attributentabellen geassocieerd met deze databron.&lt;br&gt;Als de huidige symbologie kan worden geconverteerd naar een attributentabel, kunt u een nieuwe attributentabel maken met het beschikbare contextmenu in de boom met lagen of in het dialoogvenster voor de Eigenschappen van de laag.</translation>
     </message>
@@ -110742,7 +110888,7 @@ CTRL + klik om link te openen</translation>
         <translation>&lt;b&gt;Aantal objecten is een schatting&lt;/b&gt; : de telling van het aantal objecten wordt bepaald door de statistieken van de database </translation>
     </message>
     <message>
-        <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="1220"/>
+        <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="1216"/>
         <source>New layers added from another QGIS instance</source>
         <translation>Nieuwe lagen toegevoegd uit een andere instantie van QGIS.</translation>
     </message>
@@ -110910,17 +111056,17 @@ CTRL + klik om link te openen</translation>
 <context>
     <name>QgsLayerTreeViewLowAccuracyIndicatorProvider</name>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="72"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="78"/>
         <source>Based on %1, which has a limited accuracy of &lt;b&gt;at best %2 meters&lt;/b&gt;.</source>
         <translation>Gebaseerd op %1, wat een beperkte nauwkeurigheid heeft van &lt;b&gt;ten hoogste %2 meter&lt;/b&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="76"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="82"/>
         <source>Based on %1, which has a limited accuracy.</source>
         <translation>Gebaseerd op %1, wat een beperkte nauwkeurigheid heeft.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="87"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="61"/>
         <source>%1 is a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy.</source>
         <translation>%1 is een dynamisch CRS, maar er is geen datum voor coördinaten ingesteld. Coördinaten zijn niet uniek en van beperkte nauwkeurigheid.</translation>
     </message>
@@ -111046,12 +111192,12 @@ CTRL + klik om link te openen</translation>
         <translation>Laden %1</translation>
     </message>
     <message>
-        <location filename="../src/core/layout/qgslayout.cpp" line="1174"/>
+        <location filename="../src/core/layout/qgslayout.cpp" line="1176"/>
         <source>Finalize restore</source>
         <translation>Herstellen voltooien</translation>
     </message>
     <message>
-        <location filename="../src/core/layout/qgslayout.cpp" line="1207"/>
+        <location filename="../src/core/layout/qgslayout.cpp" line="1209"/>
         <source>Update model</source>
         <translation>Model bijwerken</translation>
     </message>
@@ -115969,7 +116115,7 @@ Fout bij evaluatie: %1</translation>
 <context>
     <name>QgsLayoutLegendMapFilteringModel</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="2074"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="2077"/>
         <source>Change Legend Linked Maps</source>
         <translation>Aan legenda gekoppelde kaarten wijzigen</translation>
     </message>
@@ -115977,7 +116123,7 @@ Fout bij evaluatie: %1</translation>
 <context>
     <name>QgsLayoutLegendMapFilteringWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1959"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1962"/>
         <source>Legend Filtering</source>
         <translation>Legenda filteren</translation>
     </message>
@@ -116003,53 +116149,53 @@ Fout bij evaluatie: %1</translation>
 <context>
     <name>QgsLayoutLegendNodeWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1549"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1552"/>
         <source>Legend Item Properties</source>
         <translation>Eigenschappen items legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1554"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1557"/>
         <source>Follow Legend Default</source>
         <translation>Standaard legenda volgen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1555"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1558"/>
         <source>Allow Splitting Over Columns</source>
         <translation>Splitsen over kolommen toestaan</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1556"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1559"/>
         <source>Prevent Splitting Over Columns</source>
         <translation>Niet splitsen over kolommen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1580"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1581"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1583"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1584"/>
         <source>Default</source>
         <translation>Standaard</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1743"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1772"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1832"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1858"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1902"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1746"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1775"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1835"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1861"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1905"/>
         <source>Edit Legend Item</source>
         <translation>Item legenda bewerken</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1817"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1820"/>
         <source>Insert Expression</source>
         <translation>Expressie toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1823"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1826"/>
         <source>Insert expression</source>
         <translation>Voer expressie in</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1915"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1938"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1918"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1941"/>
         <source>Edit Legend Columns</source>
         <translation>Kolommen legenda bewerken</translation>
     </message>
@@ -116115,274 +116261,274 @@ Fout bij evaluatie: %1</translation>
 <context>
     <name>QgsLayoutLegendWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="157"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="160"/>
         <source>Legend Properties</source>
         <translation>Legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="171"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="174"/>
         <source>Symbols on Left</source>
         <translation>Symbolen links</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="172"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="175"/>
         <source>Symbols on Right</source>
         <translation>Symbolen rechts</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="181"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="184"/>
         <source>Disabled</source>
         <translation>Uitgeschakeld</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="206"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="209"/>
         <source>Select Stroke Color</source>
         <translation>Lijnkleur selecteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="349"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="352"/>
         <source>Change Legend Wrap</source>
         <translation>Doorloop legenda wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="361"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="364"/>
         <source>Change Legend Title</source>
         <translation>Titel legenda wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="374"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="377"/>
         <source>Change Title Alignment</source>
         <translation>Uitlijning titel wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="385"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="388"/>
         <source>Change Group Alignment</source>
         <translation>Uitlijning groep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="396"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="399"/>
         <source>Change Subgroup Alignment</source>
         <translation>Uitlijning subgroep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="407"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="410"/>
         <source>Change Item Alignment</source>
         <translation>Uitlijning item wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="419"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="422"/>
         <source>Change Legend Arrangement</source>
         <translation>Schikking legenda wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="430"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="433"/>
         <source>Change Column Count</source>
         <translation>Tellen aantal kolommen wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="444"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="447"/>
         <source>Split Legend Layers</source>
         <translation>Lagen legenda splitsen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="456"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="459"/>
         <source>Legend Column Width</source>
         <translation>Kolombreedte legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="468"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="471"/>
         <source>Resize Symbol Width</source>
         <translation>Breedte symbool wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="480"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="483"/>
         <source>Change Legend Maximum Symbol Size</source>
         <translation>Wijzig maximale symboolgrootte van legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="492"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="495"/>
         <source>Change Legend Minimum Symbol Size</source>
         <translation>Wijzig minimale symboolgrootte van legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="504"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="507"/>
         <source>Resize Symbol Height</source>
         <translation>Hoogte symbool wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="516"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="519"/>
         <source>Resize WMS Width</source>
         <translation>Breedte WMS wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="528"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="531"/>
         <source>Resize WMS Height</source>
         <translation>Hoogte WMS wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="540"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="543"/>
         <source>Change Title Space</source>
         <translation>Tussenruimte titel wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="552"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="588"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="555"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="591"/>
         <source>Change Group Space</source>
         <translation>Tussenruimte groep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="564"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="567"/>
         <source>Change Group Indent</source>
         <translation>Inspringen groep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="576"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="579"/>
         <source>Change Subgroup Indent</source>
         <translation>Inspringen subgroep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="600"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="603"/>
         <source>Change Side of Group Space</source>
         <translation>Zijde van tussenruimte groep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="612"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="615"/>
         <source>Change Side of Subgroup Space</source>
         <translation>Zijde van tussenruimte subgroep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="624"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="627"/>
         <source>Change Side of Symbol Space</source>
         <translation>Zijde van tussenruimte symbool wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="636"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="722"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="639"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="725"/>
         <source>Change Subgroup Space</source>
         <translation>Tussenruimte subgroep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="648"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="651"/>
         <source>Change Symbol Space</source>
         <translation>Tussenruimte symbool wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="662"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="665"/>
         <source>Change Label Space</source>
         <translation>Tussenruimte label wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="674"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="677"/>
         <source>Change Title Font</source>
         <translation>Lettertype titel wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="686"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="689"/>
         <source>Change Group Font</source>
         <translation>Lettertype groep wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="698"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="701"/>
         <source>Change Layer Font</source>
         <translation>Lettertype laag wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="710"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="713"/>
         <source>Change Item Font</source>
         <translation>Lettertype item wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="758"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="761"/>
         <source>Change Legend Wrapping</source>
         <translation>Doorloop legenda wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="734"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="737"/>
         <source>Change Box Space</source>
         <translation>Ruimte vak wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="746"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="749"/>
         <source>Change Column Space</source>
         <translation>Tussenruimte kolom wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="784"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="787"/>
         <source>Moved Legend Item Down</source>
         <translation>Item legenda naar beneden verplaatst</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="828"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="831"/>
         <source>Move Legend Item Up</source>
         <translation>Item legenda naar boven verplaatst</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="868"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="871"/>
         <source>Change Auto Update</source>
         <translation>Automatisch bijwerken wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="911"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="914"/>
         <source>Change Legend Map</source>
         <translation>Kaart legenda wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="927"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="930"/>
         <source>Resize Legend to Contents</source>
         <translation>Legenda aanpassen naar inhoud</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="942"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="945"/>
         <source>Change Legend Borders</source>
         <translation>Randen legenda wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="956"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="959"/>
         <source>Resize Legend Borders</source>
         <translation>Randen legenda aanpassen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="970"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="973"/>
         <source>Change Legend Border Color</source>
         <translation>Randkleur legenda wijzigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1001"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1004"/>
         <source>Add Legend Item(s)</source>
         <translation>Legenda-items toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1026"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1029"/>
         <source>Remove Legend Item</source>
         <translation>Legenda-item verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1113"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1143"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1159"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1186"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1250"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1288"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1116"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1146"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1162"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1189"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1253"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1291"/>
         <source>Update Legend</source>
         <translation>Legenda vernieuwen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1265"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1268"/>
         <source>Add Legend Group</source>
         <translation>Groep aan legenda toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1266"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1269"/>
         <source>Group</source>
         <translation>Groep</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1300"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1303"/>
         <source>Only show items inside current %1 feature</source>
         <translation>Alleen items tonen die binnen het huidige object %1 liggen</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1301"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1304"/>
         <source>Filter out legend elements that lie outside the current %1 feature.</source>
         <translation>Elementen van legenda die buiten het huidige object %1 liggen wegfilteren.</translation>
     </message>
@@ -123691,19 +123837,19 @@ Rasteriseren van de kaart wordt aanbevolen voor juist renderen.</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="323"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2310"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2311"/>
         <source>Refine Current Face</source>
         <translation>Huidige zijde verfijnen</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="325"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2285"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2286"/>
         <source>Remove Current Face</source>
         <translation>Huidige zijde verwijderen</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="326"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2303"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2304"/>
         <source>Split Current Face</source>
         <translation>Huidige zijde splitsen</translation>
     </message>
@@ -123745,77 +123891,77 @@ Rasteriseren van de kaart wordt aanbevolen voor juist renderen.</translation>
         <translation>Mazen opnieuw indexeren</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2271"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2272"/>
         <source>Remove Selected Vertex and Fill Hole</source>
         <translation>Geselecteerde punt verwijderen en gat vullen</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2272"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2273"/>
         <source>Remove Selected Vertex without Filling Hole</source>
         <translation>Geselecteerde punt verwijderen zonder gat te vullen</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2276"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2277"/>
         <source>Remove Selected Vertices and Fill Hole(s)</source>
         <translation>Geselecteerde punten verwijderen en gat(en) vullen</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2277"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2278"/>
         <source>Remove Selected Vertices without Filling Hole(s)</source>
         <translation>Geselecteerde punten verwijderen zonder gat(en) te vullen</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2281"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2282"/>
         <source>Remove Selected Face</source>
         <translation>Geselecteerde zijde verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2306"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2307"/>
         <source>Refine Selected Face</source>
         <translation>Geselecteerde zijde verfijnen</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2774"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2775"/>
         <source>Terrain Z Value</source>
         <translation>Terrein waarde Z</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2775"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2776"/>
         <source>Z Value from project terrain could not be obtained, setting default value %1.</source>
         <translation>Waarde Z uit het projectterrein kon niet worden verkregen, stelt standaard waarde %1 in.</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2961"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2962"/>
         <source>Selected mesh vertex ID: %1 at x: %2 y: %3 z: %4.</source>
         <translation>Geselecteerde mazen punt-ID: %1 op X: %2 Y: %3 Z: %4.</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2998"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2999"/>
         <source>Selected mesh vertices IDs: %1 and %2 with distance %3 and dZ %4.</source>
         <translation>Geselecteerde mazen punt-ID&apos;s: %1 en %2 met afstand %3 en dZ %4.</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="3002"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="3003"/>
         <source>Selected %1 mesh vertices.</source>
         <translation>Geselecteerde %1 punten van mazen.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2283"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2284"/>
         <source>Remove %n Selected Face(s)</source>
         <translation><numerusform>%n geselecteerde zijde verwijderen</numerusform><numerusform>%n geselecteerde zijden verwijderen</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2308"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2309"/>
         <source>Refine %n Selected Face(s)</source>
         <translation><numerusform>%n geselecteerde zijde verfijnen</numerusform><numerusform>%n geselecteerde zijden verfijnen</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2299"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2300"/>
         <source>Split Selected Face</source>
         <translation>Geselecteerde zijde splitsen</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2301"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2302"/>
         <source>Split %n Selected Face(s)</source>
         <translation><numerusform>%n geselecteerde zijde splitsen</numerusform><numerusform>%n geselecteerde zijden splitsen</numerusform></translation>
     </message>
@@ -123825,7 +123971,7 @@ Rasteriseren van de kaart wordt aanbevolen voor juist renderen.</translation>
         <translation>Wilt u de zijden en punten van de laag met mazen %1 opnieuw indexeren?</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2689"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2690"/>
         <source>Vertex Z value:</source>
         <translation>Waarde punt Z:</translation>
     </message>
@@ -124394,8 +124540,8 @@ Rasteriseren van de kaart wordt aanbevolen voor juist renderen.</translation>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="344"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="372"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="376"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="587"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="594"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
         <source>Move Label</source>
         <translation>Label verplaatsen</translation>
     </message>
@@ -124413,8 +124559,8 @@ Rasteriseren van de kaart wordt aanbevolen voor juist renderen.</translation>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="203"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="207"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="591"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="598"/>
         <source>Move Callout</source>
         <translation>Tekstballon verplaatsen</translation>
     </message>
@@ -124469,103 +124615,103 @@ Rasteriseren van de kaart wordt aanbevolen voor juist renderen.</translation>
         <translation>Kan “%1” niet verplaatsen — de laag “%2” kon niet bewerkbaar worden gemaakt</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="484"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="486"/>
         <source>Moved curved label offset</source>
         <translation>Verplaatste verschuiving gebogen label</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="496"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="498"/>
         <source>Move label anchor percent</source>
         <translation>Label-anker percentage verplaatsen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="545"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="547"/>
         <source>Moved label</source>
         <translation>Label verplaatst</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="547"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="549"/>
         <source>Moved callout</source>
         <translation>Tekstballon verplaatst</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="496"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="587"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="498"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
         <source>Layer “%1” must be editable in order to move labels from it</source>
         <translation>Laag “%1” moet bewerkbaar zijn om er labels vanaf te kunnen verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="591"/>
         <source>Layer “%1” must be editable in order to move callouts from it</source>
         <translation>Laag “%1” moet bewerkbaar zijn om er tekstballonnen vanaf te kunnen verplaatsen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="594"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
         <source>Error encountered while storing new label position</source>
         <translation>Fout opgetreden bij opslaan van nieuwe positie label</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="598"/>
         <source>Error encountered while storing new callout position</source>
         <translation>Fout opgetreden bij opslaan van nieuwe positie tekstballon</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="718"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="720"/>
         <source>Delete Label Anchor Percent &apos;%1&apos;</source>
         <translation>Label-anker percentage &apos;%1&apos; verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="747"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="751"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="749"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="753"/>
         <source>Delete Label Anchor Percent</source>
         <translation>Label-anker percentage verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="747"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="749"/>
         <source>Layer “%1” must be editable in order to remove stored label anchor percent</source>
         <translation>Laag “%1” moet bewerkbaar zijn om er opgeslagen percentages van label-ankers van te kunnen verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="751"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="753"/>
         <source>Error encountered while removing stored label anchor percent</source>
         <translation>Fout opgetreden bij verwijderen van opgeslagen label-anker percentage</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="757"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="767"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="774"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="759"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
         <source>Delete Label Position</source>
         <translation>Positie van label verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="757"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="759"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="771"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="778"/>
         <source>Delete Callout Position</source>
         <translation>Positie van tekstballon verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="767"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
         <source>Layer “%1” must be editable in order to remove stored label positions</source>
         <translation>Laag “%1” moet bewerkbaar zijn om er opgeslagen posities van labels van te kunnen verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="771"/>
         <source>Layer “%1” must be editable in order to remove stored callout positions</source>
         <translation>Laag “%1” moet bewerkbaar zijn om er opgeslagen posities van tekstballonnen van te kunnen verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="774"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
         <source>Error encountered while removing stored label position</source>
         <translation>Fout opgetreden bij verwijderen van opgeslagen positie label</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="778"/>
         <source>Error encountered while removing stored callout position</source>
         <translation>Fout opgetreden bij verwijderen van opgeslagen positie tekstballon</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="904"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="908"/>
         <source>Callout angle: %1°</source>
         <translation>Hoek tekstballon: %1°</translation>
     </message>
@@ -125490,7 +125636,7 @@ Berekening voor ellipsoïde voor project is niet geselecteerd.
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="535"/>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="606"/>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="858"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="867"/>
         <source>Measure</source>
         <translation>Meten</translation>
     </message>
@@ -125515,7 +125661,7 @@ Berekening voor ellipsoïde voor project is niet geselecteerd.
         <translation>Afstand wordt berekend in %1, gebaseerd op project-CRS (%2).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="858"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="867"/>
         <source>Measurements copied to clipboard</source>
         <translation>Metingen gekopieerd naar klembord</translation>
     </message>
@@ -125558,8 +125704,8 @@ Berekening voor ellipsoïde voor project is niet geselecteerd.
         <translation>Segmenten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="778"/>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="799"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="787"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="808"/>
         <source>map units</source>
         <translation>kaarteenheden</translation>
     </message>
@@ -129764,12 +129910,12 @@ Bekijk het log voor meer informatie.</translation>
         <translation>Koppeling bewerken</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="155"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="153"/>
         <source>Sockets cannot be connected</source>
         <translation>Aansluitingen kunnen niet worden verbonden</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="156"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="154"/>
         <source>Either the sockets are incompatible or there is a circular dependency</source>
         <translation>Ofwel de aansluitingen zijn niet compatibel of er is een cirkelverwijzing</translation>
     </message>
@@ -132389,12 +132535,12 @@ Foutbericht: %1</translation>
 <context>
     <name>QgsNewsFeedParser</name>
     <message>
-        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="165"/>
+        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="172"/>
         <source>Fetching News Feed</source>
         <translation>Nieuwsfeed ophalen</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="177"/>
+        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="184"/>
         <source>News feed request failed [error: %1]</source>
         <translation>Verzoek voor nieuwsfeed mislukt [fout: %1]</translation>
     </message>
@@ -132982,31 +133128,31 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     <name>QgsOapifProvider</name>
     <message>
         <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="70"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="229"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="285"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="528"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="550"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="236"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="292"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="535"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="557"/>
         <source>OAPIF</source>
         <translation>OAPIF</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="229"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="285"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="236"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="292"/>
         <source>Cannot compute layer extent: %1</source>
         <translation>Kan bereik kaartlaag niet berekenen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="568"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="575"/>
         <source>OGC API - Features filter</source>
         <translation>OGC API - Features filter</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="627"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="634"/>
         <source>Feature creation failed: %1</source>
         <translation>Maken van object mislukt: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="844"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="851"/>
         <source>Feature deletion failed: %1</source>
         <translation>Verwijderen van object mislukt: %1</translation>
     </message>
@@ -133078,8 +133224,8 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
 <context>
     <name>QgsOapifSharedData</name>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="871"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="1228"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="878"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="1235"/>
         <source>OAPIF</source>
         <translation>OAPIF</translation>
     </message>
@@ -133115,107 +133261,107 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
         <translation>SpatiaLite-database kon niet worden geopend</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="390"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="395"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
         <translation>Probleem hij het initialiseren van SpatialMetadata:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="431"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="436"/>
         <source>Creation of database failed. GeoPackage driver not found.</source>
         <translation>Maken van database mislukt. Stuurprogramma voor GeoPackage niet gevonden.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="438"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="443"/>
         <source>Creation of database failed (OGR error: %1)</source>
         <translation>Maken van database mislukt (OGR fout: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="454"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="459"/>
         <source>Could not create a new database
 </source>
         <translation>Kon geen nieuwe database maken
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="463"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="468"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
         <translation>Probleem bij het activeren van de FOREIGN_KEY beperkingen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="559"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="564"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a string of comma-separated values.</source>
         <translation>Veld &apos;%1&apos; van laag %2 is geconverteerd van een lijst naar een tekenreeks met kommagescheiden waarden.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="600"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="605"/>
         <source>Layer %1 has unsupported geometry type %2.</source>
         <translation>Laag %1 heeft een niet ondersteund type geometrie %2.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="620"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="625"/>
         <source>Layer %1 has unsupported Coordinate Reference System (%2).</source>
         <translation>Laag %1 heeft een niet ondersteund CoördinatenReferentieSysteem (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="641"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="646"/>
         <source>Filling SpatiaLite for layer %1 failed</source>
         <translation>SpatiaLite vullen voor laag %1 mislukt</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="655"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="660"/>
         <source>No Spatialite support available</source>
         <translation>Geen ondersteuning voor SpatiaLite beschikbaar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="666"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="671"/>
         <source>%1 (offline)</source>
         <translation>%1 (offline)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="680"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="685"/>
         <source>Cannot make FID-name for GPKG </source>
         <translation>Kan geen FID-naam maken voor GPKG </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="701"/>
-        <location filename="../src/core/qgsofflineediting.cpp" line="759"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="706"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="764"/>
         <source>Creation of layer failed (OGR error: %1)</source>
         <translation>Maken van laag mislukt (OGR fout: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="733"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="738"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a JSON-formatted string value.</source>
         <translation>Veld &apos;%1&apos; van laag %2 is geconverteerd van een lijst naar een JSON-opgemaakte waarde voor een tekenreeks.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="747"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="752"/>
         <source>Creation of field %1 failed (OGR error: %2)</source>
         <translation>Maken van veld %1 mislukt (OGR-fout: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="852"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="857"/>
         <source>Feature cannot be copied to the offline layer, please check if the online layer &apos;%1&apos; is still accessible.</source>
         <translation>Object kan niet gekopieerd worden naar de offline laag, controleer of de online laag &apos;%1&apos; nog bereikbaar is.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1168"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1173"/>
         <source>Offline Editing Plugin</source>
         <translation>Plug-in Offline bewerken </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1182"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1187"/>
         <source>Could not open the SpatiaLite logging database</source>
         <translation>Kon de SpatiaLite database voor loggen niet openen </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1508"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1513"/>
         <source>Could not deduce table name from data source %1.</source>
         <translation>Kon tabelnaam niet achterhalen uit gegevensbron %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="563"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="568"/>
         <source>%1: Unknown data type %2. Not using type affinity for the field.</source>
         <translation>%1: Onbekend gegevenstype %2. Gebruikt geen affiniteit voor types voor dit veld.</translation>
     </message>
@@ -134824,13 +134970,13 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="105"/>
-        <location filename="../src/app/qgisapp.cpp" line="12460"/>
+        <location filename="../src/app/qgisapp.cpp" line="12463"/>
         <source>General</source>
         <translation>Algemeen</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
-        <location filename="../src/app/qgisapp.cpp" line="12461"/>
+        <location filename="../src/app/qgisapp.cpp" line="12464"/>
         <source>System</source>
         <translation>Systeem</translation>
     </message>
@@ -134841,7 +134987,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="112"/>
-        <location filename="../src/app/qgisapp.cpp" line="12462"/>
+        <location filename="../src/app/qgisapp.cpp" line="12465"/>
         <source>CRS Handling</source>
         <translation>Afhandelen CRS</translation>
     </message>
@@ -134857,13 +135003,13 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
-        <location filename="../src/app/qgisapp.cpp" line="12463"/>
+        <location filename="../src/app/qgisapp.cpp" line="12466"/>
         <source>Coordinate Transforms</source>
         <translation>Coördinaten transformeren</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="116"/>
-        <location filename="../src/app/qgisapp.cpp" line="12464"/>
+        <location filename="../src/app/qgisapp.cpp" line="12467"/>
         <source>Data Sources</source>
         <translation>Databronnen</translation>
     </message>
@@ -134884,31 +135030,31 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="126"/>
-        <location filename="../src/app/qgisapp.cpp" line="12469"/>
+        <location filename="../src/app/qgisapp.cpp" line="12472"/>
         <source>Colors</source>
         <translation>Kleuren</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="120"/>
-        <location filename="../src/app/qgisapp.cpp" line="12466"/>
+        <location filename="../src/app/qgisapp.cpp" line="12469"/>
         <source>Canvas &amp; Legend</source>
         <translation>Kaartvenster &amp; Legenda</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="122"/>
-        <location filename="../src/app/qgisapp.cpp" line="12467"/>
+        <location filename="../src/app/qgisapp.cpp" line="12470"/>
         <source>Map Tools</source>
         <translation>Kaartgereedschap</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="124"/>
-        <location filename="../src/app/qgisapp.cpp" line="12468"/>
+        <location filename="../src/app/qgisapp.cpp" line="12471"/>
         <source>Digitizing</source>
         <translation>Digitaliseren</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="118"/>
-        <location filename="../src/app/qgisapp.cpp" line="12465"/>
+        <location filename="../src/app/qgisapp.cpp" line="12468"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
@@ -134919,7 +135065,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
-        <location filename="../src/app/qgisapp.cpp" line="12473"/>
+        <location filename="../src/app/qgisapp.cpp" line="12476"/>
         <source>Network</source>
         <translation>Netwerk</translation>
     </message>
@@ -135066,19 +135212,19 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
-        <location filename="../src/app/qgisapp.cpp" line="12472"/>
+        <location filename="../src/app/qgisapp.cpp" line="12475"/>
         <source>Authentication</source>
         <translation>Authenticatie</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
-        <location filename="../src/app/qgisapp.cpp" line="12471"/>
+        <location filename="../src/app/qgisapp.cpp" line="12474"/>
         <source>Variables</source>
         <translation>Variabelen</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsadvancedoptions.cpp" line="100"/>
-        <location filename="../src/app/qgisapp.cpp" line="12476"/>
+        <location filename="../src/app/qgisapp.cpp" line="12479"/>
         <source>Advanced</source>
         <translation>Geavanceerd</translation>
     </message>
@@ -135134,13 +135280,13 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
-        <location filename="../src/app/qgisapp.cpp" line="12470"/>
+        <location filename="../src/app/qgisapp.cpp" line="12473"/>
         <source>Layouts</source>
         <translation>Lay-outs</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
-        <location filename="../src/app/qgisapp.cpp" line="12474"/>
+        <location filename="../src/app/qgisapp.cpp" line="12477"/>
         <source>Locator</source>
         <translation>Lokaliseren</translation>
     </message>
@@ -135156,7 +135302,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
-        <location filename="../src/app/qgisapp.cpp" line="12475"/>
+        <location filename="../src/app/qgisapp.cpp" line="12478"/>
         <source>Acceleration</source>
         <translation>Acceleratie</translation>
     </message>
@@ -138723,98 +138869,98 @@ b) Gebruik de tab Configuration om uw inloggegevens in te voeren in een methode 
 <context>
     <name>QgsPictureSourceLineEditBase</name>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="288"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="294"/>
         <source>SVG files</source>
         <translation>SVG-bestanden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="297"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="303"/>
         <source>Images</source>
         <translation>Afbeeldingen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="297"/>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="308"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="303"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="314"/>
         <source>All files</source>
         <translation>Alle bestanden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="308"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="314"/>
         <source>Animated Images</source>
         <translation>Geanimeerde afbeeldingen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="319"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="325"/>
         <source>Select SVG File</source>
         <translation>SVG-bestand selecteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="321"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="327"/>
         <source>Select Image File</source>
         <translation>Afbeeldingsbestand selecteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="323"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="329"/>
         <source>Select Animated Image File</source>
         <translation>Bestand voor geanimeerde afbeelding selecteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="333"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="339"/>
         <source>SVG From URL</source>
         <translation>SVG uit URL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="335"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="341"/>
         <source>Image From URL</source>
         <translation>Afbeelding uit URL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="337"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="343"/>
         <source>Animated Image From URL</source>
         <translation>Geanimeerde afbeelding van URL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="347"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="353"/>
         <source>Enter SVG URL</source>
         <translation>Voer URL voor SVG in</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="349"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="355"/>
         <source>Enter image URL</source>
         <translation>URL voor afbeelding invoeren</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="351"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="357"/>
         <source>Enter animated image URL</source>
         <translation>URL voor geanimeerde afbeelding invoeren</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="361"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="367"/>
         <source>Embed SVG File</source>
         <translation>SVG-bestand inbedden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="363"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="369"/>
         <source>Embed Image File</source>
         <translation>Afbeeldingsbestand inbedden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="365"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="371"/>
         <source>Embed Animated Image File</source>
         <translation>Bestand voor geanimeerde afbeelding inbedden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="375"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="381"/>
         <source>Extract SVG File</source>
         <translation>SVG-bestand uitnemen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="377"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="383"/>
         <source>Extract Image File</source>
         <translation>Afbeeldingsbestand uitnemen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="379"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="385"/>
         <source>Extract Animated Image File</source>
         <translation>Bestand voor geanimeerde afbeelding uitnemen</translation>
     </message>
@@ -140834,7 +140980,7 @@ Verhogen van deze waarde zou er voor kunnen zorgen dat ontbrekende gedeelten wor
 <context>
     <name>QgsPointCloudLayerExporterTask</name>
     <message>
-        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="654"/>
+        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="657"/>
         <source>Exporting point cloud</source>
         <translation>Puntenwolk exporteren</translation>
     </message>
@@ -142843,14 +142989,14 @@ Resultaat: %3 (%4)</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1721"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1726"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2152"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3807"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4770"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3814"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4809"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4832"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4849"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4862"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4901"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4784"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4816"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4839"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4856"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4869"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4908"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -142940,64 +143086,64 @@ SQL: %2</translation>
         <translation>Geen sleutelveld opgegeven voor weergave/query.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3568"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3575"/>
         <source>PostgreSQL WHERE clause</source>
         <translation>clausule PostgreSQL WHERE </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3693"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3700"/>
         <source>Unexpected number of tuples from estimated extent query %1: %2 (1 expected).</source>
         <translation>Onverwacht aantal tuples uit query voor geschat bereik %1: %2 (1 verwacht).</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3710"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3717"/>
         <source>Unexpected format from estimated extent query %1: %2.</source>
         <translation>Onverwachte indeling uit query voor geschat bereik %1: %2.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3742"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3749"/>
         <source>Unexpected number of tuples from compute extent query %1: %2 (1 expected).</source>
         <translation>Onverwacht aantal tuples uit berekende query voor geschat bereik %1: %2 (1 verwacht).</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3760"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3767"/>
         <source>Unexpected empty result from extent query %1.</source>
         <translation>Onverwacht leeg resultaat uit query voor bereik %1.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3807"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3814"/>
         <source>Unexpected result from extent query %1: %2</source>
         <translation>Onverwacht resultaat uit query voor bereik %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3833"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3840"/>
         <source>Could not extract layer extent</source>
         <translation>Kon bereik van de laag niet uitnemen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4770"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
         <source>Cannot find end of double quoted string: %1</source>
         <translation>Kan einde van tekenreeks met dubbele aanhalingstekens niet vinden: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4784"/>
         <source>Cannot find separator: %1</source>
         <translation>Kan scheidingsteken niet vinden: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4809"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4816"/>
         <source>Error parsing hstore: %1</source>
         <translation>Fout bij parsen hstore: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4832"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4849"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4839"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4856"/>
         <source>Error parsing array: %1</source>
         <translation>Fout bij parsen array: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4862"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4901"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4869"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4908"/>
         <source>Error parsing array, missing curly braces: %1</source>
         <translation>Fout bij parsen array, krullende haken ontbreken: %1</translation>
     </message>
@@ -143064,99 +143210,99 @@ Toegang voor schrijven zal niet worden toegestaan.</translation>
         <translation>Kan geen topologie vinden voor laag %1.%2.%3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2570"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2577"/>
         <source>PostGIS error while adding features: %1</source>
         <translation>PostGIS fout bij het toevoegen van objecten: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2650"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2657"/>
         <source>PostGIS error while deleting features: %1</source>
         <translation>PostGIS fout bij het verwijderen van objecten: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2709"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2716"/>
         <source>PostGIS error while truncating: %1</source>
         <translation>Fout in PostGIS bij afbreken: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2781"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2788"/>
         <source>PostGIS error while adding attributes: %1</source>
         <translation>PostGIS fout bij het toevoegen van objecten: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2837"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2844"/>
         <source>PostGIS error while deleting attributes: %1</source>
         <translation>PostGIS fout bij het verwijderen van attributen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2862"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2869"/>
         <source>Invalid attribute index: %1</source>
         <translation>Ongeldige index voor attributen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2868"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2875"/>
         <source>Error renaming field %1: name &apos;%2&apos; already exists</source>
         <translation>Fout bij hernoemen veld %1: naam &apos;%2&apos; bestaat al</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2897"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2904"/>
         <source>PostGIS error while renaming attributes: %1</source>
         <translation>Fout in PostGIS bij hernoemen van attributen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2961"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3330"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2968"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3337"/>
         <source>Changing the value of GENERATED field %1 is not allowed.</source>
         <translation>Wijzigen van de waarde van het GEGENEREERDE veld %1 is niet toegestaan.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3024"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3031"/>
         <source>No fields were updated on the database.</source>
         <translation>Er werden geen velden bijgewerkt in de database.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3054"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3453"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3061"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3460"/>
         <source>PostGIS error while changing attributes: %1</source>
         <translation>PostGIS fout bij het bewerken van objecten: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3257"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3264"/>
         <source>PostGIS error while changing geometry values: %1</source>
         <translation>PostGIS fout bij het bewerken van geometriewaarden: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3395"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3402"/>
         <source>No fields/geometries were updated on the database.</source>
         <translation>Er werden geen velden/geometrieën bijgewerkt in de database.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4191"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4198"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>Geometrietype en srid voor lege kolom %1 van %2 niet gedifinieerd.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4218"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4225"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>Objecttype of srid voor %1 of %2 kon niet worden bepaald of werd niet gevraagd.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4731"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4738"/>
         <source>PostgreSQL version: unknown</source>
         <translation>PostgreSQL versie: onbekend</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4732"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4739"/>
         <source>unknown</source>
         <translation>onbekend</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4749"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4756"/>
         <source>PostgreSQL not connected</source>
         <translation>PostgreSQL niet verbonden</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4752"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4759"/>
         <source>PostgreSQL/PostGIS provider
 %1
 PostGIS %2</source>
@@ -143165,7 +143311,7 @@ PostGIS %2</source>
 PostGIS %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4983"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4990"/>
         <source>Error discovering relations of %1: invalid layer</source>
         <translation>Fout bij ontdekken van relaties van %1: ongeldige laag</translation>
     </message>
@@ -144001,7 +144147,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingAnnotationLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7486"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7532"/>
         <source>name of an annotation layer, or &quot;main&quot; for the main annotation layer</source>
         <translation>naam van een laag met annotaties, of &quot;main&quot; voor de hoofd-annotatielaag</translation>
     </message>
@@ -144040,22 +144186,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingBandParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6772"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6815"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6775"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6818"/>
         <source>Band number (separate bands with ; for multiple band parameters)</source>
         <translation>Bandnummer (afzonderlijke banden met ; parameters voor meerdere banden)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6789"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6832"/>
         <source>Parent layer</source>
         <translation>Ouderlaag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6822"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6865"/>
         <source>Allow multiple</source>
         <translation>Meerdere toestaan</translation>
     </message>
@@ -144063,7 +144209,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingBandWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7064"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7110"/>
         <source>selected band numbers as an array of numbers, or semicolon separated string of options (e.g. &apos;1;3&apos;)</source>
         <translation>geselecteerde bandnummers als een array van getallen, of door puntkomma gescheiden tekenreeks met opties (bijv. &apos;1;3&apos;)</translation>
     </message>
@@ -144165,12 +144311,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingColorParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4234"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4253"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4238"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4257"/>
         <source>Allow opacity control</source>
         <translation>Beheren opaciteit toestaan</translation>
     </message>
@@ -144178,7 +144324,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingColorWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4355"/>
         <source>color style string, e.g. #ff0000 or 255,0,0</source>
         <translation>tekenreeks voor opmaak kleur, bijv. #ff0000 of 255,0,0</translation>
     </message>
@@ -144280,27 +144426,27 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingCoordinateOperationParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4362"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4384"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4443"/>
         <source>Source CRS parameter</source>
         <translation>Parameter Bron CRS</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4423"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4445"/>
         <source>Destination CRS parameter</source>
         <translation>Parameter Doel CRS</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4433"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4455"/>
         <source>Static source CRS</source>
         <translation>Statische bron CRS</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4435"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4457"/>
         <source>Static destination CRS</source>
         <translation>Statisch doel CRS</translation>
     </message>
@@ -144308,7 +144454,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingCoordinateOperationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4587"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4612"/>
         <source>Proj coordinate operation string, e.g. &apos;+proj=pipeline +step +inv...&apos;</source>
         <translation>Tekenreeks voor bewerken coördinaat van Proj, bijv. &apos;+proj=pipeline +step +inv...&apos;</translation>
     </message>
@@ -144342,12 +144488,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseSchemaParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5721"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5757"/>
         <source>Provider connection parameter</source>
         <translation>Parameter verbinding provider</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5724"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5760"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
@@ -144355,7 +144501,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseSchemaWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5850"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5888"/>
         <source>database schema name as a string value</source>
         <translation>naam van schema voor de database als waarde tekenreeks</translation>
     </message>
@@ -144363,17 +144509,17 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseTableParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5955"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5993"/>
         <source>Provider connection parameter</source>
         <translation>Parameter verbinding provider</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5958"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5996"/>
         <source>Database schema parameter</source>
         <translation>Parameter voor schema van de database</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5961"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5999"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
@@ -144381,7 +144527,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseTableWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6111"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6151"/>
         <source>database table name as a string value</source>
         <translation>naam van tabel van de database als waarde tekenreeks</translation>
     </message>
@@ -144389,22 +144535,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDateTimeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5390"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5420"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5393"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5423"/>
         <source>Date and Time</source>
         <translation>Datum en Tijd</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5394"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5424"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5395"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5425"/>
         <source>Time</source>
         <translation>Tijd</translation>
     </message>
@@ -144412,22 +144558,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDateTimeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5444"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5478"/>
         <source>[Not selected]</source>
         <translation>[Niet geselecteerd]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5516"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5550"/>
         <source>datetime value, or a ISO string representation of a datetime</source>
         <translation>waarde datetime, of een ISO-tekenreeks weergave van een datetime</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5519"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5553"/>
         <source>date value, or a ISO string representation of a date</source>
         <translation>waarde date, of een ISO-tekenreeks weergave van een date</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5522"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5556"/>
         <source>time value, or a ISO string representation of a time</source>
         <translation>waarde time, of een ISO-tekenreeks weergave van een time</translation>
     </message>
@@ -144620,12 +144766,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumCheckboxPanelWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3202"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3211"/>
         <source>Select All</source>
         <translation>Alles selecteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3213"/>
         <source>Clear Selection</source>
         <translation>Selectie opheffen</translation>
     </message>
@@ -144679,18 +144825,18 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumPanelWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2982"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3075"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2991"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3084"/>
         <source>%1 options selected</source>
         <translation>%1 opties geselecteerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3098"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3107"/>
         <source>,</source>
         <translation>,</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3102"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3111"/>
         <source>%n option(s) selected</source>
         <translation><numerusform>%n optie geselecteerd</numerusform><numerusform>%n opties geselecteerd</numerusform></translation>
     </message>
@@ -144698,12 +144844,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3301"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3313"/>
         <source>[Not selected]</source>
         <translation>[Niet geselecteerd]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3389"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3399"/>
         <source>selected option index (starting from 0), array of indices, or comma separated string of options (e.g. &apos;1,3&apos;)</source>
         <translation>geselecteerde optie-index (startend vanaf 0), array van indices, of kommagescheiden tekenreeks met opties (bijv. &apos;1,3&apos;)</translation>
     </message>
@@ -144711,37 +144857,37 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExpressionParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2521"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2524"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2542"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2545"/>
         <source>Parent layer</source>
         <translation>Ouderlaag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2547"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2550"/>
         <source>Expression type</source>
         <translation>Type expressie</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2549"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2552"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2550"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2553"/>
         <source>Point Cloud</source>
         <translation>Puntenwolk</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2551"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2554"/>
         <source>Raster Calculator</source>
         <translation>Rasterberekeningen</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2555"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2558"/>
         <source>None</source>
         <translation>Geen</translation>
     </message>
@@ -144749,7 +144895,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExpressionWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2929"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2938"/>
         <source>string representation of an expression</source>
         <translation>tekenreeks die een expressie weergeeft</translation>
     </message>
@@ -144757,12 +144903,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExtentParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6168"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6208"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6171"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6211"/>
         <source>Not set</source>
         <translation>Niet bepaald</translation>
     </message>
@@ -144770,12 +144916,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExtentWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6219"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6262"/>
         <source>Not set</source>
         <translation>Niet bepaald</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6292"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6335"/>
         <source>string of the format &apos;x min,x max,y min,y max&apos; or a geometry value (bounding box is used)</source>
         <translation>tekenreeks in de indeling &apos;x min,x max,y min,y max&apos; of een waarde voor de geometrie (begrenzingsvak wordt gebruikt)</translation>
     </message>
@@ -144783,7 +144929,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSinkWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8105"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8154"/>
         <source>path to layer destination</source>
         <translation>pad naar doellaag</translation>
     </message>
@@ -144847,32 +144993,32 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSourceParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6568"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6611"/>
         <source>Geometry type</source>
         <translation>Type geometrie</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6570"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6613"/>
         <source>Geometry Not Required</source>
         <translation>Geometrie niet vereist</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6571"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6614"/>
         <source>Point</source>
         <translation>Punt</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6572"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6615"/>
         <source>Line</source>
         <translation>Lijn</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6573"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6616"/>
         <source>Polygon</source>
         <translation>Polygoon</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6574"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6617"/>
         <source>Any Geometry Type</source>
         <translation>Elk type geometrie</translation>
     </message>
@@ -144880,7 +145026,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSourceWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6611"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6654"/>
         <source>path to a vector layer</source>
         <translation>pad naar een vectorlaag</translation>
     </message>
@@ -145066,14 +145212,14 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4671"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4752"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4767"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4696"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4777"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4792"/>
         <source>%n field(s) selected</source>
         <translation><numerusform>%n veld geselecteerd</numerusform><numerusform>%n velden geselecteerd</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4763"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4788"/>
         <source>,</source>
         <translation>,</translation>
     </message>
@@ -145081,62 +145227,62 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4782"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4807"/>
         <source>Parent layer</source>
         <translation>Ouderlaag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4834"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4859"/>
         <source>Allowed data type</source>
         <translation>Toegestaan gegevenstype</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4836"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4861"/>
         <source>Any</source>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4837"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4862"/>
         <source>Number</source>
         <translation>Getal</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4838"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4863"/>
         <source>String</source>
         <translation>Tekenreeks</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4839"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4864"/>
         <source>Date/time</source>
         <translation>Datum/Tijd</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4840"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4865"/>
         <source>Binary</source>
         <translation>Binair</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4841"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4866"/>
         <source>Boolean</source>
         <translation>Booleaanse waarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4847"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4872"/>
         <source>Accept multiple fields</source>
         <translation>Meerdere velden accepteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4853"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4878"/>
         <source>Select all fields by default</source>
         <translation>Standaard alle velden selecteren.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4864"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4889"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4867"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4892"/>
         <source>Default field name, or ; separated list of field names for multiple field parameters</source>
         <translation>Standaard veldnaam of ;-gescheiden lijst van veldnamen voor parameters voor meerdere velden</translation>
     </message>
@@ -145144,7 +145290,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5171"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5199"/>
         <source>selected field names as an array of names, or semicolon separated string of options (e.g. &apos;fid;place_name&apos;)</source>
         <translation>geselecteerde veldnamen als een array van namen, of door puntkomma gescheiden tekenreeks met opties (bijv. &apos;fid;place_name&apos;)</translation>
     </message>
@@ -145152,7 +145298,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFileDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8202"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8251"/>
         <source>path to file destination</source>
         <translation>pad naar doelbestand</translation>
     </message>
@@ -145208,12 +145354,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFileWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2458"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2461"/>
         <source>%1 files</source>
         <translation>%1 bestanden</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2493"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2496"/>
         <source>string representing a path to a file or folder</source>
         <translation>een tekenreeks die een pad naar een bestand of map weergeeft</translation>
     </message>
@@ -145221,7 +145367,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFolderDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8227"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8276"/>
         <source>path to folder destination</source>
         <translation>pad naar doelmap</translation>
     </message>
@@ -145229,7 +145375,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingGeometryParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4125"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4144"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
@@ -145237,7 +145383,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingGeometryWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4223"/>
         <source>string in the Well-Known-Text format or a geometry value</source>
         <translation>tekenreeks in de indeling Well-Known-Text of een waarde voor een geometrie</translation>
     </message>
@@ -145362,124 +145508,124 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayerOutputDestinationWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="214"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="219"/>
         <source>Open output file after running algorithm</source>
         <translation>Uitvoerbestand openen na uitvoeren van algoritme</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="239"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="244"/>
         <source>Skip Output</source>
         <translation>Uitvoer overslaan</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="248"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="253"/>
         <source>Create Temporary Layer</source>
         <translation>Tijdelijke laag maken</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="252"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="257"/>
         <source>Save to a Temporary Directory</source>
         <translation>Opslaan in tijdelijke map</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="256"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="261"/>
         <source>Save to a Temporary File</source>
         <translation>Opslaan als tijdelijk bestand</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="266"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="271"/>
         <source>Save to Directory…</source>
         <translation>Opslaan naar map…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="271"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="276"/>
         <source>Save to File…</source>
         <translation>Opslaan als bestand...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="278"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="283"/>
         <source>Save to GeoPackage…</source>
         <translation>Opslaan naar GeoPackage…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="282"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="287"/>
         <source>Save to Database Table…</source>
         <translation>Opslaan als databasetabel…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="289"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="294"/>
         <source>Append to Layer…</source>
         <translation>Aan laag toevoegen…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="294"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="299"/>
         <source>Edit Field Mapping…</source>
         <translation>Velden in kaart brengen bewerken…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="306"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="311"/>
         <source>Change File Encoding (%1)…</source>
         <translation>Bestandscodering wijzigen (%1)…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="314"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="319"/>
         <source>[Skip output]</source>
         <translation>[Uitvoer overslaan]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="329"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="334"/>
         <source>[Create temporary layer]</source>
         <translation>[Tijdelijke laag maken]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="333"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="338"/>
         <source>[Save to temporary folder]</source>
         <translation>[Opslaan naar tijdelijke map]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="337"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="342"/>
         <source>[Save to temporary file]</source>
         <translation>[Opslaan naar tijdelijk bestand]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="358"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="363"/>
         <source>Select Directory</source>
         <translation>Map selecteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="419"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="424"/>
         <source>Save file</source>
         <translation>Bestand opslaan</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="446"/>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="454"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="451"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="459"/>
         <source>Save to GeoPackage</source>
         <translation>Opslaan naar GeoPackage</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="446"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="451"/>
         <source>GeoPackage files (*.gpkg);;All files (*.*)</source>
         <translation>GeoPackage-bestanden (*.gpkg);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="454"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="459"/>
         <source>Layer name</source>
         <translation>Laagnaam</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="488"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="493"/>
         <source>Save “%1” to Database Table</source>
         <translation>“%1” opslaan als databasetabel</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="539"/>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="578"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="544"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="583"/>
         <source>Append &quot;%1&quot; to Layer</source>
         <translation>“%1” aan laag toevoegen </translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="599"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="604"/>
         <source>File encoding</source>
         <translation>Bestandscodering</translation>
     </message>
@@ -145487,7 +145633,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutItemParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3530"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3543"/>
         <source>Parent layout</source>
         <translation>Ouderlay-out</translation>
     </message>
@@ -145495,12 +145641,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutItemWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3602"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3618"/>
         <source>UUID or ID of an existing print layout item</source>
         <translation>UUID of ID van een bestaand item voor afdruklay-out</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3700"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3716"/>
         <source>string representing the UUID or ID of an existing print layout item</source>
         <translation>tekenreeks die de UUID of ID van een bestaand item van de afdruklay-out weergeeft</translation>
     </message>
@@ -145508,12 +145654,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3441"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3454"/>
         <source>Name of an existing print layout</source>
         <translation>De naam van een bestaande afdruklay-out</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3505"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3518"/>
         <source>string representing the name of an existing print layout</source>
         <translation>tekenreeks die de naam van een bestaand item van de afdruklay-out weergeeft</translation>
     </message>
@@ -145569,62 +145715,62 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6321"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6364"/>
         <source>Layer type</source>
         <translation>Type laag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6323"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6366"/>
         <source>Any Map Layer</source>
         <translation>Elke laag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6324"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6367"/>
         <source>Vector (Point)</source>
         <translation>Vector (punt)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6325"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6368"/>
         <source>Vector (Line)</source>
         <translation>Vector (lijn)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6326"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6369"/>
         <source>Vector (Polygon)</source>
         <translation>Vector (polygoon)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6327"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6370"/>
         <source>Vector (Any Geometry Type)</source>
         <translation>Vector (elk type geometrie)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6328"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6371"/>
         <source>Vector (No Geometry Required)</source>
         <translation>Vector (geen geometrie vereist)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6329"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6372"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6330"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6373"/>
         <source>Mesh</source>
         <translation>Mazen</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6331"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6374"/>
         <source>Plugin</source>
         <translation>Plug-in</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6332"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6375"/>
         <source>Point Cloud</source>
         <translation>Puntenwolk</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6376"/>
         <source>Annotation</source>
         <translation>Annotatie</translation>
     </message>
@@ -145632,7 +145778,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6464"/>
         <source>path to a map layer</source>
         <translation>pad naar een laag</translation>
     </message>
@@ -145640,7 +145786,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapThemeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5250"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5278"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
@@ -145648,12 +145794,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapThemeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5302"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5332"/>
         <source>[Not selected]</source>
         <translation>[Niet geselecteerd]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5360"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5390"/>
         <source>map theme as a string value (e.g. &apos;base maps&apos;)</source>
         <translation>kaartthema als waarde tekenreeks (bijv. &apos;basiskaarten&apos;)</translation>
     </message>
@@ -145827,7 +145973,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMeshLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6640"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6683"/>
         <source>path to a mesh layer</source>
         <translation>pad naar een laag met mazen</translation>
     </message>
@@ -145927,8 +146073,8 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7158"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7312"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7358"/>
         <source>%n input(s) selected</source>
         <translation><numerusform>%n invoer geselecteerd</numerusform><numerusform>%n invoeren geselecteerd</numerusform></translation>
     </message>
@@ -145936,67 +146082,67 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7325"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7371"/>
         <source>Allowed layer type</source>
         <translation>Toegestaan type laag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7327"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7373"/>
         <source>Any Map Layer</source>
         <translation>Elke laag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7328"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7374"/>
         <source>Vector (No Geometry Required)</source>
         <translation>Vector (geen geometrie vereist)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7329"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7375"/>
         <source>Vector (Point)</source>
         <translation>Vector (punt)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7330"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7376"/>
         <source>Vector (Line)</source>
         <translation>Vector (lijn)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7331"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7377"/>
         <source>Vector (Polygon)</source>
         <translation>Vector (polygoon)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7332"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7378"/>
         <source>Any Geometry Type</source>
         <translation>Elk type geometrie</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7379"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7334"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7380"/>
         <source>File</source>
         <translation>Bestand</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7335"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7381"/>
         <source>Mesh</source>
         <translation>Mazen</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7336"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7382"/>
         <source>Plugin</source>
         <translation>Plug-in</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7337"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7383"/>
         <source>Point Cloud</source>
         <translation>Puntenwolk</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7338"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7384"/>
         <source>Annotation</source>
         <translation>Annotatie</translation>
     </message>
@@ -146004,7 +146150,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7467"/>
         <source>an array of layer paths, or semicolon separated string of layer paths</source>
         <translation>een array van paden van lagen, of door puntkomma gescheiden paden van lagen</translation>
     </message>
@@ -146161,14 +146307,14 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributePanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7619"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7688"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7703"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7665"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7734"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7749"/>
         <source>%n attribute(s) selected</source>
         <translation><numerusform>%n attribuut geselecteerd</numerusform><numerusform>%n attributen geselecteerd</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7699"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7745"/>
         <source>,</source>
         <translation>,</translation>
     </message>
@@ -146176,27 +146322,27 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7718"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7764"/>
         <source>Parent layer</source>
         <translation>Ouderlaag</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7751"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7797"/>
         <source>Accept multiple attributes</source>
         <translation>Meerdere attributen accepteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7757"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7803"/>
         <source>Select all attributes by default</source>
         <translation>Standaard alle attributen selecteren.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7768"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7814"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7771"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7817"/>
         <source>Default attribute name, or ; separated list of attribute names for multiple attribute parameters</source>
         <translation>Standaard naam voor attribuut of ;-gescheiden lijst van namen van attributen voor meerdere parameters voor attributen</translation>
     </message>
@@ -146204,7 +146350,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7998"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8047"/>
         <source>selected attribute names as an array of names, or semicolon separated string of options (e.g. &apos;X;Intensity&apos;)</source>
         <translation>geselecteerde namen van attributen als een array van namen, of door puntkomma gescheiden tekenreeks met opties (bijv. &apos;X;Intensity&apos;)</translation>
     </message>
@@ -146212,7 +146358,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8177"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8226"/>
         <source>path to layer destination</source>
         <translation>pad naar doellaag</translation>
     </message>
@@ -146363,7 +146509,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7451"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7497"/>
         <source>path to a point cloud layer</source>
         <translation>pad naar een puntenwolklaag</translation>
     </message>
@@ -146371,13 +146517,13 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3966"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3982"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3969"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3970"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3985"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3986"/>
         <source>Point as &apos;x,y&apos;</source>
         <translation>Punt als &apos;X,Y&apos;</translation>
     </message>
@@ -146385,12 +146531,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4025"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4044"/>
         <source>Point as &apos;x,y&apos;</source>
         <translation>Punt als &apos;X,Y&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4095"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4114"/>
         <source>string of the format &apos;x,y&apos; or a geometry value (centroid is used)</source>
         <translation>tekenreeks in de indeling &apos;X,Y&apos; of een waarde voor een geometrie (centroïde wordt gebruikt)</translation>
     </message>
@@ -146425,12 +146571,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingProviderConnectionParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5551"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5585"/>
         <source>Provider</source>
         <translation>Provider</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5559"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5593"/>
         <source>Default value</source>
         <translation>Standaardwaarde</translation>
     </message>
@@ -146438,7 +146584,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingProviderConnectionWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5661"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5697"/>
         <source>connection name as a string value</source>
         <translation>naam van verbinding als waarde tekenreeks</translation>
     </message>
@@ -146498,8 +146644,8 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterBandPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6687"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6758"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6730"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6801"/>
         <source>%n band(s) selected</source>
         <translation><numerusform>%n band geselecteerd</numerusform><numerusform>%n banden geselecteerd</numerusform></translation>
     </message>
@@ -146665,7 +146811,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8153"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8202"/>
         <source>path to layer destination</source>
         <translation>pad naar doellaag</translation>
     </message>
@@ -146673,7 +146819,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6465"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6508"/>
         <source>path to a raster layer</source>
         <translation>pad naar een rasterlaag</translation>
     </message>
@@ -146799,7 +146945,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8129"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8178"/>
         <source>path to layer destination</source>
         <translation>pad naar doellaag</translation>
     </message>
@@ -146807,32 +146953,32 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6499"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6542"/>
         <source>Geometry type</source>
         <translation>Type geometrie</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6501"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6544"/>
         <source>Geometry Not Required</source>
         <translation>Geometrie niet vereist</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6502"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6545"/>
         <source>Point</source>
         <translation>Punt</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6503"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6546"/>
         <source>Line</source>
         <translation>Lijn</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6504"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6547"/>
         <source>Polygon</source>
         <translation>Polygoon</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6505"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6548"/>
         <source>Any Geometry Type</source>
         <translation>Elk type geometrie</translation>
     </message>
@@ -146840,7 +146986,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6539"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6582"/>
         <source>path to a vector layer</source>
         <translation>pad naar een vectorlaag</translation>
     </message>
@@ -146848,7 +146994,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorTileDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8251"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8300"/>
         <source>path to layer destination</source>
         <translation>pad naar doellaag</translation>
     </message>
@@ -147054,295 +147200,295 @@ SQL: %3</translation>
 <context>
     <name>QgsProject</name>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1776"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="1798"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1778"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1800"/>
         <source>Loading layer %1</source>
         <translation>Laden van laag %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1820"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1822"/>
         <source>Create layer</source>
         <translation>Laag maken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1895"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1897"/>
         <source>Load layer source</source>
         <translation>Laag-bron laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1909"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1911"/>
         <source>Add layer to project</source>
         <translation>Laag aan project toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1977"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="1985"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2063"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1979"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1987"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2065"/>
         <source>Unable to open %1</source>
         <translation>Openen mislukt van  %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2046"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2048"/>
         <source>Setting up translations</source>
         <translation>Vertalingen instellen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2056"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2058"/>
         <source>Reading project file</source>
         <translation>Projectbestand lezen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2105"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2107"/>
         <source>Updating project file</source>
         <translation>Projectbestand bijwerken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2139"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2141"/>
         <source>Creating auxiliary storage</source>
         <translation>Hulpopslag maken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2170"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2172"/>
         <source>Reading properties</source>
         <translation>Eigenschappen lezen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2312"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2314"/>
         <source>Project Variables Invalid</source>
         <translation>Ongeldige projectvariabelen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2312"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2314"/>
         <source>The project contains invalid variable settings.</source>
         <translation>Het project bevat ongeldige instellingen voor variabelen.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2356"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2358"/>
         <source>Loading layer tree</source>
         <translation>Lagenboom laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2375"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2377"/>
         <source>Reading map layers</source>
         <translation>Kaartlagen lezen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2406"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2408"/>
         <source>Resolving layer references</source>
         <translation>Verwijzingen naar lagen herstellen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2401"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2403"/>
         <source>Loading embedded layers</source>
         <translation>Ingebedde lagen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="765"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="767"/>
         <source>Trying to commit changes without a layer specified. This only works if the transaction mode is buffered</source>
         <translation>Proberen om wijzigingen door te voeren terwijl geen laag is gespecificeerd. Dit werkt alleen als de modus Transactie is gebufferd</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="791"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="793"/>
         <source>Trying to roll back changes without a layer specified. This only works if the transaction mode is buffered</source>
         <translation>Proberen om wijzigingen terug te draaien terwijl geen laag is gespecificeerd. Dit werkt alleen als de modus Transactie is gebufferd</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1742"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1744"/>
         <source>Load providers in parallel</source>
         <translation>Providers parallel laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2417"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2419"/>
         <source>Resolving references</source>
         <translation>Verwijzingen herstellen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2520"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2522"/>
         <source>Storing original layer properties</source>
         <translation>Originele laageigenschappen opslaan</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2526"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2528"/>
         <source>Loading map themes</source>
         <translation>Kaartthema&apos;s laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2531"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2533"/>
         <source>Loading label settings</source>
         <translation>Instellingen voor labelen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2541"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2543"/>
         <source>Loading annotations</source>
         <translation>Annotaties laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2552"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2554"/>
         <source>Loading layouts</source>
         <translation>Lay-outs laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2558"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2560"/>
         <source>Loading 3D Views</source>
         <translation>3D-weergaven laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2562"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2564"/>
         <source>Loading bookmarks</source>
         <translation>Favoriete plaatsen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2565"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2567"/>
         <source>Loading sensors</source>
         <translation>Sensoren laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2575"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2577"/>
         <source>Loading snapping settings</source>
         <translation>instellingen voor snappen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2579"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2581"/>
         <source>Loading view settings</source>
         <translation>Instellingen voor weergave laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2603"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2605"/>
         <source>Loading style properties</source>
         <translation>Stijl-eigenschappen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2612"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2614"/>
         <source>Loading temporal settings</source>
         <translation>Instellingen Tijdbeheer laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2618"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2620"/>
         <source>Loading elevation properties</source>
         <translation>Eigenschappen hoogte laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2624"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2626"/>
         <source>Loading display settings</source>
         <translation>Instellingen voor weergave laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2631"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2633"/>
         <source>Loading GPS settings</source>
         <translation>Instellingen voor GPS laden</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2639"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2641"/>
         <source>Updating variables</source>
         <translation>Variabelen bijwerken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2641"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2643"/>
         <source>Updating CRS</source>
         <translation>CRS bijwerken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2650"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2652"/>
         <source>Reading external settings</source>
         <translation>Externe instellingen lezen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2654"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2656"/>
         <source>Updating interface</source>
         <translation>Interface bijwerken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2684"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2686"/>
         <source>Translated project saved with locale prefix %1</source>
         <translation>Vertaalde project opgeslagen met landinstelling-voorvoegsel %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2688"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2690"/>
         <source>Error saving translated project with locale prefix %1</source>
         <translation>Fout bij opslaan van vertaalde project met landinstelling-voorvoegsel %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3183"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3185"/>
         <source>Unable to read file %1</source>
         <translation>Niet mogelijk bestand %1 te lezen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3190"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3192"/>
         <source>Unable to save project to storage %1</source>
         <translation>Niet mogelijk project op te slaan naar opslag %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3233"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3235"/>
         <source>Unable to save attachments archive</source>
         <translation>Kan archief voor bijlagen niet opslaan</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3553"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3555"/>
         <source>Unable to create backup file %1</source>
         <translation>Niet mogelijk om back-upbestand %1 te maken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3567"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3569"/>
         <source>Unable to save to file %1</source>
         <translation>Opslaan van bestand %1 mislukt </translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4557"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4559"/>
         <source>Transaction mode can be changed only if all layers are not editable.</source>
         <translation>Modus Transactie kan alleen worden gewijzigd als alle lagen niet te bewerken zijn.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4644"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4646"/>
         <source>Unable to unzip file &apos;%1&apos;</source>
         <translation>Niet mogelijk om zip-bestand &apos;%1&apos; uit te pakken</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4651"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4653"/>
         <source>Zip archive does not provide a project file</source>
         <translation>Zip archiefbestand bevat geen projectbestand</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4674"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4676"/>
         <source>Cannot read unzipped qgs project file</source>
         <translation>Kan het uitgepakte qgs projectbestand niet lezen</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4706"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4708"/>
         <source>Unable to write temporary qgs file</source>
         <translation>Kan het tijdelijke qgs bestand niet schrijven</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4719"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4721"/>
         <source>Unable to save auxiliary storage file (&apos;%1&apos;). The project has been saved but the latest changes to auxiliary data cannot be recovered. It is recommended to reload the project.</source>
         <translation>Kan hulpbestand voor opslag (&apos;%1&apos;) niet opslaan. Het project is opgeslagen, maar de laatste wijzigingen voor de hulpgegevens kunnen niet worden hersteld. Aanbevolen wordt om het project opnieuw te laden.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4765"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4767"/>
         <source>Unable to perform zip</source>
         <translation>Kan zip-actie niet uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3255"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3257"/>
         <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 kan niet worden opgeslagen. Pas de schrijfrechten aan (indien mogelijk) en probeer opnieuw.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1722"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1724"/>
         <source>Sorting layers</source>
         <translation>Lagen sorteren</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2089"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2091"/>
         <source>Project file read error in file %1: %2 at line %3 column %4</source>
         <translation>Leesfout in projectbestand in bestand %1: %2 op regel %3 kolom %4</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3229"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3231"/>
         <source>Unable to save auxiliary storage (&apos;%1&apos;)</source>
         <translation>Niet mogelijk hulpopslag (&apos;%1&apos;) op te slaan</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3597"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3599"/>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation>Het bestand %1 kon niet worden opgeslagen. Het project kan corrupt zijn geraakt. Probeer wat ruimte te krijgen op de schijf en controleer schrijfrechten voordat u opnieuw probeert op te slaan.</translation>
     </message>
@@ -148128,7 +148274,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12389"/>
+        <location filename="../src/app/qgisapp.cpp" line="12392"/>
         <source>General</source>
         <translation>Algemeen</translation>
     </message>
@@ -148164,7 +148310,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12392"/>
+        <location filename="../src/app/qgisapp.cpp" line="12395"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
@@ -148175,7 +148321,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12398"/>
+        <location filename="../src/app/qgisapp.cpp" line="12401"/>
         <source>Variables</source>
         <translation>Variabelen</translation>
     </message>
@@ -148321,7 +148467,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12397"/>
+        <location filename="../src/app/qgisapp.cpp" line="12400"/>
         <source>Relations</source>
         <translation>Relaties</translation>
     </message>
@@ -148427,7 +148573,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12396"/>
+        <location filename="../src/app/qgisapp.cpp" line="12399"/>
         <source>Data Sources</source>
         <translation>Databronnen</translation>
     </message>
@@ -148468,7 +148614,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12390"/>
+        <location filename="../src/app/qgisapp.cpp" line="12393"/>
         <source>Metadata</source>
         <translation>Metadata</translation>
     </message>
@@ -148479,7 +148625,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12400"/>
+        <location filename="../src/app/qgisapp.cpp" line="12403"/>
         <source>QGIS Server</source>
         <translation>QGIS Server</translation>
     </message>
@@ -148745,7 +148891,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12399"/>
+        <location filename="../src/app/qgisapp.cpp" line="12402"/>
         <source>Macros</source>
         <translation>Macro&apos;s</translation>
     </message>
@@ -148891,7 +149037,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12393"/>
+        <location filename="../src/app/qgisapp.cpp" line="12396"/>
         <source>Transformations</source>
         <translation>Transformaties</translation>
     </message>
@@ -148902,7 +149048,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12401"/>
+        <location filename="../src/app/qgisapp.cpp" line="12404"/>
         <source>Temporal</source>
         <translation>Tijdbeheer</translation>
     </message>
@@ -148973,7 +149119,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12391"/>
+        <location filename="../src/app/qgisapp.cpp" line="12394"/>
         <source>View Settings</source>
         <translation>Instellingen voor weergave</translation>
     </message>
@@ -149144,7 +149290,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12394"/>
+        <location filename="../src/app/qgisapp.cpp" line="12397"/>
         <source>Styles</source>
         <translation>Stijlen</translation>
     </message>
@@ -149175,7 +149321,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12395"/>
+        <location filename="../src/app/qgisapp.cpp" line="12398"/>
         <source>Colors</source>
         <translation>Kleuren</translation>
     </message>
@@ -150987,27 +151133,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRangeConfigDlg</name>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="75"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="76"/>
         <source>Editable</source>
         <translation>Aanpasbaar</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="76"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="77"/>
         <source>Slider</source>
         <translation>Schuifschaal</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="77"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="78"/>
         <source>Dial</source>
         <translation>Draaischijf</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="83"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="84"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
         <translation>Huidige minimum voor deze waarde is %1 en maximum is %2.</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="88"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="89"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
         <translation>Attribuut is niet van het type real of integer, een range is daarom niet bruikbaar.</translation>
     </message>
@@ -151475,11 +151621,6 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterAttributeTableAddRowDialogBase</name>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
-        <source>Add Column</source>
-        <translation>Kolom toevoegen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>Add a new row to the attribute table.</source>
         <translation>Voeg een nieuwe rij toe aan de attributentabel.</translation>
     </message>
@@ -151497,6 +151638,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>After current row </source>
         <translation>Na huidige rij</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
+        <source>Add Row</source>
+        <translation>Rij toevoegen</translation>
     </message>
 </context>
 <context>
@@ -152920,10 +153066,10 @@ Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</tra
         <translation>Provider %1 maken</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1189"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1196"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1204"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2568"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
@@ -153009,31 +153155,36 @@ Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</tra
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="762"/>
+        <source>Could not insert provider into layer pipe (provider: %1, URI: %2</source>
+        <translation>Kon provider niet in de laagpijp invoegen (provider: %1, URI: %2)</translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="769"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
         <translation>Provider is ongeldig (provider: %1, URI: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1189"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
         <translation>Fout bij lezen van raster-attributentabel: ongeldige band %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1196"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
         <translation>Fout bij laden van raster-attributentabel, bestand niet gevonden %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1204"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
         <source>Error loading raster attribute table from path %1: %2</source>
         <translation>Fout bij laden van raster-attributentabel vanuit pad %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2258"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2263"/>
         <source>Labeling</source>
         <translation>Labelen</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2568"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>&lt;maplayer&gt; niet gevonden.</translation>
     </message>
@@ -153612,62 +153763,62 @@ U kunt ook een bestaande raster-attributentabel importeren van uit een bestand V
         <translation>Tot</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="190"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="809"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="193"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="812"/>
         <source>Select Output Directory</source>
         <translation>Map voor uitvoer selecteren</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="236"/>
         <source>Select output directory</source>
         <translation>Selecteer een map voor de uitvoer</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="975"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="978"/>
         <source>The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2.</source>
         <translation>Het benodigde aantal tegels van OpenStreetMap om de rasterlaag te produceren is te hoog en zal leiden tot gedrag voor downloaden in bulk, wat is verboden door het %1OpenStreetMap Foundation beleid voor gebruik van tegels%2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="980"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="983"/>
         <source>The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. Do you want to overwrite the whole file?</source>
         <translation>De laag %1 bestaat al in het doelbestand, en overschrijven van lagen wordt in GeoPackage niet ondersteund. Wilt u het gehele bestand overschrijven?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="196"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="815"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="199"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="818"/>
         <source>Save Layer As</source>
         <translation>Laag opslaan als</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="230"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="975"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="980"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="978"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="983"/>
         <source>Save Raster Layer</source>
         <translation>Rasterlaag opslaan</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="230"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
         <source>The directory %1 contains files which will be overwritten: %2</source>
         <translation>De map %1 bevat bestanden die zullen worden overschreven: %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="327"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="330"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="333"/>
         <source>All files (*.*)</source>
         <translation>Alle bestanden (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="598"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="601"/>
         <source>layer</source>
         <translation>laag</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="601"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="604"/>
         <source>user defined</source>
         <translation>door gebruiker gedefinieerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="606"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="609"/>
         <source>Resolution (current: %1)</source>
         <translation>Resolutie (huidige: %1)</translation>
     </message>
@@ -154819,7 +154970,7 @@ De standaard acties worden geactiveerd in het gedeelte Actie van de Laageigensch
 <context>
     <name>QgsRelationEditorConfigWidget</name>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="989"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="995"/>
         <source>Edit Filter Expression of Target Layer</source>
         <translation>Filterexpressie van doellaag bewerken</translation>
     </message>
@@ -154995,12 +155146,12 @@ De standaard acties worden geactiveerd in het gedeelte Actie van de Laageigensch
         <translation>Toevoegen van een object geometrie wordt niet ondersteund in modus Meerdere bewerken</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="777"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="783"/>
         <source>All features in selection have equal relations</source>
         <translation>Alle objecten in selectie hebben gelijke relaties</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="783"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="789"/>
         <source>Some features in selection have different relations</source>
         <translation>Sommige objecten in selectie hebben verscillende relaties</translation>
     </message>
@@ -159260,7 +159411,7 @@ Zorg er voor dat deze optie zal worden toegepast op alle punten van de bewerkte 
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5136"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5156"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5813"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
@@ -159346,14 +159497,14 @@ SQL: %1</source>
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5764"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5766"/>
         <source>Spatialite: unexpected number of rows (%1) from aggregate query
 SQL: %2</source>
         <translation>Spatialite: onverwacht aantal rijen (%1) uit samengestelde query
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5813"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>FOUT: Veld %1 niet gevonden.</translation>
     </message>
@@ -160433,32 +160584,32 @@ geef een andere naam op:</translation>
         <translation>Standaard stijldatabase initialiseren</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="725"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="731"/>
         <source>Load symbols</source>
         <translation>Symbolen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="750"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="756"/>
         <source>Load color ramps</source>
         <translation>Kleurverlopen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="772"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="778"/>
         <source>Load text formats</source>
         <translation>Tekstindelingen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="794"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="800"/>
         <source>Load label settings</source>
         <translation>Instellingen voor labelen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="816"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="822"/>
         <source>Load legend patch shapes</source>
         <translation>Legenda modelvormen laden</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="838"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="844"/>
         <source>Load 3D symbols shapes</source>
         <translation>3D-symboolvormen laden</translation>
     </message>
@@ -160680,119 +160831,119 @@ geef een andere naam op:</translation>
         <translation>Symbolen filteren…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="271"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="277"/>
         <source>Save Symbol…</source>
         <translation>Symbool opslaan…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="272"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="278"/>
         <source>Save symbol to styles</source>
         <translation>Symbool opslaan naar stijlen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="274"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="413"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="280"/>
         <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="419"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="425"/>
         <source>All Symbols</source>
         <translation>Alle symbolen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="278"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="284"/>
         <source>Save Color Ramp…</source>
         <translation>Kleurverloop opslaan…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="279"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="285"/>
         <source>Save color ramp to styles</source>
         <translation>Kleurverloop opslaan naar stijlen </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="281"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="423"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="287"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="429"/>
         <source>All Color Ramps</source>
         <translation>Alle kleurverlopen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="285"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="291"/>
         <source>Save Format…</source>
         <translation>Indeling opslaan…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="286"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="292"/>
         <source>Save text format to styles</source>
         <translation>Tekstindeling opslaan naar stijlen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="288"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="427"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="294"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="433"/>
         <source>All Text Formats</source>
         <translation>Alle tekstindelingen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="292"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="298"/>
         <source>Save Label Settings…</source>
         <translation>Instellingen label opslaan…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="293"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="299"/>
         <source>Save label settings to styles</source>
         <translation>Instellingen label opslaan naar stijlen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="295"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="431"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="301"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="437"/>
         <source>All Label Settings</source>
         <translation>Alle instellingen label</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="299"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="305"/>
         <source>Save Legend Patch Shape…</source>
         <translation>Legenda modelvorm opslaan…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="300"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="306"/>
         <source>Save legend patch shape to styles</source>
         <translation>Legenda modelvorm opslaan naar stijlen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="302"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="435"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="308"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="441"/>
         <source>All Legend Patch Shapes</source>
         <translation>Alle Legenda modelvormen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="306"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="312"/>
         <source>Save 3D Symbol…</source>
         <translation>3D-symbool opslaan…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="307"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="313"/>
         <source>Save 3D symbol to styles</source>
         <translation>3D-symbool opslaan naar stijlen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="309"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="439"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="315"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="445"/>
         <source>All 3D Symbols</source>
         <translation>Alle 3D-symbolen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="327"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="333"/>
         <source>Save Settings…</source>
         <translation>Instellingen opslaan…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="328"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="334"/>
         <source>Save label settings or text format to styles</source>
         <translation>Instellingen label of tekstindeling opslaan naar stijlen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="330"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="336"/>
         <source>All Settings</source>
         <translation>Alle instellingen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="411"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="417"/>
         <source>Favorites</source>
         <translation>Favorieten</translation>
     </message>
@@ -161305,7 +161456,7 @@ Overschrijven?</translation>
         <translation><numerusform>Weet u zeker dat u %n 3D-symbool wilt verwijderen?</numerusform><numerusform>Weet u zeker dat u %n 3D-symbolen wilt verwijderen?</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2922"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2925"/>
         <source>There was an error while editing the smart group.</source>
         <translation>Er deed zich een fout voor tijdens het bewerken van de &apos;slimme&apos; groep.</translation>
     </message>
@@ -161442,42 +161593,42 @@ Overschrijven?</translation>
         <translation>Alles</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2472"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2484"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2475"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2487"/>
         <source>Add Tag</source>
         <translation>Tag toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2472"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2475"/>
         <source>The tag “%1” already exists.</source>
         <translation>De tag “%1” bestaat al.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2484"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2487"/>
         <source>New tag could not be created — There was a problem with the symbol database.</source>
         <translation>Nieuwe tag kon niet worden gemaakt — Er was een probleem met de database met symbolen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2551"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2554"/>
         <source>Remove Group</source>
         <translation>Groep verwijderen</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2551"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2554"/>
         <source>Invalid selection. Cannot delete system defined categories.
 Kindly select a group or smart group you might want to delete.</source>
         <translation>Ongeldige selectie. Kan geen systeemgedefinieerde categorieën verwijderen
 Selecteer een groep of &apos;slimme&apos; groep die u zou willen verwijderen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2791"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2794"/>
         <source>Create New Tag…</source>
         <translation>Nieuwe tag maken…</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2902"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2922"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2905"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2925"/>
         <source>Edit Smart Group</source>
         <translation>Slimme groep bewerken</translation>
     </message>
@@ -161593,17 +161744,17 @@ Selecteer een groep of &apos;slimme&apos; groep die u zou willen verwijderen.</t
         <translation>Slimme Groepen</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
         <source>Please enter name for the new tag:</source>
         <translation>Voer een naam in voor de nieuwe tag:</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
         <source>New tag</source>
         <translation>Nieuwe tag</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2902"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2905"/>
         <source>You have not selected a Smart Group. Kindly select a Smart Group to edit.</source>
         <translation>Er is geen Slimme Groep geselecteerd. Selecteer een Slimme Groep om te bewerken.</translation>
     </message>
@@ -162690,32 +162841,32 @@ Selecteer een groep of &apos;slimme&apos; groep die u zou willen verwijderen.</t
         <translation>Bereik buffer…</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="134"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="140"/>
         <source>Select Color</source>
         <translation>Kleur selecteren </translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="282"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="288"/>
         <source>Animation Settings</source>
         <translation>Instellingen voor animatie</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="307"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="313"/>
         <source>Extent Buffer</source>
         <translation>Bereik buffer</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="346"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="352"/>
         <source>Buffer Settings</source>
         <translation>Instellingen buffer</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="385"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="391"/>
         <source>Save Symbol</source>
         <translation>Symbool opslaan</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="385"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="391"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
         <translation>Er bestaat al een symbool met de naam &apos;%1&apos;. Overschrijven?</translation>
     </message>
@@ -163342,33 +163493,33 @@ Selecteer een groep of &apos;slimme&apos; groep die u zou willen verwijderen.</t
 <context>
     <name>QgsTemporalControllerDockWidget</name>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="89"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="90"/>
         <source>Exporting animation</source>
         <translation>Animatie exporteren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="91"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
         <source>Exporting animation…</source>
         <translation>Animatie exporteren…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="91"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
         <source>Abort</source>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="93"/>
         <source>Exporting Animation</source>
         <translation>Animatie exporteren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="122"/>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="126"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="124"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="128"/>
         <source>Export Animation</source>
         <translation>Animatie exporteren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="126"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="128"/>
         <source>Successfully exported animation to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Animatie met succes geëxporteerd naar &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
@@ -166031,12 +166182,17 @@ p, li { white-space: pre-wrap; }
         <translation>Kan niet schrijven naar &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsuserprofilemanager.cpp" line="194"/>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="187"/>
+        <source>Could not copy master database to %1</source>
+        <translation>Kon hoofddatabase niet kopiëren naar %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="198"/>
         <source>Can not make &apos;%1&apos; user writable</source>
         <translation>Kan &apos;%1&apos; niet beschrijfbaar voor de gebruiker maken</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsuserprofilemanager.cpp" line="216"/>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="221"/>
         <source>Unable to fully delete user profile folder</source>
         <translation>Kan profielmap van gebruiker niet geheel verwijderen</translation>
     </message>
@@ -167559,22 +167715,22 @@ Fout was: %2</translation>
         <translation>Plaatsvervangende afbeelding legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="137"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="134"/>
         <source>Description</source>
         <translation>Omschrijving</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="137"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="134"/>
         <source>Legend Text</source>
         <translation>Legenda tekst</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="170"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="167"/>
         <source>Symbol</source>
         <translation>Symbool</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="170"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="167"/>
         <source>Text</source>
         <translation>Tekst</translation>
     </message>
@@ -169889,60 +170045,60 @@ Fout was: %2</translation>
         <translation>Punten die behoren tot objecten, die niet worden weergegeven in het kaartvenster, werden niet geselecteerd.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2276"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2275"/>
         <source>Topological points added by &apos;Vertex Tool&apos;</source>
         <translation>Topologische punten toegevoegd met &apos;Gereedschap Punten&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2417"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2455"/>
         <source>Moved vertex</source>
         <translation>Punt verplaatst</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2548"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2586"/>
         <source>Deleted vertex</source>
         <translation>Punt verwijderd </translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2572"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2610"/>
         <source>Geometry has been cleared. Use the add part tool to set geometry for this feature.</source>
         <translation>Geometrie is opgeschoond. Gebruik het gereedschap Deel toevoegen om de geometrie voor dit object in te stellen.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2628"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2640"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2654"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2677"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2666"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2678"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2692"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2715"/>
         <source>Could not convert vertex</source>
         <translation>Kon punt niet converteren</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2629"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2667"/>
         <source>Conversion can only be done on exactly one vertex.</source>
         <translation>Conversie kan alleen worden uitgevoerd op exact één punt.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2641"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2679"/>
         <source>Cannot convert vertex before it is added.</source>
         <translation>Kan punt niet converteren voordat het is toegevoegd.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2655"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2693"/>
         <source>Layer of type %1 does not support curved geometries.</source>
         <translation>Laag van het type %1 ondersteunt geen gebogen geometrieën.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2661"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2699"/>
         <source>Toggled vertex to/from curve</source>
         <translation>Punt van/naar boog schakelen</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2678"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2716"/>
         <source>Start/end of vertices of features and arcs can not be converted.</source>
         <translation>Begin-/eindpunten van objecten en bogen kunnen niet worden geconverteerd.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2923"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2961"/>
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
         <translation><numerusform>Validatie voltooid (%n fout gevonden).</numerusform><numerusform>Validatie voltooid (%n fouten gevonden).</numerusform></translation>
@@ -180735,7 +180891,7 @@ uit een GRASS GIS specifiek archiefbestand</translation>
     </message>
     <message>
         <source>Vector intersection</source>
-        <translation>Vector-intersectie</translation>
+        <translation>Vector-doorsnijding</translation>
     </message>
     <message>
         <source>Vector non-intersection</source>

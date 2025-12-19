@@ -1212,7 +1212,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
+    Q_INVOKABLE bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Inserts a new vertex before the given vertex number,

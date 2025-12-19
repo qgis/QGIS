@@ -921,8 +921,15 @@ void TestQgsProperty::genericNumericTransformer()
   const QgsGenericNumericTransformer invalid( 1.0, 1.0, 0, 1.0 );
   QCOMPARE( invalid.value( -1 ), 0.0 );
   QCOMPARE( invalid.value( 0 ), 0.0 );
-  QCOMPARE( invalid.value( 1.0 ), 1.0 );
-  QCOMPARE( invalid.value( 2.0 ), 1.0 );
+  QCOMPARE( invalid.value( 1.0 ), 0.0 );
+  QCOMPARE( invalid.value( 2.0 ), 0.0 );
+
+  // invalid settings, where minValue > maxValue
+  const QgsGenericNumericTransformer invalid2( 2.0, 1.0, 0, 1.0 );
+  QCOMPARE( invalid2.value( -1 ), 0.0 );
+  QCOMPARE( invalid2.value( 0 ), 0.0 );
+  QCOMPARE( invalid2.value( 1.0 ), 0.0 );
+  QCOMPARE( invalid2.value( 2.0 ), 0.0 );
 
   //as expression
   QgsGenericNumericTransformer t3( 15, 25, 150, 250, -10, 1.0 );
@@ -1139,6 +1146,20 @@ void TestQgsProperty::sizeScaleTransformer()
   p.setExpressionString( QStringLiteral( "no field" ) );
   QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
   QVERIFY( ok );
+
+  // invalid settings, where minValue = maxValue
+  const QgsSizeScaleTransformer invalid( QgsSizeScaleTransformer::Linear, 1.0, 1.0, 0, 1.0 );
+  QCOMPARE( invalid.transform( context, -1 ).toDouble(), 0.0 );
+  QCOMPARE( invalid.transform( context, 0 ).toDouble(), 0.0 );
+  QCOMPARE( invalid.transform( context, 1.0 ).toDouble(), 0.0 );
+  QCOMPARE( invalid.transform( context, 2.0 ).toDouble(), 0.0 );
+
+  // invalid settings, where minValue > maxValue
+  const QgsSizeScaleTransformer invalid2( QgsSizeScaleTransformer::Linear, 2.0, 1.0, 0, 1.0 );
+  QCOMPARE( invalid2.transform( context, -1 ).toDouble(), 0.0 );
+  QCOMPARE( invalid2.transform( context, 0 ).toDouble(), 0.0 );
+  QCOMPARE( invalid2.transform( context, 1.0 ).toDouble(), 0.0 );
+  QCOMPARE( invalid2.transform( context, 2.0 ).toDouble(), 0.0 );
 }
 
 void TestQgsProperty::sizeScaleTransformerFromExpression()
@@ -1220,6 +1241,20 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( scale.transform( context, QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ).value<QColor>(), QColor( 100, 150, 200 ) );
   //non numeric value
   QCOMPARE( scale.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
+
+  // invalid settings, where minValue = maxValue
+  const QgsColorRampTransformer invalid( 1.0, 1.0, new QgsGradientColorRamp( QColor( 10, 0, 0 ), QColor( 255, 255, 255 ) ) );
+  QCOMPARE( invalid.transform( context, -1 ).value<QColor>(), QColor( 10, 0, 0 ) );
+  QCOMPARE( invalid.transform( context, 0 ).value<QColor>(), QColor( 10, 0, 0 ) );
+  QCOMPARE( invalid.transform( context, 1.0 ).value<QColor>(), QColor( 10, 0, 0 ) );
+  QCOMPARE( invalid.transform( context, 2.0 ).value<QColor>(), QColor( 10, 0, 0 ) );
+
+  // invalid settings, where minValue > maxValue
+  const QgsColorRampTransformer invalid2( 2.0, 1.0, new QgsGradientColorRamp( QColor( 10, 0, 0 ), QColor( 255, 255, 255 ) ) );
+  QCOMPARE( invalid2.transform( context, -1 ).value<QColor>(), QColor( 10, 0, 0 ) );
+  QCOMPARE( invalid2.transform( context, 0 ).value<QColor>(), QColor( 10, 0, 0 ) );
+  QCOMPARE( invalid2.transform( context, 1.0 ).value<QColor>(), QColor( 10, 0, 0 ) );
+  QCOMPARE( invalid2.transform( context, 2.0 ).value<QColor>(), QColor( 10, 0, 0 ) );
 
   // add a curve
   QVERIFY( !scale.curveTransform() );

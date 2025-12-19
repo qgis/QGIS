@@ -80,7 +80,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *en
 
 void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 {
-  mMarkerEntity = new Qt3DCore::QEntity( parentEntity );
+  mMarkerEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
   mMarkerGeometry = new QgsBillboardGeometry();
   mMarkerGeometryRenderer = new Qt3DRender::QGeometryRenderer;
   mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
@@ -97,7 +97,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 
 void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine )
 {
-  mLineEntity = new Qt3DCore::QEntity( parentEntity );
+  mLineEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
 
   QgsLineVertexData dummyLineData;
   mLineGeometry = dummyLineData.createGeometry( mLineEntity );
@@ -132,7 +132,7 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DE
 
 void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
 {
-  mPolygonEntity = new Qt3DCore::QEntity( parentEntity );
+  mPolygonEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
 
   mPolygonGeometry = new QgsTessellatedPolygonGeometry();
 
@@ -182,11 +182,17 @@ void QgsRubberBand3D::removePoint( int index )
 QgsRubberBand3D::~QgsRubberBand3D()
 {
   if ( mPolygonEntity )
-    delete mPolygonEntity;
+  {
+    mPolygonEntity.reset();
+  }
   if ( mLineEntity )
-    delete mLineEntity;
+  {
+    mLineEntity.reset();
+  }
   if ( mMarkerEntity )
-    delete mMarkerEntity;
+  {
+    mMarkerEntity.reset();
+  }
 }
 
 

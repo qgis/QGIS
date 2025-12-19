@@ -200,6 +200,9 @@
             </item>
             <item row="1" column="1">
              <widget class="QgsSpinBox" name="mSpinGpsdPort">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="maximum">
                <number>65535</number>
               </property>

@@ -36,6 +36,7 @@ class QgsElevationProfileToolIdentify : public QgsPlotTool
     void plotPressEvent( QgsPlotMouseEvent *event ) override;
     void plotReleaseEvent( QgsPlotMouseEvent *event ) override;
     void plotMoveEvent( QgsPlotMouseEvent *event ) override;
+    void deactivate() override;
 
   private:
     //! Start position for mouse press

@@ -21091,10 +21091,6 @@ Acest lucru poate conduce la rezultate neașteptate.</translation>
         <translation>Eroare de pregătire a fişierului...</translation>
     </message>
     <message>
-        <source>Hey, type something to run!</source>
-        <translation>Hei, tastați ceva pentru a rula!</translation>
-    </message>
-    <message>
         <source>Python Console: Save file</source>
         <translation>Consolă Python: Salvați fișierul</translation>
     </message>
@@ -21308,6 +21304,10 @@ Din consolă, puteți tasta următoarele comenzi speciale:
 
 </translation>
     </message>
+    <message>
+        <source>Empty scripts cannot be run!</source>
+        <translation>Script-urile vide nu pot fi rulate!</translation>
+    </message>
 </context>
 <context>
     <name>PythonConsoleWidget</name>
@@ -21479,107 +21479,107 @@ Din consolă, puteți tasta următoarele comenzi speciale:
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="319"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="316"/>
         <source>Count</source>
         <translation>Numărare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="332"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="329"/>
         <source>Count Distinct</source>
         <translation>Numărare Valori Distincte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="345"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="342"/>
         <source>Count Missing</source>
         <translation>Numărare Valori Lipsă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="357"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="354"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="371"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="368"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="385"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="382"/>
         <source>Sum</source>
         <translation>Sum</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="396"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="393"/>
         <source>Mean</source>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="407"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="404"/>
         <source>Median</source>
         <translation>Mediana</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="416"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="413"/>
         <source>Stdev</source>
         <translation>Stdev</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="427"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="424"/>
         <source>Stdev Sample</source>
         <translation>Eșantion Stdev</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="438"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="435"/>
         <source>Range</source>
         <translation>Intervalul</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="451"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="448"/>
         <source>Minority</source>
         <translation>Minoritate</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="463"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="460"/>
         <source>Majority</source>
         <translation>Majoritate</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="475"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="472"/>
         <source>Q1</source>
         <translation>Q1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="486"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="483"/>
         <source>Q3</source>
         <translation>Q3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="497"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="494"/>
         <source>InterQuartileRange</source>
         <translation>InterQuartileRange</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="508"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="505"/>
         <source>Min Length</source>
         <translation>Lungimea Minimă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="515"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="512"/>
         <source>Max Length</source>
         <translation>Lungimea Maximă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="522"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="519"/>
         <source>Concatenate</source>
         <translation>Concatenarea</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="529"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="526"/>
         <source>Collect</source>
         <translation>Colectare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="535"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="532"/>
         <source>Array Aggregate</source>
         <translation>Agregarea Matricelor</translation>
     </message>
@@ -22058,7 +22058,7 @@ Rezultatul interogării va fi adăugat într-un strat nou.
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/app/main.cpp" line="923"/>
+        <location filename="../src/app/main.cpp" line="924"/>
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
@@ -22067,22 +22067,22 @@ Vedeți acest mesaj pentru că, cel mai probabil, nu ați setat variabila de med
 </translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1014"/>
+        <location filename="../src/app/main.cpp" line="1015"/>
         <source>Invalid globalsettingsfile path: %1</source>
         <translation>Cale invalidă către globalsettingsfile: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1018"/>
+        <location filename="../src/app/main.cpp" line="1019"/>
         <source>Successfully loaded globalsettingsfile path: %1</source>
         <translation>S-a încheiat cu succes calea către globalsettingsfile: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1824"/>
+        <location filename="../src/app/main.cpp" line="1825"/>
         <source>Profile not found</source>
         <translation>Profilul nu a fost găsit</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1824"/>
+        <location filename="../src/app/main.cpp" line="1825"/>
         <source>The last used profile &apos;%1&apos; was not found. The default profile was used instead.</source>
         <translation>Ultimul profil folosit &apos;%1&apos; nu a fost găsit. În schimb, a fost folosit profilul implicit.</translation>
     </message>
@@ -23164,9 +23164,9 @@ Distanța este specificată în unitățile de strat, iar azimutul în grade, m�
         <translation>Stratul &apos;%1&apos; nu a putut fi încărcat.</translation>
     </message>
     <message>
-        <location filename="../src/core/pal/feature.cpp" line="426"/>
-        <location filename="../src/core/pal/feature.cpp" line="2430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2471"/>
+        <location filename="../src/core/pal/feature.cpp" line="430"/>
+        <location filename="../src/core/pal/feature.cpp" line="2434"/>
+        <location filename="../src/core/pal/feature.cpp" line="2475"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23188,9 +23188,9 @@ Distanța este specificată în unitățile de strat, iar azimutul în grade, m�
         <translation>Excepție: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/pal/feature.cpp" line="426"/>
-        <location filename="../src/core/pal/feature.cpp" line="2430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2471"/>
+        <location filename="../src/core/pal/feature.cpp" line="430"/>
+        <location filename="../src/core/pal/feature.cpp" line="2434"/>
+        <location filename="../src/core/pal/feature.cpp" line="2475"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23238,100 +23238,100 @@ Distanța este specificată în unitățile de strat, iar azimutul în grade, m�
         <translation>Opțiunea de păstrare restrânsă la validarea geometriilor necesită o compilație QGIS bazată pe GEOS 3.10 sau o versiune ulterioară</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2248"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2251"/>
         <source>Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later</source>
         <translation>Calcularea concaveHull necesită o compilație QGIS bazată pe GEOS 3.11 sau o versiune ulterioară</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2271"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2274"/>
         <source>Validating coverages requires a QGIS build based on GEOS 3.12 or later</source>
         <translation>Validarea acoperirii necesită o compilație QGIS bazată pe GEOS 3.12 sau o versiune ulterioară</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2316"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2319"/>
         <source>Simplifying coverages requires a QGIS build based on GEOS 3.12 or later</source>
         <translation>Simplificarea acoperirii necesită o compilație QGIS bazată pe GEOS 3.12 sau o versiune ulterioară</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2358"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2361"/>
         <source>QGIS geometry cannot be converted to a GEOS geometry</source>
         <comment>GEOS Error</comment>
         <translation>Geometria QGIS nu poate fi convertită într-o geometrie GEOS</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2382"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2385"/>
         <source>Topology validation error</source>
         <comment>GEOS Error</comment>
         <translation>Eroare de validare a topologiei</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2383"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2386"/>
         <source>Repeated point</source>
         <comment>GEOS Error</comment>
         <translation>Punct repetat</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2384"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2387"/>
         <source>Hole lies outside shell</source>
         <comment>GEOS Error</comment>
         <translation>Gaura se află în afara carcasei</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2385"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2388"/>
         <source>Holes are nested</source>
         <comment>GEOS Error</comment>
         <translation>Breșele se includ unele pe altele</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2386"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2389"/>
         <source>Interior is disconnected</source>
         <comment>GEOS Error</comment>
         <translation>Interiorul este deconectat</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2387"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2390"/>
         <source>Self-intersection</source>
         <comment>GEOS Error</comment>
         <translation>Auto-intersecție</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2388"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2391"/>
         <source>Ring self-intersection</source>
         <comment>GEOS Error</comment>
         <translation>Auto-intersectare inel</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2389"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2392"/>
         <source>Nested shells</source>
         <comment>GEOS Error</comment>
         <translation>Carcase imbricate</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2390"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2393"/>
         <source>Duplicate rings</source>
         <comment>GEOS Error</comment>
         <translation>Duplicare inele</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2391"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2394"/>
         <source>Too few points in geometry component</source>
         <comment>GEOS Error</comment>
         <translation>Prea puține puncte în componenta geometrică</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2392"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2395"/>
         <source>Invalid coordinate</source>
         <comment>GEOS Error</comment>
         <translation>Coordonate nevalide</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2393"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2396"/>
         <source>Ring is not closed</source>
         <comment>GEOS Error</comment>
         <translation>Inelul nu este închis</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="3348"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="3342"/>
         <source>Calculating constrainedDelaunayTriangulation requires a QGIS build based on GEOS 3.11 or later</source>
         <translation>Calcularea constrainedDelaunayTriangulation necesită o compilație QGIS bazată pe GEOS 3.11 sau o versiune ulterioară</translation>
     </message>
@@ -24109,7 +24109,7 @@ Distanța este specificată în unitățile de strat, iar azimutul în grade, m�
         <translation>Spațierea pe verticală este prea mare pentru aria acoperită.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgrid.cpp" line="477"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgrid.cpp" line="479"/>
         <source>To preserve symmetry, hspacing is fixed relative to vspacing
  hspacing is fixed at: %1 and hoverlay is fixed at: %2 hoverlay cannot be negative. Increase hoverlay.</source>
         <translation>Pentru a păstra simetria, hspacing este fixată relativ la  vspacing
@@ -24481,25 +24481,25 @@ hspacing este stabilită la: %1 iar hoverlay la: %2 hoverlay neputând fi negati
         <translation>Eroare de creare a entității (Eroare OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3583"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3588"/>
         <source>Cannot overwrite an OGR layer in place</source>
         <translation>Nu se poate suprascrie un strat OGR în loc</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3734"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3739"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="547"/>
         <source>Failed to transform feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation>Nu s-a reușit transformarea entității cu ID-ul &apos;%1&apos;. Scrierea a fost oprită. (Excepție: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3759"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3764"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="502"/>
         <source>Feature write errors:</source>
         <translation>Erori de scriere entitate:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3783"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4413"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3788"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4418"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>
@@ -25198,13 +25198,13 @@ If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
         <translation>În mod implicit, driver-ul va încerca să detecteze tipul de date al câm purilor. Dacă este setat pe STRING, atunci toate câmpurile vor fi de tipul Șir.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3769"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3774"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="525"/>
         <source>Stopping after %n error(s)</source>
         <translation><numerusform>Oprire după %n ero(ri).</numerusform><numerusform>Oprire după %n ero(ri).</numerusform><numerusform>Oprire după %n ero(ri).</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4320"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4325"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
         <translation>Nu s-a reușit transformarea, scrierea fiind oprită. (Excepție: %1)</translation>
     </message>
@@ -26533,7 +26533,7 @@ stderr: %4</translation>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1803"/>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2268"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3346"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4675"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4682"/>
         <source>Unsupported type for field %1</source>
         <translation>Tipul nu este acceptat pentru câmpul %1</translation>
     </message>
@@ -26640,7 +26640,7 @@ stderr: %4</translation>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="348"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="351"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1618"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5554"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5588"/>
         <location filename="../src/gui/providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp" line="23"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="57"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="95"/>
@@ -26890,7 +26890,7 @@ vă rugăm să furnizați un nume nou:</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="712"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6502"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
         <source>Cannot open transaction on %1, since it is not currently opened</source>
         <translation>Nu se poate deschide tranzacția pe %1, nedeschis/ă în prezent</translation>
     </message>
@@ -27019,10 +27019,10 @@ Eroare: %2</translation>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1659"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="51"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3095"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4413"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5159"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5219"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5373"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4420"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5166"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5226"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5380"/>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
@@ -27031,11 +27031,11 @@ Eroare: %2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2695"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6023"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6098"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6273"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6332"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6437"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6025"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6100"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6275"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6334"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6439"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="186"/>
         <source>Connection to database failed</source>
         <translation>Conexiunea cu baza de date a eşuat</translation>
@@ -27047,7 +27047,7 @@ Eroare: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3236"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4595"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4602"/>
         <source>Creation of data source %1 failed: 
 %2</source>
         <translation>Crearea sursei de date %1 a eșuat: 
@@ -27056,7 +27056,7 @@ Eroare: %2</translation>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1780"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3274"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4615"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4622"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Încărcarea stratului %1 a eșuat</translation>
     </message>
@@ -27195,13 +27195,13 @@ Eroare bază de date: %2</translation>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="313"/>
+        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="321"/>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="483"/>
         <source>Infinite filter rectangle specified</source>
         <translation>S-a specificat un filtru dreptunghiular infinit </translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="313"/>
+        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="321"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="97"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="106"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="115"/>
@@ -27226,7 +27226,7 @@ Eroare bază de date: %2</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5227"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2535"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Nu se poate salva stilul stratului. Nu este posibilă crearea tabelului destinație în baza de date. Poate că acest lucru se datorează permisiunilor tabelului (utilizator=%1). Vă rugăm să contactați administratorul bazei de date</translation>
@@ -27257,28 +27257,28 @@ Eroare bază de date: %2</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4690"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4697"/>
         <source>Creation of fields failed:
 %1</source>
         <translation>Crearea câmpurilor a eșuat:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2547"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Nu se poate adăuga tipul de coloană la tabelul layer_styles. Poate că acest lucru se datorează permisiunilor tabelului (utilizator=%1). Contactați administratorul bazei de date</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5351"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2673"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Nu se poate salva stilul stratului. Nu este posibilă inserarea unei noi înregistrări în tabelul cu stiluri. Poate că acest lucru se datorează permisiunilor tabelului (user=%1). Vă rugăm să contactați administratorul bazei de date</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5453"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5539"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5574"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2769"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2859"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2894"/>
@@ -27286,49 +27286,49 @@ Eroare bază de date: %2</translation>
         <translation>Conexiunea cu baza de date, cu numele de utilizator %1, a eşuat</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5486"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5513"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5554"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5590"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5493"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2806"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2833"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2874"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2910"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6078"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6244"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6080"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6246"/>
         <source>Error executing query: %1</source>
         <translation>Eroare în timpul execuției interogării: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5487"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2807"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Eroare în timpul selecției stilurilor aferente. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5514"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6410"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6412"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Eroare în timpul selecției stilurilor care nu sunt aferente. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5555"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2875"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>Eroare pe durata execuției ștergerii. Comenzile au fost jurnalizate</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5591"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2911"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6463"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Eroare în timpul selecției. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5586"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2906"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6455"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6457"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Eroare de consistență în tabelul &apos;%1&apos;. Id-ul stilului ar trebui să fie unic</translation>
     </message>
@@ -27362,14 +27362,14 @@ SQL: %1</translation>
         <translation>crearea câmpurilor nu a reușit</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6041"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6115"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6197"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
         <source>Error executing query %1: %2</source>
         <translation>Eroare în timpul execuției interogării %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6502"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
         <source>spatialite</source>
         <translation>spatialite</translation>
     </message>
@@ -27394,31 +27394,31 @@ SQL: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="46"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="196"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="195"/>
         <source>Unable to delete table %1
 </source>
         <translation>Nu se poate șterge tabelul %1
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6459"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
         <source>Style with id %1 not found in %2 (Query: %3)</source>
         <translation>Stilul cu id-ul %1 nu a putut fi găsit în %2 (Interogarea: %3)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="3063"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6245"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6350"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6045"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6119"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6201"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6247"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6352"/>
         <source>Error looking for style. The query was logged</source>
         <translation>Eroare în timpul căutării stilului. Interogarea a fost jurnalizată</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="2901"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2964"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6151"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6153"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
         <translation>Nu se poate salva stilul stratului. Nu este posibilă crearea tabelului destinație în baza de date.</translation>
     </message>
@@ -27454,7 +27454,7 @@ SQL: %1</translation>
         <translation>Nu se poate deschide %1.</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6309"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6311"/>
         <source>Error executing loading style. The query was logged</source>
         <translation>Eroare în timpul încărcării stilului. Interogarea a fost jurnalizată</translation>
     </message>
@@ -27463,12 +27463,12 @@ SQL: %1</translation>
         <location filename="../src/core/qgsogrutils.cpp" line="2658"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2769"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2830"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6364"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6366"/>
         <source>No styles available on DB</source>
         <translation>Nu există stiluri disponibile în DB</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6384"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6386"/>
         <source>Error loading styles. The query was logged</source>
         <translation>Eroare în timpul încărcării stilului. Interogarea a fost jurnalizată</translation>
     </message>
@@ -28337,7 +28337,7 @@ Atributele suplimentare și valorile acestora sunt preluate dintr-un al doilea s
     </message>
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="154"/>
-        <location filename="../src/core/actions/qgsaction.cpp" line="429"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="435"/>
         <source>Open URL</source>
         <translation>Deschidere URL</translation>
     </message>
@@ -28540,7 +28540,7 @@ Atributele suplimentare și valorile acestora sunt preluate dintr-un al doilea s
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="319"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2887"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2889"/>
         <source>Project</source>
         <translation>Proiect</translation>
     </message>
@@ -29857,8 +29857,8 @@ Dacă valoarea minimă nu este specificată, atunci este testată doar valoarea 
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="57"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="97"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="779"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="784"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="782"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="787"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="56"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="61"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="77"/>
@@ -31144,39 +31144,39 @@ Operațiunea este IREVERSIBILĂ!
         <translation>Nu se poate încărca stratul de adnotare principal al proiectului.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1073"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1075"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="1345"/>
         <source>Specified CRS is a %1 CRS, not a Vertical CRS</source>
         <translation>CRS-ul specificat este %1, nu unul Vertical</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1089"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1091"/>
         <source>Project CRS is a Compound CRS, specified Vertical CRS will be ignored</source>
         <translation>CRS-ul proiectului este un CRS Compus, CRS-ul Vertical specificat fiind ignorat</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1098"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1100"/>
         <source>Project CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored</source>
         <translation>CRS-ul proiectului este un CRS 3D Geografic, CRS-ul Vertical specificat fiind ignorat</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1107"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1109"/>
         <source>Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored</source>
         <translation>CRS-ul proiectului este un CRS Geocentric, CRS-ul Vertical specificat fiind ignorat</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1116"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1118"/>
         <source>Project CRS is a Projected 3D CRS, specified Vertical CRS will be ignored</source>
         <translation>CRS-ul proiectului este un CRS 3D Proiectat, CRS-ul Vertical specificat fiind ignorat</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2684"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2688"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2686"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2690"/>
         <source>Project translation</source>
         <translation>Traducere proiect</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="5030"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="5032"/>
         <source>WMS Online Resource</source>
         <translation>Resursă Online WMS</translation>
     </message>
@@ -31615,29 +31615,29 @@ Valorile Z și M de la începutul și finalul noului subșir liniar sunt interpo
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="264"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="322"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="374"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="325"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="380"/>
         <source>Count: %1</source>
         <translation>Număr: %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="265"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="323"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="375"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="326"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="381"/>
         <source>Unique values: %1</source>
         <translation>Valori unice: %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="266"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="324"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="376"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="327"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="382"/>
         <source>NULL (missing) values: %1</source>
         <translation>Valori NULL (lipsă): %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="267"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="325"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="377"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="328"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="383"/>
         <source>NOT NULL (filled) values: %1</source>
         <translation>Valori NOT NULL (pline): %1</translation>
     </message>
@@ -31697,32 +31697,32 @@ Valorile Z și M de la începutul și finalul noului subșir liniar sunt interpo
         <translation>Intervalul Intercuartilic (IQR): %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="328"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="331"/>
         <source>Range (seconds): %1</source>
         <translation>Interval (secunde): %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="380"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="386"/>
         <source>Minimum length: %1</source>
         <translation>Lungimea minimă: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="381"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="387"/>
         <source>Maximum length: %1</source>
         <translation>Lungime minimă: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="382"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="388"/>
         <source>Mean length: %1</source>
         <translation>Lungimea medie: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="383"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="389"/>
         <source>Minority: %1</source>
         <translation>Minoritate: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="384"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="390"/>
         <source>Majority: %1</source>
         <translation>Majoritate: %1</translation>
     </message>
@@ -31772,7 +31772,7 @@ Valorile Z și M de la începutul și finalul noului subșir liniar sunt interpo
         <translation><numerusform>%n argument(e) sau mai multe</numerusform><numerusform>%n argument(e) sau mai multe</numerusform><numerusform>%n argument(e) sau mai multe</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="987"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="989"/>
         <source>Style Manager</source>
         <translation>Gestionare stil</translation>
     </message>
@@ -31803,8 +31803,8 @@ Valorile Z și M de la începutul și finalul noului subșir liniar sunt interpo
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="42"/>
         <location filename="../src/analysis/processing/qgsalgorithmdensifygeometriesbycount.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmdensifygeometriesbyinterval.cpp" line="40"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="231"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="334"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="228"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="331"/>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="26"/>
         <location filename="../src/analysis/processing/qgsalgorithmdropmzvalues.cpp" line="39"/>
         <location filename="../src/analysis/processing/qgsalgorithmexplode.cpp" line="44"/>
@@ -32264,19 +32264,19 @@ Algoritmul nu modifică atributele.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="51"/>
         <location filename="../src/analysis/processing/qgsalgorithmcalculateoverlaps.cpp" line="53"/>
         <location filename="../src/analysis/processing/qgsalgorithmcategorizeusingstyle.cpp" line="32"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="78"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="83"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="79"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="79"/>
@@ -32296,8 +32296,8 @@ Algoritmul nu modifică atributele.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsalgorithmdeleteduplicategeometries.cpp" line="52"/>
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="88"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="242"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="350"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="239"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="347"/>
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmexplodehstore.cpp" line="68"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="71"/>
@@ -32311,16 +32311,16 @@ Algoritmul nu modifică atributele.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="49"/>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="261"/>
         <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="71"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="75"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="69"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="54"/>
@@ -32363,7 +32363,7 @@ Algoritmul nu modifică atributele.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmuniquevalueindex.cpp" line="49"/>
         <location filename="../src/analysis/processing/qgsalgorithmvoronoipolygons.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="170"/>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1108"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1119"/>
         <source>Input layer</source>
         <translation>Strat de intrare</translation>
     </message>
@@ -32605,9 +32605,9 @@ Parametrul de limitare a teșirii controlează distanța maximă față de curba
         <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="701"/>
         <location filename="../src/core/processing/qgsprocessingalgrunnertask.cpp" line="47"/>
         <location filename="../src/core/processing/qgsprocessingalgrunnertask.cpp" line="74"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3848"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4646"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8629"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3855"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4653"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8636"/>
         <location filename="../src/core/processing/qgsprocessingprovider.cpp" line="108"/>
         <source>Processing</source>
         <translation>Processing</translation>
@@ -32781,22 +32781,22 @@ Atributele asociate fiecărui punct din stratul de ieșire sunt aceleași cu cel
         <translation>Nu se poate calcula carcasa convexă pentru o singură entitate de tip Punct (încercați în schimb algoritmul &apos;Geometria minimă de încadrare&apos;).</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="221"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="218"/>
         <source>Dissolve</source>
         <translation>Dizolvare</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="226"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="223"/>
         <source>dissolve,union,combine,collect</source>
         <translation>dizolvare,îmbinare,combinare,colectare</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="243"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="240"/>
         <source>Dissolve field(s)</source>
         <translation>Dizolvare câmp(uri)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="351"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="348"/>
         <source>Unique ID fields</source>
         <translation>Câmpuri cu ID unic</translation>
     </message>
@@ -32812,7 +32812,7 @@ Atributele asociate fiecărui punct din stratul de ieșire sunt aceleași cu cel
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcoverageunion.cpp" line="54"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="249"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="246"/>
         <source>Dissolved</source>
         <translation>Dizolvat</translation>
     </message>
@@ -32846,12 +32846,12 @@ Oferă o abordare puternic optimizată pentru unificarea acestor entități în 
         <translation>Sortare rezultat</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="242"/>
         <source>Keep disjoint features separate</source>
         <translation>Păstrează separate entitățile disjunse</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="254"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="251"/>
         <source>This algorithm takes a vector layer and combines their features into new features. One or more attributes can be specified to dissolve features belonging to the same class (having the same value for the specified attributes), alternatively all features can be dissolved in a single one.
 
 All output geometries will be converted to multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
@@ -32864,52 +32864,52 @@ Toate geometriile rezultate vor fi convertite în geometrii multiple. În cazul 
 Dacă este activată, setarea opțională de „Păstrare separată a entităților disjunse” va face ca entitățile și părțile care nu se suprapun sau care nu se ating să fie exportate ca entități separate (în loc de părți ale unei singure entități cu mai multe părți).</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="265"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="262"/>
         <source>Combines features of a vector layer into new features, optionally grouped by common attributes.</source>
         <translation>Combină entitățile unui strat vectorial în entități noi, grupate opțional după atribute comune.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="293"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="290"/>
         <source>GEOS exception: taking the slower route ...</source>
         <translation>Excepție GEOS: alegere traseu mai lent ...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="308"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="305"/>
         <source>The algorithm returned no output.</source>
         <translation>Algoritmul nu a returnat niciun rezultat.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="324"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="321"/>
         <source>Collect geometries</source>
         <translation>Colectare geometrii</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="326"/>
         <source>union,combine,collect,multipart,parts,single</source>
         <translation>union,combine,collect,multipart,parts,single</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="353"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="350"/>
         <source>Collected</source>
         <translation>Colectat</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="358"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="355"/>
         <source>This algorithm takes a vector layer and collects its geometries into new multipart geometries. One or more attributes can be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively all geometries can be collected.</source>
         <translation>Acest algoritm colectează geometriile unui strat vectorial, producând noi geometrii cu părți multiple. Pentru colectarea doar a geometriilor care aparțin aceleiași clase (care au aceeași valoare pentru atributele specificate), se pot specifica unul sau mai multe atribute, altfel se vor colecta toate geometriile.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="361"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="358"/>
         <source>All output geometries will be converted to multi geometries, even those with just a single part. This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part.</source>
         <translation>Toate geometriile de ieșire vor fi convertite în geometrii multiple, chiar și cele cu o singură parte. Acest algoritm nu dizolvă geometriile suprapuse - acestea vor fi colectate fără modificarea formei vreunei părți de geometrie.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="363"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="360"/>
         <source>See the &apos;Promote to multipart&apos; or &apos;Aggregate&apos; algorithms for alternative options.</source>
         <translation>Parcurgeți algoritmii &apos;Promovare la părți multiple sau &apos;Agregare&apos;, pentru opțiuni alternative.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="368"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="365"/>
         <source>Collects geometries of a vector layer into new multipart geometries, optionally grouped by common attributes.</source>
         <translation>Colectează geometriile unui strat vectorial în geometrii noi cu mai multe părți, grupate opțional după atribute comune.</translation>
     </message>
@@ -32978,7 +32978,7 @@ Dacă este activată, setarea opțională de „Păstrare separată a entități
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="91"/>
         <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="75"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="515"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="773"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="776"/>
         <location filename="../src/analysis/processing/qgsalgorithmextentfromlayer.cpp" line="85"/>
         <location filename="../src/analysis/processing/qgsalgorithmextenttolayer.cpp" line="29"/>
         <location filename="../src/analysis/processing/qgsalgorithmextenttolayer.cpp" line="30"/>
@@ -33332,30 +33332,30 @@ De asemenea, opțional, entitățile geometrice pot fi decupate după extindere.
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="253"/>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="98"/>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="282"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3279"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3282"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4040"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4136"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4138"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4140"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4552"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4555"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3286"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3289"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4047"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4143"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4145"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4147"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4559"/>
         <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4562"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4565"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4568"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4988"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5749"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5874"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6431"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6663"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6888"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6915"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7004"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7041"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7387"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9329"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9527"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9874"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4569"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4572"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4575"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4995"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5756"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5881"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6438"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6670"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6895"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6922"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7011"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7048"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7394"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9336"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9534"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9881"/>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="52"/>
         <location filename="../src/gui/processing/qgsprocessingmaplayercombobox.cpp" line="683"/>
         <location filename="../src/gui/processing/qgsprocessingmultipleselectiondialog.cpp" line="347"/>
@@ -33812,7 +33812,7 @@ Opțional, pot fi create linii geodezice, care reprezintă cea mai scurtă cale 
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="99"/>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1050"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1060"/>
         <source>Could not write feature</source>
         <translation>Nu se poate scrie entitatea</translation>
     </message>
@@ -34675,19 +34675,19 @@ Angles below the minimum angle are errors.</source>
 Unghiurile sub unghiul minim reprezintă erori.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="87"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="85"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="85"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="86"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="88"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="83"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="85"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="87"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="86"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="87"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="82"/>
@@ -34700,29 +34700,29 @@ Unghiurile sub unghiul minim reprezintă erori.</translation>
         <translation>Identificator de entitate unic</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="88"/>
         <source>Minimum angle (in degrees)</source>
         <translation>Unghiul minim (în grade)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="92"/>
         <source>Small angle errors</source>
         <translation>Erori ale unghiurilor mici</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="93"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="92"/>
@@ -34733,15 +34733,15 @@ Unghiurile sub unghiul minim reprezintă erori.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="104"/>
         <location filename="../src/analysis/processing/qgsalgorithmcoveragesimplify.cpp" line="54"/>
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="68"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="124"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="108"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="108"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="109"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="95"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="103"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="107"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="130"/>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="113"/>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="115"/>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatevertices.cpp" line="79"/>
@@ -34753,19 +34753,19 @@ Unghiurile sub unghiul minim reprezintă erori.</translation>
         <translation>Toleranţă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="104"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="104"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="95"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="101"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="115"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="95"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="95"/>
@@ -34774,115 +34774,190 @@ Unghiurile sub unghiul minim reprezintă erori.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="107"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="114"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="127"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="115"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="106"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="110"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="133"/>
         <source>The &quot;Tolerance&quot; advanced parameter defines the numerical precision of geometric operations, given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero.</source>
         <translation>Parametrul avansat &quot;Toleranță&quot; definește precizia numerică a operațiilor geometrice, dată de numărul întreg &quot;n&quot;, și având în vedere că orice diferență mai mică de 10⁻ⁿ (în unități de hartă) este considerată zero.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="146"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="134"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="135"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="143"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="133"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="128"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="133"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="132"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="132"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="139"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="132"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="131"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="131"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="144"/>
         <source>Missing field %1 in input layer</source>
         <translation>Câmpul %1 lipsește din stratul de intrare</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="167"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="177"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="158"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="169"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="165"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="162"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="162"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="170"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="156"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="166"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="178"/>
         <source>Preparing features…</source>
         <translation>Pregătire entități</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="182"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="196"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="177"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="213"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="187"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="179"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="181"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="179"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="174"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="186"/>
         <source>Collecting errors…</source>
         <translation>Colectare erori...</translation>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="195"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="214"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="190"/>
+        <source>Errors collected successfully.</source>
+        <translation>Erorile s-au colectat cu succes.</translation>
+    </message>
+    <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="179"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="200"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="170"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="178"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="181"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="217"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="218"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="192"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="178"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="185"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="184"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="186"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="194"/>
+        <source>Operation was canceled.</source>
+        <translation>Operația a fost anulată.</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="186"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="222"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="196"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="198"/>
+        <source>Field &apos;%1&apos; contains non-unique values and can not be used as unique ID.</source>
+        <translation>Câmpul &apos;%1&apos; conține valori non-unice și nu poate fi utilizat drept ID unic.</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="207"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="230"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="200"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="192"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="193"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="192"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="202"/>
         <source>Exporting errors…</source>
         <translation>Exportare erori...</translation>
     </message>
@@ -35681,7 +35756,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="774"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="777"/>
         <location filename="../src/analysis/processing/qgsalgorithmlinedensity.cpp" line="55"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="43"/>
         <source>Pixel size</source>
@@ -36337,7 +36412,7 @@ Algoritmul nu modifică atributele.</translation>
     <message>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="91"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="54"/>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2275"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2282"/>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="89"/>
         <source>Opacity</source>
         <translation>Opacitate</translation>
@@ -37548,7 +37623,17 @@ Informațiile extrase din etichete conțin: poziția (sub formă de geometrii pu
         <translation>Nu s-a putut încărca stratul destinație pentru %1: valoarea nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1048"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1051"/>
+        <source>Could not write feature into %1: %2</source>
+        <translation>Nu se poate înscrie entitatea în %1: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1053"/>
+        <source>Could not write feature: %1</source>
+        <translation>Nu se poate înscrie entitatea: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1058"/>
         <source>Could not write feature into %1</source>
         <translation>Nu se poate înscrie entitatea în %1</translation>
     </message>
@@ -37561,99 +37646,99 @@ Informațiile extrase din etichete conțin: poziția (sub formă de geometrii pu
         <translation>A apărut o eroare de transformare pe durata reproiectării entității cu id-ul %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="709"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="716"/>
         <source>No parameter definition for the sink</source>
         <translation>Nicio definiție a parametrilor pentru colector</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1110"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1172"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1196"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1225"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1284"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1317"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1117"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1179"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1203"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1232"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1291"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1324"/>
         <source>Error transforming extent geometry</source>
         <translation>Eroare de transformare a geometriei extinderii </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1444"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1482"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1567"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1451"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1489"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1574"/>
         <source>Error transforming point geometry</source>
         <translation>Eroare de transformare a geometriei de tip punct</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1587"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1594"/>
         <source>Error transforming rectangle geometry</source>
         <translation>Eroare de transformare a geometriei dreptunghiului</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1605"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1636"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1612"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1643"/>
         <source>Error transforming geometry</source>
         <translation>Eroare de transformare a geometriei</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3011"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3018"/>
         <source>Python identifier: ‘%1’</source>
         <translation>Identificator Python: ‘%1’</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3848"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3855"/>
         <source>Error creating geometry: &quot;%1&quot;</source>
         <translation>Eroare de creare a geometriei: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4138"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4145"/>
         <source>%1 files</source>
         <translation>%1 fișiere</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4646"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4653"/>
         <source>Invalid number parameter &quot;%1&quot;: min value %2 is &gt;= max value %3!</source>
         <translation>Parametrul numeric &quot;%1&quot; nu este valid: valoarea minimă %2 este &gt;= valoarea maximă %3!</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="268"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="326"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="378"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4695"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8738"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="384"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4702"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8745"/>
         <source>Minimum value: %1</source>
         <translation>Valoarea minimă: %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="269"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="327"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="379"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4697"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8740"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="330"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="385"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4704"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8747"/>
         <source>Maximum value: %1</source>
         <translation>Valoarea maximă: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4699"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8742"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4706"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8749"/>
         <source>Default value: %1</source>
         <translation>Valoarea implicită: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6661"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6886"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7385"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9525"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9872"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6668"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6893"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7392"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9532"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9879"/>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="50"/>
         <source>%1 files (*.%2)</source>
         <translation>%1 files (*.%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7183"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7190"/>
         <source>Default extension</source>
         <translation>Extensie implicită</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8629"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8636"/>
         <source>Invalid datetime parameter &quot;%1&quot;: min value %2 is &gt;= max value %3!</source>
         <translation>Parametru datetime &quot;%1&quot; nevalid: valoarea minimă %2 este &gt;= valoarea maximă %3!</translation>
     </message>
@@ -40348,27 +40433,27 @@ Ultimele cadre:
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="49"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="265"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="262"/>
         <source>count</source>
         <translation>numărare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="267"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="264"/>
         <source>count distinct</source>
         <translation>numărare valori distincte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="269"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="266"/>
         <source>count missing</source>
         <translation>numărare valori lipsă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="271"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="268"/>
         <source>minimum</source>
         <translation>minimum</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="273"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="270"/>
         <source>maximum</source>
         <translation>maximum</translation>
     </message>
@@ -40399,19 +40484,19 @@ Ultimele cadre:
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="54"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="275"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="272"/>
         <source>sum</source>
         <translation>sumă</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="55"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="277"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="274"/>
         <source>mean</source>
         <translation>media</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="56"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="279"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="276"/>
         <source>median</source>
         <translation>median</translation>
     </message>
@@ -40489,18 +40574,18 @@ Algoritmul calculează un rezumat statistic pentru valorile din entitățile cor
         <translation>Realizează rezumatul atributelor aduse dintr-un strat vectorial într-altul, în funcție de locație.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="281"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="278"/>
         <source>standard deviation</source>
         <translation>abaterea standard</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="283"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="280"/>
         <source>standard deviation (sample)</source>
         <translation>abatere standard (eșantion)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="53"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="285"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="282"/>
         <source>range</source>
         <translation>gamă</translation>
     </message>
@@ -40511,109 +40596,109 @@ Algoritmul calculează un rezumat statistic pentru valorile din entitățile cor
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="58"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="287"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="284"/>
         <source>minority</source>
         <translation>minority</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="59"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="289"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="286"/>
         <source>majority</source>
         <translation>majority</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="291"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="288"/>
         <source>first quartile</source>
         <translation>prima quartilă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="293"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="290"/>
         <source>third quartile</source>
         <translation>a treia quartilă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="295"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="292"/>
         <source>inter quartile range</source>
         <translation>interval interquartilic</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="297"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="294"/>
         <source>minimum length</source>
         <translation>lungime minimă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="299"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="296"/>
         <source>maximum length</source>
         <translation>lungime maximă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="301"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="298"/>
         <source>concatenate</source>
         <translation>concatenate</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="303"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="300"/>
         <source>collection</source>
         <translation>colecție</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="305"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="302"/>
         <source>array aggregate</source>
         <translation>agregare matrice</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="307"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="304"/>
         <source>concatenate (unique)</source>
         <translation>concatenare (unică)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="568"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="565"/>
         <source>Cannot calculate %1 on numeric values</source>
         <translation>Nu se poate calcula %1 pe valori numerice</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="569"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="566"/>
         <source>Cannot calculate %1 on numeric fields</source>
         <translation>Nu se poate calcula %1 pe câmpuri numerice</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="586"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="583"/>
         <source>Cannot calculate %1 on %2 values</source>
         <translation>Nu se pot calcula %1 din %2 valori</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>Cannot calculate %1 on %2 fields</source>
         <translation>Nu se pot calcula %1 din %2 câmpuri</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>date</source>
         <translation>date</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>datetime</source>
         <translation>datetime</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="634"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="631"/>
         <source>null</source>
         <translation>null</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="638"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="633"/>
         <location filename="../src/gui/editorwidgets/core/qgswidgetwrapper.cpp" line="31"/>
         <source>string</source>
         <translation>string</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="641"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="636"/>
         <source>Cannot calculate %1 on %3 values</source>
         <translation>Nu se pot calcula %1 din %3 valori</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="642"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="637"/>
         <source>Cannot calculate %1 on %3 fields</source>
         <translation>Nu se pot calcula %1 din %3 câmpuri</translation>
     </message>
@@ -42047,7 +42132,7 @@ By default only the m value from the first vertex of each feature is extracted, 
         <translation>.|:</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1514"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1517"/>
         <source>Reset to Defaults</source>
         <translation>Resetare la Valorile Implicite</translation>
     </message>
@@ -42861,7 +42946,7 @@ Oricare pixel FărăDate este omis din rezultat.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="100"/>
-        <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="120"/>
         <source>Error reversing line</source>
         <translation>Eroare de inversare direcţie</translation>
     </message>
@@ -42894,10 +42979,10 @@ Oricare pixel FărăDate este omis din rezultat.</translation>
         <location filename="../src/3d/terrain/qgs3dterrainregistry.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="165"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="474"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="727"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="949"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1250"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1473"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="730"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="952"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1253"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1476"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="54"/>
         <location filename="../src/analysis/processing/qgsalgorithmtinmeshcreation.cpp" line="31"/>
         <location filename="../src/providers/mdal/qgsmdalprovidergui.cpp" line="29"/>
@@ -42922,10 +43007,10 @@ Oricare pixel FărăDate este omis din rezultat.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="207"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="499"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="756"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="976"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1278"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1501"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="759"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="979"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1281"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1504"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="71"/>
         <source>Input mesh layer</source>
         <translation>Stratul suprafeței poliedrice de intrare</translation>
@@ -42933,27 +43018,27 @@ Oricare pixel FărăDate este omis din rezultat.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="212"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="503"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="760"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="980"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1282"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1505"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="763"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="983"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1285"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1508"/>
         <source>Dataset groups</source>
         <translation>Grupuri cu seturi de date</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="219"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="510"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="768"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="987"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1289"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="771"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="990"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1292"/>
         <source>Dataset time</source>
         <translation>Ora setului de date</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="224"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="519"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="775"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1009"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="778"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1012"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmtinmeshcreation.cpp" line="89"/>
         <source>Output coordinate system</source>
@@ -42999,10 +43084,10 @@ Oricare pixel FărăDate este omis din rezultat.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="285"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="574"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="812"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1087"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1330"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1561"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="815"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1090"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1333"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1564"/>
         <source>Preparing data</source>
         <translation>Pregătire date</translation>
     </message>
@@ -43063,12 +43148,12 @@ Suprafețele poliedrice 1D nu sunt acceptate.</translation>
         <translation>Creare grilă de puncte</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="722"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="725"/>
         <source>Rasterize mesh dataset</source>
         <translation>Rasterizează setul de date al suprafeței poliedrice</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="737"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="740"/>
         <source>This algorithm creates a raster layer from a mesh dataset.
 For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).
 1D meshes are not supported.</source>
@@ -43077,22 +43162,22 @@ Pentru datele privind volumul (valori ale setului de date stivuite în 3D), valo
 Rețelele 1D nu sunt suportate.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="789"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="792"/>
         <source>Output raster layer</source>
         <translation>Stratul raster de ieșire</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="833"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="836"/>
         <source>Creating raster layer</source>
         <translation>Creare strat raster</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="944"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="947"/>
         <source>Export contours</source>
         <translation>Exportare curbe de nivel </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="959"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="962"/>
         <source>This algorithm creates contours as a vector layer from a mesh scalar dataset.</source>
         <translation>Creează curbele de nivel sub formă de strat vectorial din setul de date al unei suprafețe poliedrice scalare.</translation>
     </message>
@@ -43122,225 +43207,225 @@ Rețelele 1D nu sunt suportate.</translation>
         <translation>Spațierea grilei nu poate fi 0</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="744"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="747"/>
         <source>Creates a raster layer from a mesh dataset.</source>
         <translation>Creează un strat raster din setul de date al unei plase.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="848"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="851"/>
         <source>Pixel size cannot be 0</source>
         <translation>Dimensiunea pixelilor nu poate fi 0</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="964"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="967"/>
         <source>Creates contours as vector layer from mesh scalar dataset.</source>
         <translation>Creează curbele de nivel sub formă de strat vectorial din setul de date scalare al unei plase.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="993"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="996"/>
         <source>Increment between contour levels</source>
         <translation>Incrementul dintre curbele de nivel</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="997"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1000"/>
         <source>Minimum contour level</source>
         <translation>Nivelul minim al curbelor de nivel</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1000"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1003"/>
         <source>Maximum contour level</source>
         <translation>Nivelul maxim al curbelor de nivel</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1004"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1007"/>
         <source>List of contours level</source>
         <translation>Lista nivelelor curbelor de nivel</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1006"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1009"/>
         <source>Comma separated list of values to export. If filled, the increment, minimum and maximum settings are ignored.</source>
         <translation>Lista de exportat cu valori separate prin virgulă. Dacă sunt completate, setările de increment, minim și maxim vor fi ignorate.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1012"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1015"/>
         <source>Exported contour lines</source>
         <translation>Curbe de nivel exportate liniar</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1013"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1016"/>
         <source>Exported contour polygons</source>
         <translation>Curbe de nivel exportate poligonal</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1049"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1052"/>
         <source>Invalid format for level values, must be numbers separated with comma</source>
         <translation>Format nevalid pentru valorile nivelului, trebuie să fie separate prin virgulă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1053"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1056"/>
         <source>Invalid format for level values, must be different numbers and in increasing order</source>
         <translation>Format nevalid pentru valorile nivelului; trebuie să fie numere diferite, în ordine crescătoare</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1065"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1068"/>
         <source>Invalid interval value, must be greater than zero</source>
         <translation>Valoarea intervalului nu este validă, trebuind să fie mai mare decât zero</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1068"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1071"/>
         <source>Invalid minimum and maximum values, minimum must be lesser than maximum</source>
         <translation>Valori minime și maxime nevalide, minima trebuie să fie mai mică decât maxima</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1071"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1074"/>
         <source>Invalid minimum, maximum and interval values, difference between minimum and maximum must be greater or equal than interval</source>
         <translation>Valorile minime, maxime și de interval nevalide, diferența dintre minim și maxim trebuind să fie mai mare sau egală cu intervalul</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1116"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1123"/>
         <source>group</source>
         <translation>grup</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1117"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1121"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1702"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1705"/>
         <source>time</source>
         <translation>ora</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1118"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1121"/>
         <source>min_value</source>
         <translation>min_value</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1122"/>
         <source>max_value</source>
         <translation>max_value</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1122"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1125"/>
         <source>value</source>
         <translation>valoare</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1248"/>
         <source>Export cross section dataset values on lines from mesh</source>
         <translation>Exportă valorile setului de date ale secțiunii transversale pe liniile din suprafața poliedrică</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1260"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1263"/>
         <source>This algorithm extracts mesh's dataset values from line contained in a vector layer.
 Each line is discretized with a resolution distance parameter for extraction of values on its vertices.</source>
         <translation>Acest algoritm extrage valorile setului de date pentru o suprafață poliedrică din linia conținută într-un strat vectorial.
 Fiecare linie este discretizată cu un parametru al distanței de rezoluție folosită la extragerea valorilor din vertecșii săi.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1266"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1269"/>
         <source>Extracts a mesh dataset&apos;s values from lines contained in a vector layer.</source>
         <translation>Extrage, din liniile conținute într-un strat vectorial, valorile setului de date pentru o plasă.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1489"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1492"/>
         <source>Extracts a mesh dataset&apos;s time series values from points contained in a vector layer.</source>
         <translation>Extrage, din punctele conținute într-un strat vectorial, valorile setului de date pentru o plasă.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1297"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1300"/>
         <source>Lines for data export</source>
         <translation>Liniile pentru exportul de date</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1301"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1304"/>
         <source>Line segmentation resolution</source>
         <translation>Rezoluția segmentării liniei</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1305"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1535"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1308"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1538"/>
         <source>Digits count for coordinates</source>
         <translation>Numărul de cifre pentru coordonate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1309"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1539"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1312"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1542"/>
         <source>Digits count for dataset value</source>
         <translation>Cifrele contează pentru valoarea setului de date</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1313"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1543"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1546"/>
         <source>Exported data CSV file</source>
         <translation>Fișierul datelor CSV exportate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1313"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1543"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1546"/>
         <source>CSV file (*.csv)</source>
         <translation>Fişier CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1361"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1364"/>
         <source>Input lines vector layer required</source>
         <translation>Stratul vectorial al liniilor de intrare este obligatoriu</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1368"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1695"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1371"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1698"/>
         <source>Unable to create the output file</source>
         <translation>Nu se poate crea fișierul de ieșire</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1375"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1378"/>
         <source>offset</source>
         <translation>decalaj</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1395"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1724"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1398"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1727"/>
         <source>Could not transform line to mesh CRS</source>
         <translation>Nu se poate transforma linia în CRS-ul suprafeței poliedrice</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1468"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1471"/>
         <source>Export time series values from points of a mesh dataset</source>
         <translation>Exportați valorile seriilor temporale din punctele unui set de date ale suprafeței poliedrice</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1483"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1486"/>
         <source>This algorithm extracts mesh's dataset time series values from points contained in a vector layer.
 If the time step is kept to its default value (0 hours), the time step used is the one of the two first datasets of the first selected dataset group.</source>
         <translation>Acest algoritm extrage valorile seturilor de date temporale pentru o suprafață poliedrică din punctele conținute într-un strat vectorial.
 Dacă pasul temporal este menținut la valoarea sa implicită (0 ore), pasul utilizat va fi unul dintre primele două seturi de date ale primului grup de date selectat.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1512"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1515"/>
         <source>Starting time</source>
         <translation>Ora de start</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1519"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1522"/>
         <source>Finishing time</source>
         <translation>Timp de definitivare</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1525"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1528"/>
         <source>Time step (hours)</source>
         <translation>Pasul temporal (ore)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1531"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1534"/>
         <source>Points for data export</source>
         <translation>Punctele pentru exportul de date</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1688"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1691"/>
         <source>Input points vector layer required</source>
         <translation>Stratul vectorial al punctelor de intrare este obligatoriu</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1775"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1778"/>
         <source>static dataset</source>
         <translation>set de date statice</translation>
     </message>
@@ -44169,7 +44254,7 @@ Dacă se dorește, pot fi generate, de asemenea, tabele care conțin liste cu ca
     </message>
     <message>
         <location filename="../src/3d/qgs3dutils.cpp" line="254"/>
-        <location filename="../src/core/qgstemporalutils.cpp" line="112"/>
+        <location filename="../src/core/qgstemporalutils.cpp" line="115"/>
         <source>Export canceled</source>
         <translation>Export anulat</translation>
     </message>
@@ -44400,6 +44485,7 @@ Numele fișierelor pot fi generate folosind valori preluate dintr-un atribut din
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbinary.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="173"/>
         <source>Could not open %1 for writing</source>
         <translation>Nu s-a putut deschide fișierul %1 pentru scriere</translation>
     </message>
@@ -44594,9 +44680,9 @@ Se poate folosi în cadrul modelelor, pentru a converti un punct într-un strat,
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="740"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckvalidity.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="78"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="88"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="91"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmkmeansclustering.cpp" line="59"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="75"/>
@@ -45025,7 +45111,7 @@ Simbolurile extrase sunt salvate într-o bază de date cu stiluri QGIS (în form
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsprojectstylealgorithms.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="193"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="196"/>
         <source>Error saving style database as %1</source>
         <translation>Eroare la salvarea bazei de date de stiluri ca %1</translation>
     </message>
@@ -45065,12 +45151,12 @@ Simbolurile extrase sunt salvate într-o bază de date cu stiluri QGIS (în form
         <translation>Importare %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="138"/>
         <source>Could not read %1</source>
         <translation>Nu se poate citi %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="190"/>
         <source>Writing output file</source>
         <translation>Scriere fișier de ieșire</translation>
     </message>
@@ -45224,7 +45310,7 @@ Simbolurile extrase sunt salvate într-o bază de date cu stiluri QGIS (în form
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="369"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="215"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="214"/>
         <source>Error deleting vector/aspatial table %1: %2</source>
         <translation>Eroare la ștergerea tabelei vectoriale/spațiale %1: %2</translation>
     </message>
@@ -45400,7 +45486,7 @@ Simbolurile extrase sunt salvate într-o bază de date cu stiluri QGIS (în form
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="183"/>
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="683"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="289"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="288"/>
         <source>Geometry column name not specified while creating spatial index</source>
         <translation>Numele coloanei geometrice nu a fost specificat în timpul creării indexului spațial</translation>
     </message>
@@ -45416,18 +45502,18 @@ Simbolurile extrase sunt salvate într-o bază de date cu stiluri QGIS (în form
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="298"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="436"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="435"/>
         <source>Error listing tables from %1: %2</source>
         <translation>Eroare la listarea tabelelor din &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="787"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="562"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="561"/>
         <source>Error executing SQL statement %1: %2</source>
         <translation>Eroare la executarea expresiei SQL %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="578"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="577"/>
         <source>There was an error opening GPKG %1!</source>
         <translation>A apărut o eroare la deschiderea GPKG %1!</translation>
     </message>
@@ -45438,9 +45524,9 @@ Simbolurile extrase sunt salvate într-o bază de date cu stiluri QGIS (în form
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="811"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="584"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="687"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="694"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="583"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="686"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="693"/>
         <source>Error executing SQL %1: %2</source>
         <translation>Eroare la execuția SQL %1: %2</translation>
     </message>
@@ -46258,6 +46344,11 @@ Un atribut sau o expresie pot fi selectate pentru a grupa punctele care au aceea
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="292"/>
         <source>Error evaluating group expression: %1</source>
         <translation>Eroare la evaluarea expresiei grupului: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="326"/>
+        <source>Invalid bookmark destination</source>
+        <translation>Destinația reperului nu este validă</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="605"/>
@@ -48913,38 +49004,48 @@ Pentru a se genera un set predeterminat de straturi, având definit câte un sti
 La nivel intern, mărimea minimă introdusă va fi extinsă până la un multiplu al dimensiunii plăcuțelor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="208"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="152"/>
+        <source>Tile size must be &gt; 0</source>
+        <translation>Dimensiunea plăcuței trebuie să fie &gt; 0</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="158"/>
+        <source>Map units per pixel must be &gt; 0</source>
+        <translation>Unitățile de hartă per pixel trebuie să fie &gt; 0</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="216"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="217"/>
         <source>Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3</source>
         <translation>Stratul %1 va fi omis, deoarece algoritmul duce la un comportament de descărcare în bloc, care este interzis de %2politica de utilizare a plăcuțelor OpenStreetMap Foundation%3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="224"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="232"/>
         <source>Invalid output raster format</source>
         <translation>Format nevalid al rasterului de ieșire</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="230"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="238"/>
         <source>Error creating GDAL driver</source>
         <translation>Eroare la crearea driverului GDAL</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="236"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="244"/>
         <source>Error creating GDAL output layer</source>
         <translation>Eroare la crearea stratului de ieșire GDAL</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="306"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="314"/>
         <source>Error reading tiles from the temporary image</source>
         <translation>Eroare la citirea plăcuțelor din imaginea temporară</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="324"/>
         <source>Error reading intermediate raster</source>
         <translation>Eroare la citirea rasterului intermediar</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="327"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="335"/>
         <source>Error writing output raster</source>
         <translation>Eroare în timpul scrierii rasterului de ieşire</translation>
     </message>
@@ -50868,8 +50969,8 @@ Stratul de tip punct creat va avea sistemul de referință spațială identic cu
         <translation>Punctele de capăt ale Liniei</translation>
     </message>
     <message>
-        <location filename="../src/core/qgssqliteutils.cpp" line="235"/>
-        <location filename="../src/core/qgssqliteutils.cpp" line="244"/>
+        <location filename="../src/core/qgssqliteutils.cpp" line="234"/>
+        <location filename="../src/core/qgssqliteutils.cpp" line="243"/>
         <source>Error retrieving default value for %1</source>
         <translation>Eroare la obținerea valorii implicite pentru %1</translation>
     </message>
@@ -51482,42 +51583,42 @@ Try to remove them before trying deleting these components.</source>
 Încercați să le eliminați înainte de a încerca să ștergeți aceste componente.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4941"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4969"/>
         <source>Name of field (separate field names with ; for multiple field parameters)</source>
         <translation>Numele câmpului (nume de câmpuri separate prin ; în cazul parametrilor multipli)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5091"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5119"/>
         <source>Could not load selected layer/table. Dependent field could not be populated</source>
         <translation>Nu se poate încărca stratul/tabela selectată. Câmpul dependent nu a fost populat.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5553"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5587"/>
         <source>Postgres</source>
         <translation>Postgres</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5555"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5589"/>
         <source>Spatialite</source>
         <translation>Spatialite</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6875"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6921"/>
         <source>Band number (separate bands with ; for multiple band parameters)</source>
         <translation>Numărul benzii (benzi separate cu ; pentru parametrii benzilor multiple)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6975"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7021"/>
         <source>Could not load selected layer/table. Dependent bands could not be populated</source>
         <translation>Nu se poate încărca stratul/tabela selectată. Câmpul dependent nu a putut fi populat.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7831"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7880"/>
         <source>Name of attribute (separate attribute names with ; for multiple attribute parameters)</source>
         <translation>Numele atributului (nume de atribute separate prin ; în cazul atributelor multiple)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7919"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7968"/>
         <source>Could not load selected layer/table. Dependent attributes could not be populated</source>
         <translation>Nu se poate încărca stratul/tabela selectată. Atributele dependente nu au putut fi populate</translation>
     </message>
@@ -51927,47 +52028,47 @@ SQL: %1</source>
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="327"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="326"/>
         <source>Database does not exist</source>
         <translation>Bază de date inexistentă</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="330"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="329"/>
         <source>Failed to open database</source>
         <translation>Nu s-a putut deschide baza de date</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="333"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="332"/>
         <source>Failed to check metadata</source>
         <translation>Nu s-au putut verifica metadatele</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="336"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="335"/>
         <source>Failed to get list of tables</source>
         <translation>Nu s-a putut obţine lista cu tabelele</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="339"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="338"/>
         <source>Unknown error</source>
         <translation>Eroare necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="347"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="346"/>
         <source>Error fetching table information for connection: %1</source>
         <translation>Eroare de obținere a informațiilor despre tabele din conexiune: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1146"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1145"/>
         <source>Could not create a valid layer for table &apos;%1&apos;</source>
         <translation>Nu se poate crea un strat valid pentru tabela &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1150"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1149"/>
         <source>Could not delete field &apos;%1&apos; of table &apos;%2&apos;: field does not exist</source>
         <translation>Nu s-a putut șterge câmpul &apos;%1&apos; din tabela &apos;%2&apos;: câmpul nu există</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1154"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1153"/>
         <source>Unknown error deleting field &apos;%1&apos; of table &apos;%2&apos;</source>
         <translation>Eroare necunoscută, la ștergerea câmpului &apos;%1&apos; din tabela &apos;%2&apos;</translation>
     </message>
@@ -53291,47 +53392,52 @@ Pentru mai multe detalii, consultați următoarele lucrări:
         <translation>Nori de Puncte Entwine</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="257"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="258"/>
+        <source>Could not open temporary file for writing</source>
+        <translation>Nu sa putut deschide fișierul temporar pentru scriere</translation>
+    </message>
+    <message>
+        <location filename="../src/core/actions/qgsaction.cpp" line="263"/>
         <source>Redirect is not supported!</source>
         <translation>Redirecționarea nu este acceptată!</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="404"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="410"/>
         <source>Generic</source>
         <translation>Generic</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="409"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="415"/>
         <source>Generic Python</source>
         <translation>Generic Python</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="414"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="420"/>
         <source>macOS</source>
         <translation>macOS</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="419"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="425"/>
         <source>Windows</source>
         <translation>Windows</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="424"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="430"/>
         <source>Unix</source>
         <translation>Unix</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="434"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="440"/>
         <source>Submit URL (urlencoded or JSON)</source>
         <translation>Adresa de expediere (urlencoded sau JSON)</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="439"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="445"/>
         <source>Submit URL (multipart)</source>
         <translation>Adresă de livrare (părți multiple)</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="443"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="449"/>
         <source>
 &lt;h2&gt;Action Details&lt;/h2&gt;
 &lt;p&gt;
@@ -53412,7 +53518,7 @@ Pentru mai multe detalii, consultați următoarele lucrări:
         <translation>Hibrid</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2276"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2283"/>
         <source>Extent buffer</source>
         <translation>Zonă tampon în jurul extinderii</translation>
     </message>
@@ -53422,7 +53528,7 @@ Pentru mai multe detalii, consultați următoarele lucrări:
         <translation>FileWidget</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="1049"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="1055"/>
         <source>Relation Editor</source>
         <translation>Editorul de Relații</translation>
     </message>
@@ -54894,100 +55000,100 @@ Only the first 999 classes have been generated.</source>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="404"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1137"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1118"/>
         <source>Remote layer</source>
         <translation>Strat aflat la distanță</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="404"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1137"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1118"/>
         <source>loading %1, please wait …</source>
         <translation>se încarcă %1, așteptați...</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="485"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1073"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1407"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="475"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1054"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1387"/>
         <source>%1 is not a valid or recognized data source.</source>
         <translation>%1 nu reprezintă o sursă de date validă sau recunoscută.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="487"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="495"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="577"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1074"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1408"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="485"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="567"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1055"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1388"/>
         <source>Invalid Data Source</source>
         <translation>Sursă de Date Nevalidă</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="487"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
         <source>Download with &quot;Protocol&quot; source type has failed, do you want to try the &quot;File&quot; source type?</source>
         <translation>Descărcarea cu tipul de sursă &quot;Protocol” a eșuat, doriți să încercați tipul de sursă &quot;Fișier”?</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="576"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="566"/>
         <source>%1 is not a valid or recognized data source, error: &quot;%2&quot;</source>
         <translation>%1 nu reprezintă o sursă de date validă sau recunoscută, eroare: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1071"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1052"/>
         <source>Unable to load %1</source>
         <translation>Nu se poate încărca %1</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1188"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1169"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 nu se acceptă ca sursă de date raster</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1192"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1173"/>
         <source>Unsupported Data Source</source>
         <translation>Sursă de Date Nepermisă</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1212"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1193"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Stratul nu este valid și, de aceea, nu poate fi adăugat hărții</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1213"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1194"/>
         <source>Layer is not valid</source>
         <translation>Stratul nu este valid</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1266"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1247"/>
         <source>Error loading layer definition</source>
         <translation>Eroare de încărcare a definițiilor stratului</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1329"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1310"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 nu este un strat valid - nu a fost încărcat</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1330"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1311"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 nu este un strat valid și nu poate fi încărcat. Pentru mai multe informații, verificați &lt;a href=&quot;#messageLog&quot;&gt;jurnalul mesajelor&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1690"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1670"/>
         <source>layer &apos;%1&apos; requires layer &apos;%2&apos; to be loaded but &apos;%2&apos; could not be found, please load it manually if possible.</source>
         <translation>stratul &apos;%1&apos; necesită încărcarea stratului &apos;%2&apos;, însă &apos;%2&apos; nu a putut fi identificat, de aceea, încercați să-l încărcați manual, dacă este posibil.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1691"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1695"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1671"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1675"/>
         <source>Missing layer form dependency</source>
         <translation>Lipsește dependența formularului stratului</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1695"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1675"/>
         <source>Layer dependency &apos;%2&apos; required by &apos;%1&apos; was automatically loaded.</source>
         <translation>Dependența de stratul &apos;%2&apos; cerută de &apos;%1&apos; a fost încărcată automat.</translation>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1726"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1706"/>
         <source>Invalid relationship %1</source>
         <translation>Relație nevalidă %1</translation>
     </message>
@@ -54998,7 +55104,7 @@ Only the first 999 classes have been generated.</source>
         <translation>, </translation>
     </message>
     <message>
-        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="386"/>
+        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="389"/>
         <source>Canceled by user</source>
         <translation>Anulat de către utilizator</translation>
     </message>
@@ -55165,7 +55271,7 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="682"/>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="838"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="222"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="902"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="905"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="171"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="188"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="415"/>
@@ -55186,7 +55292,7 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/analysis/processing/qgsalgorithmrescaleraster.cpp" line="215"/>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="196"/>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="250"/>
-        <location filename="../src/analysis/processing/qgsrasteranalysisutils.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsrasteranalysisutils.cpp" line="279"/>
         <location filename="../src/analysis/processing/qgsreclassifyutils.cpp" line="106"/>
         <source>Could not write raster block: %1</source>
         <translation>Nu se poate scrie blocul raster de ieșire: %1</translation>
@@ -55429,17 +55535,17 @@ Areas below the area threshold are errors.</source>
 Suprafețele mai mici de un anumit prag reprezintă erori.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="88"/>
         <source>Area threshold</source>
         <translation>Aria suprafeței</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="92"/>
         <source>Small polygons errors</source>
         <translation>Erorile poligoanelor mici</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="97"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="95"/>
         <source>Small polygons features</source>
         <translation>Entitățile poligonale mici</translation>
     </message>
@@ -55470,18 +55576,18 @@ Entitățile de intrare conținute în entitățile straturilor poligonale repre
 </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="89"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="85"/>
         <source>Polygon layers</source>
         <translation>Straturi poligonale</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="93"/>
         <source>Errors from contained features</source>
         <translation>Erori ale entităților conținute</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="96"/>
         <source>Contained features</source>
         <translation>Entități conținute</translation>
     </message>
@@ -55646,6 +55752,11 @@ Poligoanele care nu urmează limitele de referință reprezintă erori.</transla
         <translation>Entitățile care depășesc limitele</translation>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="190"/>
+        <source>Invalid reference layer.</source>
+        <translation>Strat de referință nevalid</translation>
+    </message>
+    <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="35"/>
         <source>Small gaps</source>
         <translation>Breșe minore</translation>
@@ -55694,7 +55805,7 @@ Stratul de ieșire al vecinilor este necesar pentru algoritmul de remediere al g
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="102"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="75"/>
         <source>Neighbors layer</source>
         <translation>Stratul vecinilor</translation>
     </message>
@@ -55707,6 +55818,11 @@ Stratul de ieșire al vecinilor este necesar pentru algoritmul de remediere al g
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="108"/>
         <source>Gap features</source>
         <translation>Entități de tip breșă</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="226"/>
+        <source>Failed to perform geometry overlay operation.</source>
+        <translation>Nu s-a putut efectua operația de suprapunere a geometriei.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="35"/>
@@ -55731,12 +55847,12 @@ Holes are errors.</source>
 Golurile reprezintă erori.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="89"/>
         <source>Holes errors</source>
         <translation>Erori ale găurilor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="92"/>
         <source>Polygons with holes</source>
         <translation>Poligoane cu găuri</translation>
     </message>
@@ -55830,12 +55946,12 @@ To be topologically correct, a vertex at the junction of two polygons must be pr
 Pentru a fi corect din punct de vedere topologic, un vertex aflat la joncțiunea a două poligoane trebuie să fie prezent pe ambele poligoane. Vertecșii lipsă reprezintă erori.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="90"/>
         <source>Missing vertices errors</source>
         <translation>Erori de tipul &quot;Vertecși lipsă&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="93"/>
         <source>Missing vertices features</source>
         <translation>Entități cu vertecși lipsă</translation>
     </message>
@@ -56725,7 +56841,7 @@ Algoritmul efectuează testarea stratului în fiecare sistem de referință cuno
         <translation>S-a găsit CRS-ul candidat: %1.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="177"/>
         <source>No matching projections found.</source>
         <translation>Nu s-a găsit proiecția potrivită.</translation>
     </message>
@@ -56766,191 +56882,191 @@ When deletion of a vertex results in a duplicate vertex (when a spike vertex is 
 Când ștergerea unui vertex are ca rezultat duplicarea acestuia (la ștergerea vertexului dintr-un vârf), vertexul duplicat va fi șters pentru a rămâne un singur vârf și pentru a se păstra topologia.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="79"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="78"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="79"/>
         <source>Error layer</source>
         <translation>Stratul erorilor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="83"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="96"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="85"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="93"/>
         <source>Field of original feature unique identifier</source>
         <translation>Câmpul identificatorului unic al entității originale</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="87"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="100"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="84"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="84"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="85"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="97"/>
         <source>Field of part index</source>
         <translation>Câmpul indexului părții</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="92"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="105"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="89"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="89"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="90"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="103"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="102"/>
         <source>Field of ring index</source>
         <translation>Câmpul indexului inelului</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="97"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="110"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="95"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="108"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="107"/>
         <source>Field of vertex index</source>
         <translation>Câmpul indexului vertexului</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="102"/>
         <source>Small angle fixed layer</source>
         <translation>Stratul fără erori de unghi mic</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="107"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="105"/>
         <source>Report layer from fixing small angles</source>
         <translation>Stratul de raportare, rezultat după remedierea unghiurilor mici</translation>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="136"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="138"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="140"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="142"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="155"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="157"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="159"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="161"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="113"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="152"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="154"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="156"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="158"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="111"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="135"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="137"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="141"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="133"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="135"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="137"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="141"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="134"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="136"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="138"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="142"/>
         <source>Field %1 does not exist in the error layer.</source>
         <translation>Câmpul %1 nu există în stratul erorilor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="147"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="116"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="143"/>
         <source>Field %1 does not exist in input layer.</source>
         <translation>Câmpul %1 nu există în stratul de intrare.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="151"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="148"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="149"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="149"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="146"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="147"/>
         <source>Field %1 does not have the same type as in the error layer.</source>
         <translation>Câmpul %1 nu are același tip cu cel din stratul erorilor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="192"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="215"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="182"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="187"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="185"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="224"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="211"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="219"/>
         <source>Fixing errors...</source>
         <translation>Remediere erori...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="208"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="235"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="202"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="198"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="206"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="205"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="231"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="195"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="204"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="240"/>
         <source>Source feature not found or invalid</source>
         <translation>Entitatea sursă nu a fost găsită sau este invalidă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="211"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="238"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="201"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="210"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="274"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="208"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="234"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="198"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="207"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="269"/>
         <source>More than one feature found in input layer with value %1 in unique field %2</source>
         <translation>Mai mult de o entitate s-a găsit în stratul de intrare, având valoarea %1 în câmpul unic %2</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="214"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="241"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="208"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="204"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="213"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="218"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="211"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="237"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="205"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="275"/>
         <source>Feature geometry is null</source>
         <translation>Geometria entității este nulă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="217"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="244"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="283"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="214"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="240"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="204"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="278"/>
         <source>Feature geometry part is null</source>
         <translation>O parte a geometriei entității este nulă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="240"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="267"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="262"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="236"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="204"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="241"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="315"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="237"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="263"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="256"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="233"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="238"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="310"/>
         <source>Error is obsolete</source>
         <translation>Eroarea este învechită</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="253"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="280"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="242"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="281"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="243"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="249"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="253"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="330"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="276"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="239"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="275"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="240"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="246"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="213"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="325"/>
         <source>Exporting fixed layer...</source>
         <translation>Se exportă stratul reparat...</translation>
     </message>
@@ -56975,33 +57091,33 @@ Când ștergerea unui vertex are ca rezultat duplicarea acestuia (la ștergerea 
         <translation>Acest algoritm îmbină poligoanele învecinate conform metodei alese, pe baza stratului cu erori din algoritmul &quot;Poligoane mici&quot; din secțiunea de &quot;Verificare a geometriei&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="88"/>
         <source>Field to consider when merging polygons with the identical attribute method</source>
         <translation>Câmpul de luat în considerare la îmbinarea poligoanelor prin metoda atributelor identice</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="117"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="114"/>
         <source>Small polygons merged layer</source>
         <translation>Stratul poligoanelor mici îmbinate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="117"/>
         <source>Report layer from merging small polygons</source>
         <translation>Stratul de raportare, rezultat după îmbinarea poligoanelor mici</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="197"/>
         <source>Merge field to merge polygons with identical attribute method is empty</source>
         <translation>Câmpul de îmbinare necesar îmbinării poligoanelor prin metoda atributelor identice este gol</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="199"/>
         <source>Merge field %1 does not exist in input layer</source>
         <translation>Câmpul îmbinat %1 nu există în stratul de intrare.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="227"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="223"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="196"/>
         <source>NULL or invalid value found in unique field %1</source>
         <translation>NULL sau o valoare nevalidă s-a depistat în câmpul unic %1</translation>
     </message>
@@ -57032,17 +57148,17 @@ Intrările necesare sunt reprezentate de stratul original utilizat în algoritmu
 De exemplu, poate fi utilizat în urma rulării următorilor algoritmi de verificare, pentru a șterge entitățile eronate:&lt;html&gt;&lt;ul&gt;&lt;li&gt;Entitățile din interiorul poligonului&lt;/li&gt;&lt;li&gt;Poligoane degenerate&lt;/li&gt;&lt;li&gt;Segmente scurte&lt;/li&gt;&lt;li&gt;Geometrii duplicate&lt;/li&gt;&lt;li&gt;etc.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="89"/>
         <source>Cleaned layer</source>
         <translation>Strat curățat</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="92"/>
         <source>Report layer from deleting features</source>
         <translation>Stratul de raportare, rezultat după ștergerea entităților</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="119"/>
         <source>Input field %1 does not have the same type as in the error layer.</source>
         <translation>Câmpul de intrare %1 nu are același tip cu cel din stratul erorilor.</translation>
     </message>
@@ -57067,51 +57183,51 @@ De exemplu, poate fi utilizat în urma rulării următorilor algoritmi de verifi
         <translation>Acest algoritm șterge vertecșii duplicați detectați cu algoritmul „Vertecși duplicați” din secțiunea de &quot;Verificare a geometriei”.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="99"/>
         <source>Fixed duplicate vertices layer</source>
         <translation>Stratul vertecșilor duplicați remediați</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="102"/>
         <source>Report layer from fixing duplicate vertices</source>
         <translation>Stratul de raportare, rezultat după remedierea vertecșilor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="135"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="117"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="127"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="129"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="131"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="134"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="132"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="163"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="165"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="167"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="169"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="173"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="175"/>
         <source>Field &quot;%1&quot; does not exist in the error layer.</source>
         <translation>Câmpul &quot;%1&quot; nu există în stratul erorilor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="122"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="135"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="174"/>
         <source>Field &quot;%1&quot; does not exist in input layer.</source>
         <translation>Câmpul “%1” nu există în stratul de intrare.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="148"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="126"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="142"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="146"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="140"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="179"/>
         <source>Field &quot;%1&quot; does not have the same type as in the error layer.</source>
         <translation>Câmpul &quot;%1&quot; nu are același tip cu cel din stratul erorilor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="212"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="209"/>
         <source>More than one feature found in input layer with value &quot;%1&quot; in unique field &quot;%2&quot;</source>
         <translation>Mai mult de o entitate s-a găsit în stratul de intrare, având valoarea &quot;%1&quot; în câmpul unic &quot;%2&quot;</translation>
     </message>
@@ -57140,58 +57256,58 @@ De exemplu, poate fi utilizat în urma rulării următorilor algoritmi de verifi
 Sunt disponibile 3 metode de umplere, care vor da rezultate diferite.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="78"/>
         <source>Gaps layer</source>
         <translation>Stratul breșelor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="96"/>
         <source>Field of error id</source>
         <translation>Câmpul ID al erorii</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="102"/>
         <source>Gaps-filled layer</source>
         <translation>Stratul breșelor umplute</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="108"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="105"/>
         <source>Report layer from fixing gaps</source>
         <translation>Stratul de raportare, rezultat după remedierea breșelor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="153"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="150"/>
         <source>Unknown resolution method</source>
         <translation>Metodă de rezolvare necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="158"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="155"/>
         <source>Field &quot;%1&quot; does not exist in the gaps layer.</source>
         <translation>Câmpul &quot;%1&quot; nu există în stratul breșelor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="157"/>
         <source>Field &quot;%1&quot; does not exist in the neighbors layer.</source>
         <translation>Câmpul &quot;%1&quot; nu există în stratul vecinătăților.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="165"/>
         <source>Field &quot;%1&quot; does not have the same type as in the neighbors layer.</source>
         <translation>Câmpul &quot;%1&quot; nu are același tip cu cel din stratul vecinilor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="196"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="209"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="204"/>
         <source>Preparing features...</source>
         <translation>Pregătire entități...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="228"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="222"/>
         <source>NULL or invalid value found in field &quot;%1&quot;</source>
         <translation>NULL sau o valoare nevalidă s-a depistat în câmpul &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="274"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="268"/>
         <source>Unable to add gap features</source>
         <translation>Nu se pot adăuga entități de tip breșă</translation>
     </message>
@@ -57218,12 +57334,12 @@ Sunt disponibile 3 metode de umplere, care vor da rezultate diferite.</translati
 </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="99"/>
         <source>Holes-filled layer</source>
         <translation>Stratul găurilor umplute</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="102"/>
         <source>Report layer from fixing holes</source>
         <translation>Stratul de raportare, rezultat după umplerea găurilor</translation>
     </message>
@@ -57248,12 +57364,12 @@ Sunt disponibile 3 metode de umplere, care vor da rezultate diferite.</translati
         <translation>Acest algoritm adaugă vertecșii lipsă de-a lungul marginilor poligoanelor, pe baza unui strat de eroare din algoritmul &quot;Vârfuri lipsă de-a lungul marginilor&quot; din secțiunea de &quot;Verificare a geometriei&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="100"/>
         <source>Border vertices fixed layer</source>
         <translation>Stratul remediat al vertecșilor marginii</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="103"/>
         <source>Report layer from fixing border vertices</source>
         <translation>Stratul de raportare, rezultat după remedierea vertecșilor marginii</translation>
     </message>
@@ -57282,12 +57398,12 @@ This algorithm does not change the layer geometry type, which will remain multip
 Acest algoritm nu modifică tipul de geometrie al stratului, care va rămâne în părți multiple.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="86"/>
         <source>Strictly-multipart layer</source>
         <translation>Strat strict în părți multiple</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="89"/>
         <source>Report layer from fixing multiparts</source>
         <translation>Stratul de raportare, rezultat după remedierea părților multiple</translation>
     </message>
@@ -57314,42 +57430,42 @@ Acest algoritm nu modifică tipul de geometrie al stratului, care va rămâne î
 </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="83"/>
         <source>Field of overlap feature unique identifier</source>
         <translation>Câmpul unic de identificare al entității suprapuse</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="88"/>
         <source>Field of error value</source>
         <translation>Câmpul cu valoarea erorii</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="94"/>
         <source>No-overlap layer</source>
         <translation>Strat fără suprapunere</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="97"/>
         <source>Report layer from fixing overlaps</source>
         <translation>Stratul de raportare, rezultat după remedierea suprapunerilor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="147"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="145"/>
         <source>Field &quot;%1&quot; does not have the same type as &quot;%2&quot; in the input layer.</source>
         <translation>Câmpul &quot;%1&quot; nu are același tip cu cel pentru &quot;%2&quot; din stratul erorilor.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="209"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="206"/>
         <source>Overlap feature not found or invalid</source>
         <translation>Entitatea suprapusă nu a fost găsită sau nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="212"/>
         <source>More than one overlap feature found in input layer with value &quot;%1&quot; in unique field &quot;%2&quot;</source>
         <translation>Mai mult de o entitate suprapusă s-a găsit în stratul de intrare, având valoarea &quot;%1&quot; în câmpul unic &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="221"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="218"/>
         <source>Overlap feature geometry is null</source>
         <translation>Geometria entității suprapuse este nulă</translation>
     </message>
@@ -57374,27 +57490,27 @@ Acest algoritm nu modifică tipul de geometrie al stratului, care va rămâne î
         <translation>Acest algoritm divide liniile sau poligoanele care se auto-intersectează în funcție de metoda aleasă, pe baza stratului cu erori generat de algoritmul &quot;Auto-intersecții&quot; din secțiunea de &quot;Verificare a geometriei&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="112"/>
         <source>Field of segment 1</source>
         <translation>Câmpul segmentului 1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="117"/>
         <source>Field of segment 2</source>
         <translation>Câmpul segmentului 2</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="126"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="123"/>
         <source>Self-intersections fixed layer</source>
         <translation>Stratul auto-intersecțiilor remediate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="129"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="126"/>
         <source>Report layer from fixing self-intersections</source>
         <translation>Stratul de raportare, rezultat după remedierea auto-intersecțiilor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="236"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="231"/>
         <source>NULL or invalid value found in unique field &quot;%1&quot;</source>
         <translation>NULL sau o valoare nevalidă s-a depistat în câmpul unic &quot;%1&quot;</translation>
     </message>
@@ -57898,7 +58014,7 @@ Dacă în stiva rasterului de date există rastere multibandă, algoritmul va ef
         <translation>Dacă se folosește separatorul zecimal local sau întotdeauna punctul zecimal. Este necesar să exportați datele ca csv cu o limbă care folosește virgula ca separator zecimal.</translation>
     </message>
     <message>
-        <location filename="../src/core/dxf/qgsdxfexport.cpp" line="302"/>
+        <location filename="../src/core/dxf/qgsdxfexport.cpp" line="304"/>
         <source>The following empty layers were skipped: %1</source>
         <translation>Următoarele straturi goale vor fi omise: %1</translation>
     </message>
@@ -58087,7 +58203,7 @@ Dacă în stiva rasterului de date există rastere multibandă, algoritmul va ef
         <translation>Nu se pot scrie statistici în &quot;%1&quot;: fișierul conține deja statistici COPC!</translation>
     </message>
     <message>
-        <location filename="../src/core/pointcloud/qgscopcpointcloudindex.cpp" line="306"/>
+        <location filename="../src/core/pointcloud/qgscopcpointcloudindex.cpp" line="307"/>
         <source>Couldn&apos;t open COPC file &quot;%1&quot; to write statistics</source>
         <translation>Nu s-a putut deschide fișierul COPC &quot;%1&quot; pentru a scrie statisticile </translation>
     </message>
@@ -58416,18 +58532,18 @@ Dacă în stiva rasterului de date există rastere multibandă, algoritmul va ef
         <translation>Straturile simbolurilor de tip câmp vectorial nu pot fi convertite în SLD</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="729"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="739"/>
         <source>JSON is not a valid Cesium 3D Tiles source (does not contain &quot;root&quot; value)</source>
         <translation>JSON nu este o sursă validă Cesium 3D Tiles (nu conține valoarea &quot;root&quot;)</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="887"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="897"/>
         <source>JSON is not a valid Cesium 3D Tiles source (unsupported boundingVolume format)</source>
         <translation>JSON nu este o sursă validă Cesium 3D Tiles (formatul boundingVolume nu este permis)</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1161"/>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1361"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1171"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1371"/>
         <source>Cesium 3D Tiles</source>
         <translation>Plăcuțe Cesium 3D</translation>
     </message>
@@ -58584,37 +58700,37 @@ Dacă în stiva rasterului de date există rastere multibandă, algoritmul va ef
         <translation>Generarea paginilor web necesită o versiune QGIS cu suport pentru biblioteca PDF4Qt</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="184"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="186"/>
         <source>Polygon Annotation</source>
         <translation>Adnotare Poligonală</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="189"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="191"/>
         <source>Line Annotation</source>
         <translation>Adnotare Liniară</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="194"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="196"/>
         <source>Marker Annotation</source>
         <translation>Adnotare de tip Marker</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="199"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="201"/>
         <source>Text Annotation at Point</source>
         <translation>Adnotare de tip Text pentru Punct</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="204"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="206"/>
         <source>Text Annotation along Line</source>
         <translation>Adnotare de tip Text de-a lungul Liniei</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="209"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="211"/>
         <source>Text Annotation in Rectangle</source>
         <translation>Adnotare de tip Text într-un Dreptunghi</translation>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="214"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="216"/>
         <source>Picture Annotation</source>
         <translation>Adnotare de tip Imagine</translation>
     </message>
@@ -59043,13 +59159,13 @@ Vă rugăm să contactați dezvoltatorii.
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3378"/>
-        <location filename="../src/app/qgisapp.cpp" line="16938"/>
+        <location filename="../src/app/qgisapp.cpp" line="16941"/>
         <source>Panels</source>
         <translation>Panouri</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3380"/>
-        <location filename="../src/app/qgisapp.cpp" line="16958"/>
+        <location filename="../src/app/qgisapp.cpp" line="16961"/>
         <source>Toolbars</source>
         <translation>Bare de Instrumente</translation>
     </message>
@@ -59348,74 +59464,74 @@ Alternativ, puteți crea o nouă suprafață poliedrică din aceasta.</translati
         <translation>Nu s-au putut %1 modificările la stratul %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="11637"/>
         <source>No legend entries selected</source>
         <translation>Nu au fost selectate intrări din legendă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="11637"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>Selectați straturile și grupurile pe care doriți să le eliminați din legendă.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11679"/>
+        <location filename="../src/app/qgisapp.cpp" line="11682"/>
         <source>(%n more hidden layer(s))</source>
         <comment>number of hidden layers not shown</comment>
         <translation><numerusform>(%n strat(uri) ascunse în plus)</numerusform><numerusform>(%n strat(uri) ascunse în plus)</numerusform><numerusform>(%n strat(uri) ascunse în plus)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11681"/>
+        <location filename="../src/app/qgisapp.cpp" line="11684"/>
         <source>The following hidden layers will be removed:
 %1</source>
         <translation>Următoarele fișiere ascunse vor fi șterse:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11684"/>
+        <location filename="../src/app/qgisapp.cpp" line="11687"/>
         <source>Remove layers and groups</source>
         <translation>Elimină straturi sau grupuri...</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11672"/>
+        <location filename="../src/app/qgisapp.cpp" line="11675"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation><numerusform>Eliminați %n intrări din legendă?</numerusform><numerusform>Eliminați %n intrări din legendă?</numerusform><numerusform>Eliminați %n intrări din legendă?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11703"/>
+        <location filename="../src/app/qgisapp.cpp" line="11706"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation><numerusform>%n intrări au fost eliminate din legendă.</numerusform><numerusform>%n intrări au fost eliminate din legendă.</numerusform><numerusform>%n intrări au fost eliminate din legendă.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11783"/>
+        <location filename="../src/app/qgisapp.cpp" line="11786"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 tip nesuportat)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11825"/>
+        <location filename="../src/app/qgisapp.cpp" line="11828"/>
         <source>Cannot copy style to duplicated layer.</source>
         <translation>Nu se poate copia stilul în stratul duplicat.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13076"/>
+        <location filename="../src/app/qgisapp.cpp" line="13079"/>
         <source>Map %1</source>
         <translation>Harta %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13274"/>
+        <location filename="../src/app/qgisapp.cpp" line="13277"/>
         <source>3D Map %1</source>
         <translation>Harta 3D %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13499"/>
+        <location filename="../src/app/qgisapp.cpp" line="13502"/>
         <source>Do you want to save the current project? %1</source>
         <translation>Doriți să salvați proiectul curent? %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5751"/>
-        <location filename="../src/app/qgisapp.cpp" line="11625"/>
-        <location filename="../src/app/qgisapp.cpp" line="13707"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
+        <location filename="../src/app/qgisapp.cpp" line="13710"/>
         <source>Active Tasks</source>
         <translation>Sarcini Active</translation>
     </message>
@@ -59557,27 +59673,27 @@ Alternativ, puteți crea o nouă suprafață poliedrică din aceasta.</translati
         <translation>Încheiere Editare</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12759"/>
+        <location filename="../src/app/qgisapp.cpp" line="12762"/>
         <source>https://qgis.org/resources/support/bug-reporting/</source>
         <translation>https://qgis.org/resources/support/bug-reporting/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12766"/>
+        <location filename="../src/app/qgisapp.cpp" line="12769"/>
         <source>https://qgis.org/community/involve/</source>
         <translation>https://qgis.org/community/involve/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12773"/>
+        <location filename="../src/app/qgisapp.cpp" line="12776"/>
         <source>https://qgis.org/funding/donate/</source>
         <translation>https://qgis.org/funding/donate/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12780"/>
+        <location filename="../src/app/qgisapp.cpp" line="12783"/>
         <source>https://qgis.org/resources/support/commercial-support/</source>
         <translation>https://qgis.org/resources/support/commercial-support/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13707"/>
+        <location filename="../src/app/qgisapp.cpp" line="13710"/>
         <source>The following tasks are currently running which depend on layers in this project:
 
 %1
@@ -59590,42 +59706,42 @@ Please cancel these tasks and retry.</source>
 Renunțați la aceste sarcini, apoi reîncercați.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14429"/>
+        <location filename="../src/app/qgisapp.cpp" line="14432"/>
         <source>Current CRS: %1</source>
         <translation>CRS-ul current: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14436"/>
+        <location filename="../src/app/qgisapp.cpp" line="14439"/>
         <source>No projection</source>
         <translation>Fără proiecție</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15242"/>
+        <location filename="../src/app/qgisapp.cpp" line="15245"/>
         <source>Add Point Feature</source>
         <translation>Adăugare Entitate de tip Punct</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15272"/>
+        <location filename="../src/app/qgisapp.cpp" line="15275"/>
         <source>Add Line Feature</source>
         <translation>Adăugare Entitate de tip Linie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15291"/>
+        <location filename="../src/app/qgisapp.cpp" line="15294"/>
         <source>Add Polygon Feature</source>
         <translation>Adăugare Entitate de tip Poligon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15308"/>
+        <location filename="../src/app/qgisapp.cpp" line="15311"/>
         <source>Add Record</source>
         <translation>Adăugare Înregistrare</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15864"/>
+        <location filename="../src/app/qgisapp.cpp" line="15867"/>
         <source>Map Views</source>
         <translation>Vederile Hărții</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15867"/>
+        <location filename="../src/app/qgisapp.cpp" line="15870"/>
         <source>A view with this name already exists</source>
         <translation>O vedere cu acest nume există deja</translation>
     </message>
@@ -59717,7 +59833,7 @@ Renunțați la aceste sarcini, apoi reîncercați.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6624"/>
         <location filename="../src/app/qgisapp.cpp" line="6712"/>
-        <location filename="../src/app/qgisapp.cpp" line="17267"/>
+        <location filename="../src/app/qgisapp.cpp" line="17270"/>
         <source>Saved project to: %1</source>
         <translation>Proiect salvat în: %1</translation>
     </message>
@@ -60144,12 +60260,12 @@ instead?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8589"/>
-        <location filename="../src/app/qgisapp.cpp" line="12603"/>
-        <location filename="../src/app/qgisapp.cpp" line="12610"/>
-        <location filename="../src/app/qgisapp.cpp" line="12670"/>
-        <location filename="../src/app/qgisapp.cpp" line="12677"/>
-        <location filename="../src/app/qgisapp.cpp" line="12723"/>
-        <location filename="../src/app/qgisapp.cpp" line="12730"/>
+        <location filename="../src/app/qgisapp.cpp" line="12606"/>
+        <location filename="../src/app/qgisapp.cpp" line="12613"/>
+        <location filename="../src/app/qgisapp.cpp" line="12673"/>
+        <location filename="../src/app/qgisapp.cpp" line="12680"/>
+        <location filename="../src/app/qgisapp.cpp" line="12726"/>
+        <location filename="../src/app/qgisapp.cpp" line="12733"/>
         <source>No Layer Selected</source>
         <translation>Nu există nici un strat selectat</translation>
     </message>
@@ -60267,8 +60383,8 @@ instead?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5740"/>
-        <location filename="../src/app/qgisapp.cpp" line="11618"/>
-        <location filename="../src/app/qgisapp.cpp" line="13700"/>
+        <location filename="../src/app/qgisapp.cpp" line="11621"/>
+        <location filename="../src/app/qgisapp.cpp" line="13703"/>
         <source> • %1</source>
         <translation> • %1</translation>
     </message>
@@ -61073,32 +61189,32 @@ Eroare: %3
         <translation>%1 modificări recente pentru %2 strat(uri)?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11399"/>
+        <location filename="../src/app/qgisapp.cpp" line="11402"/>
         <source>Error Setting Filter</source>
         <translation>Eroare de Setare a Filtrului</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11399"/>
+        <location filename="../src/app/qgisapp.cpp" line="11402"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
         <translation>Stratul filtrat nu a returnat rânduri. Furnizorul raster PostgreSQL necesită cel puțin un rând pentru a extrage informațiile necesare creării unui strat valid.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11429"/>
+        <location filename="../src/app/qgisapp.cpp" line="11432"/>
         <source>Filter on Joined Fields</source>
         <translation>Filtrare pe Câmpuri Îmbinate </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11429"/>
+        <location filename="../src/app/qgisapp.cpp" line="11432"/>
         <source>You are about to set a subset filter on a layer that has joined fields. Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. Would you like to create a virtual layer out of this layer first?</source>
         <translation>Sunteți pe cale să setați un subset de filtrare pe un strat care are câmpuri îmbinate. Câmpurile îmbinate nu pot fi filtrate, până când nu convertiți mai întâi stratul într-unul virtual. Doriți să creați un strat virtual din acest strat?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11598"/>
+        <location filename="../src/app/qgisapp.cpp" line="11601"/>
         <source>Required Layers</source>
         <translation>Straturi Necesare</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11598"/>
+        <location filename="../src/app/qgisapp.cpp" line="11601"/>
         <source>The following layers are marked as required by the project:
 
 %1
@@ -61111,7 +61227,7 @@ Please deselect them (or unmark as required) and retry.</source>
 Deselectați-le (sau demarcați-le după cum este necesar) și reîncercați.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11625"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
         <source>The following tasks are currently running which depend on this layer:
 
 %1
@@ -61124,437 +61240,437 @@ Please cancel these tasks and retry.</source>
 Renunțați la aceste sarcini, apoi reîncercați.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11732"/>
+        <location filename="../src/app/qgisapp.cpp" line="11735"/>
         <source>copy</source>
         <translation>copiere</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11737"/>
+        <location filename="../src/app/qgisapp.cpp" line="11740"/>
         <source>Plugin layer</source>
         <translation>Stratul plugin-ului</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11741"/>
+        <location filename="../src/app/qgisapp.cpp" line="11744"/>
         <source>Group layer</source>
         <translation>Stratul grupului</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11771"/>
-        <location filename="../src/app/qgisapp.cpp" line="11782"/>
+        <location filename="../src/app/qgisapp.cpp" line="11774"/>
+        <location filename="../src/app/qgisapp.cpp" line="11785"/>
         <source>Duplicate layer: </source>
         <translation>Duplicare strat:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11772"/>
+        <location filename="../src/app/qgisapp.cpp" line="11775"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (duplicarea a dus la un strat nevalid)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11827"/>
+        <location filename="../src/app/qgisapp.cpp" line="11830"/>
         <source>Layer duplication complete</source>
         <translation>Duplicarea stratului s-a încheiat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11827"/>
+        <location filename="../src/app/qgisapp.cpp" line="11830"/>
         <source>Note that it&apos;s using the same data source.</source>
         <translation>Rețineți că se folosește aceeași sursă de date.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11856"/>
+        <location filename="../src/app/qgisapp.cpp" line="11859"/>
         <source>Set scale visibility for selected layers</source>
         <translation>Setați vizibilitatea scării pentru straturile selectate</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11914"/>
+        <location filename="../src/app/qgisapp.cpp" line="11917"/>
         <source>Set CRS for %1</source>
         <translation>Stabilire CRS pentru %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12247"/>
+        <location filename="../src/app/qgisapp.cpp" line="12250"/>
         <source>Loading Python support</source>
         <translation>Încărcare suport Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12267"/>
+        <location filename="../src/app/qgisapp.cpp" line="12270"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Nu se poate încărca biblioteca suport Python: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12278"/>
+        <location filename="../src/app/qgisapp.cpp" line="12281"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Nu s-a putut rezolva instanța() simbolului din biblioteca suport Python.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12340"/>
+        <location filename="../src/app/qgisapp.cpp" line="12343"/>
         <source>There is a new version of QGIS available</source>
         <translation>Este disponibilă o nouă versiune de QGIS </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12344"/>
+        <location filename="../src/app/qgisapp.cpp" line="12347"/>
         <source>You are running a development version of QGIS</source>
         <translation>Rulați o versiune de dezvoltare a QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12348"/>
+        <location filename="../src/app/qgisapp.cpp" line="12351"/>
         <source>You are running the current version of QGIS</source>
         <translation>Rulați cea mai nouă versiune de QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12356"/>
-        <location filename="../src/app/qgisapp.cpp" line="12362"/>
+        <location filename="../src/app/qgisapp.cpp" line="12359"/>
+        <location filename="../src/app/qgisapp.cpp" line="12365"/>
         <source>QGIS Version Information</source>
         <translation>Informații despre versiunea QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12362"/>
+        <location filename="../src/app/qgisapp.cpp" line="12365"/>
         <source>Unable to get current version information from server</source>
         <translation>Nu s-au putut obține de pe server informațiile despre versiunea curentă </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12426"/>
+        <location filename="../src/app/qgisapp.cpp" line="12429"/>
         <source>Style Manager</source>
         <translation>Managerul de Stiluri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12427"/>
+        <location filename="../src/app/qgisapp.cpp" line="12430"/>
         <source>Keyboard Shortcuts</source>
         <translation>Combinații de Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12428"/>
+        <location filename="../src/app/qgisapp.cpp" line="12431"/>
         <source>Custom Projections</source>
         <translation>Proiecții Personalizate</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12429"/>
+        <location filename="../src/app/qgisapp.cpp" line="12432"/>
         <source>Interface Customization</source>
         <translation>Personalizare Interfață</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12603"/>
-        <location filename="../src/app/qgisapp.cpp" line="12610"/>
+        <location filename="../src/app/qgisapp.cpp" line="12606"/>
+        <location filename="../src/app/qgisapp.cpp" line="12613"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>Pentru o extindere completă a histogramei, este necesară selectarea unui strat raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12670"/>
-        <location filename="../src/app/qgisapp.cpp" line="12677"/>
+        <location filename="../src/app/qgisapp.cpp" line="12673"/>
+        <location filename="../src/app/qgisapp.cpp" line="12680"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>Pentru a modifica luminozitatea sau contrastul, trebuie să aveți selectat un strat raster.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12723"/>
-        <location filename="../src/app/qgisapp.cpp" line="12730"/>
+        <location filename="../src/app/qgisapp.cpp" line="12726"/>
+        <location filename="../src/app/qgisapp.cpp" line="12733"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
         <translation>Pentru a modifica gamma, trebuie să aveți selectat un strat raster.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12910"/>
+        <location filename="../src/app/qgisapp.cpp" line="12913"/>
         <source>Map tool handler is not properly constructed</source>
         <translation>Instrumentul de gestionare a hărților nu este construit corespunzător</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13132"/>
-        <location filename="../src/app/qgisapp.cpp" line="13139"/>
+        <location filename="../src/app/qgisapp.cpp" line="13135"/>
+        <location filename="../src/app/qgisapp.cpp" line="13142"/>
         <source>3D Map</source>
         <translation>Hartă 3D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13132"/>
+        <location filename="../src/app/qgisapp.cpp" line="13135"/>
         <source>3D Maps</source>
         <translation>Hărți 3D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13159"/>
+        <location filename="../src/app/qgisapp.cpp" line="13162"/>
         <source>No Elevation Profiles Found</source>
         <translation>Nu s-a Identificat Vreun Profil al Elevației</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13167"/>
+        <location filename="../src/app/qgisapp.cpp" line="13170"/>
         <source>Copy From %1</source>
         <translation>Copiere Din %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13216"/>
+        <location filename="../src/app/qgisapp.cpp" line="13219"/>
         <source>Elevation Profile</source>
         <translation>Profilul Elevației</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13220"/>
+        <location filename="../src/app/qgisapp.cpp" line="13223"/>
         <source>Elevation Profile (%1)</source>
         <translation>Profilul Elevației (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13264"/>
+        <location filename="../src/app/qgisapp.cpp" line="13267"/>
         <source>New 3D Map View</source>
         <translation>Vizualizare Hartă 3D Nouă </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13264"/>
+        <location filename="../src/app/qgisapp.cpp" line="13267"/>
         <source>Project extent is not valid. Please add or activate a layer to render.</source>
         <translation>Extinderea proiectului nu este validă. Adăugați sau să activați un strat pentru a-l randa.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13277"/>
+        <location filename="../src/app/qgisapp.cpp" line="13280"/>
         <source>3D Globe %1</source>
         <translation>3D Globe %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13499"/>
-        <location filename="../src/app/qgisapp.cpp" line="17276"/>
+        <location filename="../src/app/qgisapp.cpp" line="13502"/>
+        <location filename="../src/app/qgisapp.cpp" line="17279"/>
         <source>Save Project</source>
         <translation>Salvare Proiect</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13601"/>
+        <location filename="../src/app/qgisapp.cpp" line="13604"/>
         <source>Save Raster Attribute Table</source>
         <translation>Salvare Tabelă cu Atribute Raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13601"/>
+        <location filename="../src/app/qgisapp.cpp" line="13604"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
         <translation>Doriți să salvați modificările la tabelele de atribute (benzi: %1) asociate cu stratul &apos;%2&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
-        <location filename="../src/app/qgisapp.cpp" line="13620"/>
+        <location filename="../src/app/qgisapp.cpp" line="13615"/>
+        <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>Eroare la Salvarea Tabelei cu Atribute Raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
+        <location filename="../src/app/qgisapp.cpp" line="13615"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
         <translation>Eroare la salvarea tabelei cu atribute raster pentru stratul &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13620"/>
+        <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
         <translation>A apărut o eroare la salvarea tabelului cu atribute raster pentru stratul &apos;%1&apos; în fișierul VAT.DBF &apos;%2&apos;: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13668"/>
         <location filename="../src/app/qgisapp.cpp" line="13671"/>
+        <location filename="../src/app/qgisapp.cpp" line="13674"/>
         <source>Close Project</source>
         <translation>Închidere Proiect</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13668"/>
+        <location filename="../src/app/qgisapp.cpp" line="13671"/>
         <source>This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?</source>
         <translation>Acest proiect include unul sau mai multe straturi temporare.  Acestea nu au fost salvate pe disc, iar conținutul lor se va pierde definitiv. Sigur doriți să continuați?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13671"/>
+        <location filename="../src/app/qgisapp.cpp" line="13674"/>
         <source>This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?</source>
         <translation>Acest proiect include unul sau mai multe straturi temporare.  Acestea nu au fost salvate pe disc, iar conținutul lor se va pierde definitiv. Sigur doriți să continuați?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14426"/>
+        <location filename="../src/app/qgisapp.cpp" line="14429"/>
         <source>Unknown CRS</source>
         <translation>CRS Necunoscut</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14558"/>
+        <location filename="../src/app/qgisapp.cpp" line="14561"/>
         <source>Pan distance %1 (%2)</source>
         <translation>Distanța de panoramare %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14569"/>
+        <location filename="../src/app/qgisapp.cpp" line="14572"/>
         <source>Add to the current selection</source>
         <translation>Adăugare la selecția curentă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14573"/>
+        <location filename="../src/app/qgisapp.cpp" line="14576"/>
         <source>Subtract from the current selection</source>
         <translation>Scădere din selecția curentă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14577"/>
+        <location filename="../src/app/qgisapp.cpp" line="14580"/>
         <source>Intersect with the current selection</source>
         <translation>Intersectare cu selecția curentă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14581"/>
+        <location filename="../src/app/qgisapp.cpp" line="14584"/>
         <source>Select features completely within</source>
         <translation>Selectează entitățile situate complet în interior</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14585"/>
+        <location filename="../src/app/qgisapp.cpp" line="14588"/>
         <source>Add features completely within to the current selection</source>
         <translation>Adaugă entitățile care se situează complet în selecția curentă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14589"/>
+        <location filename="../src/app/qgisapp.cpp" line="14592"/>
         <source>Subtract features completely within from the current selection</source>
         <translation>Scădere entități care se situează complet în selecția curentă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14593"/>
+        <location filename="../src/app/qgisapp.cpp" line="14596"/>
         <source>Intersect features completely within with the current selection</source>
         <translation>Intersectează entitățile care se situează complet în selecția curentă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14738"/>
+        <location filename="../src/app/qgisapp.cpp" line="14741"/>
         <source>1 feature selected on layer %1 (%2).</source>
         <translation>1 entitate selectată în stratul %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15941"/>
+        <location filename="../src/app/qgisapp.cpp" line="15944"/>
         <source>A profile with this name already exists</source>
         <translation>Un profil cu acest nume există deja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15944"/>
+        <location filename="../src/app/qgisapp.cpp" line="15947"/>
         <source>New Profile Name</source>
         <translation>Numele Profilului Nou</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15960"/>
+        <location filename="../src/app/qgisapp.cpp" line="15963"/>
         <source>New Profile</source>
         <translation>Profil Nou</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15960"/>
+        <location filename="../src/app/qgisapp.cpp" line="15963"/>
         <source>Cannot create folder &apos;%1&apos;</source>
         <translation>Nu se poate crea folderul &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15981"/>
+        <location filename="../src/app/qgisapp.cpp" line="15984"/>
         <source>Task failed</source>
         <translation>Activitatea a eșuat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16057"/>
+        <location filename="../src/app/qgisapp.cpp" line="16060"/>
         <source>New bookmark</source>
         <translation>Reper nou</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16133"/>
+        <location filename="../src/app/qgisapp.cpp" line="16136"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
         <translation>Acest fișier proiect a fost creat de o versiune mai nouă a QGIS (%1) și nu a putut fi încărcat complet.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16359"/>
+        <location filename="../src/app/qgisapp.cpp" line="16362"/>
         <source>Select Transformation for %1</source>
         <translation>Selectare Transformare pentru %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16753"/>
+        <location filename="../src/app/qgisapp.cpp" line="16756"/>
         <source>Network request to %1 timed out, any data received is likely incomplete.</source>
         <translation>Cererea din rețea la %1 este în pauză, datele recepționate fiind, probabil, incomplete.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16816"/>
+        <location filename="../src/app/qgisapp.cpp" line="16819"/>
         <source>QGIS Authentication</source>
         <translation>Autentificare QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16951"/>
+        <location filename="../src/app/qgisapp.cpp" line="16954"/>
         <source>%1 Panel</source>
         <translation>Panoul %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17043"/>
+        <location filename="../src/app/qgisapp.cpp" line="17046"/>
         <source>Transaction</source>
         <translation>Transaction</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17056"/>
-        <location filename="../src/app/qgisapp.cpp" line="17106"/>
+        <location filename="../src/app/qgisapp.cpp" line="17059"/>
+        <location filename="../src/app/qgisapp.cpp" line="17109"/>
         <source>Cannot duplicate feature in not editable mode on layer %1</source>
         <translation>Nu se poate duplica entitatea dacă stratul %1 nu se află în mod de editare</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17086"/>
+        <location filename="../src/app/qgisapp.cpp" line="17089"/>
         <source>%1 children on layer %2 duplicated</source>
         <translation>%1 elemente subordonate din stratul %2 sunt duplicate
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17090"/>
+        <location filename="../src/app/qgisapp.cpp" line="17093"/>
         <source>%1 features on layer %2 duplicated
 %3</source>
         <translation>%1 entități din stratul %2 au fost duplicate
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17119"/>
+        <location filename="../src/app/qgisapp.cpp" line="17122"/>
         <source>Digitize the duplicate on layer %1</source>
         <translation>Digitizează duplicatul stratului %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17123"/>
+        <location filename="../src/app/qgisapp.cpp" line="17126"/>
         <source>Duplicate digitized</source>
         <translation>Duplicatul a fost digitizat</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="17136"/>
+        <location filename="../src/app/qgisapp.cpp" line="17139"/>
         <source>%n children on layer %1 duplicated</source>
         <translation><numerusform>%n elemente subordonate din stratul %1 sunt duplicate</numerusform><numerusform>%n elemente subordonate din stratul %1 sunt duplicate</numerusform><numerusform>%n elemente subordonate din stratul %1 sunt duplicate</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17139"/>
+        <location filename="../src/app/qgisapp.cpp" line="17142"/>
         <source>Feature on layer %1 duplicated
 %2</source>
         <translation>Entitățile din stratul %1 au fost duplicate
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17157"/>
+        <location filename="../src/app/qgisapp.cpp" line="17160"/>
         <source>Templates</source>
         <translation>Șabloane</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17168"/>
+        <location filename="../src/app/qgisapp.cpp" line="17171"/>
         <source>Template Name</source>
         <translation>Numele Șabloanelor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17168"/>
+        <location filename="../src/app/qgisapp.cpp" line="17171"/>
         <source>Name for the template</source>
         <translation>Numele șablonului</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17177"/>
         <source>Template not saved</source>
         <translation>Șablonul nu a fost salvat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17177"/>
         <source>The template can not have an empty name.</source>
         <translation>Șablonul nu poate avea un nume vid.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17181"/>
+        <location filename="../src/app/qgisapp.cpp" line="17184"/>
         <source>Overwrite Template</source>
         <translation>Suprascriere Șablon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17182"/>
+        <location filename="../src/app/qgisapp.cpp" line="17185"/>
         <source>The template %1 already exists, do you want to replace it?</source>
         <translation>Șablonul %1 există deja, doriți suprascrierea lui?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17183"/>
+        <location filename="../src/app/qgisapp.cpp" line="17186"/>
         <source>Overwrite</source>
         <translation>Suprascriere</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17195"/>
+        <location filename="../src/app/qgisapp.cpp" line="17198"/>
         <source>Template saved</source>
         <translation>Șablon salvat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17195"/>
+        <location filename="../src/app/qgisapp.cpp" line="17198"/>
         <source>Template %1 was saved</source>
         <translation>Șablonul %1 a fost salvat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17281"/>
+        <location filename="../src/app/qgisapp.cpp" line="17284"/>
         <source>Save as Local File</source>
         <translation>Salvare într-un Fișier Local</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17012"/>
+        <location filename="../src/app/qgisapp.cpp" line="17015"/>
         <source>Layer %1</source>
         <translation>Stratul %1</translation>
     </message>
@@ -61595,64 +61711,64 @@ Renunțați la aceste sarcini, apoi reîncercați.</translation>
         <translation>Pentru a selecta entitățile spațiale, alegeți un strat vectorial din legendă.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13481"/>
+        <location filename="../src/app/qgisapp.cpp" line="13484"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>Proiectul are strat(uri) puse în mod de editare, ale căror modificări NU vor fi salvate!</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="14744"/>
-        <location filename="../src/app/qgisapp.cpp" line="14753"/>
+        <location filename="../src/app/qgisapp.cpp" line="14747"/>
+        <location filename="../src/app/qgisapp.cpp" line="14756"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation><numerusform>%n entit(ăți) selectate în stratul %1.</numerusform><numerusform>%n entit(ăți) selectate în stratul %1.</numerusform><numerusform>%n entit(ăți) selectate în stratul %1.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15896"/>
+        <location filename="../src/app/qgisapp.cpp" line="15899"/>
         <source>Exit QGIS</source>
         <translation>Ieșire din QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15896"/>
+        <location filename="../src/app/qgisapp.cpp" line="15899"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Sigur doriți să închideți QGIS?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15943"/>
+        <location filename="../src/app/qgisapp.cpp" line="15946"/>
         <source>New profile name</source>
         <translation>Numele noului profil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15979"/>
+        <location filename="../src/app/qgisapp.cpp" line="15982"/>
         <source>Task complete</source>
         <translation>Acțiune completă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16121"/>
+        <location filename="../src/app/qgisapp.cpp" line="16124"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
         <translation>Acest fișier a fost produs de QGIS versiunea %1. Dacă îl veți salva, qgis îl va actualiza la versiunea %2, devenind, probabil, inutilizabil pentru versiunile de QGIS mai vechi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16126"/>
+        <location filename="../src/app/qgisapp.cpp" line="16129"/>
         <source>Project file is older</source>
         <translation>Fişierul proiectului este vechi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16753"/>
+        <location filename="../src/app/qgisapp.cpp" line="16756"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>Pentru informații suplimentare, verificați &lt;a href=&quot;#messageLog&quot;&gt;mesajele jurnalizate&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16659"/>
+        <location filename="../src/app/qgisapp.cpp" line="16662"/>
         <source>Warning</source>
         <translation>Avertisment</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16659"/>
+        <location filename="../src/app/qgisapp.cpp" line="16662"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Acest strat nu are o fereastră de proprietăți.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16724"/>
+        <location filename="../src/app/qgisapp.cpp" line="16727"/>
         <source>Proxy authentication required</source>
         <translation>Este necesară autentificarea proxy</translation>
     </message>
@@ -62921,9 +63037,14 @@ Renunțați la aceste sarcini, apoi reîncercați.</translation>
         <translation>Fișier încapsulat</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="232"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="233"/>
         <source>Successfully extracted file to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Fișierul s-a extras cu succes în &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="238"/>
+        <source>Error opening %1 for write</source>
+        <translation>Eroare de deschidere a %1 pentru scriere</translation>
     </message>
 </context>
 <context>
@@ -64314,6 +64435,11 @@ Sigur doriți ștergerea acestor entități?</numerusform></translation>
         <source>Set to the project fixed time extent or the extent from the project&apos;s layers</source>
         <translation>Setează la extinderea temporală fixă a proiectului sau la extinderea stratului proiectului</translation>
     </message>
+    <message>
+        <location filename="../src/ui/qgsanimationexportdialogbase.ui"/>
+        <source>Cumulative range</source>
+        <translation>Interval cumulativ</translation>
+    </message>
 </context>
 <context>
     <name>QgsAnnotation</name>
@@ -64404,37 +64530,37 @@ Sigur doriți ștergerea acestor entități?</numerusform></translation>
 <context>
     <name>QgsAnnotationLayer</name>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="626"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="627"/>
         <source>General</source>
         <translation>Generalități</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="628"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="629"/>
         <source>Name</source>
         <translation>Nume</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="631"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="632"/>
         <source>Extent</source>
         <translation>Extindere</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="638"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="639"/>
         <source>Item count</source>
         <translation>Numărul de elemente</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="647"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="648"/>
         <source>Items</source>
         <translation>Item</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="650"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="651"/>
         <source>Type</source>
         <translation>Tip</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="650"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="651"/>
         <source>Count</source>
         <translation>Numărare</translation>
     </message>
@@ -66023,14 +66149,14 @@ Erori: %2
 <context>
     <name>QgsApplication</name>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="641"/>
-        <location filename="../src/core/qgsapplication.cpp" line="647"/>
-        <location filename="../src/core/qgsapplication.cpp" line="653"/>
+        <location filename="../src/core/qgsapplication.cpp" line="663"/>
+        <location filename="../src/core/qgsapplication.cpp" line="669"/>
+        <location filename="../src/core/qgsapplication.cpp" line="675"/>
         <source>Exception</source>
         <translation>Excepţie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="653"/>
+        <location filename="../src/core/qgsapplication.cpp" line="675"/>
         <source>unknown exception</source>
         <translation>excepţie necunoscută</translation>
     </message>
@@ -66041,22 +66167,22 @@ Erori: %2
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="470"/>
+        <location filename="../src/core/qgsapplication.cpp" line="483"/>
         <source>Load user fonts</source>
         <translation>Încarcă fonturile utilizatorului</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="480"/>
+        <location filename="../src/core/qgsapplication.cpp" line="493"/>
         <source>Load color schemes</source>
         <translation>încărcare scheme de culori</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="486"/>
+        <location filename="../src/core/qgsapplication.cpp" line="499"/>
         <source>Load bookmarks</source>
         <translation>Încărcare repere</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1623"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1645"/>
         <source>QgsApplication state:
  - QGIS_PREFIX_PATH env var:   %1
  - Prefix:                     %2
@@ -66083,7 +66209,7 @@ Erori: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1641"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1663"/>
         <source>
                                </source>
         <comment>match indentation of application state</comment>
@@ -66091,251 +66217,251 @@ Erori: %2
                                </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2207"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2229"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
         <translation>[EROARE] Nu se poate face copia privată pentru qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2219"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2241"/>
         <source>Can not make &apos;%1&apos; user writable</source>
         <translation>Utilizatorul nu poate modifica &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2233"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2255"/>
         <source>Could not open qgis.db</source>
         <translation>Nu se poate deschide qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2263"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2285"/>
         <source>Creation of missing tbl_srs in the private qgis.db failed.
 %1</source>
         <translation>Crearea tabelei lipsă tbl_srs în baza de date privată qgis.db a eșuat.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2299"/>
-        <location filename="../src/core/qgsapplication.cpp" line="2356"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2321"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2378"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>Migrarea qgis.db privată a eșuat.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2323"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2345"/>
         <source>Creation of missing tbl_projection in the private qgis.db failed.
 %1</source>
         <translation>Crearea tabelei lipsă tbl_projection în baza de date privată qgis.db a eșuat.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2389"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2411"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
         <translation>Actualizarea vederii din baza de date privată qgis.db a eșuat.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2677"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2699"/>
         <source>Create query logger</source>
         <translation>Creează jurnalul interogărilor</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2682"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2704"/>
         <source>Setup coordinate reference system registry</source>
         <translation>Configurați registrul sistemelor de referință și coordonate</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2687"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2709"/>
         <source>Create connection registry</source>
         <translation>Creează registru de conectare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2692"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2714"/>
         <source>Create project storage registry</source>
         <translation>Creează registrul de stocare al proiectului</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2697"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2719"/>
         <source>Create layer metadata provider registry</source>
         <translation>Configurează registrul de furnizare a metadatelor stratului</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2702"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2724"/>
         <source>Create font manager</source>
         <translation>Creează managerul de fonturi</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2707"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2729"/>
         <source>Setup task manager</source>
         <translation>Configurare manager de activități</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2712"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2734"/>
         <source>Setup action scope registry</source>
         <translation>Configurare registru cu domenii de acțiune</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2717"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2739"/>
         <source>Setup numeric formats</source>
         <translation>Instalare formate numerice</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2722"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2744"/>
         <source>Setup field formats</source>
         <translation>Stabilire formate pentru câmpuri</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2727"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2749"/>
         <source>Setup SVG cache</source>
         <translation>Configurare cache SVG</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2732"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2754"/>
         <source>Setup image cache</source>
         <translation>Configurare cache imagine</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2737"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2759"/>
         <source>Setup source cache</source>
         <translation>Configurare cache sursă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2742"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2764"/>
         <source>Setup color scheme registry</source>
         <translation>Configurare registru cu scheme de culoare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2747"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2769"/>
         <source>Setup paint effect</source>
         <translation>Configurare efect de vopsire</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2752"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2774"/>
         <source>Setup symbol layer registry</source>
         <translation>Configurare registru de straturi simbol</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2757"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2779"/>
         <source>Recent style handler</source>
         <translation>Gestionarul stilului recent</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2762"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2784"/>
         <source>Setup callout registry</source>
         <translation>Configurare registru callout</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2767"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2789"/>
         <source>Setup renderer registry</source>
         <translation>Configurare registru de randare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2772"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2794"/>
         <source>Setup raster renderer registry</source>
         <translation>Configurare registru de randare raster</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2777"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2799"/>
         <source>Setup point cloud renderer registry</source>
         <translation>Configurare registru de randare nor de puncte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2782"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2804"/>
         <source>Setup tiled scene renderer registry</source>
         <translation>Configurare registru de randare pentru scena placată</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2787"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2809"/>
         <source>Setup GPS registry</source>
         <translation>Configurare registru GPS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2792"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2814"/>
         <source>Setup GPSBabel format registry</source>
         <translation>Configurare registru de formatare GPSBabel</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2797"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2819"/>
         <source>Setup plugin layer registry</source>
         <translation>Configurare registru de straturi plugin</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2802"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2824"/>
         <source>Setup Processing registry</source>
         <translation>Configurare registru Processing</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2808"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2830"/>
         <source>Setup layout item registry</source>
         <translation>Configurare registru pentru compoziții</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2814"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2836"/>
         <source>Setup annotation registry</source>
         <translation>Configurare registru de adnotări</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2819"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2841"/>
         <source>Setup annotation item registry</source>
         <translation>Configurare registru pentru elementul de adnotare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2825"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2847"/>
         <source>Setup labeling engine rule registry</source>
         <translation>Configurați registrul cu regulile motorului de etichetare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2830"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2852"/>
         <source>Setup sensor registry</source>
         <translation>Configurează registrul senzorului</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2836"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2858"/>
         <source>Setup 3D symbol registry</source>
         <translation>Configurare registru de simboluri 3D</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2841"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2863"/>
         <source>Setup 3D renderer registry</source>
         <translation>Configurare registru de randare 3D</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2846"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2868"/>
         <source>Setup external storage registry</source>
         <translation>Configurare registru de stocare externă</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2851"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2873"/>
         <source>Setup profile source registry</source>
         <translation>Configurare registru cu sursa profilului</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2856"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2878"/>
         <source>Setup network content cache</source>
         <translation>Setează memoria tampon a conținutului rețelei</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2861"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2883"/>
         <source>Setup layout check registry</source>
         <translation>Configurează registrul de verificare a compoziției</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2866"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2888"/>
         <source>Setup classification registry</source>
         <translation>Configurare registru de clasificare</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2871"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2893"/>
         <source>Setup bookmark manager</source>
         <translation>Instalare manager de repere</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2876"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2898"/>
         <source>Setup tile download manager</source>
         <translation>Configurează managerul de descărcare a plăcuțelor</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2881"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2903"/>
         <source>Setup scalebar registry</source>
         <translation>Configurează registrul scării grafice</translation>
     </message>
@@ -68004,22 +68130,22 @@ Sigur doriți ștergerea acestei entități?</translation>
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="654"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="651"/>
         <source>extra column</source>
         <translation>extra coloană</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="662"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="659"/>
         <source>Feature ID: %1</source>
         <translation>ID entitate: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="733"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="730"/>
         <source>... truncated ...</source>
         <translation>... trunchiat ...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="743"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="740"/>
         <source>%1 (Ctrl+click to open)</source>
         <translation>%1 (Ctrl+click pentru deschidere)</translation>
     </message>
@@ -68210,71 +68336,71 @@ Sigur doriți ștergerea acestei entități?</translation>
         <translation>Setare la NULL</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="275"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="278"/>
         <source>The provider for this layer has a NOT NULL constraint set on the field.</source>
         <translation>Furnizorul acestui strat are setată o constrângere NOT NULL pentru câmp.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="282"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="285"/>
         <source>The provider for this layer has a UNIQUE constraint set on the field.</source>
         <translation>Furnizorul acestui strat are setată o constrângere UNIQUE pentru câmp.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="556"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="580"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="559"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="583"/>
         <source>Resets the field by recalculating its default value.</source>
         <translation>Resetează câmpul prin recalculare valorii implicite.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="560"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="584"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="563"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="587"/>
         <source>Copies the current field value without change.</source>
         <translation>Copiază valoarea câmpului curent, fără a o modifica.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="564"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="567"/>
         <source>Recalculates the field value for all split portions by multiplying the existing value by the ratio of the split parts lengths or areas.</source>
         <translation>Recalculează valoarea câmpului pentru toate porțiunile divizate, înmulțind valoarea existentă cu raportul dintre lungimile sau suprafețele părților divizate.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="568"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="588"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="612"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="571"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="591"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="615"/>
         <source>Clears the field to an unset state.</source>
         <translation>Aduce câmpul la o stare nesetată.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="600"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="603"/>
         <source>Use default field value.</source>
         <translation>Folosește valoarea implicită a câmpului.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="604"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="607"/>
         <source>Sum of values.</source>
         <translation>Suma valorilor.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="608"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="611"/>
         <source>New values are computed as the weighted average of the source values.</source>
         <translation>Noile valori sunt calculate ca media ponderată a valorilor sursei.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="616"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="619"/>
         <source>Use value from feature with the largest geometry.</source>
         <translation>Preia valoarea din entitatea cu cea mai mare geometrie.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="620"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="623"/>
         <source>Use the lowest value from the selected features.</source>
         <translation>Utilizează cea mai mică valoare din entitățile selectate.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="624"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="627"/>
         <source>Use the highest value from the selected features.</source>
         <translation>Utilizează cea mai mare valoare din entitățile selectate.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="628"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="631"/>
         <source>Set attribute to NULL.</source>
         <translation>Setează atributul la NULL.</translation>
     </message>
@@ -70788,9 +70914,9 @@ Autorități/Emitenți: %1%2</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="557"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3635"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3659"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3754"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3639"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3663"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3758"/>
         <source>Master password: FAILED to access database</source>
         <translation>Parola master: EROARE de acces la baza de date</translation>
     </message>
@@ -70910,7 +71036,7 @@ Autorități/Emitenți: %1%2</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="1192"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3923"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3927"/>
         <source>Store config: FAILED to store config in default storage: %1</source>
         <translation>Stocare configurare: NU s-a încărcat configurația din niciun depozit: %1</translation>
     </message>
@@ -70931,10 +71057,10 @@ Autorități/Emitenți: %1%2</translation>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2730"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2810"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="3063"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3675"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3706"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3735"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3768"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3679"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3710"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3739"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3772"/>
         <source>Could not connect to the default storage.</source>
         <translation>Nu se poate efectua conectarea la depozitul implicit.</translation>
     </message>
@@ -71074,10 +71200,10 @@ Autorități/Emitenți: %1%2</translation>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2869"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2959"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3618"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3858"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3939"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4104"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3606"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3862"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3943"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4108"/>
         <source>Could not connect to any authentication configuration storage.</source>
         <translation>Nu s-a putut efectua conectarea la vreun depozit de stocare a configurației de autentificare.</translation>
     </message>
@@ -71107,17 +71233,17 @@ Autorități/Emitenți: %1%2</translation>
         <translation>Parola master stocată în %1 nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3799"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3803"/>
         <source>Config id %1 is already in the list</source>
         <translation>Id-ul de configurare %1 este deja în listă</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3943"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3947"/>
         <source>Reencrypt FAILED, could not find config (id: %1)</source>
         <translation>Reluarea criptării A EȘUAT; nu s-a putut găsi configurația (id: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4108"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4112"/>
         <source>Reencrypt FAILED, could not find identity (id: %1)</source>
         <translation>Reluarea criptării A EȘUAT; nu s-a putut găsi identitatea (id: %1)</translation>
     </message>
@@ -71187,7 +71313,7 @@ Autorități/Emitenți: %1%2</translation>
         <translation>Parola master stocată în propriul %1 nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4027"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4031"/>
         <source>Authentication database contains duplicate setting keys</source>
         <translation>Baza datelor de autentificare conține chei de setare duplicate</translation>
     </message>
@@ -72569,27 +72695,32 @@ Operațiunea este IREVERSIBILĂ!</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="145"/>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="172"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="178"/>
         <source>All files</source>
         <translation>Toate fișierele</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="161"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="162"/>
         <source>Saved content to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Conținutul a fost salvat în &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="172"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="166"/>
+        <source>Error opening %1 for write</source>
+        <translation>Eroare de deschidere %1 pentru scriere</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="178"/>
         <source>Embed File</source>
         <translation>Încapsulează Fișierul</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="197"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="203"/>
         <source>Clear Contents</source>
         <translation>Ștergere Conținut</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="197"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="203"/>
         <source>Are you sure you want the clear this field&apos;s content?</source>
         <translation>Sigur doriți să ştergeți conținutul acestui câmp?</translation>
     </message>
@@ -72695,33 +72826,33 @@ Operațiunea este IREVERSIBILĂ!</translation>
 <context>
     <name>QgsBlockingNetworkRequest</name>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="149"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="189"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="356"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="368"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="399"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="458"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="469"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="153"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="193"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="360"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="372"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="403"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="462"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="473"/>
         <source>Network</source>
         <translation>Reţea</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="355"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="359"/>
         <source>Redirect loop detected: %1</source>
         <translation>S-a detectat o buclă de redirecționare: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="456"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="460"/>
         <source>empty response: %1</source>
         <translation>răspuns vid: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="492"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="496"/>
         <source>network request update failed for authentication config</source>
         <translation>Actualizarea cererii din rețea nu a reușit pentru configurarea autentificării</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="502"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="506"/>
         <source>The server does not support range requests</source>
         <translation>Serverul nu acceptă interogarea intervalelor</translation>
     </message>
@@ -73628,42 +73759,42 @@ Este nevoie ca clasele existente să fie şterse înainte de clasificare?</trans
 <context>
     <name>QgsCesiumTilesDataProvider</name>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="987"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="997"/>
         <source>Only ion 3D Tiles content can be accessed, not %1</source>
         <translation>Numai conținutul ion 3D Tiles poate fi accesat, nu și %1</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1094"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1104"/>
         <source>Source</source>
         <translation>Sursă</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1177"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1187"/>
         <source>3D Tiles Version</source>
         <translation>Versiunea Plăcuțelor 3D</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1185"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1195"/>
         <source>Tileset Version</source>
         <translation>Versiunea Setului de Plăcuțe</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1196"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1206"/>
         <source>Tileset Generator</source>
         <translation>Generatorul Setului de Plăcuțe</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1208"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1218"/>
         <source>Extensions Required</source>
         <translation>Extensii Necesare </translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1220"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1230"/>
         <source>Extensions Used</source>
         <translation>Extensii Folosite</translation>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1226"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1236"/>
         <source>Z Range</source>
         <translation>Intervalul Z</translation>
     </message>
@@ -74053,29 +74184,29 @@ Este nevoie ca clasele existente să fie şterse înainte de clasificare?</trans
         <translation>Editor Python</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="458"/>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="504"/>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="509"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="457"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="503"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="508"/>
         <source>Reformat Code</source>
         <translation>Reformatare Cod</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="458"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="457"/>
         <source>Code formatting failed -- the code contains syntax errors</source>
         <translation>Formatarea codului a eșuat -- codul conține erori de sintaxă</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="504"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="503"/>
         <source>The Python module %1 is missing</source>
         <translation>Modulul Python %1 lipsește</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="509"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="508"/>
         <source>The Python modules %1 are missing</source>
         <translation>Modulele Python %1 lipsesc</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="532"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="531"/>
         <source>Search Selection in PyQGIS Documentation</source>
         <translation>Caută Textul Selectat în Documentația PyQGIS</translation>
     </message>
@@ -75941,63 +76072,63 @@ coordonatele dintr-un fișier de deplasare a grilei).</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="290"/>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="368"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="371"/>
         <source>User-defined</source>
         <translation>Definit de utilizator</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="385"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="388"/>
         <source>Geodetic</source>
         <translation>Geodezic</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="389"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="392"/>
         <source>Geocentric</source>
         <translation>Geocentric</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="393"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="396"/>
         <source>Geographic (2D)</source>
         <translation>Geografic (2D)</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="398"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="401"/>
         <source>Geographic (3D)</source>
         <translation>Geografic (3D)</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="403"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="406"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="408"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="411"/>
         <source>Projected</source>
         <translation>Proiectat</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="413"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="416"/>
         <source>Compound</source>
         <translation>Compus</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="417"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="420"/>
         <source>Temporal</source>
         <translation>Temporal</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="421"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="424"/>
         <source>Engineering</source>
         <translation>Inginerie</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="425"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="428"/>
         <source>Bound</source>
         <translation>Limită</translation>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="429"/>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="450"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="432"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="452"/>
         <source>Other</source>
         <translation>Altele</translation>
     </message>
@@ -76038,12 +76169,22 @@ coordonatele dintr-un fișier de deplasare a grilei).</translation>
         <translation>Directorul destinație &apos;%1&apos; nu există</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscopyfiletask.cpp" line="70"/>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="59"/>
+        <source>Could not open &apos;%1&apos; for reading</source>
+        <translation>Nu s-a putut deschide &apos;%1&apos; pentru citire</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="64"/>
+        <source>Could not open &apos;%1&apos; for writing</source>
+        <translation>Nu s-a putut deschide &apos;%1&apos; pentru scriere</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="78"/>
         <source>Fail reading from &apos;%1&apos;</source>
         <translation>Eroare la citirea din &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscopyfiletask.cpp" line="80"/>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="88"/>
         <source>Fail writing to &apos;%1&apos;</source>
         <translation>Eroare la scrierea în &apos;%1&apos;</translation>
     </message>
@@ -80677,192 +80818,197 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="616"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="625"/>
         <source>(disabled when attribute table only shows features visible in the current map canvas extent)</source>
         <translation>(dezactivat atunci când tabelul de atribute arată numai entitățile vizibile în extinderea hărții de pe canevas)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="752"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="761"/>
         <source>Expression Based Preview</source>
         <translation>Previzualizare Bazată pe o Expresie</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="769"/>
-        <source>Column Preview</source>
-        <translation>Previzualizare Coloană</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="769"/>
-        <source>Could not set column '%1' as preview column.
-Parser error:
-%2</source>
-        <translation>Nu se poate seta coloana &apos;%1&apos;, ca și coloană de previzualizare.
-Eroare de analiză:
-%2</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="952"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="964"/>
         <source>&amp;Set All Column Widths…</source>
         <translation>&amp;Setează Lățimea Tuturor Coloanelor...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="962"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="974"/>
         <source>&amp;Autosize All Columns</source>
         <translation>&amp;Autodimensionarea Tuturor Coloanelor</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="971"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="983"/>
         <source>&amp;Sort…</source>
         <translation>&amp;Sortare...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="957"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="969"/>
         <source>&amp;Autosize</source>
         <translation>&amp;Autodimensionare</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="252"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="256"/>
         <source>Sort…</source>
         <translation>Sortare...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="255"/>
-        <source>By Preview Expression (ascending)</source>
-        <translation>După Expresia de Previzualizare (ascendentă)</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="260"/>
-        <source>By Preview Expression (descending)</source>
-        <translation>După Expresia de Previzualizare (descendentă)</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="265"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="269"/>
         <source>By Custom Expression</source>
         <translation>După o Expresie Personalizată</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="285"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="294"/>
         <source>&apos;[Please define preview text]&apos;</source>
         <translation>&apos;[Definiți textul de previzualizare]&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="618"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="627"/>
         <source>Automatically pan to the current feature</source>
         <translation>Deplasare automată la entitatea curentă</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="619"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="628"/>
         <source>Automatically zoom to the current feature</source>
         <translation>Zoom automat la entitatea curentă</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="659"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="668"/>
         <source>An error occurred while filtering features</source>
         <translation>A avut loc o eroare pe durata filtrării entităților</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="838"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="780"/>
+        <source>Column Display Name</source>
+        <translation>Numele Afișat pentru Coloană</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="780"/>
+        <source>Could not set column '%1' as display name.
+Parser error:
+%2</source>
+        <translation>Column &apos;%1&apos; nu poate fi utilizată pentru afișarea numelui.
+Eroare de parser:
+%2</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="784"/>
+        <source>Expression</source>
+        <translation>Expresie</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="850"/>
         <source>Copy Cell Content</source>
         <translation>Copiază Conținutul Celulelor</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="849"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="861"/>
         <source>Zoom to Feature</source>
         <translation>Zoom pe Entitate</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="852"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="864"/>
         <source>Pan to Feature</source>
         <translation>Deplasare la Entitate</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="855"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="867"/>
         <source>Flash Feature</source>
         <translation>Evidențiază Entitatea</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="863"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="875"/>
         <source>Run Layer Action</source>
         <translation>Rulează Acțiunile Stratului</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="908"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="920"/>
         <source>Actions on Selection (%1)</source>
         <translation>Acțiuni în Selecție (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="925"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="937"/>
         <source>Open Form</source>
         <translation>Deschide Formular</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="926"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="938"/>
         <source>Open Form…</source>
         <translation>Deschidere Formular...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="943"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="955"/>
         <source>&amp;Hide Column</source>
         <translation>Ascundere Coloană</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="947"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="959"/>
         <source>&amp;Set Width…</source>
         <translation>&amp;Setare Lăţime...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1365"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1377"/>
         <source>%L1 features loaded.</source>
         <translation>%L1  entități încărcate.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="968"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="980"/>
         <source>&amp;Organize Columns…</source>
         <translation>&amp;Organizare Coloane...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1029"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="259"/>
+        <source>By Display Name (Ascending)</source>
+        <translation>După numele de afișare (Ascendent)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="264"/>
+        <source>By Display Name (Descending)</source>
+        <translation>După numele de afișare (Descendent)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1041"/>
         <source>Set column width</source>
         <translation>Setare lăţime coloană</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1029"/>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1041"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1060"/>
         <source>Enter column width</source>
         <translation>Introduceți lăţimea coloanei</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1060"/>
         <source>Set Column Width</source>
         <translation>Setare Lăţime Coloană</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1083"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1095"/>
         <source>Configure Attribute Table Sort Order</source>
         <translation>Configurează Ordinea de Sortare din Tabela de Atribute</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1359"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1371"/>
         <source>Loading features…</source>
         <translation>Încărcare entități...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1360"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1372"/>
         <source>Attribute Table</source>
         <translation>Tabela de atribute</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1091"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1103"/>
         <source>Defined sort order in attribute table</source>
         <translation>Ordinea de sortare definită în tabelul de atribute</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1105"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1117"/>
         <source>Sort ascending</source>
         <translation>Sortare ascendentă</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1359"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1371"/>
         <source>Abort</source>
         <translation>Renunţare</translation>
     </message>
@@ -80878,11 +81024,6 @@ Eroare de analiză:
         <location filename="../src/ui/qgsdualviewbase.ui"/>
         <source>Expression</source>
         <translation>Expresie</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdualviewbase.ui"/>
-        <source>Column Preview</source>
-        <translation>Previzualizare Coloane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdualviewbase.ui"/>
@@ -80918,6 +81059,11 @@ Eroare de analiză:
         <location filename="../src/ui/qgsdualviewbase.ui"/>
         <source>Navigate to last feature</source>
         <translation>Deplasare la ultima entitate</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdualviewbase.ui"/>
+        <source>Columns</source>
+        <translation>Coloane</translation>
     </message>
 </context>
 <context>
@@ -99987,32 +100133,32 @@ Verificați permisiunile de fișier și director pentru
 <context>
     <name>QgsGeometryAngleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="131"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="149"/>
         <source>Resulting geometry is degenerate</source>
         <translation>Rezultul geometriei este degenerat</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="135"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="153"/>
         <source>Failed to delete vertex</source>
         <translation>Nu se poate șterge vertexul</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="152"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="170"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="158"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="176"/>
         <source>Delete node with small angle</source>
         <translation>Ștergeți nodul cu unghiul mic</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="158"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="176"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="169"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="187"/>
         <source>Minimal angle</source>
         <translation>Unghi minimal</translation>
     </message>
@@ -100020,37 +100166,37 @@ Verificați permisiunile de fișier și director pentru
 <context>
     <name>QgsGeometryAreaCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="94"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="112"/>
         <source>Failed to merge with neighbor: %1</source>
         <translation>Nu se poate îmbina cu vecinul: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="99"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="117"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="210"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="228"/>
         <source>Merge with neighboring polygon with longest shared edge</source>
         <translation>Unește cu poligonul învecinat care are cea mai mare margine comună</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="211"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="229"/>
         <source>Merge with neighboring polygon with largest area</source>
         <translation>Unește cu poligonul învecinat care are cea mai mare arie</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="212"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="230"/>
         <source>Merge with neighboring polygon with identical attribute value, if any, or leave as is</source>
         <translation>Unește cu poligonul învecinat care are valori identice ale atributelor, dacă este cazul, sau rămâne așa cum este</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="213"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="231"/>
         <source>Delete feature</source>
         <translation>Ştergere entitate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="214"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="232"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -100702,33 +100848,33 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryContainedCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="33"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="46"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="49"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="67"/>
         <source>Contained check failed for (%1): the geometry is invalid</source>
         <translation>Verificarea de conținere a eșuat pentru (%1): geometria nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="57"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="78"/>
         <source>Contained check failed for (%1, %2): %3</source>
         <translation>Verificarea de conținere a eșuat pentru (%1, %2): %3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="103"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="110"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="132"/>
         <source>Delete feature</source>
         <translation>Ştergere entitate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="111"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="133"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.h" line="73"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.h" line="74"/>
         <source>Within</source>
         <translation>Este în interior</translation>
     </message>
@@ -100736,12 +100882,12 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryDangleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="107"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="130"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="113"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="136"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -100754,17 +100900,17 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryDegeneratePolygonCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="84"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="101"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="90"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="107"/>
         <source>Delete feature</source>
         <translation>Ştergere entitate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="90"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="107"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -100777,27 +100923,27 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryDuplicateCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="57"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="73"/>
         <source>Duplicate check failed for (%1): the geometry is invalid</source>
         <translation>Verificarea duplicării pentru (%1) a eșuat: geometria nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="102"/>
         <source>Duplicate check failed for (%1, %2): %3</source>
         <translation>Verificarea duplicării a eșuat pentru (%1, %2): %3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="137"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="159"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="144"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="166"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="145"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="167"/>
         <source>Remove duplicates</source>
         <translation>Eliminare duplicate</translation>
     </message>
@@ -100810,27 +100956,27 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryDuplicateNodesCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="93"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="109"/>
         <source>Resulting geometry is degenerate</source>
         <translation>Rezultul geometriei este degenerat</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="97"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="113"/>
         <source>Failed to delete vertex</source>
         <translation>Nu se poate șterge vertexul</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="109"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="115"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="131"/>
         <source>Delete duplicate node</source>
         <translation>Șterge nodul duplicat</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="115"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="131"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -100843,12 +100989,12 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryFollowBoundariesCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="104"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="126"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="110"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="132"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -100861,111 +101007,111 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryGapCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="113"/>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="123"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="139"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="133"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="149"/>
         <source>Gap check: %1</source>
         <translation>Verificare breșă: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="220"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="290"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="241"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="310"/>
         <source>Failed to merge with neighbor: %1</source>
         <translation>Nu se poate îmbina cu vecinul: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="200"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="221"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="232"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="253"/>
         <source>Could not start editing layer %1</source>
         <translation>Nu se poate începe editarea stratului %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="240"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="261"/>
         <source>Could not add feature to layer %1</source>
         <translation>Nu s-a putut adăuga entitatea în stratul %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="250"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="271"/>
         <source>Allowed gaps layer could not be resolved</source>
         <translation>Stratul breșelor permise nu a putut fi rezolvat</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="267"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="287"/>
         <source>Could not add feature</source>
         <translation>Nu se poate adăuga entitatea</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="276"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="296"/>
         <source>Could not resolve target layer %1 to add feature</source>
         <translation>Nu s-a putut identifica stratul țintă % 1 pentru adăugarea entității</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="428"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="452"/>
         <source>Add gap area to neighboring polygon with longest shared edge</source>
         <translation>Adaugă aria breșei la poligonul învecinat cu cea mai lungă margine comună</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="429"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="447"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="453"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="471"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="431"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="455"/>
         <source>Add gap to allowed exceptions</source>
         <translation>Adăugare breșă la excepțiile permise</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="439"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="463"/>
         <source>Add to longest shared edge</source>
         <translation>Adaugă celei mai lungi muchii partajate</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="439"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="463"/>
         <source>Add the gap area to the neighbouring polygon with the longest shared edge.</source>
         <translation>Adaugă aria breșei poligonului învecinat cu cea mai lungă muchie comună.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="440"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="464"/>
         <source>Create new feature</source>
         <translation>Creare entitate nouă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="440"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="464"/>
         <source>Create a new feature from the gap area.</source>
         <translation>Creează o nouă entitate din suprafața breșei.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="441"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="465"/>
         <source>Add to largest neighbouring area</source>
         <translation>Adaugă la cea mai mare zonă învecinată</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="441"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="465"/>
         <source>Add the gap area to the neighbouring polygon with the largest area.</source>
         <translation>Adaugă aria breșei poligonului învecinat cu cea mai mare arie.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="445"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
         <source>Add Gap to Allowed Exceptions</source>
         <translation>Adăugare Breșă la Excepțiile Permise</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="445"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
         <source>Create a new feature from the gap geometry on the allowed exceptions layer.</source>
         <translation>Creează o nouă entitate din breșa dintre geometriile stratului de excepții permise.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="447"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="471"/>
         <source>Do not perform any action and mark this error as fixed.</source>
         <translation>Nu efectuați nicio acțiune și marcați această eroare ca fiind remediată.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="470"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="494"/>
         <source>Gap</source>
         <translation>Breșă</translation>
     </message>
@@ -100991,17 +101137,17 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryHoleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="98"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="104"/>
         <source>Remove hole</source>
         <translation>Eliminare gaură</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="104"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -101022,12 +101168,12 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryLineIntersectionCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="88"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="110"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="94"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="116"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -101040,12 +101186,12 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryLineLayerIntersectionCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="86"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="107"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="92"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="113"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -101058,22 +101204,22 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryMissingVertexCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="94"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="119"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="132"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="120"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="133"/>
         <source>Add missing vertex</source>
         <translation>Adăugare vertex lipsă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="250"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="263"/>
         <source>Missing Vertex</source>
         <translation>Vertex Lipsă</translation>
     </message>
@@ -101109,42 +101255,42 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryOverlapCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="50"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="61"/>
         <source>Overlap check failed for (%1): the geometry is invalid</source>
         <translation>Verificarea de suprapunere pentru (%1) a eșuat: geometria nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="98"/>
         <source>Overlap check between features %1 and %2 %3</source>
         <translation>Verificare suprapunere între entitățile %1 și %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="125"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="137"/>
         <source>Failed to compute intersection between overlapping features: %1</source>
         <translation>Nu s-a reușit calcularea intersecției dintre entitățile suprapuse: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="177"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="189"/>
         <source>Could not find shared edges between intersection and overlapping features</source>
         <translation>Nu s-au găsit marginile comune de la intersecția dintre entitățile suprapuse</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="205"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="217"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="212"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="224"/>
         <source>Remove overlapping area from neighboring polygon with shortest shared edge</source>
         <translation>Elimină zona de suprapunere din poligonul învecinat, cu cea mai scurtă muchie comună</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="213"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="225"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="235"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="247"/>
         <source>Overlap</source>
         <translation>Se suprapune</translation>
     </message>
@@ -101152,12 +101298,12 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryPointCoveredByLineCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="83"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="104"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="89"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="110"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -101170,17 +101316,17 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryPointInPolygonCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="49"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="69"/>
         <source>Point in polygon check failed for (%1): the geometry is invalid</source>
         <translation>Verificarea de includere a punctului (%1) în poligon a eșuat: geometria nu este validă</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="75"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="96"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="102"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -101193,12 +101339,12 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometrySegmentLengthCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="108"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>Metodă necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="114"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="131"/>
         <source>No action</source>
         <translation>Nici o acțiune</translation>
     </message>
@@ -101240,13 +101386,13 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="300"/>
-        <source>Split feature into a multi-object feature</source>
-        <translation>Divide entitatea într-o entitate multi-obiect</translation>
+        <source>Split feature into a multi-part feature</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="301"/>
-        <source>Split feature into multiple single-object features</source>
-        <translation>Divide entitatea în mai multe entități cu un singur obiect</translation>
+        <source>Split feature into multiple single-part features</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="302"/>
@@ -101303,7 +101449,7 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
 <context>
     <name>QgsGeometryTypeCheckError</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="297"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="309"/>
         <source>Overlap with %1 at feature %2</source>
         <translation>Suprapune cu %1 la entitatea %2</translation>
     </message>
@@ -101897,10 +102043,10 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="179"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="232"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1732"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1792"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2446"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2453"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1735"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1795"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2449"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2456"/>
         <source>Georeferencer</source>
         <translation>Georeferențiator</translation>
     </message>
@@ -101936,29 +102082,29 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
         <translation>Georeferențiator - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="938"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="941"/>
         <source>Please load file to be georeferenced.</source>
         <translation>Încărcați fișierul care urmează să fie georeferențiat.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1544"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1547"/>
         <source>Source coordinate</source>
         <translation>Coordonată sursă</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1547"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1550"/>
         <source>Coordinate of image (column/line)</source>
         <translation>Coordonata imaginii (coloană/linie)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1841"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1844"/>
         <source>Georeference Successful</source>
         <translation>Georeferențiere cu succes</translation>
     </message>
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="496"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1439"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2270"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1442"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2273"/>
         <source>Transform: </source>
         <translation>Transformare: </translation>
     </message>
@@ -101973,371 +102119,371 @@ Verificarea geometriei poate fi realizată, dar nu va fi posibilă remedierea er
         <translation>Sursă încărcată: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="589"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="592"/>
         <source>Invalid Transform</source>
         <translation>Transformare Nevalidă</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="589"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="592"/>
         <source>GDAL scripting is not supported for %1 transformation.</source>
         <translation>Scriptarea GDAL nu este permisă pentru transformarea %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="895"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="902"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="906"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="898"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="905"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="909"/>
         <source>Load GCP Points</source>
         <translation>Încărcare Puncte GCP</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="895"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="919"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="898"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="922"/>
         <source>GCP file</source>
         <translation>Fişier GCP</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="906"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="909"/>
         <source>GCP file successfully loaded.</source>
         <translation>Fişierul GCP s-a încărcat cu succes.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="914"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="919"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="917"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="922"/>
         <source>Save GCP Points</source>
         <translation>Salvare Puncte GCP</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="914"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="917"/>
         <source>No GCP points are available to save.</source>
         <translation>Nu există puncte GCP de salvat.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1232"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1235"/>
         <source>Snapping Type</source>
         <translation>Tipul Acroșării</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1234"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1237"/>
         <source>Set Snapping Mode</source>
         <translation>Configurează Modul de Acroșare</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1347"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1350"/>
         <source>Panels</source>
         <translation>Panouri</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1351"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1354"/>
         <source>Toolbars</source>
         <translation>Bare de instrumente</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1421"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1424"/>
         <source>Rotation</source>
         <translation>Rotaţie</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1422"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1435"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1425"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1438"/>
         <source>Current clockwise map rotation in degrees</source>
         <translation>Rotația curentă, în sensul acelor de ceasornic, a hărții în grade</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1434"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1437"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1443"/>
         <source>Current transform parametrisation</source>
         <translation>Parametrii de transformare actuali</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1445"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1448"/>
         <source>Coordinate: </source>
         <translation>Coordonată:</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1446"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1449"/>
         <source>Current map coordinate</source>
         <translation>Coordonatele curente ale hărții</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1539"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1542"/>
         <source>None</source>
         <translation>Fără</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1627"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1630"/>
         <source>Write Error</source>
         <translation>Eroare de Scriere</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1638"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1641"/>
         <source>Save GCPs</source>
         <translation>Salvare GCP-uri</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1638"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1641"/>
         <source>Save GCP points?</source>
         <translation>Salvați punctele GCP?</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1662"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1763"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1665"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1813"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2467"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1778"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1816"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2470"/>
         <source>Transform Failed</source>
         <translation>Transformarea a Eșuat</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1662"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1665"/>
         <source>Failed to calculate linear transform parameters.</source>
         <translation>Nu s-au putut calcula parametrii liniari de transformare.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1670"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1673"/>
         <source>Georeference</source>
         <translation>Georeferențiere</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1670"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1673"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Fișierul selectat pare să aibă deja un fișier world! Doriți să-l înlocuiți cu noul fișier world?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1731"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1791"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1734"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1794"/>
         <source>Georeferencing layer…</source>
         <translation>Stratul de georeferențiere...</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1731"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1791"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1734"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1794"/>
         <source>Abort</source>
         <translation>Renunţare</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1763"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2467"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2470"/>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
         <translation>Nu s-a reușit calcularea transformării GCP: Transformarea nu este solvabilă.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
         <source>Could not read source image.</source>
         <translation>Nu se poate citi imaginea sursă.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
         <source>Error creating GDAL transformation.</source>
         <translation>Eroare la transformarea GDAL</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
         <source>Could not create destination file.</source>
         <translation>Nu se poate crea fișierul destinație.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1778"/>
         <source>Error occurred while warping image.</source>
         <translation>A apărut o eroare în timpul reproiectării imaginii.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1841"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1844"/>
         <source>The layer was successfully georeferenced.</source>
         <translation>Stratul a fost georeferențiat cu succes.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1873"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1876"/>
         <source>Save World File</source>
         <translation>Salvează Fişierul World</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1873"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1876"/>
         <source>Could not write to %1.</source>
         <translation>Nu se poate scrie în %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2001"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2014"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2111"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2192"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2004"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2017"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2114"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2195"/>
         <source>map units</source>
         <translation>unităţi hartă</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2005"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2115"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2008"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2118"/>
         <source>pixels</source>
         <translation>pixeli</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2122"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2125"/>
         <source>Transformation parameters</source>
         <translation>Parametri de transformare</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2126"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2129"/>
         <source>Transformation parameter</source>
         <translation>Parametrul transformării</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2148"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2151"/>
         <source>Translation x</source>
         <translation>Translația pe axa x</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2149"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2152"/>
         <source>Translation y</source>
         <translation>Translația y</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2150"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2153"/>
         <source>Scale x</source>
         <translation>x scară</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2151"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2154"/>
         <source>Scale y</source>
         <translation>y scară</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2152"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2155"/>
         <source>Rotation [degrees]</source>
         <translation>Rotaţie [grade]</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2154"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2157"/>
         <source>Mean error [%1]</source>
         <translation>Eroare medie [%1]</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2179"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2182"/>
         <source>Residuals</source>
         <translation>Reziduuri</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2199"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2202"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2200"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2203"/>
         <source>Enabled</source>
         <translation>Activat</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2201"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2204"/>
         <source>Pixel X</source>
         <translation>X-ul pixelului</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2202"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2205"/>
         <source>Pixel Y</source>
         <translation>Y-ul pixelului</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2203"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2206"/>
         <source>Map X</source>
         <translation>X-ul hărții</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2204"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2207"/>
         <source>Map Y</source>
         <translation>X-ul hărții</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2205"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2208"/>
         <source>Res X (%1)</source>
         <translation>Rez. X (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2206"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2209"/>
         <source>Res Y (%1)</source>
         <translation>Rez. Y (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2207"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2210"/>
         <source>Res Total (%1)</source>
         <translation>Rez. Totală (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2222"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2225"/>
         <source>yes</source>
         <translation>da</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2226"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2229"/>
         <source>no</source>
         <translation>nu</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2277"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2280"/>
         <source>Translation (%1, %2)</source>
         <translation>Translație (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2279"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2282"/>
         <source>Scale (%1, %2)</source>
         <translation>Scara (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2281"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2284"/>
         <source>Rotation: %1</source>
         <translation>Rotaţie: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2288"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2291"/>
         <source>Mean error: %1</source>
         <translation>Eroare medie: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2299"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2302"/>
         <source>Copy to Clipboard</source>
         <translation>Copiere în Clipboard</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2305"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2308"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2312"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2315"/>
         <source>GDAL Script</source>
         <translation>Script GDAL</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2443"/>
         <source>No Layer Loaded</source>
         <translation>Niciun Strat Încărcat</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2443"/>
         <source>Please load layer to be georeferenced.</source>
         <translation>Încărcați stratul care urmează să fie georeferențiat.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2453"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2456"/>
         <source>Please set output file name.</source>
         <translation>Setați numele fișierului de ieșire.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2446"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2449"/>
         <source>Please set transformation type.</source>
         <translation>Setați tipul transformării.</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2460"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2463"/>
         <source>Not Enough GCPs</source>
         <translation>Nu Există Suficiente GCP</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2460"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2463"/>
         <source>%1 transformation requires at least %n GCPs. Please define more.</source>
         <translation><numerusform>Transformarea %1 necesită cel puţin %n GCP-uri. Definiți mai multe.</numerusform><numerusform>Transformarea %1 necesită cel puţin %n GCP-uri. Definiți mai multe.</numerusform><numerusform>Transformarea %1 necesită cel puţin %n GCP-uri. Definiți mai multe.</numerusform></translation>
     </message>
@@ -103496,82 +103642,82 @@ gri = fără date
         <translation>Creare Entitate</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="366"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="364"/>
         <source>Create Point Feature at Location</source>
         <translation>Creare Entitate de tip Punct la Locație</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="367"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="365"/>
         <source>Create a new point feature at the current GPS location</source>
         <translation>Creează o nouă entitate de tip punct folosind locația GPS curentă</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="372"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="370"/>
         <source>Create Line Feature from Track</source>
         <translation>Creare Entitate Liniară din Traseu</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="373"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="371"/>
         <source>Create a new line feature using the current GPS track</source>
         <translation>Creează o nouă entitate liniară folosind traseul GPS curent</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="378"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="376"/>
         <source>Create Polygon Feature from Track</source>
         <translation>Creare Entitate Poligonală din Traseu</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="379"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="377"/>
         <source>Create a new polygon feature using the current GPS track</source>
         <translation>Creează o nouă entitate poligonală folosind traseul GPS curent.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="406"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="400"/>
         <source>Follow Active Layer</source>
         <translation>Urmărire Strat Activ</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="407"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="401"/>
         <source>Always add GPS digitized features to the active layer</source>
         <translation>Întotdeauna adaugă entitățile GPS digitizate în stratul activ</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="454"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="448"/>
         <source>Current GPS Information</source>
         <translation>Informații GPS Curente</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="461"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="455"/>
         <source>Show Location</source>
         <translation>Arată Locația</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="462"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="456"/>
         <source>Show Altitude (Geoid)</source>
         <translation>Arată Altitudinea (Geoid)</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="463"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="457"/>
         <source>Show Altitude (WGS-84 Ellipsoid)</source>
         <translation>Arată Altitudinea (Elipsoid WGS-84)</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="464"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="458"/>
         <source>Show Ground Speed</source>
         <translation>Arată Viteza la Sol</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="465"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="459"/>
         <source>Show Bearing</source>
         <translation>Arată Azimutul</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="466"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="460"/>
         <source>Show Total Track Length</source>
         <translation>Afișează Lungimea Totală a Traseului</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="467"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="461"/>
         <source>Show Distance from Start of Track</source>
         <translation>Afișează Distanța de la Începutul Traseului</translation>
     </message>
@@ -104233,12 +104379,12 @@ Apăsați Cancel pentru a opri calculul, sau OK pentru a continua.</translation>
 <context>
     <name>QgsGrassImportItem</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1183"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1182"/>
         <source>Cancel</source>
         <translation>Renunță</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1216"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1215"/>
         <source>canceling</source>
         <translation>renunțare</translation>
     </message>
@@ -104764,17 +104910,17 @@ la linia %2 coloana %3</translation>
         <translation>Nu se poate obține regiunea locației implicite</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="898"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="897"/>
         <source>Cannot delete %1</source>
         <translation>Nu se poate șterge %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="924"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="923"/>
         <source>Import to GRASS mapset</source>
         <translation>Importă în setul de hărți GRASS</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="924"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="923"/>
         <source>Failed to import some layers!
 
 </source>
@@ -104783,12 +104929,12 @@ la linia %2 coloana %3</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="935"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="934"/>
         <source>Import to GRASS mapset failed</source>
         <translation>Importul în setul de hărți GRASS a eșuat</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="936"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="935"/>
         <source>Failed to import %1 to %2: %3</source>
         <translation>Importul %1 în %2 a eșuat: %3</translation>
     </message>
@@ -105812,17 +105958,17 @@ la linia %2 coloana %3</translation>
 <context>
     <name>QgsGrassRasterImport</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="291"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="290"/>
         <source>Data type %1 not supported</source>
         <translation>Tipul de date %1 nu este acceptat</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="324"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="323"/>
         <source>Writing band %1/%2</source>
         <translation>Scriere bandă %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="363"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="362"/>
         <source>Cannot convert block (%1) to data type %2</source>
         <translation>Nu se poate converti blocul (%1) în tipul de date %2</translation>
     </message>
@@ -106159,7 +106305,7 @@ la linia %2 coloana %3</translation>
 <context>
     <name>QgsGrassVectorImport</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="617"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="616"/>
         <source>Writing features</source>
         <translation>Scriere entități</translation>
     </message>
@@ -107390,17 +107536,17 @@ b) Utilizați fila de Configurare pentru a adăuga credențialele dvs. metodei d
         <translation>Se scanează tabelele pentru %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="457"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="458"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="476"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="480"/>
         <source>Failed to retrieve tables for %1</source>
         <translation>Nu se pot obține tabelele pentru %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="478"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="482"/>
         <source>Connect</source>
         <translation>Conectare</translation>
     </message>
@@ -107978,12 +108124,12 @@ Opțional, rezultatul poate fi scris într-un fișier de pe disc.
         <translation>Cererea s-a încheiat cu codul %1.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="178"/>
         <source>Result data written to %1</source>
         <translation>Datele rezultate au fost scrise în %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="183"/>
         <source>Request failed with code %1</source>
         <translation>Solicitarea a eșuat cu codul %1</translation>
     </message>
@@ -110557,16 +110703,16 @@ CTRL + click pentru a accesa adresa</translation>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="199"/>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="227"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="257"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="277"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="258"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="278"/>
         <source>Symbology</source>
         <translation>Simbologie</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="203"/>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="236"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="261"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="281"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="262"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="282"/>
         <source>Labels</source>
         <translation>Etichete</translation>
     </message>
@@ -110577,7 +110723,7 @@ CTRL + click pentru a accesa adresa</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="213"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="267"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="268"/>
         <source>3D View</source>
         <translation>Vizualizare 3D</translation>
     </message>
@@ -110592,22 +110738,22 @@ CTRL + click pentru a accesa adresa</translation>
         <translation>Transparenţă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="244"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="245"/>
         <source>Histogram</source>
         <translation>Histogramă</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="248"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="249"/>
         <source>Raster Attribute Tables</source>
         <translation>Tabele cu Atribute Raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="307"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="308"/>
         <source>History</source>
         <translation>Istoric</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="714"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="716"/>
         <source>There are no raster attribute tables associated with this data source.&lt;br&gt;If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree or in the layer properties dialog.</source>
         <translation>Nu există tabele de atribute raster asociate acestei surse de date.&lt;br&gt;Dacă simbologia curentă poate fi convertită într-o tabelă de atribute, atunci puteți crea o nouă tabelă de atribute cu ajutorul meniului contextual disponibil în arborele straturilor sau accesând butonul de mai jos.</translation>
     </message>
@@ -110740,7 +110886,7 @@ CTRL + click pentru a accesa adresa</translation>
         <translation>&lt;b&gt;Numărul de entități este estimat&lt;/b&gt; : acesta este determinat de statisticile bazei de date</translation>
     </message>
     <message>
-        <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="1220"/>
+        <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="1216"/>
         <source>New layers added from another QGIS instance</source>
         <translation>Noi straturi, adăugate dintr-o altă instanță QGIS</translation>
     </message>
@@ -110908,17 +111054,17 @@ CTRL + click pentru a accesa adresa</translation>
 <context>
     <name>QgsLayerTreeViewLowAccuracyIndicatorProvider</name>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="72"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="78"/>
         <source>Based on %1, which has a limited accuracy of &lt;b&gt;at best %2 meters&lt;/b&gt;.</source>
         <translation>Bazat pe %1, care are o precizie limitată de &lt;b&gt;cel mult %2 metri&lt;/b&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="76"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="82"/>
         <source>Based on %1, which has a limited accuracy.</source>
         <translation>Bazat pe %1, care are o precizie limitată.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="87"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="61"/>
         <source>%1 is a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy.</source>
         <translation>%1 reprezintă un CRS dinamic, dar nu este setată nicio epocă pentru coordonate. Acestea sunt ambigue și au o acuratețe scăzută.</translation>
     </message>
@@ -111044,12 +111190,12 @@ CTRL + click pentru a accesa adresa</translation>
         <translation>Încărcare %1</translation>
     </message>
     <message>
-        <location filename="../src/core/layout/qgslayout.cpp" line="1174"/>
+        <location filename="../src/core/layout/qgslayout.cpp" line="1176"/>
         <source>Finalize restore</source>
         <translation>Finalizează restaurarea</translation>
     </message>
     <message>
-        <location filename="../src/core/layout/qgslayout.cpp" line="1207"/>
+        <location filename="../src/core/layout/qgslayout.cpp" line="1209"/>
         <source>Update model</source>
         <translation>Actualizare model</translation>
     </message>
@@ -115967,7 +116113,7 @@ Eroare de evaluare: %1</translation>
 <context>
     <name>QgsLayoutLegendMapFilteringModel</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="2074"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="2077"/>
         <source>Change Legend Linked Maps</source>
         <translation>Modifică Hărțile Legate de Legendă</translation>
     </message>
@@ -115975,7 +116121,7 @@ Eroare de evaluare: %1</translation>
 <context>
     <name>QgsLayoutLegendMapFilteringWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1959"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1962"/>
         <source>Legend Filtering</source>
         <translation>Filtrare Legendă</translation>
     </message>
@@ -116001,53 +116147,53 @@ Eroare de evaluare: %1</translation>
 <context>
     <name>QgsLayoutLegendNodeWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1549"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1552"/>
         <source>Legend Item Properties</source>
         <translation>Proprietățile Elementului Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1554"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1557"/>
         <source>Follow Legend Default</source>
         <translation>Urmează valorile Implicite pentru Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1555"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1558"/>
         <source>Allow Splitting Over Columns</source>
         <translation>Permite Împărțirea pe Mai Multe Coloane</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1556"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1559"/>
         <source>Prevent Splitting Over Columns</source>
         <translation>Previne Împărțirea pe Mai Multe Coloane</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1580"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1581"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1583"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1584"/>
         <source>Default</source>
         <translation>Setări fabrică</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1743"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1772"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1832"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1858"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1902"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1746"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1775"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1835"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1861"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1905"/>
         <source>Edit Legend Item</source>
         <translation>Editează Elementul Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1817"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1820"/>
         <source>Insert Expression</source>
         <translation>Introducere Expresie</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1823"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1826"/>
         <source>Insert expression</source>
         <translation>Introducere expresie</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1915"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1938"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1918"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1941"/>
         <source>Edit Legend Columns</source>
         <translation>Editează Coloanele Legendei</translation>
     </message>
@@ -116113,274 +116259,274 @@ Eroare de evaluare: %1</translation>
 <context>
     <name>QgsLayoutLegendWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="157"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="160"/>
         <source>Legend Properties</source>
         <translation>Proprietățile Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="171"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="174"/>
         <source>Symbols on Left</source>
         <translation>Simbolurile în partea Stângă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="172"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="175"/>
         <source>Symbols on Right</source>
         <translation>Simbolurile în partea Dreaptă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="181"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="184"/>
         <source>Disabled</source>
         <translation>Dezactivat</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="206"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="209"/>
         <source>Select Stroke Color</source>
         <translation>Selectare Culoare pentru Contur</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="349"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="352"/>
         <source>Change Legend Wrap</source>
         <translation>Modifică Încadrarea textului în Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="361"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="364"/>
         <source>Change Legend Title</source>
         <translation>Modifică Titlul Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="374"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="377"/>
         <source>Change Title Alignment</source>
         <translation>Modifică Alinierea Titlului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="385"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="388"/>
         <source>Change Group Alignment</source>
         <translation>Modifică Alinierea Grupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="396"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="399"/>
         <source>Change Subgroup Alignment</source>
         <translation>Modifică Alinierea Subgrupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="407"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="410"/>
         <source>Change Item Alignment</source>
         <translation>Modifică Alinierea Itemului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="419"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="422"/>
         <source>Change Legend Arrangement</source>
         <translation>Modifică Aranjamentul Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="430"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="433"/>
         <source>Change Column Count</source>
         <translation>Modifică Numărul Coloanelor</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="444"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="447"/>
         <source>Split Legend Layers</source>
         <translation>Divide Straturile Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="456"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="459"/>
         <source>Legend Column Width</source>
         <translation>Lățimea Coloanei Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="468"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="471"/>
         <source>Resize Symbol Width</source>
         <translation>Redimensionează Lăţimea Simbolului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="480"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="483"/>
         <source>Change Legend Maximum Symbol Size</source>
         <translation>Schimbă Dimensiunea Maximă a Simbolului din Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="492"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="495"/>
         <source>Change Legend Minimum Symbol Size</source>
         <translation>Schimbă Dimensiunea Minimă a Simbolului din Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="504"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="507"/>
         <source>Resize Symbol Height</source>
         <translation>Redimensionează Înălţimea Simbolului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="516"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="519"/>
         <source>Resize WMS Width</source>
         <translation>Redimensionează Lăţimea WMS</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="528"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="531"/>
         <source>Resize WMS Height</source>
         <translation>Redimensionează Înălţimea WMS</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="540"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="543"/>
         <source>Change Title Space</source>
         <translation>Modifică Spațiul titlului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="552"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="588"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="555"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="591"/>
         <source>Change Group Space</source>
         <translation>Modifică Spațiul Grupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="564"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="567"/>
         <source>Change Group Indent</source>
         <translation>Modifică Indentarea Grupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="576"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="579"/>
         <source>Change Subgroup Indent</source>
         <translation>Modifică Indentarea Subgrupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="600"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="603"/>
         <source>Change Side of Group Space</source>
         <translation>Schimbă Latura Spațiului Grupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="612"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="615"/>
         <source>Change Side of Subgroup Space</source>
         <translation>Schimbă Latura Spațiului Subgrupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="624"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="627"/>
         <source>Change Side of Symbol Space</source>
         <translation>Schimbă Latura Spațiului Simbolului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="636"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="722"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="639"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="725"/>
         <source>Change Subgroup Space</source>
         <translation>Modifică Spațiul Subgrupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="648"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="651"/>
         <source>Change Symbol Space</source>
         <translation>Modifică Spațiul Simbolului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="662"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="665"/>
         <source>Change Label Space</source>
         <translation>Modifică Spațiul Etichetei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="674"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="677"/>
         <source>Change Title Font</source>
         <translation>Modifică Fontul Titlului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="686"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="689"/>
         <source>Change Group Font</source>
         <translation>Modifică Fontul Grupului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="698"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="701"/>
         <source>Change Layer Font</source>
         <translation>Modifică Fontul Stratului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="710"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="713"/>
         <source>Change Item Font</source>
         <translation>Modifică Fontul Elementului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="758"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="761"/>
         <source>Change Legend Wrapping</source>
         <translation>Modifică Încadrarea textului în Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="734"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="737"/>
         <source>Change Box Space</source>
         <translation>Modifică Spațiul Casetei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="746"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="749"/>
         <source>Change Column Space</source>
         <translation>Modifică Spațiul Coloanei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="784"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="787"/>
         <source>Moved Legend Item Down</source>
         <translation>Deplasează în Jos Elementul Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="828"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="831"/>
         <source>Move Legend Item Up</source>
         <translation>Deplasează în Sus Elementul Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="868"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="871"/>
         <source>Change Auto Update</source>
         <translation>Modifică Auto Actualizarea</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="911"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="914"/>
         <source>Change Legend Map</source>
         <translation>Modifică Harta Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="927"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="930"/>
         <source>Resize Legend to Contents</source>
         <translation>Redimensionează Legenda pentru a se potrivi Conținutului</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="942"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="945"/>
         <source>Change Legend Borders</source>
         <translation>Schimbă Marginile Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="956"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="959"/>
         <source>Resize Legend Borders</source>
         <translation>Redimensioneză Marginile Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="970"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="973"/>
         <source>Change Legend Border Color</source>
         <translation>Schimbă Culoarea Marginei Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1001"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1004"/>
         <source>Add Legend Item(s)</source>
         <translation>Adaugă Element(ele) Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1026"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1029"/>
         <source>Remove Legend Item</source>
         <translation>Elimină Elementul Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1113"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1143"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1159"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1186"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1250"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1288"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1116"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1146"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1162"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1189"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1253"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1291"/>
         <source>Update Legend</source>
         <translation>Atualizează Legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1265"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1268"/>
         <source>Add Legend Group</source>
         <translation>Adaugă un Grup în Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1266"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1269"/>
         <source>Group</source>
         <translation>Grup</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1300"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1303"/>
         <source>Only show items inside current %1 feature</source>
         <translation>Se afișează doar elementele din interiorul entității curente din %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1301"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1304"/>
         <source>Filter out legend elements that lie outside the current %1 feature.</source>
         <translation>Filtrează elementele legendei care se află în afara entității din %1 curent.</translation>
     </message>
@@ -123692,19 +123838,19 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="323"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2310"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2311"/>
         <source>Refine Current Face</source>
         <translation>Rafinare Fațetă Curentă</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="325"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2285"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2286"/>
         <source>Remove Current Face</source>
         <translation>Elimină Fațeta Curentă</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="326"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2303"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2304"/>
         <source>Split Current Face</source>
         <translation>Divizare Fațetă Curentă</translation>
     </message>
@@ -123746,77 +123892,77 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
         <translation>Reindexare Suprafață Poliedrică</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2271"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2272"/>
         <source>Remove Selected Vertex and Fill Hole</source>
         <translation>Elimină Vertexul Selectat și Umple Golul</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2272"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2273"/>
         <source>Remove Selected Vertex without Filling Hole</source>
         <translation>Elimină Vertexul Selectat fără Umplerea Golului</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2276"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2277"/>
         <source>Remove Selected Vertices and Fill Hole(s)</source>
         <translation>Elimină Vertecșii Selectați și Umple Gol(urile)</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2277"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2278"/>
         <source>Remove Selected Vertices without Filling Hole(s)</source>
         <translation>Elimină Vertecșii Selectați fără Umplerea Gol(urilor)</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2281"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2282"/>
         <source>Remove Selected Face</source>
         <translation>Elimină Fațeta Selectată</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2306"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2307"/>
         <source>Refine Selected Face</source>
         <translation>Rafinează Fațeta Selectată</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2774"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2775"/>
         <source>Terrain Z Value</source>
         <translation>Valoarea Z a Terenului</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2775"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2776"/>
         <source>Z Value from project terrain could not be obtained, setting default value %1.</source>
         <translation>Valoarea Z din terenul proiectului nu s-a putut obține; valoarea implicită va fi %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2961"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2962"/>
         <source>Selected mesh vertex ID: %1 at x: %2 y: %3 z: %4.</source>
         <translation>ID-ul vertexului suprafeței poliedrice selectate: %1 at x: %2 y: %3 z: %4.</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2998"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2999"/>
         <source>Selected mesh vertices IDs: %1 and %2 with distance %3 and dZ %4.</source>
         <translation>ID-urile vertecșilor suprafeței poliedrice selectate: %1 și %2 cu distanța %3 și dZ %4.</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="3002"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="3003"/>
         <source>Selected %1 mesh vertices.</source>
         <translation>S-au selectat %1 vertecși ai suprafeței poliedrice.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2283"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2284"/>
         <source>Remove %n Selected Face(s)</source>
         <translation><numerusform>Elimină %n Fațet(e) Selectate</numerusform><numerusform>Elimină %n Fațet(e) Selectate</numerusform><numerusform>Elimină %n Fațet(e) Selectate</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2308"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2309"/>
         <source>Refine %n Selected Face(s)</source>
         <translation><numerusform>Rafinează %n Fațet(e) Selectate</numerusform><numerusform>Rafinează %n Fațet(e) Selectate</numerusform><numerusform>Rafinează %n Fațet(e) Selectate</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2299"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2300"/>
         <source>Split Selected Face</source>
         <translation>Divide Fațeta Selectată</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2301"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2302"/>
         <source>Split %n Selected Face(s)</source>
         <translation><numerusform>Divide cele %n Fațet(e) Selectate</numerusform><numerusform>Divide cele %n Fațet(e) Selectate</numerusform><numerusform>Divide cele %n Fațet(e) Selectate</numerusform></translation>
     </message>
@@ -123826,7 +123972,7 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
         <translation>Doriți reindexarea fețelor și vertecșilor pentru suprafețele poliedrice din stratul %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2689"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2690"/>
         <source>Vertex Z value:</source>
         <translation>Valoarea Z a vertexului:</translation>
     </message>
@@ -124395,8 +124541,8 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="344"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="372"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="376"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="587"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="594"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
         <source>Move Label</source>
         <translation>Mută eticheta</translation>
     </message>
@@ -124414,8 +124560,8 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="203"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="207"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="591"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="598"/>
         <source>Move Callout</source>
         <translation>Deplasare Callout</translation>
     </message>
@@ -124470,103 +124616,103 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
         <translation>Nu se poate deplasa “%1” — stratul “%2” nu a putut fi editat</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="484"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="486"/>
         <source>Moved curved label offset</source>
         <translation>S-a schimbat decalajul etichetei curbe</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="496"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="498"/>
         <source>Move label anchor percent</source>
         <translation>Schimbă procentajul de ancorare a etichetei</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="545"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="547"/>
         <source>Moved label</source>
         <translation>Eticheta mutată</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="547"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="549"/>
         <source>Moved callout</source>
         <translation>Callout deplasat</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="496"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="587"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="498"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
         <source>Layer “%1” must be editable in order to move labels from it</source>
         <translation>Stratul &quot;%1&quot; trebuie să fie editabil pentru a se putea deplasa etichetele în cadrul acestuia</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="591"/>
         <source>Layer “%1” must be editable in order to move callouts from it</source>
         <translation>Stratul &quot;%1&quot; trebuie să fie editabil pentru a se putea deplasa callout-urile în cadrul acestuia</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="594"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
         <source>Error encountered while storing new label position</source>
         <translation>A apărut o eroare la stocarea noii poziții a etichetei</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="598"/>
         <source>Error encountered while storing new callout position</source>
         <translation>A apărut o eroare la stocarea noii poziții a callout-ului</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="718"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="720"/>
         <source>Delete Label Anchor Percent &apos;%1&apos;</source>
         <translation>Șterge Procentajul de Ancorare a Etichetei &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="747"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="751"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="749"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="753"/>
         <source>Delete Label Anchor Percent</source>
         <translation>Șterge Procentajul de Ancorare a Etichetei</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="747"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="749"/>
         <source>Layer “%1” must be editable in order to remove stored label anchor percent</source>
         <translation>Stratul &quot;%1&quot; trebuie să fie editabil pentru a elimina procentajul de ancorare a etichetelor stocate</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="751"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="753"/>
         <source>Error encountered while removing stored label anchor percent</source>
         <translation>A apărut o eroare la eliminarea procentajului de ancorare a etichetei stocate</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="757"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="767"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="774"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="759"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
         <source>Delete Label Position</source>
         <translation>Șterge Poziția Etichetei</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="757"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="759"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="771"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="778"/>
         <source>Delete Callout Position</source>
         <translation>Șterge Poziția Callout-ului</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="767"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
         <source>Layer “%1” must be editable in order to remove stored label positions</source>
         <translation>Stratul &quot;%1&quot; trebuie să fie editabil pentru a elimina pozițiile etichetelor stocate</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="771"/>
         <source>Layer “%1” must be editable in order to remove stored callout positions</source>
         <translation>Stratul &quot;%1&quot; trebuie să fie editabil pentru a elimina pozițiile callout-urilor stocate</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="774"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
         <source>Error encountered while removing stored label position</source>
         <translation>A apărut o eroare la eliminarea poziției stocate a etichetei</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="778"/>
         <source>Error encountered while removing stored callout position</source>
         <translation>A apărut o eroare la eliminarea poziției stocate a callout-ului</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="904"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="908"/>
         <source>Callout angle: %1°</source>
         <translation>Unghiul callout-ului: %1°</translation>
     </message>
@@ -125489,7 +125635,7 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="535"/>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="606"/>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="858"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="867"/>
         <source>Measure</source>
         <translation>Măsurare</translation>
     </message>
@@ -125514,7 +125660,7 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
         <translation>Distanța este calculată în %1, conform CRS-ului proiectului (%2).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="858"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="867"/>
         <source>Measurements copied to clipboard</source>
         <translation>Măsurătorile au fost copiate în clipboard</translation>
     </message>
@@ -125557,8 +125703,8 @@ Pentru generarea hărții este recomandată rasterizarea.</translation>
         <translation>Segmente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="778"/>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="799"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="787"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="808"/>
         <source>map units</source>
         <translation>unităţi hartă</translation>
     </message>
@@ -129763,12 +129909,12 @@ Citiți jurnalul, pentru mai multe informații.</translation>
         <translation>Editare legătură</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="155"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="153"/>
         <source>Sockets cannot be connected</source>
         <translation>Socket-urile nu pot fi conectate</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="156"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="154"/>
         <source>Either the sockets are incompatible or there is a circular dependency</source>
         <translation>Fie socket-urile sunt incompatibile, fie există o dependență circulară</translation>
     </message>
@@ -132388,12 +132534,12 @@ Mesaj de eroare: %1</translation>
 <context>
     <name>QgsNewsFeedParser</name>
     <message>
-        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="165"/>
+        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="172"/>
         <source>Fetching News Feed</source>
         <translation>Obținere Flux de Știri</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="177"/>
+        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="184"/>
         <source>News feed request failed [error: %1]</source>
         <translation>Cererea fluxului de știri a eșuat [eroare: %1]</translation>
     </message>
@@ -132982,31 +133128,31 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     <name>QgsOapifProvider</name>
     <message>
         <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="70"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="229"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="285"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="528"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="550"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="236"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="292"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="535"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="557"/>
         <source>OAPIF</source>
         <translation>OAPIF</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="229"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="285"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="236"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="292"/>
         <source>Cannot compute layer extent: %1</source>
         <translation>Nu se poate calcula extinderea stratului: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="568"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="575"/>
         <source>OGC API - Features filter</source>
         <translation>OGC API - Filtru de entități</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="627"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="634"/>
         <source>Feature creation failed: %1</source>
         <translation>Eroare de creare a entității: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="844"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="851"/>
         <source>Feature deletion failed: %1</source>
         <translation>Eroare de ștergere a entității: %1</translation>
     </message>
@@ -133078,8 +133224,8 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
 <context>
     <name>QgsOapifSharedData</name>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="871"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="1228"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="878"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="1235"/>
         <source>OAPIF</source>
         <translation>OAPIF</translation>
     </message>
@@ -133115,107 +133261,107 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
         <translation>Nu se poate deschide baza de date SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="390"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="395"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
         <translation>Nu se poate inițializa SpatialMetadata:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="431"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="436"/>
         <source>Creation of database failed. GeoPackage driver not found.</source>
         <translation>Crearea bazei de date a eșuat. Driver-ul GeoPackage nu a fost găsit.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="438"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="443"/>
         <source>Creation of database failed (OGR error: %1)</source>
         <translation>Crearea bazei de date a eșuat (Eroare OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="454"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="459"/>
         <source>Could not create a new database
 </source>
         <translation>Nu s-a putut crea o bază de date nouă
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="463"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="468"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
         <translation>Nu se pot activa constrângerile FOREIGN_KEY</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="559"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="564"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a string of comma-separated values.</source>
         <translation>Câmpul &apos;%1&apos; din stratul %2 a fost convertit dintr-o listă într-un șir cu valori separate prin virgule.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="600"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="605"/>
         <source>Layer %1 has unsupported geometry type %2.</source>
         <translation>Stratul %1 are un tip de geometrie de tipul %2.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="620"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="625"/>
         <source>Layer %1 has unsupported Coordinate Reference System (%2).</source>
         <translation>Stratul %1 are un Sistem de Referință și Coordonate neacceptat (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="641"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="646"/>
         <source>Filling SpatiaLite for layer %1 failed</source>
         <translation>Umplerea SpatiaLite pentru stratul %1 a eșuat</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="655"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="660"/>
         <source>No Spatialite support available</source>
         <translation>Nu există suport pentru Spatialite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="666"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="671"/>
         <source>%1 (offline)</source>
         <translation>%1 (offline)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="680"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="685"/>
         <source>Cannot make FID-name for GPKG </source>
         <translation>Nu se pot crea câmpurile FID-name pentru GPKG </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="701"/>
-        <location filename="../src/core/qgsofflineediting.cpp" line="759"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="706"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="764"/>
         <source>Creation of layer failed (OGR error: %1)</source>
         <translation>Crearea stratului a eșuat (Eroare OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="733"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="738"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a JSON-formatted string value.</source>
         <translation>Câmpul &apos;%1&apos; din stratul %2 a fost convertit dintr-o listă într-un șir în format JSON.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="747"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="752"/>
         <source>Creation of field %1 failed (OGR error: %2)</source>
         <translation>Crearea câmpului %1 a eșuat (Eroare OGR: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="852"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="857"/>
         <source>Feature cannot be copied to the offline layer, please check if the online layer &apos;%1&apos; is still accessible.</source>
         <translation>Entitatea nu poate fi copiată într-un strat deconectat, vă rugăm să verificați dacă stratul &apos;% 1&apos; încă este accesibil în mod conectat.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1168"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1173"/>
         <source>Offline Editing Plugin</source>
         <translation>Plugin-ul de Editare Offline</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1182"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1187"/>
         <source>Could not open the SpatiaLite logging database</source>
         <translation>Nu se poate deschide baza de date de jurnalizare SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1508"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1513"/>
         <source>Could not deduce table name from data source %1.</source>
         <translation>Nu se poate deduce numele tabelei din baza de date sursă %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="563"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="568"/>
         <source>%1: Unknown data type %2. Not using type affinity for the field.</source>
         <translation>%1: Tipul datelor nu este cunoscut %2. Nu se utilizează tipul de afinitate pentru câmp.</translation>
     </message>
@@ -134824,13 +134970,13 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="105"/>
-        <location filename="../src/app/qgisapp.cpp" line="12460"/>
+        <location filename="../src/app/qgisapp.cpp" line="12463"/>
         <source>General</source>
         <translation>Generalități</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
-        <location filename="../src/app/qgisapp.cpp" line="12461"/>
+        <location filename="../src/app/qgisapp.cpp" line="12464"/>
         <source>System</source>
         <translation>Sistem</translation>
     </message>
@@ -134841,7 +134987,7 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="112"/>
-        <location filename="../src/app/qgisapp.cpp" line="12462"/>
+        <location filename="../src/app/qgisapp.cpp" line="12465"/>
         <source>CRS Handling</source>
         <translation>Gestionare CRS-uri</translation>
     </message>
@@ -134857,13 +135003,13 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
-        <location filename="../src/app/qgisapp.cpp" line="12463"/>
+        <location filename="../src/app/qgisapp.cpp" line="12466"/>
         <source>Coordinate Transforms</source>
         <translation>Transformări de Coordonate</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="116"/>
-        <location filename="../src/app/qgisapp.cpp" line="12464"/>
+        <location filename="../src/app/qgisapp.cpp" line="12467"/>
         <source>Data Sources</source>
         <translation>Surse de Date</translation>
     </message>
@@ -134884,31 +135030,31 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="126"/>
-        <location filename="../src/app/qgisapp.cpp" line="12469"/>
+        <location filename="../src/app/qgisapp.cpp" line="12472"/>
         <source>Colors</source>
         <translation>Culori</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="120"/>
-        <location filename="../src/app/qgisapp.cpp" line="12466"/>
+        <location filename="../src/app/qgisapp.cpp" line="12469"/>
         <source>Canvas &amp; Legend</source>
         <translation>Canevas &amp; Legendă</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="122"/>
-        <location filename="../src/app/qgisapp.cpp" line="12467"/>
+        <location filename="../src/app/qgisapp.cpp" line="12470"/>
         <source>Map Tools</source>
         <translation>Instrumente Cartografice</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="124"/>
-        <location filename="../src/app/qgisapp.cpp" line="12468"/>
+        <location filename="../src/app/qgisapp.cpp" line="12471"/>
         <source>Digitizing</source>
         <translation>Digitizare</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="118"/>
-        <location filename="../src/app/qgisapp.cpp" line="12465"/>
+        <location filename="../src/app/qgisapp.cpp" line="12468"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
@@ -134919,7 +135065,7 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
-        <location filename="../src/app/qgisapp.cpp" line="12473"/>
+        <location filename="../src/app/qgisapp.cpp" line="12476"/>
         <source>Network</source>
         <translation>Reţea</translation>
     </message>
@@ -135066,19 +135212,19 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
-        <location filename="../src/app/qgisapp.cpp" line="12472"/>
+        <location filename="../src/app/qgisapp.cpp" line="12475"/>
         <source>Authentication</source>
         <translation>Autentificare</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
-        <location filename="../src/app/qgisapp.cpp" line="12471"/>
+        <location filename="../src/app/qgisapp.cpp" line="12474"/>
         <source>Variables</source>
         <translation>Variabile</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsadvancedoptions.cpp" line="100"/>
-        <location filename="../src/app/qgisapp.cpp" line="12476"/>
+        <location filename="../src/app/qgisapp.cpp" line="12479"/>
         <source>Advanced</source>
         <translation>Avansat</translation>
     </message>
@@ -135134,13 +135280,13 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
-        <location filename="../src/app/qgisapp.cpp" line="12470"/>
+        <location filename="../src/app/qgisapp.cpp" line="12473"/>
         <source>Layouts</source>
         <translation>Compoziții</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
-        <location filename="../src/app/qgisapp.cpp" line="12474"/>
+        <location filename="../src/app/qgisapp.cpp" line="12477"/>
         <source>Locator</source>
         <translation>Localizator</translation>
     </message>
@@ -135156,7 +135302,7 @@ Se preferă rețeaua: valoarea implicită; încărcare din rețea, dacă element
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
-        <location filename="../src/app/qgisapp.cpp" line="12475"/>
+        <location filename="../src/app/qgisapp.cpp" line="12478"/>
         <source>Acceleration</source>
         <translation>Accelerare</translation>
     </message>
@@ -138730,98 +138876,98 @@ b) Utilizați fila de Configurare pentru a adăuga credențialele dvs. metodei d
 <context>
     <name>QgsPictureSourceLineEditBase</name>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="288"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="294"/>
         <source>SVG files</source>
         <translation>Fişiere SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="297"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="303"/>
         <source>Images</source>
         <translation>Imagini</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="297"/>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="308"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="303"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="314"/>
         <source>All files</source>
         <translation>Toate fișierele</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="308"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="314"/>
         <source>Animated Images</source>
         <translation>Imagini Animate</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="319"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="325"/>
         <source>Select SVG File</source>
         <translation>Selectare Fişier SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="321"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="327"/>
         <source>Select Image File</source>
         <translation>Selectare Fișier Imagine</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="323"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="329"/>
         <source>Select Animated Image File</source>
         <translation>Selectare Fișier Imagine Animată</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="333"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="339"/>
         <source>SVG From URL</source>
         <translation>SVG Din URL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="335"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="341"/>
         <source>Image From URL</source>
         <translation>Imagine de la URL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="337"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="343"/>
         <source>Animated Image From URL</source>
         <translation>Imaginea Animată de la Adresa</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="347"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="353"/>
         <source>Enter SVG URL</source>
         <translation>Introduceți adresa SVG-ului</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="349"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="355"/>
         <source>Enter image URL</source>
         <translation>Introduceți adresa imaginii</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="351"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="357"/>
         <source>Enter animated image URL</source>
         <translation>Introduceți adresa imaginii animate</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="361"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="367"/>
         <source>Embed SVG File</source>
         <translation>Încapsulare Fişier SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="363"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="369"/>
         <source>Embed Image File</source>
         <translation>Încapsulare Fişier Imagine</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="365"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="371"/>
         <source>Embed Animated Image File</source>
         <translation>Încapsulează Fișierul Imaginii Animate</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="375"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="381"/>
         <source>Extract SVG File</source>
         <translation>Extragere Fişier SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="377"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="383"/>
         <source>Extract Image File</source>
         <translation>Extragere Fișier Imagine</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="379"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="385"/>
         <source>Extract Animated Image File</source>
         <translation>Extrage Fișierul Imaginii Animate</translation>
     </message>
@@ -140841,7 +140987,7 @@ Creșterea acestei valori poate permite randarea fragmentelor lipsă, în timp c
 <context>
     <name>QgsPointCloudLayerExporterTask</name>
     <message>
-        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="654"/>
+        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="657"/>
         <source>Exporting point cloud</source>
         <translation>Exportare nor de puncte</translation>
     </message>
@@ -142849,14 +142995,14 @@ Rezultat: %3 (%4)</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1721"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1726"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2152"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3807"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4770"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3814"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4809"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4832"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4849"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4862"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4901"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4784"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4816"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4839"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4856"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4869"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4908"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -142945,64 +143091,64 @@ SQL: %2</translation>
         <translation>Nu s-a indicat câmpul cheie al vederii/interogării.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3568"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3575"/>
         <source>PostgreSQL WHERE clause</source>
         <translation>Clauza WHERE din PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3693"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3700"/>
         <source>Unexpected number of tuples from estimated extent query %1: %2 (1 expected).</source>
         <translation>A rezultat un număr neașteptat de tupluri după interogarea extinderii estimate %1: %2 (se așteaptă 1).</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3710"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3717"/>
         <source>Unexpected format from estimated extent query %1: %2.</source>
         <translation>A rezultat un format neașteptat după interogarea extinderii estimate %1: %2.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3742"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3749"/>
         <source>Unexpected number of tuples from compute extent query %1: %2 (1 expected).</source>
         <translation>A rezultat un număr neașteptat de tupluri după interogarea extinderii calculate %1: %2 (se așteaptă 1).</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3760"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3767"/>
         <source>Unexpected empty result from extent query %1.</source>
         <translation>A rezultat un rezultat neașteptat după interogarea extinderii %1.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3807"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3814"/>
         <source>Unexpected result from extent query %1: %2</source>
         <translation>A rezultat un rezultat neașteptat după interogarea extinderii %1.: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3833"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3840"/>
         <source>Could not extract layer extent</source>
         <translation>Nu se poate obține extinderea stratului</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4770"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
         <source>Cannot find end of double quoted string: %1</source>
         <translation>Nu se poate găsi ghilimeaua dublă de închidere: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4784"/>
         <source>Cannot find separator: %1</source>
         <translation>Nu se poate găsi separatorul: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4809"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4816"/>
         <source>Error parsing hstore: %1</source>
         <translation>Eroare de analiză hstore: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4832"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4849"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4839"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4856"/>
         <source>Error parsing array: %1</source>
         <translation>Eroare de analiză matrice: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4862"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4901"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4869"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4908"/>
         <source>Error parsing array, missing curly braces: %1</source>
         <translation>Eroare la analizarea matricei, lipsesc acoladele: %1</translation>
     </message>
@@ -143069,99 +143215,99 @@ Accesul la scriere este interzis.</translation>
         <translation>Nu s-a putut găsi topologia stratului %1.%2.%3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2570"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2577"/>
         <source>PostGIS error while adding features: %1</source>
         <translation>Eroare PostGIS în timpul adăugării entităților: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2650"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2657"/>
         <source>PostGIS error while deleting features: %1</source>
         <translation>Eroare PostGIS în timpul ştergerii entităților: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2709"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2716"/>
         <source>PostGIS error while truncating: %1</source>
         <translation>Eroare PostGIS în timpul trunchierii: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2781"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2788"/>
         <source>PostGIS error while adding attributes: %1</source>
         <translation>Eroare PostGIS în timpul adăugării atributelor: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2837"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2844"/>
         <source>PostGIS error while deleting attributes: %1</source>
         <translation>Eroare PostGIS în timpul ştergerii atributelor: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2862"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2869"/>
         <source>Invalid attribute index: %1</source>
         <translation>Indexul atributului nu este valid: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2868"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2875"/>
         <source>Error renaming field %1: name &apos;%2&apos; already exists</source>
         <translation>Eroare de redenumire a câmpului %1: numele &apos;%2&apos; există deja</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2897"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2904"/>
         <source>PostGIS error while renaming attributes: %1</source>
         <translation>Eroare PostGIS în timpul redenumirii atributelor: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2961"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3330"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2968"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3337"/>
         <source>Changing the value of GENERATED field %1 is not allowed.</source>
         <translation>Modificarea valorii câmpului %1 GENERAT nu este permisă.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3024"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3031"/>
         <source>No fields were updated on the database.</source>
         <translation>Niciun câmp nu a fost actualizat în baza de date.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3054"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3453"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3061"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3460"/>
         <source>PostGIS error while changing attributes: %1</source>
         <translation>Eroare PostGIS în timpul schimbării atributelor: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3257"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3264"/>
         <source>PostGIS error while changing geometry values: %1</source>
         <translation>Eroare PostGIS în timpul schimbării valorilor geometriei: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3395"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3402"/>
         <source>No fields/geometries were updated on the database.</source>
         <translation>Niciun câmp/geometrie nu a fost actualizat în baza de date.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4191"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4198"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>Tip geometrie şi srid pentru coloană goală %1 din %2 nedefinite.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4218"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4225"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>Tip trăsătură sau srid pentru %1 din %2 nu a putut fi determinat sau nu a fost cerut.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4731"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4738"/>
         <source>PostgreSQL version: unknown</source>
         <translation>Versiune PostgreSQL: necunoscută</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4732"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4739"/>
         <source>unknown</source>
         <translation>necunoscut</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4749"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4756"/>
         <source>PostgreSQL not connected</source>
         <translation>PostgreSQL nu este conectat</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4752"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4759"/>
         <source>PostgreSQL/PostGIS provider
 %1
 PostGIS %2</source>
@@ -143170,7 +143316,7 @@ PostGIS %2</source>
 PostGIS %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4983"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4990"/>
         <source>Error discovering relations of %1: invalid layer</source>
         <translation>Eroare la descoperirea relațiilor pentru %1: strat nevalid</translation>
     </message>
@@ -144004,7 +144150,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingAnnotationLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7486"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7532"/>
         <source>name of an annotation layer, or &quot;main&quot; for the main annotation layer</source>
         <translation>numele unui strat de adnotare sau &quot;principal&quot; pentru stratul de adnotare principal</translation>
     </message>
@@ -144043,22 +144189,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingBandParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6772"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6815"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6775"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6818"/>
         <source>Band number (separate bands with ; for multiple band parameters)</source>
         <translation>Numărul benzii (benzi separate cu ; pentru parametrii benzilor multiple)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6789"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6832"/>
         <source>Parent layer</source>
         <translation>Stratul părinte</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6822"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6865"/>
         <source>Allow multiple</source>
         <translation>Permite multiple</translation>
     </message>
@@ -144066,7 +144212,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingBandWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7064"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7110"/>
         <source>selected band numbers as an array of numbers, or semicolon separated string of options (e.g. &apos;1;3&apos;)</source>
         <translation>numerele de bandă selectate într-o matrice de numere sau într-un șir de opțiuni separate prin punct și virgulă (ex.: &apos;1;3&apos;)</translation>
     </message>
@@ -144168,12 +144314,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingColorParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4234"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4253"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4238"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4257"/>
         <source>Allow opacity control</source>
         <translation>Permit controlul opacității</translation>
     </message>
@@ -144181,7 +144327,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingColorWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4355"/>
         <source>color style string, e.g. #ff0000 or 255,0,0</source>
         <translation>șirul stilului culorii, ex.&quot; #ff0000 sau 255,0,0</translation>
     </message>
@@ -144283,27 +144429,27 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingCoordinateOperationParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4362"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4384"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4443"/>
         <source>Source CRS parameter</source>
         <translation>Parametrul CRS-ului sursă</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4423"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4445"/>
         <source>Destination CRS parameter</source>
         <translation>Parametrul CRS-ului destinație</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4433"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4455"/>
         <source>Static source CRS</source>
         <translation>CRS-ul sursă static</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4435"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4457"/>
         <source>Static destination CRS</source>
         <translation>CRS-ul destinației statice</translation>
     </message>
@@ -144311,7 +144457,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingCoordinateOperationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4587"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4612"/>
         <source>Proj coordinate operation string, e.g. &apos;+proj=pipeline +step +inv...&apos;</source>
         <translation>Șirul operațiunii coordonatelor proiectului, ex.: &apos;+proj=pipeline +step +inv...&apos;</translation>
     </message>
@@ -144345,12 +144491,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseSchemaParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5721"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5757"/>
         <source>Provider connection parameter</source>
         <translation>Parametru de conectare specific furnizorului</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5724"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5760"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
@@ -144358,7 +144504,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseSchemaWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5850"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5888"/>
         <source>database schema name as a string value</source>
         <translation>numele schemei bazei de date, sub formă de șir</translation>
     </message>
@@ -144366,17 +144512,17 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseTableParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5955"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5993"/>
         <source>Provider connection parameter</source>
         <translation>Parametru de conectare specific furnizorului</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5958"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5996"/>
         <source>Database schema parameter</source>
         <translation>Un parametru al schemei bazei de date</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5961"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5999"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
@@ -144384,7 +144530,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseTableWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6111"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6151"/>
         <source>database table name as a string value</source>
         <translation>numele tabelului bazei de date, sub formă de șir</translation>
     </message>
@@ -144392,22 +144538,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDateTimeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5390"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5420"/>
         <source>Type</source>
         <translation>Tip</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5393"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5423"/>
         <source>Date and Time</source>
         <translation>Data și ora</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5394"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5424"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5395"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5425"/>
         <source>Time</source>
         <translation>Timp</translation>
     </message>
@@ -144415,22 +144561,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDateTimeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5444"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5478"/>
         <source>[Not selected]</source>
         <translation>[Neselectat]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5516"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5550"/>
         <source>datetime value, or a ISO string representation of a datetime</source>
         <translation>valoarea datetime sau o reprezentare ISO a șirului unei amprente temporale</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5519"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5553"/>
         <source>date value, or a ISO string representation of a date</source>
         <translation>o valoare date sau o reprezentare ISO a șirului unei date</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5522"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5556"/>
         <source>time value, or a ISO string representation of a time</source>
         <translation>o valoare orară sau o reprezentare ISO a șirului unei ore</translation>
     </message>
@@ -144623,12 +144769,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumCheckboxPanelWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3202"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3211"/>
         <source>Select All</source>
         <translation>Selectare Totală</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3213"/>
         <source>Clear Selection</source>
         <translation>Eliminare Selecție</translation>
     </message>
@@ -144682,18 +144828,18 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumPanelWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2982"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3075"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2991"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3084"/>
         <source>%1 options selected</source>
         <translation>%1 opțiuni selectate</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3098"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3107"/>
         <source>,</source>
         <translation>,</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3102"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3111"/>
         <source>%n option(s) selected</source>
         <translation><numerusform>%n opțiun(i) selectate</numerusform><numerusform>%n opțiun(i) selectate</numerusform><numerusform>%n opțiun(i) selectate</numerusform></translation>
     </message>
@@ -144701,12 +144847,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3301"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3313"/>
         <source>[Not selected]</source>
         <translation>[Neselectat]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3389"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3399"/>
         <source>selected option index (starting from 0), array of indices, or comma separated string of options (e.g. &apos;1,3&apos;)</source>
         <translation>indexul opțiunii selectate (începând de la 0), matrice de indici sau șir de opțiuni separate prin virgulă (ex.: &apos;1,3&apos;)</translation>
     </message>
@@ -144714,37 +144860,37 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExpressionParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2521"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2524"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2542"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2545"/>
         <source>Parent layer</source>
         <translation>Stratul părinte</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2547"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2550"/>
         <source>Expression type</source>
         <translation>Tipul expresiei</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2549"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2552"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2550"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2553"/>
         <source>Point Cloud</source>
         <translation>Nor de Puncte</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2551"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2554"/>
         <source>Raster Calculator</source>
         <translation>Calculator Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2555"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2558"/>
         <source>None</source>
         <translation>Fără</translation>
     </message>
@@ -144752,7 +144898,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExpressionWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2929"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2938"/>
         <source>string representation of an expression</source>
         <translation>șir reprezentând o expresie</translation>
     </message>
@@ -144760,12 +144906,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExtentParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6168"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6208"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6171"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6211"/>
         <source>Not set</source>
         <translation>Nu este setat</translation>
     </message>
@@ -144773,12 +144919,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExtentWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6219"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6262"/>
         <source>Not set</source>
         <translation>Nu este setat</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6292"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6335"/>
         <source>string of the format &apos;x min,x max,y min,y max&apos; or a geometry value (bounding box is used)</source>
         <translation>șirul în format &apos;x min,x max,y min,y max&apos; sau o valoare a geometriei (se folosește caseta de delimitare)</translation>
     </message>
@@ -144786,7 +144932,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSinkWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8105"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8154"/>
         <source>path to layer destination</source>
         <translation>Calea către destinația stratului</translation>
     </message>
@@ -144850,32 +144996,32 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSourceParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6568"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6611"/>
         <source>Geometry type</source>
         <translation>Tipul geometriei</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6570"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6613"/>
         <source>Geometry Not Required</source>
         <translation>Geometria Nu Este Obligatorie</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6571"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6614"/>
         <source>Point</source>
         <translation>Punct</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6572"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6615"/>
         <source>Line</source>
         <translation>Linii</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6573"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6616"/>
         <source>Polygon</source>
         <translation>Poligon</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6574"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6617"/>
         <source>Any Geometry Type</source>
         <translation>Orice Tip de Geometrie</translation>
     </message>
@@ -144883,7 +145029,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSourceWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6611"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6654"/>
         <source>path to a vector layer</source>
         <translation>calea către un strat vectorial</translation>
     </message>
@@ -145069,14 +145215,14 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4671"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4752"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4767"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4696"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4777"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4792"/>
         <source>%n field(s) selected</source>
         <translation><numerusform>%n câmp(uri) selectate</numerusform><numerusform>%n câmp(uri) selectate</numerusform><numerusform>%n câmp(uri) selectate</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4763"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4788"/>
         <source>,</source>
         <translation>,</translation>
     </message>
@@ -145084,62 +145230,62 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4782"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4807"/>
         <source>Parent layer</source>
         <translation>Stratul părinte</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4834"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4859"/>
         <source>Allowed data type</source>
         <translation>Tipul de date acceptat</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4836"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4861"/>
         <source>Any</source>
         <translation>Oricare</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4837"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4862"/>
         <source>Number</source>
         <translation>Numărul</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4838"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4863"/>
         <source>String</source>
         <translation>Șir</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4839"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4864"/>
         <source>Date/time</source>
         <translation>Data/Ora</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4840"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4865"/>
         <source>Binary</source>
         <translation>Binar</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4841"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4866"/>
         <source>Boolean</source>
         <translation>Boolean</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4847"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4872"/>
         <source>Accept multiple fields</source>
         <translation>Se acceptă câmpuri multiple</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4853"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4878"/>
         <source>Select all fields by default</source>
         <translation>În mod implicit, toate câmpurile sunt selectate</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4864"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4889"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4867"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4892"/>
         <source>Default field name, or ; separated list of field names for multiple field parameters</source>
         <translation>Numele câmpului implicit sau, în cazul parametrilor cu câmpuri multiple, o listă cu nume separate prin ;</translation>
     </message>
@@ -145147,7 +145293,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5171"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5199"/>
         <source>selected field names as an array of names, or semicolon separated string of options (e.g. &apos;fid;place_name&apos;)</source>
         <translation>numele câmpurilor selectate într-o matrice de numere sau într-un șir de opțiuni separate prin punct și virgulă (ex.: &apos;fid;place_name&apos;)</translation>
     </message>
@@ -145155,7 +145301,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFileDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8202"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8251"/>
         <source>path to file destination</source>
         <translation>calea către fișierul destinație</translation>
     </message>
@@ -145211,12 +145357,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFileWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2458"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2461"/>
         <source>%1 files</source>
         <translation>%1 fișiere</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2493"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2496"/>
         <source>string representing a path to a file or folder</source>
         <translation>șir reprezentând o cale către un fișier sau folder</translation>
     </message>
@@ -145224,7 +145370,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFolderDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8227"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8276"/>
         <source>path to folder destination</source>
         <translation>calea către folderul destinație</translation>
     </message>
@@ -145232,7 +145378,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingGeometryParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4125"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4144"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
@@ -145240,7 +145386,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingGeometryWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4223"/>
         <source>string in the Well-Known-Text format or a geometry value</source>
         <translation>șir în formatul Well-Known-Text sau o valoare de geometrie</translation>
     </message>
@@ -145365,124 +145511,124 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayerOutputDestinationWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="214"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="219"/>
         <source>Open output file after running algorithm</source>
         <translation>Se deschide fișierul de ieșire, după rularea algoritmului</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="239"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="244"/>
         <source>Skip Output</source>
         <translation>Omitere Rezultat</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="248"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="253"/>
         <source>Create Temporary Layer</source>
         <translation>Creare Strat Temporar</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="252"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="257"/>
         <source>Save to a Temporary Directory</source>
         <translation>Salvare Într-un Director Temporar</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="256"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="261"/>
         <source>Save to a Temporary File</source>
         <translation>Salvare Într-un Fișier Temporar</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="266"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="271"/>
         <source>Save to Directory…</source>
         <translation>Salvare în Directorul...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="271"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="276"/>
         <source>Save to File…</source>
         <translation>Salvare într-un Fişier.,..</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="278"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="283"/>
         <source>Save to GeoPackage…</source>
         <translation>Salvare în GeoPackage...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="282"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="287"/>
         <source>Save to Database Table…</source>
         <translation>Salvare în Tabela Bazei de Date...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="289"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="294"/>
         <source>Append to Layer…</source>
         <translation>Adăugare în Strat...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="294"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="299"/>
         <source>Edit Field Mapping…</source>
         <translation>Editează Maparea Câmpului</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="306"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="311"/>
         <source>Change File Encoding (%1)…</source>
         <translation>Schimbă codificarea fișierului (%1)…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="314"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="319"/>
         <source>[Skip output]</source>
         <translation>[Omitere rezultat]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="329"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="334"/>
         <source>[Create temporary layer]</source>
         <translation>[Creare strat temporar]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="333"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="338"/>
         <source>[Save to temporary folder]</source>
         <translation>[Salvare într-un dosar temporar]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="337"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="342"/>
         <source>[Save to temporary file]</source>
         <translation>[Salvare într-un fișier temporar]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="358"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="363"/>
         <source>Select Directory</source>
         <translation>Selectare Director</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="419"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="424"/>
         <source>Save file</source>
         <translation>Salvare fişier</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="446"/>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="454"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="451"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="459"/>
         <source>Save to GeoPackage</source>
         <translation>Salveazâ ca GeoPackage</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="446"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="451"/>
         <source>GeoPackage files (*.gpkg);;All files (*.*)</source>
         <translation>Fișiere GeoPackage (*.gpkg);;Toate fișierele (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="454"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="459"/>
         <source>Layer name</source>
         <translation>Numele stratului</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="488"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="493"/>
         <source>Save “%1” to Database Table</source>
         <translation>Salvare “%1” Baza de Date</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="539"/>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="578"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="544"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="583"/>
         <source>Append &quot;%1&quot; to Layer</source>
         <translation>Adăugare &quot;%1&quot; în Strat</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="599"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="604"/>
         <source>File encoding</source>
         <translation>Codificare fișier</translation>
     </message>
@@ -145490,7 +145636,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutItemParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3530"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3543"/>
         <source>Parent layout</source>
         <translation>Compoziția părinte</translation>
     </message>
@@ -145498,12 +145644,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutItemWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3602"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3618"/>
         <source>UUID or ID of an existing print layout item</source>
         <translation>Codurile UUID sau ID ale unei compoziții existente</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3700"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3716"/>
         <source>string representing the UUID or ID of an existing print layout item</source>
         <translation>un șir corespunzător codurilor UUID sau ID ale unei compoziții existente</translation>
     </message>
@@ -145511,12 +145657,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3441"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3454"/>
         <source>Name of an existing print layout</source>
         <translation>Numele unei compoziții existente</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3505"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3518"/>
         <source>string representing the name of an existing print layout</source>
         <translation>un șir corespunzător numelui unei compoziții existente</translation>
     </message>
@@ -145572,62 +145718,62 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6321"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6364"/>
         <source>Layer type</source>
         <translation>Tipul stratului</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6323"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6366"/>
         <source>Any Map Layer</source>
         <translation>Oricare Strat al Hărții</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6324"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6367"/>
         <source>Vector (Point)</source>
         <translation>Vector (Punct)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6325"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6368"/>
         <source>Vector (Line)</source>
         <translation>Vector (Linie)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6326"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6369"/>
         <source>Vector (Polygon)</source>
         <translation>Vector (Poligon)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6327"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6370"/>
         <source>Vector (Any Geometry Type)</source>
         <translation>Vector (Orice Tip de Geometrie)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6328"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6371"/>
         <source>Vector (No Geometry Required)</source>
         <translation>Vector (Fără Geometrie)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6329"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6372"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6330"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6373"/>
         <source>Mesh</source>
         <translation>Suprafața poliedrică</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6331"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6374"/>
         <source>Plugin</source>
         <translation>Plugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6332"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6375"/>
         <source>Point Cloud</source>
         <translation>Nor de Puncte</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6376"/>
         <source>Annotation</source>
         <translation>Adnotare</translation>
     </message>
@@ -145635,7 +145781,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6464"/>
         <source>path to a map layer</source>
         <translation>calea către un strat al hărții</translation>
     </message>
@@ -145643,7 +145789,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapThemeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5250"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5278"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
@@ -145651,12 +145797,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapThemeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5302"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5332"/>
         <source>[Not selected]</source>
         <translation>[Neselectat]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5360"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5390"/>
         <source>map theme as a string value (e.g. &apos;base maps&apos;)</source>
         <translation>tema hărții ca valoare șir (de exemplu, &apos;hărți de bază&apos;)</translation>
     </message>
@@ -145830,7 +145976,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMeshLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6640"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6683"/>
         <source>path to a mesh layer</source>
         <translation>calea către stratul poliedric</translation>
     </message>
@@ -145930,8 +146076,8 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7158"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7312"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7358"/>
         <source>%n input(s) selected</source>
         <translation><numerusform>%n intr(ări) selectate</numerusform><numerusform>%n intr(ări) selectate</numerusform><numerusform>%n intr(ări) selectate</numerusform></translation>
     </message>
@@ -145939,67 +146085,67 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7325"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7371"/>
         <source>Allowed layer type</source>
         <translation>Tipul stratului acceptat</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7327"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7373"/>
         <source>Any Map Layer</source>
         <translation>Oricare Strat al Hărții</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7328"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7374"/>
         <source>Vector (No Geometry Required)</source>
         <translation>Vector (Fără Geometrie)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7329"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7375"/>
         <source>Vector (Point)</source>
         <translation>Vector (Punct)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7330"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7376"/>
         <source>Vector (Line)</source>
         <translation>Vector (Linie)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7331"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7377"/>
         <source>Vector (Polygon)</source>
         <translation>Vector (Poligon)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7332"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7378"/>
         <source>Any Geometry Type</source>
         <translation>Orice Tip de Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7379"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7334"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7380"/>
         <source>File</source>
         <translation>Fișier</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7335"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7381"/>
         <source>Mesh</source>
         <translation>Suprafața poliedrică</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7336"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7382"/>
         <source>Plugin</source>
         <translation>Plugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7337"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7383"/>
         <source>Point Cloud</source>
         <translation>Nor de Puncte</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7338"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7384"/>
         <source>Annotation</source>
         <translation>Adnotare</translation>
     </message>
@@ -146007,7 +146153,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7467"/>
         <source>an array of layer paths, or semicolon separated string of layer paths</source>
         <translation>o serie de căi către straturi sau un șir de căi separate prin punct și virgulă</translation>
     </message>
@@ -146164,14 +146310,14 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributePanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7619"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7688"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7703"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7665"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7734"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7749"/>
         <source>%n attribute(s) selected</source>
         <translation><numerusform>%n element(e) selectate</numerusform><numerusform>%n element(e) selectate</numerusform><numerusform>%n element(e) selectate</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7699"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7745"/>
         <source>,</source>
         <translation>,</translation>
     </message>
@@ -146179,27 +146325,27 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7718"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7764"/>
         <source>Parent layer</source>
         <translation>Stratul părinte</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7751"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7797"/>
         <source>Accept multiple attributes</source>
         <translation>Se acceptă atribute multiple</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7757"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7803"/>
         <source>Select all attributes by default</source>
         <translation>În mod implicit, toate atributele sunt selectate</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7768"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7814"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7771"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7817"/>
         <source>Default attribute name, or ; separated list of attribute names for multiple attribute parameters</source>
         <translation>Numele atributului implicit sau, în cazul atributelor cu parametri multipli, o listă cu nume separate prin ;</translation>
     </message>
@@ -146207,7 +146353,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7998"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8047"/>
         <source>selected attribute names as an array of names, or semicolon separated string of options (e.g. &apos;X;Intensity&apos;)</source>
         <translation>numele atributelor selectate într-o matrice de nume sau într-un șir de opțiuni separate prin punct și virgulă (ex.: &apos;X;Intensity&apos;)</translation>
     </message>
@@ -146215,7 +146361,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8177"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8226"/>
         <source>path to layer destination</source>
         <translation>Calea către destinația stratului</translation>
     </message>
@@ -146366,7 +146512,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7451"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7497"/>
         <source>path to a point cloud layer</source>
         <translation>calea către stratul cu nor de puncte</translation>
     </message>
@@ -146374,13 +146520,13 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3966"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3982"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3969"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3970"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3985"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3986"/>
         <source>Point as &apos;x,y&apos;</source>
         <translation>Punct sub forma &apos;x,y&apos;</translation>
     </message>
@@ -146388,12 +146534,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4025"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4044"/>
         <source>Point as &apos;x,y&apos;</source>
         <translation>Punct sub forma &apos;x,y&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4095"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4114"/>
         <source>string of the format &apos;x,y&apos; or a geometry value (centroid is used)</source>
         <translation>șir în formatul „x,y” sau o valoare a geometriei (se utilizează centroidul)</translation>
     </message>
@@ -146428,12 +146574,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingProviderConnectionParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5551"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5585"/>
         <source>Provider</source>
         <translation>Furnizor</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5559"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5593"/>
         <source>Default value</source>
         <translation>Valoare implicită</translation>
     </message>
@@ -146441,7 +146587,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingProviderConnectionWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5661"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5697"/>
         <source>connection name as a string value</source>
         <translation>numele conexiunii ca valoare pentru șir</translation>
     </message>
@@ -146501,8 +146647,8 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterBandPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6687"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6758"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6730"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6801"/>
         <source>%n band(s) selected</source>
         <translation><numerusform>%n b(enzi) selectate </numerusform><numerusform>%n b(enzi) selectate </numerusform><numerusform>%n b(enzi) selectate </numerusform></translation>
     </message>
@@ -146668,7 +146814,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8153"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8202"/>
         <source>path to layer destination</source>
         <translation>Calea către destinația stratului</translation>
     </message>
@@ -146676,7 +146822,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6465"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6508"/>
         <source>path to a raster layer</source>
         <translation>calea către un strat raster</translation>
     </message>
@@ -146802,7 +146948,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8129"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8178"/>
         <source>path to layer destination</source>
         <translation>Calea către destinația stratului</translation>
     </message>
@@ -146810,32 +146956,32 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6499"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6542"/>
         <source>Geometry type</source>
         <translation>Tipul geometriei</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6501"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6544"/>
         <source>Geometry Not Required</source>
         <translation>Geometria Nu Este Obligatorie</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6502"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6545"/>
         <source>Point</source>
         <translation>Punct</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6503"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6546"/>
         <source>Line</source>
         <translation>Linii</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6504"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6547"/>
         <source>Polygon</source>
         <translation>Poligon</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6505"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6548"/>
         <source>Any Geometry Type</source>
         <translation>Orice Tip de Geometrie</translation>
     </message>
@@ -146843,7 +146989,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6539"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6582"/>
         <source>path to a vector layer</source>
         <translation>calea către un strat vectorial</translation>
     </message>
@@ -146851,7 +146997,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorTileDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8251"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8300"/>
         <source>path to layer destination</source>
         <translation>Calea către destinația stratului</translation>
     </message>
@@ -147057,295 +147203,295 @@ SQL: %3</translation>
 <context>
     <name>QgsProject</name>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1776"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="1798"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1778"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1800"/>
         <source>Loading layer %1</source>
         <translation>Încărcare strat %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1820"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1822"/>
         <source>Create layer</source>
         <translation>Creare strat</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1895"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1897"/>
         <source>Load layer source</source>
         <translation>Încărcare sursă pentru strat</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1909"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1911"/>
         <source>Add layer to project</source>
         <translation>Adăugare strat în proiect</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1977"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="1985"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2063"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1979"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1987"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2065"/>
         <source>Unable to open %1</source>
         <translation>Nu se poate deschide %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2046"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2048"/>
         <source>Setting up translations</source>
         <translation>Configurare traduceri</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2056"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2058"/>
         <source>Reading project file</source>
         <translation>Citire fișier proiect</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2105"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2107"/>
         <source>Updating project file</source>
         <translation>Actualizează fișierul proiectului</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2139"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2141"/>
         <source>Creating auxiliary storage</source>
         <translation>Creare stocare auxiliară</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2170"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2172"/>
         <source>Reading properties</source>
         <translation>Citire proprietăți</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2312"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2314"/>
         <source>Project Variables Invalid</source>
         <translation>Variabilele de proiect nu sunt valide</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2312"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2314"/>
         <source>The project contains invalid variable settings.</source>
         <translation>Proiectul conţine variabile de setare nevalide.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2356"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2358"/>
         <source>Loading layer tree</source>
         <translation>Încărcare arbore cu straturi</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2375"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2377"/>
         <source>Reading map layers</source>
         <translation>Citire straturi de hartă</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2406"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2408"/>
         <source>Resolving layer references</source>
         <translation>Rezolvă referințele stratului</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2401"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2403"/>
         <source>Loading embedded layers</source>
         <translation>Încărcare straturi încapsulate</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="765"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="767"/>
         <source>Trying to commit changes without a layer specified. This only works if the transaction mode is buffered</source>
         <translation>Se încearcă salvarea modificărilor fără un strat specificat. Acest lucru funcționează numai dacă modul tranzacției este de tip buffered</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="791"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="793"/>
         <source>Trying to roll back changes without a layer specified. This only works if the transaction mode is buffered</source>
         <translation>Se încearcă anularea modificărilor fără un strat specificat. Acest lucru funcționează numai dacă modul tranzacției este de tip buffered</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1742"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1744"/>
         <source>Load providers in parallel</source>
         <translation>Încarcă în paralel furnizorii</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2417"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2419"/>
         <source>Resolving references</source>
         <translation>Rezolvare referințe</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2520"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2522"/>
         <source>Storing original layer properties</source>
         <translation>Stocarea proprietăților stratului original</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2526"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2528"/>
         <source>Loading map themes</source>
         <translation>Se încarcă temele hărții</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2531"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2533"/>
         <source>Loading label settings</source>
         <translation>Se încarcă setările de etichetare</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2541"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2543"/>
         <source>Loading annotations</source>
         <translation>Încărcare adnotări</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2552"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2554"/>
         <source>Loading layouts</source>
         <translation>Încărcare compoziții</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2558"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2560"/>
         <source>Loading 3D Views</source>
         <translation>Încărcare Vizualizări 3D</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2562"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2564"/>
         <source>Loading bookmarks</source>
         <translation>Încărcare repere</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2565"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2567"/>
         <source>Loading sensors</source>
         <translation>Încărcare senzori</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2575"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2577"/>
         <source>Loading snapping settings</source>
         <translation>Se încarcă setările de acroșare</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2579"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2581"/>
         <source>Loading view settings</source>
         <translation>Încărcare setări de vizualizare</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2603"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2605"/>
         <source>Loading style properties</source>
         <translation>Se încarcă proprietățile stilului</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2612"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2614"/>
         <source>Loading temporal settings</source>
         <translation>Încărcare Setări Temporale</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2618"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2620"/>
         <source>Loading elevation properties</source>
         <translation>Se încarcă proprietățile elevației</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2624"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2626"/>
         <source>Loading display settings</source>
         <translation>Încărcare setări de afișare</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2631"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2633"/>
         <source>Loading GPS settings</source>
         <translation>Încărcare setări GPS</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2639"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2641"/>
         <source>Updating variables</source>
         <translation>Actualizare variabile</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2641"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2643"/>
         <source>Updating CRS</source>
         <translation>Actualizare CRS</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2650"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2652"/>
         <source>Reading external settings</source>
         <translation>Citire setăril externe</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2654"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2656"/>
         <source>Updating interface</source>
         <translation>Actualizare interfață</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2684"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2686"/>
         <source>Translated project saved with locale prefix %1</source>
         <translation>Proiectul tradus a fost salvat cu prefixul limbii %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2688"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2690"/>
         <source>Error saving translated project with locale prefix %1</source>
         <translation>Eroare la salvarea proiectului cu prefixul limbii %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3183"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3185"/>
         <source>Unable to read file %1</source>
         <translation>Nu se poate citi fișierul %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3190"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3192"/>
         <source>Unable to save project to storage %1</source>
         <translation>Nu se poate salva proiectul în locația de stocare %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3233"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3235"/>
         <source>Unable to save attachments archive</source>
         <translation>Arhiva atașamentelor nu poate fi salvată</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3553"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3555"/>
         <source>Unable to create backup file %1</source>
         <translation>Nu se poate crea fișierul copiei de siguranță %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3567"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3569"/>
         <source>Unable to save to file %1</source>
         <translation>Nu se poate salva în fișierul %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4557"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4559"/>
         <source>Transaction mode can be changed only if all layers are not editable.</source>
         <translation>Modul tranzacției poate fi schimbat numai dacă toate straturile nu sunt editabile.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4644"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4646"/>
         <source>Unable to unzip file &apos;%1&apos;</source>
         <translation>Nu se poate dezarhiva fișierul &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4651"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4653"/>
         <source>Zip archive does not provide a project file</source>
         <translation>Arhiva zip nu conține un fișier proiect</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4674"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4676"/>
         <source>Cannot read unzipped qgs project file</source>
         <translation>Nu se poate citi fișierul qgs dezarhivat al proiectului</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4706"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4708"/>
         <source>Unable to write temporary qgs file</source>
         <translation>Nu se poate scrie în fișierul qgs temporar</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4719"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4721"/>
         <source>Unable to save auxiliary storage file (&apos;%1&apos;). The project has been saved but the latest changes to auxiliary data cannot be recovered. It is recommended to reload the project.</source>
         <translation>Imposibil de salvat fișierul de stocare auxiliar (&apos;%1&apos;). Proiectul a fost salvat, dar ultimele modificări ale datelor auxiliare nu pot fi recuperate. Se recomandă reîncărcarea proiectului.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4765"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4767"/>
         <source>Unable to perform zip</source>
         <translation>Nu se poate efectua arhivarea</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3255"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3257"/>
         <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>Nu se poate scrie pe %1. Vă rugăm să ajustaţi permisiunile (dacă este posibil) şi să reîncercaţi.</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1722"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1724"/>
         <source>Sorting layers</source>
         <translation>Sortare straturi</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2089"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2091"/>
         <source>Project file read error in file %1: %2 at line %3 column %4</source>
         <translation>Eroare de citire în fişierul proiectului %1: %2 la linia %3 coloana %4</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3229"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3231"/>
         <source>Unable to save auxiliary storage (&apos;%1&apos;)</source>
         <translation>Nu se poate salva stocarea auxiliară (&apos;%1&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3597"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3599"/>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation>Nu se poate salva în fişierul %1. Proiectul de pe hard disk poate fi deteriorat. Înainte de a încerca o nouă salvare, încercaţi să eliberaţi mai mult spațiu, apoi verificaţi permisiunile fişierului.</translation>
     </message>
@@ -148132,7 +148278,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12389"/>
+        <location filename="../src/app/qgisapp.cpp" line="12392"/>
         <source>General</source>
         <translation>Generalități</translation>
     </message>
@@ -148168,7 +148314,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12392"/>
+        <location filename="../src/app/qgisapp.cpp" line="12395"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
@@ -148179,7 +148325,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12398"/>
+        <location filename="../src/app/qgisapp.cpp" line="12401"/>
         <source>Variables</source>
         <translation>Variabile</translation>
     </message>
@@ -148325,7 +148471,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12397"/>
+        <location filename="../src/app/qgisapp.cpp" line="12400"/>
         <source>Relations</source>
         <translation>Relații</translation>
     </message>
@@ -148431,7 +148577,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12396"/>
+        <location filename="../src/app/qgisapp.cpp" line="12399"/>
         <source>Data Sources</source>
         <translation>Surse de Date</translation>
     </message>
@@ -148472,7 +148618,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12390"/>
+        <location filename="../src/app/qgisapp.cpp" line="12393"/>
         <source>Metadata</source>
         <translation>Metadate</translation>
     </message>
@@ -148483,7 +148629,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12400"/>
+        <location filename="../src/app/qgisapp.cpp" line="12403"/>
         <source>QGIS Server</source>
         <translation>QGIS Server</translation>
     </message>
@@ -148749,7 +148895,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12399"/>
+        <location filename="../src/app/qgisapp.cpp" line="12402"/>
         <source>Macros</source>
         <translation>Macrocomenzi</translation>
     </message>
@@ -148895,7 +149041,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12393"/>
+        <location filename="../src/app/qgisapp.cpp" line="12396"/>
         <source>Transformations</source>
         <translation>Transformări</translation>
     </message>
@@ -148906,7 +149052,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12401"/>
+        <location filename="../src/app/qgisapp.cpp" line="12404"/>
         <source>Temporal</source>
         <translation>Facilități Temporale</translation>
     </message>
@@ -148977,7 +149123,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12391"/>
+        <location filename="../src/app/qgisapp.cpp" line="12394"/>
         <source>View Settings</source>
         <translation>Vizualizare Setări</translation>
     </message>
@@ -149148,7 +149294,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12394"/>
+        <location filename="../src/app/qgisapp.cpp" line="12397"/>
         <source>Styles</source>
         <translation>Stiluri</translation>
     </message>
@@ -149179,7 +149325,7 @@ Continuaţi?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12395"/>
+        <location filename="../src/app/qgisapp.cpp" line="12398"/>
         <source>Colors</source>
         <translation>Culori</translation>
     </message>
@@ -150991,27 +151137,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRangeConfigDlg</name>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="75"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="76"/>
         <source>Editable</source>
         <translation>Editabil</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="76"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="77"/>
         <source>Slider</source>
         <translation>Bară culisantă</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="77"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="78"/>
         <source>Dial</source>
         <translation>Compozitor</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="83"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="84"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
         <translation>Minimul actual pentru această valoare este %1 iar maximul curent este %2.</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="88"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="89"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
         <translation>Atribut nu are un tip întreg sau real, de aceea gama nu este utilizabilă.</translation>
     </message>
@@ -151479,11 +151625,6 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterAttributeTableAddRowDialogBase</name>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
-        <source>Add Column</source>
-        <translation>Adăugare Coloană</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>Add a new row to the attribute table.</source>
         <translation>Adăugare rând nou în tabela de atribute.</translation>
     </message>
@@ -151501,6 +151642,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>After current row </source>
         <translation>După rândul curent</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
+        <source>Add Row</source>
+        <translation>Adăugare Rând</translation>
     </message>
 </context>
 <context>
@@ -152924,10 +153070,10 @@ Faceți clic pe butonul de ajutor, pentru a obține opțiunile de creare valabil
         <translation>Creează furnizor %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1189"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1196"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1204"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2568"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
@@ -153013,31 +153159,36 @@ Faceți clic pe butonul de ajutor, pentru a obține opțiunile de creare valabil
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="762"/>
+        <source>Could not insert provider into layer pipe (provider: %1, URI: %2</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="769"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
         <translation>Furnizorul nu este valid (furnizor: %1, URI: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1189"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
         <translation>Eroare la citirea tabelei cu atribute raster: banda %1 nu este validă.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1196"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
         <translation>Eroare la încărcarea tabelei cu atribute raster: fișierul %1 nu a putut fi găsit.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1204"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
         <source>Error loading raster attribute table from path %1: %2</source>
         <translation>Eroare la încărcarea tabelei cu atribute raster din calea %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2258"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2263"/>
         <source>Labeling</source>
         <translation>Etichetare</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2568"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>&lt;maplayer&gt; nu a fost găsit.</translation>
     </message>
@@ -153616,62 +153767,62 @@ De asemenea, puteți importa o tabelă de atribute raster existentă dintr-un fi
         <translation>La</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="190"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="809"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="193"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="812"/>
         <source>Select Output Directory</source>
         <translation>Selectare Director de Ieșire</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="236"/>
         <source>Select output directory</source>
         <translation>Selectare director pentru rezultate</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="975"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="978"/>
         <source>The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2.</source>
         <translation>Numărul de plăcuțe OpenStreetMap necesare pentru a produce stratul raster este prea mare, ceea ce va conduce la un comportament de descărcare în bloc, lucru interzis de %1Politica de utilizare a plăcuțelor OpenStreetMap Foundation%2.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="980"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="983"/>
         <source>The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. Do you want to overwrite the whole file?</source>
         <translation>Stratul %1 se află deja în fișierul țintă, iar suprascrierea straturilor din GeoPackage nu este permisă. Doriți suprascrierea întregului fișier?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="196"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="815"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="199"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="818"/>
         <source>Save Layer As</source>
         <translation>Salvare Strat Ca...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="230"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="975"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="980"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="978"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="983"/>
         <source>Save Raster Layer</source>
         <translation>Salvare Strat Raster</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="230"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
         <source>The directory %1 contains files which will be overwritten: %2</source>
         <translation>Directorul %1 conține fișierele care vor fi suprascrise: %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="327"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="330"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="333"/>
         <source>All files (*.*)</source>
         <translation>Toate fișierele (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="598"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="601"/>
         <source>layer</source>
         <translation>strat</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="601"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="604"/>
         <source>user defined</source>
         <translation>definit de utilizator</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="606"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="609"/>
         <source>Resolution (current: %1)</source>
         <translation>Rezoluţie (actuală: %1)</translation>
     </message>
@@ -154822,7 +154973,7 @@ Acțiunile implicite sunt activate în zona Acțiune, din proprietățile stratu
 <context>
     <name>QgsRelationEditorConfigWidget</name>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="989"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="995"/>
         <source>Edit Filter Expression of Target Layer</source>
         <translation>Editează Expresia de Filtrare a Stratului Destinație</translation>
     </message>
@@ -154998,12 +155149,12 @@ Acțiunile implicite sunt activate în zona Acțiune, din proprietățile stratu
         <translation>Adăugarea unei entități geometrice nu este acceptată în modul de editare multiplă</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="777"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="783"/>
         <source>All features in selection have equal relations</source>
         <translation>Toate entitățile din selecție au relații egale</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="783"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="789"/>
         <source>Some features in selection have different relations</source>
         <translation>Unele entități din selecție au relații diferite</translation>
     </message>
@@ -159267,7 +159418,7 @@ Atenție că această opțiune va fi aplicată pe toți vertecșii geometriilor 
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5136"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5156"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5813"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
@@ -159353,14 +159504,14 @@ SQL: %1</source>
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5764"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5766"/>
         <source>Spatialite: unexpected number of rows (%1) from aggregate query
 SQL: %2</source>
         <translation>Spatialite: a rezultat un număr neașteptat de rânduri (%1) din interogarea agregată
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5813"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>EROARE: Câmpul %1 nu a fost găsit.</translation>
     </message>
@@ -160440,32 +160591,32 @@ vă rugăm să furnizați un nume nou:</translation>
         <translation>Inițializează baza de date a stilurilor implicite</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="725"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="731"/>
         <source>Load symbols</source>
         <translation>Încărcare simboluri</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="750"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="756"/>
         <source>Load color ramps</source>
         <translation>Încărcare rampă de culori</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="772"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="778"/>
         <source>Load text formats</source>
         <translation>Încarcă formatele de text</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="794"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="800"/>
         <source>Load label settings</source>
         <translation>Încărcare setări de etichetare</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="816"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="822"/>
         <source>Load legend patch shapes</source>
         <translation>Încărcare patch-uri pentru legendă</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="838"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="844"/>
         <source>Load 3D symbols shapes</source>
         <translation>Încarcă formele simbolurilor 3D</translation>
     </message>
@@ -160687,119 +160838,119 @@ vă rugăm să furnizați un nume nou:</translation>
         <translation>Filtrare simboluri...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="271"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="277"/>
         <source>Save Symbol…</source>
         <translation>Salvare Simbol…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="272"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="278"/>
         <source>Save symbol to styles</source>
         <translation>Salvează simbolul în stiluri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="274"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="413"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="280"/>
         <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="419"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="425"/>
         <source>All Symbols</source>
         <translation>Toate simbolurile</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="278"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="284"/>
         <source>Save Color Ramp…</source>
         <translation>Salvare Rampă de Culori...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="279"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="285"/>
         <source>Save color ramp to styles</source>
         <translation>Salvare rampă de culori în stiluri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="281"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="423"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="287"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="429"/>
         <source>All Color Ramps</source>
         <translation>Toate Rampele de Culori</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="285"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="291"/>
         <source>Save Format…</source>
         <translation>Salvare Format...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="286"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="292"/>
         <source>Save text format to styles</source>
         <translation>Salvează formatul textului în stiluri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="288"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="427"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="294"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="433"/>
         <source>All Text Formats</source>
         <translation>Toate Formatele de Text</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="292"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="298"/>
         <source>Save Label Settings…</source>
         <translation>Salvare Setări de Etichetare...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="293"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="299"/>
         <source>Save label settings to styles</source>
         <translation>Salvează setările de etichetare în stiluri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="295"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="431"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="301"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="437"/>
         <source>All Label Settings</source>
         <translation>Toate Setările de Etichetare</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="299"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="305"/>
         <source>Save Legend Patch Shape…</source>
         <translation>Salvare Patch pentru Legendă...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="300"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="306"/>
         <source>Save legend patch shape to styles</source>
         <translation>Salvează patch-ul pentru legendă în stiluri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="302"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="435"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="308"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="441"/>
         <source>All Legend Patch Shapes</source>
         <translation>Toate Patch-urile pentru Legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="306"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="312"/>
         <source>Save 3D Symbol…</source>
         <translation>Salvare Simbol 3D…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="307"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="313"/>
         <source>Save 3D symbol to styles</source>
         <translation>Salvează simbolul 3D în stiluri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="309"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="439"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="315"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="445"/>
         <source>All 3D Symbols</source>
         <translation>Toate simbolurile 3D</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="327"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="333"/>
         <source>Save Settings…</source>
         <translation>Salvare Setări...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="328"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="334"/>
         <source>Save label settings or text format to styles</source>
         <translation>Salvează în stiluri setările de etichetare sau de formatare a textului</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="330"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="336"/>
         <source>All Settings</source>
         <translation>Toate Setările</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="411"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="417"/>
         <source>Favorites</source>
         <translation>Favorite</translation>
     </message>
@@ -161311,7 +161462,7 @@ Overwrite?</source>
         <translation><numerusform>Sigur doriți să eliminați %n simbol(uri) 3D?</numerusform><numerusform>Sigur doriți să eliminați %n simbol(uri) 3D?</numerusform><numerusform>Sigur doriți să eliminați %n simbol(uri) 3D?</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2922"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2925"/>
         <source>There was an error while editing the smart group.</source>
         <translation>A apărut o eroare în timpul editării grupului inteligent.</translation>
     </message>
@@ -161448,42 +161599,42 @@ Overwrite?</source>
         <translation>Tot</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2472"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2484"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2475"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2487"/>
         <source>Add Tag</source>
         <translation>Adăugare Etichetă</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2472"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2475"/>
         <source>The tag “%1” already exists.</source>
         <translation>Eticheta “%1” există deja.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2484"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2487"/>
         <source>New tag could not be created — There was a problem with the symbol database.</source>
         <translation>Noua etichetă nu a putut fi creată — A apărut o problemă cu baza de date a simbolurilor.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2551"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2554"/>
         <source>Remove Group</source>
         <translation>Ștergere Grup</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2551"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2554"/>
         <source>Invalid selection. Cannot delete system defined categories.
 Kindly select a group or smart group you might want to delete.</source>
         <translation>Selecție nevalidă. Nu se pot șterge categoriile definite ale sistemului.
 Vă rugăm să selectați un grup simplu sau unul inteligent care urmează a fi șters.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2791"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2794"/>
         <source>Create New Tag…</source>
         <translation>Creare Etichetă Nouă...</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2902"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2922"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2905"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2925"/>
         <source>Edit Smart Group</source>
         <translation>Editare Grupuri Inteligente</translation>
     </message>
@@ -161599,17 +161750,17 @@ Vă rugăm să selectați un grup simplu sau unul inteligent care urmează a fi 
         <translation>Grupuri Inteligente</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
         <source>Please enter name for the new tag:</source>
         <translation>Introduceți numele noii etichete:</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
         <source>New tag</source>
         <translation>Etichetă nouă</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2902"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2905"/>
         <source>You have not selected a Smart Group. Kindly select a Smart Group to edit.</source>
         <translation>Nu ați selectat un Grup Inteligent. Vă rugăm selectați un Grup Inteligent pentru a-l edita.</translation>
     </message>
@@ -162696,32 +162847,32 @@ Vă rugăm să selectați un grup simplu sau unul inteligent care urmează a fi 
         <translation>Zonă Tampon în Jurul Extinderii...</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="134"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="140"/>
         <source>Select Color</source>
         <translation>Selectare culoare</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="282"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="288"/>
         <source>Animation Settings</source>
         <translation>Setările Animației</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="307"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="313"/>
         <source>Extent Buffer</source>
         <translation>Zonă Tampon în Jurul Extinderii</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="346"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="352"/>
         <source>Buffer Settings</source>
         <translation>Setările Zonei Tampon</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="385"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="391"/>
         <source>Save Symbol</source>
         <translation>Salvare Simbol</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="385"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="391"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
         <translation>Simbolul cu numele &apos;%1&apos; există deja. Doriţi să-l suprascrieți?</translation>
     </message>
@@ -163348,33 +163499,33 @@ Vă rugăm să selectați un grup simplu sau unul inteligent care urmează a fi 
 <context>
     <name>QgsTemporalControllerDockWidget</name>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="89"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="90"/>
         <source>Exporting animation</source>
         <translation>Exportare animație</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="91"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
         <source>Exporting animation…</source>
         <translation>Exportare animație...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="91"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
         <source>Abort</source>
         <translation>Renunţare</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="93"/>
         <source>Exporting Animation</source>
         <translation>Exportare Animație</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="122"/>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="126"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="124"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="128"/>
         <source>Export Animation</source>
         <translation>Exportare Animație</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="126"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="128"/>
         <source>Successfully exported animation to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Exportarea animației în &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt; a avut loc cu succes</translation>
     </message>
@@ -166039,12 +166190,17 @@ p, li { white-space: pre-wrap; }
         <translation>Nu se poate scrie în %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsuserprofilemanager.cpp" line="194"/>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="187"/>
+        <source>Could not copy master database to %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="198"/>
         <source>Can not make &apos;%1&apos; user writable</source>
         <translation>Utilizatorul nu poate modifica &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsuserprofilemanager.cpp" line="216"/>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="221"/>
         <source>Unable to fully delete user profile folder</source>
         <translation>Nu se poate şterge complet folderul profilului de utilizator</translation>
     </message>
@@ -167567,22 +167723,22 @@ Erori furnizor:</translation>
         <translation>Imagine substitut pentru legendă</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="137"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="134"/>
         <source>Description</source>
         <translation>Descriere</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="137"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="134"/>
         <source>Legend Text</source>
         <translation>Textul Legendei</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="170"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="167"/>
         <source>Symbol</source>
         <translation>Simbol</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="170"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="167"/>
         <source>Text</source>
         <translation>Text</translation>
     </message>
@@ -169898,60 +170054,60 @@ Erori furnizor:</translation>
         <translation>Nu au fost selectați vertecșii care aparțin entităților neafișate pe canevas .</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2276"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2275"/>
         <source>Topological points added by &apos;Vertex Tool&apos;</source>
         <translation>Puncte topologice adăugate utilizând &apos;Instrumentul Vertex&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2417"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2455"/>
         <source>Moved vertex</source>
         <translation>Vertex mutat</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2548"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2586"/>
         <source>Deleted vertex</source>
         <translation>Vertex șters</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2572"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2610"/>
         <source>Geometry has been cleared. Use the add part tool to set geometry for this feature.</source>
         <translation>Geometria a fost eliminată. Utilizați instrumentul de adăugare parte, pentru a stabili geometria pentru această entitate.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2628"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2640"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2654"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2677"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2666"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2678"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2692"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2715"/>
         <source>Could not convert vertex</source>
         <translation>Nu s-a putut converti vertexul</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2629"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2667"/>
         <source>Conversion can only be done on exactly one vertex.</source>
         <translation>Conversia se poate face exact la un singur vertex.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2641"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2679"/>
         <source>Cannot convert vertex before it is added.</source>
         <translation>Nu se poate converti vertexul înainte de a fi adăugat.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2655"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2693"/>
         <source>Layer of type %1 does not support curved geometries.</source>
         <translation>Stratul de tipul %1 nu acceptă geometrii curbe.</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2661"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2699"/>
         <source>Toggled vertex to/from curve</source>
         <translation>Vertex comutat la/de la curbă</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2678"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2716"/>
         <source>Start/end of vertices of features and arcs can not be converted.</source>
         <translation>Începutul/sfârșitul vertecșilor arcelor nu se pot converti.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2923"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2961"/>
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
         <translation><numerusform>Validare încheiată (s-a(u) găsit %n erori).</numerusform><numerusform>Validare încheiată (s-a(u) găsit %n erori).</numerusform><numerusform>Validare încheiată (s-a(u) găsit %n erori).</numerusform></translation>

@@ -1,3 +1,440 @@
+Jürgen E. Fischer <jef@norbit.de>	2025-12-19
+
+    translation update for 3.44.6 from transifex
+
+Merge: e11ba69e95e 119734fe0d5
+Loïc Bartoletti <loic.bartoletti@oslandia.com>	2025-12-17
+
+    Merge pull request #64315 from qgis/backport-63639-to-release-3_44
+
+    [Backport release-3_44] Don't consider polygon bounding box in point-in-polygon geometry check
+
+Merge: 0252457cae1 947e5dc5baf
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-17
+
+    Merge pull request #64331 from qgis/backport-64313-to-release-3_44
+
+    [Backport release-3_44] Fix crash in data defined assistants when min value > max value
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-12-16
+
+    Fix crash in data defined assistants when min value > max value
+
+Jacky Volpes <jacky.volpes@oslandia.com>	2025-10-22
+
+    fix(point_in_polygon_geometry_check): remove duplicate check
+
+Jacky Volpes <jacky.volpes@oslandia.com>	2025-10-21
+
+    fix: don't consider polygon bounding box in point-in-polygon geometry check
+
+    Fixes #63424
+
+    Adapted the test.
+
+Jean Felder <jean.felder@oslandia.com>	2025-12-10
+
+    qgsrubberband3d: Properly handle entities memory management
+
+    `mPolygonEntity`, `mLineEntity`, `mMarkerEntity` already have their
+    own parent. This means that they are already deleted when their parent
+    is deleted. Therefore, one cannot directly delete these
+    entities in the rubberband destructor. Otherwise, one end up with a
+    double delete.
+
+    This issue is fixed by QObjectUniquePtr. This ensures proper memory management.
+
+Loïc Bartoletti <loic.bartoletti@oslandia.com>	2025-12-11
+
+    fix(VectorLayerEditUtils): prevent Add Part tool from reversing LineString vertices
+
+    The orientation check introduced in PR #55306 for OGC polygon ring
+    ordering was incorrectly applied to all geometry types. For LineStrings,
+    polygonOrientation() returns NoOrientation, causing the condition to
+    always be true and systematically reversing added line parts.
+
+    Fixes #64265
+
+Merge: 29c5b24a30c 9ca705c7328
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-14
+
+    Merge pull request #64278 from qgis/backport-64242-to-release-3_44
+
+    [Backport release-3_44] Initialize plugin path (initQgis) before QgsNetworkAccessManager
+
+Merge: 480e939e8a7 9273b3aa23a
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-14
+
+    Merge pull request #64259 from qgis/backport-64157-to-release-3_44
+
+    [Backport release-3_44] Don't write empty geometries to MVT tiles
+
+Merge: 27bd955bbc6 9b1d28de176
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-14
+
+    Merge pull request #64257 from qgis/backport-64208-to-release-3_44
+
+    [Backport release-3_44] [themes] Fix text color for disabled QHeaderView for dark themes
+
+David Signer <david@opengis.ch>	2025-12-11
+
+    Fix wrong naming of in place algorithms in the locator bar. Ths fixes #64200
+
+Matthias Kuhn <matthias@opengis.ch>	2025-12-10
+
+    Add comment to avoid regressing
+
+Matthias Kuhn <matthias@opengis.ch>	2025-12-10
+
+    Initialize QGIS before QgsNetworkAccessManager
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-12-11
+
+    Regenerate test reference file without null geometry
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-12-03
+
+    Don't write empty geometries to MVT tiles
+
+    These are not valid with the MVT spec.
+
+    Fixes #56072
+
+Malik Blesius <78353871+mblesius@users.noreply.github.com>	2025-12-08
+
+    [themes] Fix text color for disabled QHeaderView
+
+Merge: 89e27291bf9 a3e8cf9f3f9
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-11
+
+    Merge pull request #64224 from qgis/backport-62739-to-release-3_44
+
+    [Backport release-3_44] Allow resizing of the blocks in the Query Builder dialog
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2025-12-09
+
+    [UI] Fix GPS options
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-12-10
+
+    Fix crash when layer from layout elevation profile is removed
+
+    Refs #64218
+
+Harrissou Sant-anna <delazj@gmail.com>	2025-07-31
+
+    Allow resizing of the blocks in the Query Builder dialog
+
+Jean Felder <jean.felder@oslandia.com>	2025-12-04
+
+    qgspoint3dsymbol_p: Do not create entities with empty geometries
+
+    The `Point3DSymbolHandler::finalize` function creates two entities:
+    one for normal features and one for selected features. However, if an
+    entity does not contain any feature (for example the selected entity
+    if there are no selected entities), a useless entity with no geometry
+    is created.
+
+    This issue is fixed by checking if the requested entity has a
+    geometry in `makeEntity` . This is similar to what is already done for
+    line and polygon symbols.
+
+qgis-bot <bot@qgis.org>	2025-12-07
+
+    auto sipify 🍺
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-12-05
+
+    [qml][api] Expose QgsMapLayer flags to QML environments
+
+Merge: 596dc4d4676 956423daa9b
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-04
+
+    Merge pull request #64167 from qgis/backport-64151-to-release-3_44
+
+    [Backport release-3_44] Fix hillshade renderer for rasters with alpha channel
+
+qgis-bot <bot@qgis.org>	2025-12-04
+
+    auto sipify 🍺
+
+Merge: 54e7bc24054 e7e2c02a95a
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-04
+
+    Merge pull request #64148 from qgis/backport-63883-to-release-3_44
+
+    [Backport release-3_44] Attribute form / relation editor dual view fixes
+
+Stefanos Natsis <uclaros@gmail.com>	2025-12-02
+
+    Read the proper value from the alpha block
+
+Merge: 0b6fed59e79 482f85fb43f
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-03
+
+    Merge pull request #64146 from qgis/backport-64105-to-release-3_44
+
+    [Backport release-3_44] [themes] Respect the QWidget autoFillBackground property
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-12-02
+
+    Use a defined variable for cache index
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-12
+
+    Add test covering custom ordering when no feature is automatically shown in dual view
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-11
+
+    [dual view] Fix sort by display/preview expression (ascending/descending) menu items
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-11
+
+    [relation editor] Insure the custom feature list ordering is respected when
+    not automatically picking a feature
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-28
+
+    [themes] Respect the QWidget autoFillBackground property
+
+Merge: 070719dd711 b7c12ef4d45
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-02
+
+    Merge pull request #64141 from qgis/backport-64125-to-release-3_44
+
+    [Backport release-3_44] Use correct extent intersection logic
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-12-01
+
+    Use correct extent intersection logic
+
+Merge: d2fadf7d33b 840a51f6dc4
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-01
+
+    Merge pull request #64133 from qgis/backport-64098-to-release-3_44
+
+    [Backport release-3_44] Disable 3d symbology widget for table vector layers
+
+Stefanos Natsis <uclaros@gmail.com>	2025-11-27
+
+    disable 3d renderer setup when vector layer has no geometry type
+
+Merge: 0414fcb0a6e 9d545fe2d5c
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-30
+
+    Merge pull request #64118 from qgis/backport-64112-to-release-3_44
+
+    [Backport release-3_44] Interpolation widget: prevent a Python error when adding layer if none is selected
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2025-11-28
+
+    Interpolation widget: prevent adding layer if none is selected
+
+    Add check for layer existence before proceeding.
+
+qgis-bot <bot@qgis.org>	2025-11-28
+
+    auto sipify 🍺
+
+Matej Bagar <matej.bagar@lutraconsulting.co.uk>	2025-11-21
+
+    Sipify
+
+Matej Bagar <matej.bagar@lutraconsulting.co.uk>	2025-11-21
+
+    Fix geoid separation docs
+
+Merge: 59529c866b4 2ef4d55592d
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-27
+
+    Merge pull request #64080 from qgis/backport-64061-to-release-3_44
+
+    [Backport release-3_44] Fix crash when closing elevation profile while identify tool active
+
+Merge: fad8dcf78f3 ccedf0287fd
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-27
+
+    Merge pull request #64043 from qgis/backport-64041-to-release-3_44
+
+    [Backport release-3_44] [VectorTile] Accept connection with only style url
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2025-11-26
+
+    [GUI] Remove incorrect tooltip for label placement
+
+    Remove a tooltip about line layers incorrectly showed for polygon layers.
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-26
+
+    Fix crash when closing elevation profile while identify tool active
+
+    Fixes #63893
+
+Merge: 60ac72e4980 a12f0bcde18
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-26
+
+    Merge pull request #64051 from qgis/backport-63947-to-release-3_44
+
+    [Backport release-3_44] Allow rule-based -> categorized renderer conversion in some circumstances
+
+qgis-bot <bot@qgis.org>	2025-11-25
+
+    auto sipify 🍺
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-25
+
+    Add missing documentation for newly-introduced signals
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-25
+
+    [api][qml] Expose map layer selection properties object to QML environments
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-25
+
+    Add tests
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-17
+
+    Allow rule-based -> categorized renderer conversion in some circumstances
+
+Jan Caha <jan.caha@outlook.com>	2025-11-23
+
+    add test case
+
+Jan Caha <jan.caha@outlook.com>	2025-11-23
+
+    clone also extra datasets
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2025-11-24
+
+    fix(VectorTile): accept connection with only style url
+
+    As it contains the url
+
+Merge: 8e3c67877b1 707639beb40
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-23
+
+    Merge pull request #64026 from qgis/backport-64002-to-release-3_44
+
+    [Backport release-3_44] replace chinese flags with 'traditional' and 'simplified' symbols (fixes #63945)
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-22
+
+    [qml][vector] Make QgsVectorLayer::updateFeature invokable
+
+Jürgen E. Fischer <jef@norbit.de>	2025-11-19
+
+    replace chinese flags with 'traditional' and 'simplified' symbols (fixes #63945)
+
+Stefanos Natsis <uclaros@gmail.com>	2025-11-20
+
+    Add QgsVertexId tests
+
+Stefanos Natsis <uclaros@gmail.com>	2025-11-19
+
+    Fix QgsVertexId::vertexEqual
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-22
+
+    Update tests/src/app/testqgsvertextool.cpp
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-22
+
+    Update tests/src/app/testqgsvertextool.cpp
+
+Jacky Volpes <jacky.volpes@oslandia.com>	2025-11-04
+
+    fix(qgsvertextool): add test on coincident vertices with topological editing
+
+    Add a feature in line layer with a vertex near a polygon layer feature
+    vertex (at 4e-7 distance).
+    Verify that with the topological editing, moving the polygon vertex does
+    not move the line vertex because coincindent vertices must be with exact
+    coordinates (within 1e-8).
+
+Jacky Volpes <jacky.volpes@oslandia.com>	2025-10-27
+
+    fix(qgsvertextool): use exact matches to find coincident vertices
+
+Even Rouault <even.rouault@spatialys.com>	2025-11-07
+
+    QgsLayerStylingWidget: harden use of dataProvider() to hopefully fix crash on invalid WMS layers
+
+    This may fix #62372 although I couldn't reproduce it
+
+viperminiq <viperminiq@gmail.com>	2025-11-13
+
+    use qpointer for terrain generator to prevent 3d map crashing
+
+viperminiq <viperminiq@gmail.com>	2025-11-10
+
+    use unique_ptr when storing qgsterraingenerator
+
+github-actions[bot] <github-actions[bot]@users.noreply.github.com>	2025-11-22
+
+    auto-fix pre-commit issues
+
+TiGIS Sagl <git@tigis.ch>	2025-11-11
+
+    Fix db manager crashed caused by invalid layers loaded as virtual layers
+
+    Add a check verifing a layers is valid before adding the layer in the list of virtual layers, causing a crash in the db manager plugin when dataProvider il missing.
+
+TiGIS Sagl <git@tigis.ch>	2025-11-11
+
+     Fix crash in DB Manager when listing layers without data source
+
+    Fix crash in DB Manager when listing layers without data source
+
+    The Virtual Layer connector’s getVectorTables() checked only if a layer is spatial, but didn’t verify the presence of a data provider. When the provider is None, calling wkbType() crashes. Add a guard to ensure the layer is spatial and has a valid data provider before accessing wkbType().
+
+Even Rouault <even.rouault@spatialys.com>	2025-11-19
+
+    [OAPIF provider] Fix issue with collection bbox reprojection
+
+    Due to a threading related issue, the bounding box of the layer reported
+    in the /collection response couldn't be reprojected from OGC:CRS84 to
+    the native CRS of the layer, causing later warnings about the bounding
+    box not being correct (on projected layers)
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2025-11-21
+
+    GUI: Fix Raster Attribute Table window title 'Add Row'
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-08-20
+
+    fixup! add 3D test for model instance rendering
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-08-20
+
+    fixup! add 3D test for model instance rendering
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-08-20
+
+    add 3D test for model instance rendering
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-08-20
+
+    fix(QgsModelPoint3DSymbolHandler): add error message when mesh file is not found/valid
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-08-20
+
+    fixup! fix: 3d point instanciated objects are wrongly oriented
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-08-20
+
+    testqgs3drendering: remove testInstancedRendering as testInstancedRenderingClipping does the same thing
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-06-11
+
+    fix: 3d point instanciated objects are wrongly oriented
+
+    Previous orientation fix was missplaced and replaced by widget data.
+
+Jürgen E. Fischer <jef@norbit.de>	2025-11-21
+
+    Release of 3.44.5
+
 Jürgen E. Fischer <jef@norbit.de>	2025-11-21
 
     translation update for 3.44.5 from transifex

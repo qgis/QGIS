@@ -21072,10 +21072,6 @@ This can cause unexpected results.</source>
         <translation>准备文件出错...</translation>
     </message>
     <message>
-        <source>Hey, type something to run!</source>
-        <translation>嘿! 輸入一些東西才可以執行歐!</translation>
-    </message>
-    <message>
         <source>Python Console: Save file</source>
         <translation>Python主控台:儲存檔案</translation>
     </message>
@@ -21261,6 +21257,10 @@ From the console, you can type the following special commands:
 </source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Empty scripts cannot be run!</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PythonConsoleWidget</name>
@@ -21432,107 +21432,107 @@ From the console, you can type the following special commands:
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="319"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="316"/>
         <source>Count</source>
         <translation>計數</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="332"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="329"/>
         <source>Count Distinct</source>
         <translation>不重复的数量</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="345"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="342"/>
         <source>Count Missing</source>
         <translation>计数缺失</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="357"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="354"/>
         <source>Min</source>
         <translation>最小值</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="371"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="368"/>
         <source>Max</source>
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="385"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="382"/>
         <source>Sum</source>
         <translation>總合</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="396"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="393"/>
         <source>Mean</source>
         <translation>平均值</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="407"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="404"/>
         <source>Median</source>
         <translation>中位數</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="416"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="413"/>
         <source>Stdev</source>
         <translation>Stdev</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="427"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="424"/>
         <source>Stdev Sample</source>
         <translation>Stdev样例</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="438"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="435"/>
         <source>Range</source>
         <translation>範圍</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="451"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="448"/>
         <source>Minority</source>
         <translation>寡数（出现次数最少的值）</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="463"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="460"/>
         <source>Majority</source>
         <translation>众数（出现次数最多的值）</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="475"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="472"/>
         <source>Q1</source>
         <translation>Q1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="486"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="483"/>
         <source>Q3</source>
         <translation>Q3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="497"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="494"/>
         <source>InterQuartileRange</source>
         <translation>InterQuartileRange</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="508"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="505"/>
         <source>Min Length</source>
         <translation>最小長度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="515"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="512"/>
         <source>Max Length</source>
         <translation>最大長度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="522"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="519"/>
         <source>Concatenate</source>
         <translation>連接</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="529"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="526"/>
         <source>Collect</source>
         <translation>收集</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="535"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="532"/>
         <source>Array Aggregate</source>
         <translation>数组聚合</translation>
     </message>
@@ -21995,7 +21995,7 @@ The result of the query will be added as a new layer.
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/app/main.cpp" line="923"/>
+        <location filename="../src/app/main.cpp" line="924"/>
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
@@ -22004,22 +22004,22 @@ You are seeing this message most likely because you have no DISPLAY environment 
 </translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1014"/>
+        <location filename="../src/app/main.cpp" line="1015"/>
         <source>Invalid globalsettingsfile path: %1</source>
         <translation>無效的全局設置文件路径：%1</translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1018"/>
+        <location filename="../src/app/main.cpp" line="1019"/>
         <source>Successfully loaded globalsettingsfile path: %1</source>
         <translation>成功载入全局設置文件路径：% 1 </translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1824"/>
+        <location filename="../src/app/main.cpp" line="1825"/>
         <source>Profile not found</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="1824"/>
+        <location filename="../src/app/main.cpp" line="1825"/>
         <source>The last used profile &apos;%1&apos; was not found. The default profile was used instead.</source>
         <translation type="unfinished"/>
     </message>
@@ -23097,9 +23097,9 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>無法載入圖層&apos;%1&apos; 。</translation>
     </message>
     <message>
-        <location filename="../src/core/pal/feature.cpp" line="426"/>
-        <location filename="../src/core/pal/feature.cpp" line="2430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2471"/>
+        <location filename="../src/core/pal/feature.cpp" line="430"/>
+        <location filename="../src/core/pal/feature.cpp" line="2434"/>
+        <location filename="../src/core/pal/feature.cpp" line="2475"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23121,9 +23121,9 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>異常:%1</translation>
     </message>
     <message>
-        <location filename="../src/core/pal/feature.cpp" line="426"/>
-        <location filename="../src/core/pal/feature.cpp" line="2430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2471"/>
+        <location filename="../src/core/pal/feature.cpp" line="430"/>
+        <location filename="../src/core/pal/feature.cpp" line="2434"/>
+        <location filename="../src/core/pal/feature.cpp" line="2475"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23171,100 +23171,100 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2248"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2251"/>
         <source>Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2271"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2274"/>
         <source>Validating coverages requires a QGIS build based on GEOS 3.12 or later</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2316"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2319"/>
         <source>Simplifying coverages requires a QGIS build based on GEOS 3.12 or later</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2358"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2361"/>
         <source>QGIS geometry cannot be converted to a GEOS geometry</source>
         <comment>GEOS Error</comment>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2382"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2385"/>
         <source>Topology validation error</source>
         <comment>GEOS Error</comment>
         <translation>拓扑验证錯誤</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2383"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2386"/>
         <source>Repeated point</source>
         <comment>GEOS Error</comment>
         <translation>重复點</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2384"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2387"/>
         <source>Hole lies outside shell</source>
         <comment>GEOS Error</comment>
         <translation>洞位于多邊形外</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2385"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2388"/>
         <source>Holes are nested</source>
         <comment>GEOS Error</comment>
         <translation>孔是嵌套的</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2386"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2389"/>
         <source>Interior is disconnected</source>
         <comment>GEOS Error</comment>
         <translation>内部是断开的</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2387"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2390"/>
         <source>Self-intersection</source>
         <comment>GEOS Error</comment>
         <translation>自相交</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2388"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2391"/>
         <source>Ring self-intersection</source>
         <comment>GEOS Error</comment>
         <translation>自相交环</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2389"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2392"/>
         <source>Nested shells</source>
         <comment>GEOS Error</comment>
         <translation>嵌套壳</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2390"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2393"/>
         <source>Duplicate rings</source>
         <comment>GEOS Error</comment>
         <translation>複製环</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2391"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2394"/>
         <source>Too few points in geometry component</source>
         <comment>GEOS Error</comment>
         <translation>幾何圖形构件中的點太少</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2392"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2395"/>
         <source>Invalid coordinate</source>
         <comment>GEOS Error</comment>
         <translation>無效坐标</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="2393"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="2396"/>
         <source>Ring is not closed</source>
         <comment>GEOS Error</comment>
         <translation>环未闭合</translation>
     </message>
     <message>
-        <location filename="../src/core/geometry/qgsgeos.cpp" line="3348"/>
+        <location filename="../src/core/geometry/qgsgeos.cpp" line="3342"/>
         <source>Calculating constrainedDelaunayTriangulation requires a QGIS build based on GEOS 3.11 or later</source>
         <translation type="unfinished"/>
     </message>
@@ -24042,7 +24042,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>垂直间隔对于覆盖区域而言太大。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgrid.cpp" line="477"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgrid.cpp" line="479"/>
         <source>To preserve symmetry, hspacing is fixed relative to vspacing
  hspacing is fixed at: %1 and hoverlay is fixed at: %2 hoverlay cannot be negative. Increase hoverlay.</source>
         <translation>為了保持对称性，hspacing相对于vspacing是固定的。
@@ -24415,25 +24415,25 @@ hspacing固定在：%1，悬停覆盖固定在： %2。悬停不能為负值。�
         <translation>圖徵建立錯誤(OGR錯誤:%1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3583"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3588"/>
         <source>Cannot overwrite an OGR layer in place</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3734"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3739"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="547"/>
         <source>Failed to transform feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3759"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3764"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="502"/>
         <source>Feature write errors:</source>
         <translation>圖徵寫入失敗:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3783"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4413"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3788"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4418"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>
@@ -25133,13 +25133,13 @@ If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
         <translation>默认情况下，驱动不会尝试去检测欄位的数据類型。如果設置為字符串（STRING），全部欄位都將会是字符串類型。</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3769"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3774"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="525"/>
         <source>Stopping after %n error(s)</source>
         <translation><numerusform>%n 筆錯誤之後停止</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4320"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4325"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
         <translation>轉換失敗。停止寫入。 (異常：%1)</translation>
     </message>
@@ -26451,7 +26451,7 @@ stderr: %4</source>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1803"/>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="2268"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3346"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4675"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4682"/>
         <source>Unsupported type for field %1</source>
         <translation>未支援的欄位類別 %1</translation>
     </message>
@@ -26558,7 +26558,7 @@ stderr: %4</source>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="348"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="351"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1618"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5554"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5588"/>
         <location filename="../src/gui/providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp" line="23"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="57"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="95"/>
@@ -26808,7 +26808,7 @@ please provide a new name:</source>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="712"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6502"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
         <source>Cannot open transaction on %1, since it is not currently opened</source>
         <translation type="unfinished"/>
     </message>
@@ -26937,10 +26937,10 @@ SQL： %1
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1659"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="51"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3095"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4413"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5159"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5219"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5373"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4420"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5166"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5226"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5380"/>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
@@ -26949,11 +26949,11 @@ SQL： %1
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2695"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6023"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6098"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6273"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6332"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6437"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6025"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6100"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6275"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6334"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6439"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="186"/>
         <source>Connection to database failed</source>
         <translation>連結資料庫失敗</translation>
@@ -26965,7 +26965,7 @@ SQL： %1
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3236"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4595"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4602"/>
         <source>Creation of data source %1 failed: 
 %2</source>
         <translation>建立資料來源%1失敗: 
@@ -26974,7 +26974,7 @@ SQL： %1
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1780"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3274"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4615"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4622"/>
         <source>Loading of the layer %1 failed</source>
         <translation>載入%1圖層失敗</translation>
     </message>
@@ -27113,13 +27113,13 @@ Database error: %2</source>
         <translation>PostGIS軟體</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="313"/>
+        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="321"/>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="483"/>
         <source>Infinite filter rectangle specified</source>
         <translation>矩形過濾範圍已設定</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="313"/>
+        <location filename="../src/providers/hana/qgshanafeatureiterator.cpp" line="321"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="97"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="106"/>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="115"/>
@@ -27144,7 +27144,7 @@ Database error: %2</source>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5227"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2535"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>無法儲存圖層樣式，因為無法在資料庫中建立目標表格。這可能是表格權限的原因(使用者=%1)。請聯絡您的資料庫管理员</translation>
@@ -27175,28 +27175,28 @@ Database error: %2</source>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4690"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4697"/>
         <source>Creation of fields failed:
 %1</source>
         <translation>欄位创建失败:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2547"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>無法將列類型加入到圖層樣式表，可能是由于表权限导致的(用户=%1)，请联系您的数据库管理员</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5351"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2673"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>無法儲存圖層樣式。這是不可能插入一條新記錄到樣式表。也許這是由於資料表的權限問題(用戶=％1)。請聯繫您的資料庫管理員。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5453"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5539"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5574"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2769"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2859"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2894"/>
@@ -27204,49 +27204,49 @@ Database error: %2</source>
         <translation>使用用戶名連接資料庫失敗：％1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5486"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5513"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5554"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5590"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5493"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2806"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2833"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2874"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2910"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6078"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6244"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6080"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6246"/>
         <source>Error executing query: %1</source>
         <translation>執行查詢錯誤: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5487"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2807"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>執行SELECT查詢相關樣式錯誤。查詢被記錄。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5514"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6410"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6412"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>執行SELECT查詢無關的樣式錯誤。查詢被記錄。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5555"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2875"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>执行删除查询时出错。查询已被记录</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5591"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2911"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6463"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>執行SELECT查詢錯誤。查詢被記錄。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5586"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2906"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6455"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6457"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>表一致性錯誤&apos;％1&apos;。樣式ID應該是唯一的。</translation>
     </message>
@@ -27280,14 +27280,14 @@ SQL: %1</translation>
         <translation>建立欄位失敗</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6041"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6115"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6197"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
         <source>Error executing query %1: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6502"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6504"/>
         <source>spatialite</source>
         <translation>spatialite</translation>
     </message>
@@ -27312,31 +27312,31 @@ SQL: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="46"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="196"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="195"/>
         <source>Unable to delete table %1
 </source>
         <translation>無法刪除表格 %1
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6459"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6461"/>
         <source>Style with id %1 not found in %2 (Query: %3)</source>
         <translation>%2 中找不到 ID 為 %1 的樣式（查询：%3）</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="3063"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6043"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6117"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6199"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6245"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6350"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6045"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6119"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6201"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6247"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6352"/>
         <source>Error looking for style. The query was logged</source>
         <translation>尋找樣式錯誤。查詢已被記錄。</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="2901"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2964"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6151"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6153"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database.</source>
         <translation>無法儲存圖層樣式。在資料庫上建立目標表格這是不可能的。</translation>
     </message>
@@ -27372,7 +27372,7 @@ SQL: %1</translation>
         <translation>無法打开%1。</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6309"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6311"/>
         <source>Error executing loading style. The query was logged</source>
         <translation>執行載入樣式錯誤。查詢已被記錄。</translation>
     </message>
@@ -27381,12 +27381,12 @@ SQL: %1</translation>
         <location filename="../src/core/qgsogrutils.cpp" line="2658"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2769"/>
         <location filename="../src/core/qgsogrutils.cpp" line="2830"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6364"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6366"/>
         <source>No styles available on DB</source>
         <translation>資料庫中無可用的樣式</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6384"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6386"/>
         <source>Error loading styles. The query was logged</source>
         <translation>載入樣式錯誤。查詢已被記錄。</translation>
     </message>
@@ -28244,7 +28244,7 @@ The additional attributes and their values are taken from a second vector layer.
     </message>
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="154"/>
-        <location filename="../src/core/actions/qgsaction.cpp" line="429"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="435"/>
         <source>Open URL</source>
         <translation>打开 URL</translation>
     </message>
@@ -28447,7 +28447,7 @@ The additional attributes and their values are taken from a second vector layer.
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="319"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2887"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2889"/>
         <source>Project</source>
         <translation>專案</translation>
     </message>
@@ -29756,8 +29756,8 @@ Depending on the input geometry attributes and the filters used, the resultant g
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="57"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="97"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="779"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="784"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="782"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="787"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="56"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="61"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="77"/>
@@ -31027,39 +31027,39 @@ Operation can NOT be undone!
         <translation>無法載入專案的主要註記圖層。</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1073"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1075"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="1345"/>
         <source>Specified CRS is a %1 CRS, not a Vertical CRS</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1089"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1091"/>
         <source>Project CRS is a Compound CRS, specified Vertical CRS will be ignored</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1098"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1100"/>
         <source>Project CRS is a Geographic 3D CRS, specified Vertical CRS will be ignored</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1107"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1109"/>
         <source>Project CRS is a Geocentric CRS, specified Vertical CRS will be ignored</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1116"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1118"/>
         <source>Project CRS is a Projected 3D CRS, specified Vertical CRS will be ignored</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2684"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2688"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2686"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2690"/>
         <source>Project translation</source>
         <translation>專案翻譯</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="5030"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="5032"/>
         <source>WMS Online Resource</source>
         <translation>WMS在線资源</translation>
     </message>
@@ -31498,29 +31498,29 @@ Z and M values at the start and end of the new line substrings are linearly inte
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="264"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="322"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="374"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="325"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="380"/>
         <source>Count: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="265"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="323"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="375"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="326"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="381"/>
         <source>Unique values: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="266"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="324"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="376"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="327"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="382"/>
         <source>NULL (missing) values: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="267"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="325"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="377"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="328"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="383"/>
         <source>NOT NULL (filled) values: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -31580,32 +31580,32 @@ Z and M values at the start and end of the new line substrings are linearly inte
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="328"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="331"/>
         <source>Range (seconds): %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="380"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="386"/>
         <source>Minimum length: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="381"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="387"/>
         <source>Maximum length: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="382"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="388"/>
         <source>Mean length: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="383"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="389"/>
         <source>Minority: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="384"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="390"/>
         <source>Majority: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -31655,7 +31655,7 @@ Z and M values at the start and end of the new line substrings are linearly inte
         <translation><numerusform>%n 個或更多參數</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="987"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="989"/>
         <source>Style Manager</source>
         <translation>樣式管理</translation>
     </message>
@@ -31686,8 +31686,8 @@ Z and M values at the start and end of the new line substrings are linearly inte
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="42"/>
         <location filename="../src/analysis/processing/qgsalgorithmdensifygeometriesbycount.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmdensifygeometriesbyinterval.cpp" line="40"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="231"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="334"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="228"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="331"/>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="26"/>
         <location filename="../src/analysis/processing/qgsalgorithmdropmzvalues.cpp" line="39"/>
         <location filename="../src/analysis/processing/qgsalgorithmexplode.cpp" line="44"/>
@@ -32147,19 +32147,19 @@ Attributes are not modified by this algorithm.</source>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="51"/>
         <location filename="../src/analysis/processing/qgsalgorithmcalculateoverlaps.cpp" line="53"/>
         <location filename="../src/analysis/processing/qgsalgorithmcategorizeusingstyle.cpp" line="32"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="78"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="83"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="79"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="79"/>
@@ -32179,8 +32179,8 @@ Attributes are not modified by this algorithm.</source>
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsalgorithmdeleteduplicategeometries.cpp" line="52"/>
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="88"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="242"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="350"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="239"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="347"/>
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmexplodehstore.cpp" line="68"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="71"/>
@@ -32194,16 +32194,16 @@ Attributes are not modified by this algorithm.</source>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="49"/>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="261"/>
         <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="71"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="75"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="74"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="69"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="54"/>
@@ -32246,7 +32246,7 @@ Attributes are not modified by this algorithm.</source>
         <location filename="../src/analysis/processing/qgsalgorithmuniquevalueindex.cpp" line="49"/>
         <location filename="../src/analysis/processing/qgsalgorithmvoronoipolygons.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="170"/>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1108"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1119"/>
         <source>Input layer</source>
         <translation>輸入圖層</translation>
     </message>
@@ -32480,9 +32480,9 @@ The miter limit parameter is only applicable for miter join styles, and controls
         <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="701"/>
         <location filename="../src/core/processing/qgsprocessingalgrunnertask.cpp" line="47"/>
         <location filename="../src/core/processing/qgsprocessingalgrunnertask.cpp" line="74"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3848"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4646"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8629"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3855"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4653"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8636"/>
         <location filename="../src/core/processing/qgsprocessingprovider.cpp" line="108"/>
         <source>Processing</source>
         <translation>空間運算</translation>
@@ -32654,22 +32654,22 @@ The attributes associated to each point in the output layer are the same ones as
         <translation>無法為单個點要素計算凸包（请尝试使用“最小边界幾何圖形”演算法）。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="221"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="218"/>
         <source>Dissolve</source>
         <translation>融合(Dissolve)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="226"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="223"/>
         <source>dissolve,union,combine,collect</source>
         <translation>融合,联合,组合,聚集</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="243"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="240"/>
         <source>Dissolve field(s)</source>
         <translation>融合欄位</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="351"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="348"/>
         <source>Unique ID fields</source>
         <translation>唯一ID欄位</translation>
     </message>
@@ -32685,7 +32685,7 @@ The attributes associated to each point in the output layer are the same ones as
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcoverageunion.cpp" line="54"/>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="249"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="246"/>
         <source>Dissolved</source>
         <translation>已融合</translation>
     </message>
@@ -32717,12 +32717,12 @@ It provides a heavily optimized approach for unioning these features compared wi
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="242"/>
         <source>Keep disjoint features separate</source>
         <translation>將不相交的要素分开</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="254"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="251"/>
         <source>This algorithm takes a vector layer and combines their features into new features. One or more attributes can be specified to dissolve features belonging to the same class (having the same value for the specified attributes), alternatively all features can be dissolved in a single one.
 
 All output geometries will be converted to multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
@@ -32735,52 +32735,52 @@ If enabled, the optional &quot;Keep disjoint features separate&quot; setting wil
 如果設定「保持不相交的圖層分離」選項，會導致不重疊或接觸的圖徵和部件匯出為各自分開的圖徵（而不是單一的多部件圖徵中的部件）。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="265"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="262"/>
         <source>Combines features of a vector layer into new features, optionally grouped by common attributes.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="293"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="290"/>
         <source>GEOS exception: taking the slower route ...</source>
         <translation>GEOS异常：走较慢的路線 ...</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="308"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="305"/>
         <source>The algorithm returned no output.</source>
         <translation>演算法沒有回傳输出。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="324"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="321"/>
         <source>Collect geometries</source>
         <translation>聚合幾何圖形</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="326"/>
         <source>union,combine,collect,multipart,parts,single</source>
         <translation>联合,组合,聚集,多部件,部件,单個</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="353"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="350"/>
         <source>Collected</source>
         <translation>聚合后</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="358"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="355"/>
         <source>This algorithm takes a vector layer and collects its geometries into new multipart geometries. One or more attributes can be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively all geometries can be collected.</source>
         <translation>该演算法將向量圖層幾何圖形聚合到新的多部件幾何圖形中。可以指定某些屬性，仅收集属于同一類的幾何圖形（对指定屬性具有相同的值），也可以聚合所有幾何圖形。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="361"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="358"/>
         <source>All output geometries will be converted to multi geometries, even those with just a single part. This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part.</source>
         <translation>所有输出幾何圖形都將转换為幾何圖形集，即使单部件也是如此。该演算法不会融合重叠的幾何圖形 - 它们將被收集在一起，而不会修改每個幾何圖形部件的形状。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="363"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="360"/>
         <source>See the &apos;Promote to multipart&apos; or &apos;Aggregate&apos; algorithms for alternative options.</source>
         <translation>其他選項见“提升為多部件”或“聚合”演算法。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="368"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="365"/>
         <source>Collects geometries of a vector layer into new multipart geometries, optionally grouped by common attributes.</source>
         <translation type="unfinished"/>
     </message>
@@ -32849,7 +32849,7 @@ If enabled, the optional &quot;Keep disjoint features separate&quot; setting wil
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="91"/>
         <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="75"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="515"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="773"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="776"/>
         <location filename="../src/analysis/processing/qgsalgorithmextentfromlayer.cpp" line="85"/>
         <location filename="../src/analysis/processing/qgsalgorithmextenttolayer.cpp" line="29"/>
         <location filename="../src/analysis/processing/qgsalgorithmextenttolayer.cpp" line="30"/>
@@ -33203,30 +33203,30 @@ Optionally, feature geometries can also be clipped to the extent. If this option
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="253"/>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="98"/>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="282"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3279"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3282"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4040"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4136"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4138"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4140"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4552"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4555"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3286"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3289"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4047"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4143"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4145"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4147"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4559"/>
         <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4562"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4565"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4568"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4988"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5749"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5874"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6431"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6663"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6888"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6915"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7004"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7041"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7387"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9329"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9527"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9874"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4569"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4572"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4575"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4995"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5756"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="5881"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6438"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6670"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6895"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6922"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7011"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7048"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7394"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9336"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9534"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9881"/>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="52"/>
         <location filename="../src/gui/processing/qgsprocessingmaplayercombobox.cpp" line="683"/>
         <location filename="../src/gui/processing/qgsprocessingmultipleselectiondialog.cpp" line="347"/>
@@ -33683,7 +33683,7 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="99"/>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1050"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1060"/>
         <source>Could not write feature</source>
         <translation>無法写入要素</translation>
     </message>
@@ -34539,19 +34539,19 @@ Angles below the minimum angle are errors.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="87"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="85"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="85"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="86"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="88"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="83"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="86"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="85"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="87"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="86"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="87"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="82"/>
@@ -34564,29 +34564,29 @@ Angles below the minimum angle are errors.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="88"/>
         <source>Minimum angle (in degrees)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="92"/>
         <source>Small angle errors</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="93"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="92"/>
@@ -34597,15 +34597,15 @@ Angles below the minimum angle are errors.</source>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="104"/>
         <location filename="../src/analysis/processing/qgsalgorithmcoveragesimplify.cpp" line="54"/>
         <location filename="../src/analysis/processing/qgsalgorithmdelaunaytriangulation.cpp" line="68"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="124"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="108"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="108"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="109"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="95"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="103"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="107"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="130"/>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="113"/>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="115"/>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatevertices.cpp" line="79"/>
@@ -34617,19 +34617,19 @@ Angles below the minimum angle are errors.</source>
         <translation>容許範圍</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="104"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="104"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="95"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="101"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="115"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="95"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="101"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="99"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="95"/>
@@ -34638,115 +34638,190 @@ Angles below the minimum angle are errors.</source>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="107"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="114"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="127"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="115"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="111"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="112"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="98"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="106"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="110"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="133"/>
         <source>The &quot;Tolerance&quot; advanced parameter defines the numerical precision of geometric operations, given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="146"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="134"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="135"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="143"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="133"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="128"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="133"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="132"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="132"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="134"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="138"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="139"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="132"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="131"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="131"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="144"/>
         <source>Missing field %1 in input layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="167"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="177"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="158"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="169"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="165"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="162"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="162"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="170"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="156"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="166"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="159"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="178"/>
         <source>Preparing features…</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="164"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="171"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="174"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="186"/>
+        <source>Collecting errors…</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="175"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="182"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="196"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="166"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="177"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="213"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="195"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="214"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="188"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="174"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="179"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="181"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="179"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="172"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="187"/>
-        <source>Collecting errors…</source>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="190"/>
+        <source>Errors collected successfully.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="179"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="200"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="170"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="178"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="181"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="217"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="172"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="218"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="175"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="192"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="178"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="185"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="184"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="176"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="191"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="186"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="194"/>
+        <source>Operation was canceled.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="176"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="186"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="222"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="196"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="198"/>
+        <source>Field &apos;%1&apos; contains non-unique values and can not be used as unique ID.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryangle.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="207"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydangle.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicate.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryduplicatenodes.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="230"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylineintersection.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp" line="200"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymultipart.cpp" line="188"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryoverlap.cpp" line="192"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="193"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysegmentlength.cpp" line="192"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfcontact.cpp" line="185"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryselfintersection.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrysliverpolygon.cpp" line="202"/>
         <source>Exporting errors…</source>
         <translation type="unfinished"/>
     </message>
@@ -35536,7 +35611,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="774"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="777"/>
         <location filename="../src/analysis/processing/qgsalgorithmlinedensity.cpp" line="55"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="43"/>
         <source>Pixel size</source>
@@ -36192,7 +36267,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="91"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="54"/>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2275"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2282"/>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="89"/>
         <source>Opacity</source>
         <translation>透明度</translation>
@@ -37403,7 +37478,17 @@ Extracted label information include: position (served as point geometries), the 
         <translation>無法為%1创建目标圖層：無效值</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1048"/>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1051"/>
+        <source>Could not write feature into %1: %2</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1053"/>
+        <source>Could not write feature: %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/processing/qgsprocessingalgorithm.cpp" line="1058"/>
         <source>Could not write feature into %1</source>
         <translation>無法將要素写入 %1</translation>
     </message>
@@ -37416,99 +37501,99 @@ Extracted label information include: position (served as point geometries), the 
         <translation>重投影 ID 為 %1 的要素时遇到变换錯誤。</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="709"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="716"/>
         <source>No parameter definition for the sink</source>
         <translation>沒有洼地參數定义</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1110"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1172"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1196"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1225"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1284"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1317"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1117"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1179"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1203"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1232"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1291"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1324"/>
         <source>Error transforming extent geometry</source>
         <translation>转换幾何圖形范围时出错</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1444"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1482"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1567"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1451"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1489"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1574"/>
         <source>Error transforming point geometry</source>
         <translation>转换點幾何圖形时出错</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1587"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1594"/>
         <source>Error transforming rectangle geometry</source>
         <translation>转换矩形幾何圖形时出错</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1605"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1636"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1612"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="1643"/>
         <source>Error transforming geometry</source>
         <translation>转换幾何圖形时出错</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3011"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3018"/>
         <source>Python identifier: ‘%1’</source>
         <translation>Python标识符：‘%1’</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3848"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="3855"/>
         <source>Error creating geometry: &quot;%1&quot;</source>
         <translation>创建幾何圖形时出错：&quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4138"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4145"/>
         <source>%1 files</source>
         <translation>%1個文件</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4646"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4653"/>
         <source>Invalid number parameter &quot;%1&quot;: min value %2 is &gt;= max value %3!</source>
         <translation>無效的数字參數&quot;%1&quot;：最小值%2 &gt;= 最大值%3！</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="268"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="326"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="378"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4695"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8738"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="384"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4702"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8745"/>
         <source>Minimum value: %1</source>
         <translation>最小值：%1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="269"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="327"/>
-        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="379"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4697"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8740"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="330"/>
+        <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="385"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4704"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8747"/>
         <source>Maximum value: %1</source>
         <translation>最大值：%1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4699"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8742"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="4706"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8749"/>
         <source>Default value: %1</source>
         <translation>默认值：%1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6661"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6886"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7385"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9525"/>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9872"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6668"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="6893"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7392"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9532"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="9879"/>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="50"/>
         <source>%1 files (*.%2)</source>
         <translation>%1 文件 (*.%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7183"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="7190"/>
         <source>Default extension</source>
         <translation>預設副檔名</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8629"/>
+        <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8636"/>
         <source>Invalid datetime parameter &quot;%1&quot;: min value %2 is &gt;= max value %3!</source>
         <translation>無效的日期时间參數&quot;%1&quot;：最小值%2 &gt;= 最大值%3！</translation>
     </message>
@@ -40200,27 +40285,27 @@ Last frames:
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="49"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="265"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="262"/>
         <source>count</source>
         <translation>计数</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="267"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="264"/>
         <source>count distinct</source>
         <translation>計算非重复结果的数量</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="269"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="266"/>
         <source>count missing</source>
         <translation>计数缺失</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="271"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="268"/>
         <source>minimum</source>
         <translation>最小值</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="273"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="270"/>
         <source>maximum</source>
         <translation>最大值</translation>
     </message>
@@ -40251,19 +40336,19 @@ Last frames:
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="54"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="275"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="272"/>
         <source>sum</source>
         <translation>總計</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="55"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="277"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="274"/>
         <source>mean</source>
         <translation>均值</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="56"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="279"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="276"/>
         <source>median</source>
         <translation>中值</translation>
     </message>
@@ -40337,18 +40422,18 @@ The algorithm calculates a statistical summary for the values from matching feat
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="281"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="278"/>
         <source>standard deviation</source>
         <translation>標準偏差</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="283"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="280"/>
         <source>standard deviation (sample)</source>
         <translation>标准差 (样本)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="53"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="285"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="282"/>
         <source>range</source>
         <translation>范围</translation>
     </message>
@@ -40359,109 +40444,109 @@ The algorithm calculates a statistical summary for the values from matching feat
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="58"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="287"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="284"/>
         <source>minority</source>
         <translation>寡数（出现次数最少的值）</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="59"/>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="289"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="286"/>
         <source>majority</source>
         <translation>众数（出现次数最多的值）</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="291"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="288"/>
         <source>first quartile</source>
         <translation>第一象限</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="293"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="290"/>
         <source>third quartile</source>
         <translation>第三象限</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="295"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="292"/>
         <source>inter quartile range</source>
         <translation>四分位距</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="297"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="294"/>
         <source>minimum length</source>
         <translation>最小長度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="299"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="296"/>
         <source>maximum length</source>
         <translation>最大長度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="301"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="298"/>
         <source>concatenate</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="303"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="300"/>
         <source>collection</source>
         <translation>集合</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="305"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="302"/>
         <source>array aggregate</source>
         <translation>数组聚合</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="307"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="304"/>
         <source>concatenate (unique)</source>
         <translation>连接 (唯一)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="568"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="565"/>
         <source>Cannot calculate %1 on numeric values</source>
         <translation>对數值無法計算 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="569"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="566"/>
         <source>Cannot calculate %1 on numeric fields</source>
         <translation>对数欄位無法計算 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="586"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="583"/>
         <source>Cannot calculate %1 on %2 values</source>
         <translation>对 %2 值無法計算 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>Cannot calculate %1 on %2 fields</source>
         <translation>对 %2 欄位無法計算 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>date</source>
         <translation>日期</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="587"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="584"/>
         <source>datetime</source>
         <translation>日期时间</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="634"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="631"/>
         <source>null</source>
         <translation>空</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="638"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="633"/>
         <location filename="../src/gui/editorwidgets/core/qgswidgetwrapper.cpp" line="31"/>
         <source>string</source>
         <translation>字串</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="641"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="636"/>
         <source>Cannot calculate %1 on %3 values</source>
         <translation>对 %3 值無法計算 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsaggregatecalculator.cpp" line="642"/>
+        <location filename="../src/core/qgsaggregatecalculator.cpp" line="637"/>
         <source>Cannot calculate %1 on %3 fields</source>
         <translation>对 %3 欄位無法計算 %1</translation>
     </message>
@@ -41886,7 +41971,7 @@ By default only the m value from the first vertex of each feature is extracted, 
         <translation>.|：</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1514"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1517"/>
         <source>Reset to Defaults</source>
         <translation>重置為默认值</translation>
     </message>
@@ -42688,7 +42773,7 @@ Any NoData pixels are skipped in the output.</source>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="100"/>
-        <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="120"/>
         <source>Error reversing line</source>
         <translation>反转線时出错</translation>
     </message>
@@ -42721,10 +42806,10 @@ Any NoData pixels are skipped in the output.</source>
         <location filename="../src/3d/terrain/qgs3dterrainregistry.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="165"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="474"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="727"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="949"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1250"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1473"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="730"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="952"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1253"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1476"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="54"/>
         <location filename="../src/analysis/processing/qgsalgorithmtinmeshcreation.cpp" line="31"/>
         <location filename="../src/providers/mdal/qgsmdalprovidergui.cpp" line="29"/>
@@ -42749,10 +42834,10 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="207"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="499"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="756"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="976"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1278"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1501"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="759"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="979"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1281"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1504"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="71"/>
         <source>Input mesh layer</source>
         <translation>输入网孔圖層</translation>
@@ -42760,27 +42845,27 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="212"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="503"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="760"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="980"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1282"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1505"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="763"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="983"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1285"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1508"/>
         <source>Dataset groups</source>
         <translation>数据集组</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="219"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="510"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="768"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="987"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1289"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="771"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="990"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1292"/>
         <source>Dataset time</source>
         <translation>数据集时间</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="224"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="519"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="775"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1009"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="778"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1012"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmtinmeshcreation.cpp" line="89"/>
         <source>Output coordinate system</source>
@@ -42826,10 +42911,10 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="285"/>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="574"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="812"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1087"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1330"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1561"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="815"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1090"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1333"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1564"/>
         <source>Preparing data</source>
         <translation>准备数据</translation>
     </message>
@@ -42890,12 +42975,12 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
         <translation>创建网络點</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="722"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="725"/>
         <source>Rasterize mesh dataset</source>
         <translation>網格化网孔数据集</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="737"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="740"/>
         <source>This algorithm creates a raster layer from a mesh dataset.
 For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).
 1D meshes are not supported.</source>
@@ -42904,22 +42989,22 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
 不支持 1D 网孔。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="789"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="792"/>
         <source>Output raster layer</source>
         <translation>输出網格圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="833"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="836"/>
         <source>Creating raster layer</source>
         <translation>创建網格圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="944"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="947"/>
         <source>Export contours</source>
         <translation>匯出等值線</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="959"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="962"/>
         <source>This algorithm creates contours as a vector layer from a mesh scalar dataset.</source>
         <translation>该演算法從网孔标量数据集创建等值線作為向量圖層。</translation>
     </message>
@@ -42949,225 +43034,225 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="744"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="747"/>
         <source>Creates a raster layer from a mesh dataset.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="848"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="851"/>
         <source>Pixel size cannot be 0</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="964"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="967"/>
         <source>Creates contours as vector layer from mesh scalar dataset.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="993"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="996"/>
         <source>Increment between contour levels</source>
         <translation>等值線层级间的增量</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="997"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1000"/>
         <source>Minimum contour level</source>
         <translation>最小等值線层级</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1000"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1003"/>
         <source>Maximum contour level</source>
         <translation>最大等值線层级</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1004"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1007"/>
         <source>List of contours level</source>
         <translation>等值線层级列表</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1006"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1009"/>
         <source>Comma separated list of values to export. If filled, the increment, minimum and maximum settings are ignored.</source>
         <translation>要匯出的值的逗号分隔列表。如果已填充，忽略增量、最小值和最大值的設置。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1012"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1015"/>
         <source>Exported contour lines</source>
         <translation>匯出等值線</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1013"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1016"/>
         <source>Exported contour polygons</source>
         <translation>匯出等值線多邊形</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1049"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1052"/>
         <source>Invalid format for level values, must be numbers separated with comma</source>
         <translation>等级值的格式無效，必须是用逗号分隔的数字</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1053"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1056"/>
         <source>Invalid format for level values, must be different numbers and in increasing order</source>
         <translation>等级值的格式無效，必须是不同的数字且递增排序</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1065"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1068"/>
         <source>Invalid interval value, must be greater than zero</source>
         <translation>無效的间隔值，必须大于零</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1068"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1071"/>
         <source>Invalid minimum and maximum values, minimum must be lesser than maximum</source>
         <translation>最小值和最大值無效，最小值必须小于最大值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1071"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1074"/>
         <source>Invalid minimum, maximum and interval values, difference between minimum and maximum must be greater or equal than interval</source>
         <translation>最小值、最大值和间隔值無效，最小值和最大值之间的差必须大于或等于间隔值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1116"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1123"/>
         <source>group</source>
         <translation>群組</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1117"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1121"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1702"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1705"/>
         <source>time</source>
         <translation>時間</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1118"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1121"/>
         <source>min_value</source>
         <translation>min_value</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1122"/>
         <source>max_value</source>
         <translation>max_value</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1122"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1125"/>
         <source>value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1248"/>
         <source>Export cross section dataset values on lines from mesh</source>
         <translation>從网孔匯出線上的剖面数据集值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1260"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1263"/>
         <source>This algorithm extracts mesh's dataset values from line contained in a vector layer.
 Each line is discretized with a resolution distance parameter for extraction of values on its vertices.</source>
         <translation>该演算法從向量圖層中包含的直線中提取网孔的数据集值。
 每条線都使用分辨率距離參數离散化，以提取其頂點上的值。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1266"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1269"/>
         <source>Extracts a mesh dataset&apos;s values from lines contained in a vector layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1489"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1492"/>
         <source>Extracts a mesh dataset&apos;s time series values from points contained in a vector layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1297"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1300"/>
         <source>Lines for data export</source>
         <translation>数据匯出線</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1301"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1304"/>
         <source>Line segmentation resolution</source>
         <translation>線分割分辨率</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1305"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1535"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1308"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1538"/>
         <source>Digits count for coordinates</source>
         <translation>坐标的位数计数</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1309"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1539"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1312"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1542"/>
         <source>Digits count for dataset value</source>
         <translation>数据集值的位数计数</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1313"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1543"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1546"/>
         <source>Exported data CSV file</source>
         <translation>匯出的CSV文件数据</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1313"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1543"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1546"/>
         <source>CSV file (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1361"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1364"/>
         <source>Input lines vector layer required</source>
         <translation>需要输入線向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1368"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1695"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1371"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1698"/>
         <source>Unable to create the output file</source>
         <translation>無法创建输出文件</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1375"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1378"/>
         <source>offset</source>
         <translation>偏移</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1395"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1724"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1398"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1727"/>
         <source>Could not transform line to mesh CRS</source>
         <translation>無法將線转换為网孔CRS</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1468"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1471"/>
         <source>Export time series values from points of a mesh dataset</source>
         <translation>從网孔数据集中的點匯出时间序列值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1483"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1486"/>
         <source>This algorithm extracts mesh's dataset time series values from points contained in a vector layer.
 If the time step is kept to its default value (0 hours), the time step used is the one of the two first datasets of the first selected dataset group.</source>
         <translation>该演算法從向量圖層中包含的點中提取网孔的数据集时间序列值。
 如果时间步長保持其默认值 (0 时)，则使用的时间步長是第一個选中数据集组的前两個数据集之一。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1512"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1515"/>
         <source>Starting time</source>
         <translation>开始时间</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1519"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1522"/>
         <source>Finishing time</source>
         <translation>完成时间</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1525"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1528"/>
         <source>Time step (hours)</source>
         <translation>时间不長（小时）</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1531"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1534"/>
         <source>Points for data export</source>
         <translation>数据匯出點</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1688"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1691"/>
         <source>Input points vector layer required</source>
         <translation>需要输入點向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1775"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1778"/>
         <source>static dataset</source>
         <translation>静态数据集</translation>
     </message>
@@ -43980,7 +44065,7 @@ If desired, tables can also be output containing lists of the categories which c
     </message>
     <message>
         <location filename="../src/3d/qgs3dutils.cpp" line="254"/>
-        <location filename="../src/core/qgstemporalutils.cpp" line="112"/>
+        <location filename="../src/core/qgstemporalutils.cpp" line="115"/>
         <source>Export canceled</source>
         <translation>已取消匯出</translation>
     </message>
@@ -44209,6 +44294,7 @@ Filenames can be generated using values taken from an attribute in the source ta
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbinary.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="173"/>
         <source>Could not open %1 for writing</source>
         <translation>無法打开%1以进行写入操作</translation>
     </message>
@@ -44403,9 +44489,9 @@ It can be used in models to convert a point into a layer which can be used for o
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="740"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckvalidity.cpp" line="82"/>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="78"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="88"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="91"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmkmeansclustering.cpp" line="59"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="75"/>
@@ -44825,7 +44911,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsprojectstylealgorithms.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="193"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="196"/>
         <source>Error saving style database as %1</source>
         <translation>保存樣式数据库為%1出错</translation>
     </message>
@@ -44865,12 +44951,12 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <translation>正在匯入 %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="136"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="138"/>
         <source>Could not read %1</source>
         <translation>無法读取 %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="187"/>
+        <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="190"/>
         <source>Writing output file</source>
         <translation>写入输出文件</translation>
     </message>
@@ -45024,7 +45110,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="369"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="215"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="214"/>
         <source>Error deleting vector/aspatial table %1: %2</source>
         <translation>删除向量/空间表％1：％2时出错</translation>
     </message>
@@ -45200,7 +45286,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="183"/>
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="683"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="289"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="288"/>
         <source>Geometry column name not specified while creating spatial index</source>
         <translation>创建空间索引时未指定幾何圖形列名称</translation>
     </message>
@@ -45216,18 +45302,18 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="298"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="436"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="435"/>
         <source>Error listing tables from %1: %2</source>
         <translation>列出%1表时出错：%2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="787"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="562"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="561"/>
         <source>Error executing SQL statement %1: %2</source>
         <translation>执行SQL语句 %1 时出错：%2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="578"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="577"/>
         <source>There was an error opening GPKG %1!</source>
         <translation>打开GPKG %1 时出错！</translation>
     </message>
@@ -45238,9 +45324,9 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="811"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="584"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="687"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="694"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="583"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="686"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="693"/>
         <source>Error executing SQL %1: %2</source>
         <translation>执行 SQL %1 查询时出错：%2</translation>
     </message>
@@ -46049,6 +46135,11 @@ An attribute or expression can be selected to group points having the same value
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="292"/>
         <source>Error evaluating group expression: %1</source>
         <translation>评估表示式组时出错：％1</translation>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="326"/>
+        <source>Invalid bookmark destination</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="605"/>
@@ -48663,38 +48754,48 @@ The minimum extent entered will internally be extended to a multiple of the tile
 输入的最小范围將在内部扩展為瓦片大小的倍数。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="208"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="152"/>
+        <source>Tile size must be &gt; 0</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="158"/>
+        <source>Map units per pixel must be &gt; 0</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="216"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="217"/>
         <source>Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="224"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="232"/>
         <source>Invalid output raster format</source>
         <translation>输出網格格式不合法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="230"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="238"/>
         <source>Error creating GDAL driver</source>
         <translation>创建GDAL驱动程序时出错</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="236"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="244"/>
         <source>Error creating GDAL output layer</source>
         <translation>创建GDAL输出圖層时出错</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="306"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="314"/>
         <source>Error reading tiles from the temporary image</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="324"/>
         <source>Error reading intermediate raster</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="327"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="335"/>
         <source>Error writing output raster</source>
         <translation type="unfinished"/>
     </message>
@@ -50607,8 +50708,8 @@ The created point layer will be in the same spatial reference system as the sele
         <translation>線端點</translation>
     </message>
     <message>
-        <location filename="../src/core/qgssqliteutils.cpp" line="235"/>
-        <location filename="../src/core/qgssqliteutils.cpp" line="244"/>
+        <location filename="../src/core/qgssqliteutils.cpp" line="234"/>
+        <location filename="../src/core/qgssqliteutils.cpp" line="243"/>
         <source>Error retrieving default value for %1</source>
         <translation>检索%1的默认值时出错</translation>
     </message>
@@ -51222,42 +51323,42 @@ Try to remove them before trying deleting these components.</source>
 删除组件前先尝试移除所選項。</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4941"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4969"/>
         <source>Name of field (separate field names with ; for multiple field parameters)</source>
         <translation>欄位名（多個欄位參數用半角分号 ; 分隔欄位名）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5091"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5119"/>
         <source>Could not load selected layer/table. Dependent field could not be populated</source>
         <translation>無法載入选中圖層/表。無法填充依赖欄位。</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5553"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5587"/>
         <source>Postgres</source>
         <translation>Postgres</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5555"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5589"/>
         <source>Spatialite</source>
         <translation>Spatialite</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6875"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6921"/>
         <source>Band number (separate bands with ; for multiple band parameters)</source>
         <translation>波段编号（对于多波段參數用英文 ; 分割）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6975"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7021"/>
         <source>Could not load selected layer/table. Dependent bands could not be populated</source>
         <translation>無法載入选定的圖層/表，不能填充相关波段</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7831"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7880"/>
         <source>Name of attribute (separate attribute names with ; for multiple attribute parameters)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7919"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7968"/>
         <source>Could not load selected layer/table. Dependent attributes could not be populated</source>
         <translation type="unfinished"/>
     </message>
@@ -51667,47 +51768,47 @@ SQL: %1</source>
 SQL：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="327"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="326"/>
         <source>Database does not exist</source>
         <translation>資料庫未存在</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="330"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="329"/>
         <source>Failed to open database</source>
         <translation>開啟資料庫失敗</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="333"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="332"/>
         <source>Failed to check metadata</source>
         <translation>檢查詮釋資料失敗</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="336"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="335"/>
         <source>Failed to get list of tables</source>
         <translation>獲取表格列表失敗</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="339"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="338"/>
         <source>Unknown error</source>
         <translation>未知錯誤</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="347"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="346"/>
         <source>Error fetching table information for connection: %1</source>
         <translation>获取连接的表信息时出错: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1146"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1145"/>
         <source>Could not create a valid layer for table &apos;%1&apos;</source>
         <translation>無法為表&apos;%1&apos;创建有效的圖層</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1150"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1149"/>
         <source>Could not delete field &apos;%1&apos; of table &apos;%2&apos;: field does not exist</source>
         <translation>無法删除表&apos;%2&apos;中的欄位&apos;%1&apos;：欄位不存在</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1154"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1153"/>
         <source>Unknown error deleting field &apos;%1&apos; of table &apos;%2&apos;</source>
         <translation>删除表&apos;%2&apos;中的欄位&apos;%1&apos;时发生未知錯誤</translation>
     </message>
@@ -53029,47 +53130,52 @@ For more details, please see the following papers:
         <translation>与點云密切相关</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="257"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="258"/>
+        <source>Could not open temporary file for writing</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/actions/qgsaction.cpp" line="263"/>
         <source>Redirect is not supported!</source>
         <translation>不支持的重定向！</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="404"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="410"/>
         <source>Generic</source>
         <translation>通用</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="409"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="415"/>
         <source>Generic Python</source>
         <translation>泛型(Generic) Python</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="414"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="420"/>
         <source>macOS</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="419"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="425"/>
         <source>Windows</source>
         <translation>視窗</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="424"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="430"/>
         <source>Unix</source>
         <translation>Unix</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="434"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="440"/>
         <source>Submit URL (urlencoded or JSON)</source>
         <translation>提交URL (urlencoded 或 JSON)</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="439"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="445"/>
         <source>Submit URL (multipart)</source>
         <translation>提交URL (多部件)</translation>
     </message>
     <message>
-        <location filename="../src/core/actions/qgsaction.cpp" line="443"/>
+        <location filename="../src/core/actions/qgsaction.cpp" line="449"/>
         <source>
 &lt;h2&gt;Action Details&lt;/h2&gt;
 &lt;p&gt;
@@ -53150,7 +53256,7 @@ For more details, please see the following papers:
         <translation>混合模式</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2276"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2283"/>
         <source>Extent buffer</source>
         <translation type="unfinished"/>
     </message>
@@ -53160,7 +53266,7 @@ For more details, please see the following papers:
         <translation>FileWidget</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="1049"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="1055"/>
         <source>Relation Editor</source>
         <translation>关系編輯器</translation>
     </message>
@@ -54626,100 +54732,100 @@ Only the first 999 classes have been generated.</source>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="404"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1137"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1118"/>
         <source>Remote layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="404"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1137"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1118"/>
         <source>loading %1, please wait …</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="485"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1073"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1407"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="475"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1054"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1387"/>
         <source>%1 is not a valid or recognized data source.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="487"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="495"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="577"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1074"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1408"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="485"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="567"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1055"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1388"/>
         <source>Invalid Data Source</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="487"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
         <source>Download with &quot;Protocol&quot; source type has failed, do you want to try the &quot;File&quot; source type?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="576"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="566"/>
         <source>%1 is not a valid or recognized data source, error: &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1071"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1052"/>
         <source>Unable to load %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1188"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1169"/>
         <source>%1 is not a supported raster data source</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1192"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1173"/>
         <source>Unsupported Data Source</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1212"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1193"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1213"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1194"/>
         <source>Layer is not valid</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1266"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1247"/>
         <source>Error loading layer definition</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1329"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1310"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1330"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1311"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1690"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1670"/>
         <source>layer &apos;%1&apos; requires layer &apos;%2&apos; to be loaded but &apos;%2&apos; could not be found, please load it manually if possible.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1691"/>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1695"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1671"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1675"/>
         <source>Missing layer form dependency</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1695"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1675"/>
         <source>Layer dependency &apos;%2&apos; required by &apos;%1&apos; was automatically loaded.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1726"/>
+        <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1706"/>
         <source>Invalid relationship %1</source>
         <translation type="unfinished"/>
     </message>
@@ -54730,7 +54836,7 @@ Only the first 999 classes have been generated.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="386"/>
+        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="389"/>
         <source>Canceled by user</source>
         <translation type="unfinished"/>
     </message>
@@ -54897,7 +55003,7 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="682"/>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="838"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="222"/>
-        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="902"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="905"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="171"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="188"/>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="415"/>
@@ -54918,7 +55024,7 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/analysis/processing/qgsalgorithmrescaleraster.cpp" line="215"/>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="196"/>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="250"/>
-        <location filename="../src/analysis/processing/qgsrasteranalysisutils.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsrasteranalysisutils.cpp" line="279"/>
         <location filename="../src/analysis/processing/qgsreclassifyutils.cpp" line="106"/>
         <source>Could not write raster block: %1</source>
         <translation type="unfinished"/>
@@ -55160,17 +55266,17 @@ Areas below the area threshold are errors.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="88"/>
         <source>Area threshold</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="92"/>
         <source>Small polygons errors</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="97"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryarea.cpp" line="95"/>
         <source>Small polygons features</source>
         <translation type="unfinished"/>
     </message>
@@ -55198,18 +55304,18 @@ Input features contained in the polygon layers features are errors.
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="89"/>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrypointinpolygon.cpp" line="85"/>
         <source>Polygon layers</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="93"/>
         <source>Errors from contained features</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrycontained.cpp" line="96"/>
         <source>Contained features</source>
         <translation type="unfinished"/>
     </message>
@@ -55369,6 +55475,11 @@ Polygons not following reference boundaries are errors.</source>
         <translation type="unfinished"/>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryfollowboundaries.cpp" line="190"/>
+        <source>Invalid reference layer.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="35"/>
         <source>Small gaps</source>
         <translation type="unfinished"/>
@@ -55411,7 +55522,7 @@ The neighbors output layer is needed for the fix geometry (gaps) algorithm. It i
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="102"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="75"/>
         <source>Neighbors layer</source>
         <translation type="unfinished"/>
     </message>
@@ -55423,6 +55534,11 @@ The neighbors output layer is needed for the fix geometry (gaps) algorithm. It i
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="108"/>
         <source>Gap features</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrygap.cpp" line="226"/>
+        <source>Failed to perform geometry overlay operation.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -55447,12 +55563,12 @@ Holes are errors.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="89"/>
         <source>Holes errors</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometryhole.cpp" line="92"/>
         <source>Polygons with holes</source>
         <translation type="unfinished"/>
     </message>
@@ -55542,12 +55658,12 @@ To be topologically correct, a vertex at the junction of two polygons must be pr
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="90"/>
         <source>Missing vertices errors</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmcheckgeometrymissingvertex.cpp" line="93"/>
         <source>Missing vertices features</source>
         <translation type="unfinished"/>
     </message>
@@ -56398,7 +56514,7 @@ The algorithm operates by testing the layer&apos;s extent in every known referen
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="177"/>
         <source>No matching projections found.</source>
         <translation type="unfinished"/>
     </message>
@@ -56438,191 +56554,191 @@ When deletion of a vertex results in a duplicate vertex (when a spike vertex is 
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="79"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="77"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="78"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="76"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="79"/>
         <source>Error layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="83"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="96"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="85"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="81"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="82"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="80"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="95"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="80"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="81"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="93"/>
         <source>Field of original feature unique identifier</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="87"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="100"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="84"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="84"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="85"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="97"/>
         <source>Field of part index</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="92"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="105"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="89"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="89"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="90"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="103"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="102"/>
         <source>Field of ring index</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="97"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="110"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="94"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="95"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="108"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="107"/>
         <source>Field of vertex index</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="102"/>
         <source>Small angle fixed layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="107"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="105"/>
         <source>Report layer from fixing small angles</source>
         <translation type="unfinished"/>
     </message>
     <message>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="136"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="138"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="140"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="142"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="155"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="157"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="159"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="161"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="113"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="152"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="154"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="156"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="158"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="111"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="135"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="137"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="141"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="133"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="135"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="137"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="139"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="141"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="134"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="136"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="138"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="142"/>
         <source>Field %1 does not exist in the error layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="147"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="116"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="145"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="143"/>
         <source>Field %1 does not exist in input layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="151"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="168"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="148"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="149"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="149"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="165"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="146"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="147"/>
         <source>Field %1 does not have the same type as in the error layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="192"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="215"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="140"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="182"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="187"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="164"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="185"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="224"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="189"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="211"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="138"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="179"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="184"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="182"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="219"/>
         <source>Fixing errors...</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="208"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="235"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="202"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="198"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="180"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="206"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="245"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="205"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="231"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="195"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="204"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="240"/>
         <source>Source feature not found or invalid</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="211"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="238"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="201"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="210"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="274"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="208"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="234"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="198"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="207"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="269"/>
         <source>More than one feature found in input layer with value %1 in unique field %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="214"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="241"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="208"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="204"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="213"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="186"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="218"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="280"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="211"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="237"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="205"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="210"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="275"/>
         <source>Feature geometry is null</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="217"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="244"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="283"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="214"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="240"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="204"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="278"/>
         <source>Feature geometry part is null</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="240"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="267"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="262"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="236"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="204"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="241"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="315"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="237"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="263"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="256"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="233"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="238"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="310"/>
         <source>Error is obsolete</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="253"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="280"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="242"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="281"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="243"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="249"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="216"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="253"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="330"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="276"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="239"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="275"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="240"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="246"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="213"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="250"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="325"/>
         <source>Exporting fixed layer...</source>
         <translation type="unfinished"/>
     </message>
@@ -56647,33 +56763,33 @@ When deletion of a vertex results in a duplicate vertex (when a spike vertex is 
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="88"/>
         <source>Field to consider when merging polygons with the identical attribute method</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="117"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="114"/>
         <source>Small polygons merged layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="117"/>
         <source>Report layer from merging small polygons</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="201"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="197"/>
         <source>Merge field to merge polygons with identical attribute method is empty</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="203"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="199"/>
         <source>Merge field %1 does not exist in input layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="227"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="199"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryarea.cpp" line="223"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="196"/>
         <source>NULL or invalid value found in unique field %1</source>
         <translation type="unfinished"/>
     </message>
@@ -56701,17 +56817,17 @@ For instance, it can be used after the following check algorithms to delete erro
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="89"/>
         <source>Cleaned layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="92"/>
         <source>Report layer from deleting features</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrydeletefeatures.cpp" line="119"/>
         <source>Input field %1 does not have the same type as in the error layer.</source>
         <translation type="unfinished"/>
     </message>
@@ -56736,51 +56852,51 @@ For instance, it can be used after the following check algorithms to delete erro
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="99"/>
         <source>Fixed duplicate vertices layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="102"/>
         <source>Report layer from fixing duplicate vertices</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="135"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="133"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="117"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="127"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="129"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="131"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="134"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="132"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="161"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="163"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="165"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="167"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="169"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="171"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="173"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="175"/>
         <source>Field &quot;%1&quot; does not exist in the error layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="144"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="163"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="122"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="137"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="178"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="120"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="135"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="174"/>
         <source>Field &quot;%1&quot; does not exist in input layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="148"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="126"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="142"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="183"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="146"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="124"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="140"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="179"/>
         <source>Field &quot;%1&quot; does not have the same type as in the error layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="183"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="212"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryduplicatenodes.cpp" line="202"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="209"/>
         <source>More than one feature found in input layer with value &quot;%1&quot; in unique field &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
@@ -56807,58 +56923,58 @@ For instance, it can be used after the following check algorithms to delete erro
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="79"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="78"/>
         <source>Gaps layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="96"/>
         <source>Field of error id</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="102"/>
         <source>Gaps-filled layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="108"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="105"/>
         <source>Report layer from fixing gaps</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="153"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="150"/>
         <source>Unknown resolution method</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="158"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="155"/>
         <source>Field &quot;%1&quot; does not exist in the gaps layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="160"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="157"/>
         <source>Field &quot;%1&quot; does not exist in the neighbors layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="168"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="165"/>
         <source>Field &quot;%1&quot; does not have the same type as in the neighbors layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="196"/>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="209"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="190"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="204"/>
         <source>Preparing features...</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="228"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="222"/>
         <source>NULL or invalid value found in field &quot;%1&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="274"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrygap.cpp" line="268"/>
         <source>Unable to add gap features</source>
         <translation type="unfinished"/>
     </message>
@@ -56884,12 +57000,12 @@ For instance, it can be used after the following check algorithms to delete erro
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="101"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="99"/>
         <source>Holes-filled layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="104"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="102"/>
         <source>Report layer from fixing holes</source>
         <translation type="unfinished"/>
     </message>
@@ -56914,12 +57030,12 @@ For instance, it can be used after the following check algorithms to delete erro
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="100"/>
         <source>Border vertices fixed layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="103"/>
         <source>Report layer from fixing border vertices</source>
         <translation type="unfinished"/>
     </message>
@@ -56946,12 +57062,12 @@ This algorithm does not change the layer geometry type, which will remain multip
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="86"/>
         <source>Strictly-multipart layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="89"/>
         <source>Report layer from fixing multiparts</source>
         <translation type="unfinished"/>
     </message>
@@ -56977,42 +57093,42 @@ This algorithm does not change the layer geometry type, which will remain multip
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="84"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="83"/>
         <source>Field of overlap feature unique identifier</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="89"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="88"/>
         <source>Field of error value</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="94"/>
         <source>No-overlap layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="97"/>
         <source>Report layer from fixing overlaps</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="147"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="145"/>
         <source>Field &quot;%1&quot; does not have the same type as &quot;%2&quot; in the input layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="209"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="206"/>
         <source>Overlap feature not found or invalid</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="212"/>
         <source>More than one overlap feature found in input layer with value &quot;%1&quot; in unique field &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="221"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="218"/>
         <source>Overlap feature geometry is null</source>
         <translation type="unfinished"/>
     </message>
@@ -57037,27 +57153,27 @@ This algorithm does not change the layer geometry type, which will remain multip
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="112"/>
         <source>Field of segment 1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="117"/>
         <source>Field of segment 2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="126"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="123"/>
         <source>Self-intersections fixed layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="129"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="126"/>
         <source>Report layer from fixing self-intersections</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="236"/>
+        <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="231"/>
         <source>NULL or invalid value found in unique field &quot;%1&quot;</source>
         <translation type="unfinished"/>
     </message>
@@ -57556,7 +57672,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/dxf/qgsdxfexport.cpp" line="302"/>
+        <location filename="../src/core/dxf/qgsdxfexport.cpp" line="304"/>
         <source>The following empty layers were skipped: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -57745,7 +57861,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/pointcloud/qgscopcpointcloudindex.cpp" line="306"/>
+        <location filename="../src/core/pointcloud/qgscopcpointcloudindex.cpp" line="307"/>
         <source>Couldn&apos;t open COPC file &quot;%1&quot; to write statistics</source>
         <translation type="unfinished"/>
     </message>
@@ -58074,18 +58190,18 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="729"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="739"/>
         <source>JSON is not a valid Cesium 3D Tiles source (does not contain &quot;root&quot; value)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="887"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="897"/>
         <source>JSON is not a valid Cesium 3D Tiles source (unsupported boundingVolume format)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1161"/>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1361"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1171"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1371"/>
         <source>Cesium 3D Tiles</source>
         <translation type="unfinished"/>
     </message>
@@ -58242,37 +58358,37 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="184"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="186"/>
         <source>Polygon Annotation</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="189"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="191"/>
         <source>Line Annotation</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="194"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="196"/>
         <source>Marker Annotation</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="199"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="201"/>
         <source>Text Annotation at Point</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="204"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="206"/>
         <source>Text Annotation along Line</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="209"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="211"/>
         <source>Text Annotation in Rectangle</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="214"/>
+        <location filename="../src/gui/annotations/qgsannotationitemguiregistry.cpp" line="216"/>
         <source>Picture Annotation</source>
         <translation type="unfinished"/>
     </message>
@@ -58701,13 +58817,13 @@ Please contact the developers.
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3378"/>
-        <location filename="../src/app/qgisapp.cpp" line="16938"/>
+        <location filename="../src/app/qgisapp.cpp" line="16941"/>
         <source>Panels</source>
         <translation>版面配置</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3380"/>
-        <location filename="../src/app/qgisapp.cpp" line="16958"/>
+        <location filename="../src/app/qgisapp.cpp" line="16961"/>
         <source>Toolbars</source>
         <translation>工具列</translation>
     </message>
@@ -59006,74 +59122,74 @@ Alternatively, you can create a new mesh layer from that one.</source>
         <translation>無法对圖層 %2 进行 %1 更改</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="11637"/>
         <source>No legend entries selected</source>
         <translation>無圖層已選取</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="11637"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>選取您想移除的圖層與群組。</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11679"/>
+        <location filename="../src/app/qgisapp.cpp" line="11682"/>
         <source>(%n more hidden layer(s))</source>
         <comment>number of hidden layers not shown</comment>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11681"/>
+        <location filename="../src/app/qgisapp.cpp" line="11684"/>
         <source>The following hidden layers will be removed:
 %1</source>
         <translation>以下隐藏圖層將被删除：
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11684"/>
+        <location filename="../src/app/qgisapp.cpp" line="11687"/>
         <source>Remove layers and groups</source>
         <translation>移除圖層與群組</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11672"/>
+        <location filename="../src/app/qgisapp.cpp" line="11675"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation><numerusform>移除 %n 圖層項目?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11703"/>
+        <location filename="../src/app/qgisapp.cpp" line="11706"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation><numerusform>%n 圖層已移除。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11783"/>
+        <location filename="../src/app/qgisapp.cpp" line="11786"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2類型不支持)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11825"/>
+        <location filename="../src/app/qgisapp.cpp" line="11828"/>
         <source>Cannot copy style to duplicated layer.</source>
         <translation>無法複製樣式到圖層副本。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13076"/>
+        <location filename="../src/app/qgisapp.cpp" line="13079"/>
         <source>Map %1</source>
         <translation>地圖 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13274"/>
+        <location filename="../src/app/qgisapp.cpp" line="13277"/>
         <source>3D Map %1</source>
         <translation>三维地圖%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13499"/>
+        <location filename="../src/app/qgisapp.cpp" line="13502"/>
         <source>Do you want to save the current project? %1</source>
         <translation>您想要儲存目前專案嗎？ %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5751"/>
-        <location filename="../src/app/qgisapp.cpp" line="11625"/>
-        <location filename="../src/app/qgisapp.cpp" line="13707"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
+        <location filename="../src/app/qgisapp.cpp" line="13710"/>
         <source>Active Tasks</source>
         <translation>活动任务</translation>
     </message>
@@ -59212,27 +59328,27 @@ Alternatively, you can create a new mesh layer from that one.</source>
         <translation>结束編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12759"/>
+        <location filename="../src/app/qgisapp.cpp" line="12762"/>
         <source>https://qgis.org/resources/support/bug-reporting/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12766"/>
+        <location filename="../src/app/qgisapp.cpp" line="12769"/>
         <source>https://qgis.org/community/involve/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12773"/>
+        <location filename="../src/app/qgisapp.cpp" line="12776"/>
         <source>https://qgis.org/funding/donate/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12780"/>
+        <location filename="../src/app/qgisapp.cpp" line="12783"/>
         <source>https://qgis.org/resources/support/commercial-support/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13707"/>
+        <location filename="../src/app/qgisapp.cpp" line="13710"/>
         <source>The following tasks are currently running which depend on layers in this project:
 
 %1
@@ -59245,42 +59361,42 @@ Please cancel these tasks and retry.</source>
 取消这些任务并重试。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14429"/>
+        <location filename="../src/app/qgisapp.cpp" line="14432"/>
         <source>Current CRS: %1</source>
         <translation>当前CRS：%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14436"/>
+        <location filename="../src/app/qgisapp.cpp" line="14439"/>
         <source>No projection</source>
         <translation>无投影</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15242"/>
+        <location filename="../src/app/qgisapp.cpp" line="15245"/>
         <source>Add Point Feature</source>
         <translation>加入點要素</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15272"/>
+        <location filename="../src/app/qgisapp.cpp" line="15275"/>
         <source>Add Line Feature</source>
         <translation>加入線要素</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15291"/>
+        <location filename="../src/app/qgisapp.cpp" line="15294"/>
         <source>Add Polygon Feature</source>
         <translation>加入多邊形要素</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15308"/>
+        <location filename="../src/app/qgisapp.cpp" line="15311"/>
         <source>Add Record</source>
         <translation>加入记录</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15864"/>
+        <location filename="../src/app/qgisapp.cpp" line="15867"/>
         <source>Map Views</source>
         <translation>地圖视圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15867"/>
+        <location filename="../src/app/qgisapp.cpp" line="15870"/>
         <source>A view with this name already exists</source>
         <translation>已存在同名视圖</translation>
     </message>
@@ -59372,7 +59488,7 @@ Please cancel these tasks and retry.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6624"/>
         <location filename="../src/app/qgisapp.cpp" line="6712"/>
-        <location filename="../src/app/qgisapp.cpp" line="17267"/>
+        <location filename="../src/app/qgisapp.cpp" line="17270"/>
         <source>Saved project to: %1</source>
         <translation>儲存專案至: %1</translation>
     </message>
@@ -59799,12 +59915,12 @@ instead?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8589"/>
-        <location filename="../src/app/qgisapp.cpp" line="12603"/>
-        <location filename="../src/app/qgisapp.cpp" line="12610"/>
-        <location filename="../src/app/qgisapp.cpp" line="12670"/>
-        <location filename="../src/app/qgisapp.cpp" line="12677"/>
-        <location filename="../src/app/qgisapp.cpp" line="12723"/>
-        <location filename="../src/app/qgisapp.cpp" line="12730"/>
+        <location filename="../src/app/qgisapp.cpp" line="12606"/>
+        <location filename="../src/app/qgisapp.cpp" line="12613"/>
+        <location filename="../src/app/qgisapp.cpp" line="12673"/>
+        <location filename="../src/app/qgisapp.cpp" line="12680"/>
+        <location filename="../src/app/qgisapp.cpp" line="12726"/>
+        <location filename="../src/app/qgisapp.cpp" line="12733"/>
         <source>No Layer Selected</source>
         <translation>沒有選取的圖層</translation>
     </message>
@@ -59922,8 +60038,8 @@ instead?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5740"/>
-        <location filename="../src/app/qgisapp.cpp" line="11618"/>
-        <location filename="../src/app/qgisapp.cpp" line="13700"/>
+        <location filename="../src/app/qgisapp.cpp" line="11621"/>
+        <location filename="../src/app/qgisapp.cpp" line="13703"/>
         <source> • %1</source>
         <translation> • %1</translation>
     </message>
@@ -60719,32 +60835,32 @@ Errors: %3
         <translation>%1目前對%2圖層作出的更改？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11399"/>
+        <location filename="../src/app/qgisapp.cpp" line="11402"/>
         <source>Error Setting Filter</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11399"/>
+        <location filename="../src/app/qgisapp.cpp" line="11402"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11429"/>
+        <location filename="../src/app/qgisapp.cpp" line="11432"/>
         <source>Filter on Joined Fields</source>
         <translation>篩選被连接欄位</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11429"/>
+        <location filename="../src/app/qgisapp.cpp" line="11432"/>
         <source>You are about to set a subset filter on a layer that has joined fields. Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. Would you like to create a virtual layer out of this layer first?</source>
         <translation>你即將在一個有关联欄位的圖層上設置子集篩選器。关联欄位不能被篩選，除非你先將圖層转成虚拟圖層。你想先在当前圖層外创建一個虚拟圖層吗？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11598"/>
+        <location filename="../src/app/qgisapp.cpp" line="11601"/>
         <source>Required Layers</source>
         <translation>需要的圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11598"/>
+        <location filename="../src/app/qgisapp.cpp" line="11601"/>
         <source>The following layers are marked as required by the project:
 
 %1
@@ -60757,7 +60873,7 @@ Please deselect them (or unmark as required) and retry.</source>
 请取消選擇这些圖層（或取消必需标记）后再重试。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11625"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
         <source>The following tasks are currently running which depend on this layer:
 
 %1
@@ -60770,436 +60886,436 @@ Please cancel these tasks and retry.</source>
 请取消这些任务并重试。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11732"/>
+        <location filename="../src/app/qgisapp.cpp" line="11735"/>
         <source>copy</source>
         <translation>複製</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11737"/>
+        <location filename="../src/app/qgisapp.cpp" line="11740"/>
         <source>Plugin layer</source>
         <translation>外掛程式圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11741"/>
+        <location filename="../src/app/qgisapp.cpp" line="11744"/>
         <source>Group layer</source>
         <translation>组圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11771"/>
-        <location filename="../src/app/qgisapp.cpp" line="11782"/>
+        <location filename="../src/app/qgisapp.cpp" line="11774"/>
+        <location filename="../src/app/qgisapp.cpp" line="11785"/>
         <source>Duplicate layer: </source>
         <translation>建立圖層副本：</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11772"/>
+        <location filename="../src/app/qgisapp.cpp" line="11775"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1(建立副本结果導致無效圖層)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11827"/>
+        <location filename="../src/app/qgisapp.cpp" line="11830"/>
         <source>Layer duplication complete</source>
         <translation>圖層複製完成</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11827"/>
+        <location filename="../src/app/qgisapp.cpp" line="11830"/>
         <source>Note that it&apos;s using the same data source.</source>
         <translation>提示：正在使用同一数据源。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11856"/>
+        <location filename="../src/app/qgisapp.cpp" line="11859"/>
         <source>Set scale visibility for selected layers</source>
         <translation>設定選取圖層的可視的比例</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11914"/>
+        <location filename="../src/app/qgisapp.cpp" line="11917"/>
         <source>Set CRS for %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12247"/>
+        <location filename="../src/app/qgisapp.cpp" line="12250"/>
         <source>Loading Python support</source>
         <translation>正在載入Python支持</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12267"/>
+        <location filename="../src/app/qgisapp.cpp" line="12270"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>無法載入Python支持庫: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12278"/>
+        <location filename="../src/app/qgisapp.cpp" line="12281"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>無法解析Python支持庫的instance()符號。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12340"/>
+        <location filename="../src/app/qgisapp.cpp" line="12343"/>
         <source>There is a new version of QGIS available</source>
         <translation>QGIS有新版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12344"/>
+        <location filename="../src/app/qgisapp.cpp" line="12347"/>
         <source>You are running a development version of QGIS</source>
         <translation>您正在使用QGIS的開發版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12348"/>
+        <location filename="../src/app/qgisapp.cpp" line="12351"/>
         <source>You are running the current version of QGIS</source>
         <translation>您正在使用QGIS的目前版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12356"/>
-        <location filename="../src/app/qgisapp.cpp" line="12362"/>
+        <location filename="../src/app/qgisapp.cpp" line="12359"/>
+        <location filename="../src/app/qgisapp.cpp" line="12365"/>
         <source>QGIS Version Information</source>
         <translation>QGIS版本資訊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12362"/>
+        <location filename="../src/app/qgisapp.cpp" line="12365"/>
         <source>Unable to get current version information from server</source>
         <translation>無法從伺服器得到目前版本的資訊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12426"/>
+        <location filename="../src/app/qgisapp.cpp" line="12429"/>
         <source>Style Manager</source>
         <translation>樣式管理</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12427"/>
+        <location filename="../src/app/qgisapp.cpp" line="12430"/>
         <source>Keyboard Shortcuts</source>
         <translation>键盘快捷键</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12428"/>
+        <location filename="../src/app/qgisapp.cpp" line="12431"/>
         <source>Custom Projections</source>
         <translation>自定义投影</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12429"/>
+        <location filename="../src/app/qgisapp.cpp" line="12432"/>
         <source>Interface Customization</source>
         <translation>界面自定义</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12603"/>
-        <location filename="../src/app/qgisapp.cpp" line="12610"/>
+        <location filename="../src/app/qgisapp.cpp" line="12606"/>
+        <location filename="../src/app/qgisapp.cpp" line="12613"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>要執行完整的柱狀圖拉伸，您需要先選擇網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12670"/>
-        <location filename="../src/app/qgisapp.cpp" line="12677"/>
+        <location filename="../src/app/qgisapp.cpp" line="12673"/>
+        <location filename="../src/app/qgisapp.cpp" line="12680"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>要更改亮度和對比度，您需要先選擇網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12723"/>
-        <location filename="../src/app/qgisapp.cpp" line="12730"/>
+        <location filename="../src/app/qgisapp.cpp" line="12726"/>
+        <location filename="../src/app/qgisapp.cpp" line="12733"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
         <translation>要更改gamma，您需要先選擇網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12910"/>
+        <location filename="../src/app/qgisapp.cpp" line="12913"/>
         <source>Map tool handler is not properly constructed</source>
         <translation>地圖工具处理程序构造不正确</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13132"/>
-        <location filename="../src/app/qgisapp.cpp" line="13139"/>
+        <location filename="../src/app/qgisapp.cpp" line="13135"/>
+        <location filename="../src/app/qgisapp.cpp" line="13142"/>
         <source>3D Map</source>
         <translation>3D地圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13132"/>
+        <location filename="../src/app/qgisapp.cpp" line="13135"/>
         <source>3D Maps</source>
         <translation>三维地圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13159"/>
+        <location filename="../src/app/qgisapp.cpp" line="13162"/>
         <source>No Elevation Profiles Found</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13167"/>
+        <location filename="../src/app/qgisapp.cpp" line="13170"/>
         <source>Copy From %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13216"/>
+        <location filename="../src/app/qgisapp.cpp" line="13219"/>
         <source>Elevation Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13220"/>
+        <location filename="../src/app/qgisapp.cpp" line="13223"/>
         <source>Elevation Profile (%1)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13264"/>
+        <location filename="../src/app/qgisapp.cpp" line="13267"/>
         <source>New 3D Map View</source>
         <translation>新建3D地圖视圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13264"/>
+        <location filename="../src/app/qgisapp.cpp" line="13267"/>
         <source>Project extent is not valid. Please add or activate a layer to render.</source>
         <translation>專案范围無效。请加入或激活一個圖層用于渲染。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13277"/>
+        <location filename="../src/app/qgisapp.cpp" line="13280"/>
         <source>3D Globe %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13499"/>
-        <location filename="../src/app/qgisapp.cpp" line="17276"/>
+        <location filename="../src/app/qgisapp.cpp" line="13502"/>
+        <location filename="../src/app/qgisapp.cpp" line="17279"/>
         <source>Save Project</source>
         <translation>保存專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13601"/>
+        <location filename="../src/app/qgisapp.cpp" line="13604"/>
         <source>Save Raster Attribute Table</source>
         <translation>儲存網格影像屬性表</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13601"/>
+        <location filename="../src/app/qgisapp.cpp" line="13604"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
-        <location filename="../src/app/qgisapp.cpp" line="13620"/>
+        <location filename="../src/app/qgisapp.cpp" line="13615"/>
+        <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>網格影像屬性表儲存錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
+        <location filename="../src/app/qgisapp.cpp" line="13615"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13620"/>
+        <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13668"/>
         <location filename="../src/app/qgisapp.cpp" line="13671"/>
+        <location filename="../src/app/qgisapp.cpp" line="13674"/>
         <source>Close Project</source>
         <translation>关闭專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13668"/>
+        <location filename="../src/app/qgisapp.cpp" line="13671"/>
         <source>This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?</source>
         <translation>该專案包含某些临时圖層。这些临时圖層未永久保存内容可能会丢失。你确定要继续吗？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13671"/>
+        <location filename="../src/app/qgisapp.cpp" line="13674"/>
         <source>This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?</source>
         <translation>该專案包含某些临时圖層。这些圖層并沒有存入磁盘，其内容將会永久丢失。要继续吗？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14426"/>
+        <location filename="../src/app/qgisapp.cpp" line="14429"/>
         <source>Unknown CRS</source>
         <translation>未知CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14558"/>
+        <location filename="../src/app/qgisapp.cpp" line="14561"/>
         <source>Pan distance %1 (%2)</source>
         <translation>平移距離 %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14569"/>
+        <location filename="../src/app/qgisapp.cpp" line="14572"/>
         <source>Add to the current selection</source>
         <translation>加入到当前选择集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14573"/>
+        <location filename="../src/app/qgisapp.cpp" line="14576"/>
         <source>Subtract from the current selection</source>
         <translation>与当前选中相减</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14577"/>
+        <location filename="../src/app/qgisapp.cpp" line="14580"/>
         <source>Intersect with the current selection</source>
         <translation>与当前选中相交</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14581"/>
+        <location filename="../src/app/qgisapp.cpp" line="14584"/>
         <source>Select features completely within</source>
         <translation>完全選擇要素</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14585"/>
+        <location filename="../src/app/qgisapp.cpp" line="14588"/>
         <source>Add features completely within to the current selection</source>
         <translation>將要素完全加入到当前选择中</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14589"/>
+        <location filename="../src/app/qgisapp.cpp" line="14592"/>
         <source>Subtract features completely within from the current selection</source>
         <translation>完全從当前选择中减去要素</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14593"/>
+        <location filename="../src/app/qgisapp.cpp" line="14596"/>
         <source>Intersect features completely within with the current selection</source>
         <translation>与当前选择的要素完全相交</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14738"/>
+        <location filename="../src/app/qgisapp.cpp" line="14741"/>
         <source>1 feature selected on layer %1 (%2).</source>
         <translation>圖層 %1 (%2) 已选中 1 個要素。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15941"/>
+        <location filename="../src/app/qgisapp.cpp" line="15944"/>
         <source>A profile with this name already exists</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15944"/>
+        <location filename="../src/app/qgisapp.cpp" line="15947"/>
         <source>New Profile Name</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15960"/>
+        <location filename="../src/app/qgisapp.cpp" line="15963"/>
         <source>New Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15960"/>
+        <location filename="../src/app/qgisapp.cpp" line="15963"/>
         <source>Cannot create folder &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15981"/>
+        <location filename="../src/app/qgisapp.cpp" line="15984"/>
         <source>Task failed</source>
         <translation>任务执行失败</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16057"/>
+        <location filename="../src/app/qgisapp.cpp" line="16060"/>
         <source>New bookmark</source>
         <translation>新增書籤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16133"/>
+        <location filename="../src/app/qgisapp.cpp" line="16136"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
         <translation>此專案文件是由较新版的QGIS (%1) 创建，無法完全載入。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16359"/>
+        <location filename="../src/app/qgisapp.cpp" line="16362"/>
         <source>Select Transformation for %1</source>
         <translation>選擇 %1 变换</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16753"/>
+        <location filename="../src/app/qgisapp.cpp" line="16756"/>
         <source>Network request to %1 timed out, any data received is likely incomplete.</source>
         <translation>向%1发送的网络请求超时，获取到的数据不完整。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16816"/>
+        <location filename="../src/app/qgisapp.cpp" line="16819"/>
         <source>QGIS Authentication</source>
         <translation>QGIS认证</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16951"/>
+        <location filename="../src/app/qgisapp.cpp" line="16954"/>
         <source>%1 Panel</source>
         <translation>%1面板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17043"/>
+        <location filename="../src/app/qgisapp.cpp" line="17046"/>
         <source>Transaction</source>
         <translation>事务</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17056"/>
-        <location filename="../src/app/qgisapp.cpp" line="17106"/>
+        <location filename="../src/app/qgisapp.cpp" line="17059"/>
+        <location filename="../src/app/qgisapp.cpp" line="17109"/>
         <source>Cannot duplicate feature in not editable mode on layer %1</source>
         <translation>圖層%1处于非編輯模式，不能在其内创建要素副本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17086"/>
+        <location filename="../src/app/qgisapp.cpp" line="17089"/>
         <source>%1 children on layer %2 duplicated</source>
         <translation>在圖層%2上，%1子要素重复</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17090"/>
+        <location filename="../src/app/qgisapp.cpp" line="17093"/>
         <source>%1 features on layer %2 duplicated
 %3</source>
         <translation>在圖層%2上，%1要素重复
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17119"/>
+        <location filename="../src/app/qgisapp.cpp" line="17122"/>
         <source>Digitize the duplicate on layer %1</source>
         <translation>在 %1 圖層數位化複本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17123"/>
+        <location filename="../src/app/qgisapp.cpp" line="17126"/>
         <source>Duplicate digitized</source>
         <translation>建立數位化複本</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="17136"/>
+        <location filename="../src/app/qgisapp.cpp" line="17139"/>
         <source>%n children on layer %1 duplicated</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17139"/>
+        <location filename="../src/app/qgisapp.cpp" line="17142"/>
         <source>Feature on layer %1 duplicated
 %2</source>
         <translation>圖層%1中的要素已複製
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17157"/>
+        <location filename="../src/app/qgisapp.cpp" line="17160"/>
         <source>Templates</source>
         <translation>模板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17168"/>
+        <location filename="../src/app/qgisapp.cpp" line="17171"/>
         <source>Template Name</source>
         <translation>模板名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17168"/>
+        <location filename="../src/app/qgisapp.cpp" line="17171"/>
         <source>Name for the template</source>
         <translation>模板的名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17177"/>
         <source>Template not saved</source>
         <translation>模板未保存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17177"/>
         <source>The template can not have an empty name.</source>
         <translation>模板名称不能為空。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17181"/>
+        <location filename="../src/app/qgisapp.cpp" line="17184"/>
         <source>Overwrite Template</source>
         <translation>替换模板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17182"/>
+        <location filename="../src/app/qgisapp.cpp" line="17185"/>
         <source>The template %1 already exists, do you want to replace it?</source>
         <translation>模板 %1 已存在，确定要覆盖吗?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17183"/>
+        <location filename="../src/app/qgisapp.cpp" line="17186"/>
         <source>Overwrite</source>
         <translation>覆蓋</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17195"/>
+        <location filename="../src/app/qgisapp.cpp" line="17198"/>
         <source>Template saved</source>
         <translation>模板已保存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17195"/>
+        <location filename="../src/app/qgisapp.cpp" line="17198"/>
         <source>Template %1 was saved</source>
         <translation>模板 %1 已保存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17281"/>
+        <location filename="../src/app/qgisapp.cpp" line="17284"/>
         <source>Save as Local File</source>
         <translation>另存為本地文件</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17012"/>
+        <location filename="../src/app/qgisapp.cpp" line="17015"/>
         <source>Layer %1</source>
         <translation>圖層 %1</translation>
     </message>
@@ -61240,64 +61356,64 @@ Please cancel these tasks and retry.</source>
         <translation>在圖例中選擇一個向量圖層方可選擇要素。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13481"/>
+        <location filename="../src/app/qgisapp.cpp" line="13484"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>專案中有圖層尚在編輯模式中且尚未儲存編輯，這樣將不會儲存！</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="14744"/>
-        <location filename="../src/app/qgisapp.cpp" line="14753"/>
+        <location filename="../src/app/qgisapp.cpp" line="14747"/>
+        <location filename="../src/app/qgisapp.cpp" line="14756"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15896"/>
+        <location filename="../src/app/qgisapp.cpp" line="15899"/>
         <source>Exit QGIS</source>
         <translation>離開QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15896"/>
+        <location filename="../src/app/qgisapp.cpp" line="15899"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>您確定要離開QGIS?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15943"/>
+        <location filename="../src/app/qgisapp.cpp" line="15946"/>
         <source>New profile name</source>
         <translation>新配置名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15979"/>
+        <location filename="../src/app/qgisapp.cpp" line="15982"/>
         <source>Task complete</source>
         <translation>任务完成</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16121"/>
+        <location filename="../src/app/qgisapp.cpp" line="16124"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16126"/>
+        <location filename="../src/app/qgisapp.cpp" line="16129"/>
         <source>Project file is older</source>
         <translation>專案檔是舊版</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16753"/>
+        <location filename="../src/app/qgisapp.cpp" line="16756"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>請檢查 &lt;a href=&quot;#messageLog&quot;&gt;訊息日誌&lt;/a&gt; 以獲得更多資訊。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16659"/>
+        <location filename="../src/app/qgisapp.cpp" line="16662"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16659"/>
+        <location filename="../src/app/qgisapp.cpp" line="16662"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>這個圖層沒有屬性對話框。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16724"/>
+        <location filename="../src/app/qgisapp.cpp" line="16727"/>
         <source>Proxy authentication required</source>
         <translation>需要代理認證</translation>
     </message>
@@ -62566,9 +62682,14 @@ Please cancel these tasks and retry.</source>
         <translation>嵌入的文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="232"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="233"/>
         <source>Successfully extracted file to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>成功提取文件到 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="238"/>
+        <source>Error opening %1 for write</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -63956,6 +64077,11 @@ Delete these features?</source>
         <source>Set to the project fixed time extent or the extent from the project&apos;s layers</source>
         <translation>設置為專案固定时间范围或專案圖層的范围</translation>
     </message>
+    <message>
+        <location filename="../src/ui/qgsanimationexportdialogbase.ui"/>
+        <source>Cumulative range</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>QgsAnnotation</name>
@@ -64046,37 +64172,37 @@ Delete these features?</source>
 <context>
     <name>QgsAnnotationLayer</name>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="626"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="627"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="628"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="629"/>
         <source>Name</source>
         <translation>名稱</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="631"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="632"/>
         <source>Extent</source>
         <translation>範圍</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="638"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="639"/>
         <source>Item count</source>
         <translation>项统计</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="647"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="648"/>
         <source>Items</source>
         <translation>項目</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="650"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="651"/>
         <source>Type</source>
         <translation>類型</translation>
     </message>
     <message>
-        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="650"/>
+        <location filename="../src/core/annotations/qgsannotationlayer.cpp" line="651"/>
         <source>Count</source>
         <translation>計數</translation>
     </message>
@@ -65662,14 +65788,14 @@ Errors: %2
 <context>
     <name>QgsApplication</name>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="641"/>
-        <location filename="../src/core/qgsapplication.cpp" line="647"/>
-        <location filename="../src/core/qgsapplication.cpp" line="653"/>
+        <location filename="../src/core/qgsapplication.cpp" line="663"/>
+        <location filename="../src/core/qgsapplication.cpp" line="669"/>
+        <location filename="../src/core/qgsapplication.cpp" line="675"/>
         <source>Exception</source>
         <translation>意外錯誤</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="653"/>
+        <location filename="../src/core/qgsapplication.cpp" line="675"/>
         <source>unknown exception</source>
         <translation>未知的意外錯誤</translation>
     </message>
@@ -65680,22 +65806,22 @@ Errors: %2
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="470"/>
+        <location filename="../src/core/qgsapplication.cpp" line="483"/>
         <source>Load user fonts</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="480"/>
+        <location filename="../src/core/qgsapplication.cpp" line="493"/>
         <source>Load color schemes</source>
         <translation>載入配色方案</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="486"/>
+        <location filename="../src/core/qgsapplication.cpp" line="499"/>
         <source>Load bookmarks</source>
         <translation>載入书签</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1623"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1645"/>
         <source>QgsApplication state:
  - QGIS_PREFIX_PATH env var:   %1
  - Prefix:                     %2
@@ -65711,258 +65837,258 @@ Errors: %2
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1641"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1663"/>
         <source>
                                </source>
         <comment>match indentation of application state</comment>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2207"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2229"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
         <translation>[錯誤] 無法為qgis.db建立私有副本</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2219"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2241"/>
         <source>Can not make &apos;%1&apos; user writable</source>
         <translation>無法使“%1”用户可写</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2233"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2255"/>
         <source>Could not open qgis.db</source>
         <translation>無法打開qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2263"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2285"/>
         <source>Creation of missing tbl_srs in the private qgis.db failed.
 %1</source>
         <translation>在私有qgis.db中创建丢失的tbl_srs失败。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2299"/>
-        <location filename="../src/core/qgsapplication.cpp" line="2356"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2321"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2378"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>私有qgis.db迁移失敗。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2323"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2345"/>
         <source>Creation of missing tbl_projection in the private qgis.db failed.
 %1</source>
         <translation>在私有qgis.db中创建丢失的tbl_projection失败。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2389"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2411"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
         <translation>在私有的qgis.db中更新視圖失敗。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2677"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2699"/>
         <source>Create query logger</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2682"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2704"/>
         <source>Setup coordinate reference system registry</source>
         <translation>設置坐标参照系注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2687"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2709"/>
         <source>Create connection registry</source>
         <translation>创建连接注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2692"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2714"/>
         <source>Create project storage registry</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2697"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2719"/>
         <source>Create layer metadata provider registry</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2702"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2724"/>
         <source>Create font manager</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2707"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2729"/>
         <source>Setup task manager</source>
         <translation>設置任务管理器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2712"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2734"/>
         <source>Setup action scope registry</source>
         <translation>設置动作范围注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2717"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2739"/>
         <source>Setup numeric formats</source>
         <translation>設置數值格式</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2722"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2744"/>
         <source>Setup field formats</source>
         <translation>設置欄位格式</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2727"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2749"/>
         <source>Setup SVG cache</source>
         <translation>設置SVG缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2732"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2754"/>
         <source>Setup image cache</source>
         <translation>設置圖像缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2737"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2759"/>
         <source>Setup source cache</source>
         <translation>設置源缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2742"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2764"/>
         <source>Setup color scheme registry</source>
         <translation>設置顏色方案注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2747"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2769"/>
         <source>Setup paint effect</source>
         <translation>設置绘圖效果</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2752"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2774"/>
         <source>Setup symbol layer registry</source>
         <translation>設置符号圖層注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2757"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2779"/>
         <source>Recent style handler</source>
         <translation>最近樣式处理程序</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2762"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2784"/>
         <source>Setup callout registry</source>
         <translation>設置牵引線注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2767"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2789"/>
         <source>Setup renderer registry</source>
         <translation>設置渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2772"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2794"/>
         <source>Setup raster renderer registry</source>
         <translation>設置網格渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2777"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2799"/>
         <source>Setup point cloud renderer registry</source>
         <translation>設置點云渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2782"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2804"/>
         <source>Setup tiled scene renderer registry</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2787"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2809"/>
         <source>Setup GPS registry</source>
         <translation>設置GPS注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2792"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2814"/>
         <source>Setup GPSBabel format registry</source>
         <translation>設置GPSBabel格式注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2797"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2819"/>
         <source>Setup plugin layer registry</source>
         <translation>設置外掛程式圖層注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2802"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2824"/>
         <source>Setup Processing registry</source>
         <translation>設置处理工具箱注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2808"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2830"/>
         <source>Setup layout item registry</source>
         <translation>設置圖面配置条目注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2814"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2836"/>
         <source>Setup annotation registry</source>
         <translation>設置注记注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2819"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2841"/>
         <source>Setup annotation item registry</source>
         <translation>設置注记条目注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2825"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2847"/>
         <source>Setup labeling engine rule registry</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2830"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2852"/>
         <source>Setup sensor registry</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2836"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2858"/>
         <source>Setup 3D symbol registry</source>
         <translation>設置3D符号注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2841"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2863"/>
         <source>Setup 3D renderer registry</source>
         <translation>設置3D渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2846"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2868"/>
         <source>Setup external storage registry</source>
         <translation>設置外部存储注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2851"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2873"/>
         <source>Setup profile source registry</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2856"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2878"/>
         <source>Setup network content cache</source>
         <translation>設置网络内容缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2861"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2883"/>
         <source>Setup layout check registry</source>
         <translation>設置圖面配置检查注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2866"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2888"/>
         <source>Setup classification registry</source>
         <translation>設置分類注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2871"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2893"/>
         <source>Setup bookmark manager</source>
         <translation>設置书签管理器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2876"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2898"/>
         <source>Setup tile download manager</source>
         <translation>設置瓦片下载管理器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2881"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2903"/>
         <source>Setup scalebar registry</source>
         <translation>設置比例尺注册表</translation>
     </message>
@@ -67629,22 +67755,22 @@ Delete these features?</source>
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="654"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="651"/>
         <source>extra column</source>
         <translation>额外列</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="662"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="659"/>
         <source>Feature ID: %1</source>
         <translation>要素 ID：%1</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="733"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="730"/>
         <source>... truncated ...</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="743"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="740"/>
         <source>%1 (Ctrl+click to open)</source>
         <translation>%1 (Ctrl+點集打開)</translation>
     </message>
@@ -67835,71 +67961,71 @@ Delete these features?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="275"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="278"/>
         <source>The provider for this layer has a NOT NULL constraint set on the field.</source>
         <translation>该圖層的数据源有欄位非空限制。</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="282"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="285"/>
         <source>The provider for this layer has a UNIQUE constraint set on the field.</source>
         <translation>该圖層的数据源有欄位唯一限制。</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="556"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="580"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="559"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="583"/>
         <source>Resets the field by recalculating its default value.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="560"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="584"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="563"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="587"/>
         <source>Copies the current field value without change.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="564"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="567"/>
         <source>Recalculates the field value for all split portions by multiplying the existing value by the ratio of the split parts lengths or areas.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="568"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="588"/>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="612"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="571"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="591"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="615"/>
         <source>Clears the field to an unset state.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="600"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="603"/>
         <source>Use default field value.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="604"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="607"/>
         <source>Sum of values.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="608"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="611"/>
         <source>New values are computed as the weighted average of the source values.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="616"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="619"/>
         <source>Use value from feature with the largest geometry.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="620"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="623"/>
         <source>Use the lowest value from the selected features.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="624"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="627"/>
         <source>Use the highest value from the selected features.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="628"/>
+        <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="631"/>
         <source>Set attribute to NULL.</source>
         <translation type="unfinished"/>
     </message>
@@ -70405,9 +70531,9 @@ Authorities/Issuers: %1%2</source>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="557"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3635"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3659"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3754"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3639"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3663"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3758"/>
         <source>Master password: FAILED to access database</source>
         <translation>主密碼：無法訪問資料庫</translation>
     </message>
@@ -70527,7 +70653,7 @@ Authorities/Issuers: %1%2</source>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="1192"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3923"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3927"/>
         <source>Store config: FAILED to store config in default storage: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -70548,10 +70674,10 @@ Authorities/Issuers: %1%2</source>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2730"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2810"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="3063"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3675"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3706"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3735"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3768"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3679"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3710"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3739"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3772"/>
         <source>Could not connect to the default storage.</source>
         <translation type="unfinished"/>
     </message>
@@ -70691,10 +70817,10 @@ Authorities/Issuers: %1%2</source>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2869"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="2959"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3618"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3858"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3939"/>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4104"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3606"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3862"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3943"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4108"/>
         <source>Could not connect to any authentication configuration storage.</source>
         <translation type="unfinished"/>
     </message>
@@ -70724,17 +70850,17 @@ Authorities/Issuers: %1%2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3799"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3803"/>
         <source>Config id %1 is already in the list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3943"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="3947"/>
         <source>Reencrypt FAILED, could not find config (id: %1)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4108"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4112"/>
         <source>Reencrypt FAILED, could not find identity (id: %1)</source>
         <translation type="unfinished"/>
     </message>
@@ -70804,7 +70930,7 @@ Authorities/Issuers: %1%2</source>
         <translation>保存在你的%1中的主密码無效</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4027"/>
+        <location filename="../src/core/auth/qgsauthmanager.cpp" line="4031"/>
         <source>Authentication database contains duplicate setting keys</source>
         <translation>认证数据库包含重复的設置密钥</translation>
     </message>
@@ -72186,27 +72312,32 @@ Operation can NOT be undone!</source>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="145"/>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="172"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="178"/>
         <source>All files</source>
         <translation>所有檔案</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="161"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="162"/>
         <source>Saved content to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>内容已保存到&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="172"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="166"/>
+        <source>Error opening %1 for write</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="178"/>
         <source>Embed File</source>
         <translation>嵌入的文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="197"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="203"/>
         <source>Clear Contents</source>
         <translation>清空内容</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="197"/>
+        <location filename="../src/gui/editorwidgets/qgsbinarywidgetwrapper.cpp" line="203"/>
         <source>Are you sure you want the clear this field&apos;s content?</source>
         <translation>确定要清除该欄位的内容吗？</translation>
     </message>
@@ -72312,33 +72443,33 @@ Operation can NOT be undone!</source>
 <context>
     <name>QgsBlockingNetworkRequest</name>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="149"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="189"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="356"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="368"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="399"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="458"/>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="469"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="153"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="193"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="360"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="372"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="403"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="462"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="473"/>
         <source>Network</source>
         <translation>紅</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="355"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="359"/>
         <source>Redirect loop detected: %1</source>
         <translation>监測到重定向循環：%1</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="456"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="460"/>
         <source>empty response: %1</source>
         <translation>空响应: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="492"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="496"/>
         <source>network request update failed for authentication config</source>
         <translation>认证配置的网络请求更新失败</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="502"/>
+        <location filename="../src/core/network/qgsblockingnetworkrequest.cpp" line="506"/>
         <source>The server does not support range requests</source>
         <translation type="unfinished"/>
     </message>
@@ -73245,42 +73376,42 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsCesiumTilesDataProvider</name>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="987"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="997"/>
         <source>Only ion 3D Tiles content can be accessed, not %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1094"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1104"/>
         <source>Source</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1177"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1187"/>
         <source>3D Tiles Version</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1185"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1195"/>
         <source>Tileset Version</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1196"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1206"/>
         <source>Tileset Generator</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1208"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1218"/>
         <source>Extensions Required</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1220"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1230"/>
         <source>Extensions Used</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1226"/>
+        <location filename="../src/core/tiledscene/qgscesiumtilesdataprovider.cpp" line="1236"/>
         <source>Z Range</source>
         <translation type="unfinished"/>
     </message>
@@ -73670,29 +73801,29 @@ Should the existing classes be deleted before classification?</source>
         <translation>Python 編輯器</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="458"/>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="504"/>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="509"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="457"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="503"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="508"/>
         <source>Reformat Code</source>
         <translation>重新設定程式代碼</translation>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="458"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="457"/>
         <source>Code formatting failed -- the code contains syntax errors</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="504"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="503"/>
         <source>The Python module %1 is missing</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="509"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="508"/>
         <source>The Python modules %1 are missing</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="532"/>
+        <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="531"/>
         <source>Search Selection in PyQGIS Documentation</source>
         <translation type="unfinished"/>
     </message>
@@ -75560,63 +75691,63 @@ file are transformed).</source>
     </message>
     <message>
         <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="290"/>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="368"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="371"/>
         <source>User-defined</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="385"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="388"/>
         <source>Geodetic</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="389"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="392"/>
         <source>Geocentric</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="393"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="396"/>
         <source>Geographic (2D)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="398"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="401"/>
         <source>Geographic (3D)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="403"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="406"/>
         <source>Vertical</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="408"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="411"/>
         <source>Projected</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="413"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="416"/>
         <source>Compound</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="417"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="420"/>
         <source>Temporal</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="421"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="424"/>
         <source>Engineering</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="425"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="428"/>
         <source>Bound</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="429"/>
-        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="450"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="432"/>
+        <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="452"/>
         <source>Other</source>
         <translation type="unfinished"/>
     </message>
@@ -75657,12 +75788,22 @@ file are transformed).</source>
         <translation>目标目录&apos;%1&apos;不存在</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscopyfiletask.cpp" line="70"/>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="59"/>
+        <source>Could not open &apos;%1&apos; for reading</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="64"/>
+        <source>Could not open &apos;%1&apos; for writing</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="78"/>
         <source>Fail reading from &apos;%1&apos;</source>
         <translation>读取&apos;%1&apos;失败</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscopyfiletask.cpp" line="80"/>
+        <location filename="../src/core/qgscopyfiletask.cpp" line="88"/>
         <source>Fail writing to &apos;%1&apos;</source>
         <translation>写入&apos;%1&apos;失败</translation>
     </message>
@@ -80296,192 +80437,195 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="616"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="625"/>
         <source>(disabled when attribute table only shows features visible in the current map canvas extent)</source>
         <translation>（当屬性表仅顯示当前地圖画布范围内可见的要素时禁止该功能）</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="752"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="761"/>
         <source>Expression Based Preview</source>
         <translation>基于表示式的预览</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="769"/>
-        <source>Column Preview</source>
-        <translation>欄預覽</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="769"/>
-        <source>Could not set column '%1' as preview column.
-Parser error:
-%2</source>
-        <translation>無法將欄“%1”設置為預覽欄。
-解析錯誤：
-%2</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="952"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="964"/>
         <source>&amp;Set All Column Widths…</source>
         <translation>設置所有列宽(&amp;S)…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="962"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="974"/>
         <source>&amp;Autosize All Columns</source>
         <translation>自动调整所有列(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="971"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="983"/>
         <source>&amp;Sort…</source>
         <translation>排序(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="957"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="969"/>
         <source>&amp;Autosize</source>
         <translation>自动调整大小(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="252"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="256"/>
         <source>Sort…</source>
         <translation>排序...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="255"/>
-        <source>By Preview Expression (ascending)</source>
-        <translation>按预览表示式（升序）</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="260"/>
-        <source>By Preview Expression (descending)</source>
-        <translation>按预览表示式（降序）</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="265"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="269"/>
         <source>By Custom Expression</source>
         <translation>按自定义表示式</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="285"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="294"/>
         <source>&apos;[Please define preview text]&apos;</source>
         <translation>&apos;[请定义预览文本]&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="618"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="627"/>
         <source>Automatically pan to the current feature</source>
         <translation>自动平移到当前要素</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="619"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="628"/>
         <source>Automatically zoom to the current feature</source>
         <translation>自动缩放到当前要素</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="659"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="668"/>
         <source>An error occurred while filtering features</source>
         <translation>篩選要素时发生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="838"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="780"/>
+        <source>Column Display Name</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="780"/>
+        <source>Could not set column '%1' as display name.
+Parser error:
+%2</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="784"/>
+        <source>Expression</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="850"/>
         <source>Copy Cell Content</source>
         <translation>複製单元格内容</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="849"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="861"/>
         <source>Zoom to Feature</source>
         <translation>缩放到要素范围</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="852"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="864"/>
         <source>Pan to Feature</source>
         <translation>平移到要素</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="855"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="867"/>
         <source>Flash Feature</source>
         <translation>闪烁要素</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="863"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="875"/>
         <source>Run Layer Action</source>
         <translation>执行圖層动作</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="908"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="920"/>
         <source>Actions on Selection (%1)</source>
         <translation>在所选要素上执行操作 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="925"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="937"/>
         <source>Open Form</source>
         <translation>開啟窗體</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="926"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="938"/>
         <source>Open Form…</source>
         <translation>打开表单…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="943"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="955"/>
         <source>&amp;Hide Column</source>
         <translation>隐藏列(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="947"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="959"/>
         <source>&amp;Set Width…</source>
         <translation>設置宽度(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1365"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1377"/>
         <source>%L1 features loaded.</source>
         <translation>%L1 要素已載入。</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="968"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="980"/>
         <source>&amp;Organize Columns…</source>
         <translation>组织列(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1029"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="259"/>
+        <source>By Display Name (Ascending)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="264"/>
+        <source>By Display Name (Descending)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1041"/>
         <source>Set column width</source>
         <translation>設置列宽</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1029"/>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1041"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1060"/>
         <source>Enter column width</source>
         <translation>输入列宽</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1060"/>
         <source>Set Column Width</source>
         <translation>設置列宽</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1083"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1095"/>
         <source>Configure Attribute Table Sort Order</source>
         <translation>配置屬性表排列顺序</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1359"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1371"/>
         <source>Loading features…</source>
         <translation>正在载入要素...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1360"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1372"/>
         <source>Attribute Table</source>
         <translation>屬性表格</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1091"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1103"/>
         <source>Defined sort order in attribute table</source>
         <translation>在屬性表中定义排列顺序</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1105"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1117"/>
         <source>Sort ascending</source>
         <translation>升序排序</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1359"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1371"/>
         <source>Abort</source>
         <translation>放棄</translation>
     </message>
@@ -80497,11 +80641,6 @@ Parser error:
         <location filename="../src/ui/qgsdualviewbase.ui"/>
         <source>Expression</source>
         <translation>表示式</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdualviewbase.ui"/>
-        <source>Column Preview</source>
-        <translation>欄預覽</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdualviewbase.ui"/>
@@ -80537,6 +80676,11 @@ Parser error:
         <location filename="../src/ui/qgsdualviewbase.ui"/>
         <source>Navigate to last feature</source>
         <translation>导航到最后一個要素</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdualviewbase.ui"/>
+        <source>Columns</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -99575,32 +99719,32 @@ Check file and directory permissions on
 <context>
     <name>QgsGeometryAngleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="131"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="149"/>
         <source>Resulting geometry is degenerate</source>
         <translation>生成的结果是退化幾何圖形</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="135"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="153"/>
         <source>Failed to delete vertex</source>
         <translation>删除頂點失败</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="152"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="170"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="158"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="176"/>
         <source>Delete node with small angle</source>
         <translation>删除有小角的结點</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="158"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="176"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="169"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryanglecheck.cpp" line="187"/>
         <source>Minimal angle</source>
         <translation>最小角度</translation>
     </message>
@@ -99608,37 +99752,37 @@ Check file and directory permissions on
 <context>
     <name>QgsGeometryAreaCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="94"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="112"/>
         <source>Failed to merge with neighbor: %1</source>
         <translation>相鄰合併失敗：%1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="99"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="117"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="210"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="228"/>
         <source>Merge with neighboring polygon with longest shared edge</source>
         <translation>合併（merge）相鄰多邊形，規則為按最長公共邊</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="211"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="229"/>
         <source>Merge with neighboring polygon with largest area</source>
         <translation>合併（merge）相鄰多邊形，規則為按最大面積</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="212"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="230"/>
         <source>Merge with neighboring polygon with identical attribute value, if any, or leave as is</source>
         <translation>合併（merge）相鄰多邊形，規則為按相同屬性值（若有的話），否則保持原樣</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="213"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="231"/>
         <source>Delete feature</source>
         <translation>刪除圖徵</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="214"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryareacheck.cpp" line="232"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100290,33 +100434,33 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryContainedCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="33"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="46"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="49"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="67"/>
         <source>Contained check failed for (%1): the geometry is invalid</source>
         <translation>（%1）的包含检查失败：幾何圖形無效</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="57"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="78"/>
         <source>Contained check failed for (%1, %2): %3</source>
         <translation>（%1，%2）的包含检查失败：%3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="103"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="110"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="132"/>
         <source>Delete feature</source>
         <translation>刪除圖徵</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="111"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.cpp" line="133"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.h" line="73"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrycontainedcheck.h" line="74"/>
         <source>Within</source>
         <translation>在…之中</translation>
     </message>
@@ -100324,12 +100468,12 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryDangleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="107"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="130"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="113"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydanglecheck.cpp" line="136"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100342,17 +100486,17 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryDegeneratePolygonCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="84"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="101"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="90"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="107"/>
         <source>Delete feature</source>
         <translation>刪除圖徵</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="90"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp" line="107"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100365,27 +100509,27 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryDuplicateCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="57"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="73"/>
         <source>Duplicate check failed for (%1): the geometry is invalid</source>
         <translation>（%1）的重复检查失败：幾何圖形無效</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="102"/>
         <source>Duplicate check failed for (%1, %2): %3</source>
         <translation>（%1，%2）的重复检查失败：%3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="137"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="159"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="144"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="166"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="145"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatecheck.cpp" line="167"/>
         <source>Remove duplicates</source>
         <translation>移除重複</translation>
     </message>
@@ -100398,27 +100542,27 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryDuplicateNodesCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="93"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="109"/>
         <source>Resulting geometry is degenerate</source>
         <translation>生成的结果是退化幾何圖形</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="97"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="113"/>
         <source>Failed to delete vertex</source>
         <translation>删除頂點失败</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="109"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="115"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="131"/>
         <source>Delete duplicate node</source>
         <translation>刪除重複節點</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="115"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp" line="131"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100431,12 +100575,12 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryFollowBoundariesCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="104"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="126"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="110"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp" line="132"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100449,111 +100593,111 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryGapCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="113"/>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="123"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="139"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="133"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="149"/>
         <source>Gap check: %1</source>
         <translation>間隙檢查：%1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="220"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="290"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="241"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="310"/>
         <source>Failed to merge with neighbor: %1</source>
         <translation>相鄰合併失敗：%1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="200"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="221"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="232"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="253"/>
         <source>Could not start editing layer %1</source>
         <translation>無法开始編輯圖層%1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="240"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="261"/>
         <source>Could not add feature to layer %1</source>
         <translation>無法加入要素到圖層%1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="250"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="271"/>
         <source>Allowed gaps layer could not be resolved</source>
         <translation>無法解析允许的间隙圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="267"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="287"/>
         <source>Could not add feature</source>
         <translation>無法加入要素</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="276"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="296"/>
         <source>Could not resolve target layer %1 to add feature</source>
         <translation>無法解析目标圖層%1以加入要素</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="428"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="452"/>
         <source>Add gap area to neighboring polygon with longest shared edge</source>
         <translation>在最長公共边的相邻多邊形上加上空白区域</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="429"/>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="447"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="453"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="471"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="431"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="455"/>
         <source>Add gap to allowed exceptions</source>
         <translation>给允许的例外加入间隙</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="439"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="463"/>
         <source>Add to longest shared edge</source>
         <translation>加入到最長公共边</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="439"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="463"/>
         <source>Add the gap area to the neighbouring polygon with the longest shared edge.</source>
         <translation>將空白区域加入到最長公共边的相邻多邊形。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="440"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="464"/>
         <source>Create new feature</source>
         <translation>创建新要素</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="440"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="464"/>
         <source>Create a new feature from the gap area.</source>
         <translation>從空白区域创建一個新要素。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="441"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="465"/>
         <source>Add to largest neighbouring area</source>
         <translation>加入到最大的相邻区域</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="441"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="465"/>
         <source>Add the gap area to the neighbouring polygon with the largest area.</source>
         <translation>將间隙区域加入到面積最大的相邻多邊形中。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="445"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
         <source>Add Gap to Allowed Exceptions</source>
         <translation>给允许的例外加入间隙</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="445"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
         <source>Create a new feature from the gap geometry on the allowed exceptions layer.</source>
         <translation>從允许的例外圖層上的间隙幾何圖形创建新要素。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="447"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="471"/>
         <source>Do not perform any action and mark this error as fixed.</source>
         <translation>不进行任何操作，并將此錯誤标记為已修复</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="470"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="494"/>
         <source>Gap</source>
         <translation>間隙</translation>
     </message>
@@ -100579,17 +100723,17 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryHoleCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="98"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="104"/>
         <source>Remove hole</source>
         <translation>移除空穴</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryholecheck.cpp" line="104"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100610,12 +100754,12 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryLineIntersectionCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="88"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="110"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="94"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp" line="116"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100628,12 +100772,12 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryLineLayerIntersectionCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="86"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="107"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="92"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp" line="113"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100646,22 +100790,22 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryMissingVertexCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="94"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="119"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="132"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="120"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="133"/>
         <source>Add missing vertex</source>
         <translation>加入缺失的頂點</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="250"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp" line="263"/>
         <source>Missing Vertex</source>
         <translation>缺失頂點</translation>
     </message>
@@ -100697,42 +100841,42 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryOverlapCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="50"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="61"/>
         <source>Overlap check failed for (%1): the geometry is invalid</source>
         <translation>（%1）的重叠检查失败：幾何圖形無效</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="87"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="98"/>
         <source>Overlap check between features %1 and %2 %3</source>
         <translation>要素%1和%2 %3之间的重叠检查</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="125"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="137"/>
         <source>Failed to compute intersection between overlapping features: %1</source>
         <translation>重疊要素相交計算失敗：%1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="177"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="189"/>
         <source>Could not find shared edges between intersection and overlapping features</source>
         <translation>相交和重疊要素間找不到公共邊</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="205"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="217"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="212"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="224"/>
         <source>Remove overlapping area from neighboring polygon with shortest shared edge</source>
         <translation>移除相鄰多邊形的重疊部分，規則為按最短公共邊</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="213"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="225"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="235"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="247"/>
         <source>Overlap</source>
         <translation>重疊</translation>
     </message>
@@ -100740,12 +100884,12 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryPointCoveredByLineCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="83"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="104"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="89"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp" line="110"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100758,17 +100902,17 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryPointInPolygonCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="49"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="69"/>
         <source>Point in polygon check failed for (%1): the geometry is invalid</source>
         <translation>对（%1）的“多邊形中的點”检查失败：幾何圖形無效</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="75"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="96"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="81"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp" line="102"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100781,12 +100925,12 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometrySegmentLengthCheck</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="108"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="125"/>
         <source>Unknown method</source>
         <translation>未知方法</translation>
     </message>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="114"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp" line="131"/>
         <source>No action</source>
         <translation>無動作</translation>
     </message>
@@ -100828,13 +100972,13 @@ The geometry check can be performed, but it will not be possible to fix any erro
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="300"/>
-        <source>Split feature into a multi-object feature</source>
-        <translation>將要素切割為一個多物件要素</translation>
+        <source>Split feature into a multi-part feature</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="301"/>
-        <source>Split feature into multiple single-object features</source>
-        <translation>將要素切割為多個單物件要素</translation>
+        <source>Split feature into multiple single-part features</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp" line="302"/>
@@ -100891,7 +101035,7 @@ The geometry check can be performed, but it will not be possible to fix any erro
 <context>
     <name>QgsGeometryTypeCheckError</name>
     <message>
-        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="297"/>
+        <location filename="../src/analysis/vector/geometry_checker/qgsgeometryoverlapcheck.cpp" line="309"/>
         <source>Overlap with %1 at feature %2</source>
         <translation>在要素%2处与%1重叠</translation>
     </message>
@@ -101485,10 +101629,10 @@ The geometry check can be performed, but it will not be possible to fix any erro
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="179"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="232"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1732"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1792"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2446"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2453"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1735"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1795"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2449"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2456"/>
         <source>Georeferencer</source>
         <translation>空間對位(Georeferencer)</translation>
     </message>
@@ -101524,29 +101668,29 @@ The geometry check can be performed, but it will not be possible to fix any erro
         <translation>空間對位 - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="938"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="941"/>
         <source>Please load file to be georeferenced.</source>
         <translation>请載入需要配准的文件。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1544"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1547"/>
         <source>Source coordinate</source>
         <translation>源坐标</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1547"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1550"/>
         <source>Coordinate of image (column/line)</source>
         <translation>圖像坐标 (列/行)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1841"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1844"/>
         <source>Georeference Successful</source>
         <translation>配準成功</translation>
     </message>
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="496"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1439"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2270"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1442"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2273"/>
         <source>Transform: </source>
         <translation>轉換: </translation>
     </message>
@@ -101561,371 +101705,371 @@ The geometry check can be performed, but it will not be possible to fix any erro
         <translation>已載入源: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="589"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="592"/>
         <source>Invalid Transform</source>
         <translation>無效的變換</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="589"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="592"/>
         <source>GDAL scripting is not supported for %1 transformation.</source>
         <translation>GDAL 指令碼不支援%1轉換。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="895"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="902"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="906"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="898"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="905"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="909"/>
         <source>Load GCP Points</source>
         <translation>載入地面控制點</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="895"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="919"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="898"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="922"/>
         <source>GCP file</source>
         <translation>GCP檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="906"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="909"/>
         <source>GCP file successfully loaded.</source>
         <translation>成功載入地面控制點檔案。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="914"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="919"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="917"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="922"/>
         <source>Save GCP Points</source>
         <translation>保存地面控制點</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="914"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="917"/>
         <source>No GCP points are available to save.</source>
         <translation>無地面控制點可供儲存</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1232"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1235"/>
         <source>Snapping Type</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1234"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1237"/>
         <source>Set Snapping Mode</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1347"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1350"/>
         <source>Panels</source>
         <translation>面板</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1351"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1354"/>
         <source>Toolbars</source>
         <translation>工具列</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1421"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1424"/>
         <source>Rotation</source>
         <translation>旋轉</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1422"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1435"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1425"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1438"/>
         <source>Current clockwise map rotation in degrees</source>
         <translation>目前使用度以順時鐘旋轉地圖</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1434"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1437"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1443"/>
         <source>Current transform parametrisation</source>
         <translation>目前轉換參數配置</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1445"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1448"/>
         <source>Coordinate: </source>
         <translation>坐標: </translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1446"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1449"/>
         <source>Current map coordinate</source>
         <translation>目前地圖坐標</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1539"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1542"/>
         <source>None</source>
         <translation>無</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1627"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1630"/>
         <source>Write Error</source>
         <translation>寫入時出錯</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1638"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1641"/>
         <source>Save GCPs</source>
         <translation>儲存GCPs</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1638"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1641"/>
         <source>Save GCP points?</source>
         <translation>要儲存GCP點嗎?</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1662"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1763"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1665"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1813"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2467"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1778"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1816"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2470"/>
         <source>Transform Failed</source>
         <translation>變換失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1662"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1665"/>
         <source>Failed to calculate linear transform parameters.</source>
         <translation>計算線性轉換參數失敗。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1670"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1673"/>
         <source>Georeference</source>
         <translation>配准</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1670"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1673"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
         <translation>&lt;p&gt;該選取的檔案已有world檔！確定要以新的world檔取代嗎？&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1731"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1791"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1734"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1794"/>
         <source>Georeferencing layer…</source>
         <translation>正在配准圖層…</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1731"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1791"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1734"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1794"/>
         <source>Abort</source>
         <translation>终止</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1763"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2467"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2470"/>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
         <translation>地面控制點變換計算失敗：變換無解。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1766"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
         <source>Could not read source image.</source>
         <translation>無法读取源圖像。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1769"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
         <source>Error creating GDAL transformation.</source>
         <translation>创建GDAL变换时出错。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1772"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
         <source>Could not create destination file.</source>
         <translation>無法创建目标文件。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1775"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1778"/>
         <source>Error occurred while warping image.</source>
         <translation>扭曲圖像时发生錯誤。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1841"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1844"/>
         <source>The layer was successfully georeferenced.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1873"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1876"/>
         <source>Save World File</source>
         <translation>保存坐标信息文件</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1873"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1876"/>
         <source>Could not write to %1.</source>
         <translation>無法寫入%1。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2001"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2014"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2111"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2192"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2004"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2017"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2114"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2195"/>
         <source>map units</source>
         <translation>地圖單位</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2005"/>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2115"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2008"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2118"/>
         <source>pixels</source>
         <translation>像素</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2122"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2125"/>
         <source>Transformation parameters</source>
         <translation>轉換參數</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2126"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2129"/>
         <source>Transformation parameter</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2148"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2151"/>
         <source>Translation x</source>
         <translation>轉換 x</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2149"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2152"/>
         <source>Translation y</source>
         <translation>轉換 y</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2150"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2153"/>
         <source>Scale x</source>
         <translation>比例 x</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2151"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2154"/>
         <source>Scale y</source>
         <translation>比例 y</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2152"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2155"/>
         <source>Rotation [degrees]</source>
         <translation>旋轉 [度]</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2154"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2157"/>
         <source>Mean error [%1]</source>
         <translation>平均錯誤 [%1]</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2179"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2182"/>
         <source>Residuals</source>
         <translation>殘差</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2199"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2202"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2200"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2203"/>
         <source>Enabled</source>
         <translation>啟用</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2201"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2204"/>
         <source>Pixel X</source>
         <translation>像素横坐标</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2202"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2205"/>
         <source>Pixel Y</source>
         <translation>像素纵坐标</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2203"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2206"/>
         <source>Map X</source>
         <translation>地圖横坐标</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2204"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2207"/>
         <source>Map Y</source>
         <translation>地圖纵坐标</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2205"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2208"/>
         <source>Res X (%1)</source>
         <translation>残差X（%1）</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2206"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2209"/>
         <source>Res Y (%1)</source>
         <translation>残差Y（%1）</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2207"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2210"/>
         <source>Res Total (%1)</source>
         <translation>总残差 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2222"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2225"/>
         <source>yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2226"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2229"/>
         <source>no</source>
         <translation>否</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2277"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2280"/>
         <source>Translation (%1, %2)</source>
         <translation>轉換 (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2279"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2282"/>
         <source>Scale (%1, %2)</source>
         <translation>比例 (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2281"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2284"/>
         <source>Rotation: %1</source>
         <translation>旋轉: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2288"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2291"/>
         <source>Mean error: %1</source>
         <translation>平均錯誤: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2299"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2302"/>
         <source>Copy to Clipboard</source>
         <translation>複製到剪貼簿</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2305"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2308"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2312"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2315"/>
         <source>GDAL Script</source>
         <translation>GDAL脚本</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2443"/>
         <source>No Layer Loaded</source>
         <translation>未載入圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2440"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2443"/>
         <source>Please load layer to be georeferenced.</source>
         <translation>请載入需要配准的圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2453"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2456"/>
         <source>Please set output file name.</source>
         <translation>请設置输出文件名。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2446"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2449"/>
         <source>Please set transformation type.</source>
         <translation>请設置变换類型。</translation>
     </message>
     <message>
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2460"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2463"/>
         <source>Not Enough GCPs</source>
         <translation>地面控制點數目不足</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2460"/>
+        <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="2463"/>
         <source>%1 transformation requires at least %n GCPs. Please define more.</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
@@ -103084,82 +103228,82 @@ gray = no data
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="366"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="364"/>
         <source>Create Point Feature at Location</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="367"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="365"/>
         <source>Create a new point feature at the current GPS location</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="372"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="370"/>
         <source>Create Line Feature from Track</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="373"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="371"/>
         <source>Create a new line feature using the current GPS track</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="378"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="376"/>
         <source>Create Polygon Feature from Track</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="379"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="377"/>
         <source>Create a new polygon feature using the current GPS track</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="406"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="400"/>
         <source>Follow Active Layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="407"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="401"/>
         <source>Always add GPS digitized features to the active layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="454"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="448"/>
         <source>Current GPS Information</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="461"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="455"/>
         <source>Show Location</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="462"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="456"/>
         <source>Show Altitude (Geoid)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="463"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="457"/>
         <source>Show Altitude (WGS-84 Ellipsoid)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="464"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="458"/>
         <source>Show Ground Speed</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="465"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="459"/>
         <source>Show Bearing</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="466"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="460"/>
         <source>Show Total Track Length</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="467"/>
+        <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="461"/>
         <source>Show Distance from Start of Track</source>
         <translation type="unfinished"/>
     </message>
@@ -103821,12 +103965,12 @@ Press cancel to abort breaks calculation or OK to continue.</source>
 <context>
     <name>QgsGrassImportItem</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1183"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1182"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1216"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="1215"/>
         <source>canceling</source>
         <translation>正在取消</translation>
     </message>
@@ -104352,17 +104496,17 @@ at line %2 column %3</source>
         <translation>無法獲取預設位置區域。</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="898"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="897"/>
         <source>Cannot delete %1</source>
         <translation>無法刪除%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="924"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="923"/>
         <source>Import to GRASS mapset</source>
         <translation>匯入到GRASS地圖集</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="924"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="923"/>
         <source>Failed to import some layers!
 
 </source>
@@ -104371,12 +104515,12 @@ at line %2 column %3</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="935"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="934"/>
         <source>Import to GRASS mapset failed</source>
         <translation>匯入到GRASS地圖集失敗</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="936"/>
+        <location filename="../src/providers/grass/qgsgrassprovidermodule.cpp" line="935"/>
         <source>Failed to import %1 to %2: %3</source>
         <translation>將%1匯入到%2時失敗：%3</translation>
     </message>
@@ -105400,17 +105544,17 @@ at line %2 column %3</source>
 <context>
     <name>QgsGrassRasterImport</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="291"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="290"/>
         <source>Data type %1 not supported</source>
         <translation>資料類型 %1 不受支援</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="324"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="323"/>
         <source>Writing band %1/%2</source>
         <translation>正在寫入波段 %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="363"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="362"/>
         <source>Cannot convert block (%1) to data type %2</source>
         <translation>無法將塊（%1）轉換為資料類型%2</translation>
     </message>
@@ -105747,7 +105891,7 @@ at line %2 column %3</source>
 <context>
     <name>QgsGrassVectorImport</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="617"/>
+        <location filename="../src/providers/grass/qgsgrassimport.cpp" line="616"/>
         <source>Writing features</source>
         <translation>正在寫入要素</translation>
     </message>
@@ -106976,17 +107120,17 @@ b）在配置标签页中加入 HTTP 基本认证凭据并保存到加密的数�
         <translation>扫描表中的 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="457"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="458"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="476"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="480"/>
         <source>Failed to retrieve tables for %1</source>
         <translation>检索%1的表失败</translation>
     </message>
     <message>
-        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="478"/>
+        <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="482"/>
         <source>Connect</source>
         <translation>連接</translation>
     </message>
@@ -107559,12 +107703,12 @@ By default the algorithm will warn on errors. Optionally, the algorithm can be s
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="175"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="178"/>
         <source>Result data written to %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="183"/>
         <source>Request failed with code %1</source>
         <translation type="unfinished"/>
     </message>
@@ -110138,16 +110282,16 @@ CTRL + 单击 追踪链接</translation>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="199"/>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="227"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="257"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="277"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="258"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="278"/>
         <source>Symbology</source>
         <translation>符號學</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="203"/>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="236"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="261"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="281"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="262"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="282"/>
         <source>Labels</source>
         <translation>標記設計</translation>
     </message>
@@ -110158,7 +110302,7 @@ CTRL + 单击 追踪链接</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="213"/>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="267"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="268"/>
         <source>3D View</source>
         <translation>3D视圖</translation>
     </message>
@@ -110173,22 +110317,22 @@ CTRL + 单击 追踪链接</translation>
         <translation>透明度</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="244"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="245"/>
         <source>Histogram</source>
         <translation>分佈圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="248"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="249"/>
         <source>Raster Attribute Tables</source>
         <translation>網格影像屬性表</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="307"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="308"/>
         <source>History</source>
         <translation>歷史</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayerstylingwidget.cpp" line="714"/>
+        <location filename="../src/app/qgslayerstylingwidget.cpp" line="716"/>
         <source>There are no raster attribute tables associated with this data source.&lt;br&gt;If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree or in the layer properties dialog.</source>
         <translation type="unfinished"/>
     </message>
@@ -110321,7 +110465,7 @@ CTRL + 单击 追踪链接</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="1220"/>
+        <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="1216"/>
         <source>New layers added from another QGIS instance</source>
         <translation>從另一個QGIS实例加入新的圖層</translation>
     </message>
@@ -110489,17 +110633,17 @@ CTRL + 单击 追踪链接</translation>
 <context>
     <name>QgsLayerTreeViewLowAccuracyIndicatorProvider</name>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="72"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="78"/>
         <source>Based on %1, which has a limited accuracy of &lt;b&gt;at best %2 meters&lt;/b&gt;.</source>
         <translation>基于%1，精度&lt;b&gt; 最高為%2米 &lt;/b&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="76"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="82"/>
         <source>Based on %1, which has a limited accuracy.</source>
         <translation>基于%1，精度有限。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="87"/>
+        <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="61"/>
         <source>%1 is a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy.</source>
         <translation>%1是动态CRS，但未設置坐标历元。坐标不明确，且精度有限。</translation>
     </message>
@@ -110625,12 +110769,12 @@ CTRL + 单击 追踪链接</translation>
         <translation>載入%1</translation>
     </message>
     <message>
-        <location filename="../src/core/layout/qgslayout.cpp" line="1174"/>
+        <location filename="../src/core/layout/qgslayout.cpp" line="1176"/>
         <source>Finalize restore</source>
         <translation>完成还原</translation>
     </message>
     <message>
-        <location filename="../src/core/layout/qgslayout.cpp" line="1207"/>
+        <location filename="../src/core/layout/qgslayout.cpp" line="1209"/>
         <source>Update model</source>
         <translation>更新模型</translation>
     </message>
@@ -115543,7 +115687,7 @@ Evaluation error: %1</source>
 <context>
     <name>QgsLayoutLegendMapFilteringModel</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="2074"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="2077"/>
         <source>Change Legend Linked Maps</source>
         <translation type="unfinished"/>
     </message>
@@ -115551,7 +115695,7 @@ Evaluation error: %1</source>
 <context>
     <name>QgsLayoutLegendMapFilteringWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1959"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1962"/>
         <source>Legend Filtering</source>
         <translation type="unfinished"/>
     </message>
@@ -115577,53 +115721,53 @@ Evaluation error: %1</source>
 <context>
     <name>QgsLayoutLegendNodeWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1549"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1552"/>
         <source>Legend Item Properties</source>
         <translation>圖例项屬性</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1554"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1557"/>
         <source>Follow Legend Default</source>
         <translation>遵循圖例默认</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1555"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1558"/>
         <source>Allow Splitting Over Columns</source>
         <translation>允许按列分割</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1556"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1559"/>
         <source>Prevent Splitting Over Columns</source>
         <translation>阻止按列分割</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1580"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1581"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1583"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1584"/>
         <source>Default</source>
         <translation>預設</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1743"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1772"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1832"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1858"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1902"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1746"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1775"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1835"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1861"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1905"/>
         <source>Edit Legend Item</source>
         <translation>編輯圖例项</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1817"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1820"/>
         <source>Insert Expression</source>
         <translation>插入表示式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1823"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1826"/>
         <source>Insert expression</source>
         <translation>插入表示式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1915"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1938"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1918"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1941"/>
         <source>Edit Legend Columns</source>
         <translation>編輯圖例列</translation>
     </message>
@@ -115689,274 +115833,274 @@ Evaluation error: %1</source>
 <context>
     <name>QgsLayoutLegendWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="157"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="160"/>
         <source>Legend Properties</source>
         <translation>圖例屬性</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="171"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="174"/>
         <source>Symbols on Left</source>
         <translation>符号居左</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="172"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="175"/>
         <source>Symbols on Right</source>
         <translation>符号居右</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="181"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="184"/>
         <source>Disabled</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="206"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="209"/>
         <source>Select Stroke Color</source>
         <translation>選擇描边顏色</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="349"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="352"/>
         <source>Change Legend Wrap</source>
         <translation>更改圖例版式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="361"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="364"/>
         <source>Change Legend Title</source>
         <translation>更改圖例标题</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="374"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="377"/>
         <source>Change Title Alignment</source>
         <translation>更改标题对齐方式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="385"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="388"/>
         <source>Change Group Alignment</source>
         <translation>变更组对齐方式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="396"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="399"/>
         <source>Change Subgroup Alignment</source>
         <translation>变更子组对齐方式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="407"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="410"/>
         <source>Change Item Alignment</source>
         <translation>更改项对齐方式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="419"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="422"/>
         <source>Change Legend Arrangement</source>
         <translation>更改圖例排列</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="430"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="433"/>
         <source>Change Column Count</source>
         <translation>更改列数</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="444"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="447"/>
         <source>Split Legend Layers</source>
         <translation>分割圖例圖層</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="456"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="459"/>
         <source>Legend Column Width</source>
         <translation>圖例列宽</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="468"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="471"/>
         <source>Resize Symbol Width</source>
         <translation>调整符号宽度</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="480"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="483"/>
         <source>Change Legend Maximum Symbol Size</source>
         <translation>更改圖例最大符号大小</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="492"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="495"/>
         <source>Change Legend Minimum Symbol Size</source>
         <translation>更改圖例最小符号大小</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="504"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="507"/>
         <source>Resize Symbol Height</source>
         <translation>调整符号高度</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="516"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="519"/>
         <source>Resize WMS Width</source>
         <translation>调整WMS宽度</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="528"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="531"/>
         <source>Resize WMS Height</source>
         <translation>调整WMS高度</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="540"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="543"/>
         <source>Change Title Space</source>
         <translation>更改标题间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="552"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="588"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="555"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="591"/>
         <source>Change Group Space</source>
         <translation>更改组间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="564"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="567"/>
         <source>Change Group Indent</source>
         <translation>更改组缩进</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="576"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="579"/>
         <source>Change Subgroup Indent</source>
         <translation>更改子组缩进</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="600"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="603"/>
         <source>Change Side of Group Space</source>
         <translation>调整组一侧的间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="612"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="615"/>
         <source>Change Side of Subgroup Space</source>
         <translation>调整子组一侧的间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="624"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="627"/>
         <source>Change Side of Symbol Space</source>
         <translation>调整符号一侧的间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="636"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="722"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="639"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="725"/>
         <source>Change Subgroup Space</source>
         <translation>调整子组间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="648"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="651"/>
         <source>Change Symbol Space</source>
         <translation>更改标签间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="662"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="665"/>
         <source>Change Label Space</source>
         <translation>更改标注间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="674"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="677"/>
         <source>Change Title Font</source>
         <translation>更改标题字体</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="686"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="689"/>
         <source>Change Group Font</source>
         <translation>更改组字体</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="698"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="701"/>
         <source>Change Layer Font</source>
         <translation>更改圖層字体</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="710"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="713"/>
         <source>Change Item Font</source>
         <translation>更改项字体</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="758"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="761"/>
         <source>Change Legend Wrapping</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="734"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="737"/>
         <source>Change Box Space</source>
         <translation>更改盒子间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="746"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="749"/>
         <source>Change Column Space</source>
         <translation>更改列间距</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="784"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="787"/>
         <source>Moved Legend Item Down</source>
         <translation>下移圖例项</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="828"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="831"/>
         <source>Move Legend Item Up</source>
         <translation>上移圖例项</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="868"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="871"/>
         <source>Change Auto Update</source>
         <translation>更改自动更新</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="911"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="914"/>
         <source>Change Legend Map</source>
         <translation>更改圖例地圖</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="927"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="930"/>
         <source>Resize Legend to Contents</source>
         <translation>调整圖例至内容大小</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="942"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="945"/>
         <source>Change Legend Borders</source>
         <translation>更改圖例边界</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="956"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="959"/>
         <source>Resize Legend Borders</source>
         <translation>更改圖例边界大小</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="970"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="973"/>
         <source>Change Legend Border Color</source>
         <translation>更改圖例边界顏色</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1001"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1004"/>
         <source>Add Legend Item(s)</source>
         <translation>加入圖例项</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1026"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1029"/>
         <source>Remove Legend Item</source>
         <translation>移除圖例项</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1113"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1143"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1159"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1186"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1250"/>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1288"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1116"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1146"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1162"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1189"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1253"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1291"/>
         <source>Update Legend</source>
         <translation>更新圖例</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1265"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1268"/>
         <source>Add Legend Group</source>
         <translation>加入圖例组</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1266"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1269"/>
         <source>Group</source>
         <translation>群組</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1300"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1303"/>
         <source>Only show items inside current %1 feature</source>
         <translation>只顯示当前%1要素内部的项</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1301"/>
+        <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1304"/>
         <source>Filter out legend elements that lie outside the current %1 feature.</source>
         <translation>滤除当前%1要素之外的圖例元素。</translation>
     </message>
@@ -123266,19 +123410,19 @@ Rasterizing map is recommended for proper rendering.</source>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="323"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2310"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2311"/>
         <source>Refine Current Face</source>
         <translation>优化当前面</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="325"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2285"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2286"/>
         <source>Remove Current Face</source>
         <translation>移除当前面</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="326"/>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2303"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2304"/>
         <source>Split Current Face</source>
         <translation>分割当前面</translation>
     </message>
@@ -123320,77 +123464,77 @@ Rasterizing map is recommended for proper rendering.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2271"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2272"/>
         <source>Remove Selected Vertex and Fill Hole</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2272"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2273"/>
         <source>Remove Selected Vertex without Filling Hole</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2276"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2277"/>
         <source>Remove Selected Vertices and Fill Hole(s)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2277"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2278"/>
         <source>Remove Selected Vertices without Filling Hole(s)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2281"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2282"/>
         <source>Remove Selected Face</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2306"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2307"/>
         <source>Refine Selected Face</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2774"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2775"/>
         <source>Terrain Z Value</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2775"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2776"/>
         <source>Z Value from project terrain could not be obtained, setting default value %1.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2961"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2962"/>
         <source>Selected mesh vertex ID: %1 at x: %2 y: %3 z: %4.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2998"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2999"/>
         <source>Selected mesh vertices IDs: %1 and %2 with distance %3 and dZ %4.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="3002"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="3003"/>
         <source>Selected %1 mesh vertices.</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2283"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2284"/>
         <source>Remove %n Selected Face(s)</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2308"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2309"/>
         <source>Refine %n Selected Face(s)</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2299"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2300"/>
         <source>Split Selected Face</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2301"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2302"/>
         <source>Split %n Selected Face(s)</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
@@ -123400,7 +123544,7 @@ Rasterizing map is recommended for proper rendering.</source>
         <translation>是否重建索引网孔圖層 %1 的面和頂點？</translation>
     </message>
     <message>
-        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2689"/>
+        <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2690"/>
         <source>Vertex Z value:</source>
         <translation>頂點Z值：</translation>
     </message>
@@ -123969,8 +124113,8 @@ Rasterizing map is recommended for proper rendering.</source>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="344"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="372"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="376"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="587"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="594"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
         <source>Move Label</source>
         <translation>移動標記</translation>
     </message>
@@ -123988,8 +124132,8 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="203"/>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="207"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="591"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="598"/>
         <source>Move Callout</source>
         <translation>移动牵引線</translation>
     </message>
@@ -124044,103 +124188,103 @@ Rasterizing map is recommended for proper rendering.</source>
         <translation>無法移动“%1”：無法將圖層“%2”设置為可編輯状态</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="484"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="486"/>
         <source>Moved curved label offset</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="496"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="498"/>
         <source>Move label anchor percent</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="545"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="547"/>
         <source>Moved label</source>
         <translation>移動標籤</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="547"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="549"/>
         <source>Moved callout</source>
         <translation>已移动的牵引線</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="496"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="587"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="498"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
         <source>Layer “%1” must be editable in order to move labels from it</source>
         <translation>圖層 “%1” 必须為可編輯状态才能移动标注</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="589"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="591"/>
         <source>Layer “%1” must be editable in order to move callouts from it</source>
         <translation>圖層 “%1” 必须為可編輯状态才能移动牵引線</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="594"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
         <source>Error encountered while storing new label position</source>
         <translation>保存新标注位置时发生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="596"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="598"/>
         <source>Error encountered while storing new callout position</source>
         <translation>储存新牵引線位置时遇到錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="718"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="720"/>
         <source>Delete Label Anchor Percent &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="747"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="751"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="749"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="753"/>
         <source>Delete Label Anchor Percent</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="747"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="749"/>
         <source>Layer “%1” must be editable in order to remove stored label anchor percent</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="751"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="753"/>
         <source>Error encountered while removing stored label anchor percent</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="757"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="767"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="774"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="759"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
         <source>Delete Label Position</source>
         <translation>删除标注位置</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="757"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="759"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="771"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="778"/>
         <source>Delete Callout Position</source>
         <translation>删除牵引線位置</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="767"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
         <source>Layer “%1” must be editable in order to remove stored label positions</source>
         <translation>圖層 “%1” 必须為可編輯状态才能移除保存的标注位置</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="771"/>
         <source>Layer “%1” must be editable in order to remove stored callout positions</source>
         <translation>圖層 “%1” 必须為可編輯状态才能移除保存的牵引線位置</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="774"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
         <source>Error encountered while removing stored label position</source>
         <translation>删除保存的标注位置发生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="776"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="778"/>
         <source>Error encountered while removing stored callout position</source>
         <translation>删除储存的牵引線位置时遇到錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="904"/>
+        <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="908"/>
         <source>Callout angle: %1°</source>
         <translation>牵引線角度：%1°</translation>
     </message>
@@ -125063,7 +125207,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="535"/>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="606"/>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="858"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="867"/>
         <source>Measure</source>
         <translation>測量</translation>
     </message>
@@ -125088,7 +125232,7 @@ Rasterizing map is recommended for proper rendering.</source>
         <translation>距離是基于專案 CRS (%2) 在 %1 中計算的。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="858"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="867"/>
         <source>Measurements copied to clipboard</source>
         <translation type="unfinished"/>
     </message>
@@ -125131,8 +125275,8 @@ Rasterizing map is recommended for proper rendering.</source>
         <translation>線段</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="778"/>
-        <location filename="../src/app/qgsmeasuredialog.cpp" line="799"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="787"/>
+        <location filename="../src/app/qgsmeasuredialog.cpp" line="808"/>
         <source>map units</source>
         <translation>地圖單位</translation>
     </message>
@@ -129334,12 +129478,12 @@ See the log for more information.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="155"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="153"/>
         <source>Sockets cannot be connected</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="156"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="154"/>
         <source>Either the sockets are incompatible or there is a circular dependency</source>
         <translation type="unfinished"/>
     </message>
@@ -131957,12 +132101,12 @@ Error message: %1</source>
 <context>
     <name>QgsNewsFeedParser</name>
     <message>
-        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="165"/>
+        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="172"/>
         <source>Fetching News Feed</source>
         <translation>获取信息流</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="177"/>
+        <location filename="../src/core/network/qgsnewsfeedparser.cpp" line="184"/>
         <source>News feed request failed [error: %1]</source>
         <translation>获取信息流失败[錯誤：%1]</translation>
     </message>
@@ -132551,31 +132695,31 @@ Always network: always load from network and do not check if the cache has a val
     <name>QgsOapifProvider</name>
     <message>
         <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="70"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="229"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="285"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="528"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="550"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="236"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="292"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="535"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="557"/>
         <source>OAPIF</source>
         <translation>OAPIF</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="229"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="285"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="236"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="292"/>
         <source>Cannot compute layer extent: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="568"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="575"/>
         <source>OGC API - Features filter</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="627"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="634"/>
         <source>Feature creation failed: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="844"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="851"/>
         <source>Feature deletion failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -132647,8 +132791,8 @@ Always network: always load from network and do not check if the cache has a val
 <context>
     <name>QgsOapifSharedData</name>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="871"/>
-        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="1228"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="878"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifprovider.cpp" line="1235"/>
         <source>OAPIF</source>
         <translation>OAPIF</translation>
     </message>
@@ -132684,107 +132828,107 @@ Always network: always load from network and do not check if the cache has a val
         <translation>無法打开SpatiaLite数据库</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="390"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="395"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
         <translation>無法初始化空間詮釋資料
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="431"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="436"/>
         <source>Creation of database failed. GeoPackage driver not found.</source>
         <translation>创建数据库失败，未找到GeoPackage驱动。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="438"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="443"/>
         <source>Creation of database failed (OGR error: %1)</source>
         <translation>数据库创建失败（OGR錯誤：%1）</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="454"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="459"/>
         <source>Could not create a new database
 </source>
         <translation>無法建立新資料庫
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="463"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="468"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
         <translation>無法啟用FOREIGN_KEY限制</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="559"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="564"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a string of comma-separated values.</source>
         <translation>圖層%2中的欄位 &apos;%1&apos; 已從列表转换為逗号分隔值的字符串。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="600"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="605"/>
         <source>Layer %1 has unsupported geometry type %2.</source>
         <translation>圖層 %1 包含了不受支持的幾何圖形類型 %2。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="620"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="625"/>
         <source>Layer %1 has unsupported Coordinate Reference System (%2).</source>
         <translation>圖層 %1 包含了不受支持的坐标参照系(%2)。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="641"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="646"/>
         <source>Filling SpatiaLite for layer %1 failed</source>
         <translation>為圖層 %1 填充 SpatiaLite 失败</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="655"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="660"/>
         <source>No Spatialite support available</source>
         <translation>沒有支持可用的Spatialite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="666"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="671"/>
         <source>%1 (offline)</source>
         <translation>%1 (离線)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="680"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="685"/>
         <source>Cannot make FID-name for GPKG </source>
         <translation>無法為 GPKG 生成 FID 名称 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="701"/>
-        <location filename="../src/core/qgsofflineediting.cpp" line="759"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="706"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="764"/>
         <source>Creation of layer failed (OGR error: %1)</source>
         <translation>创建圖層失败（OGR錯誤：%1）</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="733"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="738"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a JSON-formatted string value.</source>
         <translation>圖層 %2 中的欄位 &apos;%1&apos; 已從列表转换為 JSON 格式的字符串值。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="747"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="752"/>
         <source>Creation of field %1 failed (OGR error: %2)</source>
         <translation>欄位%1创建失败（OGR錯誤：%2）</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="852"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="857"/>
         <source>Feature cannot be copied to the offline layer, please check if the online layer &apos;%1&apos; is still accessible.</source>
         <translation>無法將要素複製到离線圖層，请检查在線圖層“%1”是否仍然可以访问。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1168"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1173"/>
         <source>Offline Editing Plugin</source>
         <translation>離線編輯外掛程式</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1182"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1187"/>
         <source>Could not open the SpatiaLite logging database</source>
         <translation>無法打开SpatiaLite日志数据库</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="1508"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="1513"/>
         <source>Could not deduce table name from data source %1.</source>
         <translation>無法從数据源%1推导出表名。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="563"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="568"/>
         <source>%1: Unknown data type %2. Not using type affinity for the field.</source>
         <translation>%1: 未知数据類型 %2，未对欄位使用類型相似性。</translation>
     </message>
@@ -134393,13 +134537,13 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="105"/>
-        <location filename="../src/app/qgisapp.cpp" line="12460"/>
+        <location filename="../src/app/qgisapp.cpp" line="12463"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
-        <location filename="../src/app/qgisapp.cpp" line="12461"/>
+        <location filename="../src/app/qgisapp.cpp" line="12464"/>
         <source>System</source>
         <translation>系統設定</translation>
     </message>
@@ -134410,7 +134554,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="112"/>
-        <location filename="../src/app/qgisapp.cpp" line="12462"/>
+        <location filename="../src/app/qgisapp.cpp" line="12465"/>
         <source>CRS Handling</source>
         <translation>CRS处理</translation>
     </message>
@@ -134426,13 +134570,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
-        <location filename="../src/app/qgisapp.cpp" line="12463"/>
+        <location filename="../src/app/qgisapp.cpp" line="12466"/>
         <source>Coordinate Transforms</source>
         <translation>坐标变换</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="116"/>
-        <location filename="../src/app/qgisapp.cpp" line="12464"/>
+        <location filename="../src/app/qgisapp.cpp" line="12467"/>
         <source>Data Sources</source>
         <translation>資料來源</translation>
     </message>
@@ -134453,31 +134597,31 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="126"/>
-        <location filename="../src/app/qgisapp.cpp" line="12469"/>
+        <location filename="../src/app/qgisapp.cpp" line="12472"/>
         <source>Colors</source>
         <translation>色彩</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="120"/>
-        <location filename="../src/app/qgisapp.cpp" line="12466"/>
+        <location filename="../src/app/qgisapp.cpp" line="12469"/>
         <source>Canvas &amp; Legend</source>
         <translation>地圖與圖例</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="122"/>
-        <location filename="../src/app/qgisapp.cpp" line="12467"/>
+        <location filename="../src/app/qgisapp.cpp" line="12470"/>
         <source>Map Tools</source>
         <translation>地圖工具</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="124"/>
-        <location filename="../src/app/qgisapp.cpp" line="12468"/>
+        <location filename="../src/app/qgisapp.cpp" line="12471"/>
         <source>Digitizing</source>
         <translation>數位化</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="118"/>
-        <location filename="../src/app/qgisapp.cpp" line="12465"/>
+        <location filename="../src/app/qgisapp.cpp" line="12468"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
@@ -134488,7 +134632,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
-        <location filename="../src/app/qgisapp.cpp" line="12473"/>
+        <location filename="../src/app/qgisapp.cpp" line="12476"/>
         <source>Network</source>
         <translation>網路</translation>
     </message>
@@ -134635,19 +134779,19 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
-        <location filename="../src/app/qgisapp.cpp" line="12472"/>
+        <location filename="../src/app/qgisapp.cpp" line="12475"/>
         <source>Authentication</source>
         <translation>認證</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
-        <location filename="../src/app/qgisapp.cpp" line="12471"/>
+        <location filename="../src/app/qgisapp.cpp" line="12474"/>
         <source>Variables</source>
         <translation>變數</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsadvancedoptions.cpp" line="100"/>
-        <location filename="../src/app/qgisapp.cpp" line="12476"/>
+        <location filename="../src/app/qgisapp.cpp" line="12479"/>
         <source>Advanced</source>
         <translation>進階設定</translation>
     </message>
@@ -134703,13 +134847,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
-        <location filename="../src/app/qgisapp.cpp" line="12470"/>
+        <location filename="../src/app/qgisapp.cpp" line="12473"/>
         <source>Layouts</source>
         <translation>圖面配置</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
-        <location filename="../src/app/qgisapp.cpp" line="12474"/>
+        <location filename="../src/app/qgisapp.cpp" line="12477"/>
         <source>Locator</source>
         <translation>定位器</translation>
     </message>
@@ -134725,7 +134869,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
-        <location filename="../src/app/qgisapp.cpp" line="12475"/>
+        <location filename="../src/app/qgisapp.cpp" line="12478"/>
         <source>Acceleration</source>
         <translation>加速</translation>
     </message>
@@ -138278,98 +138422,98 @@ b）在配置标签页中加入 HTTP 基本认证凭据并保存到加密的数�
 <context>
     <name>QgsPictureSourceLineEditBase</name>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="288"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="294"/>
         <source>SVG files</source>
         <translation>SVG檔案</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="297"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="303"/>
         <source>Images</source>
         <translation>圖像</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="297"/>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="308"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="303"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="314"/>
         <source>All files</source>
         <translation>所有檔案</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="308"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="314"/>
         <source>Animated Images</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="319"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="325"/>
         <source>Select SVG File</source>
         <translation>選擇SVG文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="321"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="327"/>
         <source>Select Image File</source>
         <translation>選擇圖像文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="323"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="329"/>
         <source>Select Animated Image File</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="333"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="339"/>
         <source>SVG From URL</source>
         <translation>来自 URL 的 SVG</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="335"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="341"/>
         <source>Image From URL</source>
         <translation>来自URL的圖像</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="337"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="343"/>
         <source>Animated Image From URL</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="347"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="353"/>
         <source>Enter SVG URL</source>
         <translation>输入 SVG 的 URL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="349"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="355"/>
         <source>Enter image URL</source>
         <translation>输入圖像URL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="351"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="357"/>
         <source>Enter animated image URL</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="361"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="367"/>
         <source>Embed SVG File</source>
         <translation>嵌入的SVG文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="363"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="369"/>
         <source>Embed Image File</source>
         <translation>嵌入的圖像文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="365"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="371"/>
         <source>Embed Animated Image File</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="375"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="381"/>
         <source>Extract SVG File</source>
         <translation>提取SVG文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="377"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="383"/>
         <source>Extract Image File</source>
         <translation>提取圖像文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="379"/>
+        <location filename="../src/gui/qgsfilecontentsourcelineedit.cpp" line="385"/>
         <source>Extract Animated Image File</source>
         <translation type="unfinished"/>
     </message>
@@ -140380,7 +140524,7 @@ Raising this value may allow missing chunks to be rendered while lowering it may
 <context>
     <name>QgsPointCloudLayerExporterTask</name>
     <message>
-        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="654"/>
+        <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="657"/>
         <source>Exporting point cloud</source>
         <translation>匯出點雲</translation>
     </message>
@@ -142383,14 +142527,14 @@ SQL: %2
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1721"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1726"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2152"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3807"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4770"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3814"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4809"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4832"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4849"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4862"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4901"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4784"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4816"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4839"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4856"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4869"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4908"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -142480,64 +142624,64 @@ SQL：%2</translation>
         <translation>未给定查看/查询的键欄位。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3568"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3575"/>
         <source>PostgreSQL WHERE clause</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3693"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3700"/>
         <source>Unexpected number of tuples from estimated extent query %1: %2 (1 expected).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3710"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3717"/>
         <source>Unexpected format from estimated extent query %1: %2.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3742"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3749"/>
         <source>Unexpected number of tuples from compute extent query %1: %2 (1 expected).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3760"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3767"/>
         <source>Unexpected empty result from extent query %1.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3807"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3814"/>
         <source>Unexpected result from extent query %1: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3833"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3840"/>
         <source>Could not extract layer extent</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4770"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
         <source>Cannot find end of double quoted string: %1</source>
         <translation>找不到双引号字符串的结尾：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4777"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4784"/>
         <source>Cannot find separator: %1</source>
         <translation>找不到分隔符：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4809"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4816"/>
         <source>Error parsing hstore: %1</source>
         <translation>解析hstore时出错：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4832"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4849"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4839"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4856"/>
         <source>Error parsing array: %1</source>
         <translation>解析数组时出错：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4862"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4901"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4869"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4908"/>
         <source>Error parsing array, missing curly braces: %1</source>
         <translation>解析数组时出错，缺少大括号：%1</translation>
     </message>
@@ -142602,99 +142746,99 @@ Write accesses will be denied.</source>
         <translation>找不到圖層%1.%2.%3的拓撲資料</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2570"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2577"/>
         <source>PostGIS error while adding features: %1</source>
         <translation>增加圖徵時PostGIS發生了錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2650"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2657"/>
         <source>PostGIS error while deleting features: %1</source>
         <translation>删除圖徵時PostGIS發生了錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2709"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2716"/>
         <source>PostGIS error while truncating: %1</source>
         <translation>PostGIS在清空表中数据时出错：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2781"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2788"/>
         <source>PostGIS error while adding attributes: %1</source>
         <translation>增加屬性時PostGIS發生了錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2837"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2844"/>
         <source>PostGIS error while deleting attributes: %1</source>
         <translation>删除屬性時PostGIS發生了錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2862"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2869"/>
         <source>Invalid attribute index: %1</source>
         <translation>屬性索引無效：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2868"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2875"/>
         <source>Error renaming field %1: name &apos;%2&apos; already exists</source>
         <translation>重命名欄位%1时发生了錯誤：名称“%2”已经存在</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2897"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2904"/>
         <source>PostGIS error while renaming attributes: %1</source>
         <translation>重命名屬性时PostGIS发生了錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2961"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3330"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2968"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3337"/>
         <source>Changing the value of GENERATED field %1 is not allowed.</source>
         <translation>不允许更改GENERATED欄位 %1 的值。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3024"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3031"/>
         <source>No fields were updated on the database.</source>
         <translation>数据库中未更新任何欄位。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3054"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3453"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3061"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3460"/>
         <source>PostGIS error while changing attributes: %1</source>
         <translation>更改屬性時PostGIS發生了錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3257"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3264"/>
         <source>PostGIS error while changing geometry values: %1</source>
         <translation>更改幾何圖形的值時PostGIS發生了錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3395"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3402"/>
         <source>No fields/geometries were updated on the database.</source>
         <translation>数据库中沒有更新欄位/幾何圖形。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4191"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4198"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>%2中空欄位%1的幾何圖形類型和空間参考id未定義。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4218"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4225"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>%2中%1的圖徵類型或空間参考id無法確定或未請求。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4731"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4738"/>
         <source>PostgreSQL version: unknown</source>
         <translation>PostgreSQL版本：未知</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4732"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4739"/>
         <source>unknown</source>
         <translation>未知</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4749"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4756"/>
         <source>PostgreSQL not connected</source>
         <translation>PostgreSQL未連接</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4752"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4759"/>
         <source>PostgreSQL/PostGIS provider
 %1
 PostGIS %2</source>
@@ -142703,7 +142847,7 @@ PostGIS %2</source>
 PostGIS %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4983"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4990"/>
         <source>Error discovering relations of %1: invalid layer</source>
         <translation>发现%1的关系錯誤：無效圖層</translation>
     </message>
@@ -143537,7 +143681,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingAnnotationLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7486"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7532"/>
         <source>name of an annotation layer, or &quot;main&quot; for the main annotation layer</source>
         <translation>注记圖層名或主注记圖層的 &quot;main&quot;</translation>
     </message>
@@ -143576,22 +143720,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingBandParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6772"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6815"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6775"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6818"/>
         <source>Band number (separate bands with ; for multiple band parameters)</source>
         <translation>波段编号（对于多波段參數用英文 ; 分割）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6789"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6832"/>
         <source>Parent layer</source>
         <translation>父層</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6822"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6865"/>
         <source>Allow multiple</source>
         <translation>允许多個</translation>
     </message>
@@ -143599,7 +143743,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingBandWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7064"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7110"/>
         <source>selected band numbers as an array of numbers, or semicolon separated string of options (e.g. &apos;1;3&apos;)</source>
         <translation>选中的波段编号作為数字数组或以分号分隔的字符串選項（例如：&apos;1;3&apos;）</translation>
     </message>
@@ -143701,12 +143845,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingColorParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4234"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4253"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4238"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4257"/>
         <source>Allow opacity control</source>
         <translation>允许控制不透明度</translation>
     </message>
@@ -143714,7 +143858,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingColorWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4355"/>
         <source>color style string, e.g. #ff0000 or 255,0,0</source>
         <translation>顏色樣式字符串，比如#ff0000 或者 255,0,0</translation>
     </message>
@@ -143816,27 +143960,27 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingCoordinateOperationParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4362"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4384"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4443"/>
         <source>Source CRS parameter</source>
         <translation>源CRS參數</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4423"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4445"/>
         <source>Destination CRS parameter</source>
         <translation>目标CRS參數</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4433"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4455"/>
         <source>Static source CRS</source>
         <translation>静态源CRS</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4435"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4457"/>
         <source>Static destination CRS</source>
         <translation>静态目标CRS</translation>
     </message>
@@ -143844,7 +143988,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingCoordinateOperationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4587"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4612"/>
         <source>Proj coordinate operation string, e.g. &apos;+proj=pipeline +step +inv...&apos;</source>
         <translation>Proj坐标运算字符串，例如：&apos;+proj=pipeline +step +inv...&apos;</translation>
     </message>
@@ -143878,12 +144022,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseSchemaParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5721"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5757"/>
         <source>Provider connection parameter</source>
         <translation>数据源连接參數</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5724"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5760"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
@@ -143891,7 +144035,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseSchemaWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5850"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5888"/>
         <source>database schema name as a string value</source>
         <translation>数据库架构名作為字符串值</translation>
     </message>
@@ -143899,17 +144043,17 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseTableParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5955"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5993"/>
         <source>Provider connection parameter</source>
         <translation>数据源连接參數</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5958"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5996"/>
         <source>Database schema parameter</source>
         <translation>数据库架构參數</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5961"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5999"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
@@ -143917,7 +144061,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDatabaseTableWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6111"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6151"/>
         <source>database table name as a string value</source>
         <translation>数据库表名作為字符串值</translation>
     </message>
@@ -143925,22 +144069,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDateTimeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5390"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5420"/>
         <source>Type</source>
         <translation>類型</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5393"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5423"/>
         <source>Date and Time</source>
         <translation>日期與時間</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5394"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5424"/>
         <source>Date</source>
         <translation>日期</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5395"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5425"/>
         <source>Time</source>
         <translation>時間</translation>
     </message>
@@ -143948,22 +144092,22 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingDateTimeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5444"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5478"/>
         <source>[Not selected]</source>
         <translation>[未選擇]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5516"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5550"/>
         <source>datetime value, or a ISO string representation of a datetime</source>
         <translation>日期时间值，或日期时间的ISO字符串表示形式</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5519"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5553"/>
         <source>date value, or a ISO string representation of a date</source>
         <translation>日期值，或日期的ISO字符串表示形式</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5522"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5556"/>
         <source>time value, or a ISO string representation of a time</source>
         <translation>时间值，或时间的ISO字符串表示形式</translation>
     </message>
@@ -144156,12 +144300,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumCheckboxPanelWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3202"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3211"/>
         <source>Select All</source>
         <translation>全選</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3213"/>
         <source>Clear Selection</source>
         <translation>清除选择</translation>
     </message>
@@ -144215,18 +144359,18 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumPanelWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2982"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3075"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2991"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3084"/>
         <source>%1 options selected</source>
         <translation>选中%1個選項</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3098"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3107"/>
         <source>,</source>
         <translation>,</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3102"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3111"/>
         <source>%n option(s) selected</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
@@ -144234,12 +144378,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingEnumWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3301"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3313"/>
         <source>[Not selected]</source>
         <translation>[未選擇]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3389"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3399"/>
         <source>selected option index (starting from 0), array of indices, or comma separated string of options (e.g. &apos;1,3&apos;)</source>
         <translation>所选選項索引 (從0开始)，索引数组或逗号分隔的選項字符串（例如 &apos;1,3&apos;）</translation>
     </message>
@@ -144247,37 +144391,37 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExpressionParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2521"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2524"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2542"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2545"/>
         <source>Parent layer</source>
         <translation>父層</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2547"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2550"/>
         <source>Expression type</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2549"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2552"/>
         <source>QGIS</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2550"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2553"/>
         <source>Point Cloud</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2551"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2554"/>
         <source>Raster Calculator</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2555"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2558"/>
         <source>None</source>
         <translation>無</translation>
     </message>
@@ -144285,7 +144429,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExpressionWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2929"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2938"/>
         <source>string representation of an expression</source>
         <translation>表示式的字符串表示形式</translation>
     </message>
@@ -144293,12 +144437,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExtentParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6168"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6208"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6171"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6211"/>
         <source>Not set</source>
         <translation>未設定</translation>
     </message>
@@ -144306,12 +144450,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingExtentWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6219"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6262"/>
         <source>Not set</source>
         <translation>未設定</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6292"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6335"/>
         <source>string of the format &apos;x min,x max,y min,y max&apos; or a geometry value (bounding box is used)</source>
         <translation>格式為&apos;x min，x max，y min，y max&apos;或幾何值的字符串（使用外接矩形框）</translation>
     </message>
@@ -144319,7 +144463,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSinkWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8105"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8154"/>
         <source>path to layer destination</source>
         <translation>目标圖層路径</translation>
     </message>
@@ -144383,32 +144527,32 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSourceParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6568"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6611"/>
         <source>Geometry type</source>
         <translation>幾何類型</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6570"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6613"/>
         <source>Geometry Not Required</source>
         <translation>无需幾何圖形</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6571"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6614"/>
         <source>Point</source>
         <translation>點</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6572"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6615"/>
         <source>Line</source>
         <translation>線</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6573"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6616"/>
         <source>Polygon</source>
         <translation>多邊形</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6574"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6617"/>
         <source>Any Geometry Type</source>
         <translation>任何幾何圖形類型</translation>
     </message>
@@ -144416,7 +144560,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFeatureSourceWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6611"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6654"/>
         <source>path to a vector layer</source>
         <translation>向量圖層路径</translation>
     </message>
@@ -144602,14 +144746,14 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4671"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4752"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4767"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4696"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4777"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4792"/>
         <source>%n field(s) selected</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4763"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4788"/>
         <source>,</source>
         <translation>,</translation>
     </message>
@@ -144617,62 +144761,62 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4782"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4807"/>
         <source>Parent layer</source>
         <translation>父層</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4834"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4859"/>
         <source>Allowed data type</source>
         <translation>允许的数据類型</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4836"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4861"/>
         <source>Any</source>
         <translation>任何</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4837"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4862"/>
         <source>Number</source>
         <translation>数字</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4838"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4863"/>
         <source>String</source>
         <translation>字串</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4839"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4864"/>
         <source>Date/time</source>
         <translation>日期/时间</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4840"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4865"/>
         <source>Binary</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4841"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4866"/>
         <source>Boolean</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4847"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4872"/>
         <source>Accept multiple fields</source>
         <translation>接受多個欄位</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4853"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4878"/>
         <source>Select all fields by default</source>
         <translation>默认选取所有欄位</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4864"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4889"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4867"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4892"/>
         <source>Default field name, or ; separated list of field names for multiple field parameters</source>
         <translation>默认欄位名，或多個欄位參數的欄位名分隔列表</translation>
     </message>
@@ -144680,7 +144824,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5171"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5199"/>
         <source>selected field names as an array of names, or semicolon separated string of options (e.g. &apos;fid;place_name&apos;)</source>
         <translation>选中的欄位名称作為名称数组或以分号分隔的選項字符串（例如：&apos;fid;place_name&apos;）</translation>
     </message>
@@ -144688,7 +144832,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFileDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8202"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8251"/>
         <source>path to file destination</source>
         <translation>目标文件路径</translation>
     </message>
@@ -144744,12 +144888,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFileWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2458"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2461"/>
         <source>%1 files</source>
         <translation>%1個文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2493"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2496"/>
         <source>string representing a path to a file or folder</source>
         <translation>表示文件或文件夹的路径的字符串</translation>
     </message>
@@ -144757,7 +144901,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFolderDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8227"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8276"/>
         <source>path to folder destination</source>
         <translation>目标文件夹路径</translation>
     </message>
@@ -144765,7 +144909,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingGeometryParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4125"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4144"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
@@ -144773,7 +144917,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingGeometryWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4223"/>
         <source>string in the Well-Known-Text format or a geometry value</source>
         <translation>Well-Known-Text 格式或幾何圖形值的字符串</translation>
     </message>
@@ -144898,124 +145042,124 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayerOutputDestinationWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="214"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="219"/>
         <source>Open output file after running algorithm</source>
         <translation>演算法執行完成後開起輸出檔</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="239"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="244"/>
         <source>Skip Output</source>
         <translation>忽略输出</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="248"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="253"/>
         <source>Create Temporary Layer</source>
         <translation>创建临时圖層</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="252"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="257"/>
         <source>Save to a Temporary Directory</source>
         <translation>保存到临时目录</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="256"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="261"/>
         <source>Save to a Temporary File</source>
         <translation>保存到临时文件</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="266"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="271"/>
         <source>Save to Directory…</source>
         <translation>保存到目录…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="271"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="276"/>
         <source>Save to File…</source>
         <translation>儲存至檔案...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="278"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="283"/>
         <source>Save to GeoPackage…</source>
         <translation>保存到GeoPackage...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="282"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="287"/>
         <source>Save to Database Table…</source>
         <translation>保存到数据库表格...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="289"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="294"/>
         <source>Append to Layer…</source>
         <translation>追加到圖層...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="294"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="299"/>
         <source>Edit Field Mapping…</source>
         <translation>編輯欄位映射...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="306"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="311"/>
         <source>Change File Encoding (%1)…</source>
         <translation>改变文件編碼（%1）...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="314"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="319"/>
         <source>[Skip output]</source>
         <translation>[忽略输出]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="329"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="334"/>
         <source>[Create temporary layer]</source>
         <translation>[创建临时圖層]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="333"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="338"/>
         <source>[Save to temporary folder]</source>
         <translation>[保存到临时文件夹]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="337"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="342"/>
         <source>[Save to temporary file]</source>
         <translation>[儲存至暫存檔案]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="358"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="363"/>
         <source>Select Directory</source>
         <translation>選取資料夾</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="419"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="424"/>
         <source>Save file</source>
         <translation>儲存檔案</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="446"/>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="454"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="451"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="459"/>
         <source>Save to GeoPackage</source>
         <translation>保存到GeoPackage</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="446"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="451"/>
         <source>GeoPackage files (*.gpkg);;All files (*.*)</source>
         <translation>GeoPackage文件 (*.gpkg);;全部文件 (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="454"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="459"/>
         <source>Layer name</source>
         <translation>圖層名稱</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="488"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="493"/>
         <source>Save “%1” to Database Table</source>
         <translation>保存 “%1” 到数据库表格...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="539"/>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="578"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="544"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="583"/>
         <source>Append &quot;%1&quot; to Layer</source>
         <translation>追加 &quot;%1&quot; 到圖層</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="599"/>
+        <location filename="../src/gui/processing/qgsprocessingoutputdestinationwidget.cpp" line="604"/>
         <source>File encoding</source>
         <translation>檔案編碼</translation>
     </message>
@@ -145023,7 +145167,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutItemParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3530"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3543"/>
         <source>Parent layout</source>
         <translation>父圖面配置</translation>
     </message>
@@ -145031,12 +145175,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutItemWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3602"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3618"/>
         <source>UUID or ID of an existing print layout item</source>
         <translation>现有列印圖面配置项的 UUID 或 ID</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3700"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3716"/>
         <source>string representing the UUID or ID of an existing print layout item</source>
         <translation>代表现有列印圖面配置项 UUID 或 ID 的字符串</translation>
     </message>
@@ -145044,12 +145188,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingLayoutWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3441"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3454"/>
         <source>Name of an existing print layout</source>
         <translation>现有列印圖面配置的名称</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3505"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3518"/>
         <source>string representing the name of an existing print layout</source>
         <translation>代表现有列印圖面配置名称的字符串</translation>
     </message>
@@ -145105,62 +145249,62 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6321"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6364"/>
         <source>Layer type</source>
         <translation>圖層類型</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6323"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6366"/>
         <source>Any Map Layer</source>
         <translation>任何地圖圖層</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6324"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6367"/>
         <source>Vector (Point)</source>
         <translation>向量（點）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6325"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6368"/>
         <source>Vector (Line)</source>
         <translation>向量（線）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6326"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6369"/>
         <source>Vector (Polygon)</source>
         <translation>向量（多邊形）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6327"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6370"/>
         <source>Vector (Any Geometry Type)</source>
         <translation>向量（任何幾何圖形類型）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6328"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6371"/>
         <source>Vector (No Geometry Required)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6329"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6372"/>
         <source>Raster</source>
         <translation>影像</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6330"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6373"/>
         <source>Mesh</source>
         <translation>网孔</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6331"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6374"/>
         <source>Plugin</source>
         <translation>外掛</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6332"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6375"/>
         <source>Point Cloud</source>
         <translation>點云</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6376"/>
         <source>Annotation</source>
         <translation>注记</translation>
     </message>
@@ -145168,7 +145312,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6464"/>
         <source>path to a map layer</source>
         <translation>地圖圖層路径</translation>
     </message>
@@ -145176,7 +145320,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapThemeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5250"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5278"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
@@ -145184,12 +145328,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMapThemeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5302"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5332"/>
         <source>[Not selected]</source>
         <translation>[未選擇]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5360"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5390"/>
         <source>map theme as a string value (e.g. &apos;base maps&apos;)</source>
         <translation>字符串值形式的地圖主题（例如“底圖”）</translation>
     </message>
@@ -145363,7 +145507,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMeshLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6640"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6683"/>
         <source>path to a mesh layer</source>
         <translation>网孔圖層路径</translation>
     </message>
@@ -145463,8 +145607,8 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7158"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7312"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7204"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7358"/>
         <source>%n input(s) selected</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
@@ -145472,67 +145616,67 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7325"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7371"/>
         <source>Allowed layer type</source>
         <translation>允许的圖層類型</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7327"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7373"/>
         <source>Any Map Layer</source>
         <translation>任何地圖圖層</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7328"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7374"/>
         <source>Vector (No Geometry Required)</source>
         <translation>向量（无需幾何圖形）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7329"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7375"/>
         <source>Vector (Point)</source>
         <translation>向量（點）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7330"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7376"/>
         <source>Vector (Line)</source>
         <translation>向量（線）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7331"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7377"/>
         <source>Vector (Polygon)</source>
         <translation>向量（多邊形）</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7332"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7378"/>
         <source>Any Geometry Type</source>
         <translation>任何幾何圖形類型</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7333"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7379"/>
         <source>Raster</source>
         <translation>影像</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7334"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7380"/>
         <source>File</source>
         <translation>檔案</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7335"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7381"/>
         <source>Mesh</source>
         <translation>网孔</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7336"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7382"/>
         <source>Plugin</source>
         <translation>外掛</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7337"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7383"/>
         <source>Point Cloud</source>
         <translation>點云</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7338"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7384"/>
         <source>Annotation</source>
         <translation>注记</translation>
     </message>
@@ -145540,7 +145684,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingMultipleLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7421"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7467"/>
         <source>an array of layer paths, or semicolon separated string of layer paths</source>
         <translation>圖層路径数组，或者分号分割的圖層路径字符串</translation>
     </message>
@@ -145697,14 +145841,14 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributePanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7619"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7688"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7703"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7665"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7734"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7749"/>
         <source>%n attribute(s) selected</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7699"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7745"/>
         <source>,</source>
         <translation type="unfinished"/>
     </message>
@@ -145712,27 +145856,27 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributeParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7718"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7764"/>
         <source>Parent layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7751"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7797"/>
         <source>Accept multiple attributes</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7757"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7803"/>
         <source>Select all attributes by default</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7768"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7814"/>
         <source>Default value</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7771"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7817"/>
         <source>Default attribute name, or ; separated list of attribute names for multiple attribute parameters</source>
         <translation type="unfinished"/>
     </message>
@@ -145740,7 +145884,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudAttributeWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7998"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8047"/>
         <source>selected attribute names as an array of names, or semicolon separated string of options (e.g. &apos;X;Intensity&apos;)</source>
         <translation type="unfinished"/>
     </message>
@@ -145748,7 +145892,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8177"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8226"/>
         <source>path to layer destination</source>
         <translation>目标圖層路径</translation>
     </message>
@@ -145898,7 +146042,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointCloudLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7451"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7497"/>
         <source>path to a point cloud layer</source>
         <translation>點云圖層路径</translation>
     </message>
@@ -145906,13 +146050,13 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3966"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3982"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3969"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3970"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3985"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3986"/>
         <source>Point as &apos;x,y&apos;</source>
         <translation>點表示為“x,y”</translation>
     </message>
@@ -145920,12 +146064,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingPointWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4025"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4044"/>
         <source>Point as &apos;x,y&apos;</source>
         <translation>點表示為“x,y”</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4095"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4114"/>
         <source>string of the format &apos;x,y&apos; or a geometry value (centroid is used)</source>
         <translation>格式為“x,y”或幾何圖形值的字符串（使用其質心）</translation>
     </message>
@@ -145960,12 +146104,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingProviderConnectionParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5551"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5585"/>
         <source>Provider</source>
         <translation>資料源</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5559"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5593"/>
         <source>Default value</source>
         <translation>預設值</translation>
     </message>
@@ -145973,7 +146117,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingProviderConnectionWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5661"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5697"/>
         <source>connection name as a string value</source>
         <translation>连接名称作為字符串值</translation>
     </message>
@@ -146033,8 +146177,8 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterBandPanelWidget</name>
     <message numerus="yes">
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6687"/>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6758"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6730"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6801"/>
         <source>%n band(s) selected</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
@@ -146200,7 +146344,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8153"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8202"/>
         <source>path to layer destination</source>
         <translation>目标圖層路径</translation>
     </message>
@@ -146208,7 +146352,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingRasterLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6465"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6508"/>
         <source>path to a raster layer</source>
         <translation>網格圖層路径</translation>
     </message>
@@ -146334,7 +146478,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8129"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8178"/>
         <source>path to layer destination</source>
         <translation>目标圖層路径</translation>
     </message>
@@ -146342,32 +146486,32 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorLayerParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6499"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6542"/>
         <source>Geometry type</source>
         <translation>幾何類型</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6501"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6544"/>
         <source>Geometry Not Required</source>
         <translation>无需幾何圖形</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6502"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6545"/>
         <source>Point</source>
         <translation>點</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6503"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6546"/>
         <source>Line</source>
         <translation>線</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6504"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6547"/>
         <source>Polygon</source>
         <translation>多邊形</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6505"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6548"/>
         <source>Any Geometry Type</source>
         <translation>任何幾何圖形類型</translation>
     </message>
@@ -146375,7 +146519,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorLayerWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6539"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="6582"/>
         <source>path to a vector layer</source>
         <translation>向量圖層路径</translation>
     </message>
@@ -146383,7 +146527,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingVectorTileDestinationWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8251"/>
+        <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8300"/>
         <source>path to layer destination</source>
         <translation type="unfinished"/>
     </message>
@@ -146589,295 +146733,295 @@ SQL: %3</translation>
 <context>
     <name>QgsProject</name>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1776"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="1798"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1778"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1800"/>
         <source>Loading layer %1</source>
         <translation>載入%1圖層</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1820"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1822"/>
         <source>Create layer</source>
         <translation>创建圖層</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1895"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1897"/>
         <source>Load layer source</source>
         <translation>載入圖層源</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1909"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1911"/>
         <source>Add layer to project</source>
         <translation>加入圖層到專案</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1977"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="1985"/>
-        <location filename="../src/core/project/qgsproject.cpp" line="2063"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1979"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1987"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2065"/>
         <source>Unable to open %1</source>
         <translation>無法打開%1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2046"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2048"/>
         <source>Setting up translations</source>
         <translation>設置翻译</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2056"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2058"/>
         <source>Reading project file</source>
         <translation>正在读取專案文件</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2105"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2107"/>
         <source>Updating project file</source>
         <translation>正在更新專案文件</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2139"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2141"/>
         <source>Creating auxiliary storage</source>
         <translation>正在创建附加存储</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2170"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2172"/>
         <source>Reading properties</source>
         <translation>正在读取屬性</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2312"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2314"/>
         <source>Project Variables Invalid</source>
         <translation>專案变量無效</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2312"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2314"/>
         <source>The project contains invalid variable settings.</source>
         <translation>專案包含無效变量設置。</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2356"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2358"/>
         <source>Loading layer tree</source>
         <translation>正在載入圖層树</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2375"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2377"/>
         <source>Reading map layers</source>
         <translation>正在读取地圖圖層</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2406"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2408"/>
         <source>Resolving layer references</source>
         <translation>解析圖層参考</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2401"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2403"/>
         <source>Loading embedded layers</source>
         <translation>正在載入内嵌圖層</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="765"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="767"/>
         <source>Trying to commit changes without a layer specified. This only works if the transaction mode is buffered</source>
         <translation>尝试在未指定圖層的情况下提交更改，这仅在事务模式被缓冲时有效</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="791"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="793"/>
         <source>Trying to roll back changes without a layer specified. This only works if the transaction mode is buffered</source>
         <translation>尝试在未指定圖層的情况下回滚更改，这仅在事务模式被缓冲时有效</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1742"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1744"/>
         <source>Load providers in parallel</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2417"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2419"/>
         <source>Resolving references</source>
         <translation>正在解析参考</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2520"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2522"/>
         <source>Storing original layer properties</source>
         <translation>存储原始圖層屬性</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2526"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2528"/>
         <source>Loading map themes</source>
         <translation>正在載入地圖主题</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2531"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2533"/>
         <source>Loading label settings</source>
         <translation>正在載入标注設置</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2541"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2543"/>
         <source>Loading annotations</source>
         <translation>正在載入注记</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2552"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2554"/>
         <source>Loading layouts</source>
         <translation>正在載入圖面配置</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2558"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2560"/>
         <source>Loading 3D Views</source>
         <translation>正在載入3D视圖</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2562"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2564"/>
         <source>Loading bookmarks</source>
         <translation>正在載入书签</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2565"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2567"/>
         <source>Loading sensors</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2575"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2577"/>
         <source>Loading snapping settings</source>
         <translation>正在載入接合設定</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2579"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2581"/>
         <source>Loading view settings</source>
         <translation>正在載入视圖設置</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2603"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2605"/>
         <source>Loading style properties</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2612"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2614"/>
         <source>Loading temporal settings</source>
         <translation>正在載入时态設置</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2618"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2620"/>
         <source>Loading elevation properties</source>
         <translation>正在載入高程屬性</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2624"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2626"/>
         <source>Loading display settings</source>
         <translation>正在載入显示設置</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2631"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2633"/>
         <source>Loading GPS settings</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2639"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2641"/>
         <source>Updating variables</source>
         <translation>正在更新变量</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2641"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2643"/>
         <source>Updating CRS</source>
         <translation>正在更新CRS</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2650"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2652"/>
         <source>Reading external settings</source>
         <translation>正在读取外部設置</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2654"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2656"/>
         <source>Updating interface</source>
         <translation>正在更新界面</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2684"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2686"/>
         <source>Translated project saved with locale prefix %1</source>
         <translation>使用语言环境前缀%1保存的翻译專案</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2688"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2690"/>
         <source>Error saving translated project with locale prefix %1</source>
         <translation>保存语言环境前缀為%1的已翻译專案时出错</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3183"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3185"/>
         <source>Unable to read file %1</source>
         <translation>無法读取文件%1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3190"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3192"/>
         <source>Unable to save project to storage %1</source>
         <translation>無法將專案保存到存储 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3233"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3235"/>
         <source>Unable to save attachments archive</source>
         <translation>無法保存附件存档文件</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3553"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3555"/>
         <source>Unable to create backup file %1</source>
         <translation>不能创建备份文件 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3567"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3569"/>
         <source>Unable to save to file %1</source>
         <translation>無法儲存到文件%1</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4557"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4559"/>
         <source>Transaction mode can be changed only if all layers are not editable.</source>
         <translation>只有当所有圖層都不可編輯时，才能更改事务模式。</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4644"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4646"/>
         <source>Unable to unzip file &apos;%1&apos;</source>
         <translation>無法解压文件“%1”</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4651"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4653"/>
         <source>Zip archive does not provide a project file</source>
         <translation>压缩包中沒有專案文件</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4674"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4676"/>
         <source>Cannot read unzipped qgs project file</source>
         <translation>無法读取解压后的qgs專案文件</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4706"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4708"/>
         <source>Unable to write temporary qgs file</source>
         <translation>無法写入临时qgs文件</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4719"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4721"/>
         <source>Unable to save auxiliary storage file (&apos;%1&apos;). The project has been saved but the latest changes to auxiliary data cannot be recovered. It is recommended to reload the project.</source>
         <translation>無法保存附加存储文件 (&apos;%1&apos;)。專案已保存，但無法恢复对附加数据的最新更改，建议重新載入專案。</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="4765"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="4767"/>
         <source>Unable to perform zip</source>
         <translation>無法执行压缩</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3255"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3257"/>
         <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1無法寫入。若可能，請調整權限再重試。</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="1722"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="1724"/>
         <source>Sorting layers</source>
         <translation>排序圖層</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="2089"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="2091"/>
         <source>Project file read error in file %1: %2 at line %3 column %4</source>
         <translation>文件%1中读取專案文件时发生錯誤：%2在第%3行第%4列</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3229"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3231"/>
         <source>Unable to save auxiliary storage (&apos;%1&apos;)</source>
         <translation>無法保存附加存储（“%1”）</translation>
     </message>
     <message>
-        <location filename="../src/core/project/qgsproject.cpp" line="3597"/>
+        <location filename="../src/core/project/qgsproject.cpp" line="3599"/>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation>無法儲存到文件%1.您硬碟上的項目可能已經損壞。按保存前，請清理硬碟空間並檢查文件權限。</translation>
     </message>
@@ -147663,7 +147807,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12389"/>
+        <location filename="../src/app/qgisapp.cpp" line="12392"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
@@ -147699,7 +147843,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12392"/>
+        <location filename="../src/app/qgisapp.cpp" line="12395"/>
         <source>CRS</source>
         <translation>CRS(坐標參考系統)</translation>
     </message>
@@ -147710,7 +147854,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12398"/>
+        <location filename="../src/app/qgisapp.cpp" line="12401"/>
         <source>Variables</source>
         <translation>變數</translation>
     </message>
@@ -147856,7 +148000,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12397"/>
+        <location filename="../src/app/qgisapp.cpp" line="12400"/>
         <source>Relations</source>
         <translation>關聯</translation>
     </message>
@@ -147962,7 +148106,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12396"/>
+        <location filename="../src/app/qgisapp.cpp" line="12399"/>
         <source>Data Sources</source>
         <translation>資料來源</translation>
     </message>
@@ -148003,7 +148147,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12390"/>
+        <location filename="../src/app/qgisapp.cpp" line="12393"/>
         <source>Metadata</source>
         <translation>詮釋資料</translation>
     </message>
@@ -148014,7 +148158,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12400"/>
+        <location filename="../src/app/qgisapp.cpp" line="12403"/>
         <source>QGIS Server</source>
         <translation>QGIS 伺服器</translation>
     </message>
@@ -148280,7 +148424,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12399"/>
+        <location filename="../src/app/qgisapp.cpp" line="12402"/>
         <source>Macros</source>
         <translation>巨集</translation>
     </message>
@@ -148426,7 +148570,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12393"/>
+        <location filename="../src/app/qgisapp.cpp" line="12396"/>
         <source>Transformations</source>
         <translation>变换</translation>
     </message>
@@ -148437,7 +148581,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12401"/>
+        <location filename="../src/app/qgisapp.cpp" line="12404"/>
         <source>Temporal</source>
         <translation>时态</translation>
     </message>
@@ -148508,7 +148652,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12391"/>
+        <location filename="../src/app/qgisapp.cpp" line="12394"/>
         <source>View Settings</source>
         <translation>视圖設定</translation>
     </message>
@@ -148679,7 +148823,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12394"/>
+        <location filename="../src/app/qgisapp.cpp" line="12397"/>
         <source>Styles</source>
         <translation type="unfinished"/>
     </message>
@@ -148710,7 +148854,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12395"/>
+        <location filename="../src/app/qgisapp.cpp" line="12398"/>
         <source>Colors</source>
         <translation type="unfinished"/>
     </message>
@@ -150520,27 +150664,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRangeConfigDlg</name>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="75"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="76"/>
         <source>Editable</source>
         <translation>可編輯</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="76"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="77"/>
         <source>Slider</source>
         <translation>滑動捲軸</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="77"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="78"/>
         <source>Dial</source>
         <translation>刻度</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="83"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="84"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
         <translation>該值目前最小為%1，最大為%2。</translation>
     </message>
     <message>
-        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="88"/>
+        <location filename="../src/gui/editorwidgets/qgsrangeconfigdlg.cpp" line="89"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
         <translation>屬性不是整型或實型，因此範圍無法使用。</translation>
     </message>
@@ -151008,11 +151152,6 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterAttributeTableAddRowDialogBase</name>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
-        <source>Add Column</source>
-        <translation>加入欄</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>Add a new row to the attribute table.</source>
         <translation>加入新列至屬性資料表</translation>
     </message>
@@ -151030,6 +151169,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>After current row </source>
         <translation>在此列之後</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
+        <source>Add Row</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -152453,10 +152597,10 @@ Click on help button to get valid creation options for this format.</source>
         <translation>创建 %1 数据源</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1189"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1196"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1204"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2568"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
         <source>Raster</source>
         <translation>影像</translation>
     </message>
@@ -152542,31 +152686,36 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="762"/>
+        <source>Could not insert provider into layer pipe (provider: %1, URI: %2</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="769"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
         <translation>資料源無效(資料源：%1，URI：%2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1189"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
         <translation>讀取網格影像屬性資料表錯誤：無效波段 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1196"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
         <translation>讀取網格影像屬性資料表錯誤：找不到文件 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1204"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
         <source>Error loading raster attribute table from path %1: %2</source>
         <translation>讀取網格影像屬性資料表路徑錯誤 %1:%2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2258"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2263"/>
         <source>Labeling</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2568"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>未找到&lt;maplayer&gt;。</translation>
     </message>
@@ -153141,62 +153290,62 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
         <translation>至</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="190"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="809"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="193"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="812"/>
         <source>Select Output Directory</source>
         <translation>選擇输出目录</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="236"/>
         <source>Select output directory</source>
         <translation>選取輸出資料夾</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="975"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="978"/>
         <source>The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="980"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="983"/>
         <source>The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. Do you want to overwrite the whole file?</source>
         <translation>目标文件中已存在圖層%1，且GeoPackage不支持圖層覆盖，要替换整個文件吗？</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="196"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="815"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="199"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="818"/>
         <source>Save Layer As</source>
         <translation>儲存圖層為</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="230"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="975"/>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="980"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="978"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="983"/>
         <source>Save Raster Layer</source>
         <translation>保存網格圖層</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="230"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="233"/>
         <source>The directory %1 contains files which will be overwritten: %2</source>
         <translation>資料夾%1包含將會覆蓋的檔案: %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="327"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="330"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="333"/>
         <source>All files (*.*)</source>
         <translation>全部檔案(*.*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="598"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="601"/>
         <source>layer</source>
         <translation>圖層</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="601"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="604"/>
         <source>user defined</source>
         <translation>使用使定義</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="606"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="609"/>
         <source>Resolution (current: %1)</source>
         <translation>解析度(目前:%1)</translation>
     </message>
@@ -154345,7 +154494,7 @@ The default actions are activated in the Action section of the layer properties.
 <context>
     <name>QgsRelationEditorConfigWidget</name>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="989"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="995"/>
         <source>Edit Filter Expression of Target Layer</source>
         <translation type="unfinished"/>
     </message>
@@ -154521,12 +154670,12 @@ The default actions are activated in the Action section of the layer properties.
         <translation>多編輯模式不支持加入幾何圖形要素</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="777"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="783"/>
         <source>All features in selection have equal relations</source>
         <translation>选择中的所有要素具有相同的关系</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="783"/>
+        <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="789"/>
         <source>Some features in selection have different relations</source>
         <translation>选择中的一些要素有不同的关系</translation>
     </message>
@@ -158786,7 +158935,7 @@ Beware that this option will be applied on all vertices of the edited geometries
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5136"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5156"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5176"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5813"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
@@ -158872,13 +159021,13 @@ SQL: %1</source>
 SQL：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5764"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5766"/>
         <source>Spatialite: unexpected number of rows (%1) from aggregate query
 SQL: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5813"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5815"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>失敗：找不到欄位%1。</translation>
     </message>
@@ -159958,32 +160107,32 @@ please provide a new name:</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="725"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="731"/>
         <source>Load symbols</source>
         <translation>載入符号</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="750"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="756"/>
         <source>Load color ramps</source>
         <translation>載入顏色渐变</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="772"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="778"/>
         <source>Load text formats</source>
         <translation>載入文本格式</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="794"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="800"/>
         <source>Load label settings</source>
         <translation>載入标签設定</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="816"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="822"/>
         <source>Load legend patch shapes</source>
         <translation>載入圖例圖斑形状</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="838"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="844"/>
         <source>Load 3D symbols shapes</source>
         <translation>載入3D符号形状</translation>
     </message>
@@ -160205,119 +160354,119 @@ please provide a new name:</source>
         <translation>篩選符号…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="271"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="277"/>
         <source>Save Symbol…</source>
         <translation>保存符号…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="272"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="278"/>
         <source>Save symbol to styles</source>
         <translation>將符号保存到樣式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="274"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="413"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="280"/>
         <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="419"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="425"/>
         <source>All Symbols</source>
         <translation>全部符號</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="278"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="284"/>
         <source>Save Color Ramp…</source>
         <translation>保存顏色渐变...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="279"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="285"/>
         <source>Save color ramp to styles</source>
         <translation>保存顏色渐变到樣式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="281"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="423"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="287"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="429"/>
         <source>All Color Ramps</source>
         <translation>全部顏色渐变</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="285"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="291"/>
         <source>Save Format…</source>
         <translation>保存格式…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="286"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="292"/>
         <source>Save text format to styles</source>
         <translation>保存文本格式到樣式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="288"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="427"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="294"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="433"/>
         <source>All Text Formats</source>
         <translation>全部文本格式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="292"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="298"/>
         <source>Save Label Settings…</source>
         <translation>保存标注設定…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="293"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="299"/>
         <source>Save label settings to styles</source>
         <translation>保存标注設定到樣式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="295"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="431"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="301"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="437"/>
         <source>All Label Settings</source>
         <translation>全部标注設定</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="299"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="305"/>
         <source>Save Legend Patch Shape…</source>
         <translation>保存圖例圖斑形状…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="300"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="306"/>
         <source>Save legend patch shape to styles</source>
         <translation>保存圖例圖斑形状為樣式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="302"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="435"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="308"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="441"/>
         <source>All Legend Patch Shapes</source>
         <translation>全部圖例圖斑形状</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="306"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="312"/>
         <source>Save 3D Symbol…</source>
         <translation>保存3D符号…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="307"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="313"/>
         <source>Save 3D symbol to styles</source>
         <translation>將3D符号保存到樣式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="309"/>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="439"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="315"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="445"/>
         <source>All 3D Symbols</source>
         <translation>全部3D符号</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="327"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="333"/>
         <source>Save Settings…</source>
         <translation>保存設定…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="328"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="334"/>
         <source>Save label settings or text format to styles</source>
         <translation>保存标注設定或文本格式到樣式</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="330"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="336"/>
         <source>All Settings</source>
         <translation>全部設定</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="411"/>
+        <location filename="../src/gui/qgsstyleitemslistwidget.cpp" line="417"/>
         <source>Favorites</source>
         <translation>收藏夹</translation>
     </message>
@@ -160830,7 +160979,7 @@ Overwrite?</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2922"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2925"/>
         <source>There was an error while editing the smart group.</source>
         <translation>編輯智能组过程中出错。</translation>
     </message>
@@ -160967,42 +161116,42 @@ Overwrite?</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2472"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2484"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2475"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2487"/>
         <source>Add Tag</source>
         <translation>加入标签</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2472"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2475"/>
         <source>The tag “%1” already exists.</source>
         <translation>标签“%1”已经存在</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2484"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2487"/>
         <source>New tag could not be created — There was a problem with the symbol database.</source>
         <translation>新标签無法创建 — 标签数据库有问题。</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2551"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2554"/>
         <source>Remove Group</source>
         <translation>移除組合</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2551"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2554"/>
         <source>Invalid selection. Cannot delete system defined categories.
 Kindly select a group or smart group you might want to delete.</source>
         <translation>选择無效。無法删除系统定义的類别。
 请尝试删除组或者智能组。</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2791"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2794"/>
         <source>Create New Tag…</source>
         <translation>创建新标签…</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2902"/>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2922"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2905"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2925"/>
         <source>Edit Smart Group</source>
         <translation>編輯智慧群組</translation>
     </message>
@@ -161119,17 +161268,17 @@ Kindly select a group or smart group you might want to delete.</source>
         <translation>智慧群組</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
         <source>Please enter name for the new tag:</source>
         <translation>请输入新标签的名称：</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2465"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2468"/>
         <source>New tag</source>
         <translation>新建标签</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2902"/>
+        <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2905"/>
         <source>You have not selected a Smart Group. Kindly select a Smart Group to edit.</source>
         <translation>請先選擇便捷組合再编輯。</translation>
     </message>
@@ -162216,32 +162365,32 @@ Kindly select a group or smart group you might want to delete.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="134"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="140"/>
         <source>Select Color</source>
         <translation>選取色彩</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="282"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="288"/>
         <source>Animation Settings</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="307"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="313"/>
         <source>Extent Buffer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="346"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="352"/>
         <source>Buffer Settings</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="385"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="391"/>
         <source>Save Symbol</source>
         <translation>保存符号</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="385"/>
+        <location filename="../src/gui/symbology/qgssymbolslistwidget.cpp" line="391"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
         <translation>符號名稱為 &apos;%1&apos; 已經存在。是否要覆蓋？</translation>
     </message>
@@ -162868,33 +163017,33 @@ Kindly select a group or smart group you might want to delete.</source>
 <context>
     <name>QgsTemporalControllerDockWidget</name>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="89"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="90"/>
         <source>Exporting animation</source>
         <translation>正在匯出动画</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="91"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
         <source>Exporting animation…</source>
         <translation>正在匯出动画...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="91"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
         <source>Abort</source>
         <translation>放棄</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="92"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="93"/>
         <source>Exporting Animation</source>
         <translation>正在匯出动画</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="122"/>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="126"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="124"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="128"/>
         <source>Export Animation</source>
         <translation>匯出动画</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="126"/>
+        <location filename="../src/app/qgstemporalcontrollerdockwidget.cpp" line="128"/>
         <source>Successfully exported animation to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>成功匯出地动画到&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
@@ -165556,12 +165705,17 @@ p, li { white-space: pre-wrap; }
         <translation>無法寫入%1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsuserprofilemanager.cpp" line="194"/>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="187"/>
+        <source>Could not copy master database to %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="198"/>
         <source>Can not make &apos;%1&apos; user writable</source>
         <translation>無法使“%1”用户可写</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsuserprofilemanager.cpp" line="216"/>
+        <location filename="../src/core/qgsuserprofilemanager.cpp" line="221"/>
         <source>Unable to fully delete user profile folder</source>
         <translation>無法完全删除用户配置文件夹</translation>
     </message>
@@ -167077,22 +167231,22 @@ Error was: %2</source>
         <translation>圖例占位符圖像</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="137"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="134"/>
         <source>Description</source>
         <translation>說明</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="137"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="134"/>
         <source>Legend Text</source>
         <translation>圖例文本</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="170"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="167"/>
         <source>Symbol</source>
         <translation>符號</translation>
     </message>
     <message>
-        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="170"/>
+        <location filename="../src/gui/vector/qgsvectorlayerlegendwidget.cpp" line="167"/>
         <source>Text</source>
         <translation>文字</translation>
     </message>
@@ -169405,60 +169559,60 @@ Error was: %2</source>
         <translation>沒有選擇属于未在地圖画布上显示的要素的頂點。</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2276"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2275"/>
         <source>Topological points added by &apos;Vertex Tool&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2417"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2455"/>
         <source>Moved vertex</source>
         <translation>移动頂點</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2548"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2586"/>
         <source>Deleted vertex</source>
         <translation>删除頂點</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2572"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2610"/>
         <source>Geometry has been cleared. Use the add part tool to set geometry for this feature.</source>
         <translation>幾何圖形已被清除。请使用加入部件工具来為该要素设置幾何圖形。</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2628"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2640"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2654"/>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2677"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2666"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2678"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2692"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2715"/>
         <source>Could not convert vertex</source>
         <translation>無法转换頂點</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2629"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2667"/>
         <source>Conversion can only be done on exactly one vertex.</source>
         <translation>转换只能在一個頂點上进行。</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2641"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2679"/>
         <source>Cannot convert vertex before it is added.</source>
         <translation>加入之前無法转换頂點。</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2655"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2693"/>
         <source>Layer of type %1 does not support curved geometries.</source>
         <translation>類型為 %1 的圖層不支持弧形幾何圖形。</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2661"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2699"/>
         <source>Toggled vertex to/from curve</source>
         <translation>切換頂點到/從曲線</translation>
     </message>
     <message>
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2678"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2716"/>
         <source>Start/end of vertices of features and arcs can not be converted.</source>
         <translation>無法转换要素和弧頂點的起點/终點。</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2923"/>
+        <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2961"/>
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
         <translation type="unfinished"><numerusform></numerusform></translation>

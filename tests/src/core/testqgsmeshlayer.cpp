@@ -118,6 +118,8 @@ class TestQgsMeshLayer : public QgsTest
     void testHaveSameParentQuantity();
 
     void testMinimumMaximumActiveScalarDataset();
+
+    void testClone();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -2637,6 +2639,40 @@ void TestQgsMeshLayer::testRemoveDatasets()
 
   // cannot remove by name - does not exist
   QCOMPARE( layer.removeDatasets( "Non Existing Dataset Group" ), false );
+}
+
+void TestQgsMeshLayer::testClone()
+{
+  // layer
+  QgsMeshLayer layer(
+    testDataPath( "mesh/several_parts.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" )
+  );
+  QVERIFY( layer.isValid() );
+
+  // add additional dataset
+  bool added = layer.addDatasets( testDataPath( "mesh/several_parts_data.dat" ) );
+  QVERIFY( added );
+
+  //set settings
+  int groupIndex = 0;
+  QgsMeshRendererSettings rendererSettings = layer.rendererSettings();
+  QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::WholeMesh );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  // clone layer
+  QgsMeshLayer *layerClone = layer.clone();
+
+  // compare numver of dataset groups
+  QCOMPARE( layer.datasetGroupCount(), layerClone->datasetGroupCount() );
+
+  // compare renderer settings
+  QCOMPARE( scalarRendererSettings.limits(), layerClone->rendererSettings().scalarSettings( groupIndex ).limits() );
+  QCOMPARE( scalarRendererSettings.extent(), layerClone->rendererSettings().scalarSettings( groupIndex ).extent() );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

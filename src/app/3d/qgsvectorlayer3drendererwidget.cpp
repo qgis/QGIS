@@ -122,8 +122,9 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
 void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
+  if ( !vlayer || vlayer->geometryType() == Qgis::GeometryType::Null )
   {
+    setEnabled( false ); // hide 3d symbology
     return;
   }
   mLayer = layer;

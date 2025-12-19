@@ -155,7 +155,7 @@ QStringList QgsVectorTileProviderConnection::connectionList()
 
 QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connection( const QString &name )
 {
-  if ( !settingsUrl->exists( name ) )
+  if ( !settingsUrl->exists( name ) && !settingsStyleUrl->exists( name ) )
     return QgsVectorTileProviderConnection::Data();
 
   QgsVectorTileProviderConnection::Data conn;
