@@ -19,11 +19,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-26
+          - os: macos-15
             triplet: x64-osx-dynamic-release
             deployment-target: "10.15"
             osx-architecture: "x86_64"
-          - os: macos-26
+          - os: macos-15
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
             osx-architecture: "arm64"
