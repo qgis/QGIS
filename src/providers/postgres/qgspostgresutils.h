@@ -185,7 +185,7 @@ class QgsPostgresUtils
     *
     * \since QGIS 4.0
     */
-    static bool setupQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
+    static bool enableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
 
     /**
     * Disables QGIS project versioning for the specified \a schema.

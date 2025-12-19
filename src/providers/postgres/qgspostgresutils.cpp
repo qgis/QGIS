@@ -613,7 +613,7 @@ bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString
 
   if ( QgsPostgresUtils::qgisProjectVersioningEnabled( conn, originalSchema ) )
   {
-    if ( !QgsPostgresUtils::setupQgisProjectVersioning( conn, targetSchema ) )
+    if ( !QgsPostgresUtils::enableQgisProjectVersioning( conn, targetSchema ) )
     {
       return false;
     }
@@ -706,7 +706,7 @@ bool QgsPostgresUtils::addCommentColumnToProjectsTable( QgsPostgresConn *conn, c
   return resAddColumn.PQresultStatus() == PGRES_COMMAND_OK;
 }
 
-bool QgsPostgresUtils::setupQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema )
+bool QgsPostgresUtils::enableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema )
 {
   // create the necessary table for project versioning
   const QString sqlCreateTable = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1.qgis_projects_versions ("

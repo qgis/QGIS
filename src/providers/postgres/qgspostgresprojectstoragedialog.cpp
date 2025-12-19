@@ -278,7 +278,7 @@ void QgsPostgresProjectStorageDialog::setupQgisProjectVersioning()
         return;
       }
 
-      bool success = QgsPostgresUtils::setupQgisProjectVersioning( conn, mCboSchema->currentText() );
+      bool success = QgsPostgresUtils::enableQgisProjectVersioning( conn, mCboSchema->currentText() );
 
       if ( !success )
       {

@@ -1315,7 +1315,7 @@ bool QgsPostgresDataItemGuiProvider::enableProjectsVersioning( const QString con
 
   if ( result == QMessageBox::StandardButton::Yes )
   {
-    if ( !QgsPostgresUtils::setupQgisProjectVersioning( conn, schemaName ) )
+    if ( !QgsPostgresUtils::enableQgisProjectVersioning( conn, schemaName ) )
     {
       notify( tr( "QGIS Project Versioning" ), tr( "Cannot setup versioning of QGIS projects in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Critical );
       conn->unref();
