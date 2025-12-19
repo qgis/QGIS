@@ -728,6 +728,8 @@ approximation of the curve.
 
     virtual bool deleteVertex( QgsVertexId position );
 
+    virtual bool deleteVertices( QList<QgsVertexId> positions );
+
 
     virtual QgsLineString *reversed() const /Factory/;
 
