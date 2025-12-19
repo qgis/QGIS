@@ -125,7 +125,7 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DE
 
   mLineEntity->addComponent( mLineMaterial );
 
-  mLineTransform = new QgsGeoTransform( mLineEntity );
+  mLineTransform = new QgsGeoTransform;
   mLineTransform->setOrigin( mMapSettings->origin() );
   mLineEntity->addComponent( mLineTransform );
 }
