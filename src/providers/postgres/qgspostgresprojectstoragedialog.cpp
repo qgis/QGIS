@@ -244,6 +244,8 @@ void QgsPostgresProjectStorageDialog::onSchemaChanged()
 
   bool versioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mCboSchema->currentText() );
 
+  conn->unref();
+
   QgsSignalBlocker( mEnableProjectVersions )->setChecked( versioningEnabled );
   mEnableProjectVersions->setEnabled( !versioningEnabled );
 
