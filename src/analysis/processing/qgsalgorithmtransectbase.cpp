@@ -67,6 +67,10 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 ) );
 
+  auto direction = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Left to Right" ) << QObject::tr( "Right to Left" ), false, 0 );
+  direction->setGuiDefaultValueOverride( 1 );
+  addParameter( direction.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Transect" ), Qgis::ProcessingSourceType::VectorLine ) );
 }
 
@@ -85,6 +89,8 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
 
   if ( mOrientation == QgsTransectAlgorithmBase::Both )
     mLength /= 2.0;
+
+  mDirection = static_cast<QgsTransectAlgorithmBase::Direction>( parameterAsInt( parameters, u"DIRECTION"_s, context ) );
 
   // Let subclass prepare their specific parameters
   if ( !prepareAlgorithmTransectParameters( parameters, context, feedback ) )
@@ -180,7 +186,7 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
               << ( ( mOrientation == QgsTransectAlgorithmBase::Both ) ? evaluatedLength * 2 : evaluatedLength )
               << static_cast<int>( mOrientation );
         outFeat.setAttributes( attrs );
-        outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, mOrientation, evaluatedAngle ) );
+        outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, mOrientation, evaluatedAngle, mDirection ) );
         if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         number++;
@@ -195,7 +201,7 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
   return outputs;
 }
 
-QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithmBase::Side orientation, const double angle )
+QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithmBase::Side orientation, const double angle, const QgsTransectAlgorithmBase::Direction direction )
 {
   QgsPoint pLeft;  // left point of the line
   QgsPoint pRight; // right point of the line
@@ -220,8 +226,19 @@ QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const
       break;
   }
 
-  line.append( pLeft );
-  line.append( pRight );
+  // Direction determines the line orientation:
+  // - LeftToRight: line goes from pLeft to pRight (default)
+  // - RightToLeft: line goes from pRight to pLeft (hydraulic convention - perpendicular from stream bank looking downstream)
+  if ( direction == QgsTransectAlgorithmBase::RightToLeft )
+  {
+    line.append( pRight );
+    line.append( pLeft );
+  }
+  else
+  {
+    line.append( pLeft );
+    line.append( pRight );
+  }
 
   return QgsGeometry::fromPolyline( line );
 }
