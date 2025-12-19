@@ -223,9 +223,9 @@ void QgsProcessingTaskQueueDialog::onTaskComplete( bool success, const QVariantM
 
 void QgsProcessingTaskQueueDialog::onQueueExecutionComplete()
 {
-  const int successCount = mTaskResults.count();
-  const int errorCount = mTaskErrors.count();
-  const int totalCount = successCount + errorCount;
+  const qsizetype successCount = mTaskResults.count();
+  const qsizetype errorCount = mTaskErrors.count();
+  const qsizetype totalCount = successCount + errorCount;
 
   if ( errorCount > 0 )
   {

@@ -135,7 +135,7 @@ class CORE_EXPORT QgsProcessingTaskQueue : public QObject SIP_NODEFAULTCTORS
     /**
      * Returns the number of tasks in the queue.
      */
-    int count() const { return mQueue.count(); }
+    qsizetype count() const { return mQueue.count(); }
 
     /**
      * Returns TRUE if the queue is empty.

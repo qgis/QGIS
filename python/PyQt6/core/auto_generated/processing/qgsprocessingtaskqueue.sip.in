@@ -121,7 +121,7 @@ Clears all tasks from the queue.
 Returns all tasks in the queue.
 %End
 
-    int count() const;
+    qsizetype count() const;
 %Docstring
 Returns the number of tasks in the queue.
 %End
