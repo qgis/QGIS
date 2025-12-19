@@ -2332,6 +2332,11 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::TriangleZM:
       case Qgis::WkbType::Unknown:
       case Qgis::WkbType::NoGeometry:
+      // TOOD: NURBS should be supported, but not yet tested on ORACLE
+      case Qgis::WkbType::NurbsCurve:
+      case Qgis::WkbType::NurbsCurveZ:
+      case Qgis::WkbType::NurbsCurveM:
+      case Qgis::WkbType::NurbsCurveZM:
 
         g.isNull = true;
         break;
