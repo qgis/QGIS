@@ -708,6 +708,12 @@ bool QgsPostgresUtils::addCommentColumnToProjectsTable( QgsPostgresConn *conn, c
 
 bool QgsPostgresUtils::enableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema )
 {
+  // if the qgis_projects table has old format (no comment column) it needs to be updated first
+  if ( !QgsPostgresUtils::addCommentColumnToProjectsTable( conn, schema ) )
+  {
+    return false;
+  }
+
   // create the necessary table for project versioning
   const QString sqlCreateTable = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1.qgis_projects_versions ("
                                                  "id SERIAL PRIMARY KEY, "
