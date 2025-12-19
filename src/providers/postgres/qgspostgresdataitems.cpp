@@ -171,6 +171,14 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connection
   , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
+
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+  if ( conn )
+  {
+    mProjectVersioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mName );
+  }
+  conn->unref();
 }
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
@@ -268,8 +276,6 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       }
     }
   }
-
-  mProjectVersioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mName );
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
