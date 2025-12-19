@@ -83,7 +83,7 @@ class QgsPGSchemaItem : public QgsDatabaseSchemaItem
      */
     void setProjectVersioningEnabled( const bool enabled ) { mProjectVersioningEnabled = enabled; }
 
-    /*
+    /**
      * Returns if versioning of QGIS projects is enabled for this schema.
      *
      * \since QGIS 4.0
