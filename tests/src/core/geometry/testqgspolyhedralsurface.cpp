@@ -88,7 +88,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   auto multiPolygon = std::make_unique<QgsMultiPolygon>();
   QgsPolygon part;
   QgsLineString ring;
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
+  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZM, 50, 0, 0, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 13, 5, 0, 10 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 7, 0, 15 ) );
   part.setExteriorRing( ring.clone() );
   multiPolygon->addGeometry( part.clone() );
   QgsPolyhedralSurface polySurface( multiPolygon.get() );
@@ -105,8 +105,8 @@ void TestQgsPolyhedralSurface::testConstructor()
   QCOMPARE( polySurface.geometryType(), QString( "PolyhedralSurface" ) );
   QCOMPARE( polySurface.dimension(), 2 );
   QVERIFY( !polySurface.hasCurvedSegments() );
-  QGSCOMPARENEAR( polySurface.area(), 30.5, 0.01 );
-  QGSCOMPARENEAR( polySurface.perimeter(), 46.49, 0.01 );
+  QGSCOMPARENEAR( polySurface.area(), 170.5, 0.1 );
+  QGSCOMPARENEAR( polySurface.perimeter(), 107.489255, 1e-6 );
   QVERIFY( polySurface.patchN( 0 ) );
   QCOMPARE( polySurface.numPatches(), multiPolygon->numGeometries() );
 }
