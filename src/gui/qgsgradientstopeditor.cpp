@@ -18,16 +18,11 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
+#include <QMouseEvent>
 #include <QPainter>
+#include <QStyleOptionFrame>
 
 #include "moc_qgsgradientstopeditor.cpp"
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <QStyleOptionFrameV3>
-#else
-#include <QStyleOptionFrame>
-#endif
-#include <QMouseEvent>
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )

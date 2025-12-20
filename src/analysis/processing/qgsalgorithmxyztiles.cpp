@@ -407,9 +407,6 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
       throw QgsProcessingException( QObject::tr( "Could not open html file %1" ).arg( outputHtml ) );
     }
     QTextStream fout( &htmlFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    fout.setCodec( "UTF-8" );
-#endif
     fout << html;
 
     results.insert( QStringLiteral( "OUTPUT_HTML" ), outputHtml );

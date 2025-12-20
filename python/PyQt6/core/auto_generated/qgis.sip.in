@@ -3712,11 +3712,13 @@ GeographicLib support.
 .. versionadded:: 4.0
 %End
 
-    static bool hasQtWebkit();
+ static bool hasQtWebkit();
 %Docstring
-Returns ``True`` if the QGIS build contains QtWebkit.
+Returns ``False``.
 
-.. versionadded:: 4.0
+.. deprecated:: 4.0
+
+   WebKit-Support was removed.
 %End
 
     static QString geoNone();
@@ -4103,13 +4105,9 @@ numeric values, dates and times)
 .. seealso:: :py:func:`qgsVariantCompare`
 %End
 
-
 bool operator> ( const QVariant &v1, const QVariant &v2 );
 
 bool operator< ( const QVariant &v1, const QVariant &v2 );
-
-
-
 
  QString qgsVsiPrefix( const QString &path ) /Deprecated="Since 3.44. Use QgsGdalUtils.vsiPrefixForPath() instead."/;
 %Docstring

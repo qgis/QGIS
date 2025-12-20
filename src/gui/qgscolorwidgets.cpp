@@ -15,6 +15,8 @@
 
 #include "qgscolorwidgets.h"
 
+#include <cmath>
+
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgsguiutils.h"
@@ -22,36 +24,25 @@
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 
-#include <QResizeEvent>
-
-#include "moc_qgscolorwidgets.cpp"
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <QStyleOptionFrameV3>
-#else
-#include <QStyleOptionFrame>
-#endif
-#include <QPainter>
+#include <QDrag>
+#include <QFontMetrics>
 #include <QHBoxLayout>
 #include <QLineEdit>
-#include <QFontMetrics>
-#include <QToolButton>
-#include <QMenu>
-#include <QDrag>
-#include <QRectF>
 #include <QLineF>
+#include <QMenu>
+#include <QPainter>
+#include <QRectF>
+#include <QResizeEvent>
+#include <QStyleOptionFrame>
+#include <QToolButton>
 
-#include <cmath>
+#include "moc_qgscolorwidgets.cpp"
 
 #define HUE_MAX 360
 
 
 // TODO QGIS 4 remove typedef, QColor was qreal (double) and is now float
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-typedef qreal float_type;
-#else
 typedef float float_type;
-#endif
 
 
 //

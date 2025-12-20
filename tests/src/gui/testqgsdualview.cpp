@@ -65,11 +65,6 @@ class TestQgsDualView : public QObject
 
     void testDuplicateField();
 
-#ifdef WITH_QTWEBKIT
-    void testHtmlWidget_data();
-    void testHtmlWidget();
-#endif
-
   private:
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -377,53 +372,6 @@ void TestQgsDualView::testNoShowFirstFeature()
   config.setSortExpression( QString() );
   mPointsLayer->setAttributeTableConfig( config );
 }
-
-#ifdef WITH_QTWEBKIT
-
-void TestQgsDualView::testHtmlWidget_data()
-{
-  QTest::addColumn<QString>( "expression" );
-  QTest::addColumn<bool>( "expectedCacheGeometry" );
-
-  QTest::newRow( "with-geometry" ) << "geom_to_wkt($geometry)" << true;
-  QTest::newRow( "without-geometry" ) << "2+pk" << false;
-}
-
-void TestQgsDualView::testHtmlWidget()
-{
-  // check that HTML widget set cache geometry when needed
-
-  QFETCH( QString, expression );
-  QFETCH( bool, expectedCacheGeometry );
-
-  QgsVectorLayer layer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &layer, false, false );
-  QgsFeature f( layer.fields() );
-  f.setAttribute( QStringLiteral( "pk" ), 1 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(0.5 0.5)" ) ) );
-  QVERIFY( f.isValid() );
-  QVERIFY( f.geometry().isGeosValid() );
-  QVERIFY( layer.dataProvider()->addFeature( f ) );
-
-  QgsEditFormConfig editFormConfig = layer.editFormConfig();
-  editFormConfig.clearTabs();
-  QgsAttributeEditorHtmlElement *htmlElement = new QgsAttributeEditorHtmlElement( "HtmlWidget", nullptr );
-  htmlElement->setHtmlCode( QStringLiteral( "The text is '<script>document.write(expression.evaluate(\"%1\"));</script>'" ).arg( expression ) );
-  editFormConfig.addTab( htmlElement );
-  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
-  layer.setEditFormConfig( editFormConfig );
-
-  QgsFeatureRequest request;
-  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-
-  QgsDualView dualView;
-  dualView.setView( QgsDualView::AttributeEditor );
-  dualView.init( &layer, mCanvas, request );
-  QCOMPARE( dualView.mLayerCache->cacheGeometry(), expectedCacheGeometry );
-
-  QgsProject::instance()->removeMapLayer( &layer );
-}
-#endif
 
 void TestQgsDualView::testDuplicateField()
 {

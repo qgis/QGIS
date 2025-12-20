@@ -115,9 +115,6 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      out.setCodec( "UTF-8" );
-#endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
       out << QStringLiteral( "<pre>%1</pre>" ).arg( commandOutput.join( "" ) );
       out << QStringLiteral( "\n</body></html>" );

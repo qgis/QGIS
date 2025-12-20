@@ -6529,11 +6529,11 @@ class CORE_EXPORT Qgis
     static int geographicLibVersion();
 
     /**
-     * Returns TRUE if the QGIS build contains QtWebkit.
+     * Returns FALSE.
      *
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.0. WebKit-Support was removed.
      */
-    static bool hasQtWebkit();
+    Q_DECL_DEPRECATED static bool hasQtWebkit();
 
     /**
      * Constant that holds the string representation for "No ellipse/No CRS".
@@ -7228,8 +7228,6 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  *
@@ -7261,16 +7259,6 @@ inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
   return qgsVariantCompare( v1, v2, true ) < 0;
 }
-#endif
-
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-
-/**
- * Compares two QVariantList values and returns whether the first is less than the second.
- */
-template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
-#endif
 
 /**
  * Returns a the vsi prefix which corresponds to a file \a path, or an empty

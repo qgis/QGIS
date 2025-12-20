@@ -21,11 +21,8 @@
 #include <QObject>
 #include <QPointer>
 #include <QSize>
-
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <QtMultimedia/QMediaFormat>
 #include <QtMultimedia/QMediaRecorder>
-#endif
 
 class QgsFeedback;
 class QMediaCaptureSession;
@@ -129,8 +126,6 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     QStringList inputFiles() const;
 
 #ifndef SIP_RUN
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-
     /**
      * Sets the output file \a format.
      *
@@ -171,7 +166,6 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      * \see errorString()
      */
     QMediaRecorder::Error error() const;
-#endif
 #endif
 
 #ifdef SIP_PYQT6_RUN
@@ -246,10 +240,8 @@ class CORE_EXPORT QgsVideoExporter : public QObject
   private slots:
 
     void feedFrames();
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     void checkStatus( QMediaRecorder::RecorderState state );
     void handleError( QMediaRecorder::Error error, const QString &errorString );
-#endif
 
   private:
 
@@ -258,22 +250,17 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     QStringList mInputFiles;
     double mFramesPerSecond = 10;
     qint64 mFrameDurationUs = 100000;
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QMediaFormat::FileFormat mFormat = QMediaFormat::FileFormat::MPEG4;
     QMediaFormat::VideoCodec mCodec = QMediaFormat::VideoCodec::H264;
     QMediaRecorder::Error mError = QMediaRecorder::Error::NoError;
     int mCurrentFrameIndex = 0;
-#endif
     QPointer< QgsFeedback > mFeedback;
 
     QString mErrorString;
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     std::unique_ptr< QMediaCaptureSession > mSession;
     std::unique_ptr< QMediaRecorder > mRecorder;
     std::unique_ptr< QVideoFrameInput > mVideoInput;
-#endif
-
 };
 
 

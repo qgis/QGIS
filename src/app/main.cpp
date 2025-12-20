@@ -552,11 +552,6 @@ int main( int argc, char *argv[] )
 #endif
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  // initialize random number seed - not required for Qt 6
-  qsrand( time( nullptr ) );
-#endif
-
   /////////////////////////////////////////////////////////////////
   // Command line options 'behavior' flag setup
   ////////////////////////////////////////////////////////////////
@@ -933,14 +928,6 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
-// Set up for high displays
-// The following values are set by default in Qt6
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling, true );
-  QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
-  QGuiApplication::setHighDpiScaleFactorRoundingPolicy( Qt::HighDpiScaleFactorRoundingPolicy::PassThrough );
-#endif
-
   // GUI customization is enabled according to settings (loaded when instance is created)
   // we force disabled here if --nocustomization argument is used
   if ( !myCustomization )
@@ -952,11 +939,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
-
-  // this is implicit in Qt 6 now
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
-#endif
 
   // Initialize the default surface format for all
   // QWindow and QWindow derived components

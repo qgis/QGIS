@@ -335,9 +335,6 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
         throw QgsProcessingException( QObject::tr( "Cannot open file for writing " ) + filename );
 
       QTextStream out( &textFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      out.setCodec( "UTF-8" );
-#endif
       out << QString( "angle=Azimuth\n"
                       "heading=Coordinate_System\n"
                       "dist_units=Default\n"

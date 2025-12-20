@@ -477,7 +477,7 @@ if (ANDROID)
 else()
   add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
-  if(WIN32 AND BUILD_WITH_QT6)
+  if(WIN32)
     qt_disable_unicode_defines(qgis)
   endif()
 
@@ -559,7 +559,6 @@ target_link_libraries(qgis_app
   ${QWT_LIBRARY}
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::UiTools
-  ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
   ${QGIS_RC_LIBS}

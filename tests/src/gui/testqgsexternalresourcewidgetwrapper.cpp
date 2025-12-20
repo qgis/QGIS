@@ -30,11 +30,6 @@
 #include <QMovie>
 #include <QSignalSpy>
 
-#ifdef WITH_QTWEBKIT
-#include <QWebFrame>
-#include <QWebView>
-#endif
-
 #define SAMPLE_IMAGE QStringLiteral( "%1/sample_image.png" ).arg( TEST_DATA_DIR )
 #define OTHER_SAMPLE_IMAGE QStringLiteral( "%1/sample_image2.png" ).arg( TEST_DATA_DIR )
 
@@ -328,9 +323,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument_data()
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
@@ -374,14 +366,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -394,9 +378,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
-#ifdef WITH_QTWEBKIT
-  QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
-#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -412,14 +393,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QVERIFY( ww.mQgsWidget->mWebView->url().isValid() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "file://%1/sample_image.png" ).arg( TEST_DATA_DIR ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -449,14 +422,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QVERIFY( ww.mQgsWidget->mWebView->url().isValid() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "file://%1/sample_image.png" ).arg( TEST_DATA_DIR ) );
-  }
-#endif
 
   // wait for the fetch content object to be destroyed
   connect( QgsTestExternalStorage::sFetchContent, &QObject::destroyed, &loop, &QEventLoop::quit );
@@ -472,12 +437,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
   if ( documentType == QgsExternalResourceWidget::Image )
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
 
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-    QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
-
-#endif
-
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -489,9 +448,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
   QCoreApplication::processEvents();
 
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
-#ifdef WITH_QTWEBKIT
-  QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -514,9 +470,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument_data()
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument()
@@ -558,14 +511,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument()
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -582,14 +527,6 @@ void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() != QMovie::Running );
@@ -604,9 +541,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument_data()
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument()
@@ -658,13 +592,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument()
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -704,9 +631,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError_data()
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
@@ -757,13 +681,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -785,13 +702,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -817,9 +727,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel_data(
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
@@ -870,13 +777,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -901,13 +801,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -932,9 +825,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentNoExpression
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentNoExpression()
@@ -983,13 +873,6 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentNoExpression
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -1027,9 +910,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded_data()
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
@@ -1074,14 +954,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -1092,9 +964,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
-#ifdef WITH_QTWEBKIT
-  QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
-#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -1110,9 +979,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
-#ifdef WITH_QTWEBKIT
-  QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
-#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -1124,9 +990,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
-#ifdef WITH_QTWEBKIT
-  QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
-#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -1140,14 +1003,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QVERIFY( ww.mQgsWidget->mWebView->url().isValid() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "file://%1" ).arg( OTHER_SAMPLE_IMAGE ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -1181,22 +1036,6 @@ void TestQgsExternalResourceWidgetWrapper::testBlankAfterValue()
   QVERIFY( ww.mQgsWidget );
 
   widget->show();
-
-#ifdef WITH_QTWEBKIT
-  QEventLoop loop;
-  connect( ww.mQgsWidget->mWebView, &QWebView::loadFinished, &loop, &QEventLoop::quit );
-
-  ww.setValues( QString( "file://%1" ).arg( SAMPLE_IMAGE ), QVariantList() );
-
-  QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-
-  loop.exec();
-
-  ww.setValues( QString(), QVariantList() );
-
-  QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-  QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded_data()
@@ -1206,9 +1045,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded_dat
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
   QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
   QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
-#ifdef WITH_QTWEBKIT
-  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
-#endif
 }
 
 void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded()
@@ -1253,14 +1089,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded()
   {
     QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
@@ -1271,9 +1099,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
-#ifdef WITH_QTWEBKIT
-  QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
-#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -1292,14 +1117,6 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
   }
-#ifdef WITH_QTWEBKIT
-  else if ( documentType == QgsExternalResourceWidget::Web )
-
-  {
-    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
-    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
-  }
-#endif
 
   QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );

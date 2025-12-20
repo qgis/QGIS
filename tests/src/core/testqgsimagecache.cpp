@@ -131,7 +131,6 @@ void TestQgsImageCache::threadSafeImage()
   // This unit test checks that concurrent rendering of paths as QImage from QgsImageCache
   // works without issues across threads
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   // test deadlocks on 5.15 - see https://bugreports.qt.io/browse/QTBUG-84857
   // this is supposed to be fixed in 5.15.1, but I can still reproduce in Fedora on 5.15.5..!
 
@@ -142,7 +141,6 @@ void TestQgsImageCache::threadSafeImage()
   QVector<int> list;
   list.resize( 100 );
   QtConcurrent::blockingMap( list, RenderImageWrapper( cache, imagePath ) );
-#endif
 }
 
 void TestQgsImageCache::broken()

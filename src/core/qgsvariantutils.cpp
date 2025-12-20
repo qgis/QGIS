@@ -574,10 +574,8 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::ULongLong;
 
     case QMetaType::Char:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case QMetaType::Char16:
     case QMetaType::Char32:
-#endif
     case QMetaType::Short:
     case QMetaType::SChar:
       return QVariant::Type::Int;
@@ -606,9 +604,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
     case QMetaType::QCborArray:
     case QMetaType::QCborMap:
     case QMetaType::QObjectStar:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case QMetaType::QVariantPair:
-#endif
     case QMetaType::QByteArrayList:
     case QMetaType::QColorSpace:
       break;
@@ -627,12 +623,7 @@ bool QgsVariantUtils::isUnsetAttributeValue( const QVariant &variant )
 
 QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  return QVariant( QgsVariantUtils::metaTypeToVariantType( metaType ) );
-#else
   return QVariant( QMetaType( metaType ) );
-#endif
-
 }
 
 QString QgsVariantUtils::displayString( const QVariant &variant, int precision )

@@ -33,21 +33,12 @@
 #include "qgstessellator.h"
 #include "qgsvertexid.h"
 
-#include <Qt3DCore/QEntity>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-#else
+#include <QColor>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
-#endif
-
 #include <Qt3DRender/QGeometryRenderer>
-#include <QColor>
-
 
 /// @cond PRIVATE
 

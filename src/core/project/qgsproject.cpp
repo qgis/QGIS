@@ -2079,9 +2079,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   }
 
   QTextStream textStream( &projectFile );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  textStream.setCodec( "UTF-8" );
-#endif
   QString projectString = textStream.readAll();
   projectFile.close();
 

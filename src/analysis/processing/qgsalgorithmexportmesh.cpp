@@ -1371,9 +1371,6 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( QObject::tr( "Unable to create the output file" ) );
 
   QTextStream textStream( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  textStream.setCodec( "UTF-8" );
-#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "offset" );
   for ( const DataGroup &datagroup : std::as_const( mDataPerGroup ) )
@@ -1698,9 +1695,6 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
     throw QgsProcessingException( QObject::tr( "Unable to create the output file" ) );
 
   QTextStream textStream( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  textStream.setCodec( "UTF-8" );
-#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "time" );
 

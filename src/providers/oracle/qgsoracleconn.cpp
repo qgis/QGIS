@@ -246,11 +246,7 @@ QString QgsOracleConn::getLastExecutedQuery( const QSqlQuery &query )
   for ( QVariant value : query.boundValues() )
   {
     const QVariant &var { value.toString() };
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    QSqlField field( QString(), var.type() );
-#else
     QSqlField field( QString(), var.metaType() );
-#endif
 
     if ( var.isNull() )
     {

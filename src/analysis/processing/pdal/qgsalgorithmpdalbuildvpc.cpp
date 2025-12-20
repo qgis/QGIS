@@ -130,9 +130,6 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
   }
 
   QTextStream out( &listFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  out.setCodec( "UTF-8" );
-#endif
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
     out << layer->source() << "\n";

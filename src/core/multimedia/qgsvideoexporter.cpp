@@ -19,16 +19,11 @@
 
 #include <QDirIterator>
 #include <QUrl>
+#include <QtMultimedia/QMediaCaptureSession>
+#include <QtMultimedia/QVideoFrame>
+#include <QtMultimedia/QVideoFrameInput>
 
 #include "moc_qgsvideoexporter.cpp"
-
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-#include <QtMultimedia/QMediaCaptureSession>
-#include <QtMultimedia/QVideoFrameInput>
-#include <QtMultimedia/QVideoFrame>
-#else
-#include "qgsexception.h"
-#endif
 
 bool QgsVideoExporter::isAvailable()
 {
@@ -85,7 +80,6 @@ QStringList QgsVideoExporter::inputFiles() const
   return mInputFiles;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 void QgsVideoExporter::setFileFormat( QMediaFormat::FileFormat format )
 {
   mFormat = format;
@@ -110,7 +104,6 @@ QMediaRecorder::Error QgsVideoExporter::error() const
 {
   return mError;
 }
-#endif
 
 QString QgsVideoExporter::errorString() const
 {
@@ -196,7 +189,6 @@ void QgsVideoExporter::feedFrames()
 #endif
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 void QgsVideoExporter::checkStatus( QMediaRecorder::RecorderState state )
 {
   switch ( state )
@@ -221,4 +213,3 @@ void QgsVideoExporter::handleError( QMediaRecorder::Error error, const QString &
   mError = error;
   mErrorString = errorString;
 }
-#endif

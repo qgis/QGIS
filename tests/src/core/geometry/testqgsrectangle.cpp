@@ -369,11 +369,7 @@ void TestQgsRectangle::asVariant()
   QCOMPARE( var.userType(), qMetaTypeId<QgsRectangle>() );
   const QgsRectangle rect2 = qvariant_cast<QgsRectangle>( var );
 
-#if ( QT_VERSION > QT_VERSION_CHECK( 6, 0, 0 ) )
   QVERIFY( !var.convert( QMetaType::fromType<QgsReferencedRectangle>() ) );
-#else
-  QVERIFY( !var.convert( qMetaTypeId<QgsReferencedRectangle>() ) );
-#endif
 
   QCOMPARE( rect2.xMinimum(), rect1.xMinimum() );
   QCOMPARE( rect2.yMinimum(), rect1.yMinimum() );

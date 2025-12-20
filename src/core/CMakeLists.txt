@@ -1365,6 +1365,7 @@ set(QGIS_CORE_HDRS
   qgsvirtuallayertask.h
   qgswebpage.h
   qgswebview.h
+  qgswebframe.h
   qgswmsutils.h
   qgsxmlutils.h
   qgsziputils.h
@@ -2239,12 +2240,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   textrenderer/qgstextrenderer_p.h
 )
 
-if (NOT WITH_QTWEBKIT)
-  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-    qgswebframe.h
-  )
-endif()
-
 if (HAVE_WEBENGINE)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
         web/qgswebenginepage.cpp
@@ -2740,7 +2735,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
   ${QT_VERSION_BASE}::Multimedia
-  ${OPTIONAL_QTWEBKIT}
   GEOS::geos_c
   GDAL::GDAL
   EXPAT::EXPAT
@@ -2774,15 +2768,9 @@ if(NOT WITH_INTERNAL_SPATIALINDEX)
   target_link_libraries(qgis_core ${SPATIALINDEX_LIBRARY})
 endif()
 
-if(BUILD_WITH_QT6)
-  target_link_libraries(qgis_core
-    Qt6Keychain::Qt6Keychain
-  )
-else()
-  target_link_libraries(qgis_core
-    qt5keychain
-  )
-endif()
+target_link_libraries(qgis_core
+  Qt6Keychain::Qt6Keychain
+)
 
 if (WITH_QTPRINTER)
   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
@@ -2796,9 +2784,7 @@ if (WITH_SPATIALITE)
   target_link_libraries(qgis_core spatialite::spatialite)
 endif()
 
-if (BUILD_WITH_QT6)
-  target_link_libraries(qgis_core Qt6::Core5Compat)
-endif()
+target_link_libraries(qgis_core Qt6::Core5Compat)
 
 if (WITH_EPT)
   target_link_libraries(qgis_core
@@ -2831,17 +2817,9 @@ if (WITH_GEOGRAPHICLIB)
 endif()
 
 if (WITH_QTWEBENGINE)
-    if(BUILD_WITH_QT6)
-      target_link_libraries(qgis_core
-        ${QT_VERSION_BASE}::WebEngineCore
-      )
-    else()
-      # QWebEnginePage is in WebEngineWidgets for Qt5
-      target_link_libraries(qgis_core
-        ${QT_VERSION_BASE}::WebEngineCore
-        ${QT_VERSION_BASE}::WebEngineWidgets
-      )
-    endif()
+    target_link_libraries(qgis_core
+      ${QT_VERSION_BASE}::WebEngineCore
+    )
 endif()
 
 if (FORCE_STATIC_LIBS)

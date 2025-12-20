@@ -2253,7 +2253,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         {
           capitalization = Qgis::Capitalization::TitleCase;
         }
-#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
         else if ( fcase.compare( QLatin1String( "SmallCaps" ), Qt::CaseInsensitive ) == 0 )
         {
           capitalization = Qgis::Capitalization::SmallCaps;

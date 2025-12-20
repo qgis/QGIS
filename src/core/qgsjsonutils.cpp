@@ -467,15 +467,10 @@ std::unique_ptr< QgsLineString> parseLineStringFromGeoJson( const json &coords )
   QVector< double > x;
   QVector< double > y;
   QVector< double > z;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  x.resize( static_cast< int >( coordsSize ) );
-  y.resize( static_cast< int >( coordsSize ) );
-  z.resize( static_cast< int >( coordsSize ) );
-#else
   x.resize( coordsSize );
   y.resize( coordsSize );
   z.resize( coordsSize );
-#endif
+
   double *xOut = x.data();
   double *yOut = y.data();
   double *zOut = z.data();
