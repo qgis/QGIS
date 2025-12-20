@@ -124,6 +124,7 @@ set(QGIS_GUI_SRCS
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
   annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgsannotationmaptool.cpp
   annotations/qgscreateannotationitemmaptool.cpp
   annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
@@ -1109,6 +1110,7 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
+  annotations/qgsannotationmaptool.h
   annotations/qgscreateannotationitemmaptool.h
   annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h

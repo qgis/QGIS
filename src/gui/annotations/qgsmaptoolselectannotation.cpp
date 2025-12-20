@@ -15,27 +15,27 @@
  ***************************************************************************/
 
 #include "qgsmaptoolselectannotation.h"
-#include "moc_qgsmaptoolselectannotation.cpp"
-#include "qgsapplication.h"
-#include "qgsrubberband.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmapcanvas.h"
-#include "qgsrendereditemresults.h"
-#include "qgsrendereditemdetails.h"
+
+#include "qgsannotationitem.h"
+#include "qgsannotationitemeditoperation.h"
+#include "qgsannotationitemnode.h"
 #include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolselectannotationmousehandles.h"
 #include "qgsproject.h"
 #include "qgsrenderedannotationitemdetails.h"
-#include "qgsmaptoolselectannotationmousehandles.h"
-#include "qgsannotationitem.h"
-#include "qgsannotationitemnode.h"
-#include "qgsannotationitemeditoperation.h"
+#include "qgsrendereditemdetails.h"
+#include "qgsrendereditemresults.h"
+#include "qgsrubberband.h"
 #include "qgssnapindicator.h"
 
 #include <QGraphicsSceneHoverEvent>
+#include <QScreen>
 #include <QTransform>
 #include <QWindow>
-#include <QScreen>
 
+#include "moc_qgsmaptoolselectannotation.cpp"
 
 QgsAnnotationItemRubberBand::QgsAnnotationItemRubberBand( const QString &layerId, const QString &itemId, QgsMapCanvas *canvas )
   : QgsRubberBand( canvas, Qgis::GeometryType::Line )
@@ -48,8 +48,6 @@ QgsAnnotationItemRubberBand::QgsAnnotationItemRubberBand( const QString &layerId
   setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   setColor( QColor( 50, 50, 50, 200 ) );
   setZValue( 10 );
-
-  mNeedsUpdatedBoundingBox = true;
 }
 
 QgsAnnotationLayer *QgsAnnotationItemRubberBand::layer() const
@@ -201,7 +199,7 @@ void QgsAnnotationItemRubberBand::attemptSetSceneRect( const QRectF &rect )
 }
 
 QgsMapToolSelectAnnotation::QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  : QgsAnnotationMapTool( canvas, cadDockWidget )
 {
   connect( QgsMapToolSelectAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolSelectAnnotation::onCanvasRefreshed );
   connect( this, &QgsMapToolSelectAnnotation::selectedItemsChanged, this, &QgsMapToolSelectAnnotation::updateSelectedItem );
@@ -237,7 +235,7 @@ void QgsMapToolSelectAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 {
   const QPointF scenePos = mCanvas->mapToScene( event->pos() );
 
-  if ( ( event->buttons() == Qt::NoButton ) )
+  if ( event->buttons() == Qt::NoButton )
   {
     if ( mMouseHandles->sceneBoundingRect().contains( scenePos ) )
     {
@@ -256,7 +254,7 @@ void QgsMapToolSelectAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
       mHoveringMouseHandles = false;
     }
   }
-  else if ( ( event->buttons() == Qt::LeftButton ) )
+  else if ( event->buttons() == Qt::LeftButton )
   {
     if ( mMouseHandles->shouldBlockEvent( event ) )
     {
@@ -511,47 +509,6 @@ void QgsMapToolSelectAnnotation::onCanvasRefreshed()
   {
     emit selectedItemsChanged();
   }
-}
-
-const QgsRenderedAnnotationItemDetails *QgsMapToolSelectAnnotation::findClosestItemToPoint( const QgsPointXY &mapPoint, const QList<const QgsRenderedAnnotationItemDetails *> &items, QgsRectangle &bounds )
-{
-  const QgsRenderedAnnotationItemDetails *closestItem = nullptr;
-  double closestItemDistance = std::numeric_limits<double>::max();
-  double closestItemArea = std::numeric_limits<double>::max();
-
-  for ( const QgsRenderedAnnotationItemDetails *item : items )
-  {
-    const QgsAnnotationItem *annotationItem = annotationItemFromId( item->layerId(), item->itemId() );
-    if ( !annotationItem )
-      continue;
-
-    const QgsRectangle itemBounds = item->boundingBox();
-    const double itemDistance = itemBounds.contains( mapPoint ) ? 0 : itemBounds.distance( mapPoint );
-    if ( !closestItem || itemDistance < closestItemDistance || ( itemDistance == closestItemDistance && itemBounds.area() < closestItemArea ) )
-    {
-      closestItem = item;
-      closestItemDistance = itemDistance;
-      closestItemArea = itemBounds.area();
-      bounds = itemBounds;
-    }
-  }
-  return closestItem;
-}
-
-QgsAnnotationLayer *QgsMapToolSelectAnnotation::annotationLayerFromId( const QString &layerId )
-{
-  QgsAnnotationLayer *layer = qobject_cast<QgsAnnotationLayer *>( QgsProject::instance()->mapLayer( layerId ) );
-  if ( !layer && layerId == QgsProject::instance()->mainAnnotationLayer()->id() )
-  {
-    layer = QgsProject::instance()->mainAnnotationLayer();
-  }
-  return layer;
-}
-
-QgsAnnotationItem *QgsMapToolSelectAnnotation::annotationItemFromId( const QString &layerId, const QString &itemId )
-{
-  QgsAnnotationLayer *layer = annotationLayerFromId( layerId );
-  return layer ? layer->item( itemId ) : nullptr;
 }
 
 qsizetype QgsMapToolSelectAnnotation::annotationItemRubberBandIndexFromId( const QString &layerId, const QString &itemId )
