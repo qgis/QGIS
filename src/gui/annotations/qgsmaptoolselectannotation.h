@@ -19,13 +19,14 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsmaptoolselectannotationmousehandles.h"
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qobjectuniqueptr.h"
-#include "qgspointxy.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationmaptool.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmaptoolselectannotationmousehandles.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgsrubberband.h"
+#include "qobjectuniqueptr.h"
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
@@ -92,7 +93,7 @@ class GUI_EXPORT QgsAnnotationItemRubberBand : public QgsRubberBand
 
     /**
      * Attempts to rotate the annotation item.
-     * \param deltaDegree the rotation value in degree 
+     * \param deltaDegree the rotation value in degree
      */
     void attemptRotateBy( double deltaDegree );
 
@@ -106,7 +107,7 @@ class GUI_EXPORT QgsAnnotationItemRubberBand : public QgsRubberBand
     QString mLayerId;
     QString mItemId;
     QgsRectangle mBoundingBox;
-    bool mNeedsUpdatedBoundingBox = false;
+    bool mNeedsUpdatedBoundingBox = true;
 };
 
 
@@ -116,7 +117,7 @@ class GUI_EXPORT QgsAnnotationItemRubberBand : public QgsRubberBand
  * \note Not available in Python bindings
  * \since QGIS 4.0
  */
-class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizing
+class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsAnnotationMapTool
 {
     Q_OBJECT
 
@@ -125,7 +126,6 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
      * Constructor for QgsMapToolSelectAnnotation
      */
     explicit QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
-
     ~QgsMapToolSelectAnnotation() override;
 
     void activate() override;
@@ -166,9 +166,6 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
     void onCanvasRefreshed();
 
   private:
-    const QgsRenderedAnnotationItemDetails *findClosestItemToPoint( const QgsPointXY &mapPoint, const QList<const QgsRenderedAnnotationItemDetails *> &items, QgsRectangle &bounds );
-    QgsAnnotationLayer *annotationLayerFromId( const QString &layerId );
-    QgsAnnotationItem *annotationItemFromId( const QString &layerId, const QString &itemId );
     qsizetype annotationItemRubberBandIndexFromId( const QString &layerId, const QString &itemId );
 
     void setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection = false );

@@ -16,16 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolselectannotationmousehandles.h"
-#include "moc_qgsmaptoolselectannotationmousehandles.cpp"
+
+#include <limits>
+
 #include "qgis.h"
 #include "qgsgui.h"
 #include "qgsmaptoolselectannotation.h"
 
-#include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QWidget>
-#include <limits>
+
+#include "moc_qgsmaptoolselectannotationmousehandles.cpp"
 
 ///@cond PRIVATE
 
