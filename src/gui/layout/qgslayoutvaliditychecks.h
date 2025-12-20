@@ -110,7 +110,6 @@ class GUI_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidit
     QList<QgsValidityCheckResult> mResults;
 };
 
-#ifndef WITH_QTWEBKIT
 /**
  * \ingroup gui
  * \brief Layout HTML item validity check
@@ -131,6 +130,5 @@ class GUI_EXPORT QgsLayoutHtmlItemValidityCheck : public QgsAbstractValidityChec
   private:
     QList<QgsValidityCheckResult> mResults;
 };
-#endif
 
 #endif // QGSLAYOUTVALIDITYCHECKS_H

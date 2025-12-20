@@ -16,24 +16,16 @@
 #include "qgsdemterraintilegeometry_p.h"
 
 #include <QMatrix4x4>
+#include <Qt3DCore/QAbstractFunctor>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
 
 #include "moc_qgsdemterraintilegeometry_p.cpp"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QAbstractFunctor>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QAbstractFunctor Qt3DQAbstractFunctor;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QAbstractFunctor>
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
 typedef Qt3DCore::QAbstractFunctor Qt3DQAbstractFunctor;
-#endif
+
 #include <limits>
 #include <cmath>
 #include "qgsraycastingutils.h"
@@ -239,11 +231,7 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
 
     qintptr id() const override
     {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneVertexBufferFunctor>::id );
-#else
       return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneVertexBufferFunctor>::id );
-#endif
     }
 
     bool operator==( const Qt3DQAbstractFunctor &other ) const
@@ -283,11 +271,7 @@ class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
 
     qintptr id() const override
     {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneIndexBufferFunctor>::id );
-#else
       return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneIndexBufferFunctor>::id );
-#endif
     }
 
     bool operator==( const Qt3DQAbstractFunctor &other ) const

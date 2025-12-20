@@ -301,15 +301,9 @@ endif()
 
 set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
-if (BUILD_WITH_QT6)
-  target_include_directories(qgis_3d SYSTEM PUBLIC
-    ${QT6_3DEXTRA_INCLUDE_DIR}
-  )
-else()
-  target_include_directories(qgis_3d SYSTEM PUBLIC
-    ${QT5_3DEXTRA_INCLUDE_DIR}
-  )
-endif()
+target_include_directories(qgis_3d SYSTEM PUBLIC
+  ${QT6_3DEXTRA_INCLUDE_DIR}
+)
 
 target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}

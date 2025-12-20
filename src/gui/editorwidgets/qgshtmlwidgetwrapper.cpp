@@ -67,18 +67,6 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setHtml( mHtmlCode.replace( "\n", " " ) );
 
-#ifdef WITH_QTWEBKIT
-
-  const int horizontalDpi = mWidget->logicalDpiX();
-
-  mWidget->setZoomFactor( horizontalDpi / 96.0 );
-
-  QWebPage *page = mWidget->page();
-  connect( page, &QWebPage::contentsChanged, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-  connect( page, &QWebPage::loadFinished, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-
-#endif
-
   checkGeometryNeeds();
 }
 
@@ -159,15 +147,6 @@ void QgsHtmlWidgetWrapper::setHtmlContext()
 
   mWidget->setHtml( mHtmlCode );
 }
-
-#ifdef WITH_QTWEBKIT
-void QgsHtmlWidgetWrapper::fixHeight()
-{
-  QWebPage *page = mWidget->page();
-  const int docHeight { page->mainFrame()->contentsSize().height() };
-  mWidget->setFixedHeight( docHeight );
-}
-#endif
 
 void QgsHtmlWidgetWrapper::setFeature( const QgsFeature &feature )
 {

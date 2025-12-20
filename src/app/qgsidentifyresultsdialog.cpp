@@ -119,9 +119,6 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-#ifdef WITH_QTWEBKIT
-  page()->setForwardUnsupportedContent( true );
-#endif
   page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
   settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
   settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
@@ -1152,20 +1149,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer, const QString 
   if ( currentFormat == Qgis::RasterIdentifyFormat::Html || currentFormat == Qgis::RasterIdentifyFormat::Text )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
-#ifdef WITH_QTWEBKIT
-    attrItem->webView()->page()->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
-
-    const int horizontalDpi = logicalDpiX();
-
-    // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
-    if ( horizontalDpi > 96 )
-    {
-      attrItem->webView()->setZoomFactor( attrItem->webView()->zoomFactor() * ( currentFormat == Qgis::RasterIdentifyFormat::Html ? 0.7 : 0.9 ) );
-    }
-    connect( attrItem->webView()->page(), &QWebPage::linkClicked, []( const QUrl &url ) {
-      QDesktopServices::openUrl( url );
-    } );
-#endif
     featItem->addChild( attrItem ); // before setHtml()!
     if ( !attributes.isEmpty() )
     {

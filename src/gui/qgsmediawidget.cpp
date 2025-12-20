@@ -78,11 +78,7 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   } );
 
   connect( mPlayButton, &QAbstractButton::clicked, this, [this]() {
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     if ( mMediaPlayer.playbackState() == QMediaPlayer::PlayingState )
-#else
-    if ( mMediaPlayer.state() == QMediaPlayer::PlayingState )
-#endif
     {
       mMediaPlayer.pause();
     }
@@ -102,11 +98,7 @@ void QgsMediaWidget::setMediaPath( const QString &path )
     return;
 
   mMediaPath = path;
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   mMediaPlayer.setSource( QUrl::fromLocalFile( path ) );
-#else
-  mMediaPlayer.setMedia( QUrl::fromLocalFile( path ) );
-#endif
 }
 
 void QgsMediaWidget::setMode( Mode mode )
@@ -194,9 +186,6 @@ void QgsMediaWidget::mediaStatusChanged( QMediaPlayer::MediaStatus status )
     }
 
     case QMediaPlayer::NoMedia:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    case QMediaPlayer::UnknownMediaStatus:
-#endif
     {
       setControlsEnabled( false );
       mDurationLabel->setText( QStringLiteral( "-" ) );

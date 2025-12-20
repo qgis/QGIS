@@ -77,15 +77,9 @@ if(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
   set(DOCSTRINGSTEMPLATE "")
 endif()
 
-IF(BUILD_WITH_QT6)
-  SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
-  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
-  SET(pyqtdist "PyQt6")
-ELSE()
-  SET(QSCI_SIP_MOD_NAME Qsci/qscimod5.sip)
-  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-  SET(pyqtdist "PyQt5")
-ENDIF()
+SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
+SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
+ SET(pyqtdist "PyQt6")
 
 set(QGIS_PYTHON_DIR ${QGIS_PYTHON_INSTALL_DIR}/qgis)
 
@@ -136,10 +130,8 @@ endif()
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
   set(sipabi "")
-elseif(BUILD_WITH_QT6)
-  set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
 else()
-  set(sipabi "\n[tool.sip.project]\nabi-version = \"12.16\"")
+  set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
 endif()
 
 set(toml "

@@ -46,9 +46,6 @@ void QgsSettings::init()
   if ( ! sGlobalSettingsPath()->isEmpty() )
   {
     mGlobalSettings = std::make_unique<QSettings>( *sGlobalSettingsPath(), QSettings::IniFormat );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    mGlobalSettings->setIniCodec( "UTF-8" );
-#endif
   }
 }
 

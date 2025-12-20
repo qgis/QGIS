@@ -18,24 +18,14 @@
 #include "qgsmesh3dgeometry_p.h"
 
 #include <QFutureWatcher>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
 #include <QtConcurrentRun>
 
 #include "moc_qgsmesh3dgeometry_p.cpp"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
-
 
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
@@ -200,11 +190,7 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, const Q
 }
 
 QgsMesh3DGeometry::QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh, const QgsVector3D &origin, const QgsRectangle &extent, double verticalScale, Qt3DCore::QNode *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : Qt3DRender::QGeometry( parent )
-#else
   : Qt3DCore::QGeometry( parent )
-#endif
   , mOrigin( origin )
   , mExtent( extent )
   , mVertScale( verticalScale )

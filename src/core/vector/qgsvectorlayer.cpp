@@ -1657,15 +1657,6 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( const QList<QgsPointXY> &
   return addPart( pts );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-Qgis::GeometryOperationResult QgsVectorLayer::addPart( const QVector<QgsPointXY> &points )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return addPart( vectorPointXY2pointSequence( points ) );
-}
-#endif
-
 Qgis::GeometryOperationResult QgsVectorLayer::addPart( const QgsPointSequence &points )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1958,9 +1949,6 @@ bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor, const Qgs
       {
         // Read it into a string
         QTextStream inf( inputFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-        inf.setCodec( "UTF-8" );
-#endif
         initCode = inf.readAll();
         inputFile->close();
         initCode = QStringLiteral( "# Calling function ’%1’\n# From file %2\n\n" ).arg( mEditFormConfig.initFunction(), mEditFormConfig.initFilePath() ) + initCode;

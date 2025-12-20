@@ -106,6 +106,7 @@
 #include <QFileInfo>
 #include <QFileOpenEvent>
 #include <QIcon>
+#include <QImageReader>
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QMessageBox>
@@ -122,10 +123,6 @@
 #include <QThreadPool>
 
 #include "moc_qgsapplication.cpp"
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <QImageReader>
-#endif
 
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettingsTree::sTreeLocale, QString() );
 
@@ -334,22 +331,9 @@ void registerMetaTypes()
   qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
   qRegisterMetaType<QgsGradientColorRamp>( "QgsGradientColorRamp" );
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok
-  // TODO: when tests can run against Qt6 builds, check for any regressions
-  qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#endif
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
   qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
   qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
-  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
-  QMetaType::registerEqualsComparator<QgsProperty>();
-  QMetaType::registerEqualsComparator<QgsDateTimeRange>();
-  QMetaType::registerEqualsComparator<QgsDateRange>();
-  QMetaType::registerEqualsComparator<QgsUnsetAttributeValue>();
-#endif
   qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
   qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
   qRegisterMetaType<QgsDoubleRange>( "QgsDoubleRange" );
@@ -538,10 +522,8 @@ void QgsApplication::init( QString profileFolder )
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   // the default of 256 is not enough for QGIS
   QImageReader::setAllocationLimit( 512 );
-#endif
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load user fonts" ) );
@@ -1421,11 +1403,7 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    *sUserName() = QString::fromLocal8Bit( name );
-#else
     *sUserName() = QString::fromWCharArray( name );
-#endif
   }
 
 
@@ -1462,11 +1440,7 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    *sUserFullName() = QString::fromLocal8Bit( name );
-#else
     *sUserFullName() = QString::fromWCharArray( name );
-#endif
   }
 
   //fall back to login name

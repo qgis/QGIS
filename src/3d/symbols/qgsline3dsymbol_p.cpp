@@ -37,21 +37,13 @@
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
 typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
+
 #include <Qt3DRender/QGeometryRenderer>
 
 /// @cond PRIVATE

@@ -108,9 +108,6 @@ QVariantMap QgsRasterStatisticsAlgorithm::processAlgorithm( const QVariantMap &p
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      out.setCodec( "UTF-8" );
-#endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
       out << QObject::tr( "<p>Analyzed file: %1 (band %2)</p>\n" ).arg( layer->source() ).arg( band );
       out << QObject::tr( "<p>Count of non-NoData pixels: %1</p>\n" ).arg( stat.elementCount );

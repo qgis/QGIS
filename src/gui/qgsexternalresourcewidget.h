@@ -237,10 +237,6 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     //! UI objects
     QgsExternalStorageFileWidget *mFileWidget = nullptr;
     QgsPixmapLabel *mPixmapLabel = nullptr;
-#ifdef WITH_QTWEBKIT
-    //! This webview is used as a container to display the picture
-    QWebView *mWebView = nullptr;
-#endif
     QgsMediaWidget *mMediaWidget = nullptr;
 
     QLabel *mLoadingLabel = nullptr;

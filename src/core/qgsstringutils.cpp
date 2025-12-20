@@ -741,11 +741,7 @@ QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLe
   if ( truncateFrom <= 0 )
     return QChar( 0x2026 );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  return string.leftRef( truncateFrom ) + QString( QChar( 0x2026 ) ) + string.midRef( truncateFrom + charactersToTruncate + 1 );
-#else
   return QStringView( string ).first( truncateFrom ) + QString( QChar( 0x2026 ) ) + QStringView( string ).sliced( truncateFrom + charactersToTruncate + 1 );
-#endif
 }
 
 bool QgsStringUtils::containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity )

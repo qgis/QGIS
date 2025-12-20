@@ -65,9 +65,6 @@ class TestQgsLayout : public QgsTest
     void layoutItemById();
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
-#ifdef WITH_QTWEBKIT
-    void shouldExportPage();
-#endif
     void expressionContextPageVariables();
     void pageIsEmpty();
     void clear();
@@ -667,80 +664,6 @@ void TestQgsLayout::itemsOnPage()
   l.pageCollection()->itemsOnPage( labels, 2 );
   QCOMPARE( labels.length(), 0 );
 }
-
-#ifdef WITH_QTWEBKIT
-void TestQgsLayout::shouldExportPage()
-{
-  QgsProject proj;
-  QgsLayout l( &proj );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
-  page->setPageSize( "A4" );
-  l.pageCollection()->addPage( page );
-  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
-  page2->setPageSize( "A4" );
-  l.pageCollection()->addPage( page2 );
-  l.renderContext().mIsPreviewRender = false;
-
-  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
-  //frame on page 1
-  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, htmlItem );
-  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 100 ) );
-  //frame on page 2
-  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, htmlItem );
-  frame2->attemptSetSceneRect( QRectF( 0, 320, 100, 100 ) );
-  frame2->setHidePageIfEmpty( true );
-  htmlItem->addFrame( frame1 );
-  htmlItem->addFrame( frame2 );
-  htmlItem->setContentMode( QgsLayoutItemHtml::ManualHtml );
-  //short content, so frame 2 should be empty
-  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
-  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
-
-  //long content, so frame 2 should not be empty
-  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 10000px\"><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
-  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
-
-  //...and back again...
-  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
-  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
-
-  // get rid of frames
-  l.removeItem( frame1 );
-  l.removeItem( frame2 );
-  l.removeMultiFrame( htmlItem );
-  delete htmlItem;
-  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-
-  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
-  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
-
-  // explicitly set exclude from exports
-  l.pageCollection()->page( 0 )->setExcludeFromExports( true );
-  QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
-  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
-
-  l.pageCollection()->page( 0 )->setExcludeFromExports( false );
-  l.pageCollection()->page( 1 )->setExcludeFromExports( true );
-  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
-  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
-
-  l.pageCollection()->page( 1 )->setExcludeFromExports( false );
-  l.pageCollection()->page( 0 )->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
-  l.pageCollection()->page( 1 )->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, QgsProperty::fromValue( true ) );
-  l.refresh();
-  QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
-  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
-}
-#endif
 
 void TestQgsLayout::expressionContextPageVariables()
 {

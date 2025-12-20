@@ -165,9 +165,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   voteLabel->hide();
   voteSlider->hide();
   voteSubmit->hide();
-#ifndef WITH_QTWEBKIT
   connect( voteSubmit, &QPushButton::clicked, this, &QgsPluginManager::submitVote );
-#endif
 
   // Init the message bar instance
   msgBar = new QgsMessageBar( this );
@@ -738,69 +736,6 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   if ( !metadata->value( QStringLiteral( "plugin_id" ) ).isEmpty() )
   {
-#ifdef WITH_QTWEBKIT
-    html += QString(
-              "<style>"
-              "  div#stars_bg {"
-              "    background-image: url('qrc:/images/themes/default/stars_empty.svg');"
-              "    background-size: 92px 16px;"
-              "    width:92px;"
-              "    height:16px;"
-              "    margin-bottom:16px;"
-              "  }"
-              "  div#stars {"
-              "    background-image: url('qrc:/images/themes/default/stars_full.svg');"
-              "    background-size: 92px 16px;" /*scale to the full width*/
-              "    width:%1px;"
-              "    height:16px;"
-              "  }"
-              "</style>"
-    )
-              .arg( metadata->value( QStringLiteral( "average_vote" ) ).toFloat() / 5 * 92 );
-    html += QString(
-              "<script>"
-              "  var plugin_id=%1;"
-              "  var vote=0;"
-              "  function ready()"
-              "  {"
-              "    document.getElementById('stars_bg').onmouseover=save_vote;"
-              "    document.getElementById('stars_bg').onmouseout=restore_vote;"
-              "    document.getElementById('stars_bg').onmousemove=change_vote;"
-              "    document.getElementById('stars_bg').onclick=send_vote;"
-              "  };"
-              "    "
-              "  function save_vote(e)"
-              "  {"
-              "    vote = document.getElementById('stars').style.width"
-              "  }"
-              "   "
-              "  function restore_vote(e)"
-              "  {"
-              "    document.getElementById('stars').style.width = vote;"
-              "  }"
-              "   "
-              "  function change_vote(e)"
-              "  {"
-              "    var length = e.x - document.getElementById('stars').getBoundingClientRect().left;"
-              "    max = document.getElementById('stars_bg').getBoundingClientRect().right;"
-              "    if ( length <= max ) document.getElementById('stars').style.width = length + 'px';"
-              "  }"
-              "   "
-              "  function send_vote(e)"
-              "  {"
-              "    save_vote();"
-              "    result = Number(vote.replace('px',''));"
-              "    if (!result) return;"
-              "    result = Math.floor(result/92*5)+1;"
-              "    document.getElementById('send_vote_trigger').href='rpc2://plugin.vote/'+plugin_id+'/'+result;"
-              "    ev=document.createEvent('MouseEvents');"
-              "    ev.initEvent('click', false, true);"
-              "    document.getElementById('send_vote_trigger').dispatchEvent(ev);"
-              "  }"
-              "</script>"
-    )
-              .arg( metadata->value( QStringLiteral( "plugin_id" ) ) );
-#else
     voteRating->show();
     voteLabel->show();
     voteSlider->show();
@@ -816,14 +751,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     voteSlider->hide();
     voteSubmit->hide();
     mCurrentPluginId = -1;
-#endif
   }
 
-#ifdef WITH_QTWEBKIT
-  html += QLatin1String( "<body onload='ready()'>" );
-#else
   html += "<body>";
-#endif
 
 
   // First prepare message box(es)
@@ -945,9 +875,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
 
   QString votes;
-#ifndef WITH_QTWEBKIT
   votes += tr( "Average rating %1" ).arg( metadata->value( "average_vote" ).toFloat(), 0, 'f', 1 );
-#endif
   if ( !metadata->value( QStringLiteral( "rating_votes" ) ).isEmpty() )
   {
     if ( !votes.isEmpty() )
@@ -961,18 +889,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     votes += tr( "%1 downloads" ).arg( metadata->value( QStringLiteral( "downloads" ) ) );
   }
 
-#ifdef WITH_QTWEBKIT
-  if ( metadata->value( QStringLiteral( "readonly" ) ) == QLatin1String( "false" ) )
-  {
-    html += QLatin1String( "<div id='stars_bg'/><div id='stars'/>" );
-    html += QLatin1String( "<div id='votes'>" );
-    html += votes;
-    html += QLatin1String( "</div>" );
-    html += QLatin1String( "<div><a id='send_vote_trigger'/></div>" );
-  }
-#else
   voteRating->setText( votes );
-#endif
 
   html += QLatin1String( "</td></tr>" );
   html += QLatin1String( "<tr><td width='1%'> </td><td width='99%'> </td></tr>" );
@@ -1440,7 +1357,6 @@ void QgsPluginManager::vwPlugins_doubleClicked( const QModelIndex &index )
   }
 }
 
-#ifndef WITH_QTWEBKIT
 void QgsPluginManager::submitVote()
 {
   if ( mCurrentPluginId < 0 )
@@ -1448,7 +1364,6 @@ void QgsPluginManager::submitVote()
 
   sendVote( mCurrentPluginId, voteSlider->value() );
 }
-#endif
 
 void QgsPluginManager::sendVote( int pluginId, int vote )
 {

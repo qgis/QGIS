@@ -36,9 +36,6 @@
 #include <QSettings>
 #include <QLabel>
 #include <QDesktopServices>
-#if WITH_QTWEBKIT
-#include <QWebElement>
-#endif
 #include <QHBoxLayout>
 
 #include "qgsmaptip.h"
@@ -118,14 +115,6 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer, QgsPointXY &mapPosition, const 
     transparentColor.setAlpha( 0 );
     mWebView->setStyleSheet( QString( "background:%1;" ).arg( transparentColor.name( QColor::HexArgb ) ) );
 
-
-#if WITH_QTWEBKIT
-    mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself
-    mWebView->setContextMenuPolicy( Qt::NoContextMenu );                     //No context menu is allowed if you don't need it
-    connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
-    connect( mWebView, &QWebView::loadFinished, this, [this]( bool ) { resizeAndMoveToolTip(); } );
-#endif
-
     mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
     mWebView->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
     mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
@@ -186,24 +175,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer, QgsPointXY &mapPosition, const 
   mWebView->setHtml( tipHtml );
   lastTipText = tipText;
 
-#if !WITH_QTWEBKIT
   resizeAndMoveToolTip();
-#endif
 }
 
 void QgsMapTip::resizeAndMoveToolTip()
 {
-#if WITH_QTWEBKIT
-  // Get the content size
-  const QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
-    QStringLiteral( "#QgsWebViewContainer" )
-  );
-  const int width = container.geometry().width();
-  const int height = container.geometry().height();
-  mWebView->resize( width, height );
-#else
   mWebView->adjustSize();
-#endif
 
   int cursorOffset = 0;
   // attempt to shift the tip away from the cursor.

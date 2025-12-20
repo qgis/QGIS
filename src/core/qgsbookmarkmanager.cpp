@@ -437,9 +437,6 @@ bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const Qg
   }
 
   QTextStream out( &f );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  out.setCodec( "UTF-8" );
-#endif
   doc.save( out, 2 );
   f.close();
 
@@ -516,9 +513,6 @@ void QgsBookmarkManager::store()
     doc.appendChild( elem );
 
     QTextStream out( &f );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    out.setCodec( "UTF-8" );
-#endif
     doc.save( out, 2 );
     f.close();
   }

@@ -20,6 +20,7 @@
 #include <QScreen>
 #include <QVector2D>
 #include <QVector3D>
+#include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
@@ -30,13 +31,7 @@
 #include <Qt3DRender/QViewport>
 #include <Qt3DRender/qsubtreeenabler.h>
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QBuffer>
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
-#include <Qt3DCore/QBuffer>
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "qgsmapsettings.h"

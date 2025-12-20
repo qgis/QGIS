@@ -18,20 +18,13 @@
 #include "qgsmessagelog.h"
 
 #include <QMatrix4x4>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
 
 #include "moc_qgstessellatedpolygongeometry.cpp"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 
 #include "qgstessellator.h"
 #include "qgspolygon.h"

@@ -15,21 +15,14 @@
 
 #include "qgs3dwiredmesh_p.h"
 
-#include "moc_qgs3dwiredmesh_p.cpp"
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QGeometry>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QGeometry>
+
+#include "moc_qgs3dwiredmesh_p.cpp"
+
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QGeometry Qt3DQGeometry;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 
 #include "qgsaabb.h"
 

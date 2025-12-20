@@ -403,11 +403,7 @@ QgsLocatorResultsView::QgsLocatorResultsView( QWidget *parent )
 void QgsLocatorResultsView::recalculateSize()
 {
   QStyleOptionViewItem optView;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  optView.init( this );
-#else
   optView.initFrom( this );
-#endif
 
   // try to show about 20 rows
   int rowSize = QgsLocatorWidget::settingLocatorTreeHeight->value() * itemDelegate()->sizeHint( optView, model()->index( 0, 0 ) ).height();

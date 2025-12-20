@@ -642,9 +642,6 @@ uint qHash( const QVariant &variant )
     case QMetaType::Type::QUrl:
     case QMetaType::Type::QLocale:
     case QMetaType::Type::QRegularExpression:
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    case QMetaType::Type::QRegExp:
-#endif
       return qHash( variant.toString() );
     default:
       break;
@@ -743,11 +740,7 @@ int Qgis::geographicLibVersion()
 
 bool Qgis::hasQtWebkit()
 {
-#ifdef WITH_QTWEBKIT
-  return true;
-#else
   return false;
-#endif
 }
 
 int Qgis::geosVersionInt()
@@ -775,13 +768,3 @@ int Qgis::geosVersionPatch()
   static const int version = atoi( qgis_xstr( GEOS_VERSION_PATCH ) );
   return version;
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-template<>
-bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
-{
-  // qt's built in qMapLessThanKey for QVariantList is broken and does a case-insensitive operation.
-  // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
-  return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
-}
-#endif

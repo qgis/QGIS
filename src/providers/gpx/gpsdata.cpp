@@ -354,9 +354,6 @@ void QgsGpsData::removeTracks( const QgsFeatureIds &ids )
 
 void QgsGpsData::writeXml( QTextStream &stream )
 {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  stream.setCodec( QTextCodec::codecForName( "UTF8" ) );
-#endif
   stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
          << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
   for ( WaypointIterator wIter = waypoints.begin();

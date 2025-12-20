@@ -138,12 +138,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void showEvent( QShowEvent *event ) override;
 
 #ifndef SIP_RUN
-///@cond PRIVATE
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+    ///@cond PRIVATE
     QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent );
-#else
-    QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent );
-#endif
 ///@endcond
 #endif
 

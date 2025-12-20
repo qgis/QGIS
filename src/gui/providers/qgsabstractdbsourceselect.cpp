@@ -188,11 +188,7 @@ void QgsAbstractDbSourceSelect::filterResults()
 
   if ( regex )
   {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    mProxyModel->setFilterRegExp( searchText );
-#else
     mProxyModel->setFilterRegularExpression( searchText );
-#endif
   }
   else
   {
