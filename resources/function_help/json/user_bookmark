@@ -1,0 +1,15 @@
+{
+  "name": "user_bookmark",
+  "type": "function",
+  "groups": ["Bookmarks"],
+  "description": "Returns a user (profile) bookmark by name.",
+  "arguments": [{
+    "arg": "name",
+    "description": "a user bookmark name"
+  }],
+  "examples": [{
+    "expression": "user_bookmark('Home')",
+    "returns": "A map representing the 'Home' user bookmark."
+  }],
+  "tags": ["bookmarks", "user", "profile"]
+}

@@ -2979,49 +2979,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( this ) );
   mProjectScope->addFunction( QStringLiteral( "project_color_object" ), new GetNamedProjectColorObject( this ) );
 
-  // bookmarks
-  QVariantMap bookmarksMap;
-  const auto bookmarks = mBookmarkManager->bookmarks();
-  for ( const QgsBookmark &bm : bookmarks )
-  {
-    QVariantMap bmMap;
-    bmMap["name"] = bm.name();
-    bmMap["id"] = bm.id();
-    QVariantMap extentMap;
-    extentMap["x_min"] = bm.extent().xMinimum();
-    extentMap["y_min"] = bm.extent().yMinimum();
-    extentMap["x_max"] = bm.extent().xMaximum();
-    extentMap["y_max"] = bm.extent().yMaximum();
-    bmMap["extent"] = extentMap;
-    bmMap["width"] = bm.extent().width();
-    bmMap["height"] = bm.extent().height();
-    bmMap["crs"] = bm.extent().crs().authid();
-    bmMap["rotation"] = bm.rotation();
-    bookmarksMap[bm.name()] = bmMap;
-  }
-  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_bookmarks" ), bookmarksMap, true, true ) );
-
-  // Profile bookmarks
-  QVariantMap userBookmarksMap;
-  const auto profileBookmarks = QgsApplication::bookmarkManager()->bookmarks();
-  for ( const QgsBookmark &bm : profileBookmarks )
-  {
-    QVariantMap bmMap;
-    bmMap["name"] = bm.name();
-    bmMap["id"] = bm.id();
-    QVariantMap extentMap;
-    extentMap["x_min"] = bm.extent().xMinimum();
-    extentMap["y_min"] = bm.extent().yMinimum();
-    extentMap["x_max"] = bm.extent().xMaximum();
-    extentMap["y_max"] = bm.extent().yMaximum();
-    bmMap["extent"] = extentMap;
-    bmMap["width"] = bm.extent().width();
-    bmMap["height"] = bm.extent().height();
-    bmMap["crs"] = bm.extent().crs().authid();
-    bmMap["rotation"] = bm.rotation();
-    userBookmarksMap[bm.name()] = bmMap;
-  }
-  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "user_bookmarks" ), userBookmarksMap, true, true ) );
+  mProjectScope->addFunction( QStringLiteral( "project_bookmark" ), new GetNamedProjectBookmark( this ) );
+  mProjectScope->addFunction( QStringLiteral( "user_bookmark" ), new GetNamedUserBookmark( ) );
 
   return createExpressionContextScope();
 }
@@ -5609,6 +5568,107 @@ QgsScopedExpressionFunction *GetNamedProjectColorObject::clone() const
 {
   return new GetNamedProjectColorObject( mColors );
 }
+
+// Helper to build the hash
+static QHash<QString, QVariantMap> loadBookmarksFromProject( const QgsProject *project )
+{
+  QHash<QString, QVariantMap> bookmarks;
+  const QgsBookmarkManager *bookmarkManager = project->bookmarkManager();
+  if ( !bookmarkManager )
+    return bookmarks;
+
+  const QList<QgsBookmark> projectBookmarks = bookmarkManager->bookmarks();
+  for ( const QgsBookmark &bm : projectBookmarks )
+  {
+    QVariantMap bmMap;
+    bmMap["name"] = bm.name();
+    bmMap["id"] = bm.id();
+
+    QVariantMap extentMap;
+    extentMap["x_min"] = bm.extent().xMinimum();
+    extentMap["y_min"] = bm.extent().yMinimum();
+    extentMap["x_max"] = bm.extent().xMaximum();
+    extentMap["y_max"] = bm.extent().yMaximum();
+    bmMap["extent_rect"] = extentMap;
+
+    bmMap["width"] = bm.extent().width();
+    bmMap["height"] = bm.extent().height();
+    bmMap["crs"] = bm.extent().crs().authid();
+    bmMap["rotation"] = bm.rotation();
+
+    bmMap["extent"] = QVariant::fromValue( bm.extent() );
+
+    bookmarks[bm.name()] = bmMap;
+  }
+  return bookmarks;
+}
+
+// Constructor
+GetNamedProjectBookmark::GetNamedProjectBookmark( const QgsProject * )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_bookmark" ), 1, QStringLiteral( "Bookmarks" ) )
+{
+}
+
+QVariant GetNamedProjectBookmark::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  if ( values.isEmpty() )
+    return QVariant();
+
+  const QgsProject *project = QgsProject::instance();
+  if ( !project )
+    return QVariant();
+
+  const QHash<QString, QVariantMap> bookmarks = loadBookmarksFromProject( project );
+  const QString bookmarkName = values.at( 0 ).toString();
+  const QVariantMap bmMap = bookmarks.value( bookmarkName );
+  if ( bmMap.isEmpty() )
+    return QVariant();
+  return bmMap;
+}
+
+QgsScopedExpressionFunction *GetNamedProjectBookmark::clone() const
+{
+  return new GetNamedProjectBookmark( nullptr );
+}
+
+
+// Helper to build the hash for user bookmarks
+static QHash<QString, QVariantMap> loadUserBookmarks()
+{
+  QHash<QString, QVariantMap> bookmarks;
+  const auto userBookmarks = QgsApplication::bookmarkManager()->bookmarks();
+  for ( const QgsBookmark &b : userBookmarks )
+  {
+    QVariantMap map;
+    map["id"] = b.id();
+    map["name"] = b.name();
+    map["group"] = b.group();
+    map["extent"] = QVariant::fromValue( b.extent() );
+    map["rotation"] = b.rotation();
+    bookmarks[b.name()] = map;
+  }
+  return bookmarks;
+}
+
+GetNamedUserBookmark::GetNamedUserBookmark()
+  : QgsScopedExpressionFunction( QStringLiteral( "user_bookmark" ), 1, QStringLiteral( "Bookmarks" ) )
+{}
+
+QVariant GetNamedUserBookmark::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  if ( values.isEmpty() )
+    return QVariant();
+
+  const QString name = values.at( 0 ).toString();
+  const auto bookmarks = loadUserBookmarks();
+  return bookmarks.value( name );
+}
+
+QgsScopedExpressionFunction *GetNamedUserBookmark::clone() const
+{
+  return new GetNamedUserBookmark();
+}
+
 
 // ----------------
 

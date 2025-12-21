@@ -1002,6 +1002,8 @@ void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
   QgsExpression::registerFunction( new GetNamedProjectColorObject( nullptr ) );
+  QgsExpression::registerFunction( new GetNamedProjectBookmark( nullptr ) );
+  QgsExpression::registerFunction( new GetNamedUserBookmark() );
   QgsExpression::registerFunction( new GetSensorData( ) );
   QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
   QgsExpression::registerFunction( new GetLayoutMapLayerCredits( nullptr ) );

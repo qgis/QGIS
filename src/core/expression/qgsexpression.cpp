@@ -777,8 +777,6 @@ void QgsExpression::buildVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "project_ellipsoid" ), QCoreApplication::translate( "variable_help", "Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer_ids" ), QCoreApplication::translate( "variable_help", "List of all map layer IDs from the current project." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layers" ), QCoreApplication::translate( "variable_help", "List of all map layers from the current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_bookmarks" ), QCoreApplication::translate( "variable_help", "List of all bookmarks from the current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "user_bookmarks" ), QCoreApplication::translate( "variable_help", "List of all user bookmarks from the current profile." ) );
 
   //layer variables
   sVariableHelpTexts()->insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
