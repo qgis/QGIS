@@ -33,6 +33,7 @@ set(TESTS
   testqgsmaptoolselect.cpp
   testqgsmaptoolreshape.cpp
   testqgsmaptoolrotatefeature.cpp
+  testqgsmaptoolselectannotation.cpp
   testqgsmaptoolscalefeature.cpp
   testqgsmaptoolcircularstring.cpp
   testqgsmaptooleditmesh.cpp
