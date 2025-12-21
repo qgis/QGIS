@@ -407,7 +407,7 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 
   if ( !mBoundingBox.isNull() )
   {
-    return mBoundingBox.intersects( rectangle );
+    return mBoundingBox.toRectangle().intersects( rectangle );
   }
   const int nb = mX.size();
 
@@ -434,11 +434,14 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
   // and save future calls to calculate the bounding box!
   double xmin = std::numeric_limits<double>::max();
   double ymin = std::numeric_limits<double>::max();
+  double zmin = -std::numeric_limits<double>::max();
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
+  double zmax = -std::numeric_limits<double>::max();
 
   const double *x = mX.constData();
   const double *y = mY.constData();
+  const double *z = is3D() ? mZ.constData() : nullptr;
   bool foundPointInRectangle = false;
   for ( int i = 0; i < nb; ++i )
   {
@@ -448,6 +451,12 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
     const double py = *y++;
     ymin = std::min( ymin, py );
     ymax = std::max( ymax, py );
+    if ( z )
+    {
+      const double pz = *z++;
+      zmin = std::min( zmin, pz );
+      zmax = std::max( zmax, pz );
+    }
 
     if ( !foundPointInRectangle && rectangle.contains( px, py ) )
     {
@@ -465,7 +474,7 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 
   // at this stage we now know the overall bounding box of the linestring, so let's cache
   // it so we don't ever have to calculate this again. We've done all the hard work anyway!
-  mBoundingBox = QgsRectangle( xmin, ymin, xmax, ymax, false );
+  mBoundingBox = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax, false );
 
   if ( foundPointInRectangle )
     return true;

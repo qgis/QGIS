@@ -272,7 +272,7 @@ void TestQgsMeshLayer::test_read_1d_mesh()
   dataProviders.append( mMemory1DLayer->dataProvider() );
   dataProviders.append( mMdal1DLayer->dataProvider() );
 
-  foreach ( auto dp, dataProviders )
+  for ( const QgsMeshDataProvider *dp : std::as_const( dataProviders ) )
   {
     QVERIFY( dp != nullptr );
     QVERIFY( dp->isValid() );
@@ -307,7 +307,7 @@ void TestQgsMeshLayer::test_read_1d_bed_elevation_dataset()
   layers.append( mMemory1DLayer );
   layers.append( mMdal1DLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -357,7 +357,7 @@ void TestQgsMeshLayer::test_read_1d_vertex_scalar_dataset()
   layers.append( mMemory1DLayer );
   layers.append( mMdal1DLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -408,7 +408,7 @@ void TestQgsMeshLayer::test_read_1d_vertex_vector_dataset()
   layers.append( mMemory1DLayer );
   layers.append( mMdal1DLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -459,7 +459,7 @@ void TestQgsMeshLayer::test_read_1d_edge_scalar_dataset()
   layers.append( mMemory1DLayer );
   layers.append( mMdal1DLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -513,7 +513,7 @@ void TestQgsMeshLayer::test_read_1d_edge_vector_dataset()
   layers.append( mMemory1DLayer );
   layers.append( mMdal1DLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -567,7 +567,7 @@ void TestQgsMeshLayer::test_read_mesh()
   dataProviders.append( mMemoryLayer->dataProvider() );
   dataProviders.append( mMdalLayer->dataProvider() );
 
-  foreach ( auto dp, dataProviders )
+  for ( const QgsMeshDataProvider *dp : std::as_const( dataProviders ) )
   {
     QVERIFY( dp != nullptr );
     QVERIFY( dp->isValid() );
@@ -606,7 +606,7 @@ void TestQgsMeshLayer::test_read_bed_elevation_dataset()
   layers.append( mMemoryLayer );
   layers.append( mMdalLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -661,7 +661,7 @@ void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
   layers.append( mMemoryLayer );
   layers.append( mMdalLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -729,7 +729,7 @@ void TestQgsMeshLayer::test_read_vertex_vector_dataset()
   layers.append( mMemoryLayer );
   layers.append( mMdalLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -791,7 +791,7 @@ void TestQgsMeshLayer::test_read_face_scalar_dataset()
   layers.append( mMemoryLayer );
   layers.append( mMdalLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );
@@ -848,7 +848,7 @@ void TestQgsMeshLayer::test_read_face_vector_dataset()
   layers.append( mMemoryLayer );
   layers.append( mMdalLayer );
 
-  foreach ( auto ly, layers )
+  for ( const QgsMeshLayer *ly : std::as_const( layers ) )
   {
     const QgsMeshDataProvider *dp = ly->dataProvider();
     QVERIFY( dp != nullptr );

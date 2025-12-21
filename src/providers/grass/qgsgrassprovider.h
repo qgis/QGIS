@@ -99,6 +99,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
+    using QgsVectorDataProvider::addFeatures;
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
     // TODO: implement also these functions but disable during manual layer editing

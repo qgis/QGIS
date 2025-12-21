@@ -59,6 +59,16 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance2D( x1, y1, x2, y2 ) ); }
 
     /**
+     * Returns the squared 2D distance between \a point1 and \a point2
+     */
+    static double sqrDistance2D( QPointF point1, QPointF point2 ) SIP_HOLDGIL {return sqrDistance2D( point1.x(), point1.y(), point2.x(), point2.y() ); }
+
+    /**
+     * Returns the 2D distance between \a point1 and \a point2
+     */
+    static double distance2D( QPointF point1, QPointF point2 ) SIP_HOLDGIL {return distance2D( point1.x(), point1.y(), point2.x(), point2.y() );}
+
+    /**
      * Returns the squared distance between a point and a line.
      */
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL;
@@ -607,9 +617,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static double maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
-                                   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
-                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
+    static double maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY, double epsilon = 1e-8 ) SIP_HOLDGIL;
 
     /**
      * Creates a chamfer (angled corner) between two line segments.

@@ -23,32 +23,28 @@
 #include "qgsowsconnection.h"
 #include "qgswfsguiutils.h"
 
+#include <QMap>
 #include <QMessageBox>
 
 #include "moc_qgswfsnewconnection.cpp"
 
 static QString translatedImageFormatFromMediaType( const QString &type )
 {
-  if ( type == QLatin1String( "application/geo+json" ) )
-  {
-    return QObject::tr( "GeoJSON" );
-  }
-  else if ( type == QLatin1String( "application/flatgeobuf" ) )
-  {
-    return QObject::tr( "FlatGeoBuf" );
-  }
-  else if ( type == QLatin1String( "application/fg+json" ) )
-  {
-    return QObject::tr( "JSON-FG" );
-  }
-  else if ( type == QLatin1String( "default" ) )
-  {
-    return QObject::tr( "Default" );
-  }
-  else
-  {
-    return type;
-  }
+  static QMap<QString, QString> mapMimeTypeToTranslated {
+    { QStringLiteral( "default" ), QObject::tr( "Default" ) },
+    { QStringLiteral( "application/fg+json" ), QObject::tr( "JSON-FG" ) },
+    { QStringLiteral( "application/flatgeobuf" ), QObject::tr( "FlatGeoBuf" ) },
+    { QStringLiteral( "application/geo+json" ), QObject::tr( "GeoJSON" ) },
+    { QStringLiteral( "application/gml+xml" ), QObject::tr( "GML" ) },
+    { QStringLiteral( "application/gml+xml;version=3.2" ), QObject::tr( "GML 3.2" ) },
+    { QStringLiteral( "application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf0\"" ), QObject::tr( "GML 3.2, Simple Features 0 profile" ) },
+    { QStringLiteral( "application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf2\"" ), QObject::tr( "GML 3.2, Simple Features 2 profile" ) },
+  };
+
+  const auto iter = mapMimeTypeToTranslated.constFind( type );
+  if ( iter != mapMimeTypeToTranslated.constEnd() )
+    return iter.value();
+  return type;
 }
 
 QgsWFSNewConnection::QgsWFSNewConnection( QWidget *parent, const QString &connName )

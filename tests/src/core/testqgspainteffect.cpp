@@ -68,6 +68,7 @@ class DummyPaintEffect : public QgsPaintEffect
       props[QStringLiteral( "testProp2" )] = mProp2;
       return props;
     }
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override
     {
       mProp1 = props[QStringLiteral( "testProp" )].toString();

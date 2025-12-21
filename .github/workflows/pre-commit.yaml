@@ -32,7 +32,7 @@ jobs:
         run: pip install pre-commit
 
       - name: Install deps
-        run: sudo apt-get install -y silversearcher-ag astyle flip
+        run: sudo apt-get install -y silversearcher-ag astyle flip expect
 
       - name: Run pre-commit
         run: |

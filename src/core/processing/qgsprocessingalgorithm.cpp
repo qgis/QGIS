@@ -31,6 +31,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingutils.h"
+#include "qgsrasterfilewriter.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 
@@ -809,6 +810,26 @@ QgsMeshLayer *QgsProcessingAlgorithm::parameterAsMeshLayer( const QVariantMap &p
 QString QgsProcessingAlgorithm::parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsOutputLayer( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsOutputFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsOutputFormat( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsOutputRasterFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  QString outputFormat = parameterAsOutputFormat( parameters, name, context );
+  if ( outputFormat.isEmpty() )
+  {
+    QString outputFile = parameterAsOutputLayer( parameters, name, context );
+    if ( !outputFile.isEmpty() )
+    {
+      const QFileInfo fi( outputFile );
+      outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    }
+  }
+  return outputFormat;
 }
 
 QString QgsProcessingAlgorithm::parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

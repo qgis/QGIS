@@ -135,6 +135,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     } TileImage;
 
   protected:
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QImage draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback = nullptr );

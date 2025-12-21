@@ -185,6 +185,20 @@ Returns whether normals are inverted (``True``) or not (``False``).
 .. versionadded:: 4.0
 %End
 
+    void setTriangulationAlgorithm( Qgis::TriangulationAlgorithm algorithm );
+%Docstring
+Sets the triangulation algorithm.
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::TriangulationAlgorithm triangulationAlgorithm() const;
+%Docstring
+Returns the algorithm used for triangulation.
+
+.. versionadded:: 4.0
+%End
+
     void setOutputZUp( bool zUp );
 %Docstring
 Sets whether the "up" direction should be the Z axis on output

@@ -38,19 +38,19 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 {
   setupUi( this );
 
-  mFrameStyleComboBox->addItem( tr( "No Frame" ), QgsLayoutItemMapGrid::NoFrame );
-  mFrameStyleComboBox->addItem( tr( "Zebra" ), QgsLayoutItemMapGrid::Zebra );
-  mFrameStyleComboBox->addItem( tr( "Zebra (Nautical)" ), QgsLayoutItemMapGrid::ZebraNautical );
-  mFrameStyleComboBox->addItem( tr( "Interior Ticks" ), QgsLayoutItemMapGrid::InteriorTicks );
-  mFrameStyleComboBox->addItem( tr( "Exterior Ticks" ), QgsLayoutItemMapGrid::ExteriorTicks );
-  mFrameStyleComboBox->addItem( tr( "Interior and Exterior Ticks" ), QgsLayoutItemMapGrid::InteriorExteriorTicks );
-  mFrameStyleComboBox->addItem( tr( "Line Border" ), QgsLayoutItemMapGrid::LineBorder );
-  mFrameStyleComboBox->addItem( tr( "Line Border (Nautical)" ), QgsLayoutItemMapGrid::LineBorderNautical );
+  mFrameStyleComboBox->addItem( tr( "No Frame" ), QVariant::fromValue( Qgis::MapGridFrameStyle::NoFrame ) );
+  mFrameStyleComboBox->addItem( tr( "Zebra" ), QVariant::fromValue( Qgis::MapGridFrameStyle::Zebra ) );
+  mFrameStyleComboBox->addItem( tr( "Zebra (Nautical)" ), QVariant::fromValue( Qgis::MapGridFrameStyle::ZebraNautical ) );
+  mFrameStyleComboBox->addItem( tr( "Interior Ticks" ), QVariant::fromValue( Qgis::MapGridFrameStyle::InteriorTicks ) );
+  mFrameStyleComboBox->addItem( tr( "Exterior Ticks" ), QVariant::fromValue( Qgis::MapGridFrameStyle::ExteriorTicks ) );
+  mFrameStyleComboBox->addItem( tr( "Interior and Exterior Ticks" ), QVariant::fromValue( Qgis::MapGridFrameStyle::InteriorExteriorTicks ) );
+  mFrameStyleComboBox->addItem( tr( "Line Border" ), QVariant::fromValue( Qgis::MapGridFrameStyle::LineBorder ) );
+  mFrameStyleComboBox->addItem( tr( "Line Border (Nautical)" ), QVariant::fromValue( Qgis::MapGridFrameStyle::LineBorderNautical ) );
 
-  mRotatedTicksLengthModeComboBox->addItem( tr( "Orthogonal" ), QgsLayoutItemMapGrid::OrthogonalTicks );
-  mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed Length" ), QgsLayoutItemMapGrid::NormalizedTicks );
-  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Orthogonal" ), QgsLayoutItemMapGrid::OrthogonalTicks );
-  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed Length" ), QgsLayoutItemMapGrid::NormalizedTicks );
+  mRotatedTicksLengthModeComboBox->addItem( tr( "Orthogonal" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::OrthogonalTicks ) );
+  mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed Length" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::NormalizedTicks ) );
+  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Orthogonal" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::OrthogonalTicks ) );
+  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed Length" ), QVariant::fromValue( Qgis::MapGridTickLengthMode::NormalizedTicks ) );
 
   mGridFrameMarginSpinBox->setShowClearButton( true );
   mGridFrameMarginSpinBox->setClearValue( 0 );
@@ -124,15 +124,15 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   blockAllSignals( true );
 
-  mMapGridUnitComboBox->addItem( tr( "Map Units" ), QgsLayoutItemMapGrid::MapUnit );
-  mMapGridUnitComboBox->addItem( tr( "Fit Segment Width" ), QgsLayoutItemMapGrid::DynamicPageSizeBased );
-  mMapGridUnitComboBox->addItem( tr( "Millimeters" ), QgsLayoutItemMapGrid::MM );
-  mMapGridUnitComboBox->addItem( tr( "Centimeters" ), QgsLayoutItemMapGrid::CM );
+  mMapGridUnitComboBox->addItem( tr( "Map Units" ), QVariant::fromValue( Qgis::MapGridUnit::MapUnits ) );
+  mMapGridUnitComboBox->addItem( tr( "Fit Segment Width" ), QVariant::fromValue( Qgis::MapGridUnit::DynamicPageSizeBased ) );
+  mMapGridUnitComboBox->addItem( tr( "Millimeters" ), QVariant::fromValue( Qgis::MapGridUnit::Millimeters ) );
+  mMapGridUnitComboBox->addItem( tr( "Centimeters" ), QVariant::fromValue( Qgis::MapGridUnit::Centimeters ) );
 
-  mGridTypeComboBox->insertItem( 0, tr( "Solid" ), QgsLayoutItemMapGrid::Solid );
-  mGridTypeComboBox->insertItem( 1, tr( "Cross" ), QgsLayoutItemMapGrid::Cross );
-  mGridTypeComboBox->insertItem( 2, tr( "Markers" ), QgsLayoutItemMapGrid::Markers );
-  mGridTypeComboBox->insertItem( 3, tr( "Frame and annotations only" ), QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  mGridTypeComboBox->insertItem( 0, tr( "Solid" ), QVariant::fromValue( Qgis::MapGridStyle::Lines ) );
+  mGridTypeComboBox->insertItem( 1, tr( "Cross" ), QVariant::fromValue( Qgis::MapGridStyle::LineCrosses ) );
+  mGridTypeComboBox->insertItem( 2, tr( "Markers" ), QVariant::fromValue( Qgis::MapGridStyle::Markers ) );
+  mGridTypeComboBox->insertItem( 3, tr( "Frame and annotations only" ), QVariant::fromValue( Qgis::MapGridStyle::FrameAndAnnotationsOnly ) );
 
   insertFrameDisplayEntries( mFrameDivisionsLeftComboBox );
   insertFrameDisplayEntries( mFrameDivisionsRightComboBox );
@@ -316,7 +316,7 @@ void QgsLayoutMapGridWidget::blockAllSignals( bool block )
   mMaxWidthSpinBox->blockSignals( block );
 }
 
-void QgsLayoutMapGridWidget::handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, const QgsLayoutItemMapGrid::DisplayMode mode )
+void QgsLayoutMapGridWidget::handleChangedFrameDisplay( Qgis::MapGridBorderSide border, const Qgis::MapGridComponentVisibility mode )
 {
   if ( !mMapGrid || !mMap )
   {
@@ -329,7 +329,7 @@ void QgsLayoutMapGridWidget::handleChangedFrameDisplay( QgsLayoutItemMapGrid::Bo
   mMap->updateBoundingRect();
 }
 
-void QgsLayoutMapGridWidget::handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, const QgsLayoutItemMapGrid::DisplayMode mode )
+void QgsLayoutMapGridWidget::handleChangedAnnotationDisplay( Qgis::MapGridBorderSide border, const Qgis::MapGridComponentVisibility mode )
 {
   if ( !mMapGrid || !mMap )
   {
@@ -373,32 +373,32 @@ void QgsLayoutMapGridWidget::toggleFrameControls( bool frameEnabled, bool frameF
 
 void QgsLayoutMapGridWidget::insertAnnotationPositionEntries( QComboBox *c )
 {
-  c->insertItem( 0, tr( "Inside Frame" ), QgsLayoutItemMapGrid::InsideMapFrame );
-  c->insertItem( 1, tr( "Outside Frame" ), QgsLayoutItemMapGrid::OutsideMapFrame );
+  c->insertItem( 0, tr( "Inside Frame" ), QVariant::fromValue( Qgis::MapGridAnnotationPosition::InsideMapFrame ) );
+  c->insertItem( 1, tr( "Outside Frame" ), QVariant::fromValue( Qgis::MapGridAnnotationPosition::OutsideMapFrame ) );
 }
 
 void QgsLayoutMapGridWidget::insertAnnotationDirectionEntries( QComboBox *c )
 {
-  c->addItem( tr( "Horizontal" ), QgsLayoutItemMapGrid::Horizontal );
-  c->addItem( tr( "Vertical Ascending" ), QgsLayoutItemMapGrid::Vertical );
-  c->addItem( tr( "Vertical Descending" ), QgsLayoutItemMapGrid::VerticalDescending );
-  c->addItem( tr( "Boundary Direction" ), QgsLayoutItemMapGrid::BoundaryDirection );
-  // c->addItem( tr( "Parallel to Tick" ), QgsLayoutItemMapGrid::ParallelToTick );
-  c->addItem( tr( "Above Tick" ), QgsLayoutItemMapGrid::AboveTick );
-  c->addItem( tr( "On Tick" ), QgsLayoutItemMapGrid::OnTick );
-  c->addItem( tr( "Under Tick" ), QgsLayoutItemMapGrid::UnderTick );
+  c->addItem( tr( "Horizontal" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::Horizontal ) );
+  c->addItem( tr( "Vertical Ascending" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::Vertical ) );
+  c->addItem( tr( "Vertical Descending" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::VerticalDescending ) );
+  c->addItem( tr( "Boundary Direction" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::BoundaryDirection ) );
+  // c->addItem( tr( "Parallel to Tick" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::ParallelToTick ) );
+  c->addItem( tr( "Above Tick" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::AboveTick ) );
+  c->addItem( tr( "On Tick" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::OnTick ) );
+  c->addItem( tr( "Under Tick" ), QVariant::fromValue( Qgis::MapGridAnnotationDirection::UnderTick ) );
 }
 
-void QgsLayoutMapGridWidget::initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display )
+void QgsLayoutMapGridWidget::initFrameDisplayBox( QComboBox *c, Qgis::MapGridComponentVisibility display )
 {
   if ( !c )
   {
     return;
   }
-  c->setCurrentIndex( c->findData( display ) );
+  c->setCurrentIndex( c->findData( QVariant::fromValue( display ) ) );
 }
 
-void QgsLayoutMapGridWidget::handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, const QgsLayoutItemMapGrid::AnnotationPosition position )
+void QgsLayoutMapGridWidget::handleChangedAnnotationPosition( Qgis::MapGridBorderSide border, const Qgis::MapGridAnnotationPosition position )
 {
   if ( !mMapGrid || !mMap )
   {
@@ -413,7 +413,7 @@ void QgsLayoutMapGridWidget::handleChangedAnnotationPosition( QgsLayoutItemMapGr
   mMap->endCommand();
 }
 
-void QgsLayoutMapGridWidget::handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction )
+void QgsLayoutMapGridWidget::handleChangedAnnotationDirection( Qgis::MapGridBorderSide border, Qgis::MapGridAnnotationDirection direction )
 {
   if ( !mMapGrid || !mMap )
   {
@@ -429,43 +429,36 @@ void QgsLayoutMapGridWidget::handleChangedAnnotationDirection( QgsLayoutItemMapG
 
 void QgsLayoutMapGridWidget::insertFrameDisplayEntries( QComboBox *c )
 {
-  c->addItem( tr( "All" ), QgsLayoutItemMapGrid::ShowAll );
-  c->addItem( tr( "Latitude/Y Only" ), QgsLayoutItemMapGrid::LatitudeOnly );
-  c->addItem( tr( "Longitude/X Only" ), QgsLayoutItemMapGrid::LongitudeOnly );
+  c->addItem( tr( "All" ), QVariant::fromValue( Qgis::MapGridComponentVisibility::ShowAll ) );
+  c->addItem( tr( "Latitude/Y Only" ), QVariant::fromValue( Qgis::MapGridComponentVisibility::LatitudeOnly ) );
+  c->addItem( tr( "Longitude/X Only" ), QVariant::fromValue( Qgis::MapGridComponentVisibility::LongitudeOnly ) );
 }
 
 void QgsLayoutMapGridWidget::insertAnnotationDisplayEntries( QComboBox *c )
 {
-  c->insertItem( 0, tr( "Show All" ), QgsLayoutItemMapGrid::ShowAll );
-  c->insertItem( 1, tr( "Show Latitude/Y Only" ), QgsLayoutItemMapGrid::LatitudeOnly );
-  c->insertItem( 2, tr( "Show Longitude/X Only" ), QgsLayoutItemMapGrid::LongitudeOnly );
-  c->insertItem( 3, tr( "Disabled" ), QgsLayoutItemMapGrid::HideAll );
+  c->insertItem( 0, tr( "Show All" ), QVariant::fromValue( Qgis::MapGridComponentVisibility::ShowAll ) );
+  c->insertItem( 1, tr( "Show Latitude/Y Only" ), QVariant::fromValue( Qgis::MapGridComponentVisibility::LatitudeOnly ) );
+  c->insertItem( 2, tr( "Show Longitude/X Only" ), QVariant::fromValue( Qgis::MapGridComponentVisibility::LongitudeOnly ) );
+  c->insertItem( 3, tr( "Disabled" ), QVariant::fromValue( Qgis::MapGridComponentVisibility::HideAll ) );
 }
 
-void QgsLayoutMapGridWidget::initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos )
+void QgsLayoutMapGridWidget::initAnnotationPositionBox( QComboBox *c, Qgis::MapGridAnnotationPosition pos )
 {
   if ( !c )
   {
     return;
   }
 
-  if ( pos == QgsLayoutItemMapGrid::InsideMapFrame )
-  {
-    c->setCurrentIndex( c->findText( tr( "Inside Frame" ) ) );
-  }
-  else
-  {
-    c->setCurrentIndex( c->findText( tr( "Outside Frame" ) ) );
-  }
+  c->setCurrentIndex( c->findData( QVariant::fromValue( pos ) ) );
 }
 
-void QgsLayoutMapGridWidget::initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir )
+void QgsLayoutMapGridWidget::initAnnotationDirectionBox( QComboBox *c, Qgis::MapGridAnnotationDirection dir )
 {
   if ( !c )
   {
     return;
   }
-  c->setCurrentIndex( c->findData( dir ) );
+  c->setCurrentIndex( c->findData( QVariant::fromValue( dir ) ) );
 }
 
 bool QgsLayoutMapGridWidget::hasPredefinedScales() const
@@ -506,11 +499,11 @@ void QgsLayoutMapGridWidget::setGridItems()
   mGridFrameFill1ColorButton->setColor( mMapGrid->frameFillColor1() );
   mGridFrameFill2ColorButton->setColor( mMapGrid->frameFillColor2() );
 
-  const QgsLayoutItemMapGrid::GridStyle gridStyle = mMapGrid->style();
-  mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findData( gridStyle ) );
+  const Qgis::MapGridStyle gridStyle = mMapGrid->style();
+  mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findData( QVariant::fromValue( gridStyle ) ) );
   switch ( gridStyle )
   {
-    case QgsLayoutItemMapGrid::Cross:
+    case Qgis::MapGridStyle::LineCrosses:
       mCrossWidthSpinBox->setVisible( true );
       mCrossWidthDDBtn->setVisible( true );
       mCrossWidthLabel->setVisible( true );
@@ -521,7 +514,7 @@ void QgsLayoutMapGridWidget::setGridItems()
       mGridBlendComboBox->setVisible( true );
       mGridBlendLabel->setVisible( true );
       break;
-    case QgsLayoutItemMapGrid::Markers:
+    case Qgis::MapGridStyle::Markers:
       mCrossWidthSpinBox->setVisible( false );
       mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
@@ -533,7 +526,7 @@ void QgsLayoutMapGridWidget::setGridItems()
       mGridBlendComboBox->setVisible( true );
       mGridBlendLabel->setVisible( true );
       break;
-    case QgsLayoutItemMapGrid::Solid:
+    case Qgis::MapGridStyle::Lines:
       mCrossWidthSpinBox->setVisible( false );
       mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
@@ -545,7 +538,7 @@ void QgsLayoutMapGridWidget::setGridItems()
       mGridBlendComboBox->setVisible( true );
       mGridBlendLabel->setVisible( true );
       break;
-    case QgsLayoutItemMapGrid::FrameAnnotationsOnly:
+    case Qgis::MapGridStyle::FrameAndAnnotationsOnly:
       mCrossWidthSpinBox->setVisible( false );
       mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
@@ -562,47 +555,47 @@ void QgsLayoutMapGridWidget::setGridItems()
   //grid frame
   mFrameWidthSpinBox->setValue( mMapGrid->frameWidth() );
   mGridFrameMarginSpinBox->setValue( mMapGrid->frameMargin() );
-  const QgsLayoutItemMapGrid::FrameStyle gridFrameStyle = mMapGrid->frameStyle();
-  mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findData( gridFrameStyle ) );
+  const Qgis::MapGridFrameStyle gridFrameStyle = mMapGrid->frameStyle();
+  mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findData( QVariant::fromValue( gridFrameStyle ) ) );
   switch ( gridFrameStyle )
   {
-    case QgsLayoutItemMapGrid::Zebra:
-    case QgsLayoutItemMapGrid::ZebraNautical:
+    case Qgis::MapGridFrameStyle::Zebra:
+    case Qgis::MapGridFrameStyle::ZebraNautical:
       toggleFrameControls( true, true, true, false );
       break;
-    case QgsLayoutItemMapGrid::InteriorTicks:
-    case QgsLayoutItemMapGrid::ExteriorTicks:
-    case QgsLayoutItemMapGrid::InteriorExteriorTicks:
+    case Qgis::MapGridFrameStyle::InteriorTicks:
+    case Qgis::MapGridFrameStyle::ExteriorTicks:
+    case Qgis::MapGridFrameStyle::InteriorExteriorTicks:
       toggleFrameControls( true, false, true, true );
       break;
-    case QgsLayoutItemMapGrid::LineBorder:
-    case QgsLayoutItemMapGrid::LineBorderNautical:
+    case Qgis::MapGridFrameStyle::LineBorder:
+    case Qgis::MapGridFrameStyle::LineBorderNautical:
       toggleFrameControls( true, false, false, false );
       break;
-    case QgsLayoutItemMapGrid::NoFrame:
+    case Qgis::MapGridFrameStyle::NoFrame:
       toggleFrameControls( false, false, false, false );
       break;
   }
 
-  mCheckGridLeftSide->setChecked( mMapGrid->testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) );
-  mCheckGridRightSide->setChecked( mMapGrid->testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) );
-  mCheckGridTopSide->setChecked( mMapGrid->testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) );
-  mCheckGridBottomSide->setChecked( mMapGrid->testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) );
+  mCheckGridLeftSide->setChecked( mMapGrid->testFrameSideFlag( Qgis::MapGridFrameSideFlag::Left ) );
+  mCheckGridRightSide->setChecked( mMapGrid->testFrameSideFlag( Qgis::MapGridFrameSideFlag::Right ) );
+  mCheckGridTopSide->setChecked( mMapGrid->testFrameSideFlag( Qgis::MapGridFrameSideFlag::Top ) );
+  mCheckGridBottomSide->setChecked( mMapGrid->testFrameSideFlag( Qgis::MapGridFrameSideFlag::Bottom ) );
 
   mRotatedTicksGroupBox->setChecked( mMapGrid->rotatedTicksEnabled() );
-  mRotatedTicksLengthModeComboBox->setCurrentIndex( mRotatedTicksLengthModeComboBox->findData( mMapGrid->rotatedTicksLengthMode() ) );
+  mRotatedTicksLengthModeComboBox->setCurrentIndex( mRotatedTicksLengthModeComboBox->findData( QVariant::fromValue( mMapGrid->rotatedTicksLengthMode() ) ) );
   mRotatedTicksThresholdSpinBox->setValue( mMapGrid->rotatedTicksMinimumAngle() );
   mRotatedTicksMarginToCornerSpinBox->setValue( mMapGrid->rotatedTicksMarginToCorner() );
 
   mRotatedAnnotationsGroupBox->setChecked( mMapGrid->rotatedAnnotationsEnabled() );
-  mRotatedAnnotationsLengthModeComboBox->setCurrentIndex( mRotatedAnnotationsLengthModeComboBox->findData( mMapGrid->rotatedAnnotationsLengthMode() ) );
+  mRotatedAnnotationsLengthModeComboBox->setCurrentIndex( mRotatedAnnotationsLengthModeComboBox->findData( QVariant::fromValue( mMapGrid->rotatedAnnotationsLengthMode() ) ) );
   mRotatedAnnotationsThresholdSpinBox->setValue( mMapGrid->rotatedAnnotationsMinimumAngle() );
   mRotatedAnnotationsMarginToCornerSpinBox->setValue( mMapGrid->rotatedAnnotationsMarginToCorner() );
 
-  initFrameDisplayBox( mFrameDivisionsLeftComboBox, mMapGrid->frameDivisions( QgsLayoutItemMapGrid::Left ) );
-  initFrameDisplayBox( mFrameDivisionsRightComboBox, mMapGrid->frameDivisions( QgsLayoutItemMapGrid::Right ) );
-  initFrameDisplayBox( mFrameDivisionsTopComboBox, mMapGrid->frameDivisions( QgsLayoutItemMapGrid::Top ) );
-  initFrameDisplayBox( mFrameDivisionsBottomComboBox, mMapGrid->frameDivisions( QgsLayoutItemMapGrid::Bottom ) );
+  initFrameDisplayBox( mFrameDivisionsLeftComboBox, mMapGrid->frameDivisions( Qgis::MapGridBorderSide::Left ) );
+  initFrameDisplayBox( mFrameDivisionsRightComboBox, mMapGrid->frameDivisions( Qgis::MapGridBorderSide::Right ) );
+  initFrameDisplayBox( mFrameDivisionsTopComboBox, mMapGrid->frameDivisions( Qgis::MapGridBorderSide::Top ) );
+  initFrameDisplayBox( mFrameDivisionsBottomComboBox, mMapGrid->frameDivisions( Qgis::MapGridBorderSide::Bottom ) );
 
   //line style
   mGridLineStyleButton->setSymbol( mMapGrid->lineSymbol()->clone() );
@@ -612,41 +605,41 @@ void QgsLayoutMapGridWidget::setGridItems()
   mGridBlendComboBox->setBlendMode( mMapGrid->blendMode() );
 
   mDrawAnnotationGroupBox->setChecked( mMapGrid->annotationEnabled() );
-  mAnnotationDisplayLeftComboBox->setCurrentIndex( mAnnotationDisplayLeftComboBox->findData( mMapGrid->annotationDisplay( QgsLayoutItemMapGrid::Left ) ) );
-  mAnnotationDisplayRightComboBox->setCurrentIndex( mAnnotationDisplayRightComboBox->findData( mMapGrid->annotationDisplay( QgsLayoutItemMapGrid::Right ) ) );
-  mAnnotationDisplayTopComboBox->setCurrentIndex( mAnnotationDisplayTopComboBox->findData( mMapGrid->annotationDisplay( QgsLayoutItemMapGrid::Top ) ) );
-  mAnnotationDisplayBottomComboBox->setCurrentIndex( mAnnotationDisplayBottomComboBox->findData( mMapGrid->annotationDisplay( QgsLayoutItemMapGrid::Bottom ) ) );
+  mAnnotationDisplayLeftComboBox->setCurrentIndex( mAnnotationDisplayLeftComboBox->findData( QVariant::fromValue( mMapGrid->annotationDisplay( Qgis::MapGridBorderSide::Left ) ) ) );
+  mAnnotationDisplayRightComboBox->setCurrentIndex( mAnnotationDisplayRightComboBox->findData( QVariant::fromValue( mMapGrid->annotationDisplay( Qgis::MapGridBorderSide::Right ) ) ) );
+  mAnnotationDisplayTopComboBox->setCurrentIndex( mAnnotationDisplayTopComboBox->findData( QVariant::fromValue( mMapGrid->annotationDisplay( Qgis::MapGridBorderSide::Top ) ) ) );
+  mAnnotationDisplayBottomComboBox->setCurrentIndex( mAnnotationDisplayBottomComboBox->findData( QVariant::fromValue( mMapGrid->annotationDisplay( Qgis::MapGridBorderSide::Bottom ) ) ) );
 
-  mAnnotationPositionLeftComboBox->setCurrentIndex( mAnnotationPositionLeftComboBox->findData( mMapGrid->annotationPosition( QgsLayoutItemMapGrid::Left ) ) );
-  mAnnotationPositionRightComboBox->setCurrentIndex( mAnnotationPositionRightComboBox->findData( mMapGrid->annotationPosition( QgsLayoutItemMapGrid::Right ) ) );
-  mAnnotationPositionTopComboBox->setCurrentIndex( mAnnotationPositionTopComboBox->findData( mMapGrid->annotationPosition( QgsLayoutItemMapGrid::Top ) ) );
-  mAnnotationPositionBottomComboBox->setCurrentIndex( mAnnotationPositionBottomComboBox->findData( mMapGrid->annotationPosition( QgsLayoutItemMapGrid::Bottom ) ) );
+  mAnnotationPositionLeftComboBox->setCurrentIndex( mAnnotationPositionLeftComboBox->findData( QVariant::fromValue( mMapGrid->annotationPosition( Qgis::MapGridBorderSide::Left ) ) ) );
+  mAnnotationPositionRightComboBox->setCurrentIndex( mAnnotationPositionRightComboBox->findData( QVariant::fromValue( mMapGrid->annotationPosition( Qgis::MapGridBorderSide::Right ) ) ) );
+  mAnnotationPositionTopComboBox->setCurrentIndex( mAnnotationPositionTopComboBox->findData( QVariant::fromValue( mMapGrid->annotationPosition( Qgis::MapGridBorderSide::Top ) ) ) );
+  mAnnotationPositionBottomComboBox->setCurrentIndex( mAnnotationPositionBottomComboBox->findData( QVariant::fromValue( mMapGrid->annotationPosition( Qgis::MapGridBorderSide::Bottom ) ) ) );
 
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxLeft, mMapGrid->annotationDirection( QgsLayoutItemMapGrid::Left ) );
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxRight, mMapGrid->annotationDirection( QgsLayoutItemMapGrid::Right ) );
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxTop, mMapGrid->annotationDirection( QgsLayoutItemMapGrid::Top ) );
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxBottom, mMapGrid->annotationDirection( QgsLayoutItemMapGrid::Bottom ) );
+  initAnnotationDirectionBox( mAnnotationDirectionComboBoxLeft, mMapGrid->annotationDirection( Qgis::MapGridBorderSide::Left ) );
+  initAnnotationDirectionBox( mAnnotationDirectionComboBoxRight, mMapGrid->annotationDirection( Qgis::MapGridBorderSide::Right ) );
+  initAnnotationDirectionBox( mAnnotationDirectionComboBoxTop, mMapGrid->annotationDirection( Qgis::MapGridBorderSide::Top ) );
+  initAnnotationDirectionBox( mAnnotationDirectionComboBoxBottom, mMapGrid->annotationDirection( Qgis::MapGridBorderSide::Bottom ) );
 
   mAnnotationFontButton->setDialogTitle( tr( "Grid Annotation Font" ) );
   mAnnotationFontButton->setMode( QgsFontButton::ModeTextRenderer );
   mAnnotationFontButton->setTextFormat( mMapGrid->annotationTextFormat() );
 
-  mAnnotationFormatComboBox->setCurrentIndex( mAnnotationFormatComboBox->findData( mMapGrid->annotationFormat() ) );
-  mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == QgsLayoutItemMapGrid::CustomFormat );
+  mAnnotationFormatComboBox->setCurrentIndex( mAnnotationFormatComboBox->findData( QVariant::fromValue( mMapGrid->annotationFormat() ) ) );
+  mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == Qgis::MapGridAnnotationFormat::CustomFormat );
   mDistanceToMapFrameSpinBox->setValue( mMapGrid->annotationFrameDistance() );
   mCoordinatePrecisionSpinBox->setValue( mMapGrid->annotationPrecision() );
 
   //Unit
-  mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findData( mMapGrid->units() ) );
+  mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findData( QVariant::fromValue( mMapGrid->units() ) ) );
   switch ( mMapGrid->units() )
   {
-    case QgsLayoutItemMapGrid::MapUnit:
-    case QgsLayoutItemMapGrid::MM:
-    case QgsLayoutItemMapGrid::CM:
+    case Qgis::MapGridUnit::MapUnits:
+    case Qgis::MapGridUnit::Millimeters:
+    case Qgis::MapGridUnit::Centimeters:
       mIntervalStackedWidget->setCurrentIndex( 0 );
       break;
 
-    case QgsLayoutItemMapGrid::DynamicPageSizeBased:
+    case Qgis::MapGridUnit::DynamicPageSizeBased:
       mIntervalStackedWidget->setCurrentIndex( 1 );
       break;
   }
@@ -761,7 +754,7 @@ void QgsLayoutMapGridWidget::mCheckGridLeftSide_toggled( bool checked )
   }
 
   mMap->beginCommand( tr( "Change Frame Left" ) );
-  mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft, checked );
+  mMapGrid->setFrameSideFlag( Qgis::MapGridFrameSideFlag::Left, checked );
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();
@@ -775,7 +768,7 @@ void QgsLayoutMapGridWidget::mCheckGridRightSide_toggled( bool checked )
   }
 
   mMap->beginCommand( tr( "Change Frame Right" ) );
-  mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameRight, checked );
+  mMapGrid->setFrameSideFlag( Qgis::MapGridFrameSideFlag::Right, checked );
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();
@@ -789,7 +782,7 @@ void QgsLayoutMapGridWidget::mCheckGridTopSide_toggled( bool checked )
   }
 
   mMap->beginCommand( tr( "Change Frame Top" ) );
-  mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameTop, checked );
+  mMapGrid->setFrameSideFlag( Qgis::MapGridFrameSideFlag::Top, checked );
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();
@@ -803,7 +796,7 @@ void QgsLayoutMapGridWidget::mCheckGridBottomSide_toggled( bool checked )
   }
 
   mMap->beginCommand( tr( "Change Frame Bottom" ) );
-  mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom, checked );
+  mMapGrid->setFrameSideFlag( Qgis::MapGridFrameSideFlag::Bottom, checked );
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();
@@ -811,22 +804,22 @@ void QgsLayoutMapGridWidget::mCheckGridBottomSide_toggled( bool checked )
 
 void QgsLayoutMapGridWidget::mFrameDivisionsLeftComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsLeftComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( Qgis::MapGridBorderSide::Left, mFrameDivisionsLeftComboBox->itemData( index ).value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsRightComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsRightComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( Qgis::MapGridBorderSide::Right, mFrameDivisionsRightComboBox->itemData( index ).value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsTopComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsTopComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( Qgis::MapGridBorderSide::Top, mFrameDivisionsTopComboBox->itemData( index ).value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsBottomComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsBottomComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( Qgis::MapGridBorderSide::Bottom, mFrameDivisionsBottomComboBox->itemData( index ).value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mGridFramePenSizeSpinBox_valueChanged( double d )
@@ -889,25 +882,25 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( int )
     return;
   }
 
-  const QgsLayoutItemMapGrid::FrameStyle style = static_cast<QgsLayoutItemMapGrid::FrameStyle>( mFrameStyleComboBox->currentData().toInt() );
+  const Qgis::MapGridFrameStyle style = mFrameStyleComboBox->currentData().value< Qgis::MapGridFrameStyle >();
   mMap->beginCommand( tr( "Change Frame Style" ) );
   mMapGrid->setFrameStyle( style );
   switch ( style )
   {
-    case QgsLayoutItemMapGrid::Zebra:
-    case QgsLayoutItemMapGrid::ZebraNautical:
+    case Qgis::MapGridFrameStyle::Zebra:
+    case Qgis::MapGridFrameStyle::ZebraNautical:
       toggleFrameControls( true, true, true, false );
       break;
-    case QgsLayoutItemMapGrid::InteriorTicks:
-    case QgsLayoutItemMapGrid::ExteriorTicks:
-    case QgsLayoutItemMapGrid::InteriorExteriorTicks:
+    case Qgis::MapGridFrameStyle::InteriorTicks:
+    case Qgis::MapGridFrameStyle::ExteriorTicks:
+    case Qgis::MapGridFrameStyle::InteriorExteriorTicks:
       toggleFrameControls( true, false, true, true );
       break;
-    case QgsLayoutItemMapGrid::LineBorder:
-    case QgsLayoutItemMapGrid::LineBorderNautical:
+    case Qgis::MapGridFrameStyle::LineBorder:
+    case Qgis::MapGridFrameStyle::LineBorderNautical:
       toggleFrameControls( true, false, false, false );
       break;
-    case QgsLayoutItemMapGrid::NoFrame:
+    case Qgis::MapGridFrameStyle::NoFrame:
       toggleFrameControls( false, false, false, false );
       break;
   }
@@ -936,7 +929,7 @@ void QgsLayoutMapGridWidget::mRotatedTicksLengthModeComboBox_currentIndexChanged
     return;
   }
 
-  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast<QgsLayoutItemMapGrid::TickLengthMode>( mRotatedTicksLengthModeComboBox->currentData().toInt() );
+  const Qgis::MapGridTickLengthMode mode = mRotatedTicksLengthModeComboBox->currentData().value< Qgis::MapGridTickLengthMode >();
   mMap->beginCommand( tr( "Change Tick Length Mode" ) );
   mMapGrid->setRotatedTicksLengthMode( mode );
   mMap->update();
@@ -989,7 +982,7 @@ void QgsLayoutMapGridWidget::mRotatedAnnotationsLengthModeComboBox_currentIndexC
     return;
   }
 
-  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast<QgsLayoutItemMapGrid::TickLengthMode>( mRotatedAnnotationsLengthModeComboBox->currentData().toInt() );
+  const Qgis::MapGridTickLengthMode mode = mRotatedAnnotationsLengthModeComboBox->currentData().value< Qgis::MapGridTickLengthMode >();
   mMap->beginCommand( tr( "Change Annotation Length Mode" ) );
   mMapGrid->setRotatedAnnotationsLengthMode( mode );
   mMap->update();
@@ -1029,16 +1022,16 @@ void QgsLayoutMapGridWidget::intervalUnitChanged( int )
     return;
   }
 
-  const QgsLayoutItemMapGrid::GridUnit unit = static_cast<QgsLayoutItemMapGrid::GridUnit>( mMapGridUnitComboBox->currentData().toInt() );
+  const Qgis::MapGridUnit unit = mMapGridUnitComboBox->currentData().value< Qgis::MapGridUnit >();
   switch ( unit )
   {
-    case QgsLayoutItemMapGrid::MapUnit:
-    case QgsLayoutItemMapGrid::MM:
-    case QgsLayoutItemMapGrid::CM:
+    case Qgis::MapGridUnit::MapUnits:
+    case Qgis::MapGridUnit::Millimeters:
+    case Qgis::MapGridUnit::Centimeters:
       mIntervalStackedWidget->setCurrentIndex( 0 );
       break;
 
-    case QgsLayoutItemMapGrid::DynamicPageSizeBased:
+    case Qgis::MapGridUnit::DynamicPageSizeBased:
       mIntervalStackedWidget->setCurrentIndex( 1 );
       break;
   }
@@ -1085,11 +1078,11 @@ void QgsLayoutMapGridWidget::annotationTextFormatChanged()
 void QgsLayoutMapGridWidget::onCrsChanged()
 {
   mBlockAnnotationFormatUpdates++;
-  const QgsLayoutItemMapGrid::AnnotationFormat prevFormat = static_cast<QgsLayoutItemMapGrid::AnnotationFormat>( mAnnotationFormatComboBox->currentData().toInt() );
+  const Qgis::MapGridAnnotationFormat prevFormat = mAnnotationFormatComboBox->currentData().value< Qgis::MapGridAnnotationFormat >();
 
   mAnnotationFormatComboBox->clear();
-  mAnnotationFormatComboBox->addItem( tr( "Decimal" ), QgsLayoutItemMapGrid::Decimal );
-  mAnnotationFormatComboBox->addItem( tr( "Decimal with Suffix" ), QgsLayoutItemMapGrid::DecimalWithSuffix );
+  mAnnotationFormatComboBox->addItem( tr( "Decimal" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::Decimal ) );
+  mAnnotationFormatComboBox->addItem( tr( "Decimal with Suffix" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::DecimalWithSuffix ) );
 
   // only show degree based options for geographic CRSes
   const QgsCoordinateReferenceSystem crs = mMapGrid->crs().isValid() ? mMapGrid->crs() : mMap->crs();
@@ -1147,24 +1140,24 @@ void QgsLayoutMapGridWidget::onCrsChanged()
 
     case Qgis::DistanceUnit::Degrees:
     case Qgis::DistanceUnit::Unknown:
-      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute" ), QgsLayoutItemMapGrid::DegreeMinuteNoSuffix );
-      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute with Suffix" ), QgsLayoutItemMapGrid::DegreeMinute );
-      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute Aligned" ), QgsLayoutItemMapGrid::DegreeMinutePadded );
-      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second" ), QgsLayoutItemMapGrid::DegreeMinuteSecondNoSuffix );
-      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second with Suffix" ), QgsLayoutItemMapGrid::DegreeMinuteSecond );
-      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second Aligned" ), QgsLayoutItemMapGrid::DegreeMinuteSecondPadded );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::DegreeMinuteNoSuffix ) );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute with Suffix" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::DegreeMinute ) );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute Aligned" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::DegreeMinutePadded ) );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::DegreeMinuteSecondNoSuffix ) );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second with Suffix" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::DegreeMinuteSecond ) );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second Aligned" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::DegreeMinuteSecondPadded ) );
       break;
   }
-  mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsLayoutItemMapGrid::CustomFormat );
+  mAnnotationFormatComboBox->addItem( tr( "Custom" ), QVariant::fromValue( Qgis::MapGridAnnotationFormat::CustomFormat ) );
 
-  const int prevIndex = mAnnotationFormatComboBox->findData( prevFormat );
+  const int prevIndex = mAnnotationFormatComboBox->findData( QVariant::fromValue( prevFormat ) );
   if ( prevIndex >= 0 )
     mAnnotationFormatComboBox->setCurrentIndex( prevIndex );
   else
     mAnnotationFormatComboBox->setCurrentIndex( 0 );
   mBlockAnnotationFormatUpdates--;
 
-  const QgsLayoutItemMapGrid::AnnotationFormat newFormat = static_cast<QgsLayoutItemMapGrid::AnnotationFormat>( mAnnotationFormatComboBox->currentData().toInt() );
+  const Qgis::MapGridAnnotationFormat newFormat = mAnnotationFormatComboBox->currentData().value< Qgis::MapGridAnnotationFormat >();
   if ( newFormat != prevFormat )
   {
     mAnnotationFormatComboBox_currentIndexChanged( mAnnotationFormatComboBox->currentIndex() );
@@ -1191,10 +1184,10 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( int )
   }
 
   mMap->beginCommand( tr( "Change Grid Type" ) );
-  switch ( static_cast<QgsLayoutItemMapGrid::GridStyle>( mGridTypeComboBox->currentData().toInt() ) )
+  switch ( mGridTypeComboBox->currentData().value< Qgis::MapGridStyle >() )
   {
-    case QgsLayoutItemMapGrid::Cross:
-      mMapGrid->setStyle( QgsLayoutItemMapGrid::Cross );
+    case Qgis::MapGridStyle::LineCrosses:
+      mMapGrid->setStyle( Qgis::MapGridStyle::LineCrosses );
       mCrossWidthSpinBox->setVisible( true );
       mCrossWidthDDBtn->setVisible( true );
       mCrossWidthLabel->setVisible( true );
@@ -1208,8 +1201,8 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( int )
       mGridBlendLabel->setVisible( true );
       break;
 
-    case QgsLayoutItemMapGrid::Markers:
-      mMapGrid->setStyle( QgsLayoutItemMapGrid::Markers );
+    case Qgis::MapGridStyle::Markers:
+      mMapGrid->setStyle( Qgis::MapGridStyle::Markers );
       mCrossWidthSpinBox->setVisible( false );
       mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
@@ -1222,8 +1215,8 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( int )
       mGridBlendLabel->setVisible( true );
       break;
 
-    case QgsLayoutItemMapGrid::Solid:
-      mMapGrid->setStyle( QgsLayoutItemMapGrid::Solid );
+    case Qgis::MapGridStyle::Lines:
+      mMapGrid->setStyle( Qgis::MapGridStyle::Lines );
       mCrossWidthSpinBox->setVisible( false );
       mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
@@ -1236,8 +1229,8 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( int )
       mGridBlendLabel->setVisible( true );
       break;
 
-    case QgsLayoutItemMapGrid::FrameAnnotationsOnly:
-      mMapGrid->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+    case Qgis::MapGridStyle::FrameAndAnnotationsOnly:
+      mMapGrid->setStyle( Qgis::MapGridStyle::FrameAndAnnotationsOnly );
       mCrossWidthSpinBox->setVisible( false );
       mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
@@ -1313,62 +1306,62 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayLeftComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayLeftComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( Qgis::MapGridBorderSide::Left, mAnnotationDisplayLeftComboBox->currentData().value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayRightComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayRightComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( Qgis::MapGridBorderSide::Right, mAnnotationDisplayRightComboBox->currentData().value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayTopComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayTopComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( Qgis::MapGridBorderSide::Top, mAnnotationDisplayTopComboBox->currentData().value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayBottomComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayBottomComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( Qgis::MapGridBorderSide::Bottom, mAnnotationDisplayBottomComboBox->currentData().value< Qgis::MapGridComponentVisibility >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionLeftComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionLeftComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( Qgis::MapGridBorderSide::Left, mAnnotationPositionLeftComboBox->currentData().value< Qgis::MapGridAnnotationPosition >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionRightComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionRightComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( Qgis::MapGridBorderSide::Right, mAnnotationPositionRightComboBox->currentData().value< Qgis::MapGridAnnotationPosition >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionTopComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionTopComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( Qgis::MapGridBorderSide::Top, mAnnotationPositionTopComboBox->currentData().value< Qgis::MapGridAnnotationPosition >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionBottomComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionBottomComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( Qgis::MapGridBorderSide::Bottom, mAnnotationPositionBottomComboBox->currentData().value< Qgis::MapGridAnnotationPosition >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxLeft->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( Qgis::MapGridBorderSide::Left, mAnnotationDirectionComboBoxLeft->itemData( index ).value< Qgis::MapGridAnnotationDirection >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxRight_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxRight->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( Qgis::MapGridBorderSide::Right, mAnnotationDirectionComboBoxRight->itemData( index ).value< Qgis::MapGridAnnotationDirection >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxTop_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxTop->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( Qgis::MapGridBorderSide::Top, mAnnotationDirectionComboBoxTop->itemData( index ).value< Qgis::MapGridAnnotationDirection >() );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxBottom->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( Qgis::MapGridBorderSide::Bottom, mAnnotationDirectionComboBoxBottom->itemData( index ).value< Qgis::MapGridAnnotationDirection >() );
 }
 
 void QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged( double d )
@@ -1436,8 +1429,8 @@ void QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged( int 
 
   mMap->beginCommand( tr( "Change Annotation Format" ) );
 
-  mMapGrid->setAnnotationFormat( static_cast<QgsLayoutItemMapGrid::AnnotationFormat>( mAnnotationFormatComboBox->itemData( index ).toInt() ) );
-  mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == QgsLayoutItemMapGrid::CustomFormat );
+  mMapGrid->setAnnotationFormat( mAnnotationFormatComboBox->itemData( index ).value< Qgis::MapGridAnnotationFormat >() );
+  mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == Qgis::MapGridAnnotationFormat::CustomFormat );
 
   mMap->updateBoundingRect();
   mMap->update();

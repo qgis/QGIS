@@ -53,6 +53,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometryMap ) override;

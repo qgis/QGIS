@@ -56,6 +56,7 @@ Sets the store's ``crs``.
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
+
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 
