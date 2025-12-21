@@ -43,6 +43,8 @@ class QgsUpdateGpsDetailsAction : public QgsMapLayerAction
     QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent );
     bool canRunUsingLayer( QgsMapLayer *layer ) const override;
     bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const override;
+
+    using QgsMapLayerAction::triggerForFeature;
     void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context ) override;
 
   private:

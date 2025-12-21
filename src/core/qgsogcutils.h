@@ -301,6 +301,14 @@ class CORE_EXPORT QgsOgcUtils
         const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
         const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() ) SIP_SKIP;
 
+    /**
+     * Returns the Qgis::WkbType corresponding to a GML geometry type.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static Qgis::WkbType geomTypeFromPropertyType( const QString &gmlGeomType ) SIP_SKIP;
+
   private:
 
     //! Static method that creates geometry from GML Point

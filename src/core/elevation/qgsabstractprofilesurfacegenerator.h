@@ -61,6 +61,7 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
     QVector< QgsGeometry > asGeometries() const override;
     QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
+    using QgsAbstractProfileResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;

@@ -201,11 +201,11 @@ QgsGraphVertex.incomingEdges: src/analysis/network/qgsgraph.h#L103
 QgsGraphVertex.outgoingEdges: src/analysis/network/qgsgraph.h#L109
 QgsGraphVertex.point: src/analysis/network/qgsgraph.h#L114
 QgsGraphVertex: src/analysis/network/qgsgraph.h#L88
-QgsGridFileWriter.creationOptions: src/analysis/interpolation/qgsgridfilewriter.h#L71
-QgsGridFileWriter.noDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L87
-QgsGridFileWriter.setCreationOptions: src/analysis/interpolation/qgsgridfilewriter.h#L63
-QgsGridFileWriter.setNoDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L79
-QgsGridFileWriter.writeFile: src/analysis/interpolation/qgsgridfilewriter.h#L55
+QgsGridFileWriter.creationOptions: src/analysis/interpolation/qgsgridfilewriter.h#L73
+QgsGridFileWriter.noDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L89
+QgsGridFileWriter.setCreationOptions: src/analysis/interpolation/qgsgridfilewriter.h#L65
+QgsGridFileWriter.setNoDataValue: src/analysis/interpolation/qgsgridfilewriter.h#L81
+QgsGridFileWriter.writeFile: src/analysis/interpolation/qgsgridfilewriter.h#L57
 QgsGridFileWriter: src/analysis/interpolation/qgsgridfilewriter.h#L36
 QgsHillshadeFilter.lightAngle: src/analysis/raster/qgshillshadefilter.h#L38
 QgsHillshadeFilter.lightAzimuth: src/analysis/raster/qgshillshadefilter.h#L36
@@ -282,7 +282,6 @@ QgsPdalAlgorithms.id: src/analysis/processing/pdal/qgspdalalgorithms.h#L44
 QgsPdalAlgorithms.loadAlgorithms: src/analysis/processing/pdal/qgspdalalgorithms.h#L54
 QgsPdalAlgorithms.name: src/analysis/processing/pdal/qgspdalalgorithms.h#L46
 QgsPdalAlgorithms.supportedOutputPointCloudLayerExtensions: src/analysis/processing/pdal/qgspdalalgorithms.h#L51
-QgsPdalAlgorithms.supportedOutputRasterLayerExtensions: src/analysis/processing/pdal/qgspdalalgorithms.h#L50
 QgsPdalAlgorithms.supportedOutputVectorLayerExtensions: src/analysis/processing/pdal/qgspdalalgorithms.h#L49
 QgsPdalAlgorithms.supportsNonFileBasedOutput: src/analysis/processing/pdal/qgspdalalgorithms.h#L47
 QgsPdalAlgorithms.svgIconPath: src/analysis/processing/pdal/qgspdalalgorithms.h#L43

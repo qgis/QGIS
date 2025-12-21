@@ -347,6 +347,8 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     QString type() const override { return QStringLiteral( "drawSource" ); }
     QgsDrawSourceEffect *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
 
     /**

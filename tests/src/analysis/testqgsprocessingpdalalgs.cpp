@@ -497,6 +497,15 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) );
 
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 6 )
+  parameters.insert( QStringLiteral( "MAX_EDGE_LENGTH" ), 25 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--max_triangle_edge_length=25" ) );
+  parameters.remove( QStringLiteral( "MAX_EDGE_LENGTH" ) );
+#endif
+#endif
+
   // filter expression
   parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );

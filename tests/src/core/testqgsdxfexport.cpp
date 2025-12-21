@@ -2103,7 +2103,7 @@ bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &tex
   {
     while ( debugLines.size() > 10 )
       debugLines.removeFirst();
-    debugInfo->append( debugLines.join( QLatin1String( "" ) ) );
+    debugInfo->append( debugLines.join( QString() ) );
     debugInfo->append( QStringLiteral( "\n  Failed on line %1" ).arg( failedLine ) );
     debugInfo->append( QStringLiteral( "\n  Candidate line %1" ).arg( failedCandidateLine ) );
   }

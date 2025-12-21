@@ -2281,14 +2281,14 @@ void TestQgsMeshEditor::transformByExpression()
 
   transformVertex.clear();
   transformVertex.setInputVertices( { 8 } );
-  transformVertex.setExpressions( QStringLiteral( "$vertex_x - 1000" ), QStringLiteral( "$vertex_y - 1000" ), QLatin1String( "" ) );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x - 1000" ), QStringLiteral( "$vertex_y - 1000" ), QString() );
 
   QVERIFY( !transformVertex.calculate( layer.get() ) );
 
   transformVertex.clear();
   transformVertex.setInputVertices( { 8 } );
 
-  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 1000" ), QStringLiteral( "$vertex_y + 1000" ), QLatin1String( "" ) );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 1000" ), QStringLiteral( "$vertex_y + 1000" ), QString() );
 
   QVERIFY( transformVertex.calculate( layer.get() ) );
 }

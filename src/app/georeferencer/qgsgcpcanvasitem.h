@@ -29,6 +29,7 @@ class QgsGCPCanvasItem final : public QgsMapCanvasItem
   public:
     QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource /* = true*/ );
 
+    using QgsMapCanvasItem::paint;
     //! draws point information
     void paint( QPainter *p ) override;
 

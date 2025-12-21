@@ -16,21 +16,17 @@
 """
 
 __author__ = "Nyall Dawson"
-__date__ = "May2017"
+__date__ = "May 2017"
 __copyright__ = "(C) 2017, Nyall Dawson"
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
-from processing.algs.help import shortHelp
 
 
 class QgisAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self):
         super().__init__()
-
-    def shortHelpString(self):
-        return shortHelp.get(self.id(), None)
 
     def tr(self, string, context=""):
         if context == "":
@@ -45,9 +41,6 @@ class QgisFeatureBasedAlgorithm(QgsProcessingFeatureBasedAlgorithm):
 
     def __init__(self):
         super().__init__()
-
-    def shortHelpString(self):
-        return shortHelp.get(self.id(), None)
 
     def tr(self, string, context=""):
         if context == "":

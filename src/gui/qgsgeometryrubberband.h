@@ -120,6 +120,7 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
     void updatePosition() override;
 
   protected:
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     //! Returns which geometry is handled by the rubber band, polygon or line

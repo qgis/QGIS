@@ -39,6 +39,7 @@ class SERVER_EXPORT QgsFcgiServerRequest : public QgsServerRequest
      */
     bool hasError() const { return mHasError; }
 
+    using QgsServerRequest::header;
     /**
      * Returns the header value
      * \param name of the header

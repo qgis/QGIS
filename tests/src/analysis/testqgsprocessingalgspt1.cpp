@@ -27,6 +27,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
 #include "qgsfontutils.h"
+#include "qgsgdalutils.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutmanager.h"
@@ -114,6 +115,11 @@ class TestQgsProcessingAlgsPt1 : public QgsTest
 
     void fillNoData_data();
     void fillNoData();
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+    void rasterCOGOutput();
+#endif
+
     void lineDensity_data();
     void lineDensity();
 
@@ -2240,6 +2246,55 @@ void TestQgsProcessingAlgsPt1::fillNoData()
     }
   }
 }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+void TestQgsProcessingAlgsPt1::rasterCOGOutput()
+{
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fillnodata" ) ) );
+
+  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  auto inputRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + QStringLiteral( "/raster/band1_int16_noct_epsg4326.tif" ), QStringLiteral( "inputDataset" ), QStringLiteral( "gdal" ) );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( inputRasterLayer->crs(), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), QString( myDataPath + QStringLiteral( "/raster/band1_int16_noct_epsg4326.tif" ) ) );
+  parameters.insert( QStringLiteral( "BAND" ), 1 );
+  parameters.insert( QStringLiteral( "FILL_VALUE" ), 1 );
+
+  QgsProcessingOutputLayerDefinition outputLayerDef( QgsProcessing::TEMPORARY_OUTPUT );
+  outputLayerDef.setFormat( QStringLiteral( "COG" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputLayerDef );
+
+  //run alg...
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  const QString outputFilename = results.value( QStringLiteral( "OUTPUT" ) ).toString();
+
+  gdal::dataset_unique_ptr dataset( GDALOpen( outputFilename.toStdString().c_str(), GA_ReadOnly ) );
+  QVERIFY( dataset );
+
+  const char *pszLayout = GDALGetMetadataItem( dataset.get(), "LAYOUT", "IMAGE_STRUCTURE" );
+  QVERIFY( pszLayout );
+
+  QCOMPARE( QString( pszLayout ), QStringLiteral( "COG" ) );
+}
+#endif
 
 void TestQgsProcessingAlgsPt1::lineDensity_data()
 {

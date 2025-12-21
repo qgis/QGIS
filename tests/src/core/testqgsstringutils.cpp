@@ -270,7 +270,7 @@ void TestQgsStringUtils::testIsUrl()
   QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "ftp://example.com" ) ) );
   QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "file:///path/to/file" ) ) );
   QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "file://C:\\path\\to\\file" ) ) );
-  QVERIFY( !QgsStringUtils::isUrl( QLatin1String( "" ) ) );
+  QVERIFY( !QgsStringUtils::isUrl( QString() ) );
   QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "some:random/string" ) ) );
   QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "bla" ) ) );
 }

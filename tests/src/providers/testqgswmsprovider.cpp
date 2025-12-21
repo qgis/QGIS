@@ -453,7 +453,7 @@ void TestQgsWmsProvider::providerUriLocalFile()
   sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ) );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QLatin1String( "" ) );
+  QCOMPARE( sublayers.at( 0 ).name(), QString() );
   QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );

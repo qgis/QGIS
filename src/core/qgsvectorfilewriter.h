@@ -880,6 +880,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     Qgis::VectorFileWriterCapabilities capabilities() const;
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
 

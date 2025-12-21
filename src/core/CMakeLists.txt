@@ -515,6 +515,7 @@ set(QGIS_CORE_SRCS
   qgslocalec.cpp
   qgslocalizeddatapathregistry.cpp
   qgslogger.cpp
+  qgsmagneticmodel.cpp
   qgsmapclippingregion.cpp
   qgsmapclippingutils.cpp
   qgsmapdecoration.cpp
@@ -1227,6 +1228,7 @@ set(QGIS_CORE_HDRS
   qgslocalec.h
   qgslocalizeddatapathregistry.h
   qgslogger.h
+  qgsmagneticmodel.h
   qgsmapclippingregion.h
   qgsmapclippingutils.h
   qgsmapdecoration.h
@@ -2001,6 +2003,7 @@ set(QGIS_CORE_HDRS
   stac/qgsstacparser.h
   stac/qgsstacprovider.h
 
+  symbology/line_p.h
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
 
@@ -2653,6 +2656,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
 if (WITH_PDF4QT)
@@ -2670,6 +2674,11 @@ if (WITH_COPC)
   target_include_directories(qgis_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/core/providers/copc
     ${CMAKE_SOURCE_DIR}/src/core/providers/vpc)
+endif()
+
+if (WITH_GEOGRAPHICLIB)
+  target_include_directories(qgis_core PRIVATE
+     ${GeographicLib_INCLUDE_DIR})
 endif()
 
 find_package(${QT_VERSION_BASE} COMPONENTS Multimedia REQUIRED)
@@ -2812,6 +2821,12 @@ endif()
 if (WITH_SFCGAL)
   target_link_libraries(qgis_core
     SFCGAL::SFCGAL
+  )
+endif()
+
+if (WITH_GEOGRAPHICLIB)
+  target_link_libraries(qgis_core
+    ${GeographicLib_LIBRARIES}
   )
 endif()
 
