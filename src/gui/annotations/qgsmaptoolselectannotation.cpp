@@ -299,8 +299,9 @@ void QgsMapToolSelectAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
   }
 
   QPointF scenePos = mCanvas->mapToScene( event->pos() );
+  const bool toggleSelection = event->modifiers() & Qt::ShiftModifier;
 
-  if ( !mSelectedItems.empty() && mMouseHandles->sceneBoundingRect().contains( scenePos ) )
+  if ( !toggleSelection && !mSelectedItems.empty() && mMouseHandles->sceneBoundingRect().contains( scenePos ) )
   {
     QGraphicsSceneMouseEvent forwardedEvent( QEvent::GraphicsSceneMousePress );
     forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
