@@ -69,7 +69,7 @@ NANOARROW_CXX_NAMESPACE_BEGIN
 class Exception : public std::exception {
  public:
   Exception(const std::string& msg) : msg_(msg) {}
-  const char* what() const noexcept { return msg_.c_str(); }
+  const char* what() const noexcept override { return msg_.c_str(); }
 
  private:
   std::string msg_;

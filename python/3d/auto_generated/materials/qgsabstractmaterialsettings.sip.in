@@ -40,7 +40,6 @@ Context settings for a material.
 #include "qgsabstractmaterialsettings.h"
 %End
   public:
-
     bool isSelected() const;
 %Docstring
 Returns ``True`` if the material should represent a selected state.

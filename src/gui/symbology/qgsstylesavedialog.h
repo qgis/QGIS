@@ -35,7 +35,6 @@ class GUI_EXPORT QgsStyleSaveDialog : public QDialog, private Ui::QgsStyleSaveDi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSymbolSaveDialog
      * \param parent parent widget

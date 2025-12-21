@@ -1463,8 +1463,20 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
     tempArc.setPoints( {filletPoints[0], filletPoints[1], filletPoints[2]} );
 
     // Calculate appropriate tolerance based on desired number of segments
-    // For segments > 0: use angle tolerance = 2*PI / (4 * segments) to get approximately 'segments' segments for a quarter circle
-    const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
+    // Calculate the actual arc angle and divide by desired number of segments
+    // Note: segmentizeArc uses ceil(angle/tolerance), so we need to ensure we get exactly the desired number of segments
+    double angleTolerance = M_PI / 180.0; // Default to 1 degree
+    if ( segments > 0 )
+    {
+      double radius, centerX, centerY;
+      QgsGeometryUtils::circleCenterRadius( filletPoints[0], filletPoints[1], filletPoints[2], radius, centerX, centerY );
+      const double arcAngle = std::abs( QgsGeometryUtilsBase::sweepAngle( centerX, centerY,
+                                        filletPoints[0].x(), filletPoints[0].y(),
+                                        filletPoints[1].x(), filletPoints[1].y(),
+                                        filletPoints[2].x(), filletPoints[2].y() ) ) * M_PI / 180.0; // Convert to radians
+      // Add small epsilon to avoid ceil() rounding up due to numerical precision
+      angleTolerance = arcAngle / segments * ( 1.0 + 1e-10 );
+    }
 
     std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
 
@@ -1483,7 +1495,7 @@ double QgsGeometryUtils::maxFilletRadius( const QgsPoint &segment1Start, const Q
     const QgsPoint &segment2Start, const QgsPoint &segment2End,
     double epsilon )
 {
-  return QgsGeometryUtilsBase::maxFilletRadius( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), epsilon );
+  return QgsGeometryUtilsBase::maximumFilletRadius( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), epsilon );
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
@@ -1574,6 +1586,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
 
     if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
     {
+      // Add fillet arc as line segments with proper segmentation
       if ( firstNewPoint != pPrev )
         points.append( firstNewPoint );
 
@@ -1582,7 +1595,16 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
         QgsCircularString tempArc;
         tempArc.setPoints( { firstNewPoint, middlePoint, lastNewPoint } );
 
-        const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
+        // Calculate the actual arc angle and divide by desired number of segments
+        // Note: segmentizeArc uses ceil(angle/tolerance), so we need to ensure we get exactly the desired number of segments
+        double radius, centerX, centerY;
+        QgsGeometryUtils::circleCenterRadius( firstNewPoint, middlePoint, lastNewPoint, radius, centerX, centerY );
+        const double arcAngle = std::abs( QgsGeometryUtilsBase::sweepAngle( centerX, centerY,
+                                          firstNewPoint.x(), firstNewPoint.y(),
+                                          middlePoint.x(), middlePoint.y(),
+                                          lastNewPoint.x(), lastNewPoint.y() ) ) * M_PI / 180.0; // Convert to radians
+        // Add small epsilon to avoid ceil() rounding up due to numerical precision
+        const double angleTolerance = arcAngle / segments * ( 1.0 + 1e-10 );
         std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
 
         for ( int i = 1; i < segmentizedArc->numPoints() - 1; ++i )
@@ -1738,4 +1760,16 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
   }
 
   throw QgsInvalidArgumentException( "While generating output: curse is not a QgsLineString nor a QgsCompoundCurve." );
+}
+
+bool QgsGeometryUtils::pointsAreCollinear( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon )
+{
+  if ( pt1.is3D() )
+  {
+    return QgsGeometryUtilsBase::points3DAreCollinear( pt1.x(), pt1.y(), pt1.z(), pt2.x(), pt2.y(), pt2.z(), pt3.x(), pt3.y(), pt3.z(), epsilon );
+  }
+  else
+  {
+    return QgsGeometryUtilsBase::pointsAreCollinear( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pt3.x(), pt3.y(), epsilon );
+  }
 }

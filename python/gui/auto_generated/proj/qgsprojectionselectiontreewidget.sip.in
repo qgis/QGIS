@@ -34,7 +34,6 @@ more suitable to use the compact
 #include "qgsprojectionselectiontreewidget.h"
 %End
   public:
-
     QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionTreeWidget, with the specified

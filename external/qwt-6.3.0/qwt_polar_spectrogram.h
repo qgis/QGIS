@@ -47,7 +47,7 @@ class QWT_EXPORT QwtPolarSpectrogram : public QwtPolarItem
     Q_DECLARE_FLAGS( PaintAttributes, PaintAttribute )
 
     explicit QwtPolarSpectrogram();
-    virtual ~QwtPolarSpectrogram();
+    ~QwtPolarSpectrogram() override;
 
     void setData( QwtRasterData* data );
     const QwtRasterData* data() const;

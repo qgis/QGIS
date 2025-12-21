@@ -863,7 +863,6 @@ class QgsWmsSettings
 class QgsWmsCapabilities
 {
   public:
-
     /**
      * Constructs a QgsWmsCapabilities object with the given \a coordinateTransformContext
      */

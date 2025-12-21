@@ -33,7 +33,6 @@ class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsEnumerationWidgetWrapper.
      *

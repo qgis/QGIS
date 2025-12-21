@@ -41,7 +41,6 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsExternalResourceWidgetWrapper.
      *

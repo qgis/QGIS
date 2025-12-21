@@ -34,7 +34,6 @@ class ANALYSIS_EXPORT QgsPdalAlgorithms : public QgsProcessingProvider
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPdalAlgorithms.
      */
@@ -48,7 +47,7 @@ class ANALYSIS_EXPORT QgsPdalAlgorithms : public QgsProcessingProvider
     bool supportsNonFileBasedOutput() const override;
 
     QStringList supportedOutputVectorLayerExtensions() const override;
-    QStringList supportedOutputRasterLayerExtensions() const override;
+    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override;
     QStringList supportedOutputPointCloudLayerExtensions() const override;
 
   protected:

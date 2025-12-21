@@ -37,7 +37,6 @@ class QgsAbstractMaterialSettings;
 class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-
     /**
      * How to render the color of the mesh
      *

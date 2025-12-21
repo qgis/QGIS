@@ -45,7 +45,7 @@ class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
   public:
     //! Creates a new map transform
     QgsQuickMapTransform() = default;
-    ~QgsQuickMapTransform() = default;
+    ~QgsQuickMapTransform() override = default;
 
     /**
      * Applies transformation based on current map settings to a matrix.
@@ -53,7 +53,7 @@ class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
      * Also optimize resulting matrix after transformation
      * \param matrix Matrix to be transformed
      */
-    void applyTo( QMatrix4x4 *matrix ) const;
+    void applyTo( QMatrix4x4 *matrix ) const override;
 
     //! \copydoc QgsQuickMapTransform::mapSettings
     QgsQuickMapSettings *mapSettings() const;

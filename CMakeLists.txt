@@ -98,11 +98,6 @@ if (USE_OPENCL)
     find_package(OpenCL)
     if(${OpenCL_FOUND})
         set(HAVE_OPENCL TRUE)
-        # Fixup for standard FindOpenCL module not assigning proper framework headers directory
-        if (APPLE AND "${OpenCL_INCLUDE_DIR}" MATCHES "OpenCL\\.framework/?$")
-            set(OpenCL_INCLUDE_DIR "${OpenCL_INCLUDE_DIR}/Headers" CACHE PATH "" FORCE)
-            set(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIR})
-        endif()
         find_package(OpenCLhpp)
         if(NOT OPENCL_HPP_FOUND)
             # Use internal headers copied from OpenCL-CLHPP project
@@ -255,6 +250,7 @@ if(WITH_CORE)
   endif()
 
   set (WITH_SFCGAL FALSE CACHE BOOL "Determines whether SFCGAL geometry support should be built")
+  set (WITH_GEOGRAPHICLIB FALSE CACHE BOOL "Determines whether GeographicLib support should be built")
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
@@ -508,6 +504,18 @@ if(WITH_CORE)
     else()
       message(STATUS "SFCGAL support DISABLED.")
     endif()
+  endif()
+
+  if (WITH_GEOGRAPHICLIB)
+    if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+      # Workaround for https://bugs.launchpad.net/ubuntu/+source/geographiclib/+bug/1805173
+      list(APPEND CMAKE_MODULE_PATH /usr/share/cmake/geographiclib)
+    endif()
+    find_package(GeographicLib REQUIRED)
+    message(STATUS "Found GeographicLib: ${GeographicLib_VERSION}")
+    add_definitions(-DWITH_GEOGRAPHICLIB)
+  else()
+    message(STATUS "GeographicLib support DISABLED.")
   endif()
 
   if (WITH_POSTGRESQL)
@@ -887,8 +895,24 @@ if (PEDANTIC)
     # add_definitions( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type-c-linkage")
     endif()
+
+    include(CheckCXXCompilerFlag)
+    macro (detect_and_set_cxx_warning_flag flag_name)
+      string(TOUPPER ${flag_name} flag_name_upper)
+      string(REPLACE "-" "_" flag_name_upper "${flag_name_upper}")
+      string(REPLACE "=" "_" flag_name_upper "${flag_name_upper}")
+      check_cxx_compiler_flag(-W${flag_name} "HAVE_WFLAG_${flag_name_upper}")
+      if (HAVE_WFLAG_${flag_name_upper})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W${flag_name}")
+      endif ()
+    endmacro ()
+
+    detect_and_set_cxx_warning_flag(overloaded-virtual)
+    detect_and_set_cxx_warning_flag(implicit-fallthrough)
+    detect_and_set_cxx_warning_flag(suggest-override)
+    detect_and_set_cxx_warning_flag(suggest-destructor-override)
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
     # command line -D option overrides environment variable

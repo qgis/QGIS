@@ -37,7 +37,6 @@ class QgsModelDesignerInputsTreeWidget : public QTreeWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerInputsTreeWidget with the specified \a parent widget.
      */

@@ -39,7 +39,6 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServerFilter
 {
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors

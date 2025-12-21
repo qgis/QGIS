@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>350</height>
+    <height>399</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
       <string>Import Identity</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="margin">
+      <property name="margin" stdset="0">
        <number>6</number>
       </property>
       <item>
@@ -40,7 +40,7 @@
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -53,16 +53,16 @@
        </layout>
       </item>
       <item>
-       <widget class="QStackedWidget" name="stkwBundleType">
+       <widget class="QgsStackedWidget" name="stkwBundleType">
         <property name="currentIndex">
          <number>1</number>
         </property>
         <widget class="QWidget" name="pagePkiPaths">
          <layout class="QGridLayout" name="gridLayout_2">
-          <property name="margin">
+          <property name="margin" stdset="0">
            <number>0</number>
           </property>
-          <item row="4" column="0" alignment="Qt::AlignTop">
+          <item row="4" column="0" alignment="Qt::AlignmentFlag::AlignTop">
            <widget class="QLabel" name="lblPkiPathsKey">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -78,7 +78,7 @@
           <item row="10" column="1">
            <spacer name="verticalSpacer_3">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -127,7 +127,7 @@
                  <string>…</string>
                 </property>
                 <property name="popupMode">
-                 <enum>QToolButton::InstantPopup</enum>
+                 <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
                 </property>
                </widget>
               </item>
@@ -138,7 +138,7 @@
               <item>
                <widget class="QLineEdit" name="lePkiPathsKeyPass">
                 <property name="echoMode">
-                 <enum>QLineEdit::Password</enum>
+                 <enum>QLineEdit::EchoMode::Password</enum>
                 </property>
                 <property name="placeholderText">
                  <string>Optional passphrase</string>
@@ -173,7 +173,7 @@
                <string>…</string>
               </property>
               <property name="popupMode">
-               <enum>QToolButton::InstantPopup</enum>
+               <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
               </property>
              </widget>
             </item>
@@ -193,7 +193,7 @@
         </widget>
         <widget class="QWidget" name="pagePkiPkcs12">
          <layout class="QGridLayout" name="gridLayout_8">
-          <property name="margin">
+          <property name="margin" stdset="0">
            <number>0</number>
           </property>
           <item row="1" column="0">
@@ -212,7 +212,7 @@
           <item row="2" column="1">
            <spacer name="verticalSpacer_4">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -233,7 +233,7 @@
                <string>…</string>
               </property>
               <property name="popupMode">
-               <enum>QToolButton::InstantPopup</enum>
+               <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
               </property>
              </widget>
             </item>
@@ -267,7 +267,7 @@
             <item>
              <widget class="QLineEdit" name="lePkiPkcs12KeyPass">
               <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
+               <enum>QLineEdit::EchoMode::Password</enum>
               </property>
               <property name="placeholderText">
                <string>Optional passphrase</string>
@@ -299,10 +299,10 @@
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
      <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
+      <enum>QSizePolicy::Policy::Fixed</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -327,7 +327,7 @@
       <property name="spacing">
        <number>12</number>
       </property>
-      <property name="margin">
+      <property name="margin" stdset="0">
        <number>6</number>
       </property>
       <item>
@@ -349,15 +349,23 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cmbIdentityTypes</tabstop>
   <tabstop>lePkiPkcs12Bundle</tabstop>

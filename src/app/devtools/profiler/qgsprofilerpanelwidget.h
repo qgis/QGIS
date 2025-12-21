@@ -53,7 +53,6 @@ class QgsProfilerPanelWidget : public QgsDevToolWidget, private Ui::QgsProfilerP
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProfilerPanelWidget.
      */

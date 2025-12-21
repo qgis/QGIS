@@ -417,6 +417,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   protected:
+    using QgsMapCanvasItem::paint;
 
     /**
      * Paints the rubber band in response to an update event.

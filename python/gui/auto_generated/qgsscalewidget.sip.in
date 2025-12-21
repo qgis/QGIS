@@ -21,7 +21,6 @@ highlights nearest to current scale value.
 #include "qgsscalewidget.h"
 %End
   public:
-
     explicit QgsScaleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsScaleWidget creates a combobox which lets the user select map scale

@@ -34,7 +34,6 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, protected Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied

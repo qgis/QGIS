@@ -37,7 +37,6 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     Q_OBJECT
 
   public:
-
     /**
      * \brief The WarningType enum is used to determine the text
      * of the message shown to the user about the destination of

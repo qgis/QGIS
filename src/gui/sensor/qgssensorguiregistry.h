@@ -37,7 +37,6 @@
 class GUI_EXPORT QgsSensorAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsSensorAbstractGuiMetadata with the specified class \a type.
      *
@@ -116,7 +115,6 @@ typedef std::function<QgsAbstractSensorWidget *( QgsAbstractSensor *sensor )> Qg
 class GUI_EXPORT QgsSensorGuiMetadata : public QgsSensorAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsSensorGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the configuration widget creation function.
@@ -184,7 +182,6 @@ class GUI_EXPORT QgsSensorGuiRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty sensor GUI registry.
      *

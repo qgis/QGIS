@@ -33,12 +33,14 @@
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooleditblanksegments.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgsproperty.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssvgcache.h"
 #include "qgssvgselectorwidget.h"
 #include "qgssymbollayerutils.h"
@@ -1890,10 +1892,15 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTemplatedLineSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mOffsetAlongLineUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTemplatedLineSymbolLayerWidget::mOffsetAlongLineUnitWidget_changed );
   connect( mAverageAngleUnit, &QgsUnitSelectionWidget::changed, this, &QgsTemplatedLineSymbolLayerWidget::averageAngleUnitChanged );
-  mIntervalUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mOffsetAlongLineUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
-  mAverageAngleUnit->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  connect( mBlankSegmentsUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTemplatedLineSymbolLayerWidget::blankSegmentsUnitChanged );
+
+  const QgsUnitTypes::RenderUnitList units = { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches };
+  mIntervalUnitWidget->setUnits( units );
+  mOffsetUnitWidget->setUnits( units );
+  mOffsetAlongLineUnitWidget->setUnits( QgsUnitTypes::RenderUnitList( units ) << Qgis::RenderUnit::Percentage );
+  mAverageAngleUnit->setUnits( units );
+  mIntervalUnitWidget->setUnits( units );
+  mBlankSegmentsUnitWidget->setUnits( units );
 
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
@@ -1918,6 +1925,7 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
   connect( chkRotateMarker, &QAbstractButton::clicked, this, &QgsTemplatedLineSymbolLayerWidget::setRotate );
   connect( spinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTemplatedLineSymbolLayerWidget::setOffset );
   connect( mSpinAverageAngleLength, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTemplatedLineSymbolLayerWidget::setAverageAngle );
+  connect( mEditBlankSegmentsBtn, &QToolButton::toggled, this, &QgsMarkerLineSymbolLayerWidget::toggleMapToolEditBlankSegments );
 
   connect( mCheckInterval, &QCheckBox::toggled, this, &QgsTemplatedLineSymbolLayerWidget::setPlacement );
   connect( mCheckVertex, &QCheckBox::toggled, this, &QgsTemplatedLineSymbolLayerWidget::setPlacement );
@@ -2024,6 +2032,7 @@ void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mAverageAngleUnit )->setUnit( mLayer->averageAngleUnit() );
   whileBlocking( mAverageAngleUnit )->setMapUnitScale( mLayer->averageAngleMapUnitScale() );
   whileBlocking( mSpinAverageAngleLength )->setValue( mLayer->averageAngleLength() );
+  whileBlocking( mBlankSegmentsUnitWidget )->setUnit( mLayer->blankSegmentsUnit() );
 
   switch ( mSymbolType )
   {
@@ -2052,6 +2061,12 @@ void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mPlacementDDBtn, QgsSymbolLayer::Property::Placement );
   registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::Property::OffsetAlongLine );
   registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::Property::AverageAngleLength );
+  registerDataDefinedButton( mBlankSegmentsDDButton, QgsSymbolLayer::Property::BlankSegments );
+
+  connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::changed, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+  connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+
+  updateBlankSegmentsWidget();
 }
 
 QgsSymbolLayer *QgsTemplatedLineSymbolLayerWidget::symbolLayer()
@@ -2233,6 +2248,15 @@ void QgsTemplatedLineSymbolLayerWidget::averageAngleUnitChanged()
   emit changed();
 }
 
+void QgsTemplatedLineSymbolLayerWidget::blankSegmentsUnitChanged()
+{
+  if ( mLayer )
+  {
+    mLayer->setBlankSegmentsUnit( mBlankSegmentsUnitWidget->unit() );
+  }
+  emit changed();
+}
+
 void QgsTemplatedLineSymbolLayerWidget::setAverageAngle( double val )
 {
   if ( mLayer )
@@ -2240,6 +2264,65 @@ void QgsTemplatedLineSymbolLayerWidget::setAverageAngle( double val )
     mLayer->setAverageAngleLength( val );
     emit changed();
   }
+}
+
+void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool toggled )
+{
+  if ( mMapToolEditBlankSegments )
+  {
+    context().mapCanvas()->unsetMapTool( mMapToolEditBlankSegments );
+    mMapToolEditBlankSegments.reset();
+  }
+
+  if ( toggled )
+  {
+    switch ( mSymbolType )
+    {
+      // NOLINTBEGIN(bugprone-branch-clone)
+      case TemplatedSymbolType::Hash:
+        mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsHashedLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, blankSegmentsFieldIndex() ) );
+        break;
+
+      case TemplatedSymbolType::Marker:
+        mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, blankSegmentsFieldIndex() ) );
+        break;
+        // NOLINTEND(bugprone-branch-clone)
+    }
+
+    context().mapCanvas()->setMapTool( mMapToolEditBlankSegments );
+  }
+}
+
+void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
+{
+  mEditBlankSegmentsBtn->setEnabled( blankSegmentsFieldIndex() > -1 );
+  QString tooltip;
+  switch ( mSymbolType )
+  {
+    case TemplatedSymbolType::Hash:
+      tooltip = tr( "Tool to create blank segments where hashed lines won't be displayed" );
+      break;
+
+    case TemplatedSymbolType::Marker:
+      tooltip = tr( "Tool to create blank segments where marker lines won't be displayed" );
+      break;
+  }
+
+  if ( !mEditBlankSegmentsBtn->isEnabled() )
+  {
+    tooltip += QStringLiteral( "<br/><br/>" ) + tr( "This tool is disabled because no valid field property has been set" );
+  }
+
+  mEditBlankSegmentsBtn->setToolTip( tooltip );
+}
+
+int QgsTemplatedLineSymbolLayerWidget::blankSegmentsFieldIndex() const
+{
+  const QgsProperty blankSegmentsProperty = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::BlankSegments );
+  return blankSegmentsProperty && blankSegmentsProperty.isActive()
+             && blankSegmentsProperty.propertyType() == Qgis::PropertyType::Field
+           ? vectorLayer()->fields().indexFromName( blankSegmentsProperty.field() )
+           : -1;
 }
 
 ///////////

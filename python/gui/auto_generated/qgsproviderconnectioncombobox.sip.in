@@ -29,7 +29,6 @@ given provider.
 #include "qgsproviderconnectioncombobox.h"
 %End
   public:
-
     explicit QgsProviderConnectionComboBox( const QString &provider, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProviderConnectionComboBox, for the specified

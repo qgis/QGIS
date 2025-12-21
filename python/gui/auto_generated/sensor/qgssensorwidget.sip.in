@@ -22,7 +22,6 @@ sensors.
 #include "qgssensorwidget.h"
 %End
   public:
-
     QgsAbstractSensorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractSensorWidget.

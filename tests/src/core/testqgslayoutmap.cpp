@@ -561,10 +561,10 @@ void TestQgsLayoutMap::rasterized()
   grid->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   grid->setBlendMode( QPainter::CompositionMode_Darken );
   grid->setAnnotationEnabled( true );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Top );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Right );
-  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Bottom );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Left );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Top );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Right );
+  grid->setAnnotationDisplay( Qgis::MapGridComponentVisibility::ShowAll, Qgis::MapGridBorderSide::Bottom );
   map->grids()->addGrid( grid );
   map->updateBoundingRect();
 
@@ -733,7 +733,7 @@ void TestQgsLayoutMap::expressionContext()
   QgsExpression e10( QStringLiteral( "@map_layer_ids" ) );
   r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
-  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
+  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) ); // skip-keyword-check
   r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
 

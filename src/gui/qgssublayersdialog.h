@@ -35,7 +35,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 {
     Q_OBJECT
   public:
-
     /**
      * Prompt behavior of the QgsSublayersDialog
      * \deprecated QGIS 3.40. Use Qgis::SublayerPromptMode instead.
@@ -158,7 +157,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     void mBtnDeselectAll_pressed();
 
   protected:
-
     /**
      * Provider type name
      */

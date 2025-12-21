@@ -35,7 +35,6 @@ class GUI_EXPORT QgsFindFilesByPatternWidget : public QWidget, private Ui::QgsFi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFindFilesByPatternWidget, with the specified \a parent widget.
      */
@@ -81,7 +80,6 @@ class GUI_EXPORT QgsFindFilesByPatternDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFindFilesByPatternDialog, with the specified \a parent widget.
      */

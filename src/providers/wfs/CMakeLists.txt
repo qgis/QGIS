@@ -28,6 +28,7 @@ set(WFS_SRCS
   qgsfeaturedownloaderimpl.cpp
   qgsfeaturedownloaderprogresstask.cpp
   qgsthreadedfeaturedownloader.cpp
+  qgsxmlschemaanalyzer.cpp
 
   oapif/qgsoapiflandingpagerequest.cpp
   oapif/qgsoapifapirequest.cpp

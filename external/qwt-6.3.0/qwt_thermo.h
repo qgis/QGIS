@@ -101,7 +101,7 @@ class QWT_EXPORT QwtThermo : public QwtAbstractScale
     };
 
     explicit QwtThermo( QWidget* parent = NULL );
-    virtual ~QwtThermo();
+    ~QwtThermo() override;
 
     void setOrientation( Qt::Orientation );
     Qt::Orientation orientation() const;

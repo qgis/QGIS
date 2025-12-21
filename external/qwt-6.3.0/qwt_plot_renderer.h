@@ -94,7 +94,7 @@ class QWT_EXPORT QwtPlotRenderer : public QObject
     Q_DECLARE_FLAGS( LayoutFlags, LayoutFlag )
 
     explicit QwtPlotRenderer( QObject* = NULL );
-    virtual ~QwtPlotRenderer();
+    ~QwtPlotRenderer() override;
 
     void setDiscardFlag( DiscardFlag flag, bool on = true );
     bool testDiscardFlag( DiscardFlag flag ) const;

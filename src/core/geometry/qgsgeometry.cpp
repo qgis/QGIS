@@ -1868,6 +1868,51 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
       res << QgsGeometry( parts->geometryN( i )->clone() );
     }
   }
+  // GeometryCollection (of Point/LineString/Polygon) -> MultiPoint/MultiLineString/MultiPolygon
+  else if ( ( type == Qgis::WkbType::MultiPoint ||
+              type == Qgis::WkbType::MultiLineString ||
+              type == Qgis::WkbType::MultiPolygon ) &&
+            newGeom.wkbType() == Qgis::WkbType::GeometryCollection )
+  {
+    Qgis::WkbType singleType = QgsWkbTypes::singleType( type );
+    const QgsGeometryCollection *geomColl( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
+
+    bool allExpectedType = true;
+    for ( int i = 0; i < geomColl->numGeometries(); ++i )
+    {
+      if ( geomColl->geometryN( i )->wkbType() != singleType )
+      {
+        allExpectedType = false;
+        break;
+      }
+    }
+    if ( allExpectedType )
+    {
+      std::unique_ptr< QgsGeometryCollection > newGeomCol;
+      if ( type == Qgis::WkbType::MultiPoint )
+      {
+        newGeomCol = std::make_unique< QgsMultiPoint >();
+      }
+      else if ( type == Qgis::WkbType::MultiLineString )
+      {
+        newGeomCol = std::make_unique< QgsMultiLineString >();
+      }
+      else
+      {
+        newGeomCol = std::make_unique< QgsMultiPolygon >();
+      }
+      newGeomCol->reserve( geomColl->numGeometries() );
+      for ( int i = 0; i < geomColl->numGeometries(); ++i )
+      {
+        newGeomCol->addGeometry( geomColl->geometryN( i )->clone() );
+      }
+      res << QgsGeometry( std::move( newGeomCol ) );
+    }
+    else
+    {
+      res << newGeom;
+    }
+  }
   else
   {
     res << newGeom;
@@ -4544,7 +4589,11 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   int modifiedPart = -1;
   int modifiedRing = -1;
   QgsVertexId vertexId;
-  vertexIdFromVertexNr( vertexIndex, vertexId );
+  if ( !vertexIdFromVertexNr( vertexIndex, vertexId ) )
+  {
+    mLastError = QStringLiteral( "Invalid vertex index" );
+    return QgsGeometry();
+  }
   int resolvedVertexIndex = vertexId.vertex;
   QgsMultiLineString *inputMultiLine = nullptr;
   QgsMultiPolygon *inputMultiPoly = nullptr;

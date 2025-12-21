@@ -33,7 +33,7 @@ QgsHttpExternalStorageStoreTask::QgsHttpExternalStorageStoreTask( const QUrl &ur
   , mUrl( url )
   , mFilePath( filePath )
   , mAuthCfg( authCfg )
-  , mFeedback( new QgsFeedback( this ) )
+  , mFeedback( std::make_unique<QgsFeedback>( this ) )
 {
 }
 
@@ -45,11 +45,12 @@ bool QgsHttpExternalStorageStoreTask::run()
   QNetworkRequest req( mUrl );
   QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsHttpExternalStorageStoreTask" ) );
 
-  QFile *f = new QFile( mFilePath );
-  f->open( QIODevice::ReadOnly );
+  QFile f( mFilePath );
+  if ( !f.open( QIODevice::ReadOnly ) )
+    return false;
 
   if ( mPrepareRequestHandler )
-    mPrepareRequestHandler( req, f );
+    mPrepareRequestHandler( req, &f );
 
   connect( &request, &QgsBlockingNetworkRequest::uploadProgress, this, [this]( qint64 bytesReceived, qint64 bytesTotal )
   {
@@ -60,7 +61,7 @@ bool QgsHttpExternalStorageStoreTask::run()
     }
   } );
 
-  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, f, mFeedback.get() );
+  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, &f, mFeedback.get() );
 
   if ( err != QgsBlockingNetworkRequest::NoError )
   {

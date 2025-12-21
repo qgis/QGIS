@@ -142,8 +142,12 @@ class QgsPGProjectItem : public QgsProjectItem
     */
     QString connectionName() const { return mConnectionName; }
 
+    using QgsProjectItem::refresh;
+    void refresh() override;
 
   private:
+    void refreshTooltip();
+
     QgsPostgresProjectUri mProjectUri;
     QString mConnectionName;
 };

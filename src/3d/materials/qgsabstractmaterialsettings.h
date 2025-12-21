@@ -71,7 +71,6 @@ enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNES
 class _3D_EXPORT QgsMaterialContext
 {
   public:
-
     /**
      * Returns TRUE if the material should represent a selected state.
      *

@@ -212,6 +212,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
 
     Qgis::DataProviderFlags flags() const override;
 
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
@@ -641,7 +642,6 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     void canceled();
 
   protected:
-
     /**
      * \brief Relaunch tile request cloning previous request parameters and managing max repeat
      *

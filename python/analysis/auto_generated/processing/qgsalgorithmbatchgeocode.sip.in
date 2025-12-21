@@ -58,7 +58,6 @@ Example
 #include "qgsalgorithmbatchgeocode.h"
 %End
   public:
-
     QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocoder );
 %Docstring
 Constructor for QgsBatchGeocodeAlgorithm.

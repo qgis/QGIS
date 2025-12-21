@@ -103,7 +103,7 @@ class QWT_EXPORT QwtPlotTradingCurve
     explicit QwtPlotTradingCurve( const QString& title = QString() );
     explicit QwtPlotTradingCurve( const QwtText& title );
 
-    virtual ~QwtPlotTradingCurve();
+    ~QwtPlotTradingCurve() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

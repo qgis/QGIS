@@ -1100,7 +1100,7 @@ void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projec
     else
     {
       notify( tr( "Set Project Comment" ), tr( "Comment updated for project '%1'" ).arg( projectItem->name() ), context, Qgis::MessageLevel::Success );
-      projectItem->parent()->refresh();
+      projectItem->refresh();
     }
   }
 
@@ -1140,6 +1140,21 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
   pgProjectUri.connInfo = conn->uri();
   pgProjectUri.schemaName = schemaItem->name();
   pgProjectUri.projectName = project->title().isEmpty() ? project->baseName() : project->title();
+
+  if ( pgProjectUri.projectName.isEmpty() )
+  {
+    bool ok;
+    const QString projectName = QInputDialog::getText( nullptr, tr( "Set Project Name" ), tr( "Name" ), QLineEdit::Normal, tr( "New Project" ), &ok );
+    if ( ok && !projectName.isEmpty() )
+    {
+      pgProjectUri.projectName = projectName;
+    }
+    else
+    {
+      notify( tr( "Save Project" ), tr( "Unable to save project without name to database." ), context, Qgis::MessageLevel::Warning );
+      return;
+    }
+  }
 
   QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
   const QString sqlProjectExist = QStringLiteral( "SELECT EXISTS( SELECT 1 FROM %1.qgis_projects WHERE name = %2);" )

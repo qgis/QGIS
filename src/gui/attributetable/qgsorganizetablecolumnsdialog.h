@@ -37,7 +37,6 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param vl The concerned vector layer

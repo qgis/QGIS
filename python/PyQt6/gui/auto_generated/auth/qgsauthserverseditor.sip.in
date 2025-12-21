@@ -21,7 +21,6 @@ Widget for viewing and editing servers in authentication database.
 #include "qgsauthserverseditor.h"
 %End
   public:
-
     explicit QgsAuthServersEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Widget for editing authentication configurations directly in database

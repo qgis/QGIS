@@ -35,6 +35,7 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
 
     QgsPointRotationItem( QgsMapCanvas *canvas );
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     //! Sets the center point of the rotation symbol (in map coordinates)

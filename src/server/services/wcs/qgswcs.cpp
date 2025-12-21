@@ -38,7 +38,6 @@ namespace QgsWcs
   class Service : public QgsService
   {
     public:
-
       /**
        * Constructor for WCS service.
        * \param serverIface Interface for plugins.

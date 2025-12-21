@@ -42,7 +42,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     Q_OBJECT
 
   public:
-
     /**
      * Constructor.
      * \param qgis Pointer to the QgisApp object

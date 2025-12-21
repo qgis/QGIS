@@ -37,7 +37,6 @@ class GUI_EXPORT QgsFileDownloaderDialog : public QProgressDialog
 {
     Q_OBJECT
   public:
-
     /**
      * QgsFileDownloader
      * \param url the download url

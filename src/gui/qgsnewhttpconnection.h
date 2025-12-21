@@ -108,6 +108,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void updateOkButtonState();
     void wfsVersionCurrentIndexChanged( int index );
     void wfsFeaturePagingCurrentIndexChanged( int index );
+    void featureFormatCurrentIndexChanged( int index );
 
   protected:
     //! Index of wfsVersionComboBox

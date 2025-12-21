@@ -42,7 +42,6 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a QgsFormLabelFormatWidget with given \a parent.
      */

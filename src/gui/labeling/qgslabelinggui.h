@@ -37,7 +37,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingGui, for configuring a vector \a layer labeling.
      */
@@ -84,7 +83,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void saveFormat() override;
 
   protected:
-
     /**
      * Constructor for QgsLabelingGui, for subclasses.
      *

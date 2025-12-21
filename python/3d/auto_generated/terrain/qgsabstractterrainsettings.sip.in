@@ -191,7 +191,6 @@ or down).
 %End
 
   protected:
-
     void writeCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes common properties from the base class into an XML ``element``.

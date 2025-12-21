@@ -54,7 +54,7 @@ class QWT_EXPORT QwtMatrixRasterData : public QwtRasterData
     };
 
     QwtMatrixRasterData();
-    virtual ~QwtMatrixRasterData();
+    ~QwtMatrixRasterData() override;
 
     void setResampleMode(ResampleMode mode);
     ResampleMode resampleMode() const;

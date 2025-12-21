@@ -41,7 +41,6 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProcessingHelpEditorWidget, with the specified \a parent widget.
      */
@@ -95,7 +94,6 @@ class GUI_EXPORT QgsProcessingHelpEditorDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingHelpEditorDialog, with the specified \a parent and \a flags.
      */

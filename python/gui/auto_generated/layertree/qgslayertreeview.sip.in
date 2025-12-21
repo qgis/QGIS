@@ -31,7 +31,6 @@ layers and text filtering.
       sipType = nullptr;
 %End
   public:
-
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 %Docstring
 Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a
@@ -379,7 +378,6 @@ in layer tree nodes
 %End
 
   protected:
-
     void updateExpandedStateFromNode( QgsLayerTreeNode *node );
 %Docstring
 Updates the expanded state from a ``node``.

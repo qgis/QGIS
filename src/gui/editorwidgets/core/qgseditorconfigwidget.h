@@ -41,7 +41,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
 {
     Q_OBJECT
   public:
-
     /**
      * Create a new configuration widget
      *
@@ -89,7 +88,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
     void changed();
 
   protected:
-
     /**
      * Registers a property override button, setting up its initial value, connections and description.
      * \param button button to register

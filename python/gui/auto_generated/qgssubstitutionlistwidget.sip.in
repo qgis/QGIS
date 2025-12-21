@@ -24,7 +24,6 @@ lists.
 #include "qgssubstitutionlistwidget.h"
 %End
   public:
-
     QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListWidget.
@@ -71,7 +70,6 @@ lists.
 #include "qgssubstitutionlistwidget.h"
 %End
   public:
-
     QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListDialog.

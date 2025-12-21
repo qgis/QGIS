@@ -21,7 +21,6 @@ Base class for tiled scene 2D renderer settings widgets.
 #include "qgstiledscenerendererwidget.h"
 %End
   public:
-
     QgsTiledSceneRendererWidget( QgsTiledSceneLayer *layer, QgsStyle *style );
 %Docstring
 Constructor for QgsTiledSceneRendererWidget, associated with the

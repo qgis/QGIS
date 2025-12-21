@@ -35,7 +35,6 @@ class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidg
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor.
      */
@@ -60,7 +59,6 @@ class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidg
     virtual void setReadOnly( bool readOnly );
 
   protected:
-
     /**
      * Initialize the table with the given model.
      * Must be called once in the child class' constructor.

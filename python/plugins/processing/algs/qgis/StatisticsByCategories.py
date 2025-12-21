@@ -112,6 +112,14 @@ class StatisticsByCategories(QgisAlgorithm):
     def displayName(self):
         return self.tr("Statistics by categories")
 
+    def shortDescription(self):
+        return self.tr("Calculates statistics of fields depending on a parent class.")
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm calculates statistics of fields depending on a parent class."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

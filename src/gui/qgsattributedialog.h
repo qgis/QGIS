@@ -41,7 +41,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
     Q_OBJECT
 
   public:
-
     /**
      * Create an attribute dialog for a given layer and feature
      *

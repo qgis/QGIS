@@ -53,7 +53,6 @@ class GUI_EXPORT QgsPropertyOverrideButton : public QToolButton
     Q_PROPERTY( bool active READ isActive WRITE setActive )
 
   public:
-
     /**
      * Constructor for QgsPropertyOverrideButton.
      * \param parent parent widget

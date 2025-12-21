@@ -92,6 +92,19 @@ class CORE_EXPORT QgsVector3D
       return QgsVector3D( mX + other.mX, mY + other.mY, mZ + other.mZ );
     }
 
+    /**
+     * Adds another vector to this vector in place.
+     *
+     * \since QGIS 4.0
+     */
+    QgsVector3D &operator+=( const QgsVector3D &other ) SIP_HOLDGIL
+    {
+      mX += other.mX;
+      mY += other.mY;
+      mZ += other.mZ;
+      return *this;
+    }
+
     //! Returns difference of two vectors
     QgsVector3D operator-( const QgsVector3D &other ) const SIP_HOLDGIL
     {
@@ -135,10 +148,24 @@ class CORE_EXPORT QgsVector3D
                           v1.x() * v2.y() - v1.y() * v2.x() );
     }
 
-    //! Returns the length of the vector
+    /**
+     * Returns the length of the vector.
+     * \see lengthSquared()
+     */
     double length() const SIP_HOLDGIL
     {
       return sqrt( mX * mX + mY * mY + mZ * mZ );
+    }
+
+    /**
+     * Returns the squared length of the vector.
+     * \see length()
+     *
+     * \since QGIS 4.0
+     */
+    double lengthSquared() const SIP_HOLDGIL
+    {
+      return mX * mX + mY * mY + mZ * mZ;
     }
 
     //! Normalizes the current vector in place.

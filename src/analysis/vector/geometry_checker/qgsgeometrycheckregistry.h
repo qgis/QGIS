@@ -41,7 +41,6 @@ class QgsGeometryCheckContext;
 class ANALYSIS_EXPORT QgsGeometryCheckRegistry
 {
   public:
-
     /**
      * Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
      * QgsAnalysis::geometryCheckRegistry().

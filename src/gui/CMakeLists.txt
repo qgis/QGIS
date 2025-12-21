@@ -357,8 +357,9 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapture.cpp
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
-  maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooldigitizefeature.cpp
+  maptools/qgsmaptooledit.cpp
+  maptools/qgsmaptooleditblanksegments.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
@@ -1370,6 +1371,7 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapturerubberband.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
+  maptools/qgsmaptooleditblanksegments.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
@@ -1805,6 +1807,17 @@ if(WITH_INTERNAL_QWT)
       ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_cubic.cpp
       PROPERTIES COMPILE_FLAGS "-Wno-implicit-fallthrough -Wno-unused-function -Wno-unused-private-field"
     )
+  endif()
+
+  set(QWT_COMPILE_OPTIONS)
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (QWT_COMPILE_OPTIONS)
+    set_source_files_properties($QGIS_QWT_SRCS PROPERTIES COMPILE_OPTIONS "${QWT_COMPILE_OPTIONS}")
   endif()
 
   set(QGIS_GUI_SRCS

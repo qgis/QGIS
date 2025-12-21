@@ -31,7 +31,6 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Create a html widget wrapper
      *

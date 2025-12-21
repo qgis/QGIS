@@ -157,8 +157,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
     creationOptions = optionsString;
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
 
   // round up width and height to the nearest integer as GDAL does (e.g. in gdal_rasterize)
   // see https://github.com/qgis/QGIS/issues/43547

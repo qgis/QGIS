@@ -588,7 +588,7 @@ void QgsAuthOAuth2Edit::selectCurrentDefinedConfig()
 
 void QgsAuthOAuth2Edit::getDefinedCustomDir()
 {
-  const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ), QDir::homePath(), QFileDialog::DontResolveSymlinks );
+  const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select Extra Directory to Parse" ), QDir::homePath(), QFileDialog::DontResolveSymlinks );
   this->raise();
   this->activateWindow();
 
@@ -601,7 +601,7 @@ void QgsAuthOAuth2Edit::getDefinedCustomDir()
 
 void QgsAuthOAuth2Edit::getSoftStatementDir()
 {
-  const QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select software statement file" ), QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
+  const QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select Software Statement File" ), QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
   this->raise();
   this->activateWindow();
 

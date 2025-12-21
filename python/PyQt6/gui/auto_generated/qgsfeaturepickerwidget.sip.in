@@ -29,7 +29,6 @@ typed text.
 #include "qgsfeaturepickerwidget.h"
 %End
   public:
-
     QgsFeaturePickerWidget( QWidget *parent = 0 );
 %Docstring
 Create a new QgsFeaturePickerWidget, optionally specifying a ``parent``.

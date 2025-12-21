@@ -101,7 +101,6 @@ const QMap<int, QString> knownStatuses {
 class HttpException : public std::exception
 {
   public:
-
     /**
      * Constructs an HttpException with the given \a message
      */
