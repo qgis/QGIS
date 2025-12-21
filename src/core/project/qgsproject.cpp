@@ -5583,6 +5583,7 @@ static QHash<QString, QVariantMap> loadBookmarksFromProject( const QgsProject *p
     QVariantMap bmMap;
     bmMap["name"] = bm.name();
     bmMap["id"] = bm.id();
+    bmMap["group"] = bm.group();
 
     QVariantMap extentMap;
     extentMap["x_min"] = bm.extent().xMinimum();
@@ -5596,7 +5597,9 @@ static QHash<QString, QVariantMap> loadBookmarksFromProject( const QgsProject *p
     bmMap["crs"] = bm.extent().crs().authid();
     bmMap["rotation"] = bm.rotation();
 
-    bmMap["extent"] = QVariant::fromValue( bm.extent() );
+    QgsGeometry geomBounds = QgsGeometry::fromRect( bm.extent() );
+    QVariant result = !geomBounds.isNull() ? QVariant::fromValue( geomBounds ) : QVariant();
+    bmMap["extent"] = result;
 
     bookmarks[bm.name()] = bmMap;
   }
@@ -5643,8 +5646,23 @@ static QHash<QString, QVariantMap> loadUserBookmarks()
     map["id"] = b.id();
     map["name"] = b.name();
     map["group"] = b.group();
-    map["extent"] = QVariant::fromValue( b.extent() );
+
+    QVariantMap extentMap;
+    extentMap["x_min"] = b.extent().xMinimum();
+    extentMap["y_min"] = b.extent().yMinimum();
+    extentMap["x_max"] = b.extent().xMaximum();
+    extentMap["y_max"] = b.extent().yMaximum();
+    map["extent_rect"] = extentMap;
+
+    map["width"] = b.extent().width();
+    map["height"] = b.extent().height();
+    map["crs"] = b.extent().crs().authid();
     map["rotation"] = b.rotation();
+
+    QgsGeometry geomBounds = QgsGeometry::fromRect( b.extent() );
+    QVariant result = !geomBounds.isNull() ? QVariant::fromValue( geomBounds ) : QVariant();
+    map["extent"] = result;
+
     bookmarks[b.name()] = map;
   }
   return bookmarks;
