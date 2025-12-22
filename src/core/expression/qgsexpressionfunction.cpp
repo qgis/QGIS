@@ -2718,6 +2718,23 @@ static QVariant fcnStrpos( const QVariantList &values, const QgsExpressionContex
   return string.indexOf( QgsExpressionUtils::getStringValue( values.at( 1 ), parent ) ) + 1;
 }
 
+static QVariant fcnUnaccent(
+  const QVariantList &values,
+  const QgsExpressionContext *context,
+  QgsExpression *,
+  const QgsExpressionNodeFunction *node
+)
+{
+  Q_UNUSED( context )
+  Q_UNUSED( node )
+
+  if ( values.isEmpty() || values[0].isNull() )
+    return QVariant();
+
+  return QgsStringUtils::unaccent( values[0].toString() );
+}
+
+
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -8806,6 +8823,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "trim" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTrim, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "unaccent" ), { QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) }, fcnUnaccent, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "ltrim" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "characters" ), true, QStringLiteral( " " ) ), fcnLTrim, QStringLiteral( "String" ) )
@@ -10211,3 +10229,4 @@ void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpres
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
 }
+
