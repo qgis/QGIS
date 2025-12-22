@@ -67,7 +67,7 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 ) );
 
-  auto direction = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Left to Right" ) << QObject::tr( "Right to Left" ), false, 0 );
+  auto direction = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Left to Right" ) << QObject::tr( "Right to Left" ), false, 0, true );
   direction->setGuiDefaultValueOverride( 1 );
   addParameter( direction.release() );
 
