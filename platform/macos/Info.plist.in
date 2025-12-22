@@ -14,8 +14,8 @@
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
-  <key>NSHumanReadableCopyright</key>
-  <string>Copyright © QGIS.org</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © QGIS.org</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@COMPLETE_VERSION@</string>
 	<key>CFBundleVersion</key>
