@@ -1145,6 +1145,9 @@ void TestQgsSfcgal::primitiveCube()
                        "((5.0 0.0 0.0,5.0 5.0 0.0,5.0 5.0 5.0,5.0 0.0 5.0,5.0 0.0 0.0)),"
                        "((0.0 0.0 0.0,0.0 0.0 5.0,0.0 5.0 5.0,0.0 5.0 0.0,0.0 0.0 0.0)))"_s;
   QCOMPARE( poly->asWkt( 1 ), expPolyWkt );
+  std::unique_ptr<QgsSfcgalGeometry> poly2 = cube2->primitiveAsPolyhedralSurface();
+  QCOMPARE( poly2->asWkt( 1 ), expPolyWkt );
+
 
   // check export as QgsAbstractGeometry
   std::unique_ptr<QgsAbstractGeometry> qgsGeom = cube->asQgisGeometry();
