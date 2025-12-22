@@ -91,7 +91,14 @@ jobs:
           xcode-version: latest-stable
 
       - name: Install Metal Toolchain
-        run: sudo xcodebuild -downloadComponent MetalToolchain
+        run:
+          # Source - https://stackoverflow.com/a
+          # Posted by PuerGozi
+          # Retrieved 2025-12-22, License - CC BY-SA 4.0
+          
+          sudo xcodebuild -downloadComponent metalToolchain -exportPath /tmp/MyMetalExport/
+          sudo sed -i '' -e 's/17A5241c/17A5241e/g' /tmp/MyMetalExport/MetalToolchain-17A5241c.exportedBundle/ExportMetadata.plist
+          sudo xcodebuild -importComponent metalToolchain -importPath /tmp/MyMetalExport/MetalToolchain-17A5241c.exportedBundle
 
       - name: 🛍️ Setup ccache
         uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03  # v1.2.23
