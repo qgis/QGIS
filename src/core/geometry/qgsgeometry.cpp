@@ -1729,8 +1729,9 @@ json QgsGeometry::asJsonObject( int precision ) const
 
 }
 
-QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates, QString *errorMessage ) const
+QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates ) const
 {
+  mLastError.clear();
   QVector< QgsGeometry > res;
   if ( isNull() )
     return res;
@@ -1845,10 +1846,9 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
         if ( polygon->exteriorRing() )
         {
           const int numPoints = polygon->exteriorRing()->numPoints();
-          if ( numPoints > 4 || numPoints < 3 )
+          if ( numPoints != 4 )
           {
-            if ( errorMessage )
-              *errorMessage = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
+            mLastError = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
             return res;
           }
           auto triangle = std::make_unique< QgsTriangle >();
@@ -1893,10 +1893,9 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
       if ( polygon->exteriorRing() )
       {
         const int numPoints = polygon->exteriorRing()->numPoints();
-        if ( numPoints > 4 || numPoints < 3 )
+        if ( numPoints != 4 )
         {
-          if ( errorMessage )
-            *errorMessage = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
+          mLastError = QObject::tr( "Cannot convert polygon with %1 vertices to a triangle. A triangle requires exactly 3 vertices." ).arg( numPoints > 0 ? numPoints - 1 : 0 );
           return res;
         }
         auto triangle = std::make_unique< QgsTriangle >();

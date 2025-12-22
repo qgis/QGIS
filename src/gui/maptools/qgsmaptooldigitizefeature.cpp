@@ -80,13 +80,13 @@ void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geomet
     {
       double defaultZ = QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->value();
       double defaultM = QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value();
-      QString coerceError;
-      QVector<QgsGeometry> layerGeometries = geometry.coerceToType( layerWKBType, defaultZ, defaultM, true, &coerceError );
+      QVector<QgsGeometry> layerGeometries = geometry.coerceToType( layerWKBType, defaultZ, defaultM, true );
       if ( layerGeometries.count() > 0 )
         layerGeometry = layerGeometries.at( 0 );
 
       if ( layerGeometry.wkbType() != layerWKBType && layerGeometry.wkbType() != QgsWkbTypes::linearType( layerWKBType ) )
       {
+        const QString coerceError = geometry.lastError();
         if ( !coerceError.isEmpty() )
         {
           emit messageEmitted( coerceError, Qgis::MessageLevel::Warning );
