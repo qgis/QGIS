@@ -1,4 +1,4 @@
----
+d---
 name: 🍎 Build - MacOS Qt6
 on:
   push:
@@ -84,7 +84,7 @@ jobs:
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
           # TODO: This is a test and includes a hardcoded path (to metal for qtwebengine build)... fixme
-          export PATH=/Applications/Xcode_26.0.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:$PATH
+          export PATH=$PATH:/Applications/Xcode_26.0.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
 
           # Install first only with binarycaching, then deduplicate binaries and replace copies with symlinks.
           # Nuget doesn't understand the symlink concept
