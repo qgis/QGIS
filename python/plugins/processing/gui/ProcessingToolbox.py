@@ -61,7 +61,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     TAG_ROLE = Qt.ItemDataRole.UserRole + 1
     TYPE_ROLE = Qt.ItemDataRole.UserRole + 2
 
-    # Trigger algorithm execution
     executeWithGui = pyqtSignal(str, QWidget, bool, bool)
 
     def __init__(self):
@@ -108,7 +107,16 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 QCoreApplication.translate("ProcessingToolbox", "Search…")
             )
 
-        # connect to existing providers
+        self.queueButton = QToolButton()
+        self.queueButton.setIcon(QgsApplication.getThemeIcon("/mTaskRunning.svg"))
+        self.queueButton.setToolTip(
+            QCoreApplication.translate(
+                "ProcessingToolbox", "Show Processing Task Queue"
+            )
+        )
+        self.queueButton.clicked.connect(self.showTaskQueue)
+        self.processingToolbar.addWidget(self.queueButton)
+
         for p in QgsApplication.processingRegistry().providers():
             if p.isActive():
                 self.addProviderActions(p)
@@ -207,6 +215,14 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                     self.executeAlgorithmAsBatchProcess
                 )
                 popupmenu.addAction(executeBatchAction)
+
+            addToQueueAction = QAction(
+                QCoreApplication.translate("ProcessingToolbox", "Add to Queue…"),
+                popupmenu,
+            )
+            addToQueueAction.triggered.connect(self.addAlgorithmToQueue)
+            popupmenu.addAction(addToQueueAction)
+
             popupmenu.addSeparator()
             editRenderingStylesAction = QAction(
                 QCoreApplication.translate(
@@ -270,6 +286,27 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         alg = self.algorithmTree.selectedAlgorithm()
         if alg is not None:
             self.executeWithGui.emit(alg.id(), self, self.in_place_mode, False)
+
+    def addAlgorithmToQueue(self):
+        """Opens the algorithm dialog to configure parameters before adding to queue."""
+        alg = self.algorithmTree.selectedAlgorithm()
+        if alg is not None:
+            from processing.gui.AlgorithmDialog import AlgorithmDialog
+            from qgis.utils import iface
+
+            alg_instance = alg.create()
+            dlg = AlgorithmDialog(alg_instance, parent=iface.mainWindow())
+            dlg.show()
+            dlg.exec()
+
+    def showTaskQueue(self):
+        """Shows the task queue management dialog."""
+        from qgis.gui import QgsProcessingTaskQueueDialog
+        from qgis.utils import iface
+
+        dlg = QgsProcessingTaskQueueDialog(parent=iface.mainWindow())
+        dlg.show()
+        dlg.exec()
 
     def toggleFavorite(self):
         alg = self.algorithmTree.selectedAlgorithm()
