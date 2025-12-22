@@ -17,6 +17,7 @@
 
 #include "qgscircularstring.h"
 #include "qgscoordinatetransform.h"
+#include "qgscurve.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
@@ -73,6 +74,7 @@ class TestQgsCircularString : public QObject
     void segmentLength();
     void angle();
     void sumUpArea();
+    void sumUpArea3D();
     void closestSegment();
     void boundary();
     void boundingBox();
@@ -1621,6 +1623,74 @@ void TestQgsCircularString::sumUpArea()
   cs.sumUpArea( area );
 
   QGSCOMPARENEAR( area, 12.566370614359172, 0.0001 );
+}
+
+void TestQgsCircularString::sumUpArea3D()
+{
+  QgsCircularString cs;
+  double area3D = 0.0;
+
+  // half circle (0,0),(1 1),(2 0) and rotate it
+  // X rotation
+  // normal (0, 1, 0), positive area
+  area3D = 0.0;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 1, 0, 1 ) << QgsPoint( 2, 0, 0 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, 1.570796, 1e-6 );
+
+  // inverse to check the sign
+  // normal (0, -1, 0), negative area
+  area3D = 0.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 2, 0, 0 ) << QgsPoint( 1, 0, 1 ) << QgsPoint( 0, 0, 0 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, -1.570796, 1e-6 );
+
+  // shift positions no affect on the result
+  area3D = 0.;
+  const double shift = 10.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 2 + shift, 0, 0 ) << QgsPoint( 1 + shift, 0, 1 ) << QgsPoint( 0 + shift, 0, 0 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, -1.570796, 1e-6 );
+
+  area3D = 0.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 2, 0 + shift, 0 ) << QgsPoint( 1, 0 + shift, 1 ) << QgsPoint( 0, 0 + shift, 0 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, -1.570796, 1e-6 );
+
+  area3D = 0.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 2, 0, 0 + shift ) << QgsPoint( 1, 0, 1 + shift ) << QgsPoint( 0, 0, 0 + shift ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, -1.570796, 1e-6 );
+
+  // Y rotation
+  // normal (-1, 0, 0), negative area
+  area3D = 0.0;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 0, 1, -1 ) << QgsPoint( 0, 0, -2 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, -1.570796, 1e-6 );
+
+  // inverse to check the sign
+  // normal (1, 0, 0), positive area
+  area3D = 0.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, -2 ) << QgsPoint( 0, 1, -1 ) << QgsPoint( 0, 0, 0 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, 1.570796, 1e-6 );
+
+  // shift positions no affect on the result
+  area3D = 0.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0 + shift, 0, -2 ) << QgsPoint( 0 + shift, 1, -1 ) << QgsPoint( 0 + shift, 0, 0 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, 1.570796, 1e-6 );
+
+  area3D = 0.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 + shift, -2 ) << QgsPoint( 0, 1 + shift, -1 ) << QgsPoint( 0, 0 + shift, 0 ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, 1.570796, 1e-6 );
+
+  area3D = 0.;
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, -2 + shift ) << QgsPoint( 0, 1, -1 + shift ) << QgsPoint( 0, 0, 0 + shift ) );
+  cs.sumUpArea3D( area3D );
+  QGSCOMPARENEAR( area3D, 1.570796, 1e-6 );
 }
 
 void TestQgsCircularString::boundingBox()

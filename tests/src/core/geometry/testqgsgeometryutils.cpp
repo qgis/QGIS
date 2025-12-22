@@ -15,10 +15,12 @@
 
 #include <math.h>
 
+#include "qgscircularstring.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgstest.h"
 
@@ -94,6 +96,7 @@ class TestQgsGeometryUtils : public QObject
     void transferFirstZOrMValueToPoint_qgspointsequence();
     void transferFirstZOrMValueToPoint_qgsgeometry();
     void testPointsAreCollinear();
+    void testHas3DPlane();
 };
 
 
@@ -1984,6 +1987,83 @@ void TestQgsGeometryUtils::testPointsAreCollinear()
   QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 4, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 7, 2, 2, 2, Qgis::WkbType::PointM ), 0.00001 ) );
   QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 0, 2 ), QgsPoint( 10, 10, 0, 17 ), QgsPoint( 20, 10, 0, 43 ), 0.00001 ) );
   QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2, 2 ), QgsPoint( 2, 2, 3, 2 ), QgsPoint( 2, 3, 5, 2 ), 0.00001 ) );
+}
+
+void TestQgsGeometryUtils::testHas3DPlane()
+{
+  QgsPoint pt1;
+  QgsPoint pt2;
+  QgsPoint pt3;
+
+  // nullptr: false
+  QVERIFY( !QgsGeometryUtils::has3DPlane( nullptr, pt1, pt2, pt3 ) );
+
+  // QgsPoint: false
+  const QgsPoint pt( 2, 2 );
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &pt, pt1, pt2, pt3 ) );
+
+  // QgsGeometryCollection: false
+  QgsGeometryCollection collection;
+  QgsPolygon polygon3D;
+  polygon3D.fromWkt( QStringLiteral( "POLYGON Z((5 10 0, 5 15 5, 10 15 5, 10 10 5, 5 10 0))" ) );
+  QVERIFY( !polygon3D.isEmpty() );
+  collection.addGeometry( polygon3D.clone() );
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &collection, pt1, pt2, pt3 ) );
+
+  // 2D geometry: false
+  QgsPolygon polygon2D;
+  polygon2D.fromWkt( QStringLiteral( "POLYGON ((5 10, 5 15, 10 15, 10 10, 5 10))" ) );
+  QVERIFY( !polygon2D.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &polygon2D, pt1, pt2, pt3 ) );
+
+  // Line with less than 3 points - false
+  QgsLineString line3D;
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &line3D, pt1, pt2, pt3 ) );
+  line3D.addVertex( QgsPoint( 0, 0, 0 ) );
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &line3D, pt1, pt2, pt3 ) );
+  line3D.addVertex( QgsPoint( 2, 0, 1 ) );
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &line3D, pt1, pt2, pt3 ) );
+
+  // line with 3 points - true
+  line3D.addVertex( QgsPoint( 2, 2, 2 ) );
+  QVERIFY( QgsGeometryUtils::has3DPlane( &line3D, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 0, 0, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 2, 0, 1 ) );
+  QCOMPARE( pt3, QgsPoint( 2, 2, 2 ) );
+
+  // 3D polygon
+  QVERIFY( QgsGeometryUtils::has3DPlane( &polygon3D, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 5, 10, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 5, 15, 5 ) );
+  QCOMPARE( pt3, QgsPoint( 10, 15, 5 ) );
+
+  // 3D Polygon with interior ring
+  QgsPolygon polygon3DInterior;
+  polygon3DInterior.fromWkt( QStringLiteral( "POLYGON Z ((0 0 0, 10 0 10, 10 10 20, 0 10 10, 0 0 0),(3 3 6, 3 7 10, 7 7 14, 7 3 10, 3 3 6))" ) );
+  QVERIFY( QgsGeometryUtils::has3DPlane( &polygon3DInterior, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 0, 0, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 10, 0, 10 ) );
+  QCOMPARE( pt3, QgsPoint( 10, 10, 20 ) );
+
+  // 3D Polygon - similar points - false
+  QgsPolygon polygon3DRepeat;
+  polygon3DRepeat.fromWkt( QStringLiteral( "POLYGON Z ((5 5 5, 5 5 5, 6 6 6, 6 6 6, 5 5 5))" ) );
+  QVERIFY( !polygon3DRepeat.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &polygon3DRepeat, pt1, pt2, pt3 ) );
+
+  // 3D Linestring
+  QgsCircularString circularString3D;
+  circularString3D.fromWkt( QStringLiteral( "CIRCULARSTRING Z (0 0 0, 10 10 5, 20 0 0)" ) );
+  QVERIFY( QgsGeometryUtils::has3DPlane( &circularString3D, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 0, 0, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 10, 10, 5 ) );
+  QCOMPARE( pt3, QgsPoint( 20, 0, 0 ) );
+
+  // 3D LineString - No Plane
+  QgsLineString Line3DNoPlane;
+  Line3DNoPlane.fromWkt( QStringLiteral( "LINESTRING Z (0 0 0, 1 1 1, 2 2 2)" ) );
+  QVERIFY( !Line3DNoPlane.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::has3DPlane( &Line3DNoPlane, pt1, pt2, pt3 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

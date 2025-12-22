@@ -363,6 +363,18 @@ double QgsPolyhedralSurface::area() const
   return area;
 }
 
+double QgsPolyhedralSurface::area3D() const
+{
+  // sum area 3D of patches
+  double area = 0.0;
+  for ( const QgsPolygon *patch : mPatches )
+  {
+    area += patch->area3D();
+  }
+
+  return area;
+}
+
 double QgsPolyhedralSurface::perimeter() const
 {
   // sum perimeter of patches
