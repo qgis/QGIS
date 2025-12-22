@@ -2260,9 +2260,13 @@ class CORE_EXPORT QgsGeometry
      * to coerce geometries to the desired \a type. It also correctly maintains curves and z/m values
      * wherever appropriate.
      *
+     * \note If an error occurs during conversion (e.g., attempting to convert a polygon with
+     * non-triangular vertices to a Triangle or TIN geometry), an empty vector will be returned and the
+     * error message can be retrieved by calling lastError() on the returned geometry.
+     *
      * \since QGIS 3.14
      */
-    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true, QString *errorMessage SIP_OUT = nullptr ) const;
+    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true ) const;
 
     /**
      * Try to convert the geometry to the requested type

@@ -2329,7 +2329,7 @@ Exports the geometry to a GeoJSON string.
 %End
 
 
-    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true, QString *errorMessage /Out/ = 0 ) const;
+    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true ) const;
 %Docstring
 Attempts to coerce this geometry into the specified destination
 ``type``.
@@ -2364,6 +2364,12 @@ geometries to points. By default duplicated nodes are ignored.
    of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
    to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
    wherever appropriate.
+
+.. note::
+
+   If an error occurs during conversion (e.g., attempting to convert a polygon with
+   non-triangular vertices to a Triangle or TIN geometry), an empty vector will be returned and the
+   error message can be retrieved by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 .. versionadded:: 3.14
 %End

@@ -1139,15 +1139,10 @@ void TestQgsTriangulatedSurface::testCoerceToTypeErrorMessage()
   polygon.setExteriorRing( exteriorRing );
   QgsGeometry geom( polygon.clone() );
 
-  QString errorMessage;
-  QVector<QgsGeometry> result = geom.coerceToType( Qgis::WkbType::TIN, 0, 0, true, &errorMessage );
+  QVector<QgsGeometry> result = geom.coerceToType( Qgis::WkbType::TIN, 0, 0, true );
 
   // Should fail with empty result
   QVERIFY( result.isEmpty() );
-  // Should have an error message
-  QVERIFY( !errorMessage.isEmpty() );
-  QVERIFY( errorMessage.contains( "triangle" ) );
-  QVERIFY( errorMessage.contains( "3 vertices" ) );
 
   // Test with a valid triangle (3 vertices = 4 points including closing)
   QgsPolygon trianglePolygon;
@@ -1156,13 +1151,10 @@ void TestQgsTriangulatedSurface::testCoerceToTypeErrorMessage()
   trianglePolygon.setExteriorRing( triangleRing );
   QgsGeometry triangleGeom( trianglePolygon.clone() );
 
-  QString noError;
-  result = triangleGeom.coerceToType( Qgis::WkbType::TIN, 0, 0, true, &noError );
+  result = triangleGeom.coerceToType( Qgis::WkbType::TIN, 0, 0, true );
 
   // Should succeed
   QVERIFY( !result.isEmpty() );
-  // No error message
-  QVERIFY( noError.isEmpty() );
 }
 
 void TestQgsTriangulatedSurface::testGeometryEditUtilsAddPart()
