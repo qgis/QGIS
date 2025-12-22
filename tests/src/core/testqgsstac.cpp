@@ -136,7 +136,6 @@ void TestQgsStac::testParseLocalCollection()
   QCOMPARE( col->providers().size(), 1 );
   QCOMPARE( col->stacExtensions().size(), 3 );
   QCOMPARE( col->license(), QLatin1String( "CC-BY-4.0" ) );
-  QVERIFY( col->assets().isEmpty() );
 
   // extent
   QgsStacExtent ext( col->extent() );
@@ -154,6 +153,14 @@ void TestQgsStac::testParseLocalCollection()
   QVariantMap sum( col->summaries() );
   QCOMPARE( sum.size(), 9 );
   QCOMPARE( sum.value( QStringLiteral( "platform" ) ).toStringList(), QStringList() << QLatin1String( "cool_sat1" ) << QLatin1String( "cool_sat2" ) );
+
+  QCOMPARE( col->assets().size(), 1 );
+
+  QgsStacAsset asset = col->assets().value( QStringLiteral( "geoparquet-file" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QCOMPARE( asset.formatName(), QStringLiteral( "Parquet" ) );
+  QCOMPARE( asset.uri().layerType, QStringLiteral( "vector" ) );
+  QVERIFY( asset.isDownloadable() );
+  QVERIFY( asset.isCloudOptimized() );
 }
 
 void TestQgsStac::testParseLocalItem()

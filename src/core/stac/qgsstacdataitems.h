@@ -47,6 +47,7 @@ class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
     QVariant sortKey() const override { return QStringLiteral( "4 %1" ).arg( mName ); }
     void updateToolTip();
     const QgsStacAsset *stacAsset() const { return mStacAsset; }
+    QgsStacController *stacController() const;
 
   private:
     const QgsStacAsset *mStacAsset;
