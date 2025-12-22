@@ -60,18 +60,8 @@ jobs:
         with:
           python-version: '3.11'
 
- #     - name: 🍭 Setup XCode
-   #     uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
- #       with:
-         #       xcode-version: latest-stable
-      - name: Install Metal Toolchain
-        run: |
-          # Source - https://stackoverflow.com/a
-          # Posted by PuerGozi
-          # Retrieved 2025-12-22, License - CC BY-SA 4.0
-          sudo xcodebuild -downloadComponent metalToolchain -exportPath /tmp/MyMetalExport/
-          sudo sed -i '' -e 's/17A5241c/17A5241e/g' /tmp/MyMetalExport/MetalToolchain-17A5241c.exportedBundle/ExportMetadata.plist
-          sudo xcodebuild -importComponent metalToolchain -importPath /tmp/MyMetalExport/MetalToolchain-17A5241c.exportedBundle
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: 🛍️ Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
