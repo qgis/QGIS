@@ -63,7 +63,7 @@ jobs:
       - name: 🍭 Setup XCode
         uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
-          xcode-version: latest-stable
+          xcode-version: 15
 
       - name: 🛍️ Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -83,8 +83,6 @@ jobs:
           X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
-          # TODO: This is a test and includes a hardcoded path (to metal for qtwebengine build)... fixme
-          export PATH=$PATH:/Applications/Xcode_26.0.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
 
           # Install first only with binarycaching, then deduplicate binaries and replace copies with symlinks.
           # Nuget doesn't understand the symlink concept
