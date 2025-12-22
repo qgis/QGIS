@@ -7,49 +7,64 @@
     <x>0</x>
     <y>0</y>
     <width>503</width>
-    <height>370</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Interface Customization</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <widget class="QCheckBox" name="mCustomizationEnabledCheckBox">
-      <property name="text">
-       <string>Enable customization</string>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QCheckBox" name="mCustomizationEnabledCheckBox">
+        <property name="text">
+         <string>Enable customization</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
     <item>
-     <widget class="QgsFilterLineEdit" name="mLeFilter">
-      <property name="placeholderText">
-       <string>Search…</string>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QTreeWidget" name="treeWidget">
-      <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectItems</enum>
-      </property>
-      <property name="columnCount">
-       <number>2</number>
-      </property>
-      <attribute name="headerVisible">
-       <bool>true</bool>
-      </attribute>
-      <column>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string notr="true">2</string>
-       </property>
-      </column>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QgsFilterLineEdit" name="mFilterLe">
+          <property name="placeholderText">
+           <string>Search…</string>
+          </property>
+          <property name="showSearchIcon">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeView" name="mTreeView">
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectItems</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item>
@@ -157,6 +172,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

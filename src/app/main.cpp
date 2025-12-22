@@ -584,7 +584,7 @@ int main( int argc, char *argv[] )
 #endif
 
   bool myRestoreDefaultWindowState = false;
-  bool myCustomization = true;
+  bool hasCustomization = true;
 
   QString dxfOutputFile;
   Qgis::FeatureSymbologyExport dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
@@ -685,7 +685,7 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
         {
-          myCustomization = false;
+          hasCustomization = false;
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--profile" ) ) )
         {
@@ -940,13 +940,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
   QGuiApplication::setHighDpiScaleFactorRoundingPolicy( Qt::HighDpiScaleFactorRoundingPolicy::PassThrough );
 #endif
-
-  // GUI customization is enabled according to settings (loaded when instance is created)
-  // we force disabled here if --nocustomization argument is used
-  if ( !myCustomization )
-  {
-    QgsCustomization::instance()->setEnabled( false );
-  }
 
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
@@ -1331,26 +1324,6 @@ int main( int argc, char *argv[] )
   QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
 
-  // TODO: use QgsSettings
-  QSettings *customizationsettings = nullptr;
-
-  if ( !customizationfile.isEmpty() )
-  {
-    // Using the customizationfile option always overrides the option and config path options.
-    QgsCustomization::instance()->setEnabled( true );
-  }
-  else
-  {
-    // Use the default file location
-    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION3.ini" );
-  }
-
-  customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
-
-  // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
-  QgsCustomization::instance()->setSettings( customizationsettings );
-  QgsCustomization::instance()->loadDefault();
-
 #ifdef Q_OS_MACOS
   if ( !getenv( "GDAL_DRIVER_PATH" ) )
   {
@@ -1498,8 +1471,21 @@ int main( int argc, char *argv[] )
     QgsApplication::setAuthDatabaseDirPath( authdbdirectory );
   }
 
+  if ( customizationfile.isEmpty() )
+  {
+    // Use the default file location
+    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION.xml" );
+  }
+
+  auto customization = std::make_unique<QgsCustomization>( profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION.xml" ) );
+  if ( !hasCustomization )
+  {
+    customization->setEnabled( false );
+  }
+
+
   //set up splash screen
-  QString splashPath( QgsCustomization::instance()->splashPath() );
+  QString splashPath( customization->splashPath() );
   QPixmap pixmap( splashPath + QStringLiteral( "splash.png" ) );
 
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
@@ -1573,11 +1559,7 @@ int main( int argc, char *argv[] )
 
   QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
-
-  QgsApplication::connect(
-    &myApp, &QgsApplication::preNotify,
-    QgsCustomization::instance(), &QgsCustomization::preNotify
-  );
+  qgis->setCustomization( std::move( customization ) );
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
