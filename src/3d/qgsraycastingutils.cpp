@@ -18,6 +18,7 @@
 #include "qgsaabb.h"
 #include "qgslogger.h"
 #include "qgsray3d.h"
+#include "qgsraycastcontext.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 
@@ -124,7 +125,22 @@ namespace QgsRayCastingUtils
     return true;
   }
 
-  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer, const QgsRay3D &r, float maxDist, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex )
+  double rayTriangleMinAngle( const QgsRay3D &ray, const QList<QVector3D> &pointList, QVector3D &minPoint )
+  {
+    double minAngle = 999999;
+    for ( const QVector3D point : pointList )
+    {
+      double angle = ray.angleToPoint( point );
+      if ( angle < minAngle )
+      {
+        minAngle = angle;
+        minPoint = point;
+      }
+    }
+    return minAngle;
+  }
+
+  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer, const QgsRay3D &r, const QgsRayCastContext &context, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex )
   {
     if ( geometryRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles )
     {
@@ -211,7 +227,7 @@ namespace QgsRayCastingUtils
       vertexCount = positionAttr->count();
     }
 
-    QVector3D intersectionPt, minIntersectionPt;
+    QVector3D intersectionPt, minIntersectionPt, minAnglePt;
     float minDistance = -1;
 
     for ( int i = 0; i < vertexCount; i += 3 )
@@ -265,18 +281,28 @@ namespace QgsRayCastingUtils
       // We're testing both triangle orientations here and ignoring the culling mode.
       // We should probably respect the culling mode used for the entity and perform a
       // single test using the properly oriented triangle.
-      if ( QgsRayCastingUtils::rayTriangleIntersection( r, maxDist, tA, tB, tC, uvw, t ) || QgsRayCastingUtils::rayTriangleIntersection( r, maxDist, tA, tC, tB, uvw, t ) )
+      if ( QgsRayCastingUtils::rayTriangleIntersection( r, context.maximumDistance(), tA, tB, tC, uvw, t ) || QgsRayCastingUtils::rayTriangleIntersection( r, context.maximumDistance(), tA, tC, tB, uvw, t ) )
       {
-        intersectionPt = r.point( t * maxDist );
-        const float distance = r.projectedDistance( intersectionPt );
+        intersectionPt = r.point( t * context.maximumDistance() );
+      }
+      else if ( ( minDistance == -1 ) && QgsRayCastingUtils::rayTriangleMinAngle( r, { tA, tB, tC }, minAnglePt ) < context.angleThreshold() )
+      {
+        // Do not use angle Threshold if an intersection point has already been found
+        intersectionPt = minAnglePt;
+      }
+      else
+      {
+        continue;
+      }
 
-        // we only want the first intersection of the ray with the mesh (closest to the ray origin)
-        if ( minDistance == -1 || distance < minDistance )
-        {
-          triangleIndex = static_cast<int>( i / 3 );
-          minDistance = distance;
-          minIntersectionPt = intersectionPt;
-        }
+      const float distance = r.projectedDistance( intersectionPt );
+
+      // we only want the first intersection of the ray with the mesh (closest to the ray origin)
+      if ( minDistance == -1 || distance < minDistance )
+      {
+        triangleIndex = static_cast<int>( i / 3 );
+        minDistance = distance;
+        minIntersectionPt = intersectionPt;
       }
     }
 

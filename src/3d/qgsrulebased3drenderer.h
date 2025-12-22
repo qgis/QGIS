@@ -251,21 +251,21 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * register individual features
          * \note not available in Python bindings
          */
-        RegisterResult registerFeature( QgsFeature &feature, Qgs3DRenderContext &context, RuleToHandlerMap &handlers ) const SIP_SKIP;
+        RegisterResult registerFeature( const QgsFeature &feature, Qgs3DRenderContext &context, RuleToHandlerMap &handlers ) const SIP_SKIP;
+
+        /**
+         * Check if a given feature shall be labelled by this rule
+         *
+         * \param feature   The feature to test
+         * \param context   The context in which the rendering happens
+         * \returns         TRUE if the feature shall be rendered
+         */
+        bool isFilterOK( const QgsFeature &feature, Qgs3DRenderContext &context ) const SIP_SKIP;
 
       private:
 #ifdef SIP_RUN
         Rule( const QgsRuleBased3DRenderer::Rule &rh );
 #endif
-
-        /**
-         * Check if a given feature shall be labelled by this rule
-         *
-         * \param f         The feature to test
-         * \param context   The context in which the rendering happens
-         * \returns          TRUE if the feature shall be rendered
-         */
-        bool isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const;
 
         /**
          * Initialize filters. Automatically called by setFilterExpression.
@@ -305,6 +305,8 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
     QString type() const override { return "rulebased"; }
     QgsRuleBased3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
+
+    std::unique_ptr<QgsAbstractVectorLayer3DHighlightFactory> createHighlightFactory( Qgs3DMapSettings *mapSettings ) const override SIP_SKIP;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;

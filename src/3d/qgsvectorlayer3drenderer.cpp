@@ -19,6 +19,7 @@
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayer3dhighlightfactory_p.h"
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsxmlutils.h"
 
@@ -101,4 +102,16 @@ void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
   mSymbol.reset( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
   if ( mSymbol )
     mSymbol->readXml( elemSymbol, context );
+}
+
+std::unique_ptr<QgsAbstractVectorLayer3DHighlightFactory> QgsVectorLayer3DRenderer::createHighlightFactory( Qgs3DMapSettings *mapSettings ) const
+{
+  QgsVectorLayer *vectorLayer = layer();
+
+  if ( !vectorLayer )
+  {
+    return nullptr;
+  }
+
+  return std::make_unique<QgsVectorLayer3DHighlightFactory>( mapSettings, vectorLayer, mSymbol.get() );
 }

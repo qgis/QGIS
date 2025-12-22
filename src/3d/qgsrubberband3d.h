@@ -31,11 +31,12 @@
 
 #include "qgis_3d.h"
 #include "qgsgeometry.h"
+#include "qgsmarkersymbol.h"
 #include "qgspolygon.h"
 #include "qgstessellator.h"
-#include "qobjectuniqueptr.h"
 
 #include <QColor>
+#include <Qt3DCore/QEntity>
 
 class QgsGeometry;
 class QgsAbstract3DEngine;
@@ -46,13 +47,11 @@ class QgsTessellatedPolygonGeometry;
 class QgsLineMaterial;
 class Qgs3DMapSettings;
 class QgsBillboardGeometry;
-class QgsMarkerSymbol;
 class QgsPoint3DBillboardMaterial;
 class QgsGeoTransform;
 
 namespace Qt3DCore
 {
-  class QEntity;
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   class QBuffer;
   class QGeometry;
@@ -81,10 +80,15 @@ namespace Qt3DRender
  * \note Currently only supports multi point, linestring and polygon geometry.
  * \since QGIS 3.20
  */
-class _3D_EXPORT QgsRubberBand3D
+class _3D_EXPORT QgsRubberBand3D : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
-    //! Icons
+    /**
+     * \brief Icons enum
+     * \deprecated QGIS 4.0. Use Qgis::MarkerShape instead.
+     */
     enum MarkerType
     {
 
@@ -100,7 +104,6 @@ class _3D_EXPORT QgsRubberBand3D
     };
 
     QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
-    ~QgsRubberBand3D();
 
     //! Returns the rubber band width in pixels
     float width() const;
@@ -128,13 +131,29 @@ class _3D_EXPORT QgsRubberBand3D
 
     /**
      * Sets the \a marker type to highlight point geometries and line vertices.
+     * \deprecated QGIS 4.0. Use setMarkerShape(Qgis::MarkerShape) instead.
      */
-    void setMarkerType( MarkerType marker );
+    Q_DECL_DEPRECATED void setMarkerType( MarkerType marker );
+
+    /**
+     * Sets the \a marker type to highlight point geometries and line vertices.
+     *
+     * \since QGIS 4.0
+     */
+    void setMarkerShape( Qgis::MarkerShape marker );
 
     /**
      * Returns the current marker type to highlight point geometries and line vertices.
+     * \deprecated QGIS 4.0. Use markerShape().
      */
-    MarkerType markerType() const;
+    Q_DECL_DEPRECATED MarkerType markerType() const;
+
+    /**
+     * Returns the current marker type to highlight point geometries and line vertices.
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::MarkerShape markerShape() const;
 
     /**
      * Sets the marker outline style
@@ -213,9 +232,9 @@ class _3D_EXPORT QgsRubberBand3D
   private:
     void updateGeometry();
     void updateMarkerMaterial();
-    void setupMarker( Qt3DCore::QEntity *parentEntity );
-    void setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine );
-    void setupPolygon( Qt3DCore::QEntity *parentEntity );
+    void setupMarker();
+    void setupLine( QgsAbstract3DEngine *engine );
+    void setupPolygon();
     //! negative index counts from end
     void removePoint( int index );
 
@@ -229,7 +248,7 @@ class _3D_EXPORT QgsRubberBand3D
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Line;
 
     //! point and vertex marker type
-    MarkerType mMarkerType = Circle;
+    Qgis::MarkerShape mMarkerType = Qgis::MarkerShape::Circle;
     float mWidth = 3.f;
     QColor mColor = Qt::red;
     QColor mOutlineColor;
@@ -239,9 +258,9 @@ class _3D_EXPORT QgsRubberBand3D
     bool mEdgesEnabled = true;
     bool mPolygonFillEnabled = true;
 
-    QObjectUniquePtr<Qt3DCore::QEntity> mLineEntity = nullptr;    // owned by parentEntity (from constructor)
-    QObjectUniquePtr<Qt3DCore::QEntity> mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
-    QObjectUniquePtr<Qt3DCore::QEntity> mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mLineEntity = nullptr;
+    Qt3DCore::QEntity *mPolygonEntity = nullptr;
+    Qt3DCore::QEntity *mMarkerEntity = nullptr;
 
     QgsGeoTransform *mLineTransform = nullptr;
     QgsGeoTransform *mPolygonTransform = nullptr;

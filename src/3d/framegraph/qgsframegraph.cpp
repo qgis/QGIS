@@ -158,6 +158,12 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
   // sub passes:
   constructSubPostPassForProcessing()->setParent( mRenderCaptureTargetSelector );
   constructDebugTexturePass( mRenderCaptureTargetSelector );
+
+  constructHighlightsPass()->setParent( mRenderCaptureTargetSelector );
+
+  // rubber bands (they should be always on top)
+  constructRubberBandsPass()->setParent( mRenderCaptureTargetSelector );
+
   constructSubPostPassForRenderCapture()->setParent( mRenderCaptureTargetSelector );
 
   return mRenderCaptureTargetSelector;
@@ -171,10 +177,40 @@ void QgsFrameGraph::constructAmbientOcclusionRenderPass()
   registerRenderView( std::unique_ptr<QgsAmbientOcclusionRenderView>( aorv ), AMBIENT_OCCLUSION_RENDERVIEW );
 }
 
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructHighlightsPass()
+{
+  Qt3DRender::QCameraSelector *highlightsCameraSelector = new Qt3DRender::QCameraSelector;
+  highlightsCameraSelector->setObjectName( "highlightsPass" );
+  highlightsCameraSelector->setCamera( mMainCamera );
+
+  Qt3DRender::QLayerFilter *highlightsLayerFilter = new Qt3DRender::QLayerFilter( highlightsCameraSelector );
+  highlightsLayerFilter->addLayer( mHighlightsLayer );
+
+  Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
+  blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
+  blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
+
+  Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
+  blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
+
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
+
+  Qt3DRender::QRenderStateSet *highlightsStateSet = new Qt3DRender::QRenderStateSet( highlightsLayerFilter );
+  highlightsStateSet->addRenderState( depthTest );
+  highlightsStateSet->addRenderState( blendState );
+  highlightsStateSet->addRenderState( blendEquation );
+
+  Qt3DRender::QClearBuffers *clear = new Qt3DRender::QClearBuffers( highlightsStateSet );
+  clear->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
+
+  return highlightsCameraSelector;
+}
+
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
 {
   mRubberBandsCameraSelector = new Qt3DRender::QCameraSelector;
-  mRubberBandsCameraSelector->setObjectName( "RubberBands Pass CameraSelector" );
+  mRubberBandsCameraSelector->setObjectName( "rubberBandsPass" );
   mRubberBandsCameraSelector->setCamera( mMainCamera );
 
   mRubberBandsLayerFilter = new Qt3DRender::QLayerFilter( mRubberBandsCameraSelector );
@@ -193,12 +229,6 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
   mRubberBandsStateSet->addRenderState( depthTest );
   mRubberBandsStateSet->addRenderState( blendState );
   mRubberBandsStateSet->addRenderState( blendEquation );
-
-  // Here we attach our drawings to the render target also used by forward pass.
-  // This is kind of okay, but as a result, post-processing effects get applied
-  // to rubber bands too. Ideally we would want them on top of everything.
-  mRubberBandsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mRubberBandsStateSet );
-  mRubberBandsRenderTargetSelector->setTarget( forwardRenderView().renderTargetSelector()->target() );
 
   return mRubberBandsCameraSelector;
 }
@@ -252,6 +282,10 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mRootEntity = root;
   mMainCamera = mainCamera;
 
+  mHighlightsLayer = new Qt3DRender::QLayer;
+  mHighlightsLayer->setObjectName( "mHighlightsLayer" );
+  mHighlightsLayer->setRecursive( true );
+
   mRubberBandsLayer = new Qt3DRender::QLayer;
   mRubberBandsLayer->setObjectName( "mRubberBandsLayer" );
   mRubberBandsLayer->setRecursive( true );
@@ -270,11 +304,6 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   // Forward render
   constructForwardRenderPass();
 
-  // rubber bands (they should be always on top)
-  Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
-  rubberBandsPass->setObjectName( "rubberBandsPass" );
-  rubberBandsPass->setParent( mMainViewPort );
-
   // shadow rendering pass
   constructShadowRenderPass();
 
@@ -288,6 +317,10 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mMainViewPort );
   postprocessingPass->setObjectName( "PostProcessingPass" );
+
+  mHighlightsRootEntity = new Qt3DCore::QEntity( mRootEntity );
+  mHighlightsRootEntity->setObjectName( "mHighlightsRootEntity" );
+  mHighlightsRootEntity->addComponent( mHighlightsLayer );
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
   mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );

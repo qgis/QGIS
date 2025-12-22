@@ -44,3 +44,8 @@ void QgsRayCastHit::setProperties( const QVariantMap &attributes )
 {
   mAttributes = attributes;
 }
+
+void QgsRayCastHit::addProperty( const QString &key, const QVariant &value )
+{
+  mAttributes[key] = value;
+}

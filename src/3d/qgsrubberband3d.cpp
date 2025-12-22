@@ -24,6 +24,7 @@
 #include "qgslinestring.h"
 #include "qgslinevertexdata_p.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsmessagelog.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspolygon.h"
@@ -33,7 +34,7 @@
 #include "qgstessellator.h"
 #include "qgsvertexid.h"
 
-#include <Qt3DCore/QEntity>
+#include "moc_qgsrubberband3d.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
@@ -53,41 +54,44 @@
 
 
 QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qt3DCore::QEntity *parentEntity, const Qgis::GeometryType geometryType )
-  : mMapSettings( &map )
+  : Qt3DCore::QEntity()
+  , mMapSettings( &map )
   , mEngine( engine )
   , mGeometryType( geometryType )
 {
   switch ( mGeometryType )
   {
     case Qgis::GeometryType::Point:
-      setupMarker( parentEntity );
+      setupMarker();
       break;
     case Qgis::GeometryType::Line:
-      setupLine( parentEntity, engine );
-      setupMarker( parentEntity );
+      setupLine( engine );
+      setupMarker();
       break;
     case Qgis::GeometryType::Polygon:
-      setupMarker( parentEntity );
-      setupLine( parentEntity, engine );
-      setupPolygon( parentEntity );
+      setupMarker();
+      setupLine( engine );
+      setupPolygon();
       break;
     case Qgis::GeometryType::Null:
     case Qgis::GeometryType::Unknown:
       QgsDebugError( "Unknown GeometryType used in QgsRubberband3D" );
       break;
   }
+
+  setParent( parentEntity );
 }
 
-void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
+void QgsRubberBand3D::setupMarker()
 {
-  mMarkerEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mMarkerEntity = new Qt3DCore::QEntity( this );
   mMarkerGeometry = new QgsBillboardGeometry();
   mMarkerGeometryRenderer = new Qt3DRender::QGeometryRenderer;
   mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
   mMarkerGeometryRenderer->setGeometry( mMarkerGeometry );
   mMarkerGeometryRenderer->setVertexCount( mMarkerGeometry->count() );
 
-  setMarkerType( mMarkerType );
+  setMarkerShape( mMarkerType );
   mMarkerEntity->addComponent( mMarkerGeometryRenderer );
 
   mMarkerTransform = new QgsGeoTransform;
@@ -95,9 +99,9 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
   mMarkerEntity->addComponent( mMarkerTransform );
 }
 
-void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine )
+void QgsRubberBand3D::setupLine( QgsAbstract3DEngine *engine )
 {
-  mLineEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mLineEntity = new Qt3DCore::QEntity( this );
 
   QgsLineVertexData dummyLineData;
   mLineGeometry = dummyLineData.createGeometry( mLineEntity );
@@ -130,9 +134,9 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DE
   mLineEntity->addComponent( mLineTransform );
 }
 
-void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
+void QgsRubberBand3D::setupPolygon()
 {
-  mPolygonEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mPolygonEntity = new Qt3DCore::QEntity( this );
 
   mPolygonGeometry = new QgsTessellatedPolygonGeometry();
 
@@ -178,23 +182,6 @@ void QgsRubberBand3D::removePoint( int index )
 
   updateGeometry();
 }
-
-QgsRubberBand3D::~QgsRubberBand3D()
-{
-  if ( mPolygonEntity )
-  {
-    mPolygonEntity.reset();
-  }
-  if ( mLineEntity )
-  {
-    mLineEntity.reset();
-  }
-  if ( mMarkerEntity )
-  {
-    mMarkerEntity.reset();
-  }
-}
-
 
 float QgsRubberBand3D::width() const
 {
@@ -282,6 +269,14 @@ void QgsRubberBand3D::setOutlineColor( const QColor color )
 
 void QgsRubberBand3D::setMarkerType( const MarkerType marker )
 {
+  if ( marker == QgsRubberBand3D::Square )
+    setMarkerShape( Qgis::MarkerShape::Square );
+  else
+    setMarkerShape( Qgis::MarkerShape::Circle );
+}
+
+void QgsRubberBand3D::setMarkerShape( const Qgis::MarkerShape marker )
+{
   mMarkerType = marker;
 
   const bool lineOrPolygon = mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon;
@@ -293,22 +288,30 @@ void QgsRubberBand3D::setMarkerType( const MarkerType marker )
     { QStringLiteral( "outline_color" ), mOutlineColor.value() ? mOutlineColor.name() : mColor.name() },
     { QStringLiteral( "outline_style" ), QgsSymbolLayerUtils::encodePenStyle( mMarkerOutlineStyle ) },
     { QStringLiteral( "outline_width" ), QString::number( lineOrPolygon ? 0.5 : 1 ) },
-    { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
+    { QStringLiteral( "name" ), QgsSimpleMarkerSymbolLayerBase::encodeShape( mMarkerType ) }
   };
 
   mMarkerSymbol = QgsMarkerSymbol::createSimple( props );
   updateMarkerMaterial();
 }
 
-QgsRubberBand3D::MarkerType QgsRubberBand3D::markerType() const
+Qgis::MarkerShape QgsRubberBand3D::markerShape() const
 {
   return mMarkerType;
+}
+
+QgsRubberBand3D::MarkerType QgsRubberBand3D::markerType() const
+{
+  if ( mMarkerType == Qgis::MarkerShape::Square )
+    return QgsRubberBand3D::Square;
+
+  return QgsRubberBand3D::Circle;
 }
 
 void QgsRubberBand3D::setMarkerOutlineStyle( const Qt::PenStyle style )
 {
   mMarkerOutlineStyle = style;
-  setMarkerType( markerType() );
+  setMarkerShape( markerShape() );
 }
 
 Qt::PenStyle QgsRubberBand3D::markerOutlineStyle() const
