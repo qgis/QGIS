@@ -65,7 +65,7 @@ jobs:
  #       with:
          #       xcode-version: latest-stable
       - name: Install Metal Toolchain
-        run:
+        run: |
           # Source - https://stackoverflow.com/a
           # Posted by PuerGozi
           # Retrieved 2025-12-22, License - CC BY-SA 4.0
