@@ -698,6 +698,13 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void ensureModelIsInitialized() const;
 
+    /**
+     * Determines whether the legend requires filtering because of renderer settings (UpdatedCanvas on raster or mesh layers).
+     *
+     * \since QGIS 4.0
+     */
+    bool requiresFilteringBecauseOfRendererSetting();
+
     QgsLegendRenderer createRenderer() const;
 
     std::unique_ptr< QgsLegendModel > mLegendModel;
