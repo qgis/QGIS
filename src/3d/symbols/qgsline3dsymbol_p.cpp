@@ -68,7 +68,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
-    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+    QList<Qt3DCore::QEntity *> finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
     //! temporary data we will pass to the tessellator
@@ -81,7 +81,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
 
     void processPolygon( QgsPolygon *polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &lineData );
 
-    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &lineData, bool selected );
+    Qt3DCore::QEntity *makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &lineData, bool selected );
 
     // input specific for this class
     std::unique_ptr<QgsLine3DSymbol> mSymbol;
@@ -204,21 +204,34 @@ void QgsBufferedLine3DSymbolHandler::processPolygon( QgsPolygon *polyBuffered, Q
   delete polyBuffered;
 }
 
-void QgsBufferedLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+QList<Qt3DCore::QEntity *> QgsBufferedLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
+  QList<Qt3DCore::QEntity *> createdEntities;
+
   // create entity for selected and not selected
-  makeEntity( parent, context, mLineDataNormal, false );
-  makeEntity( parent, context, mLineDataSelected, true );
+  Qt3DCore::QEntity *normalEntity = makeEntity( parent, context, mLineDataNormal, false );
+  if ( normalEntity )
+  {
+    createdEntities.append( normalEntity );
+  }
+
+  Qt3DCore::QEntity *selectedEntity = makeEntity( parent, context, mLineDataSelected, true );
+  if ( selectedEntity )
+  {
+    createdEntities.append( selectedEntity );
+  }
 
   mZMin = std::min( mLineDataNormal.tessellator->zMinimum(), mLineDataSelected.tessellator->zMinimum() );
   mZMax = std::max( mLineDataNormal.tessellator->zMaximum(), mLineDataSelected.tessellator->zMaximum() );
+
+  return createdEntities;
 }
 
 
-void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &lineData, bool selected )
+Qt3DCore::QEntity *QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &lineData, bool selected )
 {
   if ( lineData.tessellator->dataVerticesCount() == 0 )
-    return; // nothing to show - no need to create the entity
+    return nullptr; // nothing to show - no need to create the entity
 
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
@@ -253,6 +266,7 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
 
   // cppcheck wrongly believes entity will leak
   // cppcheck-suppress memleak
+  return entity;
 }
 
 
@@ -270,10 +284,10 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
-    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+    QList<Qt3DCore::QEntity *> finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
-    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsLineVertexData &lineVertexData, bool selected );
+    Qt3DCore::QEntity *makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsLineVertexData &lineVertexData, bool selected );
     Qt3DExtras::QPhongMaterial *material( const QgsLine3DSymbol &symbol ) const;
     void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData );
 
@@ -355,21 +369,33 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &feature, con
   mFeatureCount++;
 }
 
-void QgsThickLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+QList<Qt3DCore::QEntity *> QgsThickLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
+  QList<Qt3DCore::QEntity *> createdEntities;
   // create entity for selected and not selected
-  makeEntity( parent, context, mLineDataNormal, false );
-  makeEntity( parent, context, mLineDataSelected, true );
+  Qt3DCore::QEntity *normalEntity = makeEntity( parent, context, mLineDataNormal, false );
+  if ( normalEntity )
+  {
+    createdEntities.append( normalEntity );
+  }
+
+  Qt3DCore::QEntity *selectedEntity = makeEntity( parent, context, mLineDataSelected, true );
+  if ( selectedEntity )
+  {
+    createdEntities.append( selectedEntity );
+  }
 
   updateZRangeFromPositions( mLineDataNormal.vertices );
   updateZRangeFromPositions( mLineDataSelected.vertices );
+
+  return createdEntities;
 }
 
 
-void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsLineVertexData &lineVertexData, bool selected )
+Qt3DCore::QEntity *QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsLineVertexData &lineVertexData, bool selected )
 {
   if ( lineVertexData.indexes.isEmpty() )
-    return;
+    return nullptr;
 
   // material (only ambient color is used for the color)
   QgsMaterialContext materialContext;
@@ -410,6 +436,8 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   entity->addComponent( material );
   entity->addComponent( transform );
   entity->setParent( parent );
+
+  return entity;
 }
 
 void QgsThickLine3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData )

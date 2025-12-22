@@ -7,6 +7,7 @@ set(QGIS_3D_SRCS
   qgs3daxissettings.cpp
   qgsaabb.cpp
   qgsabstract3dengine.cpp
+  qgsabstractvectorlayer3dhighlightfactory_p.cpp
   qgsabstractvectorlayer3drenderer.cpp
   qgsannotationlayer3drenderer.cpp
   qgsannotationlayerchunkloader_p.cpp
@@ -35,12 +36,14 @@ set(QGIS_3D_SRCS
   qgsraycastcontext.cpp
   qgsraycasthit.cpp
   qgsraycastresult.cpp
+  qgsrulebased3dhighlightfactory_p.cpp
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
   qgstiledscenechunkloader_p.cpp
   qgstiledscenelayer3drenderer.cpp
   qgstilingscheme.cpp
+  qgsvectorlayer3dhighlightfactory_p.cpp
   qgsvectorlayer3drenderer.cpp
   qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
@@ -256,7 +259,10 @@ set(QGIS_3D_HDRS
 )
 
 set(QGIS_3D_PRIVATE_HDRS
+  qgsabstractvectorlayer3dhighlightfactory_p.h
+  qgsrulebased3dhighlightfactory_p.h
   qgsrulebasedchunkloader_p.h
+  qgsvectorlayer3dhighlightfactory_p.h
   qgsvectorlayerchunkloader_p.h
   qgspointcloudlayerchunkloader_p.h
   qgsvirtualpointcloudentity_p.h

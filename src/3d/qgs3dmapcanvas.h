@@ -18,9 +18,12 @@
 
 #include "qgis.h"
 #include "qgis_3d.h"
+#include "qgsfeature.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
+#include "qobjectuniqueptr.h"
 
+#include <Qt3DCore/QEntity>
 #include <QtGui/QWindow>
 
 #ifndef SIP_RUN
@@ -28,7 +31,6 @@ namespace Qt3DCore
 {
   class QAspectEngine;
   class QAbstractAspect;
-  class QEntity;
 } // namespace Qt3DCore
 
 namespace Qt3DRender
@@ -64,7 +66,6 @@ class QgsCameraController;
 class QgsTemporalController;
 class Qgs3DMapScene;
 class Qgs3DMapSettings;
-class QgsFeature;
 class QgsMapLayer;
 class QgsRubberBand3D;
 class QgsRayCastContext;
@@ -248,7 +249,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void captureDepthBuffer();
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
     void onNavigationModeChanged( Qgis::NavigationMode mode );
-    void updateHighlightSizes();
 
   protected:
     /**
@@ -262,6 +262,10 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void resizeEvent( QResizeEvent * ) override;
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
+
+  private:
+    void updateHighlightParameters( const QgsFeature &feature );
+    void createVectorHighlight( QgsMapLayer *layer, const QgsFeature &feature );
 
   private:
     Qt3DCore::QAspectEngine *m_aspectEngine;
@@ -299,8 +303,8 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     QgsTemporalController *mTemporalController = nullptr;
 
-    //! This holds and owns the rubber bands for highlighting identified features
-    QMap<QgsMapLayer *, QgsRubberBand3D *> mHighlights;
+    //! This holds and owns the entities for highlighting identified features
+    std::map<QgsMapLayer *, QObjectUniquePtr<Qt3DCore::QEntity>> mHighlights;
 };
 
 #endif //QGS3DMAPCANVAS_H

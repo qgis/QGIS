@@ -52,7 +52,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &f, const Qgs3DRenderContext &context ) override;
-    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+    QList<Qt3DCore::QEntity *> finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
     //! temporary data we will pass to the tessellator
@@ -66,7 +66,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 
     void processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float offset, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, PolygonData &out );
-    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
+    Qt3DCore::QEntity *makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
     QgsMaterial *material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
 
     // input specific for this class
@@ -242,11 +242,21 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   mFeatureCount++;
 }
 
-void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+QList<Qt3DCore::QEntity *> QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
+  QList<Qt3DCore::QEntity *> createdEntities;
   // create entity for selected and not selected
-  makeEntity( parent, context, outNormal, false );
-  makeEntity( parent, context, outSelected, true );
+  Qt3DCore::QEntity *normalEntity = makeEntity( parent, context, outNormal, false );
+  if ( normalEntity )
+  {
+    createdEntities.append( normalEntity );
+  }
+
+  Qt3DCore::QEntity *selectedEntity = makeEntity( parent, context, outSelected, true );
+  if ( selectedEntity )
+  {
+    createdEntities.append( selectedEntity );
+  }
 
   mZMin = std::min( outNormal.tessellator->zMinimum(), outSelected.tessellator->zMinimum() );
   mZMax = std::max( outNormal.tessellator->zMaximum(), outSelected.tessellator->zMaximum() );
@@ -278,14 +288,18 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
     entity->addComponent( mat );
     entity->addComponent( tr );
     entity->setParent( parent );
+
+    createdEntities.append( entity );
   }
+
+  return createdEntities;
 }
 
 
-void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &polyData, bool selected )
+Qt3DCore::QEntity *QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &polyData, bool selected )
 {
   if ( polyData.tessellator->dataVerticesCount() == 0 )
-    return; // nothing to show - no need to create the entity
+    return nullptr; // nothing to show - no need to create the entity
 
   QgsMaterial *mat = material( mSymbol.get(), selected, context );
 
@@ -320,8 +334,7 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   if ( !selected )
     renderer->setProperty( Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG, Qgs3DTypes::Main3DRenderer ); // temporary measure to distinguish between "selected" and "main"
 
-  // cppcheck wrongly believes entity will leak
-  // cppcheck-suppress memleak
+  return entity;
 }
 
 // front/back side culling

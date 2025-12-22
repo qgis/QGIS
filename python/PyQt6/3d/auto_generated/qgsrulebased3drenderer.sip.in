@@ -239,6 +239,7 @@ store labeling info to XML element
 
 
 
+
       private:
         Rule( const QgsRuleBased3DRenderer::Rule &rh );
     };
@@ -257,6 +258,7 @@ Returns pointer to the root rule
 
     virtual QString type() const;
     virtual QgsRuleBased3DRenderer *clone() const /Factory/;
+
 
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

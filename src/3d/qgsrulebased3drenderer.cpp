@@ -22,6 +22,7 @@
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsfeature3dhandler_p.h"
+#include "qgsrulebased3dhighlightfactory_p.h"
 #include "qgsrulebasedchunkloader_p.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -288,7 +289,7 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   }
 }
 
-QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature( QgsFeature &feature, Qgs3DRenderContext &context, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature( const QgsFeature &feature, Qgs3DRenderContext &context, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
 {
   if ( !isFilterOK( feature, context ) )
     return Filtered;
@@ -337,12 +338,12 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
 }
 
 
-bool QgsRuleBased3DRenderer::Rule::isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const
+bool QgsRuleBased3DRenderer::Rule::isFilterOK( const QgsFeature &feature, Qgs3DRenderContext &context ) const
 {
   if ( !mFilter || mElseRule )
     return true;
 
-  context.expressionContext().setFeature( f );
+  context.expressionContext().setFeature( feature );
   QVariant res = mFilter->evaluate( &context.expressionContext() );
   return res.toInt() != 0;
 }
@@ -413,4 +414,16 @@ void QgsRuleBased3DRenderer::readXml( const QDomElement &elem, const QgsReadWrit
   readXmlBaseProperties( elem, context );
 
   // root rule is read before class constructed
+}
+
+std::unique_ptr<QgsAbstractVectorLayer3DHighlightFactory> QgsRuleBased3DRenderer::createHighlightFactory( Qgs3DMapSettings *mapSettings ) const
+{
+  QgsVectorLayer *vectorLayer = layer();
+
+  if ( !vectorLayer )
+  {
+    return nullptr;
+  }
+
+  return std::make_unique<QgsRuleBased3DHighlightFactory>( mapSettings, vectorLayer, mRootRule );
 }
