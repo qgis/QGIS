@@ -572,7 +572,6 @@ void QgsGraphicsViewMouseHandles::startMove( QPointF sceneCoordPos )
   //save current item geometry
   mBeginMouseEventPos = sceneCoordPos;
   mBeginHandlePos = scenePos();
-  qDebug() << "startMove --- " << mBeginHandlePos;
   mBeginHandleWidth = rect().width();
   mBeginHandleHeight = rect().height();
   mCurrentMouseMoveAction = Qgis::MouseHandlesAction::MoveItem;
@@ -628,7 +627,6 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
   //save current item geometry
   mBeginMouseEventPos = event->lastScenePos();
   mBeginHandlePos = scenePos();
-  qDebug() << "mousePressEvent --- " << mBeginHandlePos;
   mBeginHandleWidth = rect().width();
   mBeginHandleHeight = rect().height();
   //type of mouse move action
@@ -695,7 +693,6 @@ void QgsGraphicsViewMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent *even
 {
   if ( isDragging() )
   {
-    qDebug() << "mouseMoveEvent -> isDragging()";
     //currently dragging a selection
     //if shift depressed, constrain movement to horizontal/vertical
     //if control depressed, ignore snapping
@@ -760,9 +757,6 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
     QPointF mEndHandleMovePos = scenePos();
 
-    qDebug() << "---";
-    qDebug() << mBeginHandlePos;
-    qDebug() << mEndHandleMovePos;
     double deltaX = mEndHandleMovePos.x() - mBeginHandlePos.x();
     double deltaY = mEndHandleMovePos.y() - mBeginHandlePos.y();
 
@@ -967,7 +961,6 @@ void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition, bool
 
 void QgsGraphicsViewMouseHandles::dragMouseMove( QPointF currentPosition, bool lockMovement, bool preventSnap )
 {
-  qDebug() << "dragMouseMove";
   if ( !scene() )
   {
     return;
@@ -976,7 +969,6 @@ void QgsGraphicsViewMouseHandles::dragMouseMove( QPointF currentPosition, bool l
   //calculate total amount of mouse movement since drag began
   double moveX = currentPosition.x() - mBeginMouseEventPos.x();
   double moveY = currentPosition.y() - mBeginMouseEventPos.y();
-  qDebug() << "in!" << moveX << moveY;
 
   //find target position before snapping (in scene coordinates)
   QPointF upperLeftPoint( mBeginHandlePos.x() + moveX, mBeginHandlePos.y() + moveY );
