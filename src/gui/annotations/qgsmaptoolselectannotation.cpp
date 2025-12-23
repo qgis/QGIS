@@ -83,120 +83,11 @@ void QgsAnnotationItemRubberBand::updateBoundingBox( const QgsRectangle &boundin
   setSelected( true );
 }
 
-void QgsAnnotationItemRubberBand::attemptMoveBy( double deltaX, double deltaY )
+void QgsAnnotationItemRubberBand::setNeedsUpdatedBoundingBox( bool needsUpdatedBoundingBox )
 {
-  if ( QgsAnnotationItem *annotationItem = item() )
-  {
-    const double mupp = mMapCanvas->mapSettings().mapUnitsPerPixel();
-    QgsVector translation( deltaX * mupp, -deltaY * mupp );
-    QgsAnnotationLayer *annotationLayer = layer();
-
-    QgsAnnotationItemEditContext context;
-    context.setCurrentItemBounds( mBoundingBox );
-    context.setRenderContext( QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() ) );
-
-    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
-    for ( const QgsAnnotationItemNode &node : itemNodes )
-    {
-      QgsPointXY mapPoint = mMapCanvas->mapSettings().layerToMapCoordinates( annotationLayer, node.point() );
-      mapPoint += translation;
-      QgsPointXY modifiedPoint = mMapCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, mapPoint );
-
-      QgsAnnotationItemEditOperationMoveNode operation( mItemId, node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
-      switch ( annotationLayer->applyEditV2( &operation, context ) )
-      {
-        case Qgis::AnnotationItemEditOperationResult::Success:
-          QgsProject::instance()->setDirty( true );
-          mNeedsUpdatedBoundingBox = true;
-          break;
-
-        case Qgis::AnnotationItemEditOperationResult::Invalid:
-        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
-          break;
-      }
-    }
-    mBoundingBox += translation;
-  }
+  mNeedsUpdatedBoundingBox = needsUpdatedBoundingBox;
 }
 
-void QgsAnnotationItemRubberBand::attemptRotateBy( double deltaDegree )
-{
-  if ( QgsAnnotationItem *annotationItem = item() )
-  {
-    QgsAnnotationLayer *annotationLayer = layer();
-
-    const double deltaRadian = -deltaDegree * M_PI / 180;
-    const QgsRectangle boundingBox = mMapCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, mBoundingBox );
-    const QgsPointXY centroid = boundingBox.center();
-
-    QgsAnnotationItemEditContext context;
-    context.setCurrentItemBounds( boundingBox );
-    context.setRenderContext( QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() ) );
-
-    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
-    for ( const QgsAnnotationItemNode &node : itemNodes )
-    {
-      const double translatedX = node.point().x() - centroid.x();
-      const double translatedY = node.point().y() - centroid.y();
-      const double rotatedX = translatedX * std::cos( deltaRadian ) - translatedY * std::sin( deltaRadian );
-      const double rotatedY = translatedX * std::sin( deltaRadian ) + translatedY * std::cos( deltaRadian );
-      QgsPointXY modifiedPoint( rotatedX + centroid.x(), rotatedY + centroid.y() );
-      QgsAnnotationItemEditOperationMoveNode operation( mItemId, node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
-      switch ( annotationLayer->applyEditV2( &operation, context ) )
-      {
-        case Qgis::AnnotationItemEditOperationResult::Success:
-          QgsProject::instance()->setDirty( true );
-          mNeedsUpdatedBoundingBox = true;
-          break;
-
-        case Qgis::AnnotationItemEditOperationResult::Invalid:
-        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
-          break;
-      }
-    }
-  }
-}
-
-void QgsAnnotationItemRubberBand::attemptSetSceneRect( const QRectF &rect )
-{
-  const double widthRatio = rect.width() / boundingRect().width();
-  const double heightRatio = rect.height() / boundingRect().height();
-  const double deltaX = rect.x() - x() + 1;
-  const double deltaY = rect.y() - y() + 1;
-  attemptMoveBy( deltaX, deltaY );
-
-  if ( QgsAnnotationItem *annotationItem = item() )
-  {
-    QgsAnnotationLayer *annotationLayer = layer();
-
-    const QgsRectangle boundingBox = mMapCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, mBoundingBox );
-    const QgsRectangle modifiedBoundingBox( boundingBox.xMinimum(), boundingBox.yMaximum() - boundingBox.height() * heightRatio, boundingBox.xMinimum() + boundingBox.width() * widthRatio, boundingBox.yMaximum() );
-
-    QgsAnnotationItemEditContext context;
-    context.setCurrentItemBounds( boundingBox );
-    context.setRenderContext( QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() ) );
-
-    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
-    for ( const QgsAnnotationItemNode &node : itemNodes )
-    {
-      const double modifiedX = modifiedBoundingBox.xMinimum() + modifiedBoundingBox.width() * ( ( node.point().x() - boundingBox.xMinimum() ) / boundingBox.width() );
-      const double modifiedY = modifiedBoundingBox.yMaximum() - modifiedBoundingBox.height() * ( ( boundingBox.yMaximum() - node.point().y() ) / boundingBox.height() );
-      QgsPointXY modifiedPoint( modifiedX, modifiedY );
-      QgsAnnotationItemEditOperationMoveNode operation( mItemId, node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
-      switch ( annotationLayer->applyEditV2( &operation, context ) )
-      {
-        case Qgis::AnnotationItemEditOperationResult::Success:
-          QgsProject::instance()->setDirty( true );
-          mNeedsUpdatedBoundingBox = true;
-          break;
-
-        case Qgis::AnnotationItemEditOperationResult::Invalid:
-        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
-          break;
-      }
-    }
-  }
-}
 
 QgsMapToolSelectAnnotation::QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsAnnotationMapTool( canvas, cadDockWidget )
@@ -408,7 +299,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
         QString pastedItemId = annotationLayer->addItem( annotationItem->clone() );
 
         mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( copiedItem.first, pastedItemId, mCanvas ) );
-        mSelectedItems.back()->attemptMoveBy( deltaX, deltaY );
+        attemptMoveBy( mSelectedItems.back().get(), deltaX, deltaY );
       }
     }
     emit selectedItemsChanged();
@@ -456,7 +347,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
 
     for ( auto &selectedItem : mSelectedItems )
     {
-      selectedItem->attemptMoveBy( deltaX, deltaY );
+      attemptMoveBy( selectedItem.get(), deltaX, deltaY );
     }
     event->ignore();
   }
@@ -648,5 +539,120 @@ void QgsMapToolSelectAnnotation::clearSelectedItems()
   if ( hadSelection )
   {
     emit selectedItemsChanged();
+  }
+}
+
+void QgsMapToolSelectAnnotation::attemptMoveBy( QgsAnnotationItemRubberBand *annotationItemRubberBand, double deltaX, double deltaY )
+{
+  if ( QgsAnnotationItem *annotationItem = annotationItemRubberBand->item() )
+  {
+    QgsRectangle boundingBox = annotationItemRubberBand->boundingBox();
+    const double mupp = mCanvas->mapSettings().mapUnitsPerPixel();
+    QgsVector translation( deltaX * mupp, -deltaY * mupp );
+    QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
+
+    QgsAnnotationItemEditContext context;
+    context.setCurrentItemBounds( boundingBox );
+    context.setRenderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+
+    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
+    for ( const QgsAnnotationItemNode &node : itemNodes )
+    {
+      QgsPointXY mapPoint = mCanvas->mapSettings().layerToMapCoordinates( annotationLayer, node.point() );
+      mapPoint += translation;
+      QgsPointXY modifiedPoint = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, mapPoint );
+
+      QgsAnnotationItemEditOperationMoveNode operation( annotationItemRubberBand->itemId(), node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
+      switch ( annotationLayer->applyEditV2( &operation, context ) )
+      {
+        case Qgis::AnnotationItemEditOperationResult::Success:
+          QgsProject::instance()->setDirty( true );
+          annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
+          break;
+
+        case Qgis::AnnotationItemEditOperationResult::Invalid:
+        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+          break;
+      }
+    }
+    boundingBox += translation;
+    annotationItemRubberBand->updateBoundingBox( boundingBox );
+  }
+}
+
+void QgsMapToolSelectAnnotation::attemptRotateBy( QgsAnnotationItemRubberBand *annotationItemRubberBand, double deltaDegree )
+{
+  if ( QgsAnnotationItem *annotationItem = annotationItemRubberBand->item() )
+  {
+    QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
+    const QgsRectangle boundingBox = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, annotationItemRubberBand->boundingBox() );
+    const QgsPointXY centroid = boundingBox.center();
+
+    QgsAnnotationItemEditContext context;
+    context.setCurrentItemBounds( boundingBox );
+    context.setRenderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+
+    const double deltaRadian = -deltaDegree * M_PI / 180;
+    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
+    for ( const QgsAnnotationItemNode &node : itemNodes )
+    {
+      const double translatedX = node.point().x() - centroid.x();
+      const double translatedY = node.point().y() - centroid.y();
+      const double rotatedX = translatedX * std::cos( deltaRadian ) - translatedY * std::sin( deltaRadian );
+      const double rotatedY = translatedX * std::sin( deltaRadian ) + translatedY * std::cos( deltaRadian );
+      QgsPointXY modifiedPoint( rotatedX + centroid.x(), rotatedY + centroid.y() );
+      QgsAnnotationItemEditOperationMoveNode operation( annotationItemRubberBand->itemId(), node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
+      switch ( annotationLayer->applyEditV2( &operation, context ) )
+      {
+        case Qgis::AnnotationItemEditOperationResult::Success:
+          QgsProject::instance()->setDirty( true );
+          annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
+          break;
+
+        case Qgis::AnnotationItemEditOperationResult::Invalid:
+        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+          break;
+      }
+    }
+  }
+}
+
+void QgsMapToolSelectAnnotation::attemptSetSceneRect( QgsAnnotationItemRubberBand *annotationItemRubberBand, const QRectF &rect )
+{
+  if ( QgsAnnotationItem *annotationItem = annotationItemRubberBand->item() )
+  {
+    const double widthRatio = rect.width() / annotationItemRubberBand->boundingRect().width();
+    const double heightRatio = rect.height() / annotationItemRubberBand->boundingRect().height();
+    const double deltaX = rect.x() - annotationItemRubberBand->x() + 1;
+    const double deltaY = rect.y() - annotationItemRubberBand->y() + 1;
+    attemptMoveBy( annotationItemRubberBand, deltaX, deltaY );
+
+    QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
+    const QgsRectangle boundingBox = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, annotationItemRubberBand->boundingBox() );
+    const QgsRectangle modifiedBoundingBox( boundingBox.xMinimum(), boundingBox.yMaximum() - boundingBox.height() * heightRatio, boundingBox.xMinimum() + boundingBox.width() * widthRatio, boundingBox.yMaximum() );
+
+    QgsAnnotationItemEditContext context;
+    context.setCurrentItemBounds( boundingBox );
+    context.setRenderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+
+    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
+    for ( const QgsAnnotationItemNode &node : itemNodes )
+    {
+      const double modifiedX = modifiedBoundingBox.xMinimum() + modifiedBoundingBox.width() * ( ( node.point().x() - boundingBox.xMinimum() ) / boundingBox.width() );
+      const double modifiedY = modifiedBoundingBox.yMaximum() - modifiedBoundingBox.height() * ( ( boundingBox.yMaximum() - node.point().y() ) / boundingBox.height() );
+      QgsPointXY modifiedPoint( modifiedX, modifiedY );
+      QgsAnnotationItemEditOperationMoveNode operation( annotationItemRubberBand->itemId(), node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
+      switch ( annotationLayer->applyEditV2( &operation, context ) )
+      {
+        case Qgis::AnnotationItemEditOperationResult::Success:
+          QgsProject::instance()->setDirty( true );
+          annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
+          break;
+
+        case Qgis::AnnotationItemEditOperationResult::Invalid:
+        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+          break;
+      }
+    }
   }
 }

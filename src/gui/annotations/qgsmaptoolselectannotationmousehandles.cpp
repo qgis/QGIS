@@ -20,6 +20,10 @@
 #include <limits>
 
 #include "qgis.h"
+#include "qgsannotationitem.h"
+#include "qgsannotationitemeditoperation.h"
+#include "qgsannotationitemnode.h"
+#include "qgsannotationlayer.h"
 #include "qgsgui.h"
 #include "qgsmaptoolselectannotation.h"
 
@@ -96,19 +100,21 @@ QRectF QgsMapToolSelectAnnotationMouseHandles::itemRect( QGraphicsItem *item ) c
 
 void QgsMapToolSelectAnnotationMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double deltaY )
 {
-  qgis::down_cast<QgsAnnotationItemRubberBand *>( item )->attemptMoveBy( deltaX, deltaY );
+  QgsAnnotationItemRubberBand *annotationRubberBandItem = qgis::down_cast<QgsAnnotationItemRubberBand *>( item );
+  mMapTool->attemptMoveBy( annotationRubberBandItem, deltaX, deltaY );
 }
 
 void QgsMapToolSelectAnnotationMouseHandles::rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY )
 {
-  QgsAnnotationItemRubberBand *annotationItem = qgis::down_cast<QgsAnnotationItemRubberBand *>( item );
-  annotationItem->attemptMoveBy( deltaCenterX, deltaCenterY );
-  annotationItem->attemptRotateBy( deltaDegree );
+  QgsAnnotationItemRubberBand *annotationRubberBandItem = qgis::down_cast<QgsAnnotationItemRubberBand *>( item );
+  mMapTool->attemptMoveBy( annotationRubberBandItem, deltaCenterX, deltaCenterY );
+  mMapTool->attemptRotateBy( annotationRubberBandItem, deltaDegree );
 }
 
 void QgsMapToolSelectAnnotationMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
-  qgis::down_cast<QgsAnnotationItemRubberBand *>( item )->attemptSetSceneRect( rect );
+  QgsAnnotationItemRubberBand *annotationRubberBandItem = qgis::down_cast<QgsAnnotationItemRubberBand *>( item );
+  mMapTool->attemptSetSceneRect( annotationRubberBandItem, rect );
 }
 
 ///@endcond PRIVATE
