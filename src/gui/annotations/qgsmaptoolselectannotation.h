@@ -75,6 +75,11 @@ class GUI_EXPORT QgsAnnotationItemRubberBand : public QgsRubberBand
     QgsAnnotationItem *item() const;
 
     /**
+     * Returns the item bounding box.
+     */
+    QgsRectangle boundingBox() const { return mBoundingBox; }
+
+    /**
      * Update the rubberband using the provided annotation item bounding box.
      */
     void updateBoundingBox( const QgsRectangle &boundingBox );
@@ -85,23 +90,9 @@ class GUI_EXPORT QgsAnnotationItemRubberBand : public QgsRubberBand
     bool needsUpdatedBoundingBox() const { return mNeedsUpdatedBoundingBox; }
 
     /**
-     * Attempts to move the annotation item.
-     * \param deltaX the X-axis movement in pixel value
-     * \param deltaY the Y-axis movement in pixel value
+     * Sets whether the bounding box requires  updating on fresh annotation item rendering.
      */
-    void attemptMoveBy( double deltaX, double deltaY );
-
-    /**
-     * Attempts to rotate the annotation item.
-     * \param deltaDegree the rotation value in degree
-     */
-    void attemptRotateBy( double deltaDegree );
-
-    /**
-     * Attempts to move and resize the annotation item.
-     * \param rect the rectangular area (in scene units) within which the annotation item will fit in
-     */
-    void attemptSetSceneRect( const QRectF &rect );
+    void setNeedsUpdatedBoundingBox( bool needsUpdatedBoundingBox );
 
   private:
     QString mLayerId;
@@ -139,6 +130,28 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsAnnotationMapTool
      * Returns the current list of selected annotation item rubberband items.
      */
     QList<QgsAnnotationItemRubberBand *> selectedItems() const;
+
+    /**
+     * Attempts to move an annotation item.
+     * \param annotationItemRubberBand the annotation item rubber band
+     * \param deltaX the X-axis movement in pixel value
+     * \param deltaY the Y-axis movement in pixel value
+     */
+    void attemptMoveBy( QgsAnnotationItemRubberBand *annotationItemRubberBand, double deltaX, double deltaY );
+
+    /**
+     * Attempts to rotate am annotation item.
+     * \param annotationItemRubberBand the annotation item rubber band
+     * \param deltaDegree the rotation value in degree
+     */
+    void attemptRotateBy( QgsAnnotationItemRubberBand *annotationItemRubberBand, double deltaDegree );
+
+    /**
+     * Attempts to move and resize an annotation item.
+     * \param annotationItemRubberBand the annotation item rubber band
+     * \param rect the rectangular area (in scene units) within which the annotation item will fit in
+     */
+    void attemptSetSceneRect( QgsAnnotationItemRubberBand *annotationItemRubberBand, const QRectF &rect );
 
   signals:
 
