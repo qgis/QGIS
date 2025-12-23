@@ -110,6 +110,13 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
       SaveAsFile,    //!< Save model as a file
       SaveInProject, //!< Save model into project
     };
+  signals:
+    /**
+     * Emitted when the model dirty is set to True.
+     *
+     * \since QGIS 4.0
+     */
+    void dirtySet();
 
   public slots:
 
@@ -206,6 +213,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
+
+    QPointer<QgsProcessingAlgorithmDialogBase> mAlgorithmDialog;
 
     QActionGroup *mToolsActionGroup = nullptr;
 
