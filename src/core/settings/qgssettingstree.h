@@ -68,6 +68,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeWindowState = sTreeGui->createChildNode( QStringLiteral( "window-state" ) );
     static inline QgsSettingsTreeNode *sTreeAuthentication = treeRoot()->createChildNode( QStringLiteral( "authentication" ) );
     static inline QgsSettingsTreeNode *sTreeDatabase = treeRoot()->createChildNode( QStringLiteral( "database" ) );
+    static inline QgsSettingsTreeNode *sTree3DMap = treeRoot()->createChildNode( QStringLiteral( "3dmap" ) );
 
 #endif
 

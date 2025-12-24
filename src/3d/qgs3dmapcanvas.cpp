@@ -230,6 +230,23 @@ void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const Qgs
   emit crossSectionEnabledChanged( true );
 }
 
+void Qgs3DMapCanvas::nudgeCameraXY( double dx, double dy )
+{
+  if ( !mScene )
+    return;
+
+  QgsCameraController *controller = mScene->cameraController();
+
+  QgsCameraPose cameraPose = controller->cameraPose();
+  QgsVector3D cameraCenter = cameraPose.centerPoint();
+
+  cameraCenter.setX( cameraCenter.x() + dx );
+  cameraCenter.setY( cameraCenter.y() + dy );
+  cameraPose.setCenterPoint( cameraCenter );
+
+  controller->setCameraPose( cameraPose );
+}
+
 void Qgs3DMapCanvas::disableCrossSection()
 {
   if ( !mScene )
