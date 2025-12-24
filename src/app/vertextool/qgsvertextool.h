@@ -411,7 +411,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     QList<NurbsBand> mDragNurbsBands;
 
     //! rubber band for displaying NURBS control polygon in edit mode
-    QgsRubberBand *mNurbsControlPolygonBand = nullptr;
+    std::unique_ptr<QgsRubberBand> mNurbsControlPolygonBand;
 
     //! rubber bands for displaying Poly-Bézier tangent lines (anchor to handle)
     QList<QgsRubberBand *> mBezierTangentBands;

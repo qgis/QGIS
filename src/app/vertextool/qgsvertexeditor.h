@@ -83,13 +83,13 @@ class APP_EXPORT QgsVertexEditorModel : public QAbstractTableModel
 
     bool mHasZ = false;
     bool mHasM = false;
-    bool mHasR = true;  //always show for now - avoids scanning whole feature for curves TODO - avoid this
-    bool mHasW = false; // true if geometry contains NURBS curves
+    bool mHasR = true;       //always show for now - avoids scanning whole feature for curves TODO - avoid this
+    bool mHasWeight = false; // true if geometry contains NURBS curves
 
     int mZCol = -1;
     int mMCol = -1;
     int mRCol = -1;
-    int mWCol = -1; // weight column for NURBS control points
+    int mWeightCol = -1; // weight column for NURBS control points
 
     QFont mWidgetFont;
 

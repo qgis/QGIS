@@ -387,8 +387,8 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mEndpointMarker->setVisible( false );
 
   // Control polygon for NURBS curves
-  mNurbsControlPolygonBand = new QgsRubberBand( canvas, Qgis::GeometryType::Line );
-  applyControlPolygonStyle( mNurbsControlPolygonBand );
+  mNurbsControlPolygonBand = std::make_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Line );
+  applyControlPolygonStyle( mNurbsControlPolygonBand.get() );
   mNurbsControlPolygonBand->setVisible( false );
 }
 
@@ -400,7 +400,6 @@ QgsVertexTool::~QgsVertexTool()
   delete mVertexBand;
   delete mEdgeBand;
   delete mEndpointMarker;
-  delete mNurbsControlPolygonBand;
   clearBezierVisuals();
 }
 
@@ -1529,7 +1528,7 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
         mapCtrlPts.append( mapPt );
       }
 
-      if ( QgsNurbsUtils::isPolyBezier( nurbs ) )
+      if ( nurbs->isPolyBezier() )
       {
         // Poly-Bézier mode: show anchors (squares) and handles (circles) separately
         // Control points layout: [anchor0, handle_right0, handle_left1, anchor1, handle_right1, handle_left2, anchor2, ...]
@@ -2388,6 +2387,7 @@ QgsPoint QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, cons
     {
       case QgsPointLocator::Vertex:
       case QgsPointLocator::LineEndpoint:
+      case QgsPointLocator::ControlPoint:
       case QgsPointLocator::All:
       {
         //  use point coordinates of the layer

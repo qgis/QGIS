@@ -20,12 +20,9 @@
 
 #include <memory>
 
-#include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
-#include "qgscurvepolygon.h"
 #include "qgsdoublevalidator.h"
-#include "qgsgeometrycollection.h"
 #include "qgsgeometryutils.h"
 #include "qgslockedfeature.h"
 #include "qgsmapcanvas.h"
@@ -72,7 +69,7 @@ void QgsVertexEditorModel::setFeature( QgsLockedFeature *lockedFeature )
   beginResetModel();
 
   mLockedFeature = lockedFeature;
-  mHasW = false;
+  mHasWeight = false;
   mHasR = false; // Will be set to true only if geometry contains circular strings
 
   if ( mLockedFeature && mLockedFeature->layer() )
@@ -86,82 +83,19 @@ void QgsVertexEditorModel::setFeature( QgsLockedFeature *lockedFeature )
 
     mMCol = mHasM ? ( 2 + ( mHasZ ? 1 : 0 ) ) : -1;
 
-    // Check if geometry contains NURBS curves or circular strings
+    // Check if geometry contains NURBS curves (show Weight column)
+    // mHasR is already true by default (for circular strings)
     if ( mLockedFeature->geometry() && mLockedFeature->geometry()->constGet() )
     {
-      const QgsAbstractGeometry *geom = mLockedFeature->geometry()->constGet();
-
-      // Check for circular strings (show R column) - but not for NURBS curves
-      if ( geom->hasCurvedSegments() && !qgsgeometry_cast<const QgsNurbsCurve *>( geom ) )
+      if ( QgsNurbsUtils::containsNurbsCurve( mLockedFeature->geometry()->constGet() ) )
       {
-        mHasR = true;
-      }
-
-      if ( qgsgeometry_cast<const QgsNurbsCurve *>( geom ) )
-      {
-        mHasW = true;
-        mHasR = false; // NURBS don't have radius
-      }
-      else if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom ) )
-      {
-        for ( int i = 0; i < collection->numGeometries(); ++i )
-        {
-          if ( qgsgeometry_cast<const QgsNurbsCurve *>( collection->geometryN( i ) ) )
-          {
-            mHasW = true;
-            break;
-          }
-        }
-      }
-      else if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
-      {
-        if ( qgsgeometry_cast<const QgsNurbsCurve *>( polygon->exteriorRing() ) )
-        {
-          mHasW = true;
-        }
-        else
-        {
-          for ( int i = 0; i < polygon->numInteriorRings(); ++i )
-          {
-            if ( qgsgeometry_cast<const QgsNurbsCurve *>( polygon->interiorRing( i ) ) )
-            {
-              mHasW = true;
-              break;
-            }
-          }
-        }
-        // Check compound curves in polygon rings
-        if ( !mHasW )
-        {
-          if ( const QgsCompoundCurve *cc = qgsgeometry_cast<const QgsCompoundCurve *>( polygon->exteriorRing() ) )
-          {
-            for ( int i = 0; i < cc->nCurves(); ++i )
-            {
-              if ( qgsgeometry_cast<const QgsNurbsCurve *>( cc->curveAt( i ) ) )
-              {
-                mHasW = true;
-                break;
-              }
-            }
-          }
-        }
-      }
-      else if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( geom ) )
-      {
-        for ( int i = 0; i < compound->nCurves(); ++i )
-        {
-          if ( qgsgeometry_cast<const QgsNurbsCurve *>( compound->curveAt( i ) ) )
-          {
-            mHasW = true;
-            break;
-          }
-        }
+        mHasWeight = true;
       }
     }
 
     // Calculate column indices after determining which columns are present
     mRCol = mHasR ? ( 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) ) : -1;
-    mWCol = mHasW ? ( 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 ) ) : -1;
+    mWeightCol = mHasWeight ? ( 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 ) ) : -1;
   }
 
   endResetModel();
@@ -181,7 +115,7 @@ int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
   if ( !mLockedFeature )
     return 0;
   else
-    return 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 ) + ( mHasW ? 1 : 0 );
+    return 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 ) + ( mHasWeight ? 1 : 0 );
 }
 
 QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
@@ -260,7 +194,7 @@ QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
     }
     return QVariant();
   }
-  else if ( index.column() == mWCol )
+  else if ( index.column() == mWeightCol )
   {
     double w = getWeightForVertex( index.row() );
     if ( w > 0 )
@@ -293,7 +227,7 @@ QVariant QgsVertexEditorModel::headerData( int section, Qt::Orientation orientat
         return QVariant( tr( "m" ) );
       else if ( section == mRCol )
         return QVariant( tr( "r" ) );
-      else if ( section == mWCol )
+      else if ( section == mWeightCol )
         return QVariant( tr( "w" ) );
       else
         return QVariant();
@@ -317,7 +251,7 @@ QVariant QgsVertexEditorModel::headerData( int section, Qt::Orientation orientat
         return QVariant( tr( "M Value" ) );
       else if ( section == mRCol )
         return QVariant( tr( "Radius Value" ) );
-      else if ( section == mWCol )
+      else if ( section == mWeightCol )
         return QVariant( tr( "NURBS Weight" ) );
       else
         return QVariant();
@@ -344,7 +278,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   const double doubleValue { QgsDoubleValidator::toDouble( value.toString() ) };
 
   // Handle weight column separately
-  if ( index.column() == mWCol )
+  if ( index.column() == mWeightCol )
   {
     if ( setWeightForVertex( index.row(), doubleValue ) )
     {
