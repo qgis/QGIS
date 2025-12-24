@@ -20,9 +20,9 @@
 #include <memory>
 
 #include "qgis_gui.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptooledit.h"
 
-class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnapToGridCanvasItem;
 class QgsSnapIndicator;

@@ -22,7 +22,6 @@
 #include "qgsannotationitemnode.h"
 #include "qgsannotationlayer.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgsrendereditemdetails.h"
@@ -115,7 +114,7 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
 
 
 QgsMapToolModifyAnnotation::QgsMapToolModifyAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  : QgsAnnotationMapTool( canvas, cadDockWidget )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
   connect( QgsMapToolModifyAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolModifyAnnotation::onCanvasRefreshed );
@@ -712,45 +711,6 @@ QSizeF QgsMapToolModifyAnnotation::deltaForKeyEvent( QgsAnnotationLayer *layer, 
   const QgsPointXY afterMoveLayerPoint = toLayerCoordinates( layer, afterMoveMapPoint );
 
   return QSizeF( afterMoveLayerPoint.x() - beforeMoveLayerPoint.x(), afterMoveLayerPoint.y() - beforeMoveLayerPoint.y() );
-}
-
-const QgsRenderedAnnotationItemDetails *QgsMapToolModifyAnnotation::findClosestItemToPoint( const QgsPointXY &mapPoint, const QList<const QgsRenderedAnnotationItemDetails *> &items, QgsRectangle &bounds )
-{
-  const QgsRenderedAnnotationItemDetails *closestItem = nullptr;
-  double closestItemDistance = std::numeric_limits<double>::max();
-  double closestItemArea = std::numeric_limits<double>::max();
-
-  for ( const QgsRenderedAnnotationItemDetails *item : items )
-  {
-    const QgsAnnotationItem *annotationItem = annotationItemFromId( item->layerId(), item->itemId() );
-    if ( !annotationItem )
-      continue;
-
-    const QgsRectangle itemBounds = item->boundingBox();
-    const double itemDistance = itemBounds.contains( mapPoint ) ? 0 : itemBounds.distance( mapPoint );
-    if ( !closestItem || itemDistance < closestItemDistance || ( itemDistance == closestItemDistance && itemBounds.area() < closestItemArea ) )
-    {
-      closestItem = item;
-      closestItemDistance = itemDistance;
-      closestItemArea = itemBounds.area();
-      bounds = itemBounds;
-    }
-  }
-  return closestItem;
-}
-
-QgsAnnotationLayer *QgsMapToolModifyAnnotation::annotationLayerFromId( const QString &layerId )
-{
-  QgsAnnotationLayer *layer = qobject_cast<QgsAnnotationLayer *>( QgsProject::instance()->mapLayer( layerId ) );
-  if ( !layer && layerId == QgsProject::instance()->mainAnnotationLayer()->id() )
-    layer = QgsProject::instance()->mainAnnotationLayer();
-  return layer;
-}
-
-QgsAnnotationItem *QgsMapToolModifyAnnotation::annotationItemFromId( const QString &layerId, const QString &itemId )
-{
-  QgsAnnotationLayer *layer = annotationLayerFromId( layerId );
-  return layer ? layer->item( itemId ) : nullptr;
 }
 
 void QgsMapToolModifyAnnotation::setHoveredItemFromPoint( const QgsPointXY &mapPoint )

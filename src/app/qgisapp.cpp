@@ -102,6 +102,7 @@
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
+#include "qgsmaptoolselectannotation.h"
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
 #include "qgsdockablewidgethelper.h"
@@ -1926,7 +1927,11 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   updateCrsStatusBar();
   endProfile();
 
-  connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::itemSelected, mMapStyleWidget, &QgsLayerStylingWidget::setAnnotationItem );
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::singleItemSelected, mMapStyleWidget, [this]( QgsAnnotationLayer *layer, const QString &itemId ) { mMapStyleWidget->setAnnotationItem( layer, itemId, false ); } );
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::multipleItemsSelected, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString(), true ); } );
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::selectionCleared, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString(), false ); } );
+
+  connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::itemSelected, mMapStyleWidget, [this]( QgsAnnotationLayer *layer, const QString &itemId ) { mMapStyleWidget->setAnnotationItem( layer, itemId, false ); } );
   connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::selectionCleared, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString() ); } );
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
@@ -3193,6 +3198,7 @@ void QgisApp::createActions()
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
   connect( mActionCreateAnnotationLayer, &QAction::triggered, this, &QgisApp::createAnnotationLayer );
+  connect( mActionSelectAnnotation, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ); } );
   connect( mActionModifyAnnotation, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ); } );
   connect( mMainAnnotationLayerProperties, &QAction::triggered, this, [this] {
     showLayerProperties( QgsProject::instance()->mainAnnotationLayer() );
@@ -3329,6 +3335,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
   mMapToolGroup->addAction( mActionReverseLine );
   mMapToolGroup->addAction( mActionTrimExtendFeature );
+  mMapToolGroup->addAction( mActionSelectAnnotation );
   mMapToolGroup->addAction( mActionModifyAnnotation );
 
   //
@@ -4553,6 +4560,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::MoveLabel )->setAction( mActionMoveLabel );
   mMapTools->mapTool( QgsAppMapTools::RotateLabel )->setAction( mActionRotateLabel );
   mMapTools->mapTool( QgsAppMapTools::ChangeLabelProperties )->setAction( mActionChangeLabelProperties );
+  mMapTools->mapTool( QgsAppMapTools::AnnotationSelect )->setAction( mActionSelectAnnotation );
   mMapTools->mapTool( QgsAppMapTools::AnnotationEdit )->setAction( mActionModifyAnnotation );
 
   //ensure that non edit tool is initialized or we will get crashes in some situations
