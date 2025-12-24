@@ -82,6 +82,10 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     ~QgsGdalProvider() override;
 
+    bool hasReportsDuringClose() const override;
+
+    bool closeWithProgress( QgsFeedback *feedback ) override;
+
     /**
      * Gets the data source specification. This may be a path or a protocol
      * connection string
@@ -272,6 +276,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! \brief Whether this raster has overviews / pyramids or not
     bool mHasPyramids = false;
+
+    //! Flag indicating if the dataset is in closing
+    bool mInClosing = false;
 
     /**
      * \brief Gdal data types used to represent data in in QGIS,
