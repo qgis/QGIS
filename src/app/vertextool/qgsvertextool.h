@@ -399,8 +399,11 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
         QVector<double> knots;                //!< Knot vector
         QVector<double> weights;              //!< Weights
 
-        //! update geometry of the rubber bands on the current mouse cursor position (in map units)
+        //! Update geometry of the rubber bands on the current mouse cursor position (in map units)
         void updateRubberBand( const QgsPointXY &mapPoint );
+
+        //! Update geometry of the rubber bands from pre-calculated control points
+        void updateRubberBandFromPoints( const QVector<QgsPoint> &updatedCtrlPts );
     };
 
     //! list of active straight line rubber bands
@@ -426,6 +429,11 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     DraggingVertexType mDraggingVertexType = NotDragging;
     //! whether we are currently dragging an edge
     bool mDraggingEdge = false;
+
+    //! Whether Alt+drag on poly-Bézier anchor is active (symmetric handle extension)
+    bool mAltDragPolyBezierAnchor = false;
+    //! Index of the anchor being Alt+dragged in the NURBS control points (0, 3, 6, ...)
+    int mAltDragAnchorIndex = -1;
 
     /**
      * list of Vertex instances of further vertices that are dragged together with
