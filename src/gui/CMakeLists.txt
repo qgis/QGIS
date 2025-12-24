@@ -363,7 +363,6 @@ set(QGIS_GUI_SRCS
 
   maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooldigitizefeature.cpp
-  maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooleditblanksegments.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp

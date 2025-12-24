@@ -26,21 +26,17 @@
 QgsBezierMarker::QgsBezierMarker( QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
   , mCanvas( canvas )
+  , mCurveRubberBand( std::make_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Line ) )
 {
-  mCurveRubberBand = new QgsRubberBand( canvas, Qgis::GeometryType::Line );
   mCurveRubberBand->setColor( QgsSettingsRegistryCore::settingsDigitizingLineColor->value() );
   mCurveRubberBand->setWidth( QgsSettingsRegistryCore::settingsDigitizingLineWidth->value() );
 }
 
-QgsBezierMarker::~QgsBezierMarker()
-{
-  clear();
-  delete mCurveRubberBand;
-}
+QgsBezierMarker::~QgsBezierMarker() = default;
 
-QgsVertexMarker *QgsBezierMarker::createAnchorMarker()
+std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createAnchorMarker()
 {
-  QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
+  auto marker = std::make_unique<QgsVertexMarker>( mCanvas );
   marker->setIconType( QgsVertexMarker::ICON_BOX );
   marker->setIconSize( 10 );
   const QColor snapColor = QgsSettingsRegistryCore::settingsDigitizingSnapColor->value();
@@ -52,9 +48,9 @@ QgsVertexMarker *QgsBezierMarker::createAnchorMarker()
   return marker;
 }
 
-QgsVertexMarker *QgsBezierMarker::createHandleMarker()
+std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createHandleMarker()
 {
-  QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
+  auto marker = std::make_unique<QgsVertexMarker>( mCanvas );
   marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
   marker->setIconSize( 8 );
   QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
@@ -69,9 +65,9 @@ QgsVertexMarker *QgsBezierMarker::createHandleMarker()
   return marker;
 }
 
-QgsRubberBand *QgsBezierMarker::createHandleLine()
+std::unique_ptr<QgsRubberBand> QgsBezierMarker::createHandleLine()
 {
-  QgsRubberBand *rb = new QgsRubberBand( mCanvas, Qgis::GeometryType::Line );
+  auto rb = std::make_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Line );
   QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
   lineColor.setAlpha( 150 );
   rb->setColor( lineColor );
@@ -107,13 +103,13 @@ void QgsBezierMarker::updateCurve( const QgsBezierData &data )
 
 void QgsBezierMarker::updateAnchorMarkers( const QgsBezierData &data )
 {
-  while ( mAnchorMarkers.count() < data.anchorCount() )
+  while ( static_cast<int>( mAnchorMarkers.size() ) < data.anchorCount() )
   {
-    mAnchorMarkers.append( createAnchorMarker() );
+    mAnchorMarkers.push_back( createAnchorMarker() );
   }
-  while ( mAnchorMarkers.count() > data.anchorCount() )
+  while ( static_cast<int>( mAnchorMarkers.size() ) > data.anchorCount() )
   {
-    delete mAnchorMarkers.takeLast();
+    mAnchorMarkers.pop_back();
   }
 
   const QColor snapColor = QgsSettingsRegistryCore::settingsDigitizingSnapColor->value();
@@ -144,13 +140,13 @@ void QgsBezierMarker::updateAnchorMarkers( const QgsBezierData &data )
 
 void QgsBezierMarker::updateHandleMarkers( const QgsBezierData &data )
 {
-  while ( mHandleMarkers.count() < data.handleCount() )
+  while ( static_cast<int>( mHandleMarkers.size() ) < data.handleCount() )
   {
-    mHandleMarkers.append( createHandleMarker() );
+    mHandleMarkers.push_back( createHandleMarker() );
   }
-  while ( mHandleMarkers.count() > data.handleCount() )
+  while ( static_cast<int>( mHandleMarkers.size() ) > data.handleCount() )
   {
-    delete mHandleMarkers.takeLast();
+    mHandleMarkers.pop_back();
   }
 
   QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
@@ -194,13 +190,13 @@ void QgsBezierMarker::updateHandleMarkers( const QgsBezierData &data )
 
 void QgsBezierMarker::updateHandleLines( const QgsBezierData &data )
 {
-  while ( mHandleLines.count() < data.handleCount() )
+  while ( static_cast<int>( mHandleLines.size() ) < data.handleCount() )
   {
-    mHandleLines.append( createHandleLine() );
+    mHandleLines.push_back( createHandleLine() );
   }
-  while ( mHandleLines.count() > data.handleCount() )
+  while ( static_cast<int>( mHandleLines.size() ) > data.handleCount() )
   {
-    delete mHandleLines.takeLast();
+    mHandleLines.pop_back();
   }
 
   for ( int i = 0; i < data.handleCount(); ++i )
@@ -235,13 +231,13 @@ void QgsBezierMarker::setVisible( bool visible )
 {
   mVisible = visible;
 
-  for ( QgsVertexMarker *marker : std::as_const( mAnchorMarkers ) )
+  for ( const auto &marker : mAnchorMarkers )
     marker->setVisible( visible );
 
-  for ( QgsVertexMarker *marker : std::as_const( mHandleMarkers ) )
+  for ( const auto &marker : mHandleMarkers )
     marker->setVisible( visible && mHandlesVisible );
 
-  for ( QgsRubberBand *rb : std::as_const( mHandleLines ) )
+  for ( const auto &rb : mHandleLines )
     rb->setVisible( visible && mHandlesVisible );
 
   mCurveRubberBand->setVisible( visible );
@@ -251,22 +247,17 @@ void QgsBezierMarker::setHandlesVisible( bool visible )
 {
   mHandlesVisible = visible;
 
-  for ( QgsVertexMarker *marker : std::as_const( mHandleMarkers ) )
+  for ( const auto &marker : mHandleMarkers )
     marker->setVisible( mVisible && visible );
 
-  for ( QgsRubberBand *rb : std::as_const( mHandleLines ) )
+  for ( const auto &rb : mHandleLines )
     rb->setVisible( mVisible && visible );
 }
 
 void QgsBezierMarker::clear()
 {
-  qDeleteAll( mAnchorMarkers );
   mAnchorMarkers.clear();
-
-  qDeleteAll( mHandleMarkers );
   mHandleMarkers.clear();
-
-  qDeleteAll( mHandleLines );
   mHandleLines.clear();
 
   if ( mCurveRubberBand )
@@ -276,12 +267,12 @@ void QgsBezierMarker::clear()
   mHighlightedHandle = -1;
 }
 
-void QgsBezierMarker::highlightAnchor( int idx )
+void QgsBezierMarker::setHighlightedAnchor( int idx )
 {
   mHighlightedAnchor = idx;
 }
 
-void QgsBezierMarker::highlightHandle( int idx )
+void QgsBezierMarker::setHighlightedHandle( int idx )
 {
   mHighlightedHandle = idx;
 }

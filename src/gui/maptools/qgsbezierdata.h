@@ -16,6 +16,8 @@
 #ifndef QGSBEZIERDATA_H
 #define QGSBEZIERDATA_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgspoint.h"
 
@@ -24,6 +26,35 @@ class QgsNurbsCurve;
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
+
+/**
+ * \brief Structure representing an anchor point with its two control handles.
+ *
+ * Each anchor has:
+ *
+ * - anchor: the point where the curve passes through
+ * - leftHandle: controls the incoming tangent (from previous segment)
+ * - rightHandle: controls the outgoing tangent (to next segment)
+ *
+ * \since QGIS 4.0
+ */
+struct GUI_EXPORT QgsAnchorWithHandles
+{
+    QgsPoint anchor;      //!< Anchor point (curve passes through this)
+    QgsPoint leftHandle;  //!< Left handle (controls incoming tangent)
+    QgsPoint rightHandle; //!< Right handle (controls outgoing tangent)
+
+    //! Constructor with anchor at origin, handles retracted
+    QgsAnchorWithHandles() = default;
+
+    //! Constructor with anchor position, handles retracted at anchor
+    explicit QgsAnchorWithHandles( const QgsPoint &pt )
+      : anchor( pt ), leftHandle( pt ), rightHandle( pt ) {}
+
+    //! Constructor with all points specified
+    QgsAnchorWithHandles( const QgsPoint &a, const QgsPoint &left, const QgsPoint &right )
+      : anchor( a ), leftHandle( left ), rightHandle( right ) {}
+};
 
 /**
  * \brief Data structure for managing Poly-Bézier curve during digitizing.
@@ -97,10 +128,10 @@ class GUI_EXPORT QgsBezierData
     void extendHandle( int idx, const QgsPoint &pt );
 
     //! Returns the number of anchor points
-    int anchorCount() const { return mAnchors.count(); }
+    int anchorCount() const { return mData.count(); }
 
     //! Returns the number of handles (always 2 * anchorCount)
-    int handleCount() const { return mHandles.count(); }
+    int handleCount() const { return mData.count() * 2; }
 
     //! Returns the anchor at index \a idx
     QgsPoint anchor( int idx ) const;
@@ -108,11 +139,18 @@ class GUI_EXPORT QgsBezierData
     //! Returns the handle at index \a idx
     QgsPoint handle( int idx ) const;
 
-    //! Returns all anchors
-    const QVector<QgsPoint> &anchors() const { return mAnchors; }
+    //! Returns all anchors (extracted from mData)
+    QVector<QgsPoint> anchors() const;
 
-    //! Returns all handles
-    const QVector<QgsPoint> &handles() const { return mHandles; }
+    //! Returns all handles (extracted from mData, 2 per anchor)
+    QVector<QgsPoint> handles() const;
+
+    /**
+     * Returns the anchor with its handles at index \a idx.
+     * \param idx anchor index (0-based)
+     * \returns QgsAnchorWithHandles structure, or default if index is invalid
+     */
+    const QgsAnchorWithHandles &anchorWithHandles( int idx ) const;
 
     /**
      * Returns the interpolated points of the curve for visualization.
@@ -123,15 +161,15 @@ class GUI_EXPORT QgsBezierData
     /**
      * Converts the Poly-Bézier data to a QgsNurbsCurve.
      * The resulting curve is a piecewise cubic Bézier represented as NURBS.
-     * \returns new QgsNurbsCurve, caller takes ownership. Returns nullptr if less than 2 anchors.
+     * \returns new QgsNurbsCurve. Returns nullptr if less than 2 anchors.
      */
-    QgsNurbsCurve *asNurbsCurve() const;
+    std::unique_ptr<QgsNurbsCurve> asNurbsCurve() const;
 
     //! Clears all data
     void clear();
 
     //! Returns TRUE if there are no anchors
-    bool isEmpty() const { return mAnchors.isEmpty(); }
+    bool isEmpty() const { return mData.isEmpty(); }
 
     /**
      * Finds the closest anchor to the given point within tolerance.
@@ -158,8 +196,8 @@ class GUI_EXPORT QgsBezierData
     int findClosestSegment( const QgsPoint &pt, double tolerance ) const;
 
   private:
-    QVector<QgsPoint> mAnchors; //!< Anchor points (curve passes through these)
-    QVector<QgsPoint> mHandles; //!< Handle points (2 per anchor: left and right)
+    QVector<QgsAnchorWithHandles> mData;              //!< Anchor points with their handles (guarantees consistency)
+    static const QgsAnchorWithHandles sInvalidAnchor; //!< Invalid anchor for out-of-bounds access
 
     /**
      * Evaluates a cubic Bézier segment at parameter t.
