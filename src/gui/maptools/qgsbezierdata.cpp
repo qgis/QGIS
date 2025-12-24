@@ -17,6 +17,7 @@
 
 #include <cmath>
 
+#include "qgsgeometryutils.h"
 #include "qgsnurbscurve.h"
 
 ///@cond PRIVATE
@@ -147,30 +148,6 @@ const QgsAnchorWithHandles &QgsBezierData::anchorWithHandles( int idx ) const
   return mData[idx];
 }
 
-QgsPoint QgsBezierData::evaluateBezier( const QgsPoint &p0, const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, double t )
-{
-  // Cubic Bézier formula: B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
-  const double t1 = 1.0 - t;
-  const double t1_2 = t1 * t1;
-  const double t1_3 = t1_2 * t1;
-  const double t_2 = t * t;
-  const double t_3 = t_2 * t;
-
-  const double x = t1_3 * p0.x() + 3.0 * t1_2 * t * p1.x() + 3.0 * t1 * t_2 * p2.x() + t_3 * p3.x();
-  const double y = t1_3 * p0.y() + 3.0 * t1_2 * t * p1.y() + 3.0 * t1 * t_2 * p2.y() + t_3 * p3.y();
-
-  QgsPoint result( x, y );
-
-  // Handle Z if present
-  if ( p0.is3D() )
-  {
-    const double z = t1_3 * p0.z() + 3.0 * t1_2 * t * p1.z() + 3.0 * t1 * t_2 * p2.z() + t_3 * p3.z();
-    result.addZValue( z );
-  }
-
-  return result;
-}
-
 QgsPointSequence QgsBezierData::interpolate() const
 {
   QgsPointSequence result;
@@ -198,7 +175,7 @@ QgsPointSequence QgsBezierData::interpolate() const
     for ( int j = 1; j <= INTERPOLATION_POINTS; ++j )
     {
       const double t = static_cast<double>( j ) / INTERPOLATION_POINTS;
-      result.append( evaluateBezier( p0, p1, p2, p3, t ) );
+      result.append( QgsGeometryUtils::interpolatePointOnCubicBezier( p0, p1, p2, p3, t ) );
     }
   }
 
@@ -335,7 +312,7 @@ int QgsBezierData::findClosestSegment( const QgsPoint &pt, double tolerance ) co
     for ( int j = 0; j <= INTERPOLATION_POINTS; ++j )
     {
       const double t = static_cast<double>( j ) / INTERPOLATION_POINTS;
-      const QgsPoint curvePoint = evaluateBezier( p0, p1, p2, p3, t );
+      const QgsPoint curvePoint = QgsGeometryUtils::interpolatePointOnCubicBezier( p0, p1, p2, p3, t );
 
       const double dx = curvePoint.x() - pt.x();
       const double dy = curvePoint.y() - pt.y();

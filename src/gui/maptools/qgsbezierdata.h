@@ -198,17 +198,6 @@ class GUI_EXPORT QgsBezierData
   private:
     QVector<QgsAnchorWithHandles> mData;              //!< Anchor points with their handles (guarantees consistency)
     static const QgsAnchorWithHandles sInvalidAnchor; //!< Invalid anchor for out-of-bounds access
-
-    /**
-     * Evaluates a cubic Bézier segment at parameter t.
-     * \param p0 start point (anchor)
-     * \param p1 control point 1 (right handle of start)
-     * \param p2 control point 2 (left handle of end)
-     * \param p3 end point (anchor)
-     * \param t parameter [0, 1]
-     * \returns point on the curve
-     */
-    static QgsPoint evaluateBezier( const QgsPoint &p0, const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, double t );
 };
 
 ///@endcond PRIVATE
