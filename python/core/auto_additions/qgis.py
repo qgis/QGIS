@@ -1420,6 +1420,9 @@ QgsSnappingConfig.LineEndpointFlag = Qgis.SnappingType.LineEndpoint
 QgsSnappingConfig.SnappingTypes.LineEndpointFlag = Qgis.SnappingType.LineEndpoint
 QgsSnappingConfig.LineEndpointFlag.is_monkey_patched = True
 QgsSnappingConfig.LineEndpointFlag.__doc__ = "Start or end points of lines, or first vertex in polygon rings only \n.. versionadded:: 3.20"
+QgsSnappingConfig.ControlPoint = Qgis.SnappingType.ControlPoint
+QgsSnappingConfig.ControlPoint.is_monkey_patched = True
+QgsSnappingConfig.ControlPoint.__doc__ = "On control points (for NURBS curves) \n.. versionadded:: 4.0"
 Qgis.SnappingType.__doc__ = """SnappingTypeFlag defines on what object the snapping is performed
 
 .. versionadded:: 3.26
@@ -1454,6 +1457,10 @@ Qgis.SnappingType.__doc__ = """SnappingTypeFlag defines on what object the snapp
 
 
   Available as ``QgsSnappingConfig.LineEndpointFlag`` in older QGIS releases.
+
+* ``ControlPoint``: On control points (for NURBS curves)
+
+  .. versionadded:: 4.0
 
 
 """
@@ -5678,6 +5685,10 @@ QgsVertexId.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.VertexType.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.CurveVertex.is_monkey_patched = True
 QgsVertexId.CurveVertex.__doc__ = "An intermediate point on a segment defining the curvature of the segment"
+QgsVertexId.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.VertexType.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.ControlPointVertex.is_monkey_patched = True
+QgsVertexId.ControlPointVertex.__doc__ = "A NURBS control point (does not lie on the curve) \n.. versionadded:: 4.0"
 Qgis.VertexType.__doc__ = """Types of vertex.
 
 .. versionadded:: 3.22
@@ -5689,6 +5700,13 @@ Qgis.VertexType.__doc__ = """Types of vertex.
 * ``Curve``: An intermediate point on a segment defining the curvature of the segment
 
   Available as ``QgsVertexId.CurveVertex`` in older QGIS releases.
+
+* ``ControlPoint``: A NURBS control point (does not lie on the curve)
+
+  .. versionadded:: 4.0
+
+
+  Available as ``QgsVertexId.ControlPointVertex`` in older QGIS releases.
 
 
 """

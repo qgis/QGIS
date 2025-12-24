@@ -71,14 +71,12 @@ Qgis::SnappingTypes QgsSnappingConfig::IndividualLayerSettings::typeFlag() const
 
 QgsSnappingConfig::SnappingType QgsSnappingConfig::IndividualLayerSettings::type() const
 {
-
   if ( ( mType & QgsSnappingConfig::SnappingType::Segment ) && ( mType & QgsSnappingConfig::SnappingType::Vertex ) )
     return QgsSnappingConfig::SnappingType::VertexAndSegment;
   else if ( mType & QgsSnappingConfig::SnappingType::Segment )
     return QgsSnappingConfig::SnappingType::Segment;
   else
     return QgsSnappingConfig::SnappingType::Vertex;
-
 }
 
 void QgsSnappingConfig::IndividualLayerSettings::setType( QgsSnappingConfig::SnappingType type )
@@ -144,7 +142,7 @@ void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double maxScal
   mMaximumScale = maxScale;
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
+bool QgsSnappingConfig::IndividualLayerSettings::operator!=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
   return mValid != other.mValid
          || mEnabled != other.mEnabled
@@ -155,7 +153,7 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingC
          || mMaximumScale != other.mMaximumScale;
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
+bool QgsSnappingConfig::IndividualLayerSettings::operator==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
   return mValid == other.mValid
          && mEnabled == other.mEnabled
@@ -294,6 +292,8 @@ QString QgsSnappingConfig::snappingTypeToString( Qgis::SnappingType type )
       return QObject::tr( "Middle of Segments" );
     case Qgis::SnappingType::LineEndpoint:
       return QObject::tr( "Line Endpoints" );
+    case Qgis::SnappingType::ControlPoint:
+      return QObject::tr( "Control Points" );
   }
   return QString();
 }
@@ -316,6 +316,8 @@ QIcon QgsSnappingConfig::snappingTypeToIcon( Qgis::SnappingType type )
       return QgsApplication::getThemeIcon( u"/mIconSnappingMiddle.svg"_s );
     case Qgis::SnappingType::LineEndpoint:
       return QgsApplication::getThemeIcon( u"/mIconSnappingEndpoint.svg"_s );
+    case Qgis::SnappingType::ControlPoint:
+      return QgsApplication::getThemeIcon( u"/mIconSnappingControlPoint.svg"_s );
   }
   return QIcon();
 }
@@ -647,10 +649,7 @@ void QgsSnappingConfig::readLegacySettings()
   const QStringList snapToList = mProject->readListEntry( u"Digitizing"_s, u"/LayerSnapToList"_s, QStringList() );
 
   // lists must have the same size, otherwise something is wrong
-  if ( layerIdList.size() != enabledList.size() ||
-       layerIdList.size() != toleranceList.size() ||
-       layerIdList.size() != toleranceUnitList.size() ||
-       layerIdList.size() != snapToList.size() )
+  if ( layerIdList.size() != enabledList.size() || layerIdList.size() != toleranceList.size() || layerIdList.size() != toleranceUnitList.size() || layerIdList.size() != snapToList.size() )
     return;
 
   // Use snapping information from the project
@@ -658,7 +657,7 @@ void QgsSnappingConfig::readLegacySettings()
     mMode = Qgis::SnappingMode::ActiveLayer;
   else if ( snapMode == "all_layers"_L1 )
     mMode = Qgis::SnappingMode::AllLayers;
-  else   // either "advanced" or empty (for background compatibility)
+  else // either "advanced" or empty (for background compatibility)
     mMode = Qgis::SnappingMode::AdvancedConfiguration;
 
   // load layers, tolerances, snap type
@@ -673,11 +672,7 @@ void QgsSnappingConfig::readLegacySettings()
     if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
-    const Qgis::SnappingTypes t( *snapIt == "to_vertex"_L1 ? Qgis::SnappingType::Vertex :
-                                 ( *snapIt == "to_segment"_L1 ? Qgis::SnappingType::Segment :
-                                   static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment )
-                                 )
-                               );
+    const Qgis::SnappingTypes t( *snapIt == "to_vertex"_L1 ? Qgis::SnappingType::Vertex : ( *snapIt == "to_segment"_L1 ? Qgis::SnappingType::Segment : static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) ) );
 
     mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == "enabled"_L1, t, tolIt->toDouble(), static_cast<Qgis::MapToolUnit>( tolUnitIt->toInt() ), 0.0, 0.0 ) );
   }
@@ -740,8 +735,3 @@ QgsSnappingConfig::ScaleDependencyMode QgsSnappingConfig::scaleDependencyMode() 
 {
   return mScaleDependencyMode;
 }
-
-
-
-
-
