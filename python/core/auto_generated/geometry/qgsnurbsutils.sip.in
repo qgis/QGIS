@@ -34,13 +34,6 @@ Extracts the first NURBS curve found in the ``geom`` (recursively).
 Returns ``None`` if no NURBS curve is found.
 %End
 
-    static bool isPolyBezier( const QgsNurbsCurve *nurbs );
-%Docstring
-Returns ``True`` if the NURBS curve is a Poly-Bézier.
-
-A Poly-Bézier has degree 3 and control points count = 3*segments + 1.
-%End
-
     static const QgsNurbsCurve *findNurbsCurveForVertex(
       const QgsAbstractGeometry *geom,
       const QgsVertexId &vid,

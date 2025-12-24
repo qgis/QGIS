@@ -47,13 +47,6 @@ class CORE_EXPORT QgsNurbsUtils
     static const QgsNurbsCurve *extractNurbsCurve( const QgsAbstractGeometry *geom );
 
     /**
-     * Returns TRUE if the NURBS curve is a Poly-Bézier.
-     *
-     * A Poly-Bézier has degree 3 and control points count = 3*segments + 1.
-     */
-    static bool isPolyBezier( const QgsNurbsCurve *nurbs );
-
-    /**
      * Finds the NURBS curve containing the vertex identified by \a vid.
      *
      * Returns the NURBS curve and sets \a localIndex to the control point index

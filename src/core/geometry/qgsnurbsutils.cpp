@@ -107,14 +107,6 @@ const QgsNurbsCurve *QgsNurbsUtils::extractNurbsCurve( const QgsAbstractGeometry
   return nullptr;
 }
 
-bool QgsNurbsUtils::isPolyBezier( const QgsNurbsCurve *nurbs )
-{
-  if ( !nurbs )
-    return false;
-
-  return nurbs->isPolyBezier();
-}
-
 const QgsNurbsCurve *QgsNurbsUtils::findNurbsCurveForVertex( const QgsAbstractGeometry *geom, const QgsVertexId &vid, int &localIndex )
 {
   if ( !geom )
