@@ -179,71 +179,22 @@ QgsLineString::QgsLineString( const QgsLineSegment2D &segment )
   mY[1] = segment.endY();
 }
 
-static double cubicInterpolate( double a, double b,
-                                double A, double B, double C, double D )
-{
-  return A * b * b * b + 3 * B * b * b * a + 3 * C * b * a * a + D * a * a * a;
-}
-
 std::unique_ptr< QgsLineString > QgsLineString::fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments )
 {
   if ( segments == 0 )
     return std::make_unique< QgsLineString >();
 
-  QVector<double> x;
-  x.resize( segments + 1 );
-  QVector<double> y;
-  y.resize( segments + 1 );
-  QVector<double> z;
-  double *zData = nullptr;
-  if ( start.is3D() && end.is3D() && controlPoint1.is3D() && controlPoint2.is3D() )
-  {
-    z.resize( segments + 1 );
-    zData = z.data();
-  }
-  QVector<double> m;
-  double *mData = nullptr;
-  if ( start.isMeasure() && end.isMeasure() && controlPoint1.isMeasure() && controlPoint2.isMeasure() )
-  {
-    m.resize( segments + 1 );
-    mData = m.data();
-  }
+  QgsPointSequence points;
+  points.reserve( segments + 1 );
 
-  double *xData = x.data();
-  double *yData = y.data();
   const double step = 1.0 / segments;
-  double a = 0;
-  double b = 1.0;
-  for ( int i = 0; i < segments; i++, a += step, b -= step )
+  for ( int i = 0; i <= segments; ++i )
   {
-    if ( i == 0 )
-    {
-      *xData++ = start.x();
-      *yData++ = start.y();
-      if ( zData )
-        *zData++ = start.z();
-      if ( mData )
-        *mData++ = start.m();
-    }
-    else
-    {
-      *xData++ = cubicInterpolate( a, b, start.x(), controlPoint1.x(), controlPoint2.x(), end.x() );
-      *yData++ = cubicInterpolate( a, b, start.y(), controlPoint1.y(), controlPoint2.y(), end.y() );
-      if ( zData )
-        *zData++ = cubicInterpolate( a, b, start.z(), controlPoint1.z(), controlPoint2.z(), end.z() );
-      if ( mData )
-        *mData++ = cubicInterpolate( a, b, start.m(), controlPoint1.m(), controlPoint2.m(), end.m() );
-    }
+    const double t = i * step;
+    points.append( QgsGeometryUtils::interpolatePointOnCubicBezier( start, controlPoint1, controlPoint2, end, t ) );
   }
 
-  *xData = end.x();
-  *yData = end.y();
-  if ( zData )
-    *zData = end.z();
-  if ( mData )
-    *mData = end.m();
-
-  return std::make_unique< QgsLineString >( x, y, z, m );
+  return std::make_unique< QgsLineString >( points );
 }
 
 std::unique_ptr< QgsLineString > QgsLineString::fromQPolygonF( const QPolygonF &polygon )
