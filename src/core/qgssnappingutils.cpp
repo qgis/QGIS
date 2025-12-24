@@ -188,7 +188,7 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
     return;
 
   // ORDER
-  // LineEndpoint
+  // LineEndpoint, ControlPoint
   // Vertex, Intersection
   // Middle
   // Centroid
@@ -199,6 +199,15 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
   if ( ( bestMatch.type() & QgsPointLocator::LineEndpoint ) && !( candidateMatch.type() & QgsPointLocator::LineEndpoint ) )
     return;
   if ( candidateMatch.type() & QgsPointLocator::LineEndpoint )
+  {
+    bestMatch = candidateMatch;
+    return;
+  }
+
+  // control points -- similar priority to line endpoints
+  if ( ( bestMatch.type() & QgsPointLocator::ControlPoint ) && !( candidateMatch.type() & QgsPointLocator::ControlPoint ) )
+    return;
+  if ( candidateMatch.type() & QgsPointLocator::ControlPoint )
   {
     bestMatch = candidateMatch;
     return;
@@ -252,6 +261,10 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   if ( type & QgsPointLocator::LineEndpoint )
   {
     _replaceIfBetter( bestMatch, loc->nearestLineEndpoints( pointMap, tolerance, filter, relaxed ), tolerance );
+  }
+  if ( type & QgsPointLocator::ControlPoint )
+  {
+    _replaceIfBetter( bestMatch, loc->nearestControlPoint( pointMap, tolerance, filter, relaxed ), tolerance );
   }
 }
 

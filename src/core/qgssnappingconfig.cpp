@@ -294,6 +294,8 @@ QString QgsSnappingConfig::snappingTypeToString( Qgis::SnappingType type )
       return QObject::tr( "Middle of Segments" );
     case Qgis::SnappingType::LineEndpoint:
       return QObject::tr( "Line Endpoints" );
+    case Qgis::SnappingType::ControlPoint:
+      return QObject::tr( "Control Points" );
   }
   return QString();
 }
@@ -316,6 +318,8 @@ QIcon QgsSnappingConfig::snappingTypeToIcon( Qgis::SnappingType type )
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnappingMiddle.svg" ) );
     case Qgis::SnappingType::LineEndpoint:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnappingEndpoint.svg" ) );
+    case Qgis::SnappingType::ControlPoint:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnappingControlPoint.svg" ) );
   }
   return QIcon();
 }

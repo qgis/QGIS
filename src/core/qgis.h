@@ -771,6 +771,7 @@ class CORE_EXPORT Qgis
       Centroid SIP_MONKEYPATCH_COMPAT_NAME( CentroidFlag ) = 1 << 3, //!< On centroid
       MiddleOfSegment SIP_MONKEYPATCH_COMPAT_NAME( MiddleOfSegmentFlag ) = 1 << 4, //!< On Middle segment
       LineEndpoint SIP_MONKEYPATCH_COMPAT_NAME( LineEndpointFlag ) = 1 << 5, //!< Start or end points of lines, or first vertex in polygon rings only \since QGIS 3.20
+      ControlPoint SIP_MONKEYPATCH_COMPAT_NAME( ControlPoint ) = 1 << 6, //!< On control points (for NURBS curves) \since QGIS 4.0
     };
     Q_ENUM( SnappingType )
     //! Snapping types
@@ -3083,6 +3084,7 @@ class CORE_EXPORT Qgis
       {
       Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1, //!< The actual start or end point of a segment
       Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2, //!< An intermediate point on a segment defining the curvature of the segment
+      ControlPoint SIP_MONKEYPATCH_COMPAT_NAME( ControlPointVertex ) = 3, //!< A NURBS control point (does not lie on the curve) \since QGIS 4.0
     };
     Q_ENUM( VertexType )
 
