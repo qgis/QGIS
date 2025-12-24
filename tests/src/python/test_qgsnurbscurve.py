@@ -55,12 +55,11 @@ class TestQgsNurbsCurve(unittest.TestCase):
         knots = [0, 0, 0, 1, 2, 2, 2]  # degree + 1 + control_points = 2 + 1 + 4 = 7
         weights = [1, 1, 1, 1]
 
-        nurbs = QgsNurbsCurve(control_points, degree, knots, weights, False)
+        nurbs = QgsNurbsCurve(control_points, degree, knots, weights)
         self.assertEqual(nurbs.degree(), 2)
         self.assertEqual(len(nurbs.controlPoints()), 4)
         self.assertEqual(len(nurbs.knots()), 7)
         self.assertEqual(len(nurbs.weights()), 4)
-        self.assertFalse(nurbs.isClosed())
 
     def testClone(self):
         """Test clone method"""
@@ -222,6 +221,8 @@ class TestQgsNurbsCurve(unittest.TestCase):
 
     def testBoundingBox(self):
         """Test bounding box calculation"""
+        # Quadratic Bézier curve: the curve reaches max y=5 at t=0.5
+        # The control points define the convex hull, but the curve doesn't pass through them
         control_points = [QgsPoint(0, 0), QgsPoint(5, 10), QgsPoint(10, 0)]
         degree = 2
         knots = [0, 0, 0, 1, 1, 1]
@@ -233,7 +234,8 @@ class TestQgsNurbsCurve(unittest.TestCase):
         self.assertLessEqual(bbox.xMinimum(), 0.0)
         self.assertGreaterEqual(bbox.xMaximum(), 10.0)
         self.assertLessEqual(bbox.yMinimum(), 0.0)
-        self.assertGreaterEqual(bbox.yMaximum(), 10.0)
+        # For a quadratic Bézier with these control points, max y is 5.0 (at t=0.5)
+        self.assertGreaterEqual(bbox.yMaximum(), 4.9)  # Allow small tolerance
 
     def testEquals(self):
         """Test equality comparison"""
