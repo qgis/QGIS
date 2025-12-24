@@ -45,12 +45,11 @@ QgsNurbsCurve::QgsNurbsCurve()
   mWkbType = Qgis::WkbType::NurbsCurve;
 }
 
-QgsNurbsCurve::QgsNurbsCurve( const QVector<QgsPoint> &ctrlPoints, int degree, const QVector<double> &knots, const QVector<double> &weights, bool closed )
+QgsNurbsCurve::QgsNurbsCurve( const QVector<QgsPoint> &ctrlPoints, int degree, const QVector<double> &knots, const QVector<double> &weights )
   : mControlPoints( ctrlPoints )
   , mKnots( knots )
   , mWeights( weights )
   , mDegree( degree )
-  , mClosed( closed )
 {
   mWkbType = Qgis::WkbType::NurbsCurve;
 
@@ -68,6 +67,56 @@ QgsNurbsCurve::QgsNurbsCurve( const QVector<QgsPoint> &ctrlPoints, int degree, c
 QgsCurve *QgsNurbsCurve::clone() const
 {
   return new QgsNurbsCurve( *this );
+}
+
+bool QgsNurbsCurve::isBezier() const
+{
+  const int n = mControlPoints.size();
+  if ( n < 2 || mDegree < 1 )
+    return false;
+
+  if ( mDegree != n - 1 )
+    return false;
+
+  if ( !isBSpline() )
+    return false;
+
+  if ( mKnots.size() != n + mDegree + 1 )
+    return false;
+
+  for ( int i = 0; i <= mDegree; ++i )
+  {
+    if ( !qgsDoubleNear( mKnots[i], 0.0 ) )
+      return false;
+  }
+  for ( int i = n; i < mKnots.size(); ++i )
+  {
+    if ( !qgsDoubleNear( mKnots[i], 1.0 ) )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsNurbsCurve::isBSpline() const
+{
+  for ( const double w : mWeights )
+  {
+    if ( !qgsDoubleNear( w, 1.0 ) )
+      return false;
+  }
+  return true;
+}
+
+bool QgsNurbsCurve::isRational() const
+{
+  return !isBSpline();
+}
+
+bool QgsNurbsCurve::isPolyBezier() const
+{
+  const int n = mControlPoints.size();
+  return mDegree == 3 && n >= 4 && ( n - 1 ) % 3 == 0;
 }
 
 /**
@@ -117,6 +166,12 @@ QgsPoint QgsNurbsCurve::evaluate( double t ) const
 {
   const int n = mControlPoints.size();
   if ( n == 0 )
+  {
+    return QgsPoint();
+  }
+
+  QString error;
+  if ( !isValid( error, Qgis::GeometryValidityFlags() ) )
   {
     return QgsPoint();
   }
@@ -214,38 +269,8 @@ QgsPoint QgsNurbsCurve::evaluate( double t ) const
     return QgsPoint( x, y );
 }
 
-bool QgsNurbsCurve::isBezier() const
-{
-  // A Bézier curve is a special case of NURBS:
-  // - Non-rational (all weights equal to 1.0)
-  // - Number of control points equals degree + 1
-  // - Open uniform knot vector
-  return ( !isRational() && mDegree > 0 && mControlPoints.size() == mDegree + 1 );
-}
-
-bool QgsNurbsCurve::isBSpline() const
-{
-  return !isRational();
-}
-
-bool QgsNurbsCurve::isRational() const
-{
-  constexpr double epsilon = 1e-8;
-  for ( const double w : mWeights )
-  {
-    if ( std::fabs( w - 1.0 ) > epsilon )
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
 bool QgsNurbsCurve::isClosed() const
 {
-  if ( mClosed )
-    return true;
-
   if ( mControlPoints.size() < 2 )
     return false;
 
@@ -263,9 +288,6 @@ bool QgsNurbsCurve::isClosed() const
 
 bool QgsNurbsCurve::isClosed2D() const
 {
-  if ( mClosed )
-    return true;
-
   if ( mControlPoints.size() < 2 )
     return false;
 
@@ -331,32 +353,19 @@ bool QgsNurbsCurve::equals( const QgsCurve &other ) const
   if ( !o )
     return false;
 
-  if ( o->mDegree != mDegree || o->mClosed != mClosed || o->mControlPoints.size() != mControlPoints.size() )
+  if ( o->mDegree != mDegree )
   {
     return false;
   }
 
-  if ( o->mWeights.size() != mWeights.size() || o->mKnots.size() != mKnots.size() )
-  {
+  if ( mControlPoints != o->mControlPoints )
     return false;
-  }
 
-  for ( int i = 0; i < mControlPoints.size(); ++i )
-  {
-    if ( mControlPoints[i] != o->mControlPoints[i] )
-      return false;
-    if ( i < mWeights.size() && i < o->mWeights.size() )
-    {
-      if ( !qgsDoubleNear( mWeights[i], o->mWeights[i] ) )
-        return false;
-    }
-  }
+  if ( mWeights != o->mWeights )
+    return false;
 
-  for ( int i = 0; i < mKnots.size(); ++i )
-  {
-    if ( !qgsDoubleNear( mKnots[i], o->mKnots[i] ) )
-      return false;
-  }
+  if ( mKnots != o->mKnots )
+    return false;
 
   return true;
 }
@@ -395,7 +404,7 @@ bool QgsNurbsCurve::pointAt( int node, QgsPoint &point, Qgis::VertexType &type )
     return false;
   }
   point = mControlPoints[node];
-  type = Qgis::VertexType::Segment;
+  type = Qgis::VertexType::ControlPoint;
   return true;
 }
 
@@ -431,7 +440,7 @@ QgsCurve *QgsNurbsCurve::reversed() const
 void QgsNurbsCurve::scroll( int firstVertexIndex )
 {
   // Scrolling only makes sense for closed curves
-  if ( !mClosed || firstVertexIndex <= 0 || firstVertexIndex >= mControlPoints.size() )
+  if ( !isClosed() || firstVertexIndex <= 0 || firstVertexIndex >= mControlPoints.size() )
   {
     return;
   }
@@ -511,14 +520,14 @@ bool QgsNurbsCurve::addZValue( double zValue )
   if ( QgsWkbTypes::hasZ( mWkbType ) )
     return false;
 
+  clearCache();
+  mWkbType = QgsWkbTypes::addZ( mWkbType );
+
   for ( QgsPoint &p : mControlPoints )
   {
-    if ( !p.is3D() )
-      p.setZ( zValue );
+    p.addZValue( zValue );
   }
 
-  mWkbType = QgsWkbTypes::addZ( mWkbType );
-  clearCache();
   return true;
 }
 
@@ -527,14 +536,14 @@ bool QgsNurbsCurve::addMValue( double mValue )
   if ( QgsWkbTypes::hasM( mWkbType ) )
     return false;
 
+  clearCache();
+  mWkbType = QgsWkbTypes::addM( mWkbType );
+
   for ( QgsPoint &p : mControlPoints )
   {
-    if ( !p.isMeasure() )
-      p.setM( mValue );
+    p.addMValue( mValue );
   }
 
-  mWkbType = QgsWkbTypes::addM( mWkbType );
-  clearCache();
   return true;
 }
 
@@ -584,6 +593,21 @@ bool QgsNurbsCurve::deleteVertex( QgsVertexId position )
   {
     mWeights.remove( idx );
   }
+
+  const int n = mControlPoints.size();
+  const int knotsSize = n + mDegree + 1;
+  mKnots.clear();
+  mKnots.reserve( knotsSize );
+  for ( int i = 0; i < knotsSize; ++i )
+  {
+    if ( i <= mDegree )
+      mKnots.append( 0.0 );
+    else if ( i >= n )
+      mKnots.append( 1.0 );
+    else
+      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
+  }
+
   clearCache();
   return true;
 }
@@ -603,6 +627,21 @@ void QgsNurbsCurve::filterVertices( const std::function<bool( const QgsPoint & )
   }
   mControlPoints = newPts;
   mWeights = newWeights;
+
+  const int n = mControlPoints.size();
+  const int knotsSize = n + mDegree + 1;
+  mKnots.clear();
+  mKnots.reserve( knotsSize );
+  for ( int i = 0; i < knotsSize; ++i )
+  {
+    if ( i <= mDegree )
+      mKnots.append( 0.0 );
+    else if ( i >= n )
+      mKnots.append( 1.0 );
+    else
+      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
+  }
+
   clearCache();
 }
 
@@ -624,11 +663,28 @@ bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
   // Read degree (4 bytes uint32)
   quint32 degree;
   wkb >> degree;
+
+  // Validate degree before casting to int
+  if ( degree < 1 || degree > static_cast<quint32>( std::numeric_limits<int>::max() ) )
+    return false;
+
   mDegree = static_cast<int>( degree );
 
   // Read number of control points (4 bytes uint32)
   quint32 numControlPoints;
   wkb >> numControlPoints;
+
+  // Sanity check: numControlPoints should be reasonable given the WKB blob size
+  // Each control point needs at least:
+  // - 1 byte (endianness)
+  // - 16 bytes (x,y)
+  // - 8 bytes (z) if 3D
+  // - 8 bytes (m) if measure
+  // - 1 byte (weight flag)
+  // Minimum: 18 bytes (2D) to 34 bytes (ZM)
+  const int minBytesPerPoint = 18 + ( is3D ? 8 : 0 ) + ( isMeasure ? 8 : 0 );
+  if ( numControlPoints > static_cast<quint32>( wkb.remaining() / minBytesPerPoint + 1 ) )
+    return false;
 
   mControlPoints.clear();
   mWeights.clear();
@@ -641,6 +697,11 @@ bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
     // Read byte order for this point (1 byte)
     char pointEndianness;
     wkb >> pointEndianness;
+
+    // Validate endianness matches the WKB header (must be same)
+    // The endianness should be 0 (big-endian) or 1 (little-endian)
+    if ( pointEndianness != 0 && pointEndianness != 1 )
+      return false;
 
     // Read coordinates
     double x, y, z = 0.0, m = 0.0;
@@ -680,6 +741,15 @@ bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
   // Read number of knots (4 bytes uint32)
   quint32 numKnots;
   wkb >> numKnots;
+
+  // Sanity check: numKnots should be numControlPoints + degree + 1
+  const quint32 expectedKnots = numControlPoints + degree + 1;
+  if ( numKnots != expectedKnots )
+    return false;
+
+  // Sanity check: remaining WKB should have enough bytes for knots
+  if ( numKnots * sizeof( double ) > static_cast<quint32>( wkb.remaining() ) )
+    return false;
 
   mKnots.clear();
   mKnots.reserve( numKnots );
@@ -737,16 +807,23 @@ bool QgsNurbsCurve::fromWkt( const QString &wkt )
     return false;
 
   // Second block should be the control points
-  QString pointsStr = blocks[1];
-  pointsStr = pointsStr.remove( '(' ).remove( ')' ).trimmed();
+  QString pointsStr = blocks[1].trimmed();
+
+  // Validate control points block starts with '(' and ends with ')'
+  if ( !pointsStr.startsWith( QLatin1Char( '(' ) ) || !pointsStr.endsWith( QLatin1Char( ')' ) ) )
+    return false;
+
+  pointsStr = pointsStr.mid( 1, pointsStr.length() - 2 ).trimmed();
 
   // Parse control points
   QStringList pointsCoords = pointsStr.split( ',', Qt::SkipEmptyParts );
   QVector<QgsPoint> controlPoints;
 
+  const thread_local QRegularExpression rx( QStringLiteral( "\\s+" ) );
+
   for ( const QString &pointStr : pointsCoords )
   {
-    QStringList coords = pointStr.trimmed().split( QRegularExpression( QStringLiteral( "\\s+" ) ), Qt::SkipEmptyParts );
+    QStringList coords = pointStr.trimmed().split( rx, Qt::SkipEmptyParts );
 
     if ( coords.size() < 2 )
       return false;
@@ -858,10 +935,14 @@ bool QgsNurbsCurve::fromWkt( const QString &wkt )
   {
     QString block = blocks[i].trimmed();
 
-    if ( block.startsWith( '(' ) )
+    if ( block.startsWith( QLatin1Char( '(' ) ) )
     {
+      // Validate block ends with ')'
+      if ( !block.endsWith( QLatin1Char( ')' ) ) )
+        return false;
+
       // This could be weights or knots vector
-      block = block.remove( '(' ).remove( ')' ).trimmed();
+      block = block.mid( 1, block.length() - 2 ).trimmed();
       QStringList values = block.split( ',', Qt::SkipEmptyParts );
 
       QVector<double> parsedValues;
@@ -886,6 +967,11 @@ bool QgsNurbsCurve::fromWkt( const QString &wkt )
         mKnots = parsedValues;
         hasKnots = true;
       }
+    }
+    else
+    {
+      // Invalid block - doesn't start with '('
+      return false;
     }
   }
 
@@ -920,7 +1006,7 @@ bool QgsNurbsCurve::fuzzyEqual( const QgsAbstractGeometry &other, double epsilon
   if ( !o )
     return false;
 
-  if ( mDegree != o->mDegree || mClosed != o->mClosed || mControlPoints.size() != o->mControlPoints.size() || mWeights.size() != o->mWeights.size() || mKnots.size() != o->mKnots.size() )
+  if ( mDegree != o->mDegree || mControlPoints.size() != o->mControlPoints.size() || mWeights.size() != o->mWeights.size() || mKnots.size() != o->mKnots.size() )
   {
     return false;
   }
@@ -948,34 +1034,7 @@ bool QgsNurbsCurve::fuzzyEqual( const QgsAbstractGeometry &other, double epsilon
 
 bool QgsNurbsCurve::fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon ) const
 {
-  const QgsNurbsCurve *o = qgsgeometry_cast<const QgsNurbsCurve *>( &other );
-  if ( !o )
-    return false;
-
-  if ( mDegree != o->mDegree || mClosed != o->mClosed || mControlPoints.size() != o->mControlPoints.size() || mWeights.size() != o->mWeights.size() || mKnots.size() != o->mKnots.size() )
-  {
-    return false;
-  }
-
-  for ( int i = 0; i < mControlPoints.size(); ++i )
-  {
-    if ( mControlPoints[i].distance( o->mControlPoints[i] ) > epsilon )
-      return false;
-  }
-
-  for ( int i = 0; i < mWeights.size(); ++i )
-  {
-    if ( std::fabs( mWeights[i] - o->mWeights[i] ) > epsilon )
-      return false;
-  }
-
-  for ( int i = 0; i < mKnots.size(); ++i )
-  {
-    if ( std::fabs( mKnots[i] - o->mKnots[i] ) > epsilon )
-      return false;
-  }
-
-  return true;
+  return fuzzyEqual( other, epsilon );
 }
 
 QString QgsNurbsCurve::geometryType() const
@@ -1030,6 +1089,17 @@ bool QgsNurbsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags )
 {
   Q_UNUSED( flags );
 
+  // Use cached validity if available
+  if ( mValidityComputed )
+  {
+    if ( !mIsValid )
+      error = QStringLiteral( "NURBS curve is invalid" );
+    return mIsValid;
+  }
+
+  mValidityComputed = true;
+  mIsValid = false;
+
   if ( mDegree < 1 )
   {
     error = QStringLiteral( "Degree must be >= 1" );
@@ -1055,6 +1125,17 @@ bool QgsNurbsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags )
     return false;
   }
 
+  // Check that knots are non-decreasing
+  for ( int i = 1; i < mKnots.size(); ++i )
+  {
+    if ( mKnots[i] < mKnots[i - 1] )
+    {
+      error = QStringLiteral( "Knot vector values must be non-decreasing" );
+      return false;
+    }
+  }
+
+  mIsValid = true;
   return true;
 }
 
@@ -1126,8 +1207,6 @@ QgsAbstractGeometry *QgsNurbsCurve::simplifyByDistance( double tolerance ) const
 
 bool QgsNurbsCurve::removeDuplicateNodes( double epsilon, bool useZValues )
 {
-  Q_UNUSED( useZValues );
-
   if ( mControlPoints.size() < 2 )
     return false;
 
@@ -1143,7 +1222,17 @@ bool QgsNurbsCurve::removeDuplicateNodes( double epsilon, bool useZValues )
 
   for ( int i = 1; i < mControlPoints.size(); ++i )
   {
-    if ( mControlPoints[i].distance( mControlPoints[i - 1] ) >= epsilon )
+    double dist;
+    if ( useZValues && mControlPoints[i].is3D() && mControlPoints[i - 1].is3D() )
+    {
+      dist = mControlPoints[i].distance3D( mControlPoints[i - 1] );
+    }
+    else
+    {
+      dist = mControlPoints[i].distance( mControlPoints[i - 1] );
+    }
+
+    if ( dist >= epsilon )
     {
       newPoints.append( mControlPoints[i] );
       if ( i < mWeights.size() )
@@ -1152,10 +1241,29 @@ bool QgsNurbsCurve::removeDuplicateNodes( double epsilon, bool useZValues )
   }
 
   const bool changed = ( newPoints.size() != mControlPoints.size() );
+  if ( !changed )
+    return false;
+
   mControlPoints = newPoints;
   mWeights = newWeights;
 
-  return changed;
+  // Regenerate uniform knot vector for the new number of control points
+  const int n = mControlPoints.size();
+  const int knotsSize = n + mDegree + 1;
+  mKnots.clear();
+  mKnots.reserve( knotsSize );
+  for ( int i = 0; i < knotsSize; ++i )
+  {
+    if ( i <= mDegree )
+      mKnots.append( 0.0 );
+    else if ( i >= n )
+      mKnots.append( 1.0 );
+    else
+      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
+  }
+
+  clearCache();
+  return true;
 }
 
 double QgsNurbsCurve::vertexAngle( QgsVertexId vertex ) const
@@ -1268,34 +1376,29 @@ QgsBox3D QgsNurbsCurve::calculateBoundingBox3D() const
   if ( mControlPoints.isEmpty() )
     return QgsBox3D();
 
-  const QgsPoint &first = mControlPoints[0];
-  double xmin = first.x();
-  double ymin = first.y();
-  double zmin = first.is3D() ? first.z() : 0.0;
-  double xmax = xmin;
-  double ymax = ymin;
-  double zmax = zmin;
-
+  // The bounding box must include all control points, not just points on the curve.
+  // This is important for Snapping to control points (they can lie outside the curve itself)
+  QgsBox3D bbox;
   for ( const QgsPoint &pt : mControlPoints )
   {
-    xmin = std::min( xmin, pt.x() );
-    ymin = std::min( ymin, pt.y() );
-    xmax = std::max( xmax, pt.x() );
-    ymax = std::max( ymax, pt.y() );
-
-    if ( pt.is3D() )
-    {
-      zmin = std::min( zmin, pt.z() );
-      zmax = std::max( zmax, pt.z() );
-    }
+    bbox.combineWith( pt.x(), pt.y(), pt.is3D() ? pt.z() : std::numeric_limits<double>::quiet_NaN() );
   }
 
-  return QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
+  // Also include points on the curve to ensure the bbox is complete
+  std::unique_ptr<QgsLineString> line( curveToLine() );
+  if ( line )
+  {
+    bbox.combineWith( line->boundingBox3D() );
+  }
+
+  return bbox;
 }
 
 void QgsNurbsCurve::clearCache() const
 {
   QgsCurve::clearCache();
+  mValidityComputed = false;
+  mIsValid = false;
 }
 
 bool QgsNurbsCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos )
@@ -1324,6 +1427,20 @@ bool QgsNurbsCurve::insertVertex( QgsVertexId position, const QgsPoint &vertex )
   mControlPoints.insert( idx, vertex );
   if ( idx <= mWeights.size() )
     mWeights.insert( idx, 1.0 );
+
+  const int n = mControlPoints.size();
+  const int knotsSize = n + mDegree + 1;
+  mKnots.clear();
+  mKnots.reserve( knotsSize );
+  for ( int i = 0; i < knotsSize; ++i )
+  {
+    if ( i <= mDegree )
+      mKnots.append( 0.0 );
+    else if ( i >= n )
+      mKnots.append( 1.0 );
+    else
+      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
+  }
 
   clearCache();
   return true;
@@ -1520,8 +1637,10 @@ QDomElement QgsNurbsCurve::asGml3( QDomDocument &doc, int precision, const QStri
 
 json QgsNurbsCurve::asJsonObject( int precision ) const
 {
-  Q_UNUSED( precision );
-  return json::object(); // Not implemented
+  std::unique_ptr<QgsLineString> line( curveToLine() );
+  if ( !line )
+    return json::object();
+  return line->asJsonObject( precision );
 }
 
 QString QgsNurbsCurve::asKml( int precision ) const
@@ -1549,7 +1668,6 @@ void QgsNurbsCurve::clear()
   mKnots.clear();
   mWeights.clear();
   mDegree = 0;
-  mClosed = false;
   clearCache();
 }
 
@@ -1597,6 +1715,32 @@ int QgsNurbsCurve::compareToSameClass( const QgsAbstractGeometry *other ) const
     else if ( mControlPoints[i].y() < otherCurve->mControlPoints[i].y() )
       return -1;
     else if ( mControlPoints[i].y() > otherCurve->mControlPoints[i].y() )
+      return 1;
+  }
+
+  if ( mWeights.size() < otherCurve->mWeights.size() )
+    return -1;
+  else if ( mWeights.size() > otherCurve->mWeights.size() )
+    return 1;
+
+  for ( int i = 0; i < mWeights.size(); ++i )
+  {
+    if ( mWeights[i] < otherCurve->mWeights[i] )
+      return -1;
+    else if ( mWeights[i] > otherCurve->mWeights[i] )
+      return 1;
+  }
+
+  if ( mKnots.size() < otherCurve->mKnots.size() )
+    return -1;
+  else if ( mKnots.size() > otherCurve->mKnots.size() )
+    return 1;
+
+  for ( int i = 0; i < mKnots.size(); ++i )
+  {
+    if ( mKnots[i] < otherCurve->mKnots[i] )
+      return -1;
+    else if ( mKnots[i] > otherCurve->mKnots[i] )
       return 1;
   }
 

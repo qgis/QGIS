@@ -41,7 +41,6 @@
 class CORE_EXPORT QgsNurbsCurve : public QgsCurve
 {
   public:
-
     /**
      * Constructor for an empty NURBS curve geometry.
      */
@@ -49,15 +48,12 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
 
     /**
      * Constructs a NURBS curve from control points, degree, knot vector and weights.
-     * \param ctrlPoints control points defining the curve
-     * \param degree degree of the NURBS curve (typically 1-3)
-     * \param knots knot vector (must have size = control points count + degree + 1)
+     * \param ctrlPoints control points defining the curve. The number of control points must be strictly greater than \a degree
+     * \param degree degree of the NURBS curve (must be >= 1, typically 1-3)
+     * \param knots knot vector (must have size = control points count + degree + 1, values must be non-decreasing)
      * \param weights weight vector for rational curves (same size as control points)
-     * \param closed whether the curve should be treated as closed
      */
-    QgsNurbsCurve( const QVector<QgsPoint> &ctrlPoints, int degree,
-                   const QVector<double> &knots, const QVector<double> &weights,
-                   bool closed = false );
+    QgsNurbsCurve( const QVector<QgsPoint> &ctrlPoints, int degree, const QVector<double> &knots, const QVector<double> &weights );
 
     QgsCurve *clone() const override SIP_FACTORY;
 
@@ -84,6 +80,13 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * Returns TRUE if this curve is rational (has non-uniform weights).
      */
     bool isRational() const;
+
+    /**
+     * Returns TRUE if this curve represents a poly-Bézier curve.
+     * A poly-Bézier is a degree 3 NURBS with (n-1) divisible by 3,
+     * where n is the number of control points.
+     */
+    bool isPolyBezier() const;
 
     bool isClosed() const override SIP_HOLDGIL;
     bool isClosed2D() const override SIP_HOLDGIL;
@@ -164,8 +167,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     QgsPoint vertexAt( QgsVertexId id ) const override;
     int vertexCount( int part = 0, int ring = 0 ) const override SIP_HOLDGIL;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
-    bool isValid( QString &error SIP_OUT,
-                  Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
 
     /**
      * Returns the degree of the NURBS curve.
@@ -176,7 +178,11 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * Sets the degree of the NURBS curve.
      * \param degree curve degree (typically 1-3)
      */
-    void setDegree( int degree ) { mDegree = degree; clearCache(); }
+    void setDegree( int degree )
+    {
+      mDegree = degree;
+      clearCache();
+    }
 
     /**
      * Returns the control points of the NURBS curve.
@@ -187,7 +193,11 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * Sets the control points of the NURBS curve.
      * \param points control points
      */
-    void setControlPoints( const QVector<QgsPoint> &points ) { mControlPoints = points; clearCache(); }
+    void setControlPoints( const QVector<QgsPoint> &points )
+    {
+      mControlPoints = points;
+      clearCache();
+    }
 
     /**
      * Returns the knot vector of the NURBS curve.
@@ -196,9 +206,13 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
 
     /**
      * Sets the knot vector of the NURBS curve.
-     * \param knots knot vector (must have size = control points count + degree + 1)
+     * \param knots knot vector (must have size = control points count + degree + 1, values must be non-decreasing)
      */
-    void setKnots( const QVector<double> &knots ) { mKnots = knots; clearCache(); }
+    void setKnots( const QVector<double> &knots )
+    {
+      mKnots = knots;
+      clearCache();
+    }
 
     /**
      * Returns the weight vector of the NURBS curve.
@@ -209,7 +223,11 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * Sets the weight vector of the NURBS curve.
      * \param weights weight vector (same size as control points)
      */
-    void setWeights( const QVector<double> &weights ) { mWeights = weights; clearCache(); }
+    void setWeights( const QVector<double> &weights )
+    {
+      mWeights = weights;
+      clearCache();
+    }
 
     /**
      * Returns the weight at the specified control point \a index.
@@ -251,19 +269,17 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     }
 
   protected:
-
     void clearCache() const override;
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsBox3D calculateBoundingBox3D() const override;
 
   private:
-    QVector<QgsPoint> mControlPoints;  //! Control points defining the curve shape
-    QVector<double> mKnots;           //! Knot vector for B-spline basis functions
-    QVector<double> mWeights;         //! Weight vector for rational curves
-    int mDegree = 0;                  //! Degree of the NURBS curve
-    bool mClosed = false;             //! Whether the curve is closed
-
+    QVector<QgsPoint> mControlPoints;       //! Control points defining the curve shape
+    QVector<double> mKnots;                 //! Knot vector for B-spline basis functions
+    QVector<double> mWeights;               //! Weight vector for rational curves
+    int mDegree = 0;                        //! Degree of the NURBS curve
+    mutable bool mValidityComputed = false; //! Whether validity has been computed
+    mutable bool mIsValid = false;          //! Cached validity state
 };
 
 #endif // QGSNURBSCURVE_H
-

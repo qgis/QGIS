@@ -112,11 +112,7 @@ bool QgsNurbsUtils::isPolyBezier( const QgsNurbsCurve *nurbs )
   if ( !nurbs )
     return false;
 
-  // A poly-Bézier is degree 3 and has (n-1) divisible by 3
-  // where n is the number of control points
-  // This means: n = 3*segments + 1, so n-1 = 3*segments, so (n-1) % 3 == 0
-  const int n = nurbs->controlPoints().size();
-  return nurbs->degree() == 3 && n >= 4 && ( n - 1 ) % 3 == 0;
+  return nurbs->isPolyBezier();
 }
 
 const QgsNurbsCurve *QgsNurbsUtils::findNurbsCurveForVertex( const QgsAbstractGeometry *geom, const QgsVertexId &vid, int &localIndex )
@@ -182,62 +178,5 @@ const QgsNurbsCurve *QgsNurbsUtils::findNurbsCurveForVertex( const QgsAbstractGe
 
 QgsNurbsCurve *QgsNurbsUtils::findMutableNurbsCurveForVertex( QgsAbstractGeometry *geom, const QgsVertexId &vid, int &localIndex )
 {
-  if ( !geom )
-    return nullptr;
-
-  // Direct NURBS curve
-  if ( QgsNurbsCurve *nurbs = qgsgeometry_cast<QgsNurbsCurve *>( geom ) )
-  {
-    localIndex = vid.vertex;
-    return nurbs;
-  }
-
-  // Compound curve - find the curve containing this vertex
-  if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( geom ) )
-  {
-    int vertexOffset = 0;
-    for ( int i = 0; i < compound->nCurves(); ++i )
-    {
-      const QgsCurve *curve = compound->curveAt( i );
-      const int curveVertexCount = curve->numPoints();
-
-      // Check if vertex is in this curve (accounting for shared endpoints)
-      const int adjustedCount = ( i == compound->nCurves() - 1 ) ? curveVertexCount : curveVertexCount - 1;
-      if ( vid.vertex < vertexOffset + adjustedCount )
-      {
-        if ( const QgsNurbsCurve *nurbs = qgsgeometry_cast<const QgsNurbsCurve *>( curve ) )
-        {
-          localIndex = vid.vertex - vertexOffset;
-          // Return non-const by casting via the original geometry parameter
-          return const_cast<QgsNurbsCurve *>( nurbs );
-        }
-        return nullptr;
-      }
-      vertexOffset += adjustedCount;
-    }
-  }
-
-  // Curve polygon - check exterior and interior rings
-  if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
-  {
-    QgsCurve *ring = nullptr;
-    if ( vid.ring == 0 )
-      ring = polygon->exteriorRing();
-    else if ( vid.ring > 0 && vid.ring <= polygon->numInteriorRings() )
-      ring = polygon->interiorRing( vid.ring - 1 );
-
-    if ( ring )
-      return findMutableNurbsCurveForVertex( ring, QgsVertexId( 0, 0, vid.vertex ), localIndex );
-  }
-
-  // Geometry collection
-  if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
-  {
-    if ( vid.part >= 0 && vid.part < collection->numGeometries() )
-    {
-      return findMutableNurbsCurveForVertex( collection->geometryN( vid.part ), QgsVertexId( 0, vid.ring, vid.vertex ), localIndex );
-    }
-  }
-
-  return nullptr;
+  return const_cast<QgsNurbsCurve *>( findNurbsCurveForVertex( geom, vid, localIndex ) );
 }
