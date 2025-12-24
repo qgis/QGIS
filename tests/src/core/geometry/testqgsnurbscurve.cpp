@@ -98,14 +98,16 @@ void TestQgsNurbsCurve::constructorWithParams()
   QVector<double> knots { 0, 0, 0, 1, 2, 2, 2 };
   QVector<double> weights { 1, 1, 1, 1 };
 
-  QgsNurbsCurve curve( controlPoints, degree, knots, weights, false );
+  QgsNurbsCurve curve( controlPoints, degree, knots, weights );
 
   QVERIFY( !curve.isEmpty() );
   QCOMPARE( curve.degree(), 2 );
   QCOMPARE( curve.controlPoints().size(), 4 );
   QCOMPARE( curve.knots().size(), 7 );
   QCOMPARE( curve.weights().size(), 4 );
-  QVERIFY( !curve.isClosed() );
+
+  QString error;
+  QVERIFY( curve.isValid( error, Qgis::GeometryValidityFlags() ) );
 }
 
 void TestQgsNurbsCurve::constructorDegree1()
@@ -270,6 +272,21 @@ void TestQgsNurbsCurve::evaluation()
   QgsPoint end = linear.evaluate( 1.0 );
   QGSCOMPARENEAR( end.x(), 10.0, 0.00001 );
   QGSCOMPARENEAR( end.y(), 10.0, 0.00001 );
+
+  // Test t below 0 returns start point
+  QgsPoint belowZero = linear.evaluate( -0.5 );
+  QGSCOMPARENEAR( belowZero.x(), 0.0, 0.00001 );
+  QGSCOMPARENEAR( belowZero.y(), 0.0, 0.00001 );
+
+  // Test t above 1 returns end point
+  QgsPoint aboveOne = linear.evaluate( 1.5 );
+  QGSCOMPARENEAR( aboveOne.x(), 10.0, 0.00001 );
+  QGSCOMPARENEAR( aboveOne.y(), 10.0, 0.00001 );
+
+  // Test evaluate on empty NURBS returns empty point
+  QgsNurbsCurve empty;
+  QgsPoint emptyEval = empty.evaluate( 0.5 );
+  QVERIFY( emptyEval.isEmpty() );
 }
 
 void TestQgsNurbsCurve::startEndPoints()
@@ -387,43 +404,83 @@ void TestQgsNurbsCurve::vertexAt()
 
 void TestQgsNurbsCurve::addZValue()
 {
-  // Test 3D curve created from 3D control points
-  QVector<QgsPoint> controlPoints3D { QgsPoint( 0, 0, 1 ), QgsPoint( 10, 10, 2 ) };
-  QgsNurbsCurve curveZ( controlPoints3D, 1, QVector<double> { 0, 0, 1, 1 }, QVector<double> { 1, 1 } );
+  // Start with a 2D curve
+  QVector<QgsPoint> controlPoints { QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) };
+  QgsNurbsCurve curve( controlPoints, 1, QVector<double> { 0, 0, 1, 1 }, QVector<double> { 1, 1 } );
 
-  QVERIFY( curveZ.is3D() );
-  QCOMPARE( curveZ.wkbType(), Qgis::WkbType::NurbsCurveZ );
+  QVERIFY( !curve.is3D() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurve );
+
+  // Add Z value
+  QVERIFY( curve.addZValue( 5.0 ) );
+  QVERIFY( curve.is3D() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurveZ );
+
+  // Check control points now have Z
+  QGSCOMPARENEAR( curve.controlPoints()[0].z(), 5.0, 0.00001 );
+  QGSCOMPARENEAR( curve.controlPoints()[1].z(), 5.0, 0.00001 );
+
+  // Adding Z again should fail
+  QVERIFY( !curve.addZValue( 10.0 ) );
 }
 
 void TestQgsNurbsCurve::addMValue()
 {
-  // Test M curve created from M control points
-  QVector<QgsPoint> controlPointsM { QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 2 ) };
-  QgsNurbsCurve curveM( controlPointsM, 1, QVector<double> { 0, 0, 1, 1 }, QVector<double> { 1, 1 } );
+  // Start with a 2D curve
+  QVector<QgsPoint> controlPoints { QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) };
+  QgsNurbsCurve curve( controlPoints, 1, QVector<double> { 0, 0, 1, 1 }, QVector<double> { 1, 1 } );
 
-  QVERIFY( curveM.isMeasure() );
-  QCOMPARE( curveM.wkbType(), Qgis::WkbType::NurbsCurveM );
+  QVERIFY( !curve.isMeasure() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurve );
+
+  // Add M value
+  QVERIFY( curve.addMValue( 100.0 ) );
+  QVERIFY( curve.isMeasure() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurveM );
+
+  // Check control points now have M
+  QGSCOMPARENEAR( curve.controlPoints()[0].m(), 100.0, 0.00001 );
+  QGSCOMPARENEAR( curve.controlPoints()[1].m(), 100.0, 0.00001 );
+
+  // Adding M again should fail
+  QVERIFY( !curve.addMValue( 200.0 ) );
 }
 
 void TestQgsNurbsCurve::dropZValue()
 {
-  // Test ZM curve created from ZM control points
-  QVector<QgsPoint> controlPointsZM { QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 10 ), QgsPoint( Qgis::WkbType::PointZM, 10, 10, 2, 20 ) };
-  QgsNurbsCurve curveZM( controlPointsZM, 1, QVector<double> { 0, 0, 1, 1 }, QVector<double> { 1, 1 } );
+  // Start with a 3D curve
+  QVector<QgsPoint> controlPoints { QgsPoint( 0, 0, 5 ), QgsPoint( 10, 10, 15 ) };
+  QgsNurbsCurve curve( controlPoints, 1, QVector<double> { 0, 0, 1, 1 }, QVector<double> { 1, 1 } );
 
-  QVERIFY( curveZM.is3D() );
-  QVERIFY( curveZM.isMeasure() );
-  QCOMPARE( curveZM.wkbType(), Qgis::WkbType::NurbsCurveZM );
+  QVERIFY( curve.is3D() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurveZ );
+
+  // Drop Z value
+  QVERIFY( curve.dropZValue() );
+  QVERIFY( !curve.is3D() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurve );
+
+  // Dropping Z again should fail
+  QVERIFY( !curve.dropZValue() );
 }
 
 void TestQgsNurbsCurve::dropMValue()
 {
-  // Test we can create different dimension curves via WKT
-  QgsNurbsCurve curveFromWkt;
-  QVERIFY( curveFromWkt.fromWkt( QStringLiteral( "NURBSCURVE M(1, (0 0 10, 10 10 20))" ) ) );
+  // Start with an M curve
+  QgsNurbsCurve curve;
+  QVERIFY( curve.fromWkt( QStringLiteral( "NURBSCURVE M(1, (0 0 10, 10 10 20))" ) ) );
 
-  QVERIFY( curveFromWkt.isMeasure() );
-  QVERIFY( !curveFromWkt.is3D() );
+  QVERIFY( curve.isMeasure() );
+  QVERIFY( !curve.is3D() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurveM );
+
+  // Drop M value
+  QVERIFY( curve.dropMValue() );
+  QVERIFY( !curve.isMeasure() );
+  QCOMPARE( curve.wkbType(), Qgis::WkbType::NurbsCurve );
+
+  // Dropping M again should fail
+  QVERIFY( !curve.dropMValue() );
 }
 
 void TestQgsNurbsCurve::toFromWkt()
