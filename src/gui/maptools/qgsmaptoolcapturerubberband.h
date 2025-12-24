@@ -17,6 +17,8 @@
 #define QGSMAPTOOLCAPTURERUBBERBAND_H
 
 
+#include <memory>
+
 #include "qgsgeometryrubberband.h"
 
 class QgsMapToolCaptureRubberBand;
@@ -125,7 +127,7 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
     QgsPointSequence mPoints;
     QVector<double> mWeights; //!< Weights for NURBS control points
     QgsPoint mFirstPolygonPoint;
-    QgsRubberBand *mControlPolygonRubberBand = nullptr;
+    std::unique_ptr<QgsRubberBand> mControlPolygonRubberBand;
 
     void updateControlPolygon();
 };

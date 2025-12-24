@@ -27,19 +27,16 @@
 
 QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType )
   : QgsGeometryRubberBand( mapCanvas, geomType )
+  , mControlPolygonRubberBand( std::make_unique<QgsRubberBand>( mapCanvas, Qgis::GeometryType::Line ) )
 {
   setVertexDrawingEnabled( false );
 
-  // Create control polygon rubberband for NURBS visualization
-  mControlPolygonRubberBand = new QgsRubberBand( mapCanvas, Qgis::GeometryType::Line );
-  QgsMapToolEdit::applyControlPolygonStyle( mControlPolygonRubberBand );
+  // Style control polygon rubberband for NURBS visualization
+  QgsMapToolEdit::applyControlPolygonStyle( mControlPolygonRubberBand.get() );
   mControlPolygonRubberBand->setVisible( false );
 }
 
-QgsMapToolCaptureRubberBand::~QgsMapToolCaptureRubberBand()
-{
-  delete mControlPolygonRubberBand;
-}
+QgsMapToolCaptureRubberBand::~QgsMapToolCaptureRubberBand() = default;
 
 QgsCurve *QgsMapToolCaptureRubberBand::curve()
 {
@@ -204,7 +201,7 @@ void QgsMapToolCaptureRubberBand::updateCurve()
 
   if ( geometryType() == Qgis::GeometryType::Polygon )
   {
-    std::unique_ptr<QgsCurvePolygon> geom( new QgsCurvePolygon );
+    auto geom = std::make_unique<QgsCurvePolygon>();
     geom->setExteriorRing( curve.release() );
     setGeometry( geom.release() );
   }
@@ -219,7 +216,7 @@ void QgsMapToolCaptureRubberBand::updateCurve()
 
 QgsCurve *QgsMapToolCaptureRubberBand::createLinearString()
 {
-  std::unique_ptr<QgsLineString> curve( new QgsLineString );
+  auto curve = std::make_unique<QgsLineString>();
   if ( geometryType() == Qgis::GeometryType::Polygon )
   {
     QgsPointSequence points = mPoints;
@@ -234,12 +231,12 @@ QgsCurve *QgsMapToolCaptureRubberBand::createLinearString()
 
 QgsCurve *QgsMapToolCaptureRubberBand::createCircularString()
 {
-  std::unique_ptr<QgsCircularString> curve( new QgsCircularString );
+  auto curve = std::make_unique<QgsCircularString>();
   curve->setPoints( mPoints );
   if ( geometryType() == Qgis::GeometryType::Polygon )
   {
     // add a linear string to close the polygon
-    std::unique_ptr<QgsCompoundCurve> polygonCurve( new QgsCompoundCurve );
+    auto polygonCurve = std::make_unique<QgsCompoundCurve>();
     polygonCurve->addVertex( mFirstPolygonPoint );
     if ( !mPoints.empty() )
       polygonCurve->addVertex( mPoints.first() );
@@ -320,7 +317,7 @@ QgsCurve *QgsMapToolCaptureRubberBand::createNurbsCurve()
   if ( geometryType() == Qgis::GeometryType::Polygon )
   {
     // For polygons, we need to close the curve
-    std::unique_ptr<QgsCompoundCurve> polygonCurve( new QgsCompoundCurve );
+    auto polygonCurve = std::make_unique<QgsCompoundCurve>();
     polygonCurve->addCurve( curve.release() );
     return polygonCurve.release();
   }
