@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsbezierdata.h"
 #include "qgsbeziermarker.h"
+#include "qgscompoundcurve.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
@@ -524,7 +525,7 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
         // Start dragging this handle independently
         mBezierDragHandleIndex = handleIdx;
         mBezierDragging = true;
-        mBezierMarker->highlightHandle( handleIdx );
+        mBezierMarker->setHighlightedHandle( handleIdx );
         emit messageEmitted( tr( "Bézier editing: drag to move handle, release to confirm" ), Qgis::MessageLevel::Info );
         return;
       }
@@ -538,7 +539,7 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
           // Alt+click on anchor: extend handles symmetrically (like creating new anchor)
           mBezierDragAnchorIndex = anchorIdx;
           mBezierDragging = true;
-          mBezierMarker->highlightAnchor( anchorIdx );
+          mBezierMarker->setHighlightedAnchor( anchorIdx );
           emit messageEmitted( tr( "Bézier editing: drag to extend handles symmetrically, release to confirm" ), Qgis::MessageLevel::Info );
         }
         else
@@ -546,7 +547,7 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
           // Normal click: start moving this anchor
           mBezierMoveAnchorIndex = anchorIdx;
           mBezierDragging = true;
-          mBezierMarker->highlightAnchor( anchorIdx );
+          mBezierMarker->setHighlightedAnchor( anchorIdx );
           emit messageEmitted( tr( "Bézier editing: drag to move anchor, release to confirm" ), Qgis::MessageLevel::Info );
         }
         return;
@@ -1520,14 +1521,14 @@ void QgsMapToolCapture::updateExtraSnapLayer()
       auto lineForSnap = std::make_unique<QgsLineString>();
 
       // Add all anchors for snapping
-      const QVector<QgsPoint> &anchors = mBezierData->anchors();
+      const QVector<QgsPoint> anchors = mBezierData->anchors();
       for ( const QgsPoint &pt : anchors )
       {
         lineForSnap->addVertex( pt );
       }
 
       // Add all handles for snapping
-      const QVector<QgsPoint> &handles = mBezierData->handles();
+      const QVector<QgsPoint> handles = mBezierData->handles();
       for ( const QgsPoint &pt : handles )
       {
         lineForSnap->addVertex( pt );
@@ -1654,8 +1655,8 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         // Clear highlights
         if ( mBezierMarker )
         {
-          mBezierMarker->highlightAnchor( -1 );
-          mBezierMarker->highlightHandle( -1 );
+          mBezierMarker->setHighlightedAnchor( -1 );
+          mBezierMarker->setHighlightedHandle( -1 );
           mBezierMarker->updateFromData( *mBezierData );
         }
 
@@ -1674,7 +1675,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mBezierData && mBezierData->anchorCount() >= 2 )
         {
           // Convert Poly-Bézier to NurbsCurve
-          QgsNurbsCurve *nurbsCurve = mBezierData->asNurbsCurve();
+          std::unique_ptr<QgsNurbsCurve> nurbsCurve = mBezierData->asNurbsCurve();
           if ( nurbsCurve )
           {
             // Transform to layer coordinates
@@ -1690,21 +1691,31 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                 }
                 catch ( QgsCsException & )
                 {
-                  delete nurbsCurve;
                   emit messageEmitted( tr( "Cannot transform the geometry to layer coordinates" ), Qgis::MessageLevel::Warning );
                   stopCapturing();
                   return;
                 }
               }
 
-              // Close for polygon if needed
-              if ( mode() == CapturePolygon )
-              {
-                // For polygon, we need to close the curve - add first anchor as last anchor
-                // The NurbsCurve from asNurbsCurve is already properly formed
-              }
+              std::unique_ptr<QgsCurve> curveToAdd;
 
-              std::unique_ptr<QgsCurve> curveToAdd( nurbsCurve );
+              // Close for polygon if needed
+              if ( mode() == CapturePolygon && !nurbsCurve->isClosed() )
+              {
+                // For polygon, wrap in compound curve and add closing segment
+                auto compound = std::make_unique<QgsCompoundCurve>();
+                compound->addCurve( nurbsCurve.release() );
+                // Add closing line segment from end to start
+                auto closingSegment = std::make_unique<QgsLineString>();
+                closingSegment->addVertex( compound->endPoint() );
+                closingSegment->addVertex( compound->startPoint() );
+                compound->addCurve( closingSegment.release() );
+                curveToAdd = std::move( compound );
+              }
+              else
+              {
+                curveToAdd.reset( nurbsCurve.release() );
+              }
               QgsGeometry g;
 
               if ( mode() == CaptureLine )
@@ -1715,7 +1726,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
               }
               else // CapturePolygon
               {
-                std::unique_ptr<QgsCurvePolygon> poly { new QgsCurvePolygon() };
+                auto poly = std::make_unique<QgsCurvePolygon>();
                 poly->setExteriorRing( curveToAdd.release() );
                 g = QgsGeometry( poly->clone() );
                 geometryCaptured( g );
@@ -1938,7 +1949,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           }
         }
         // curveToAdd is already set for NURBS curves, so we just use it
-        std::unique_ptr<QgsCurvePolygon> poly { new QgsCurvePolygon() };
+        auto poly = std::make_unique<QgsCurvePolygon>();
         poly->setExteriorRing( curveToAdd.release() );
         g = QgsGeometry( poly->clone() );
         geometryCaptured( g );
