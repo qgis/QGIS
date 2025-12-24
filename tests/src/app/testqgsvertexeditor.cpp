@@ -110,16 +110,16 @@ void TestQgsVertexEditor::initTestCase()
   mLayerNurbs = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurve?crs=EPSG:27700" ), QStringLiteral( "layer nurbs" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerNurbs->isValid() );
 
-  QgsNurbsCurve *nurbs = new QgsNurbsCurve(
+  auto nurbs = std::make_unique<QgsNurbsCurve>(
     QVector<QgsPoint> { QgsPoint( 0, 0 ), QgsPoint( 5, 10 ), QgsPoint( 10, 5 ), QgsPoint( 15, 10 ) },
     3,
     QVector<double> { 0, 0, 0, 0, 1, 1, 1, 1 },
     QVector<double> { 1.0, 2.0, 1.5, 1.0 }
   );
-  QgsCompoundCurve *cc = new QgsCompoundCurve();
-  cc->addCurve( nurbs );
+  auto cc = std::make_unique<QgsCompoundCurve>();
+  cc->addCurve( nurbs.release() );
   QgsFeature nurbsFeature;
-  nurbsFeature.setGeometry( QgsGeometry( cc ) );
+  nurbsFeature.setGeometry( QgsGeometry( cc.release() ) );
   mLayerNurbs->dataProvider()->addFeature( nurbsFeature );
   QCOMPARE( mLayerNurbs->featureCount(), 1 );
 }
