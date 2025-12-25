@@ -413,7 +413,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     // Set the request handler into the interface for plugins to manipulate it
     sServerInterface->setRequestHandler( &requestHandler );
 
-    // Initialize configfilepath so that is is available
+    // Initialize configfilepath so that it is available
     // before calling plugin methods
     // Note that plugins may still change that value using
     // setConfigFilePath() interface method
