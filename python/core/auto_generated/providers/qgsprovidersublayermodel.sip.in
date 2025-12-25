@@ -60,7 +60,7 @@ added by calling :py:func:`~addNonLayerItem`.
     };
 
     class NonLayerItem
-{
+    {
 %Docstring(signature="appended")
 Contains details for a non-sublayer item to include in a
 QgsProviderSublayerModel.
@@ -68,9 +68,6 @@ QgsProviderSublayerModel.
 .. versionadded:: 3.22
 %End
 
-%TypeHeaderCode
-#include "qgsprovidersublayermodel.h"
-%End
       public:
 
         QString type() const;

@@ -23,7 +23,7 @@ A layout item subclass that renders chart plots.
   public:
 
     class SeriesDetails
-{
+    {
 %Docstring(signature="appended")
 Chart series details covering all supported series types.
 
@@ -35,9 +35,6 @@ Chart series details covering all supported series types.
 .. versionadded:: 4.0
 %End
 
-%TypeHeaderCode
-#include "qgslayoutitemchart.h"
-%End
       public:
 
         explicit SeriesDetails( const QString &name = QString() );

@@ -26,16 +26,13 @@ Contains utility functions relating to Processing GUI components.
 %End
   public:
     class ResultLayerDetails
-{
+    {
 %Docstring(signature="appended")
 Contains details of a layer result from running an algorithm.
 
 .. versionadded:: 3.44
 %End
 
-%TypeHeaderCode
-#include "qgsprocessingguiutils.h"
-%End
       public:
         ResultLayerDetails( QgsMapLayer *layer /Transfer/ );
 %Docstring

@@ -18,6 +18,9 @@
 
 struct QgsMesh
 {
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
 
   enum ElementType
   {

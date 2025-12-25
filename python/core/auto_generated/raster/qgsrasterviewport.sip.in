@@ -12,9 +12,8 @@
 struct QgsRasterViewPort
 {
 %TypeHeaderCode
-#include <qgsrasterviewport.h>
+#include "qgsrasterviewport.h"
 %End
-
   QgsPointXY mTopLeftPoint;
 
   QgsPointXY mBottomRightPoint;

@@ -28,16 +28,13 @@ file.
   public:
 
     class UsageInformation
-{
+    {
 %Docstring(signature="appended")
 The UsageInformation class represents information about a field usage.
 
 .. versionadded:: 3.30
 %End
 
-%TypeHeaderCode
-#include "qgsrasterattributetable.h"
-%End
       public:
 
         QString description;
@@ -58,7 +55,7 @@ The UsageInformation class represents information about a field usage.
     };
 
     class Field
-{
+    {
 %Docstring(signature="appended")
 The Field class represents a Raster Attribute Table field, including its
 name, usage and type.
@@ -66,9 +63,6 @@ name, usage and type.
 .. versionadded:: 3.30
 %End
 
-%TypeHeaderCode
-#include "qgsrasterattributetable.h"
-%End
       public:
 
         Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QMetaType::Type type );
@@ -104,7 +98,7 @@ AlphaMin/AlphaMax) information.
     };
 
     class MinMaxClass
-{
+    {
 %Docstring(signature="appended")
 The Field class represents a Raster Attribute Table classification entry
 for a thematic Raster Attribute Table.
@@ -112,9 +106,6 @@ for a thematic Raster Attribute Table.
 .. versionadded:: 3.30
 %End
 
-%TypeHeaderCode
-#include "qgsrasterattributetable.h"
-%End
       public:
         QString name;
 

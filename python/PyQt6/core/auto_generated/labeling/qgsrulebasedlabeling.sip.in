@@ -24,14 +24,11 @@ Rule based labeling for a vector layer.
   public:
 
     class Rule
-{
+    {
 %Docstring(signature="appended")
 A child rule for QgsRuleBasedLabeling.
 %End
 
-%TypeHeaderCode
-#include "qgsrulebasedlabeling.h"
-%End
       public:
         Rule( QgsPalLayerSettings *settings /Transfer/, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
 %Docstring

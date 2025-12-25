@@ -46,7 +46,7 @@ implementing filters called from
 
 
     class CadConstraint
-{
+    {
 %Docstring(signature="appended")
 The CadConstraint is a class for all basic constraints
 (angle/distance/x/y). It contains all values (locked, value, relative)
@@ -57,9 +57,6 @@ and pointers to corresponding widgets.
    Relative is not mandatory since it is not used for distance.
 %End
 
-%TypeHeaderCode
-#include "qgsadvanceddigitizingdockwidget.h"
-%End
       public:
         enum LockMode /BaseType=IntEnum/
         {

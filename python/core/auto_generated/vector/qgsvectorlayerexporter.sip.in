@@ -71,16 +71,13 @@ source ``expression``.
     };
 
     class ExportOptions
-{
+    {
 %Docstring(signature="appended")
 Encapsulates options for use with QgsVectorLayerExporter.
 
 .. versionadded:: 3.44
 %End
 
-%TypeHeaderCode
-#include "qgsvectorlayerexporter.h"
-%End
       public:
 
         void setSelectedOnly( bool selected );
