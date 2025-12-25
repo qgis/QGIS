@@ -339,6 +339,7 @@ validateCertChain validates the given ``certificateChain``
          valid
 %End
 
+
     static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool trustRootCa = false );
 %Docstring
 validatePKIBundle validate the PKI bundle by checking the certificate
