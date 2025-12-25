@@ -83,7 +83,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double r
     std::vector<Stage*> readers;
     for (const std::string &f : tile->inputFilenames)
     {
-        readers.push_back(&manager->makeReader(f, ""));
+        readers.push_back(&makeReader(manager.get(), f));
     }
 
     std::vector<Stage*> last = readers;

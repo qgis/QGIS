@@ -22,14 +22,14 @@ struct FileDimInfo
     FileDimInfo()
     {}
 
-    FileDimInfo(const std::string& name) : name(name), extraDim(false)
+    FileDimInfo(const std::string& name) : name(name)
     {}
 
     std::string name;
-    pdal::Dimension::Type type;
-    int offset;
-    pdal::Dimension::Id dim;
-    bool extraDim;
+    pdal::Dimension::Type type {pdal::Dimension::Type::None};
+    int offset {0};
+    pdal::Dimension::Id dim {pdal::Dimension::Id::Unknown};
+    bool extraDim {false};
 };
 
 using DimInfoList = std::vector<FileDimInfo>;

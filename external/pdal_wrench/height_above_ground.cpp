@@ -1,5 +1,5 @@
 /*****************************************************************************
- *   Copyright (c) 2023, Lutra Consulting Ltd. and Hobu, Inc.                *
+ *   Copyright (c) 2025, Lutra Consulting Ltd. and Hobu, Inc.                *
  *                                                                           *
  *   All rights reserved.                                                    *
  *                                                                           *
@@ -19,6 +19,7 @@
 #include <pdal/util/ProgramArgs.hpp>
 #include <pdal/pdal_types.hpp>
 #include <pdal/Polygon.hpp>
+#include <pdal/PipelineWriter.hpp>
 
 #include <gdal_utils.h>
 
@@ -31,21 +32,22 @@ using namespace pdal;
 namespace fs = std::filesystem;
 
 
-void Translate::addArgs()
+void HeightAboveGround::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
     argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
-    programArgs.add("assign-crs", "Assigns CRS to data (no reprojection)", assignCrs);
-    programArgs.add("transform-crs", "Transforms (reprojects) data to another CRS", transformCrs);
-    programArgs.add("transform-coord-op", "Details on how to do the transform of coordinates when --transform-crs is used. "
-                    "It can be a PROJ pipeline or a WKT2 CoordinateOperation. "
-                    "When not specified, PROJ will pick the default transform.", transformCoordOp);
-    programArgs.add("transform-matrix", "A whitespace-delimited transformation matrix. "
-                    "The matrix is assumed to be presented in row-major order. "
-                    "Only matrices with sixteen elements are allowed.", transformMatrix);
+    argAlgorithm = &programArgs.add("algorithm", "Height Above Ground algorithm to use: nn (Nearest Neighbor) or delaunay (Delaunay).", algorithm, "nn");
+    argReplaceZWithHeightAboveGround = &programArgs.add("replace-z", "Replace Z dimension with height above ground (true/false).", replaceZWithHeightAboveGround, true);
+
+    // args - NN
+    argNNCount = &programArgs.add("nn-count", "The number of ground neighbors to consider when determining the height above ground for a non-ground point", nnCount, 1);
+    argNNMaxDistance = &programArgs.add("nn-max-distance", "Use only ground points within max_distance of non-ground point when performing neighbor interpolation.", nnMaxDistance, 0);
+
+    // args - Delaunay
+    argDelaunayCount = &programArgs.add("delaunay-count", "The number of ground neighbors to consider when determining the height above ground for a non-ground point.", delaunayCount, 10);
 }
 
-bool Translate::checkArgs()
+bool HeightAboveGround::checkArgs()
 {
     if (!argOutput->set())
     {
@@ -53,10 +55,9 @@ bool Translate::checkArgs()
         return false;
     }
 
-    // TODO: or use the same format as the reader?
     if (argOutputFormat->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz")
+        if (outputFormat != "las" && outputFormat != "laz" && outputFormat != "copc")
         {
             std::cerr << "unknown output format: " << outputFormat << std::endl;
             return false;
@@ -65,25 +66,41 @@ bool Translate::checkArgs()
     else
         outputFormat = "las";  // uncompressed by default
 
-    if (!transformCoordOp.empty() && transformCrs.empty())
+    if (!argAlgorithm->set())
     {
-        std::cerr << "Need to specify also --transform-crs when --transform-coord-op is used." << std::endl;
+        std::cerr << "missing algorithm" << std::endl;
         return false;
+    }
+    else
+    {
+        if (!(algorithm == "nn" || algorithm == "delaunay"))
+        {
+            std::cerr << "unknown algorithm: " << algorithm << std::endl;
+            return false;
+        }
+    }
+
+    if (algorithm == "delaunay" && (argNNMaxDistance->set() || argNNCount->set()))
+    {
+        std::cout << "nn-* arguments are not supported with delaunay algorithm" << std::endl;
+    }
+
+    if (algorithm == "nn" && (argDelaunayCount->set()))
+    {
+        std::cout << "delaunay-count argument is not supported with nn algorithm" << std::endl;
     }
 
     return true;
 }
 
 
-static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string assignCrs, std::string transformCrs, std::string transformCoordOp, std::string transformMatrix)
+static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string algorithm, bool replaceZWithHeightAboveGround, int nnCount, double nnMaxDistance, int delaunayCount)
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
     Options reader_opts;
-    if (!assignCrs.empty())
-        reader_opts.add(pdal::Option("override_srs", assignCrs));
 
-    Stage& r = makeReader(manager.get(), tile->inputFilenames[0], reader_opts);
+    Stage& r = makeReader( manager.get(), tile->inputFilenames[0], reader_opts );
 
     Stage *last = &r;
 
@@ -104,6 +121,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
             last = &manager->makeFilter( "filters.crop", *last, filter_opts);
         }
     }
+
     if (!tile->filterExpression.empty())
     {
         Options filter_opts;
@@ -111,56 +129,53 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         last = &manager->makeFilter( "filters.expression", *last, filter_opts);
     }
 
-    // optional reprojection
-    Stage* reproject = nullptr;
-    if (!transformCrs.empty())
+    // NN HAG filter
+    if (algorithm == "nn")
     {
-        Options transform_opts;
-        transform_opts.add(pdal::Option("out_srs", transformCrs));
-        if (!transformCoordOp.empty())
+        Options hag_nn_opts;
+
+        if (nnCount > 1)
         {
-            transform_opts.add(pdal::Option("coord_op", transformCoordOp));
-            reproject = &manager->makeFilter( "filters.projpipeline", *last, transform_opts);
+            hag_nn_opts.add(pdal::Option("count", nnCount));
         }
-        else
+
+        if (nnMaxDistance > 0)
         {
-            reproject = &manager->makeFilter( "filters.reprojection", *last, transform_opts);
+            hag_nn_opts.add(pdal::Option("max_distance", nnMaxDistance));
         }
-        last = reproject;
+
+        last = &manager->makeFilter( "filters.hag_nn", *last, hag_nn_opts);
     }
 
-    if (!transformMatrix.empty())
+    // Delaunay HAG filter
+    if (algorithm == "delaunay")
     {
-        Options matrix_opts;
-        matrix_opts.add(pdal::Option("matrix", transformMatrix));
-        Stage* matrixTransform = &manager->makeFilter( "filters.transformation", *last, matrix_opts);
-        last = matrixTransform;
+        Options hag_delaunay_opts;
+
+        if (delaunayCount > 0)
+        {
+            hag_delaunay_opts.add(pdal::Option("count", delaunayCount));
+        }
+
+        last = &manager->makeFilter( "filters.hag_delaunay", *last, hag_delaunay_opts);
     }
 
-    pdal::Options writer_opts;
-    if (!reproject)
+    if (replaceZWithHeightAboveGround)
     {
-        // let's use the same offset & scale & header & vlrs as the input
-        writer_opts.add(pdal::Option("forward", "all"));
-    }
-    else
-    {
-        // avoid adding offset as it probably wouldn't work
-        // TODO: maybe adjust scale as well - depending on the CRS
-        writer_opts.add(pdal::Option("forward", "header,scale,vlr"));
-        writer_opts.add(pdal::Option("offset_x", "auto"));
-        writer_opts.add(pdal::Option("offset_y", "auto"));
-        writer_opts.add(pdal::Option("offset_z", "auto"));
+        pdal::Options ferry_opts;
+        ferry_opts.add(pdal::Option("dimensions", "HeightAboveGround=>Z"));
+
+        last = &manager->makeFilter( "filters.ferry", *last, ferry_opts);
     }
 
-    makeWriter(manager.get(), tile->outputFilename, last, writer_opts);
+    makeWriter( manager.get(), tile->outputFilename, last);
 
     return manager;
 }
 
 
-void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
-{
+void HeightAboveGround::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+{   
     if (ends_with(inputFile, ".vpc"))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
@@ -189,23 +204,19 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
 
             tileOutputFiles.push_back(tile.outputFilename);
 
-            pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
+            pipelines.push_back(pipeline(&tile, algorithm, replaceZWithHeightAboveGround, nnCount, nnMaxDistance, delaunayCount));
         }
     }
     else
     {
-        if (ends_with(outputFile, ".copc.laz"))
-        {
-            isStreaming = false;
-        }
         ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
-        pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
+        pipelines.push_back(pipeline(&tile, algorithm, replaceZWithHeightAboveGround, nnCount, nnMaxDistance, delaunayCount));
     }
 }
 
-void Translate::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
+void HeightAboveGround::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;

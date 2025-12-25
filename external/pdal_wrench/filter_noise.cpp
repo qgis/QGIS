@@ -1,5 +1,5 @@
 /*****************************************************************************
- *   Copyright (c) 2023, Lutra Consulting Ltd. and Hobu, Inc.                *
+ *   Copyright (c) 2025, Lutra Consulting Ltd. and Hobu, Inc.                *
  *                                                                           *
  *   All rights reserved.                                                    *
  *                                                                           *
@@ -19,6 +19,7 @@
 #include <pdal/util/ProgramArgs.hpp>
 #include <pdal/pdal_types.hpp>
 #include <pdal/Polygon.hpp>
+#include <pdal/PipelineWriter.hpp>
 
 #include <gdal_utils.h>
 
@@ -30,33 +31,34 @@ using namespace pdal;
 
 namespace fs = std::filesystem;
 
-
-void Translate::addArgs()
+void FilterNoise::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
     argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
-    programArgs.add("assign-crs", "Assigns CRS to data (no reprojection)", assignCrs);
-    programArgs.add("transform-crs", "Transforms (reprojects) data to another CRS", transformCrs);
-    programArgs.add("transform-coord-op", "Details on how to do the transform of coordinates when --transform-crs is used. "
-                    "It can be a PROJ pipeline or a WKT2 CoordinateOperation. "
-                    "When not specified, PROJ will pick the default transform.", transformCoordOp);
-    programArgs.add("transform-matrix", "A whitespace-delimited transformation matrix. "
-                    "The matrix is assumed to be presented in row-major order. "
-                    "Only matrices with sixteen elements are allowed.", transformMatrix);
+    
+    argAlgorithm = &programArgs.add("algorithm", "Noise filtering algorithm to use: statistical or radius.", algorithm, "statistical");
+    argRemoveNoisePoints = &programArgs.add("remove-noise-points", "Remove noise points from the output.", removeNoisePoints, false);
+
+    // radius args
+    argRadiusMinK = &programArgs.add("radius-min-k", "Minimum number of neighbors in radius (radius algorithm only).", radiusMinK, 2.0);
+    argRadiusRadius = &programArgs.add("radius-radius", "Radius (radius method only).", radiusRadius, 1.0);
+
+    // statistical args
+    argStatisticalMeanK = &programArgs.add("statistical-mean-k", "Mean number of neighbors (statistical method only)", statisticalMeanK, 8);
+    argStatisticalMultiplier = &programArgs.add("statistical-multiplier", "Standard deviation threshold (statistical method only).", statisticalMultiplier, 2.0);
 }
 
-bool Translate::checkArgs()
+bool FilterNoise::checkArgs()
 {
-    if (!argOutput->set())
+     if (!argOutput->set())
     {
         std::cerr << "missing output" << std::endl;
         return false;
     }
 
-    // TODO: or use the same format as the reader?
     if (argOutputFormat->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz")
+        if (outputFormat != "las" && outputFormat != "laz" && outputFormat != "copc")
         {
             std::cerr << "unknown output format: " << outputFormat << std::endl;
             return false;
@@ -65,9 +67,29 @@ bool Translate::checkArgs()
     else
         outputFormat = "las";  // uncompressed by default
 
-    if (!transformCoordOp.empty() && transformCrs.empty())
+    if (!argAlgorithm->set())
     {
-        std::cerr << "Need to specify also --transform-crs when --transform-coord-op is used." << std::endl;
+        std::cerr << "missing algorithm" << std::endl;
+        return false;
+    }
+    else
+    {
+        if (!(algorithm == "statistical" || algorithm == "radius"))
+        {
+            std::cerr << "unknown algorithm: " << algorithm << std::endl;
+            return false;
+        }
+    }
+
+    if (algorithm == "radius" && (argStatisticalMeanK->set() || argStatisticalMultiplier->set()))
+    {
+        std::cerr << "statistical- arguments are not supported with radius algorithm" << std::endl;
+        return false;
+    }
+
+    if (algorithm == "statistical" && (argRadiusMinK->set() || argRadiusRadius->set()))
+    {
+        std::cerr << "radius- arguments are not supported with statistical algorithm" << std::endl;
         return false;
     }
 
@@ -75,15 +97,11 @@ bool Translate::checkArgs()
 }
 
 
-static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string assignCrs, std::string transformCrs, std::string transformCoordOp, std::string transformMatrix)
+static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, pdal::Options &noiseFilterOptions, bool removeNoisePoints)
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Options reader_opts;
-    if (!assignCrs.empty())
-        reader_opts.add(pdal::Option("override_srs", assignCrs));
-
-    Stage& r = makeReader(manager.get(), tile->inputFilenames[0], reader_opts);
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 
@@ -101,66 +119,47 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         else
         {
             // Reader can't do the filtering - do it with a filter
-            last = &manager->makeFilter( "filters.crop", *last, filter_opts);
+            last = &manager->makeFilter("filters.crop", *last, filter_opts);
         }
     }
+
     if (!tile->filterExpression.empty())
     {
         Options filter_opts;
         filter_opts.add(pdal::Option("expression", tile->filterExpression));
+        last = &manager->makeFilter("filters.expression", *last, filter_opts);
+    }
+
+    last = &manager->makeFilter("filters.outlier", *last, noiseFilterOptions);
+
+    if (removeNoisePoints)
+    {
+        Options filter_opts;
+        filter_opts.add(pdal::Option("expression", "Classification != 7"));
         last = &manager->makeFilter( "filters.expression", *last, filter_opts);
     }
-
-    // optional reprojection
-    Stage* reproject = nullptr;
-    if (!transformCrs.empty())
-    {
-        Options transform_opts;
-        transform_opts.add(pdal::Option("out_srs", transformCrs));
-        if (!transformCoordOp.empty())
-        {
-            transform_opts.add(pdal::Option("coord_op", transformCoordOp));
-            reproject = &manager->makeFilter( "filters.projpipeline", *last, transform_opts);
-        }
-        else
-        {
-            reproject = &manager->makeFilter( "filters.reprojection", *last, transform_opts);
-        }
-        last = reproject;
-    }
-
-    if (!transformMatrix.empty())
-    {
-        Options matrix_opts;
-        matrix_opts.add(pdal::Option("matrix", transformMatrix));
-        Stage* matrixTransform = &manager->makeFilter( "filters.transformation", *last, matrix_opts);
-        last = matrixTransform;
-    }
-
-    pdal::Options writer_opts;
-    if (!reproject)
-    {
-        // let's use the same offset & scale & header & vlrs as the input
-        writer_opts.add(pdal::Option("forward", "all"));
-    }
-    else
-    {
-        // avoid adding offset as it probably wouldn't work
-        // TODO: maybe adjust scale as well - depending on the CRS
-        writer_opts.add(pdal::Option("forward", "header,scale,vlr"));
-        writer_opts.add(pdal::Option("offset_x", "auto"));
-        writer_opts.add(pdal::Option("offset_y", "auto"));
-        writer_opts.add(pdal::Option("offset_z", "auto"));
-    }
-
-    makeWriter(manager.get(), tile->outputFilename, last, writer_opts);
+ 
+    makeWriter(manager.get(), tile->outputFilename, last);
 
     return manager;
 }
 
+void FilterNoise::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
+{   
+    pdal::Options noiseFilterOptions;
+    noiseFilterOptions.add(pdal::Option("method", algorithm));
 
-void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
-{
+    if (algorithm == "radius")
+    {
+        noiseFilterOptions.add(pdal::Option("min_k", radiusMinK));
+        noiseFilterOptions.add(pdal::Option("radius", radiusRadius));
+    }
+    else if (algorithm == "statistical")
+    {
+        noiseFilterOptions.add(pdal::Option("mean_k", statisticalMeanK));
+        noiseFilterOptions.add(pdal::Option("multiplier", statisticalMultiplier));
+    }
+
     if (ends_with(inputFile, ".vpc"))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
@@ -189,23 +188,20 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
 
             tileOutputFiles.push_back(tile.outputFilename);
 
-            pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
+            pipelines.push_back(pipeline(&tile, noiseFilterOptions, removeNoisePoints));
         }
     }
     else
     {
-        if (ends_with(outputFile, ".copc.laz"))
-        {
-            isStreaming = false;
-        }
         ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
-        pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
+
+        pipelines.push_back(pipeline(&tile, noiseFilterOptions, removeNoisePoints));
     }
 }
 
-void Translate::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
+void FilterNoise::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (tileOutputFiles.empty())
         return;

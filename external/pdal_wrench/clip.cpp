@@ -116,7 +116,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const pd
 
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Stage& r = manager->makeReader( tile->inputFilenames[0], "");
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 
@@ -146,9 +146,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const pd
 
     last = &manager->makeFilter( "filters.crop", *last, crop_opts );
 
-    pdal::Options writer_opts;
-    writer_opts.add(pdal::Option("forward", "all"));
-    manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
+    makeWriter(manager.get(), tile->outputFilename, last);
 
     return manager;
 }
@@ -222,29 +220,5 @@ void Clip::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
     if (tileOutputFiles.empty())
         return;
 
-    // now build a new output VPC
-    std::vector<std::string> args;
-    args.push_back("--output=" + outputFile);
-    for (std::string f : tileOutputFiles)
-        args.push_back(f);
-    
-    if (ends_with(outputFile, ".vpc"))
-    {
-        // now build a new output VPC
-        buildVpc(args);
-    }
-    else
-    {
-        // merge all the output files into a single file        
-        Merge merge;
-        // for copc set isStreaming to false
-        if (ends_with(outputFile, ".copc.laz"))
-        {
-            merge.isStreaming = false;
-        }
-        runAlg(args, merge);
-
-        // remove files as they are not needed anymore - they are merged
-        removeFiles(tileOutputFiles, true);
-    }
+    buildOutput(outputFile, tileOutputFiles);
 }
