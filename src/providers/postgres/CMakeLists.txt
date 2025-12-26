@@ -29,6 +29,8 @@ if (WITH_GUI)
     raster/qgspostgresrastertemporalsettingswidget.cpp
     qgspostgresutils.cpp
     qgspostgresimportprojectdialog.cpp
+    qgspostgresprojectversionsdialog.cpp
+    qgspostgresprojectversionsmodel.cpp
   )
 
   set(PG_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgspostgresrastertemporalsettingswidgetbase.ui)

@@ -15,14 +15,16 @@
 #include "qgspostgresprojectstoragedialog.h"
 
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
+#include "qgspostgresprojectversionsdialog.h"
+#include "qgspostgresutils.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 
 #include <QMenu>
-#include <QMessageBox>
 #include <QPushButton>
 
 #include "moc_qgspostgresprojectstoragedialog.cpp"
@@ -42,17 +44,37 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   btnManageProjects->setMenu( menuManageProjects );
   buttonBox->addButton( btnManageProjects, QDialogButtonBox::ActionRole );
 
+  mVersionsTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mVersionsTableView->setSelectionMode( QAbstractItemView::SingleSelection );
+
+  mVersionsModel = new QgsPostgresProjectVersionsModel( QString(), this );
+  mVersionsTableView->setModel( mVersionsModel );
+
+  connect( mVersionsModel, &QAbstractTableModel::modelReset, this, [this] {
+    mVersionsTableView->resizeColumnsToContents();
+    mVersionsTableView->selectRow( 0 );
+  } );
+
   if ( saving )
   {
     setWindowTitle( tr( "Save project to PostgreSQL" ) );
     mCboProject->setEditable( true );
+    mGroupBoxVersions->setVisible( false );
   }
   else
   {
     setWindowTitle( tr( "Load project from PostgreSQL" ) );
+    mLabelProjectVersions->setVisible( false );
+    mEnableProjectVersions->setVisible( false );
+
+    mGroupBoxVersions->setCollapsed( true );
   }
 
   connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateSchemas );
+
+  connect( mCboSchema, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::onSchemaChanged );
+
+  connect( mEnableProjectVersions, &QCheckBox::clicked, this, &QgsPostgresProjectStorageDialog::setupQgisProjectVersioning );
 
   mLblProjectsNotAllowed->setVisible( false );
 
@@ -89,6 +111,8 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
 {
   mCboSchema->clear();
   mCboProject->clear();
+
+  mVersionsModel->setConnection( mCboConnection->currentText() );
 
   QString name = mCboConnection->currentText();
   QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
@@ -163,6 +187,13 @@ void QgsPostgresProjectStorageDialog::onOK()
 void QgsPostgresProjectStorageDialog::projectChanged()
 {
   mActionRemoveProject->setEnabled( mCboProject->count() != 0 && mExistingProjects.contains( mCboProject->currentText() ) );
+
+  if ( !mCboProject->currentText().isEmpty() )
+  {
+    QgsTemporaryCursorOverride override( Qt::WaitCursor );
+
+    mVersionsModel->populateVersions( mCboSchema->currentText(), mCboProject->currentText() );
+  }
 }
 
 void QgsPostgresProjectStorageDialog::removeProject()
@@ -180,9 +211,91 @@ void QgsPostgresProjectStorageDialog::removeProject()
 QString QgsPostgresProjectStorageDialog::currentProjectUri( bool schemaOnly )
 {
   QgsPostgresProjectUri postUri;
-  postUri.connInfo = QgsPostgresConn::connUri( mCboConnection->currentText() );
-  postUri.schemaName = mCboSchema->currentText();
-  if ( !schemaOnly )
-    postUri.projectName = mCboProject->currentText();
+
+  // either project is empty (schema uri is requested) or nothig from versions is selected - return simple uri
+  if ( mCboProject->currentText().isEmpty() || mVersionsModel->rowCount() == 0 )
+  {
+    postUri.connInfo = QgsPostgresConn::connUri( mCboConnection->currentText() );
+    postUri.schemaName = mCboSchema->currentText();
+    if ( !schemaOnly )
+      postUri.projectName = mCboProject->currentText();
+  }
+  else
+  {
+    postUri = mVersionsModel->projectUriForRow( mVersionsTableView->currentIndex().row() );
+  }
+
   return QgsPostgresProjectStorage::encodeUri( postUri );
+}
+
+void QgsPostgresProjectStorageDialog::onSchemaChanged()
+{
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
+
+  QString name = mCboConnection->currentText();
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), false );
+  if ( !conn )
+  {
+    QMessageBox::critical( this, tr( "Error" ), tr( "Connection failed" ) + "\n" + QgsPostgresConn::connectionInfo( uri, false ) );
+    return;
+  }
+
+  bool versioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mCboSchema->currentText() );
+
+  conn->unref();
+
+  QgsSignalBlocker( mEnableProjectVersions )->setChecked( versioningEnabled );
+  mEnableProjectVersions->setEnabled( !versioningEnabled );
+
+  mGroupBoxVersions->setEnabled( versioningEnabled );
+}
+
+void QgsPostgresProjectStorageDialog::setupQgisProjectVersioning()
+{
+  if ( mEnableProjectVersions->isChecked() )
+  {
+    QMessageBox::StandardButton result = QgsPostgresProjectStorageDialog::questionAllowProjectVersioning( this, mCboSchema->currentText() );
+
+    if ( result == QMessageBox::StandardButton::Yes )
+    {
+      QgsTemporaryCursorOverride override( Qt::WaitCursor );
+
+      QString name = mCboConnection->currentText();
+      QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
+
+      QgsPostgresConn *conn = QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), false );
+      if ( !conn )
+      {
+        QMessageBox::critical( this, tr( "Error" ), tr( "Connection failed" ) + "\n" + QgsPostgresConn::connectionInfo( uri, false ) );
+        return;
+      }
+
+      if ( !QgsPostgresUtils::createProjectsTable( conn, mCboSchema->currentText() ) )
+      {
+        QMessageBox::critical( this, tr( "Error" ), tr( "Could not create qgis_projects table." ) );
+        return;
+      }
+
+      bool success = QgsPostgresUtils::enableQgisProjectVersioning( conn, mCboSchema->currentText() );
+
+      if ( !success )
+      {
+        QMessageBox::critical( this, tr( "Error" ), tr( "Could not setup QGIS project versioning." ) );
+        return;
+      }
+
+      mEnableProjectVersions->setEnabled( false );
+    }
+    else
+    {
+      QgsSignalBlocker( mEnableProjectVersions )->setChecked( false );
+    }
+  }
+}
+
+QMessageBox::StandardButton QgsPostgresProjectStorageDialog::questionAllowProjectVersioning( QWidget *parent, const QString &schemaName )
+{
+  return QMessageBox::question( parent, tr( "Enable versioning of QGIS projects" ), tr( "Do you want to enable versioning of QGIS projects in the schema `%1`?\nThis will create new table in the schema and store older versions of QGIS projects there." ).arg( schemaName ) );
 }
