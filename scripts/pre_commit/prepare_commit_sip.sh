@@ -69,6 +69,10 @@ for root_dir in python python/PyQt6; do
         fi
         rm "$m"
 
+        if ! [ -f "$py_m" ]; then
+          continue
+        fi
+
         if ! cmp -s "$py_out" "$py_m" || ! git ls-files --error-unmatch "$py_out" > /dev/null 2>&1; then
           echo "$py_out is not up to date or is not staged for commit"
           cp "$py_m" "$py_out"

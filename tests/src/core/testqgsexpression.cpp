@@ -1880,6 +1880,27 @@ class TestQgsExpression : public QObject
       QTest::newRow( "substr_count case sensitivity" ) << "substr_count('BANANA', 'an')" << false << QVariant( 0 );
       QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
       QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
+      // unaccent() tests aligned with PostgreSQL's contrib/unaccent/sql/unaccent.sql and some more tests
+      // Source: https://raw.githubusercontent.com/postgres/postgres/refs/heads/master/contrib/unaccent/sql/unaccent.sql
+      QTest::newRow( "unaccent basic french" ) << "unaccent('Hôtel crème brûlée')" << false << QVariant( "Hotel creme brulee" );
+      QTest::newRow( "unaccent basic romanian" ) << "unaccent('Românește')" << false << QVariant( "Romaneste" );
+      QTest::newRow( "unaccent ligatures and Polish" ) << "unaccent('Æsir & Œuvre, Łódź')" << false << QVariant( "AEsir & OEuvre, Lodz" );
+      QTest::newRow( "unaccent lowercase accents" ) << "unaccent('crème brûlée')" << false << QVariant( "creme brulee" );
+      QTest::newRow( "unaccent special letters" ) << "unaccent('straße, Łódź')" << false << QVariant( "strasse, Lodz" );
+      QTest::newRow( "unaccent noop ascii" ) << "unaccent('plain ASCII')" << false << QVariant( "plain ASCII" );
+      QTest::newRow( "unaccent empty" ) << "unaccent('')" << false << QVariant( "" );
+      QTest::newRow( "unaccent null" ) << "unaccent(NULL)" << false << QVariant();
+      QTest::newRow( "unaccent cyrillic small yo" ) << "unaccent('ёлка')" << false << QVariant( "елка" );
+      QTest::newRow( "unaccent cyrillic Cyrillic capital yo: Ё → Е" ) << "unaccent('ЁЖИК')" << false << QVariant( "ЕЖИК" );
+      QTest::newRow( "unaccent modifier symbols" ) << "unaccent('˃˖˗˜')" << false << QVariant( ">+-~" );
+      QTest::newRow( "unaccent combining grave" ) << "unaccent('À')" << false << QVariant( "A" );
+      QTest::newRow( "unaccent degree celsius fahrenheit" ) << "unaccent('℃℉')" << false << QVariant( "°C°F" );
+      QTest::newRow( "unaccent sound recording copyright ℗ → P" ) << "unaccent('℗')" << false << QVariant( "(P)" );
+      QTest::newRow( "unaccent vulgar fraction" ) << "unaccent('1½')" << false << QVariant( "1 1/2" );
+      QTest::newRow( "unaccent quotation mark variant" ) << "unaccent('〝')" << false << QVariant( "\"" );
+      QTest::newRow( "unaccent blackletter H" ) << "unaccent('ℌ')" << false << QVariant( "H" );
+      QTest::newRow( "unaccent fullwidth number sign FE5F" ) << "unaccent('﹟')" << false << QVariant( "#" );
+      QTest::newRow( "unaccent fullwidth hash FF03" ) << "unaccent('＃')" << false << QVariant( "#" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
@@ -2134,14 +2155,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "color grayscale average object" ) << "color_grayscale_average(color_rgbf(0.6,0.5,0.1))" << false << QVariant( QColor::fromRgbF( 0.4, 0.4, 0.4 ) );
       QTest::newRow( "color grayscale average cmyk" ) << "color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))" << false << QVariant( QColor::fromCmykF( 0.4, 0.4, 0.4, 0.8 ) );
       QTest::newRow( "color mix rgb" ) << "color_mix_rgb('0,0,0,100','255,255,255',0.5)" << false << QVariant( "127,127,127,177" );
-
-// looks like way color are rounded has changed between Qt 5 and 6
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,177" );
-#else
       QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,178" );
-#endif
-
       QTest::newRow( "color mix mixed types" ) << "color_mix('0,0,0,100',color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
       QTest::newRow( "color mix mixed color types" ) << "color_mix(color_cmykf(1.0,1.0,1.0,1.0),color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
       QTest::newRow( "color mix cmyk" ) << "color_mix(color_cmykf(0.9,0.9,0.9,0.9),color_cmykf(0.1,0.1,0.1,0.1),0.5)" << false << QVariant( QColor::fromCmykF( 0.5, 0.5, 0.5, 0.5 ) );

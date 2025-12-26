@@ -104,11 +104,7 @@ void TestQgsLayout3DMap::testBasic()
   map3dItem->setMapSettings( map );
   l.addLayoutItem( map3dItem );
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
-#else
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
-#endif
 
   QVERIFY( !map->isTemporal() );
 
@@ -118,11 +114,7 @@ void TestQgsLayout3DMap::testBasic()
 
   map3dItem->refresh();
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
-#else
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
-#endif
 
   QVERIFY( map->isTemporal() );
   QCOMPARE( map->temporalRange(), QgsDateTimeRange( begin, end ) );

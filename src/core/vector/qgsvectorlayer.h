@@ -1377,31 +1377,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QList<QgsPointXY> &ring ) SIP_DEPRECATED;
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-
-    /**
-     * Adds a new part polygon to a multipart feature
-     * \returns Qgis::GeometryOperationResult
-     *
-     * - Success
-     * - LayerNotEditable
-     * - SelectionIsEmpty
-     * - SelectionIsGreaterThanOne
-     * - AddPartSelectedGeometryNotFound
-     * - AddPartNotMultiGeometry
-     * - InvalidBaseGeometry
-     * - InvalidInputGeometryType
-     *
-     * \note available in Python bindings as addPartV2
-     * \note Calls to addPart() are only valid for layers in which edits have been enabled
-     * by a call to startEditing(). Changes made to features using this method are not committed
-     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
-     * changes can be discarded by calling rollBack().
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
-     */
-    Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &ring ) SIP_PYNAME( addPartV2 ) SIP_DEPRECATED;
-#endif
-
     /**
      * Adds a new part polygon to a multipart feature
      * \returns Qgis::GeometryOperationResult

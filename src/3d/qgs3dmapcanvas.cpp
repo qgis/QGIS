@@ -25,21 +25,17 @@
 #include "qgstemporalcontroller.h"
 #include "qgswindow3dengine.h"
 
+#include <QTimer>
 #include <Qt3DCore/QAspectEngine>
-
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DCore/QCoreAspect>
-#endif
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QRenderAspect>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QInputSettings>
-#include <Qt3DLogic/QLogicAspect>
 #include <Qt3DLogic/QFrameAction>
-#include <QTimer>
+#include <Qt3DLogic/QLogicAspect>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QRenderSettings>
 
 #include "moc_qgs3dmapcanvas.cpp"
-
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -54,9 +50,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   setSurfaceType( QSurface::OpenGLSurface );
 
   // register aspects
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   m_aspectEngine->registerAspect( new Qt3DCore::QCoreAspect );
-#endif
   m_aspectEngine->registerAspect( m_renderAspect );
   m_aspectEngine->registerAspect( m_inputAspect );
   m_aspectEngine->registerAspect( m_logicAspect );

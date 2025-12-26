@@ -74,11 +74,6 @@ class TestQgsCompositionConverter : public QgsTest
     void importComposerTemplateAttributeTable();
 
     /**
-     * Test import HTML from a composer template
-     */
-    void importComposerTemplateHtml();
-
-    /**
      * Test import label from a composer template
      */
     void importComposerTemplateLabel();
@@ -466,34 +461,6 @@ void TestQgsCompositionConverter::importComposerTemplateAttributeTable()
   QGSVERIFYLAYOUTCHECK( "importComposerTemplateAttributeTable_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 }
 
-void TestQgsCompositionConverter::importComposerTemplateHtml()
-{
-  if ( !Qgis::hasQtWebkit() )
-  {
-    QSKIP( "This test requires a build with QtWebkit", SkipSingle );
-  }
-
-  QDomElement composerElem( loadComposer( QStringLiteral( "2x_template_html.qpt" ) ) );
-  QgsProject project;
-  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
-  QDomElement docElem = composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
-  std::unique_ptr<QgsPrintLayout> layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-
-  QVERIFY( layout.get() );
-  QCOMPARE( layout->pageCollection()->pageCount(), 7 );
-
-  // Check the HTML
-  QList<QgsLayoutItemHtml *> items;
-  layout->layoutObjects<QgsLayoutItemHtml>( items );
-  QVERIFY( items.size() > 0 );
-  const QgsLayoutItemHtml *html = items.at( 0 );
-  QVERIFY( html );
-  QCOMPARE( html->contentMode(), QgsLayoutItemHtml::ContentMode::ManualHtml );
-  QCOMPARE( html->html(), QStringLiteral( "<div style=\"height:5000px; font-family: QGIS Vera Sans; background-color:green; color:white;\">aaaaA</div>\t\n" ) );
-
-  QGSVERIFYLAYOUTCHECK( "importComposerTemplateHtml_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
-}
-
 void TestQgsCompositionConverter::importComposerTemplateScaleBar()
 {
   QDomElement composerElem( loadComposer( QStringLiteral( "2x_template_scalebar.qpt" ) ) );
@@ -672,14 +639,7 @@ void TestQgsCompositionConverter::importComposerTemplate()
   }
 
   QGSVERIFYLAYOUTCHECK( "importComposerTemplate_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
-  if ( Qgis::hasQtWebkit() )
-  {
-    QGSVERIFYLAYOUTCHECK( "importComposerTemplate_1", layout.get(), 1, 0, renderedPageSize( layout.get(), 1 ), 0 );
-  }
-  else
-  {
-    QGSVERIFYLAYOUTCHECK( "importComposerTemplate_1_nowebkit", layout.get(), 1, 0, renderedPageSize( layout.get(), 1 ), 0 );
-  }
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplate_1_nowebkit", layout.get(), 1, 0, renderedPageSize( layout.get(), 1 ), 0 );
 }
 
 void TestQgsCompositionConverter::importComposerAtlas()

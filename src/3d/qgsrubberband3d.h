@@ -53,20 +53,13 @@ class QgsGeoTransform;
 namespace Qt3DCore
 {
   class QEntity;
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   class QBuffer;
   class QGeometry;
   class QAttribute;
-#endif
 } // namespace Qt3DCore
 
 namespace Qt3DRender
 {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  class QBuffer;
-  class QGeometry;
-  class QAttribute;
-#endif
   class QGeometryRenderer;
 } // namespace Qt3DRender
 
@@ -253,15 +246,9 @@ class _3D_EXPORT QgsRubberBand3D
 
     // all these are owned by mLineEntity
     Qt3DRender::QGeometryRenderer *mLineGeometryRenderer = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QGeometry *mLineGeometry = nullptr;
-    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QAttribute *mIndexAttribute = nullptr;
-#else
     Qt3DCore::QGeometry *mLineGeometry = nullptr;
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mIndexAttribute = nullptr;
-#endif
     QgsLineMaterial *mLineMaterial = nullptr;
 
     // and these are owned by mMarkerEntity

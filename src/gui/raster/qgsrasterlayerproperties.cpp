@@ -30,6 +30,7 @@
 #include "qgsexpressionfinder.h"
 #include "qgsfileutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgshillshaderendererwidget.h"
 #include "qgshuesaturationfilter.h"
 #include "qgsloadrasterattributetabledialog.h"
@@ -71,33 +72,28 @@
 #include "qgswebframe.h"
 #include "qgswebview.h"
 
-#include "moc_qgsrasterlayerproperties.cpp"
-
-#if WITH_QTWEBKIT
-#include <QWebElement>
-#endif
-#include "qgshelp.h"
-
+#include <QColorDialog>
 #include <QDesktopServices>
-#include <QTableWidgetItem>
-#include <QHeaderView>
-#include <QTextStream>
 #include <QFile>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QPainter>
+#include <QHeaderView>
 #include <QLinearGradient>
+#include <QList>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
-#include <QColorDialog>
-#include <QList>
-#include <QMouseEvent>
-#include <QVector>
-#include <QUrl>
-#include <QMenu>
-#include <QScreen>
-#include <QRegularExpressionValidator>
 #include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QScreen>
+#include <QTableWidgetItem>
+#include <QTextStream>
+#include <QUrl>
+#include <QVector>
+
+#include "moc_qgsrasterlayerproperties.cpp"
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "RasterLayerProperties" ), parent, fl )
@@ -480,23 +476,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       mBackgroundLayerCheckBox->hide();
     }
   }
-
-#ifdef WITH_QTWEBKIT
-  // Setup information tab
-
-  const int horizontalDpi = logicalDpiX();
-
-  // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
-  if ( horizontalDpi > 96 )
-  {
-    mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
-  }
-  mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
-  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsRasterLayerProperties::openUrl );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-
-#endif
 
   initializeDataDefinedButton( mRasterTransparencyWidget->mOpacityDDBtn, QgsRasterPipe::Property::RendererOpacity );
 
@@ -1383,12 +1362,6 @@ void QgsRasterLayerProperties::initMapTipPreview()
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
   mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
-#if WITH_QTWEBKIT
-  mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself
-  mMapTipPreview->setContextMenuPolicy( Qt::NoContextMenu );                     //No context menu is allowed if you don't need it
-  connect( mMapTipPreview, &QWebView::loadFinished, this, &QgsRasterLayerProperties::resizeMapTip );
-#endif
-
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
@@ -1413,19 +1386,5 @@ void QgsRasterLayerProperties::resizeMapTip()
 {
   // Ensure the map tip is not bigger than the container
   mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
-#if WITH_QTWEBKIT
-  // Get the content size
-  const QWebElement container = mMapTipPreview->page()->mainFrame()->findFirstElement(
-    QStringLiteral( "#QgsWebViewContainer" )
-  );
-  const int width = container.geometry().width();
-  const int height = container.geometry().height();
-  mMapTipPreview->resize( width, height );
-
-  // Move the map tip to the center of the container
-  mMapTipPreview->move( ( mMapTipPreviewContainer->width() - mMapTipPreview->width() ) / 2, ( mMapTipPreviewContainer->height() - mMapTipPreview->height() ) / 2 );
-
-#else
   mMapTipPreview->adjustSize();
-#endif
 }

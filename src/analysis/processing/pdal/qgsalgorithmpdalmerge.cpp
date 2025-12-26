@@ -106,9 +106,6 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   }
 
   QTextStream out( &listFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  out.setCodec( "UTF-8" );
-#endif
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
     out << layer->source() << "\n";

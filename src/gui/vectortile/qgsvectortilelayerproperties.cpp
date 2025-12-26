@@ -71,22 +71,6 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
   mSourceGroupBox->hide();
 
-#ifdef WITH_QTWEBKIT
-  // Setup information tab
-
-  const int horizontalDpi = logicalDpiX();
-
-  // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
-  if ( horizontalDpi > 96 )
-  {
-    mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
-  }
-  mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
-  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsVectorTileLayerProperties::openUrl );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-
-#endif
   mOptsPage_Information->setContentsMargins( 0, 0, 0, 0 );
 
   QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
@@ -269,9 +253,6 @@ void QgsVectorTileLayerProperties::loadStyle()
       else
       {
         QTextStream in( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-        in.setCodec( "UTF-8" );
-#endif
         const QString content = in.readAll();
 
         QgsMapBoxGlStyleConversionContext context;

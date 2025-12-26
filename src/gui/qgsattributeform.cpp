@@ -2361,9 +2361,6 @@ void QgsAttributeForm::initPython()
           {
             // Read it into a string
             QTextStream inf( inputFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-            inf.setCodec( "UTF-8" );
-#endif
             initCode = inf.readAll();
             inputFile->close();
           }

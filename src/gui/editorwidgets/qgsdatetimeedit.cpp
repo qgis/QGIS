@@ -28,22 +28,13 @@
 #include "moc_qgsdatetimeedit.cpp"
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : QgsDateTimeEdit( QDateTime(), QMetaType::Type::QDateTime, parent )
-#else
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
-#endif
 {
 }
 
 ///@cond PRIVATE
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
-#else
-QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
-  : QDateTimeEdit( var, parserType, parent )
-#endif
   , mNullRepresentation( QgsApplication::nullRepresentation() )
 {
   const QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
@@ -141,11 +132,7 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     if ( calendarPopup() )
     {
       QStyleOptionComboBox optCombo;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      optCombo.init( this );
-#else
       optCombo.initFrom( this );
-#endif
       optCombo.editable = true;
       optCombo.subControls = QStyle::SC_All;
       control = style()->hitTestComplexControl( QStyle::CC_ComboBox, &optCombo, event->pos(), this );
@@ -423,11 +410,7 @@ QDate QgsDateTimeEdit::date() const
 //
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : QgsDateTimeEdit( QTime(), QMetaType::Type::QTime, parent )
-#else
   : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
-#endif
 {
 }
 
@@ -463,11 +446,7 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 //
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : QgsDateTimeEdit( QDate(), QMetaType::Type::QDate, parent )
-#else
   : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
-#endif
 {
 }
 

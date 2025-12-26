@@ -646,7 +646,7 @@ int QgsMapToolEditBlankSegmentsBase::getClosestBlankSegmentIndex( const QPointF 
       {
         projectedPoint( blankSegment->pointAt( iPoint - 1 ), blankSegment->pointAt( iPoint ), point, d, status );
       }
-      catch ( std::invalid_argument e )
+      catch ( std::invalid_argument &e )
       {
         QgsDebugError( e.what() );
         continue;
@@ -830,7 +830,7 @@ void QgsMapToolEditBlankSegmentsBase::updateAttribute()
       QgsBlankSegmentUtils::BlankSegments &segments = rings[ringIndex];
       segments << startEndDistance;
     }
-    catch ( std::invalid_argument e )
+    catch ( std::invalid_argument &e )
     {
       QgsDebugError( e.what() );
       return;
@@ -989,7 +989,7 @@ void QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::setPoints( int par
         mNeedSwap = true;
       }
     }
-    catch ( std::invalid_argument e )
+    catch ( std::invalid_argument &e )
     {
       QgsDebugError( e.what() );
     }
@@ -1015,7 +1015,7 @@ void QgsMapToolEditBlankSegmentsBase::BlankSegmentRubberBand::updatePoints()
       const QgsPointXY mapPoint = m2p.toMapCoordinates( point.x(), point.y() );
       addPoint( mapPoint, iPoint == pointsCount() - 1 ); // update only last one
     }
-    catch ( std::invalid_argument e )
+    catch ( std::invalid_argument &e )
     {
       QgsDebugError( e.what() );
     }

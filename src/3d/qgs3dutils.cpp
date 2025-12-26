@@ -54,13 +54,8 @@
 #include <GL/gl.h>
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QBuffer>
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
 #include <Qt3DCore/QBuffer>
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 
 // declared here as Qgs3DTypes has no cpp file
 const char *Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG = "PROP_NAME_3D_RENDERER_FLAG";

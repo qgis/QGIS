@@ -57,10 +57,6 @@ class TestQgsLayoutLabel : public QgsTest
     void render();
     void renderAsHtml();
     void renderAsHtmlLineHeight();
-#ifdef WITH_QTWEBKIT
-    void convertToHtml();
-    void renderAsHtmlRelative();
-#endif
     void labelRotation();
 
   private:
@@ -339,49 +335,6 @@ void TestQgsLayoutLabel::renderAsHtmlLineHeight()
 
   QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_renderhtmllineheight" ), &l, 0, 10 ) );
 }
-
-#ifdef WITH_QTWEBKIT
-void TestQgsLayoutLabel::convertToHtml()
-{
-  QgsProject project;
-  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_label_html.qgs" );
-
-  QgsLayout *layout = project.layoutManager()->printLayouts().at( 0 );
-  QVERIFY( layout );
-
-  QgsLayoutMultiFrame *html = layout->multiFrames().at( 0 );
-  QVERIFY( html );
-
-  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_converttohtml" ), layout, 0, 10 ) );
-}
-
-void TestQgsLayoutLabel::renderAsHtmlRelative()
-{
-  QgsLayout l( QgsProject::instance() );
-  l.initializeDefaults();
-  l.renderContext().mIsPreviewRender = false;
-  QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
-  label->setMargin( 1 );
-  l.addLayoutItem( label );
-
-  QgsProject::instance()->setFileName( QStringLiteral( TEST_DATA_DIR ) + QDir::separator() + "test.qgs" );
-  label->setText( QStringLiteral( "test <img src=\"small_sample_image.png\" />" ) );
-
-  QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
-  format.setSize( 48 );
-  format.setSizeUnit( Qgis::RenderUnit::Points );
-  format.setColor( QColor( 200, 40, 60 ) );
-  label->setTextFormat( format );
-
-  label->setPos( 70, 70 );
-  label->adjustSizeToText();
-  label->setMode( QgsLayoutItemLabel::ModeHtml );
-  label->update();
-
-  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_renderhtmlrelative" ), &l ) );
-}
-#endif
 
 void TestQgsLayoutLabel::labelRotation()
 {

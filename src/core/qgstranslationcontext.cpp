@@ -93,9 +93,6 @@ void QgsTranslationContext::writeTsFile( const QString &locale ) const
     return;
   }
   QTextStream stream( &tsFile );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   stream << doc.toString();
   tsFile.close();
 }

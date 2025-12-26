@@ -14,20 +14,11 @@
  ***************************************************************************/
 
 #include <QVector3D>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 
 #include "qgsbillboardgeometry.h"
 #include "moc_qgsbillboardgeometry.cpp"

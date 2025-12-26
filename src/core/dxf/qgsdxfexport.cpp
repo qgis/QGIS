@@ -206,11 +206,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   }
 
   mTextStream.setDevice( d );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  mTextStream.setCodec( encoding.toLocal8Bit() );
-#else
   mTextStream.setEncoding( QStringConverter::encodingForName( encoding.toLocal8Bit() ).value_or( QStringConverter::Utf8 ) );
-#endif
 
   if ( mCrs.isValid() )
     mMapSettings.setDestinationCrs( mCrs );

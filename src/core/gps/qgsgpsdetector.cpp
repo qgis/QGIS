@@ -182,7 +182,7 @@ void QgsGpsDetector::advance()
     }
     else
     {
-#if defined( HAVE_QTSERIALPORT )
+#if defined(HAVE_QTSERIALPORT)
       auto serial = std::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
@@ -204,8 +204,8 @@ void QgsGpsDetector::advance()
         QgsDebugError( QStringLiteral( "Serial port could NOT be opened" ) );
       }
 #else
-      QgsDebugError( QStringLiteral( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" ) );
-      qWarning( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" );
+      QgsDebugError( QStringLiteral( "QTSERIALPORT not found and mPortList matches serial port, this should never happen" ) );
+      qWarning( "QTSERIALPORT not found and mPortList matches serial port, this should never happen" );
 #endif
     }
 

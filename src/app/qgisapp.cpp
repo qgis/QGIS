@@ -1743,9 +1743,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutNorthArrowValidityCheck() );
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutOverviewValidityCheck() );
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutPictureSourceValidityCheck() );
-#ifndef WITH_QTWEBKIT
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutHtmlItemValidityCheck() );
-#endif
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
@@ -6148,10 +6146,6 @@ void QgisApp::newGpxLayer()
     }
 
     QTextStream outStream( &outputFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    outStream.setCodec( "UTF-8" );
-#endif
-
     outStream << "<gpx></gpx>" << Qt::endl;
     outputFile.close();
 
