@@ -598,7 +598,7 @@ class CORE_EXPORT QgsProviderRegistry
      * for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
      * or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
      *
-     * This method tests whether any of the registered providers return TRUE for the their
+     * This method tests whether any of the registered providers return TRUE for their
      * QgsProviderMetadata::uriIsBlocklisted() implementation for the specified URI.
      *
      * \since QGIS 3.18

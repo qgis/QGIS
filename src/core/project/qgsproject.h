@@ -680,7 +680,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool removeEntry( const QString &scope, const QString &key );
 
     /**
-     * Returns a list of child keys with values which exist within the the specified \a scope and \a key.
+     * Returns a list of child keys with values which exist within the specified \a scope and \a key.
      *
      * This method does not return keys that contain other keys. See subkeyList() to retrieve keys
      * which contain other keys.
@@ -690,7 +690,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /**
-     * Returns a list of child keys which contain other keys that exist within the the specified \a scope and \a key.
+     * Returns a list of child keys which contain other keys that exist within the specified \a scope and \a key.
      *
      * This method only returns keys with keys, it will not return keys that contain only values. See
      * entryList() to retrieve keys with values.

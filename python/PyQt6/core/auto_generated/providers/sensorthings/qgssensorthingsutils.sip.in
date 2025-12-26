@@ -277,14 +277,14 @@ Set to -1 if no limit is desired.
 
     QString filter() const;
 %Docstring
-Returns the the string filter to filter expanded child entities by.
+Returns the string filter to filter expanded child entities by.
 
 .. seealso:: :py:func:`setFilter`
 %End
 
     void setFilter( const QString &filter );
 %Docstring
-Returns the the string ``filter`` to filter expanded child entities by.
+Returns the string ``filter`` to filter expanded child entities by.
 
 .. seealso:: :py:func:`filter`
 %End

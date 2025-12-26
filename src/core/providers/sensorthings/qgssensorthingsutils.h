@@ -274,14 +274,14 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     void setLimit( int limit );
 
     /**
-     * Returns the the string filter to filter expanded child entities by.
+     * Returns the string filter to filter expanded child entities by.
      *
      * \see setFilter()
      */
     QString filter() const;
 
     /**
-     * Returns the the string \a filter to filter expanded child entities by.
+     * Returns the string \a filter to filter expanded child entities by.
      *
      * \see filter()
      */
