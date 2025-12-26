@@ -241,6 +241,7 @@ void QgsModelArrowItem::updatePath()
   path.moveTo( controlPoints.at( 0 ) );
   path.cubicTo( controlPoints.at( 1 ), controlPoints.at( 2 ), controlPoints.at( 3 ) );
   setPath( path );
+  emit painterPathUpdated();
 }
 
 QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const
