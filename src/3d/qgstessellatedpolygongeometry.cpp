@@ -16,18 +16,14 @@
 #include "qgstessellatedpolygongeometry.h"
 
 #include "qgsmessagelog.h"
+#include "qgspolygon.h"
+#include "qgstessellator.h"
 
 #include <QMatrix4x4>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
 #include "moc_qgstessellatedpolygongeometry.cpp"
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-
-#include "qgstessellator.h"
-#include "qgspolygon.h"
 
 QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals, bool _invertNormals, bool _addBackFaces, bool _addTextureCoords, QNode *parent )
   : QGeometry( parent )
@@ -36,18 +32,18 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   , mAddBackFaces( _addBackFaces )
   , mAddTextureCoords( _addTextureCoords )
 {
-  mVertexBuffer = new Qt3DQBuffer( this );
+  mVertexBuffer = new Qt3DCore::QBuffer( this );
 
   QgsTessellator tmpTess;
   tmpTess.setAddNormals( mWithNormals );
   tmpTess.setAddTextureUVs( mAddTextureCoords );
   const int stride = tmpTess.stride();
 
-  mPositionAttribute = new Qt3DQAttribute( this );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute = new Qt3DCore::QAttribute( this );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
   mPositionAttribute->setByteStride( stride );
   mPositionAttribute->setByteOffset( 0 );
@@ -55,11 +51,11 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
 
   if ( mWithNormals )
   {
-    mNormalAttribute = new Qt3DQAttribute( this );
-    mNormalAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
-    mNormalAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+    mNormalAttribute = new Qt3DCore::QAttribute( this );
+    mNormalAttribute->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
+    mNormalAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
     mNormalAttribute->setVertexSize( 3 );
-    mNormalAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+    mNormalAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
     mNormalAttribute->setBuffer( mVertexBuffer );
     mNormalAttribute->setByteStride( stride );
     mNormalAttribute->setByteOffset( 3 * sizeof( float ) );
@@ -67,11 +63,11 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   }
   if ( mAddTextureCoords )
   {
-    mTextureCoordsAttribute = new Qt3DQAttribute( this );
-    mTextureCoordsAttribute->setName( Qt3DQAttribute::defaultTextureCoordinateAttributeName() );
-    mTextureCoordsAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+    mTextureCoordsAttribute = new Qt3DCore::QAttribute( this );
+    mTextureCoordsAttribute->setName( Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName() );
+    mTextureCoordsAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
     mTextureCoordsAttribute->setVertexSize( 2 );
-    mTextureCoordsAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+    mTextureCoordsAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
     mTextureCoordsAttribute->setBuffer( mVertexBuffer );
     mTextureCoordsAttribute->setByteStride( stride );
     mTextureCoordsAttribute->setByteOffset( mWithNormals ? 6 * sizeof( float ) : 3 * sizeof( float ) );

@@ -15,44 +15,35 @@
 
 #include "qgspoint3dsymbol_p.h"
 
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QTechnique>
-
-#include <Qt3DExtras/QCylinderGeometry>
-#include <Qt3DExtras/QConeGeometry>
-#include <Qt3DExtras/QCuboidGeometry>
-#include <Qt3DExtras/QPlaneGeometry>
-#include <Qt3DExtras/QSphereGeometry>
-#include <Qt3DExtras/QTorusGeometry>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QSceneLoader>
-#include <Qt3DRender/QPaintedTextureImage>
-
-#include <Qt3DRender/QMesh>
-
-#include <Qt3DExtras/QExtrudedTextGeometry>
+#include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgsbillboardgeometry.h"
+#include "qgsgeotransform.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgspoint3dsymbol.h"
+#include "qgssourcecache.h"
+#include "qgsvectorlayer.h"
 
 #include <QUrl>
 #include <QVector3D>
-
-#include "qgspoint3dsymbol.h"
-#include "qgsapplication.h"
-#include "qgsgeotransform.h"
-#include "qgsvectorlayer.h"
-#include "qgs3dutils.h"
-#include "qgsbillboardgeometry.h"
-#include "qgspoint3dbillboardmaterial.h"
-#include "qgssourcecache.h"
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+#include <Qt3DExtras/QConeGeometry>
+#include <Qt3DExtras/QCuboidGeometry>
+#include <Qt3DExtras/QCylinderGeometry>
+#include <Qt3DExtras/QExtrudedTextGeometry>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QPlaneGeometry>
+#include <Qt3DExtras/QSphereGeometry>
+#include <Qt3DExtras/QTorusGeometry>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QMesh>
+#include <Qt3DRender/QPaintedTextureImage>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QTechnique>
 
 /// @cond PRIVATE
 
@@ -74,7 +65,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
   private:
     static QgsMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
     static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions );
-    static Qt3DQGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
+    static Qt3DCore::QGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
 
     //! temporary data we will pass to the tessellator
     struct PointData
@@ -292,13 +283,13 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   ba.resize( byteCount );
   memcpy( ba.data(), positions.constData(), byteCount );
 
-  Qt3DQBuffer *instanceBuffer = new Qt3DQBuffer();
+  Qt3DCore::QBuffer *instanceBuffer = new Qt3DCore::QBuffer();
   instanceBuffer->setData( ba );
 
-  Qt3DQAttribute *instanceDataAttribute = new Qt3DQAttribute;
+  Qt3DCore::QAttribute *instanceDataAttribute = new Qt3DCore::QAttribute;
   instanceDataAttribute->setName( QStringLiteral( "pos" ) );
-  instanceDataAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
-  instanceDataAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  instanceDataAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  instanceDataAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   instanceDataAttribute->setVertexSize( 3 );
   instanceDataAttribute->setByteOffset( 0 );
   instanceDataAttribute->setDivisor( 1 );
@@ -306,7 +297,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   instanceDataAttribute->setCount( count );
   instanceDataAttribute->setByteStride( 3 * sizeof( float ) );
 
-  Qt3DQGeometry *geometry = symbolGeometry( symbol );
+  Qt3DCore::QGeometry *geometry = symbolGeometry( symbol );
   geometry->addAttribute( instanceDataAttribute );
   geometry->setBoundingVolumePositionAttribute( instanceDataAttribute );
 
@@ -317,7 +308,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   return renderer;
 }
 
-Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3DSymbol *symbol )
+Qt3DCore::QGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3DSymbol *symbol )
 {
   switch ( symbol->shape() )
   {
