@@ -206,11 +206,8 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
   return indexBytes;
 }
 
-// QAbstractFunctor marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-Q_NOWARN_DEPRECATED_PUSH
-
 //! Generates vertex buffer for DEM terrain tiles
-class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
+class PlaneVertexBufferFunctor : public Qt3DCore::QAbstractFunctor
 {
   public:
     explicit PlaneVertexBufferFunctor( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap )
@@ -231,7 +228,7 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
       return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneVertexBufferFunctor>::id );
     }
 
-    bool operator==( const Qt3DQAbstractFunctor &other ) const
+    bool operator==( const Qt3DCore::QAbstractFunctor &other ) const
     {
       const PlaneVertexBufferFunctor *otherFunctor = dynamic_cast<const PlaneVertexBufferFunctor *>( &other );
       if ( otherFunctor )
@@ -247,13 +244,8 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
     QByteArray mHeightMap;
 };
 
-Q_NOWARN_DEPRECATED_POP
-
-// QAbstractFunctor marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-Q_NOWARN_DEPRECATED_PUSH
-
 //! Generates index buffer for DEM terrain tiles
-class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
+class PlaneIndexBufferFunctor : public Qt3DCore::QAbstractFunctor
 {
   public:
     explicit PlaneIndexBufferFunctor( int resolution, const QByteArray &heightMap )
@@ -271,7 +263,7 @@ class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
       return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneIndexBufferFunctor>::id );
     }
 
-    bool operator==( const Qt3DQAbstractFunctor &other ) const
+    bool operator==( const Qt3DCore::QAbstractFunctor &other ) const
     {
       const PlaneIndexBufferFunctor *otherFunctor = dynamic_cast<const PlaneIndexBufferFunctor *>( &other );
       if ( otherFunctor )
@@ -283,8 +275,6 @@ class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
     int mResolution;
     QByteArray mHeightMap;
 };
-
-Q_NOWARN_DEPRECATED_POP
 
 // ------------
 
