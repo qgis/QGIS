@@ -98,7 +98,26 @@ bool loadPolygons(const std::string &polygonFile, pdal::Options& crop_opts, BOX2
                 fullEnvelope = envelope;
             else
                 fullEnvelope.Merge(envelope);
-            crop_opts.add(pdal::Option("polygon", pdal::Polygon(hGeometry)));
+
+            char* wkt_ptr = nullptr;
+            OGR_G_ExportToWkt(hGeometry, &wkt_ptr);
+            const std::string wkt(wkt_ptr);
+            CPLFree(wkt_ptr);
+
+            SpatialReference pdalSrs;
+            if ( OGRSpatialReferenceH srs = OGR_G_GetSpatialReference(hGeometry) )
+            {
+                char *srsWkt_ptr = nullptr;
+                const OGRErr err = OSRExportToWkt(srs, &srsWkt_ptr);
+                if ( err== OGRERR_NONE )
+                {
+                  const std::string srsWkt = std::string(srsWkt_ptr);
+                  pdalSrs = SpatialReference( srsWkt );
+                }
+                CPLFree(srsWkt_ptr);
+            }
+
+            crop_opts.add(pdal::Option("polygon", pdal::Polygon(wkt, pdalSrs)));
         }
         OGR_F_Destroy( hFeature );
     }
