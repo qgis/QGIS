@@ -433,7 +433,7 @@ class CORE_EXPORT QgsGeometry
      * Compares the geometry with another geometry using GEOS.
      *
      * This method performs a slow, topological check, where geometries
-     * are considered equal if all of the their component edges overlap. E.g.
+     * are considered equal if all of their component edges overlap. E.g.
      * lines with the same vertex locations but opposite direction will be
      * considered equal by this method.
      *
