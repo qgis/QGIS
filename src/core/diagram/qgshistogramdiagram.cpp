@@ -145,13 +145,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
-      mScaleFactor = maxValue / s.size.height();
+      mScaleFactor = s.size.height() / maxValue;
       size.scale( s.barWidth * s.categoryColors.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), s.size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
-      mScaleFactor = maxValue / s.size.width();
+      mScaleFactor = s.size.width() / maxValue;
       size.scale( s.size.width(), s.barWidth * s.categoryColors.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
