@@ -421,3 +421,16 @@ tests:
       OUTPUT:
         name: expected/remove_multipolygon_parts_by_area.gml
         type: vector
+
+  - algorithm: native:totalcurvature
+    name: Total curvature from QGIS analysis library
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+      NODATA: -9999.0
+    results:
+      OUTPUT:
+        hash: fc06f1af668bbfc6ee4fb6d421a4f561265ee20578a074eb763ae380
+        type: rasterhash

@@ -848,46 +848,12 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
             f.setGeometry( g );
           }
 
-          // If receiving a geometry collection, but expecting a multipoint/...,
-          // then try to convert it
-          if ( f.hasGeometry() && f.geometry().wkbType() == Qgis::WkbType::GeometryCollection && ( mShared->mWKBType == Qgis::WkbType::MultiPoint || mShared->mWKBType == Qgis::WkbType::MultiLineString || mShared->mWKBType == Qgis::WkbType::MultiPolygon ) )
+          // Coerce geometry type if needed
+          if ( f.hasGeometry() && QgsWkbTypes::flatType( f.geometry().wkbType() ) != QgsWkbTypes::flatType( mShared->mWKBType ) )
           {
-            Qgis::WkbType singleType = QgsWkbTypes::singleType( mShared->mWKBType );
-            const QgsAbstractGeometry *g = f.geometry().constGet();
-            if ( const QgsGeometryCollection *gc = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
-            {
-              bool allExpectedType = true;
-              for ( int i = 0; i < gc->numGeometries(); ++i )
-              {
-                if ( gc->geometryN( i )->wkbType() != singleType )
-                {
-                  allExpectedType = false;
-                  break;
-                }
-              }
-              if ( allExpectedType )
-              {
-                std::unique_ptr< QgsGeometryCollection > newGC;
-                if ( mShared->mWKBType == Qgis::WkbType::MultiPoint )
-                {
-                  newGC = std::make_unique< QgsMultiPoint >();
-                }
-                else if ( mShared->mWKBType == Qgis::WkbType::MultiLineString )
-                {
-                  newGC = std::make_unique< QgsMultiLineString >();
-                }
-                else
-                {
-                  newGC = std::make_unique< QgsMultiPolygon >();
-                }
-                newGC->reserve( gc->numGeometries() );
-                for ( int i = 0; i < gc->numGeometries(); ++i )
-                {
-                  newGC->addGeometry( gc->geometryN( i )->clone() );
-                }
-                f.setGeometry( std::move( newGC ) );
-              }
-            }
+            QVector< QgsGeometry > coercedGeoms = f.geometry().coerceToType( mShared->mWKBType );
+            if ( coercedGeoms.size() == 1 )
+              f.setGeometry( coercedGeoms[0] );
           }
           else if ( f.hasGeometry() && !mShared->mWFSGeometryTypeFilter.isEmpty() && QgsWkbTypes::flatType( f.geometry().wkbType() ) != mShared->mWKBType )
           {

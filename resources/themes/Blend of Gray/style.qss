@@ -1285,3 +1285,7 @@ QgsAttributeFormWidget QComboBox:disabled {
 QgsAttributeFormWidget QComboBox::down-arrow:disabled {
      image: none;
 }
+
+QgsLocatorResultsView::item:disabled {
+    color: @itemdarkbackground;
+}

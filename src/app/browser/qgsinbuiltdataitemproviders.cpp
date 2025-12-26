@@ -47,6 +47,7 @@
 #include "qgsfileutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgslayeritem.h"
 #include "qgsmessagebar.h"
@@ -1693,6 +1694,12 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             options[QStringLiteral( "geometryColumn" )] = geometryColumn;
           }
 
+          // Check for non-standard GeoPackage geometry types
+          if ( !QgsGuiUtils::warnAboutNonStandardGeoPackageGeometryType( geometryType, nullptr, QObject::tr( "New Table" ) ) )
+          {
+            return;
+          }
+
           try
           {
             conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
@@ -1700,7 +1707,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             {
               try
               {
-                conn2->createSpatialIndex( schemaName, tableName );
+                QgsAbstractDatabaseProviderConnection::SpatialIndexOptions spatialIndexOptions;
+                spatialIndexOptions.geometryColumnName = geometryColumn;
+                conn2->createSpatialIndex( schemaName, tableName, spatialIndexOptions );
               }
               catch ( QgsProviderConnectionException &ex )
               {

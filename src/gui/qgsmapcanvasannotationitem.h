@@ -92,6 +92,7 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanva
 
     QRectF boundingRect() const override;
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     /**

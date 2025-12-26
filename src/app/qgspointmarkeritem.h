@@ -40,6 +40,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem : public QgsMapCanvasItem
     QgsMapCanvasSymbolItem( QgsMapCanvas *canvas = nullptr );
     ~QgsMapCanvasSymbolItem() override;
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     /**

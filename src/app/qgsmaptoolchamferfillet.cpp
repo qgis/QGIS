@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmultipolygon.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssettingsentryenumflag.h"
@@ -64,17 +65,19 @@ void QgsMapToolChamferFillet::applyOperationFromWidget( Qt::KeyboardModifiers mo
 {
   if ( mSourceLayer && !mOriginalGeometryInSourceLayerCrs.isNull() )
   {
+    computeMaxValues();
     double value1 = mUserInputWidget->value1();
     double value2 = mUserInputWidget->value2();
-    if ( !qgsDoubleNear( value1, 0 ) && !qgsDoubleNear( value2, 0 ) )
-    {
-      mGeometryModified = true;
-      applyOperation( value1, value2, modifiers );
-    }
+    if ( QgsMapToolChamferFillet::settingsOperation->value() == QgsGeometry::ChamferFilletOperationType::Fillet )
+      value2 = value1;
+
+    handleModifier( modifiers & Qt::ShiftModifier, value1, value2 );
+    handleMaxAndLock( value1, value2 );
+    applyOperation( value1, value2 );
   }
 }
 
-void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::KeyboardModifiers )
+void QgsMapToolChamferFillet::applyOperation( double value1, double value2 )
 {
   if ( !mSourceLayer || qgsDoubleNear( value1, 0.0 ) || qgsDoubleNear( value2, 0.0 ) )
   {
@@ -106,7 +109,8 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::
       i++;
     }
 
-    emit messageEmitted( tr( "Generated geometry is not valid: '%1'. " ).arg( mModifiedGeometry.lastError() ) + message, Qgis::MessageLevel::Critical );
+    emit messageEmitted( tr( "Generated geometry is not valid: '%1'. " ).arg( mModifiedGeometry.lastError() ), Qgis::MessageLevel::Warning );
+    QgsLogger::warning( tr( "Generated geometry is not valid: '%1'. " ).arg( mModifiedGeometry.lastError() ) + message );
     // no cancel, continue editing.
     return;
   }
@@ -127,13 +131,11 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::
   else
   {
     destLayer->destroyEditCommand();
-    emit messageEmitted( QStringLiteral( "Could not apply chamfer/fillet" ), Qgis::MessageLevel::Critical );
+    emit messageEmitted( QStringLiteral( "Could not apply chamfer/fillet" ), Qgis::MessageLevel::Warning );
   }
 
-  deleteRubberBandAndGeometry();
-  deleteUserInputWidget();
+  cancel();
   destLayer->triggerRepaint();
-  mSourceLayer = nullptr;
 }
 
 void QgsMapToolChamferFillet::cancel()
@@ -141,6 +143,69 @@ void QgsMapToolChamferFillet::cancel()
   deleteUserInputWidget();
   deleteRubberBandAndGeometry();
   mSourceLayer = nullptr;
+}
+
+void QgsMapToolChamferFillet::handleModifier( bool isShiftKeyPressed, double &value1, double &value2 )
+{
+  QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
+  if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
+  {
+    if ( isShiftKeyPressed )
+    {
+      value1 = ( value1 + value2 ) / 2.0;
+      value2 = value1;
+    }
+  }
+  else
+  {
+    value1 = ( value1 + value2 ) / 2.0;
+    value2 = -1;
+  }
+}
+
+void QgsMapToolChamferFillet::handleMaxAndLock( double &value1, double &value2 )
+{
+  bool locked = QgsMapToolChamferFillet::settingsLock1->value();
+  if ( locked )
+    value1 = QgsMapToolChamferFillet::settingsValue1->value();
+
+  locked = QgsMapToolChamferFillet::settingsLock2->value();
+  if ( locked )
+    value2 = QgsMapToolChamferFillet::settingsValue2->value();
+
+  value1 = std::min( value1, mMaxValue1 );
+  value2 = std::min( value2, mMaxValue2 );
+}
+
+void QgsMapToolChamferFillet::computeValuesFromMousePos( const QgsPointXY &mapPoint, bool isShiftKeyPressed, double &value1, double &value2 )
+{
+  calculateDistances( mapPoint, value1, value2 );
+  handleModifier( isShiftKeyPressed, value1, value2 );
+  handleMaxAndLock( value1, value2 );
+
+  if ( !mUserInputWidget )
+    return;
+
+  mUserInputWidget->blockSignals( true );
+  QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
+  if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
+  {
+    bool locked = QgsMapToolChamferFillet::settingsLock1->value();
+    if ( !locked )
+      mUserInputWidget->setValue1( value1 );
+    locked = QgsMapToolChamferFillet::settingsLock2->value();
+    if ( !locked )
+      mUserInputWidget->setValue2( value2 );
+  }
+  else
+  {
+    bool locked = QgsMapToolChamferFillet::settingsLock1->value();
+    if ( !locked )
+      mUserInputWidget->setValue1( value1 );
+  }
+  mUserInputWidget->blockSignals( false );
+  mUserInputWidget->setFocus( Qt::TabFocusReason );
+  mUserInputWidget->editor()->selectAll();
 }
 
 void QgsMapToolChamferFillet::calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 )
@@ -183,6 +248,84 @@ void QgsMapToolChamferFillet::keyPressEvent( QKeyEvent *e )
   }
 }
 
+void QgsMapToolChamferFillet::computeMaxValues()
+{
+  if ( mVertexIndex < 0 )
+    return;
+
+  // Get the segments around the vertex
+  QgsPoint vertexBefore = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex - 1 );
+  const QgsPoint vertex = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex );
+  QgsPoint vertexAfter = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex + 1 );
+
+  // find vertex before first or after last point.
+  if ( vertexBefore.isEmpty() || vertexAfter.isEmpty() )
+  {
+    const QgsAbstractGeometry *absPoly;
+    if ( const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( mManipulatedGeometryInSourceLayerCrs.get() ) )
+      absPoly = poly;
+    else if ( const QgsMultiPolygon *multiPoly = qgsgeometry_cast<const QgsMultiPolygon *>( mManipulatedGeometryInSourceLayerCrs.get() ) )
+      absPoly = multiPoly;
+    else
+      absPoly = nullptr;
+
+    if ( absPoly != nullptr )
+    {
+      QgsVertexId vId;
+      mManipulatedGeometryInSourceLayerCrs.vertexIdFromVertexNr( mVertexIndex, vId );
+      if ( vertexBefore.isEmpty() )
+      {
+        vId.vertex = absPoly->vertexCount( vId.part, vId.ring ) - 2;
+        vertexBefore = absPoly->vertexAt( vId );
+      }
+      else if ( vertexAfter.isEmpty() )
+      {
+        vId.vertex = 1;
+        vertexAfter = absPoly->vertexAt( vId );
+      }
+    }
+  }
+
+  if ( !vertexBefore.isEmpty() && !vertex.isEmpty() && !vertexAfter.isEmpty() )
+  {
+    QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
+    if ( op == QgsGeometry::ChamferFilletOperationType::Fillet )
+    {
+      const double maxRadius = QgsGeometryUtils::maxFilletRadius( vertexBefore, vertex, vertex, vertexAfter );
+      if ( maxRadius > 0 )
+      {
+        mMaxValue1 = maxRadius;
+      }
+      mMaxValue2 = 64;
+    }
+    else
+    {
+      double dist1 = vertex.distance( vertexBefore );
+      double dist2 = vertex.distance( vertexAfter );
+      if ( dist1 > 0 )
+      {
+        mMaxValue1 = dist1;
+      }
+      if ( dist2 > 0 )
+      {
+        mMaxValue2 = dist2;
+      }
+    }
+
+    if ( mUserInputWidget )
+    {
+      mUserInputWidget->blockSignals( true );
+      bool locked = QgsMapToolChamferFillet::settingsLock1->value();
+      if ( !locked )
+        mUserInputWidget->setMaximumValue1( mMaxValue1 );
+      locked = QgsMapToolChamferFillet::settingsLock2->value();
+      if ( !locked )
+        mUserInputWidget->setMaximumValue2( mMaxValue2 );
+      mUserInputWidget->blockSignals( false );
+    }
+  }
+}
+
 void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() == Qt::RightButton )
@@ -221,36 +364,23 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
         mModifiedFeature = fet.id();
         createUserInputWidget();
 
-        // Set maximum fillet radius based on geometry
-        if ( mUserInputWidget && mUserInputWidget->operation() == QgsGeometry::ChamferFilletOperationType::Fillet && mVertexIndex >= 0 )
-        {
-          // Get the segments around the vertex
-          const QgsPoint vertexBefore = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex - 1 );
-          const QgsPoint vertex = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex );
-          const QgsPoint vertexAfter = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex + 1 );
+        // Set maximum values based on geometry
+        computeMaxValues();
 
-          if ( !vertexBefore.isEmpty() && !vertex.isEmpty() && !vertexAfter.isEmpty() )
+        if ( mSourceLayer != nullptr )
+        {
+          const bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
+          const bool hasM = QgsWkbTypes::hasM( mSourceLayer->wkbType() );
+          if ( hasZ || hasM )
           {
-            const double maxRadius = QgsGeometryUtils::maxFilletRadius( vertexBefore, vertex, vertex, vertexAfter );
-            if ( maxRadius > 0 )
-            {
-              mUserInputWidget->setMaximumValue1( maxRadius );
-            }
+            emit messageEmitted( QStringLiteral( "Layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
           }
-        }
-
-        const bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
-        const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
-        if ( hasZ || hasM )
-        {
-          emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
         }
       }
     }
 
     if ( mOriginalGeometryInSourceLayerCrs.isNull() )
     {
-      emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
       cancel();
     }
 
@@ -260,23 +390,10 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
   else
   {
     // second click - apply changes
+    computeMaxValues();
     double value1, value2;
-    calculateDistances( e->mapPoint(), value1, value2 );
-    QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
-    if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
-    {
-      if ( e->modifiers() & Qt::ShiftModifier )
-      {
-        value1 = ( value1 + value2 ) / 2.0;
-        value2 = value1;
-      }
-    }
-    else
-    {
-      value1 = ( value1 + value2 ) / 2.0;
-    }
-
-    applyOperation( value1, value2, e->modifiers() );
+    computeValuesFromMousePos( e->mapPoint(), e->modifiers() & Qt::ShiftModifier, value1, value2 );
+    applyOperation( value1, value2 );
   }
 }
 
@@ -300,47 +417,9 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
   const QgsPointXY mapPoint = e->mapPoint();
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
+  computeMaxValues();
   double value1, value2;
-  calculateDistances( mapPoint, value1, value2 );
-
-  QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
-  if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
-  {
-    if ( e->modifiers() & Qt::ShiftModifier )
-    {
-      value1 = ( value1 + value2 ) / 2.0;
-      value2 = value1;
-    }
-  }
-  else
-  {
-    value1 = ( value1 + value2 ) / 2.0;
-  }
-
-  bool locked = QgsMapToolChamferFillet::settingsLock1->value();
-  if ( locked )
-    value1 = QgsMapToolChamferFillet::settingsValue1->value();
-
-  locked = QgsMapToolChamferFillet::settingsLock2->value();
-  if ( locked )
-    value2 = QgsMapToolChamferFillet::settingsValue2->value();
-
-  if ( mUserInputWidget )
-  {
-    mUserInputWidget->blockSignals( true );
-    if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
-    {
-      mUserInputWidget->setValue1( value1 );
-      mUserInputWidget->setValue2( value2 );
-    }
-    else
-    {
-      mUserInputWidget->setValue1( value1 );
-    }
-    mUserInputWidget->blockSignals( false );
-    mUserInputWidget->setFocus( Qt::TabFocusReason );
-    mUserInputWidget->editor()->selectAll();
-  }
+  computeValuesFromMousePos( mapPoint, e->modifiers() & Qt::ShiftModifier, value1, value2 );
 
   //create chamfer geometry using geos
   updateGeometryAndRubberBand( value1, value2 );
@@ -348,8 +427,7 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
 
 bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
-  const QgsVectorLayer *vl = match.layer();
-  if ( !vl )
+  if ( !match.layer() )
   {
     return false;
   }
@@ -366,7 +444,7 @@ bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
 
   if ( !geom.isGeosValid() )
   {
-    emit messageEmitted( tr( "Chamfer/fillet: input geometry is invalid!" ), Qgis::MessageLevel::Critical );
+    emit messageEmitted( tr( "Chamfer/fillet: input geometry is invalid!" ), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -375,6 +453,10 @@ bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
     return false;
 
   if ( !match.hasEdge() && !match.hasVertex() )
+    return false;
+
+  // maptool will not work with first or last point on a linestring
+  if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Line && ( match.vertexIndex() == 0 || match.vertexIndex() == geom.constGet()->vertexCount( 0 ) - 1 ) )
     return false;
 
   mOriginalGeometryInSourceLayerCrs = geom;
@@ -423,17 +505,22 @@ void QgsMapToolChamferFillet::deleteRubberBandAndGeometry()
 void QgsMapToolChamferFillet::configChanged()
 {
   if ( mUserInputWidget )
-    updateGeometryAndRubberBand( mUserInputWidget->value1(), mUserInputWidget->value2() );
+  {
+    computeMaxValues();
+    double value1 = mUserInputWidget->value1();
+    double value2 = mUserInputWidget->value2();
+    if ( QgsMapToolChamferFillet::settingsOperation->value() == QgsGeometry::ChamferFilletOperationType::Fillet )
+      value2 = value1;
+
+    handleModifier( false, value1, value2 );
+    handleMaxAndLock( value1, value2 );
+    updateGeometryAndRubberBand( value1, value2 );
+  }
 }
 
 void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double value2 )
 {
-  if ( !mRubberBand || mOriginalGeometryInSourceLayerCrs.isNull() )
-  {
-    return;
-  }
-
-  if ( !mSourceLayer )
+  if ( !mRubberBand || mOriginalGeometryInSourceLayerCrs.isNull() || !mSourceLayer )
   {
     return;
   }
@@ -455,12 +542,10 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double
 
   if ( newGeom.isNull() )
   {
-    deleteRubberBandAndGeometry();
-    deleteUserInputWidget();
-    mSourceLayer = nullptr;
+    cancel();
     mGeometryModified = false;
     emit messageDiscarded();
-    emit messageEmitted( tr( "Creating chamfer/fillet geometry failed: %1" ).arg( mManipulatedGeometryInSourceLayerCrs.lastError() ), Qgis::MessageLevel::Critical );
+    emit messageEmitted( tr( "Creating chamfer/fillet geometry failed: %1" ).arg( mManipulatedGeometryInSourceLayerCrs.lastError() ), Qgis::MessageLevel::Warning );
   }
   else
   {
@@ -487,35 +572,42 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
   mOperationComboBox->setCurrentIndex( mOperationComboBox->findData( QVariant::fromValue( op ) ) );
 
   auto updateLabels = [this]( const QgsGeometry::ChamferFilletOperationType &op ) {
+    mValue1SpinBox->blockSignals( true );
+    mValue2SpinBox->blockSignals( true );
+
     if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
     {
       mVal1Label->setText( tr( "Distance 1" ) );
-      mValue1SpinBox->setDecimals( 6 );
-      mValue1SpinBox->setClearValue( 0.001 );
-      const double value1 = QgsMapToolChamferFillet::settingsValue1->value();
-      mValue1SpinBox->setValue( value1 );
+      mValue1SpinBox->setDecimals( 3 );
+      mValue1SpinBox->setMinimum( 0.01 );
+      if ( QgsMapToolChamferFillet::settingsValue1->value() < mValue1SpinBox->minimum() )
+        QgsMapToolChamferFillet::settingsValue1->setValue( mValue1SpinBox->minimum() );
+      mValue1SpinBox->setValue( QgsMapToolChamferFillet::settingsValue1->value() );
 
       mVal2Label->setText( tr( "Distance 2" ) );
-      mValue2SpinBox->setDecimals( 6 );
-      mValue2SpinBox->setClearValue( 0.001 );
-      const double value2 = QgsMapToolChamferFillet::settingsValue2->value();
-      mValue2SpinBox->setValue( value2 );
+      mValue2SpinBox->setDecimals( 3 );
+      mValue2SpinBox->setMinimum( 0.01 );
+      if ( QgsMapToolChamferFillet::settingsValue2->value() < mValue2SpinBox->minimum() )
+        QgsMapToolChamferFillet::settingsValue2->setValue( mValue2SpinBox->minimum() );
+      mValue2SpinBox->setValue( QgsMapToolChamferFillet::settingsValue2->value() );
 
       mVal2Locker->setEnabled( true );
     }
     else
     {
       mVal1Label->setText( tr( "Radius" ) );
-      mValue1SpinBox->setDecimals( 6 );
-      mValue1SpinBox->setClearValue( 0.001 );
-      const double value1 = QgsMapToolChamferFillet::settingsValue1->value();
-      mValue1SpinBox->setValue( value1 );
+      mValue1SpinBox->setDecimals( 3 );
+      mValue1SpinBox->setMinimum( 0.01 );
+      if ( QgsMapToolChamferFillet::settingsValue1->value() < mValue1SpinBox->minimum() )
+        QgsMapToolChamferFillet::settingsValue1->setValue( mValue1SpinBox->minimum() );
+      mValue1SpinBox->setValue( QgsMapToolChamferFillet::settingsValue1->value() );
 
       mVal2Label->setText( tr( "Fillet segments" ) );
       mValue2SpinBox->setDecimals( 0 );
-      mValue2SpinBox->setClearValue( 6.0 );
-      const int segments = QgsMapToolChamferFillet::settingsFilletSegment->value();
-      mValue2SpinBox->setValue( segments );
+      mValue2SpinBox->setMinimum( 1.0 );
+      if ( QgsMapToolChamferFillet::settingsFilletSegment->value() < mValue2SpinBox->minimum() )
+        QgsMapToolChamferFillet::settingsFilletSegment->setValue( mValue2SpinBox->minimum() );
+      mValue2SpinBox->setValue( QgsMapToolChamferFillet::settingsFilletSegment->value() );
 
       mVal2Locker->setEnabled( false );
     }
@@ -525,6 +617,9 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 
     checked = QgsMapToolChamferFillet::settingsLock2->value();
     mVal2Locker->setChecked( checked );
+
+    mValue1SpinBox->blockSignals( false );
+    mValue2SpinBox->blockSignals( false );
   };
 
   updateLabels( op );
@@ -533,7 +628,6 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
     QgsGeometry::ChamferFilletOperationType op = operation();
     QgsMapToolChamferFillet::settingsOperation->setValue( op );
     updateLabels( op );
-
     emit distanceConfigChanged();
   } );
 
@@ -552,11 +646,13 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 
   connect( mVal1Locker, &QPushButton::clicked, this, [this]( bool checked ) {
     QgsMapToolChamferFillet::settingsLock1->setValue( checked );
-    emit distanceConfigChanged(); } );
+    emit distanceConfigChanged();
+  } );
 
   connect( mVal2Locker, &QPushButton::clicked, this, [this]( bool checked ) {
     QgsMapToolChamferFillet::settingsLock2->setValue( checked );
-    emit distanceConfigChanged(); } );
+    emit distanceConfigChanged();
+  } );
 
   mValue1SpinBox->installEventFilter( this );
   mValue2SpinBox->installEventFilter( this );
@@ -578,6 +674,11 @@ void QgsChamferFilletUserWidget::setValue2( double value )
 void QgsChamferFilletUserWidget::setMaximumValue1( double maximum )
 {
   mValue1SpinBox->setMaximum( maximum );
+}
+
+void QgsChamferFilletUserWidget::setMaximumValue2( double maximum )
+{
+  mValue2SpinBox->setMaximum( maximum );
 }
 
 double QgsChamferFilletUserWidget::value1() const

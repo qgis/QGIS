@@ -143,6 +143,16 @@ class VariableDistanceBuffer(QgisAlgorithm):
     def displayName(self):
         return self.tr("Variable distance buffer")
 
+    def shortDescription(self):
+        return self.tr("Computes a buffer area whose size is defined by an attribute.")
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm computes a buffer area for all the features in an input layer. "
+            "The size of the buffer for a given feature is defined by an attribute, "
+            "so it allows different features to have different buffer sizes."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

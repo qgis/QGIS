@@ -141,6 +141,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      */
     QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;
 
+    using QgsFeatureSink::addFeatures;
     /**
      * Adds a list of features in joined layers. Features given in parameter
      * are those added in target layer. If a corresponding joined feature yet

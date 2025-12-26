@@ -1642,7 +1642,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
   f.setAttributes( QgsAttributes() << 1 << QVariant() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
   layer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 2 << QLatin1String( "" ) );
+  f.setAttributes( QgsAttributes() << 2 << QString( "" ) );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 1)" ) ) );
   layer->dataProvider()->addFeature( f );
   f.setAttributes( QgsAttributes() << 3 << QStringLiteral( "value" ) );
@@ -2139,7 +2139,7 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   // ignore empty field
-  parameters[QStringLiteral( "TITLE" )] = QLatin1String( "" );
+  parameters[QStringLiteral( "TITLE" )] = QString();
   parameters.insert( QStringLiteral( "IGNORE_EMPTY" ), true );
 
   ok = false;
@@ -2160,7 +2160,7 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   QVERIFY( ok );
 
   QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
-  QCOMPARE( layer->metadata().title(), QLatin1String( "" ) );
+  QCOMPARE( layer->metadata().title(), QString() );
   QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
   QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
   QVERIFY( layer->metadata().crs().isValid() );

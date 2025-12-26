@@ -49,6 +49,8 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QString type() const override { return QStringLiteral( "transform" ); }
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
     QgsTransformEffect *clone() const override SIP_FACTORY;
 
