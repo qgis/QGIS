@@ -65,6 +65,10 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
   private:
     static void initRendererWidgetFunctions();
+    void setZoomOutMultiplier( double multiplier );
+    double zoomOutMultiplier() const;
+
+    const std::array<double, 8> mZoomOutScale = { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0 };
 
     QgsPointCloudLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;

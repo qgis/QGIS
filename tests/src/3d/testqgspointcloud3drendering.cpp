@@ -603,6 +603,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DOverview()
   QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
   renderer->setSymbol( symbol );
   renderer->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview );
+  renderer->setZoomOutMultiplier( 16.0 );
   mVpcLayer->setRenderer3D( renderer );
 
   scene->cameraController()->resetView( 120 );

@@ -153,6 +153,11 @@ void QgsPointCloudRenderer::setMaximumScreenError( double error )
   mMaximumScreenError = error;
 }
 
+void QgsPointCloudRenderer::setZoomOutMultiplier( double value )
+{
+  mZoomOutMultiplier = value;
+}
+
 Qgis::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const
 {
   return mMaximumScreenErrorUnit;
@@ -221,6 +226,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setShowLabels( mShowLabels );
   destination->setLabelTextFormat( mLabelTextFormat );
   destination->setZoomOutBehavior( mZoomOutBehavior );
+  destination->setZoomOutMultiplier( mZoomOutMultiplier );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -246,6 +252,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
     mLabelTextFormat.readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
   }
   mZoomOutBehavior = qgsEnumKeyToValue( element.attribute( QStringLiteral( "zoomOutBehavior" ) ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
+  mZoomOutMultiplier = element.attribute( QStringLiteral( "zoomOutMultiplier" ), QStringLiteral( "1.0" ) ).toDouble();
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -272,7 +279,10 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
     element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
   }
   if ( mZoomOutBehavior != Qgis::PointCloudZoomOutRenderBehavior::RenderExtents )
+  {
     element.setAttribute( QStringLiteral( "zoomOutBehavior" ), qgsEnumValueToKey( mZoomOutBehavior ) );
+    element.setAttribute( QStringLiteral( "zoomOutMultiplier" ), qgsDoubleToString( mZoomOutMultiplier ) );
+  }
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const

@@ -315,6 +315,18 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
       */
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
+    /**
+      * Sets the zoom out multiplier for zoomed out rendering of the overview
+      * \since QGIS 4.0
+      */
+    void setZoomOutMultiplier( double multiplier ) { mZoomOutMultiplier = multiplier; }
+
+    /**
+      * Returns the zoom out multiplier for zoomed out rendering of the overview
+      * \since QGIS 4.0
+      */
+    double zoomOutMultiplier() const { return mZoomOutMultiplier; }
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
@@ -322,6 +334,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     bool mShowBoundingBoxes = false;
     int mPointBudget = 5000000;
     Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
+    double mZoomOutMultiplier = 1.0;
 
   private:
 #ifdef SIP_RUN
