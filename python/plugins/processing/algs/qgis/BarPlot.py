@@ -6,12 +6,12 @@
     Copyright            : (C) 2013 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
+* *
+* This program is free software; you can redistribute it and/or modify  *
+* it under the terms of the GNU General Public License as published by  *
+* the Free Software Foundation; either version 2 of the License, or     *
+* (at your option) any later version.                                   *
+* *
 ***************************************************************************
 """
 
@@ -23,16 +23,13 @@ import warnings
 
 from qgis.core import (
     QgsFeatureRequest,
+    QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
-    QgsProcessingException,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class BarPlot(QgisAlgorithm):
@@ -61,37 +58,31 @@ class BarPlot(QgisAlgorithm):
             QgsProcessingParameterField(
                 self.NAME_FIELD,
                 self.tr("Category name field"),
-                None,
-                self.INPUT,
-                QgsProcessingParameterField.DataType.Any,
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Any,
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
                 self.VALUE_FIELD,
                 self.tr("Value field"),
-                None,
-                self.INPUT,
-                QgsProcessingParameterField.DataType.Numeric,
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Numeric,
             )
         )
-
         self.addParameter(
             QgsProcessingParameterFileDestination(
                 self.OUTPUT, self.tr("Bar plot"), self.tr("HTML files (*.html)")
             )
         )
-
         self.addParameter(
             QgsProcessingParameterString(self.TITLE, self.tr("Title"), optional=True)
         )
-
         self.addParameter(
             QgsProcessingParameterString(
                 self.XAXIS_TITLE, self.tr("X-axis title"), optional=True
             )
         )
-
         self.addParameter(
             QgsProcessingParameterString(
                 self.YAXIS_TITLE, self.tr("Y-axis title"), optional=True
@@ -105,12 +96,7 @@ class BarPlot(QgisAlgorithm):
         return self.tr("Bar plot")
 
     def shortDescription(self):
-        return self.tr("Creates a bar plot from a category and a layer field.")
-
-    def shortHelpString(self):
-        return self.tr(
-            "This algorithm creates a bar plot from a category and a layer field."
-        )
+        return self.tr("Generates a bar plot from a category and a value field.")
 
     def processAlgorithm(self, parameters, context, feedback):
         try:
@@ -118,13 +104,11 @@ class BarPlot(QgisAlgorithm):
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=ResourceWarning)
                 warnings.filterwarnings("ignore", category=ImportWarning)
-                import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
             raise QgsProcessingException(
-                QCoreApplication.translate(
-                    "BarPlot",
-                    "This algorithm requires the Python “plotly” library. Please install this library and try again.",
+                self.tr(
+                    "This algorithm requires the Python “plotly” library. Please install this library and try again."
                 )
             )
 
@@ -136,37 +120,73 @@ class BarPlot(QgisAlgorithm):
 
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
-
         title = self.parameterAsString(parameters, self.TITLE, context)
         xaxis_title = self.parameterAsString(parameters, self.XAXIS_TITLE, context)
         yaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
 
-        if title.strip() == "":
+        if not title:
             title = None
-        if xaxis_title == "":
+        if not xaxis_title:
             xaxis_title = namefieldname
-        elif xaxis_title == " ":
-            xaxis_title = None
-        if yaxis_title == "":
+        if not yaxis_title:
             yaxis_title = valuefieldname
-        elif yaxis_title == " ":
-            yaxis_title = None
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(source, valuefieldname)
+        # 1. GET FIELD INDICES
+        name_idx = source.fields().indexFromName(namefieldname)
+        value_idx = source.fields().indexFromName(valuefieldname)
 
-        x_var = vector.convert_nulls(
-            [
-                i[namefieldname]
-                for i in source.getFeatures(
-                    QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
-                )
-            ],
-            "<NULL>",
-        )
+        # 2. VALIDATE INDICES
+        if name_idx == -1:
+            raise QgsProcessingException(
+                self.tr("Field '{}' not found in input layer.").format(namefieldname)
+            )
+        if value_idx == -1:
+            raise QgsProcessingException(
+                self.tr("Field '{}' not found in input layer.").format(valuefieldname)
+            )
 
-        data = [go.Bar(x=x_var, y=values[valuefieldname])]
+        # 3. LIGHTWEIGHT MATERIALIZATION (The Hybrid Fix)
+        # We copy ONLY the 2 fields we need, and NO geometry.
+        # This creates a tiny, safe memory layer that won't crash the test runner.
+        req = QgsFeatureRequest()
+        req.setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        req.setSubsetOfAttributes([name_idx, value_idx])
+
+        clean_layer = source.materialize(req)
+
+        # 4. SAFE EXECUTION ON CLEAN LAYER
+        x_data = []
+        y_data = []
+
+        # We must re-fetch indices because the clean_layer might have different field order
+        clean_name_idx = clean_layer.fields().indexFromName(namefieldname)
+        clean_value_idx = clean_layer.fields().indexFromName(valuefieldname)
+
+        for f in clean_layer.getFeatures():
+            if feedback.isCanceled():
+                break
+
+            attrs = f.attributes()
+            
+            # SAFE CAST: Force QGIS types into Python str/float
+            raw_name = attrs[clean_name_idx]
+            if raw_name is None:
+                x_data.append("<NULL>")
+            else:
+                x_data.append(str(raw_name))
+
+            raw_val = attrs[clean_value_idx]
+            if raw_val is None:
+                y_data.append(None)
+            else:
+                try:
+                    y_data.append(float(raw_val))
+                except (ValueError, TypeError):
+                    y_data.append(0.0)
+
+        data = [go.Bar(x=x_data, y=y_data)]
 
         fig = go.Figure(
             data=data,
@@ -174,7 +194,6 @@ class BarPlot(QgisAlgorithm):
             layout_xaxis_title=xaxis_title,
             layout_yaxis_title=yaxis_title,
         )
-
         fig.write_html(output)
 
         return {self.OUTPUT: output}
