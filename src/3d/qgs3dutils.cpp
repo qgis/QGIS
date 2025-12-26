@@ -45,6 +45,7 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <Qt3DCore/QBuffer>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QRenderSettings>
@@ -54,8 +55,6 @@
 #include <GL/gl.h>
 #endif
 
-#include <Qt3DCore/QBuffer>
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
 
 // declared here as Qgs3DTypes has no cpp file
 const char *Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG = "PROP_NAME_3D_RENDERER_FLAG";
@@ -182,7 +181,7 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
 double Qgs3DUtils::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
 {
   long long usedGpuMemory = 0;
-  for ( Qt3DQBuffer *buffer : entity->findChildren<Qt3DQBuffer *>() )
+  for ( Qt3DCore::QBuffer *buffer : entity->findChildren<Qt3DCore::QBuffer *>() )
   {
     usedGpuMemory += buffer->data().size();
   }

@@ -15,23 +15,20 @@
 
 #include "qgsdemterraintilegeometry_p.h"
 
+#include <cmath>
+#include <limits>
+
+#include "qgis.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgsraycastingutils.h"
+
 #include <QMatrix4x4>
 #include <Qt3DCore/QAbstractFunctor>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
 #include "moc_qgsdemterraintilegeometry_p.cpp"
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QAbstractFunctor Qt3DQAbstractFunctor;
-
-#include <limits>
-#include <cmath>
-#include "qgsraycastingutils.h"
-#include "qgsray3d.h"
-#include "qgsraycastcontext.h"
-#include "qgis.h"
 
 ///@cond PRIVATE
 
@@ -365,12 +362,12 @@ bool DemTerrainTileGeometry::rayIntersection( const QgsRay3D &ray, const QgsRayC
 
 void DemTerrainTileGeometry::init()
 {
-  mPositionAttribute = new Qt3DQAttribute( this );
-  mNormalAttribute = new Qt3DQAttribute( this );
-  mTexCoordAttribute = new Qt3DQAttribute( this );
-  mIndexAttribute = new Qt3DQAttribute( this );
-  mVertexBuffer = new Qt3DQBuffer( this );
-  mIndexBuffer = new Qt3DQBuffer( this );
+  mPositionAttribute = new Qt3DCore::QAttribute( this );
+  mNormalAttribute = new Qt3DCore::QAttribute( this );
+  mTexCoordAttribute = new Qt3DCore::QAttribute( this );
+  mIndexAttribute = new Qt3DCore::QAttribute( this );
+  mVertexBuffer = new Qt3DCore::QBuffer( this );
+  mIndexBuffer = new Qt3DCore::QBuffer( this );
 
   int nVertsX = mResolution + 2;
   int nVertsZ = mResolution + 2;
@@ -378,34 +375,34 @@ void DemTerrainTileGeometry::init()
   const int stride = ( 3 + 2 + 3 ) * sizeof( float );
   const int faces = 2 * ( nVertsX - 1 ) * ( nVertsZ - 1 );
 
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
   mPositionAttribute->setByteStride( stride );
   mPositionAttribute->setCount( nVerts );
 
-  mTexCoordAttribute->setName( Qt3DQAttribute::defaultTextureCoordinateAttributeName() );
-  mTexCoordAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mTexCoordAttribute->setName( Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName() );
+  mTexCoordAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mTexCoordAttribute->setVertexSize( 2 );
-  mTexCoordAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mTexCoordAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mTexCoordAttribute->setBuffer( mVertexBuffer );
   mTexCoordAttribute->setByteStride( stride );
   mTexCoordAttribute->setByteOffset( 3 * sizeof( float ) );
   mTexCoordAttribute->setCount( nVerts );
 
-  mNormalAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
-  mNormalAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mNormalAttribute->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
+  mNormalAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mNormalAttribute->setVertexSize( 3 );
-  mNormalAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mNormalAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mNormalAttribute->setBuffer( mVertexBuffer );
   mNormalAttribute->setByteStride( stride );
   mNormalAttribute->setByteOffset( 5 * sizeof( float ) );
   mNormalAttribute->setCount( nVerts );
 
-  mIndexAttribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
-  mIndexAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedInt );
+  mIndexAttribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
+  mIndexAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedInt );
   mIndexAttribute->setBuffer( mIndexBuffer );
 
   // Each primitive has 3 vertives
