@@ -34,6 +34,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QVariant>
+
 #ifdef HAVE_AUTH
 #include <QtCrypto>
 #endif
@@ -184,6 +185,7 @@ bool QgsAuthManager::isFilesystemBasedDatabase( const QString &uri )
   }
   return true;
 #else
+  Q_UNUSED( uri )
   return false;
 #endif
 }
@@ -215,6 +217,8 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   mAuthDatabaseConnectionUri = authDatabasePath.startsWith( QLatin1String( "QSQLITE://" ) ) ? authDatabasePath : QStringLiteral( "QSQLITE://" ) + authDatabasePath;
   return initPrivate( pluginPath );
 #else
+  Q_UNUSED( pluginPath )
+  Q_UNUSED( authDatabasePath )
   return false;
 #endif
 }
@@ -402,6 +406,7 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath )
 
   return true;
 #else
+  Q_UNUSED( pluginPath )
   return false;
 #endif
 }
@@ -426,6 +431,8 @@ void QgsAuthManager::setup( const QString &pluginPath, const QString &authDataba
 #endif
   }
 #else
+  Q_UNUSED( pluginPath )
+  Q_UNUSED( authDatabasePath )
 #endif
 }
 
@@ -585,6 +592,7 @@ bool QgsAuthManager::setMasterPassword( bool verify )
   QgsDebugMsgLevel( QStringLiteral( "Master password is set and verified" ), 2 );
   return true;
 #else
+  Q_UNUSED( verify )
   return false;
 #endif
 }
@@ -616,6 +624,8 @@ bool QgsAuthManager::setMasterPassword( const QString &pass, bool verify )
   QgsDebugMsgLevel( QStringLiteral( "Master password set: SUCCESS%1" ).arg( verify ? " and verified" : "" ), 2 );
   return true;
 #else
+  Q_UNUSED( pass )
+  Q_UNUSED( verify )
   return false;
 #endif
 }
@@ -716,6 +726,7 @@ bool QgsAuthManager::verifyMasterPassword( const QString &compare )
 
   return true;
 #else
+  Q_UNUSED( compare )
   return false;
 #endif
 }
@@ -738,6 +749,7 @@ bool QgsAuthManager::masterPasswordSame( const QString &pass ) const
 
   return mMasterPass == pass;
 #else
+  Q_UNUSED( pass )
   return false;
 #endif
 }
@@ -894,6 +906,10 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
   emit authDatabaseChanged();
   return true;
 #else
+  Q_UNUSED( newpass )
+  Q_UNUSED( oldpass )
+  Q_UNUSED( keepbackup )
+  Q_UNUSED( backuppath )
   return false;
 #endif
 }
@@ -917,6 +933,9 @@ bool QgsAuthManager::resetMasterPasswordUsingStoredPasswordHelper( const QString
 
   return resetMasterPassword( newPassword, existingPassword, keepBackup, backupPath );
 #else
+  Q_UNUSED( newPassword )
+  Q_UNUSED( keepBackup )
+  Q_UNUSED( backupPath )
   return false;
 #endif
 }
@@ -950,6 +969,7 @@ void QgsAuthManager::setScheduledAuthDatabaseErase( bool scheduleErase )
       mScheduledDbEraseTimer->stop();
   }
 #else
+  Q_UNUSED( scheduleErase )
 #endif
 }
 
@@ -1035,6 +1055,7 @@ bool QgsAuthManager::configIdUnique( const QString &id ) const
   QStringList configids = configIds();
   return !configids.contains( id );
 #else
+  Q_UNUSED( id )
   return false;
 #endif
 }
@@ -1045,6 +1066,7 @@ bool QgsAuthManager::hasConfigId( const QString &txt )
   const thread_local QRegularExpression authCfgRegExp( AUTH_CFG_REGEX );
   return txt.indexOf( authCfgRegExp ) != -1;
 #else
+  Q_UNUSED( txt )
   return false;
 #endif
 }
@@ -1098,6 +1120,7 @@ QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QStrin
   return baseConfigs;
 
 #else
+  Q_UNUSED( dataprovider )
   return QgsAuthMethodConfigsMap();
 #endif
 }
@@ -1128,7 +1151,6 @@ void QgsAuthManager::updateConfigAuthMethods()
       }
     }
   }
-#else
 #endif
 }
 
@@ -1165,6 +1187,7 @@ QString QgsAuthManager::configAuthMethodKey( const QString &authcfg ) const
 
   return mConfigAuthMethods.value( authcfg, QString() );
 #else
+  Q_UNUSED( authcfg )
   return QString();
 #endif
 }
@@ -1177,6 +1200,7 @@ QStringList QgsAuthManager::authMethodsKeys( const QString &dataprovider )
 
   return authMethodsMap( dataprovider.toLower() ).keys();
 #else
+  Q_UNUSED( dataprovider )
   return QStringList();
 #endif
 }
@@ -1242,6 +1266,7 @@ QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString &dataprovider )
   }
   return filteredmap;
 #else
+  Q_UNUSED( dataprovider )
   return QgsAuthMethodsMap();
 #endif
 }
@@ -1274,6 +1299,8 @@ QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const Q
   }
   return QgsAuthMethod::Expansions();
 #else
+  Q_UNUSED( authcfg )
+
   return static_cast<QgsAuthMethod::Expansions>(0);
 #endif
 }
@@ -1362,6 +1389,8 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &config, boo
   QgsDebugMsgLevel( QStringLiteral( "Store config SUCCESS for authcfg: %1" ).arg( uid ), 2 );
   return true;
 #else
+  Q_UNUSED( config )
+  Q_UNUSED( overwrite )
   return false;
 #endif
 }
@@ -1433,6 +1462,7 @@ bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &conf
 
   return true;
 #else
+  Q_UNUSED( config )
   return false;
 #endif
 }
@@ -1502,6 +1532,9 @@ bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMe
 
   return false;
 #else
+  Q_UNUSED( authcfg )
+  Q_UNUSED( config )
+  Q_UNUSED( full )
   return false;
 #endif
 }
@@ -1553,6 +1586,7 @@ bool QgsAuthManager::removeAuthenticationConfig( const QString &authcfg )
   return false;
 
 #else
+  Q_UNUSED( authcfg )
   return false;
 #endif
 }
@@ -1615,6 +1649,9 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
   file.close();
   return true;
 #else
+  Q_UNUSED( filename )
+  Q_UNUSED( authcfgs )
+  Q_UNUSED( password )
   return false;
 #endif
 }
@@ -1672,6 +1709,9 @@ bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename
   }
   return true;
 #else
+  Q_UNUSED( filename )
+  Q_UNUSED( password )
+  Q_UNUSED( overwrite )
   return false;
 #endif
 }
@@ -1760,6 +1800,7 @@ bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
   QgsDebugMsgLevel( QStringLiteral( "Backed up auth database at %1" ).arg( dbbackup ), 2 );
   return true;
 #else
+  Q_UNUSED( backuppath )
   return false;
 #endif
 }
@@ -1813,6 +1854,8 @@ bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppa
 
   return true;
 #else
+  Q_UNUSED( backup )
+  Q_UNUSED( backuppath )
   return false;
 #endif
 }
@@ -1844,6 +1887,9 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
   }
   return false;
 #else
+  Q_UNUSED( request )
+  Q_UNUSED( authcfg )
+  Q_UNUSED( dataprovider )
   return false;
 #endif
 }
@@ -1876,6 +1922,9 @@ bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString &au
 
   return false;
 #else
+  Q_UNUSED( reply )
+  Q_UNUSED( authcfg )
+  Q_UNUSED( dataprovider )
   return false;
 #endif
 }
@@ -1908,6 +1957,9 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
 
   return false;
 #else
+  Q_UNUSED( connectionItems )
+  Q_UNUSED( authcfg )
+  Q_UNUSED( dataprovider )
   return false;
 #endif
 }
@@ -1940,6 +1992,9 @@ bool QgsAuthManager::updateNetworkProxy( QNetworkProxy &proxy, const QString &au
 
   return false;
 #else
+  Q_UNUSED( proxy )
+  Q_UNUSED( authcfg )
+  Q_UNUSED( dataprovider )
   return false;
 #endif
 }
@@ -1989,6 +2044,9 @@ bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant &value
     return false;
   }
 #else
+  Q_UNUSED( key )
+  Q_UNUSED( value )
+  Q_UNUSED( encrypt )
   return false;
 #endif
 }
@@ -2031,6 +2089,9 @@ QVariant QgsAuthManager::authSetting( const QString &key, const QVariant &defaul
 
   return value;
 #else
+  Q_UNUSED( key )
+  Q_UNUSED( defaultValue )
+  Q_UNUSED( decrypt )
   return QVariant();
 #endif
 }
@@ -2062,6 +2123,7 @@ bool QgsAuthManager::existsAuthSetting( const QString &key )
 
   return false;
 #else
+  Q_UNUSED( key )
   return false;
 #endif
 }
@@ -2105,6 +2167,7 @@ bool QgsAuthManager::removeAuthSetting( const QString &key )
   }
   return false;
 #else
+  Q_UNUSED( key )
   return false;
 #endif
 }
@@ -2181,6 +2244,8 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
     return false;
   }
 #else
+  Q_UNUSED( cert )
+  Q_UNUSED( key )
   return false;
 #endif
 }
@@ -2216,6 +2281,7 @@ const QSslCertificate QgsAuthManager::certIdentity( const QString &id )
 
   return cert;
 #else
+  Q_UNUSED( id )
   return QSslCertificate();
 #endif
 }
@@ -2279,6 +2345,7 @@ const QStringList QgsAuthManager::certIdentityBundleToPem( const QString &id )
   }
   return QStringList();
 #else
+  Q_UNUSED( id )
   return QStringList();
 #endif
 }
@@ -2387,6 +2454,7 @@ bool QgsAuthManager::existsCertIdentity( const QString &id )
 
   return false;
 #else
+  Q_UNUSED( id )
   return false;
 #endif
 }
@@ -2427,6 +2495,7 @@ bool QgsAuthManager::removeCertIdentity( const QString &id )
   return false;
 
 #else
+  Q_UNUSED( id )
   return false;
 #endif
 }
@@ -2471,6 +2540,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
 
   return true;
 #else
+  Q_UNUSED( config )
   return false;
 #endif
 }
@@ -2517,6 +2587,8 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfig( const QString 
   return config;
 
 #else
+  Q_UNUSED( id )
+  Q_UNUSED( hostport )
   return QgsAuthConfigSslServer();
 #endif
 }
@@ -2557,6 +2629,7 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QS
 
   return config;
 #else
+  Q_UNUSED( hostport )
   return QgsAuthConfigSslServer();
 #endif
 }
@@ -2636,6 +2709,8 @@ bool QgsAuthManager::existsSslCertCustomConfig( const QString &id, const QString
 
   return false;
 #else
+  Q_UNUSED( id )
+  Q_UNUSED( hostPort )
   return false;
 #endif
 }
@@ -2682,6 +2757,8 @@ bool QgsAuthManager::removeSslCertCustomConfig( const QString &id, const QString
 
   return false;
 #else
+  Q_UNUSED( id )
+  Q_UNUSED( hostport )
   return false;
 #endif
 }
@@ -2712,7 +2789,6 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
   {
     QgsDebugMsgLevel( QStringLiteral( "Ignored SSL errors cache EMPTY" ), 2 );
   }
-#else
 #endif
 }
 
@@ -2747,6 +2823,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
   QgsDebugMsgLevel( QStringLiteral( "No ignored SSL errors to cache for sha:host:port = %1" ).arg( shahostport ), 2 );
   return true;
 #else
+  Q_UNUSED( config )
   return false;
 #endif
 }
@@ -2797,6 +2874,8 @@ bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, co
   dumpIgnoredSslErrorsCache_();
   return true;
 #else
+  Q_UNUSED( shahostport )
+  Q_UNUSED( errors )
   return false;
 #endif
 }
@@ -2887,6 +2966,7 @@ bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
   }
   return true;
 #else
+  Q_UNUSED( certs )
   return false;
 #endif
 }
@@ -2923,6 +3003,7 @@ bool QgsAuthManager::storeCertAuthority( const QSslCertificate &cert )
 
   return false;
 #else
+  Q_UNUSED( cert )
   return false;
 #endif
 }
@@ -2958,6 +3039,7 @@ const QSslCertificate QgsAuthManager::certAuthority( const QString &id )
 
   return cert;
 #else
+  Q_UNUSED( id )
   return QSslCertificate();
 #endif
 }
@@ -3038,6 +3120,7 @@ bool QgsAuthManager::removeCertAuthority( const QSslCertificate &cert )
 
   return false;
 #else
+  Q_UNUSED( cert )
   return false;
 #endif
 }
@@ -3196,6 +3279,8 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
     return false;
   }
 #else
+  Q_UNUSED( cert )
+  Q_UNUSED( policy )
   return false;
 #endif
 }
@@ -3231,6 +3316,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certTrustPolicy( const QSslCer
 
   return QgsAuthCertUtils::DefaultTrust;
 #else
+  Q_UNUSED( cert )
   return static_cast<QgsAuthCertUtils::CertTrustPolicy>(0);
 #endif
 }
@@ -3254,6 +3340,7 @@ bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &cert
   }
   return true;
 #else
+  Q_UNUSED( certs )
   return false;
 #endif
 }
@@ -3299,6 +3386,7 @@ bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
 
   return false;
 #else
+  Q_UNUSED( cert )
   return false;
 #endif
 }
@@ -3329,6 +3417,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certificateTrustPolicy( const 
   }
   return policy;
 #else
+  Q_UNUSED( cert )
   return static_cast<QgsAuthCertUtils::CertTrustPolicy>(0);
 #endif
 }
@@ -3345,6 +3434,7 @@ bool QgsAuthManager::setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolic
   }
   return storeAuthSetting( QStringLiteral( "certdefaulttrust" ), static_cast< int >( policy ) );
 #else
+  Q_UNUSED( policy )
   return false;
 #endif
 }
@@ -3458,6 +3548,7 @@ const QList<QSslCertificate> QgsAuthManager::trustedCaCerts( bool includeinvalid
 
   return trustedcerts;
 #else
+  Q_UNUSED( includeinvalid )
   return QList<QSslCertificate>();
 #endif
 }
@@ -3490,6 +3581,7 @@ const QList<QSslCertificate> QgsAuthManager::untrustedCaCerts( QList<QSslCertifi
   }
   return untrustedCAs;
 #else
+  Q_UNUSED( trustedCAs )
   return QList<QSslCertificate>();
 #endif
 }
@@ -3581,6 +3673,7 @@ QString QgsAuthManager::passwordHelperDisplayName( bool titleCase )
   return titleCase ? QObject::tr( "Password Manager" ) : QObject::tr( "password manager" );
 #endif
 #else
+  Q_UNUSED( titleCase )
   return QString();
 #endif
 }
@@ -3603,7 +3696,6 @@ void QgsAuthManager::clearAllCachedConfigs()
   {
     clearCachedConfig( authcfg );
   }
-#else
 #endif
 }
 
@@ -3621,6 +3713,7 @@ void QgsAuthManager::clearCachedConfig( const QString &authcfg )
     authmethod->clearCachedConfig( authcfg );
   }
 #else
+  Q_UNUSED( authcfg )
 #endif
 }
 
@@ -3654,6 +3747,9 @@ void QgsAuthManager::writeToConsole( const QString &message,
   QTextStream out( stdout, QIODevice::WriteOnly );
   out << msg << Qt::endl;
 #else
+  Q_UNUSED( message )
+  Q_UNUSED( tag )
+  Q_UNUSED( level )
 #endif
 }
 
@@ -3689,7 +3785,6 @@ void QgsAuthManager::tryToStartDbErase()
     return;
   }
   QgsDebugMsgLevel( QStringLiteral( "authDatabaseEraseRequest emit skipped" ), 2 );
-#else
 #endif
 }
 
@@ -3758,6 +3853,7 @@ void QgsAuthManager::passwordHelperLog( const QString &msg ) const
     QgsMessageLog::logMessage( msg, passwordHelperName() );
   }
 #else
+  Q_UNUSED( msg )
 #endif
 }
 
@@ -3844,6 +3940,7 @@ QString QgsAuthManager::passwordHelperRead( bool &ok )
   passwordHelperProcessError();
   return password;
 #else
+  Q_UNUSED( ok )
   return QString();
 #endif
 }
@@ -3884,6 +3981,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
   passwordHelperProcessError();
   return result;
 #else
+  Q_UNUSED( password )
   return false;
 #endif
 }
@@ -3909,6 +4007,7 @@ void QgsAuthManager::setPasswordHelperEnabled( const bool enabled )
                    tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
                    .arg( passwordHelperDisplayName() ) );
 #else
+  Q_UNUSED( enabled )
 #endif
 }
 
@@ -3929,6 +4028,7 @@ void QgsAuthManager::setPasswordHelperLoggingEnabled( const bool enabled )
   QgsSettings settings;
   settings.setValue( QStringLiteral( "password_helper_logging" ),  enabled, QgsSettings::Section::Auth );
 #else
+  Q_UNUSED( enabled )
 #endif
 }
 
@@ -3937,7 +4037,6 @@ void QgsAuthManager::passwordHelperClearErrors()
 #ifdef HAVE_AUTH
   mPasswordHelperErrorCode = QKeychain::NoError;
   mPasswordHelperErrorMessage.clear();
-#else
 #endif
 }
 
@@ -3967,7 +4066,6 @@ void QgsAuthManager::passwordHelperProcessError()
     emit passwordHelperMessageLog( mPasswordHelperErrorMessage, authManTag(), Qgis::MessageLevel::Critical );
   }
   passwordHelperClearErrors();
-#else
 #endif
 }
 
@@ -4068,6 +4166,7 @@ bool QgsAuthManager::masterPasswordRowsInDb( int &rows ) const
 
   return res;
 #else
+  Q_UNUSED( rows )
   return false;
 #endif
 }
@@ -4131,6 +4230,7 @@ bool QgsAuthManager::masterPasswordCheckAgainstDb( const QString &compare ) cons
     return false;
   }
 #else
+  Q_UNUSED( compare )
   return false;
 #endif
 }
@@ -4356,6 +4456,8 @@ bool QgsAuthManager::reencryptAllAuthenticationConfigs( const QString &prevpass,
   }
   return res;
 #else
+  Q_UNUSED( prevpass )
+  Q_UNUSED( prevciv )
   return false;
 #endif
 }
@@ -4428,13 +4530,15 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
 
   return false;
 #else
+  Q_UNUSED( authcfg )
+  Q_UNUSED( prevpass )
+  Q_UNUSED( prevciv )
   return false;
 #endif
 }
 
 bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass, const QString &prevciv )
 {
-#ifdef HAVE_AUTH
   ensureInitialized();
 
   // TODO: start remove (when function is actually used)
@@ -4519,9 +4623,6 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
 
   return true;
 #endif
-#else
-  return false;
-#endif
 }
 
 bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpass, const QString &prevciv )
@@ -4540,6 +4641,8 @@ bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpa
   }
   return res;
 #else
+  Q_UNUSED( prevpass )
+  Q_UNUSED( prevciv )
   return false;
 #endif
 }
@@ -4605,6 +4708,9 @@ bool QgsAuthManager::reencryptAuthenticationIdentity(
 
   return false;
 #else
+  Q_UNUSED( identid )
+  Q_UNUSED( prevpass )
+  Q_UNUSED( prevciv )
   return false;
 #endif
 }
@@ -4621,6 +4727,8 @@ void QgsAuthManager::insertCaCertInCache( QgsAuthCertUtils::CaCertSource source,
                           QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>( source, cert ) );
   }
 #else
+  Q_UNUSED( source )
+  Q_UNUSED( certs )
 #endif
 }
 #endif
