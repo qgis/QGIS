@@ -1,17 +1,17 @@
 """
 ***************************************************************************
-    BarPlot.py
+    PolarPlot.py
     ---------------------
     Date                 : January 2013
     Copyright            : (C) 2013 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
+* *
+* This program is free software; you can redistribute it and/or modify  *
+* it under the terms of the GNU General Public License as published by  *
+* the Free Software Foundation; either version 2 of the License, or     *
+* (at your option) any later version.                                   *
+* *
 ***************************************************************************
 """
 
@@ -22,15 +22,13 @@ __copyright__ = "(C) 2013, Victor Olaya"
 import warnings
 
 from qgis.core import (
+    QgsFeatureRequest,
     QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class PolarPlot(QgisAlgorithm):
@@ -92,19 +90,8 @@ class PolarPlot(QgisAlgorithm):
                 import plotly.graph_objs as go
         except ImportError:
             raise QgsProcessingException(
-                QCoreApplication.translate(
-                    "PolarPlot",
-                    "This algorithm requires the Python “plotly” library. Please install this library and try again.",
-                )
-            )
-
-        try:
-            import numpy as np
-        except ImportError:
-            raise QgsProcessingException(
-                QCoreApplication.translate(
-                    "PolarPlot",
-                    "This algorithm requires the Python “numpy” library. Please install this library and try again.",
+                self.tr(
+                    "This algorithm requires the Python “plotly” library. Please install this library and try again."
                 )
             )
 
@@ -115,20 +102,31 @@ class PolarPlot(QgisAlgorithm):
             )
 
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
-
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(source, valuefieldname)
+        # Optimize: Only fetch the field we need, and skip geometry
+        value_index = source.fields().lookupField(valuefieldname)
+        req = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        req.setSubsetOfAttributes([value_index])
+
+        values = [f[valuefieldname] for f in source.getFeatures(req)]
+
+        # Calculate angles without numpy (standard Python logic)
+        count = len(values)
+        if count > 0:
+            step = 360.0 / count
+            theta = [i * step for i in range(count)]
+        else:
+            theta = []
 
         data = [
             go.Barpolar(
-                r=values[valuefieldname],
-                theta=np.degrees(
-                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))
-                ),
+                r=values,
+                theta=theta,
             )
         ]
 
-        plt.offline.plot(data, filename=output, auto_open=False)
+        fig = go.Figure(data=data)
+        fig.write_html(output)
 
         return {self.OUTPUT: output}
