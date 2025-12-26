@@ -141,6 +141,8 @@ class QgsHttpExternalStorageStoreTask : public QgsTask
 
     QgsHttpExternalStorageStoreTask( const QUrl &url, const QString &filePath, const QString &authCfg );
 
+    ~QgsHttpExternalStorageStoreTask() override;
+
     bool run() override;
 
     void cancel() override;

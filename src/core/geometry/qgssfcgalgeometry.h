@@ -33,6 +33,8 @@ SIP_IF_MODULE( HAVE_SFCGAL_SIP )
 
 #include <QtGui/qmatrix4x4.h>
 
+SIP_IF_MODULE( HAVE_SFCGAL_SIP )
+
 /**
  * Wraps SFCGAL geometry object.
  *

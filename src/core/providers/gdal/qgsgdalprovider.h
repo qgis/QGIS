@@ -82,6 +82,10 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     ~QgsGdalProvider() override;
 
+    bool hasReportsDuringClose() const override;
+
+    bool closeWithProgress( QgsFeedback *feedback ) override;
+
     /**
      * Gets the data source specification. This may be a path or a protocol
      * connection string

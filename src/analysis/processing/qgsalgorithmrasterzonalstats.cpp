@@ -193,11 +193,6 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   qgssize noDataCount = 0;
 
   const qgssize layerSize = static_cast<qgssize>( mLayerWidth ) * static_cast<qgssize>( mLayerHeight );
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   QgsRasterIterator iter = mRefLayer == Source ? QgsRasterIterator( mSourceInterface )
                                                : QgsRasterIterator( mZonesInterface );
@@ -213,8 +208,10 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   bool isNoData = false;
   while ( true )
   {
+    int band;
     if ( mRefLayer == Source )
     {
+      band = mBand;
       if ( !iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop, &blockExtent ) )
         break;
 
@@ -222,6 +219,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     }
     else
     {
+      band = mZonesBand;
       if ( !iter.readNextRasterPart( mZonesBand, iterCols, iterRows, zonesRasterBlock, iterLeft, iterTop, &blockExtent ) )
         break;
 
@@ -230,7 +228,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     if ( !zonesRasterBlock || !rasterBlock )
       continue;
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( 100 * iter.progress( band ) );
     if ( !rasterBlock->isValid() || rasterBlock->isEmpty() || !zonesRasterBlock->isValid() || zonesRasterBlock->isEmpty() )
       continue;
 

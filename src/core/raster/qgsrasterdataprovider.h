@@ -107,6 +107,31 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProvider *clone() const override = 0;
 
+
+    /**
+     * Returns whether closeWithProgress() will actually report closing progress.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool hasReportsDuringClose() const SIP_SKIP;
+
+    /**
+     * Close the provider with feedback.
+     *
+     * Only implemented at time of writing for GDAL COG driver in GDAL >= 3.13.
+     * For other providers/drivers, this method does nothing.
+     *
+     * Use with great caution. After that method has been called, the only valid
+     * action on the provider is to destroy it. Other method calls will likely
+     * result in a crash.
+     *
+     * \param feedback Feedback object on which to report the progress, or nullptr.
+     * \returns true if the closing was successful.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool closeWithProgress( QgsFeedback *feedback ) SIP_SKIP;
+
     /**
      * Returns flags containing the supported capabilities of the data provider.
      */

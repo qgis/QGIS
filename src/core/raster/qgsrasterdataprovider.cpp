@@ -1062,4 +1062,15 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
   return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }
 
+bool QgsRasterDataProvider::hasReportsDuringClose() const
+{
+  return false;
+}
+
+bool QgsRasterDataProvider::closeWithProgress( QgsFeedback * /* feedback */ )
+{
+  return false;
+}
+
+
 #undef ERR

@@ -357,7 +357,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
       }
     }
 
-    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider.get(), feedback );
+    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
 
     if ( attempt == 0 && error == Qgis::RasterFileWriterResult::NoDataConflict )
     {
@@ -406,7 +406,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
     Qgis::DataType destDataType,
     const QList<bool> &destHasNoDataValueList,
     const QList<double> &destNoDataValueList,
-    QgsRasterDataProvider *destProvider,
+    std::unique_ptr<QgsRasterDataProvider> &destProvider,
     QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( pipe )
@@ -448,11 +448,14 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
     nParts = nPartsX * nPartsY;
   }
 
+  const bool hasReportsDuringClose = destProvider && destProvider->hasReportsDuringClose();
+
   // hmm why is there a for(;;) here ..
   // not good coding practice IMHO, it might be better to use [ for() and break ] or  [ while (test) ]
   Q_FOREVER
   {
-    for ( int i = 1; i <= nBands; ++i )
+    bool done = false;
+    for ( int i = 1; i <= nBands && !done; ++i )
     {
       QgsRasterBlock *block = nullptr;
       if ( !iter->readNextRasterPart( i, iterCols, iterRows, &block, iterLeft, iterTop ) )
@@ -471,20 +474,24 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
         {
           if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
           {
-            buildPyramids( mOutputUrl, destProvider );
+            buildPyramids( mOutputUrl, destProvider.get() );
           }
         }
 
-        QgsDebugMsgLevel( QStringLiteral( "Done" ), 4 );
-        return Qgis::RasterFileWriterResult::Success; //reached last tile, bail out
+        done = true;
       }
       blockList[i - 1].reset( block );
       // TODO: verify if NoDataConflict happened, to do that we need the whole pipe or nuller interface
     }
+    if ( done )
+    {
+      break;
+    }
 
     if ( feedback && fileIndex < ( nParts - 1 ) )
     {
-      feedback->setProgress( 100.0 * fileIndex / static_cast< double >( nParts ) );
+      const double maxProgress = hasReportsDuringClose ? 50.0 : 100.0;
+      feedback->setProgress( maxProgress * fileIndex / static_cast< double >( nParts ) );
       if ( feedback->isCanceled() )
       {
         break;
@@ -551,6 +558,21 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
       }
     }
     ++fileIndex;
+  }
+
+  // If the provider can report progress during closing (typically when generating COG files),
+  // report it, making feedback report percentage in the [50, 100] range.
+  if ( feedback && destProvider && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, 50.0, 100.0 ) );
+    if ( !destProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      destProvider->remove();
+      destProvider.reset();
+      return ( feedback && feedback->isCanceled() ) ?
+             Qgis::RasterFileWriterResult::Canceled :
+             Qgis::RasterFileWriterResult::WriteError;
+    }
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Done" ), 4 );
