@@ -31,7 +31,6 @@ from qgis.core import (
     QgsProcessingParameterString,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import vector
 
 from qgis.PyQt.QtCore import QCoreApplication
 
