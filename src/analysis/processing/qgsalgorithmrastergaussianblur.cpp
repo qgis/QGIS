@@ -175,6 +175,8 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
   std::unique_ptr<QgsRasterBlock> inputBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, inputBlock, iterLeft, iterTop, &blockExtent, &tileCols, &tileRows, &tileLeft, &tileTop ) )
   {
+    feedback->setProgress( 100 * iter.progress( mBand, 0 ) );
+
     if ( feedback->isCanceled() )
       break;
 
@@ -197,6 +199,8 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
 
     for ( int r = 0; r < iterRows; ++r )
     {
+      feedback->setProgress( 100 * iter.progress( mBand, r / static_cast< double >( iterRows ) * 0.5 ) );
+
       if ( feedback->isCanceled() )
         break;
 
@@ -250,6 +254,8 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
     // unlike the first pass, here we ONLY need to calculate the blur for pixels which aren't block padding
     for ( int r = 0; r < tileRows; ++r )
     {
+      feedback->setProgress( 100 * iter.progress( mBand, 0.5 + r / static_cast< double >( tileRows ) * 0.5 ) );
+
       if ( feedback->isCanceled() )
         break;
 
@@ -296,8 +302,6 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
     {
       throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destProvider->error().summary() ) );
     }
-
-    feedback->setProgress( 100 * iter.progress( mBand ) );
   }
   destProvider->setEditable( false );
 
