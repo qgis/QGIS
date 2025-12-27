@@ -85,6 +85,7 @@ bool QgsMapToolReshape::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::StraightSegments:
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return true;
 
     case Qgis::CaptureTechnique::Shape:

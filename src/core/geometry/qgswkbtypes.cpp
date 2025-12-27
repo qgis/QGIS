@@ -73,6 +73,11 @@ Q_GLOBAL_STATIC_WITH_ARGS( WkbEntries, sWkbEntries, (
   { Qgis::WkbType::CircularStringZ, WkbEntry( QLatin1String( "CircularStringZ" ), false, Qgis::WkbType::MultiCurveZ, Qgis::WkbType::CircularStringZ, Qgis::WkbType::CircularString, Qgis::GeometryType::Line, true, false ) },
   { Qgis::WkbType::CircularStringM, WkbEntry( QLatin1String( "CircularStringM" ), false, Qgis::WkbType::MultiCurveM, Qgis::WkbType::CircularStringM, Qgis::WkbType::CircularString, Qgis::GeometryType::Line, false, true ) },
   { Qgis::WkbType::CircularStringZM, WkbEntry( QLatin1String( "CircularStringZM" ), false, Qgis::WkbType::MultiCurveZM, Qgis::WkbType::CircularStringZM, Qgis::WkbType::CircularString, Qgis::GeometryType::Line, true, true ) },
+  //nurbscurve
+  { Qgis::WkbType::NurbsCurve, WkbEntry( QLatin1String( "NurbsCurve" ), false, Qgis::WkbType::MultiCurve, Qgis::WkbType::NurbsCurve, Qgis::WkbType::NurbsCurve, Qgis::GeometryType::Line, false, false ) },
+  { Qgis::WkbType::NurbsCurveZ, WkbEntry( QLatin1String( "NurbsCurveZ" ), false, Qgis::WkbType::MultiCurveZ, Qgis::WkbType::NurbsCurveZ, Qgis::WkbType::NurbsCurve, Qgis::GeometryType::Line, true, false ) },
+  { Qgis::WkbType::NurbsCurveM, WkbEntry( QLatin1String( "NurbsCurveM" ), false, Qgis::WkbType::MultiCurveM, Qgis::WkbType::NurbsCurveM, Qgis::WkbType::NurbsCurve, Qgis::GeometryType::Line, false, true ) },
+  { Qgis::WkbType::NurbsCurveZM, WkbEntry( QLatin1String( "NurbsCurveZM" ), false, Qgis::WkbType::MultiCurveZM, Qgis::WkbType::NurbsCurveZM, Qgis::WkbType::NurbsCurve, Qgis::GeometryType::Line, true, true ) },
   //compoundcurve
   { Qgis::WkbType::CompoundCurve, WkbEntry( QLatin1String( "CompoundCurve" ), false, Qgis::WkbType::MultiCurve, Qgis::WkbType::CompoundCurve, Qgis::WkbType::CompoundCurve, Qgis::GeometryType::Line, false, false ) },
   { Qgis::WkbType::CompoundCurveZ, WkbEntry( QLatin1String( "CompoundCurveZ" ), false, Qgis::WkbType::MultiCurveZ, Qgis::WkbType::CompoundCurveZ, Qgis::WkbType::CompoundCurve, Qgis::GeometryType::Line, true, false ) },
@@ -180,6 +185,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::MultiPolygon: return QObject::tr( "MultiPolygon" );
     case Qgis::WkbType::GeometryCollection: return QObject::tr( "GeometryCollection" );
     case Qgis::WkbType::CircularString: return QObject::tr( "CircularString" );
+    case Qgis::WkbType::NurbsCurve: return QObject::tr( "NurbsCurve" );
     case Qgis::WkbType::CompoundCurve: return QObject::tr( "CompoundCurve" );
     case Qgis::WkbType::CurvePolygon: return QObject::tr( "CurvePolygon" );
     case Qgis::WkbType::MultiCurve: return QObject::tr( "MultiCurve" );
@@ -196,6 +202,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::MultiPolygonZ: return QObject::tr( "MultiPolygonZ" );
     case Qgis::WkbType::GeometryCollectionZ: return QObject::tr( "GeometryCollectionZ" );
     case Qgis::WkbType::CircularStringZ: return QObject::tr( "CircularStringZ" );
+    case Qgis::WkbType::NurbsCurveZ: return QObject::tr( "NurbsCurveZ" );
     case Qgis::WkbType::CompoundCurveZ: return QObject::tr( "CompoundCurveZ" );
     case Qgis::WkbType::CurvePolygonZ: return QObject::tr( "CurvePolygonZ" );
     case Qgis::WkbType::MultiCurveZ: return QObject::tr( "MultiCurveZ" );
@@ -211,6 +218,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::MultiPolygonM: return QObject::tr( "MultiPolygonM" );
     case Qgis::WkbType::GeometryCollectionM: return QObject::tr( "GeometryCollectionM" );
     case Qgis::WkbType::CircularStringM: return QObject::tr( "CircularStringM" );
+    case Qgis::WkbType::NurbsCurveM: return QObject::tr( "NurbsCurveM" );
     case Qgis::WkbType::CompoundCurveM: return QObject::tr( "CompoundCurveM" );
     case Qgis::WkbType::CurvePolygonM: return QObject::tr( "CurvePolygonM" );
     case Qgis::WkbType::MultiCurveM: return QObject::tr( "MultiCurveM" );
@@ -225,6 +233,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::MultiPolygonZM: return QObject::tr( "MultiPolygonZM" );
     case Qgis::WkbType::GeometryCollectionZM: return QObject::tr( "GeometryCollectionZM" );
     case Qgis::WkbType::CircularStringZM: return QObject::tr( "CircularStringZM" );
+    case Qgis::WkbType::NurbsCurveZM: return QObject::tr( "NurbsCurveZM" );
     case Qgis::WkbType::CompoundCurveZM: return QObject::tr( "CompoundCurveZM" );
     case Qgis::WkbType::CurvePolygonZM: return QObject::tr( "CurvePolygonZM" );
     case Qgis::WkbType::MultiCurveZM: return QObject::tr( "MultiCurveZM" );

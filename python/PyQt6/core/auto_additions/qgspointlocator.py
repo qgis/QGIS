@@ -6,6 +6,7 @@ QgsPointLocator.Area = QgsPointLocator.Type.Area
 QgsPointLocator.Centroid = QgsPointLocator.Type.Centroid
 QgsPointLocator.MiddleOfSegment = QgsPointLocator.Type.MiddleOfSegment
 QgsPointLocator.LineEndpoint = QgsPointLocator.Type.LineEndpoint
+QgsPointLocator.ControlPoint = QgsPointLocator.Type.ControlPoint
 QgsPointLocator.All = QgsPointLocator.Type.All
 QgsPointLocator.Types = lambda flags=0: QgsPointLocator.Type(flags)
 try:

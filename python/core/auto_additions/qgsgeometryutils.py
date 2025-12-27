@@ -14,6 +14,7 @@ try:
     QgsGeometryUtils.projectPointOnSegment = staticmethod(QgsGeometryUtils.projectPointOnSegment)
     QgsGeometryUtils.leftOfLine = staticmethod(QgsGeometryUtils.leftOfLine)
     QgsGeometryUtils.interpolatePointOnArc = staticmethod(QgsGeometryUtils.interpolatePointOnArc)
+    QgsGeometryUtils.interpolatePointOnCubicBezier = staticmethod(QgsGeometryUtils.interpolatePointOnCubicBezier)
     QgsGeometryUtils.segmentMidPoint = staticmethod(QgsGeometryUtils.segmentMidPoint)
     QgsGeometryUtils.segmentMidPointFromCenter = staticmethod(QgsGeometryUtils.segmentMidPointFromCenter)
     QgsGeometryUtils.circleTangentDirection = staticmethod(QgsGeometryUtils.circleTangentDirection)
