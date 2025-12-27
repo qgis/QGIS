@@ -32,7 +32,7 @@ class TestQgsMessageLog(QgisTestCase):
         app_log = QgsApplication.messageLog()
 
         # signals should be emitted by application log
-        app_spy = QSignalSpy(app_log.messageReceived)
+        app_spy = QSignalSpy(app_log.messageReceivedWithType)
         app_spy_received = QSignalSpy(app_log.messageReceived[bool])
 
         QgsMessageLog.logMessage("test", "tag", Qgis.MessageLevel.Info, notifyUser=True)
@@ -59,7 +59,7 @@ class TestQgsMessageLog(QgisTestCase):
     def testBlocker(self):
         app_log = QgsApplication.messageLog()
 
-        spy = QSignalSpy(app_log.messageReceived)
+        spy = QSignalSpy(app_log.messageReceivedWithType)
         spy_received = QSignalSpy(app_log.messageReceived[bool])
 
         QgsMessageLog.logMessage(
