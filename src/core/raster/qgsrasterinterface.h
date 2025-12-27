@@ -209,7 +209,7 @@ class CORE_EXPORT QgsRasterInterface
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
-    // TODO QGIS 4.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
+    // TODO QGIS 5.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
     // (which inherits this class)
 
     /**
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsRasterInterface
     /**
      * Returns the raster interface capabilities in friendly format.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 

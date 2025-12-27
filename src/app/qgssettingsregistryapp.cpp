@@ -62,7 +62,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
 
 QgsSettingsRegistryApp::~QgsSettingsRegistryApp()
 {
-  // TODO QGIS 4.0: Remove
+  // TODO QGIS 5.0: Remove
   // backward compatibility for settings
   QgsIdentifyResultsDialog::settingHideNullValues->copyValueToKeyIfChanged( QStringLiteral( "Map/hideNullValues" ) );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueToKeyIfChanged( QStringLiteral( "plugins/automatically-check-for-updates" ) );

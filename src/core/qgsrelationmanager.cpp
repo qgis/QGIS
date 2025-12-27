@@ -28,9 +28,9 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
 {
   if ( project )
   {
-    // TODO: QGIS 4 remove: relations are now stored with the layer style
+    // TODO: QGIS 5 remove: relations are now stored with the layer style
     connect( project, &QgsProject::readProjectWithContext, this, &QgsRelationManager::readProject );
-    // TODO: QGIS 4 remove: relations are now stored with the layer style
+    // TODO: QGIS 5 remove: relations are now stored with the layer style
     connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
 
     connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );

@@ -2537,7 +2537,7 @@ void TestQgsGeometry::splitGeometry()
   QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
 
   // Repeat previous tests with QVector<QgsPointXY> instead of QgsPointSequence
-  // Those tests are for the deprecated QgsGeometry::splitGeometry() variant and should be removed in QGIS 4.0
+  // Those tests are for the deprecated QgsGeometry::splitGeometry() variant and should be removed in QGIS 5.0
   Q_NOWARN_DEPRECATED_PUSH
   // Test splitting Z enabled line on an existing vertex - https://github.com/qgis/QGIS/issues/49403
   g2 = QgsGeometry::fromWkt( "LineString Z (0 0 0, 1 1 1, 2 2 2 )" );

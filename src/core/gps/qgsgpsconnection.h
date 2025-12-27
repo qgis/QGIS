@@ -149,7 +149,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
      */
     void stateChanged( const QgsGpsInformation &info );
 
-    // TODO QGIS 4.0 -- move to QgsNmeaConnection, it makes no sense in the base class
+    // TODO QGIS 5.0 -- move to QgsNmeaConnection, it makes no sense in the base class
 
     /**
      * Emitted whenever the GPS device receives a raw NMEA sentence.

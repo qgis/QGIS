@@ -79,12 +79,12 @@ void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "NATURAL_SORT" ), QObject::tr( "Sort text containing numbers naturally" ), false ) );
   addParameter( std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "GROUP_EXPRESSION" ), QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
-  // TODO QGIS 4: remove parameter. move logic to separate algorithm if needed.
+  // TODO QGIS 5: remove parameter. move logic to separate algorithm if needed.
   addParameter( std::make_unique<QgsProcessingParameterFolderDestination>( QStringLiteral( "OUTPUT_TEXT_DIR" ), QObject::tr( "Directory for text output" ), QVariant(), true, false ) );
   addOutput( std::make_unique<QgsProcessingOutputNumber>( QStringLiteral( "NUM_PATHS" ), QObject::tr( "Number of paths" ) ) );
 
   // backwards compatibility parameters
-  // TODO QGIS 4: remove compatibility parameters and their logic
+  // TODO QGIS 5: remove compatibility parameters and their logic
   auto orderField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "ORDER_FIELD" ), QObject::tr( "Order field" ), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, true );
   orderField->setFlags( orderField->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( std::move( orderField ) );

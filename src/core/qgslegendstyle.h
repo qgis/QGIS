@@ -37,7 +37,7 @@ class CORE_EXPORT QgsLegendStyle
 {
   public:
 
-    // TODO QGIS 4.0 - use Qt enum instead
+    // TODO QGIS 5.0 - use Qt enum instead
 
     //! Margin sides
     enum Side

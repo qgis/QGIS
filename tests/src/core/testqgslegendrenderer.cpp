@@ -961,7 +961,7 @@ void TestQgsLegendRenderer::testMapUnits()
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
   Q_NOWARN_DEPRECATED_PUSH
-  // TODO QGIS 4.0 -- move these to parameters on _renderLegend, and set the render context to match
+  // TODO QGIS 5.0 -- move these to parameters on _renderLegend, and set the render context to match
   settings.setMmPerMapUnit( 0.1 );
   settings.setMapScale( 1000 );
   Q_NOWARN_DEPRECATED_POP

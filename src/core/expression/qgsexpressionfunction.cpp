@@ -6120,15 +6120,15 @@ static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsE
   if ( !color.isValid() )
     return QVariant();
 
-  const float alpha = color.alphaF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  const float alpha = color.alphaF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   if ( color.spec() == QColor::Spec::Cmyk )
   {
-    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
     color = QColor::fromCmykF( avg, avg, avg, color.blackF(), alpha );
   }
   else
   {
-    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
     color.setRgbF( avg, avg, avg, alpha );
   }
 
@@ -6187,7 +6187,7 @@ static QVariant fcnColorMix( const QVariantList &values, const QgsExpressionCont
 
   const float ratio = static_cast<float>( std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0., 1. ) );
 
-  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   // NOLINTBEGIN(bugprone-narrowing-conversions)
 
   QColor newColor;

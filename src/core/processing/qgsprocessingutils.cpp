@@ -1883,7 +1883,7 @@ QSet<QVariant> QgsProcessingFeatureSource::uniqueValues( int fieldIndex, int lim
     return mSource->uniqueValues( fieldIndex, limit );
 
   // inefficient method when filter expression in use
-  // TODO QGIS 4.0 -- add filter expression to virtual ::uniqueValues function
+  // TODO QGIS 5.0 -- add filter expression to virtual ::uniqueValues function
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )
     return QSet<QVariant>();
 
@@ -1910,7 +1910,7 @@ QVariant QgsProcessingFeatureSource::minimumValue( int fieldIndex ) const
     return mSource->minimumValue( fieldIndex );
 
   // inefficient method when filter expression in use
-  // TODO QGIS 4.0 -- add filter expression to virtual ::minimumValue function
+  // TODO QGIS 5.0 -- add filter expression to virtual ::minimumValue function
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )
     return QVariant();
 
@@ -1938,7 +1938,7 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
     return mSource->maximumValue( fieldIndex );
 
   // inefficient method when filter expression in use
-  // TODO QGIS 4.0 -- add filter expression to virtual ::maximumValue function
+  // TODO QGIS 5.0 -- add filter expression to virtual ::maximumValue function
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )
     return QVariant();
 

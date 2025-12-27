@@ -199,7 +199,7 @@ class CORE_EXPORT QgsRectangle
      * Set a rectangle so that min corner is at max
      * and max corner is at min. It is NOT normalized.
      *
-     * \deprecated QGIS 3.34. Will be removed in QGIS 4.0. Use setNull().
+     * \deprecated QGIS 3.34. Will be removed in QGIS 5.0. Use setNull().
      */
     Q_DECL_DEPRECATED void setMinimal() SIP_DEPRECATED
     {

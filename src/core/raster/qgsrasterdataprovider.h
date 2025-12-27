@@ -439,7 +439,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     //! Creates a new dataset with mDataSourceURI
     static QgsRasterDataProvider *create( const QString &providerKey,
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Validates creation options for a specific dataset and destination format.

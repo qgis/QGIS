@@ -115,7 +115,7 @@ bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters
     {
       if ( message )
       {
-        // TODO QGIS 4 - move the message handling to the parameter subclasses (but this
+        // TODO QGIS 5 - move the message handling to the parameter subclasses (but this
         // requires a change in signature for the virtual checkValueIsAcceptable method)
         if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
           *message = invalidSourceError( parameters, def->name() );

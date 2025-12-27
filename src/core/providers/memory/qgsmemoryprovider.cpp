@@ -70,7 +70,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   }
   else
   {
-    // TODO - remove in QGIS 4.0. Layers without an explicit CRS set SHOULD have an invalid CRS. But in order to maintain
+    // TODO - remove in QGIS 5.0. Layers without an explicit CRS set SHOULD have an invalid CRS. But in order to maintain
     // 3.x api, we have to be tolerant/shortsighted(?) here and fallback to EPSG:4326
     mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   }

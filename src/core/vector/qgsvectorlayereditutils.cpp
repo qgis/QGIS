@@ -424,7 +424,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   return errorCode;
 }
 
-// TODO QGIS 4.0 -- this should return Qgis::GeometryOperationResult
+// TODO QGIS 5.0 -- this should return Qgis::GeometryOperationResult
 int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
   if ( !mLayer->isSpatial() )

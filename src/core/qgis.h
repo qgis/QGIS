@@ -486,7 +486,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, ReadFlags )
     Q_FLAG( DataProviderReadFlags )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
 
     /**
      * Vector data provider capabilities.
@@ -950,7 +950,7 @@ class CORE_EXPORT Qgis
     enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 0, //!< Item has no capabilities
-      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
       Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -2841,7 +2841,7 @@ class CORE_EXPORT Qgis
     {
       UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
       UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
-      // TODO QGIS 4.0: remove
+      // TODO QGIS 5.0: remove
       RenderOutlineLabels   = 1 << 3, //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
       DrawLabelRectOnly     = 1 << 4, //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5, //!< Whether to draw rectangles of generated candidates (good for debugging)
@@ -4838,7 +4838,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( RasterIdentifyFormat )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
     // remove deprecated members
     // Remove "Identify" member, and replace with combinations of IdentifyValue/IdentifyText/etc
 
@@ -4853,8 +4853,8 @@ class CORE_EXPORT Qgis
     {
       NoCapabilities = 0, //!< No capabilities
       Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
-      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
+      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
+      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
       BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability::BuildPyramids instead)
       Identify = 1 << 5, //!< At least one identify format supported
       IdentifyValue = 1 << 6, //!< Numerical values
@@ -4873,7 +4873,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( RasterInterfaceCapabilities, RasterInterfaceCapability )
     Q_FLAG( RasterInterfaceCapabilities )
 
-    // TODO QGIS 4 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
 
     /**
      * Raster data provider capabilities.
@@ -5945,7 +5945,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VsiHandlerType )
 
-    // TODO QGIS 4: make All include all values (we can't do this before 4.0, as we need to keep
+    // TODO QGIS 5: make All include all values (we can't do this before 4.0, as we need to keep
     // compatibility with code which expects all these statistics to give numeric results)
 
     /**
@@ -6403,7 +6403,7 @@ class CORE_EXPORT Qgis
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
      *
-     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static const double SCALE_PRECISION;
 
@@ -6557,7 +6557,7 @@ class CORE_EXPORT Qgis
 
     /**
     * WKT string that represents a geographic coord system
-    * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+    * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
     */
     Q_DECL_DEPRECATED static QString geoWkt()
     {
@@ -6568,7 +6568,7 @@ class CORE_EXPORT Qgis
 
     /**
      * PROJ4 string that represents a geographic coord system.
-     * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static QString geoProj4()
     {
@@ -7320,21 +7320,21 @@ class ScopedIntIncrementor
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOSRID = 4326;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system in QGIS internal srs database.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOCRS_ID = 3452;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEO_EPSG_CRS_ID = 4326;
 

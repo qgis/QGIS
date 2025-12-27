@@ -5734,7 +5734,7 @@ void QgisApp::addVirtualLayer()
   dts->setMapCanvas( mMapCanvas );
   dts->setBrowserModel( mBrowserModel );
   Q_NOWARN_DEPRECATED_PUSH
-  // TODO QGIS 4.0 -- this should use the generic addLayer signal instead
+  // TODO QGIS 5.0 -- this should use the generic addLayer signal instead
   connect( dts, &QgsAbstractDataSourceWidget::addVectorLayer, this, &QgisApp::addVectorLayer );
   Q_NOWARN_DEPRECATED_POP
   connect( dts, &QgsAbstractDataSourceWidget::replaceVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );

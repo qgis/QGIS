@@ -197,7 +197,7 @@ static QColor interpolateCmyk( const QColor &c1, const QColor &c2, const double 
   const qreal alpha2 = c2.alphaF();
   const qreal alpha = ( alpha1 + value * ( alpha2 - alpha1 ) );
 
-  return QColor::fromCmykF( cyan, magenta, yellow, black, alpha ); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  return QColor::fromCmykF( cyan, magenta, yellow, black, alpha ); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
 }
 
 //////////////

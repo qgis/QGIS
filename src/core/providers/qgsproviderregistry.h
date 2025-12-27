@@ -59,7 +59,7 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
-    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
+    // TODO QGIS 5 - either move to QgsAbstractDataSourceWidget or remove altogether
 
     /**
      * Different ways a source select dialog can be used
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Creates new instance of raster data provider

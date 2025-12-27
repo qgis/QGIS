@@ -40,7 +40,7 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
 
 QgsSettingsRegistryGui::~QgsSettingsRegistryGui()
 {
-  // TODO QGIS 4.0: Remove
+  // TODO QGIS 5.0: Remove
   // backward compatibility for settings
   settingsRespectScreenDPI->copyValueToKeyIfChanged( QStringLiteral( "gui/qgis/respect_screen_dpi" ) );
 }

@@ -482,7 +482,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // lists the available projects metadata).
 
         // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
-        // TODO: QGIS 4 fix the OWS services and treat them as APIs
+        // TODO: QGIS 5 fix the OWS services and treat them as APIs
         if ( !response.feedback() || !response.feedback()->isCanceled() )
         {
           if ( params.service().isEmpty() )
