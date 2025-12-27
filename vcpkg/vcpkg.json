@@ -61,7 +61,10 @@
       "default-features": false,
       "features": [
         "opengl",
-        "gles3",
+        {
+          "name": "gles3",
+          "platform": "emscripten"
+        },
         "concurrent",
         "freetype",
         "gui",
@@ -182,6 +185,7 @@
             "sql-odbc"
           ]
         },
+        "opencl",
         "qtdeclarative",
         "qtimageformats",
         "qtquickcontrols2",
