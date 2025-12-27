@@ -28,7 +28,6 @@ from qgis.core import (
     QgsProcessingParameterFileDestination,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import vector
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -99,7 +98,7 @@ class PolarPlot(QgisAlgorithm):
             )
 
         try:
-            import numpy as np
+            import math
         except ImportError:
             raise QgsProcessingException(
                 QCoreApplication.translate(
@@ -123,8 +122,11 @@ class PolarPlot(QgisAlgorithm):
         data = [
             go.Barpolar(
                 r=values[valuefieldname],
-                theta=np.degrees(
-                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))
+                theta=math.degrees(
+                    [
+                        (2 * math.pi / len(values[valuefieldname])) * i
+                        for i in range(len(values[valuefieldname]))
+                    ]
                 ),
             )
         ]
