@@ -18,6 +18,8 @@
 #ifndef QGSAUTHCERTUTILS_H
 #define QGSAUTHCERTUTILS_H
 
+#include "qgsconfig.h"
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsauthconfig.h"
@@ -25,6 +27,7 @@
 #include <QFile>
 #include <QSslCertificate>
 #include <QSslError>
+
 #ifdef HAVE_AUTH
 #include <QtCrypto>
 #endif

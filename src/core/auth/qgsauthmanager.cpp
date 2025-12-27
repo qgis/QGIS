@@ -1301,7 +1301,7 @@ QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const Q
 #else
   Q_UNUSED( authcfg )
 
-  return static_cast<QgsAuthMethod::Expansions>(0);
+  return QgsAuthMethod::Expansions();
 #endif
 }
 
@@ -3317,7 +3317,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certTrustPolicy( const QSslCer
   return QgsAuthCertUtils::DefaultTrust;
 #else
   Q_UNUSED( cert )
-  return static_cast<QgsAuthCertUtils::CertTrustPolicy>(0);
+  return QgsAuthCertUtils::DefaultTrust;
 #endif
 }
 
@@ -3418,7 +3418,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certificateTrustPolicy( const 
   return policy;
 #else
   Q_UNUSED( cert )
-  return static_cast<QgsAuthCertUtils::CertTrustPolicy>(0);
+  return QgsAuthCertUtils::DefaultTrust;
 #endif
 }
 
@@ -3452,7 +3452,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
   }
   return static_cast< QgsAuthCertUtils::CertTrustPolicy >( policy.toInt() );
 #else
-  return static_cast<QgsAuthCertUtils::CertTrustPolicy>(0);
+  return QgsAuthCertUtils::DefaultTrust;
 #endif
 }
 

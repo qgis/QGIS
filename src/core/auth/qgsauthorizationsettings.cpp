@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsauthorizationsettings.h"
+
 #include "qgslogger.h"
 
 QgsAuthorizationSettings::QgsAuthorizationSettings( const QString &userName, const QString &password, const QgsHttpHeaders &httpHeaders, const QString &authcfg )
