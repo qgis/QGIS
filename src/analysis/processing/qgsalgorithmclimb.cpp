@@ -70,7 +70,7 @@ void QgsClimbAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Line layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Climb layer" ) ) );
-  // TODO QGIS 4.0 harmonize output names with the rest of algorithms (use underscore to separate words)
+  // TODO QGIS 5.0 harmonize output names with the rest of algorithms (use underscore to separate words)
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTALCLIMB" ), QObject::tr( "Total climb" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTALDESCENT" ), QObject::tr( "Total descent" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MINELEVATION" ), QObject::tr( "Minimum elevation" ) ) );

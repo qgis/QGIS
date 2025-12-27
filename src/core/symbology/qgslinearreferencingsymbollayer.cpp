@@ -136,7 +136,7 @@ QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &prop
   res->setShowMarker( properties.value( QStringLiteral( "show_marker" ), false ).toBool() );
 
   // it's impossible to get the project's path resolver here :(
-  // TODO QGIS 4.0 -- force use of QgsReadWriteContext in create methods
+  // TODO QGIS 5.0 -- force use of QgsReadWriteContext in create methods
   QgsReadWriteContext rwContext;
   //rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
 
@@ -220,7 +220,7 @@ QVariantMap QgsLinearReferencingSymbolLayer::properties() const
 {
   QDomDocument textFormatDoc;
   // it's impossible to get the project's path resolver here :(
-  // TODO QGIS 4.0 -- force use of QgsReadWriteContext in properties methods
+  // TODO QGIS 5.0 -- force use of QgsReadWriteContext in properties methods
   QgsReadWriteContext rwContext;
   // rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
   const QDomElement textElem = mTextFormat.writeXml( textFormatDoc, rwContext );

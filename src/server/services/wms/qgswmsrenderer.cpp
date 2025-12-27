@@ -4097,7 +4097,7 @@ namespace QgsWms
       mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
-      // QGIS 4.0 - require correct use of QgsRenderContext instead of these
+      // QGIS 5.0 - require correct use of QgsRenderContext instead of these
       Q_NOWARN_DEPRECATED_PUSH
       settings.setMapScale( mapSettings.scale() );
       settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
@@ -4105,7 +4105,7 @@ namespace QgsWms
     }
     else
     {
-      // QGIS 4.0 - require correct use of QgsRenderContext instead of these
+      // QGIS 5.0 - require correct use of QgsRenderContext instead of these
       Q_NOWARN_DEPRECATED_PUSH
       const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
       settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );

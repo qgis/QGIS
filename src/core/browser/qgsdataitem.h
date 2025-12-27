@@ -274,7 +274,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
      *
-     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED virtual bool rename( const QString &name ) SIP_DEPRECATED;
 
-    // ### QGIS 4 - rename to capabilities()
+    // ### QGIS 5 - rename to capabilities()
 
     /**
      * Returns the capabilities for the data item.

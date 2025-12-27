@@ -1482,7 +1482,7 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &po
 
 QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed, QgsPointLocator::MatchFilter *filter )
 {
-  // TODO QGIS 4: reorder relaxed & filter parameters to match other methods' signatures
+  // TODO QGIS 5: reorder relaxed & filter parameters to match other methods' signatures
   if ( !prepare( relaxed ) )
     return MatchList();
 

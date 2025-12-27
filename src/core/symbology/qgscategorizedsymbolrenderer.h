@@ -493,7 +493,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void rebuildHash();
 
     /**
-     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QgsSymbol *skipRender() SIP_DEPRECATED;
 
@@ -503,7 +503,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     Q_DECL_DEPRECATED QgsSymbol *symbolForValue( const QVariant &value ) const SIP_DEPRECATED;
 
-    // TODO QGIS 4.0 - rename Python method to symbolForValue
+    // TODO QGIS 5.0 - rename Python method to symbolForValue
 
     /**
      * Returns the matching symbol corresponding to an attribute \a value.

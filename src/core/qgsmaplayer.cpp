@@ -1863,7 +1863,7 @@ QString QgsMapLayer::loadNamedMetadata( const QString &uri, bool &resultFlag )
   bool metadataSuccessfullyLoaded = false;
   const QString message = loadNamedProperty( uri, QgsMapLayer::Metadata, metadataExists, metadataSuccessfullyLoaded );
 
-  // TODO QGIS 4.0 -- fix API for loadNamedMetadata so we can return metadataExists too
+  // TODO QGIS 5.0 -- fix API for loadNamedMetadata so we can return metadataExists too
   ( void )metadataExists;
   resultFlag = metadataSuccessfullyLoaded;
   return message;
@@ -2735,7 +2735,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bo
 
     returnMessage = loadNamedProperty( theURI, PropertyType::Style, styleExists, styleSuccessfullyLoaded, categories, flags );
 
-    // TODO QGIS 4.0 -- fix API for loadNamedStyle so we can return styleExists too
+    // TODO QGIS 5.0 -- fix API for loadNamedStyle so we can return styleExists too
     ( void )styleExists;
     resultFlag = styleSuccessfullyLoaded;
   }

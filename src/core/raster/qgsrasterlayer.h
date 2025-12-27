@@ -195,7 +195,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * returned in \a retError.
      */
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
-    // TODO QGIS 4.0 - rename fileNameQString to fileName
+    // TODO QGIS 5.0 - rename fileNameQString to fileName
 
     static bool isValidRasterFileName( const QString &fileNameQString );
 

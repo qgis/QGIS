@@ -38,7 +38,7 @@ namespace pal
 }
 #endif
 
-// TODO QGIS 4.0 - this should be private, not exposed to SIP
+// TODO QGIS 5.0 - this should be private, not exposed to SIP
 
 /**
  * \ingroup core

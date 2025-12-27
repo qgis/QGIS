@@ -267,7 +267,7 @@ bool QgsLayoutItem::nextExportPart()
   if ( !mLayout || mLayout->renderContext().currentExportLayer() == -1 )
     return false;
 
-  // QGIS 4- return false from base class implementation
+  // QGIS 5- return false from base class implementation
 
   const int layers = numberExportLayers();
   return mLayout->renderContext().currentExportLayer() < layers;

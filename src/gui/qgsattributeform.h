@@ -92,7 +92,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void displayWarning( const QString &message );
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Hides the button box (OK/Cancel) and enables auto-commit
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void hideButtonBox();
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Shows the button box (OK/Cancel) and disables auto-commit
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void showButtonBox();
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Disconnects the button box (OK/Cancel) from the accept/resetValues slots

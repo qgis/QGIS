@@ -1713,7 +1713,7 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
   return result;
 }
 
-// TODO QGIS 4.0 -- this should return Qgis::GeometryOperationResult, not int
+// TODO QGIS 5.0 -- this should return Qgis::GeometryOperationResult, not int
 int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

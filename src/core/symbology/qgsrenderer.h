@@ -80,7 +80,7 @@ class CORE_EXPORT QgsSymbolLevelItem
      */
     int layer() const;
 
-    // TODO QGIS 4.0 -> make private
+    // TODO QGIS 5.0 -> make private
   protected:
     QgsSymbol *mSymbol = nullptr;
     int mLayer;

@@ -581,7 +581,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isValid() const;
 
-    // TODO QGIS 4.0: consider changing bool hidePassword to an enumeration: HIDE_CREDENTIALS / REDACT_CREDENTIALS
+    // TODO QGIS 5.0: consider changing bool hidePassword to an enumeration: HIDE_CREDENTIALS / REDACT_CREDENTIALS
     // to avoid the ambiguity of the double negation (hide = false)
 
     /**
@@ -826,7 +826,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
         QString &msgError SIP_OUT,
         QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
     /**
@@ -1167,7 +1167,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString saveNamedMetadata( const QString &uri, bool &resultFlag SIP_OUT );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
     // The first (metadata found, error occurred loading it) should trigger a user-facing warning, whereas the second (no metadata found) isn't reflective of an error at all.
 
     /**
@@ -1185,7 +1185,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag SIP_OUT );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
     // The first (metadata found, error occurred loading it) should trigger a user-facing warning, whereas the second (no metadata found) isn't reflective of an error at all.
 
     /**
@@ -1225,7 +1225,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString styleURI() const;
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
     /**
@@ -1239,7 +1239,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString loadDefaultStyle( bool &resultFlag SIP_OUT );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
     /**
@@ -2382,7 +2382,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Data provider key (name of the data provider)
     QString mProviderKey;
 
-    //TODO QGIS 4 - move to readXml as a new argument (breaks API)
+    //TODO QGIS 5 - move to readXml as a new argument (breaks API)
 
     //! Read flags. It's up to the subclass to respect these when restoring state from XML
     QgsMapLayer::ReadFlags mReadFlags = QgsMapLayer::ReadFlags();

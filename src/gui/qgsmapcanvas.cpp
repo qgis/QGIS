@@ -104,7 +104,7 @@ email                : sherman at mrcc.com
  * \brief Deprecated to be deleted, stuff from here should be moved elsewhere.
  * \note not available in Python bindings
 */
-//TODO QGIS 4.0 - remove
+//TODO QGIS 5.0 - remove
 class QgsMapCanvas::CanvasProperties
 {
   public:
@@ -1335,7 +1335,7 @@ void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors
 void QgsMapCanvas::updateDevicePixelFromScreen()
 {
   mSettings.setDevicePixelRatio( static_cast<float>( devicePixelRatioF() ) );
-  // TODO: QGIS 4 -> always respect screen dpi
+  // TODO: QGIS 5 -> always respect screen dpi
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() )
   {
     if ( window()->windowHandle() )

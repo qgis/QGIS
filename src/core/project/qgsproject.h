@@ -1407,7 +1407,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void removeMapLayers( const QStringList &layerIds );
 
-    //TODO QGIS 4.0 - add PyName alias to avoid list type conversion error
+    //TODO QGIS 5.0 - add PyName alias to avoid list type conversion error
 
     /**
      * \brief
@@ -2188,7 +2188,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void layerRemoved( const QString &layerId );
 
-    //TODO QGIS 4.0 - rename to past tense
+    //TODO QGIS 5.0 - rename to past tense
 
     /**
      * Emitted when all layers are removed, before layersWillBeRemoved() and
@@ -2284,7 +2284,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
-    // TODO QGIS 4.0 - rename b to dirty
+    // TODO QGIS 5.0 - rename b to dirty
 
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will

@@ -256,7 +256,7 @@ void TestQgsCompoundColorWidget::testSliderWidgets()
   QgsCompoundColorWidget w( nullptr, QColor::fromRgbF( 0.12f, 0.34f, 0.56f, 0.78f ) );
   w.setVisible( true );
 
-  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   // NOLINTBEGIN(bugprone-narrowing-conversions)
   QCOMPARE( w.mRedSlider->mSpinBox->value(), 30.6 );
   compareFloat( w.mRedSlider->mRampWidget->color().redF(), 0.12f );
@@ -299,7 +299,7 @@ void TestQgsCompoundColorWidget::testSliderWidgetsCmyk()
   QgsCompoundColorWidget w( nullptr, QColor::fromCmykF( 0.12f, 0.34f, 0.56f, 0.78f, 0.91f ) );
   w.setVisible( true );
 
-  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   // NOLINTBEGIN(bugprone-narrowing-conversions)
   QCOMPARE( w.mCyanSlider->mSpinBox->value(), 12 );
   compareFloat( w.mCyanSlider->mRampWidget->color().cyanF(), 0.12f );

@@ -5009,7 +5009,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
 
   QgsCoordinateReferenceSystem defaultCrs;
 
-  // TODO QGIS 4.0 -- remove this method, and place it somewhere in app (where it belongs)
+  // TODO QGIS 5.0 -- remove this method, and place it somewhere in app (where it belongs)
   // in the meantime, we have a slightly hacky way to read the settings key using an enum which isn't available (since it lives in app)
   if ( mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
        || mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == QLatin1String( "2" ) )

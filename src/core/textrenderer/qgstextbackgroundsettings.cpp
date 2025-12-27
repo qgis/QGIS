@@ -31,7 +31,7 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 {
   d = new QgsTextBackgroundSettingsPrivate();
 
-  // Create a default fill symbol to preserve API promise until QGIS 4.0
+  // Create a default fill symbol to preserve API promise until QGIS 5.0
   QgsSimpleFillSymbolLayer *fill = new QgsSimpleFillSymbolLayer( d->fillColor, Qt::SolidPattern, d->strokeColor );
   fill->setStrokeWidth( d->strokeWidth );
   fill->setStrokeWidthUnit( d->strokeWidthUnits );

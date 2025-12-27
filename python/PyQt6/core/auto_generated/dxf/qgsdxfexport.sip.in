@@ -509,7 +509,7 @@ Register name of layer for feature
 
 .. deprecated:: 3.40
 
-   Will be made private in QGIS 4.
+   Will be made private in QGIS 5.
 %End
 
   private:

@@ -50,7 +50,7 @@ void QgsRasterStackPositionAlgorithmBase::initAlgorithm( const QVariantMap & )
   addParameter( output_nodata_parameter.release() );
 
   // backwards compatibility parameter
-  // TODO QGIS 4: remove parameter and related logic
+  // TODO QGIS 5: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );

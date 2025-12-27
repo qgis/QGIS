@@ -548,7 +548,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       SinglePolygon = 1 << 7,          //!< Supports single polygon types (as distinct from multi polygon types) \since QGIS 3.28
       PolyhedralSurfaces = 1 << 8,     //!< Supports polyhedral surfaces (PolyhedralSurface, TIN) types (as distinct from multi polygon types) \since QGIS 3.40
     };
-    // TODO QGIS 4.0 -- remove SinglePart
+    // TODO QGIS 5.0 -- remove SinglePart
 
     Q_ENUM( GeometryColumnCapability )
     Q_DECLARE_FLAGS( GeometryColumnCapabilities, GeometryColumnCapability )

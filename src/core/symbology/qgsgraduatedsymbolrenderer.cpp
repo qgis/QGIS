@@ -574,7 +574,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement methodElem = element.firstChildElement( QStringLiteral( "classificationMethod" ) );
   std::unique_ptr< QgsClassificationMethod > method;
 
-  // TODO QGIS 4 Remove
+  // TODO QGIS 5 Remove
   // backward compatibility for QGIS project < 3.10
   if ( !modeElem.isNull() )
   {

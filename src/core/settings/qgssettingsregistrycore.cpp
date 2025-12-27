@@ -399,7 +399,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsSettings::releaseFlush();
 }
 
-// TODO QGIS 4.0: Remove
+// TODO QGIS 5.0: Remove
 void QgsSettingsRegistryCore::backwardCompatibility()
 {
   // This method triggers a ton of QgsSettings constructions and destructions, which is very expensive

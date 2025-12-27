@@ -147,7 +147,7 @@ class CORE_EXPORT QgsVectorTileRenderer
     //! Returns field names of sub-layers that will be used for rendering. Must be called between startRender/stopRender.
     virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) SIP_SKIP { return QMap<QString, QSet<QString> >(); }
 
-    //TODO QGIS 4.0 -- make pure virtual
+    //TODO QGIS 5.0 -- make pure virtual
 
     /**
      * Returns a list of the layers required for rendering.
