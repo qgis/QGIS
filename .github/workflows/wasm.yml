@@ -25,7 +25,7 @@ jobs:
       - name: 🧹 Reclaim disk space
         run: |
           sudo rm -rf /usr/local/lib/android/
-          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/*
 
       - name: ♻️ Check disk space
         run: df . -h
