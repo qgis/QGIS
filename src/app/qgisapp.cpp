@@ -5656,7 +5656,9 @@ QString QgisApp::getVersionString()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     versionString += QStringLiteral( "<td colspan=\"2\">&nbsp;</td></tr><tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Active Python plugins" ) );
-    const QStringList activePlugins = mPythonUtils->listActivePlugins();
+    QStringList pluginsList = mPythonUtils->listActivePlugins();
+    pluginsList.sort();
+    const QStringList activePlugins = pluginsList;
     for ( const QString &plugin : activePlugins )
     {
       const QString version = mPythonUtils->getPluginMetadata( plugin, QStringLiteral( "version" ) );
