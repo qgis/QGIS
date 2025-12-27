@@ -38,5 +38,6 @@
         <file>shaders/texture.frag</file>
         <file>shaders/texture.vert</file>
         <file>shaders/globe.frag</file>
+        <file>shaders/singlecolor.frag</file>
     </qresource>
 </RCC>
