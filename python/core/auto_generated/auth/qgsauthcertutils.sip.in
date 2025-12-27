@@ -13,6 +13,8 @@
 
 
 
+
+
 class QgsAuthCertUtils
 {
 %Docstring(signature="appended")
@@ -338,6 +340,7 @@ validateCertChain validates the given ``certificateChain``
 :return: list of QSslError, if the list is empty then the cert chain is
          valid
 %End
+
 
     static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool trustRootCa = false );
 %Docstring

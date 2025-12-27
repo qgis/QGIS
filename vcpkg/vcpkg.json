@@ -2,7 +2,7 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "edffab1bcd2cb5b8c17d6ba34d5651ea0bf82979",
+      "baseline": "5d57f5a0a5469a23e005fc79a7c1814ab4fc967e",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
@@ -33,25 +33,18 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
-    "duckdb",
     "expat",
     {
       "name": "gdal",
+      "default-features": false,
       "features": [
-        "arrow-adbc",
-        "freexl",
-        "kea",
-        "parquet",
-        "poppler",
-        "tools"
+        "freexl"
       ]
     },
     "geos",
     "gsl",
     "jhasse-poly2tri",
-    "libpq",
     "libspatialindex",
-    "libspatialite",
     {
       "name": "libtasn1",
       "platform": "ios | osx"
@@ -61,28 +54,56 @@
     "meshoptimizer",
     "nlohmann-json",
     "o2",
-    "opencl",
     "proj",
     "protobuf",
     {
       "name": "qtbase",
+      "default-features": false,
       "features": [
-        "sql-odbc"
+        "opengl",
+        "gles3",
+        "concurrent",
+        "freetype",
+        "gui",
+        "jpeg",
+        "network",
+        "widgets",
+        "sql-sqlite",
+        "testlib"
       ]
     },
-    "qtdeclarative",
-    "qtimageformats",
-    "qtkeychain-qt6",
-    "qtquickcontrols2",
+    {
+      "name": "qtbase",
+      "default-features": false,
+      "host": true
+    },
     "qtsvg",
-    "qttools",
-    "zlib"
+    "qtmultimedia",
+    "qt5compat",
+    "qtkeychain-qt6",
+    "zlib",
+    "zstd"
+  ],
+  "default-features": [
+    "recommended-features"
   ],
   "features": {
     "3d": {
       "description": "Determines whether QGIS 3D library should be built",
       "dependencies": [
         "qt3d"
+      ]
+    },
+    "auth": {
+      "description": "Build with Auth (QCA) support",
+      "dependencies": [
+        {
+          "name": "qca",
+          "default-features": false,
+          "features": [
+            "ossl"
+          ]
+        }
       ]
     },
     "bindings": {
@@ -138,16 +159,34 @@
         "python3"
       ]
     },
-    "auth": {
-      "description": "Determines whether the EXIV2 should be built",
+    "recommended-features": {
+      "description": "Enable a recommended QGIS build",
       "dependencies": [
+        "duckdb",
+        "libpq",
+        "libspatialite",
         {
-          "name": "qca",
-          "default-features": false,
+          "name": "gdal",
+          "default-features": true,
           "features": [
-            "ossl"
+            "arrow-adbc",
+            "kea",
+            "parquet",
+            "poppler",
+            "tools"
           ]
-        }
+        },
+        {
+          "name": "qtbase",
+          "features": [
+            "sql-odbc"
+          ]
+        },
+        "qtdeclarative",
+        "qtimageformats",
+        "qtquickcontrols2",
+        "qttools",
+        "qtpositioning"
       ]
     },
     "exiv2": {
@@ -162,7 +201,7 @@
       ]
     },
     "gui": {
-      "description": "Determines whether the QGIS gui should be built",
+      "description": "Determines whether QGIS gui should be built",
       "dependencies": [
         "qscintilla",
         "qtmultimedia",
@@ -182,15 +221,15 @@
       ]
     },
     "pdal": {
-      "description": "Build with pdal support",
+      "description": "Build with PDAL support",
       "dependencies": [
         "pdal"
       ]
     },
     "qtpositioning": {
-      "description": "Determines whether QGIS should be built with support for QtPositioning",
+      "description": "Build with QtPositioning support",
       "dependencies": [
-        "qtlocation"
+        "qtpositioning"
       ]
     },
     "server": {

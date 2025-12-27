@@ -96,6 +96,8 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     bool initialize() override;
     QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const override;
 
+#ifndef QT_NO_SSL
+
     bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem ) override;
     bool removeCertIdentity( const QSslCertificate &cert ) override;
     const QSslCertificate loadCertIdentity( const QString &id ) const override;
@@ -124,6 +126,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const override;
     bool removeCertTrustPolicy( const QSslCertificate &cert ) override;
     bool certTrustPolicyExists( const QSslCertificate &cert ) const override;
+#endif
 
     const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const override;
     bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) override;
