@@ -209,6 +209,7 @@
 #include "qgsalgorithmrastercalculator.h"
 #include "qgsalgorithmrasterdtmslopebasedfilter.h"
 #include "qgsalgorithmrasterfrequencybycomparisonoperator.h"
+#include "qgsalgorithmrastergaussianblur.h"
 #include "qgsalgorithmrasterlayerproperties.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmrasterlogicalop.h"
@@ -565,6 +566,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRasterFrequencyByEqualOperatorAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByGreaterThanOperatorAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByLessThanOperatorAlgorithm() );
+  addAlgorithm( new QgsRasterGaussianBlurAlgorithm() );
   addAlgorithm( new QgsRasterLayerPropertiesAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );
