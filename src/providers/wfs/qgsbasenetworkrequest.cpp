@@ -733,7 +733,7 @@ void QgsBaseNetworkRequest::replyFinished()
       }
       else if ( !replyContent.isEmpty() )
       {
-        mErrorMessage += tr( "\nserver response: %1" ).arg( replyContent );
+        mErrorMessage += tr( "\nServer response: %1" ).arg( replyContent );
       }
       mErrorCode = QgsBaseNetworkRequest::ServerExceptionError;
       logMessageIfEnabled();
