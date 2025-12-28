@@ -435,7 +435,7 @@ tests:
         hash: fc06f1af668bbfc6ee4fb6d421a4f561265ee20578a074eb763ae380
         type: rasterhash
 
-  - algorithm: native:gaussianblur
+  - algorithm: native:rastergaussianblur
     name: Gaussian blur
     params:
       BAND: 1
@@ -450,7 +450,7 @@ tests:
         hash: a8962717af6fe2db0125f4d3cce29e9f0fce5a4bc980c4e01ebbbac1
         type: rasterhash
 
-  - algorithm: native:gaussianblur
+  - algorithm: native:rastergaussianblur
     name: Gaussian blur with nodata
     params:
       BAND: 1
