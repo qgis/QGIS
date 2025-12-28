@@ -23,7 +23,7 @@
 
 QString QgsRasterGaussianBlurAlgorithm::name() const
 {
-  return QStringLiteral( "gaussianblur" );
+  return QStringLiteral( "rastergaussianblur" );
 }
 
 QString QgsRasterGaussianBlurAlgorithm::displayName() const
